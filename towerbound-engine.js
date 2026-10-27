@@ -72,11 +72,9 @@ create:function(){
  heroG.fillStyle(0x7d405b,1);heroG.fillPoints([{x:48,y:20},{x:64,y:2},{x:80,y:20},{x:64,y:15}],true);
  heroG.fillStyle(0xffd87b,1);heroG.fillCircle(64,19,4);
  // sword in right hand, bright steel edge
- heroG.save();heroG.translate(96,85);heroG.rotate(.28);
- heroG.fillStyle(0xe9f4ff,1);heroG.fillPoints([{x:-3,y:4},{x:3,y:4},{x:2,y:-48},{x:0,y:-59},{x:-2,y:-48}],true);
- heroG.lineStyle(2,0x9ce8f2,1);heroG.strokePoints([{x:0,y:-58},{x:3,y:4}],false);
- heroG.fillStyle(0xe8c875,1);heroG.fillRoundedRect(-10,1,20,5,2);heroG.fillStyle(0x5c344f,1);heroG.fillRoundedRect(-3,5,6,17,2);
- heroG.restore();
+ heroG.fillStyle(0xe9f4ff,1);heroG.fillPoints([{x:92,y:82},{x:98,y:84},{x:113,y:34},{x:110,y:24},{x:106,y:34}],true);
+ heroG.lineStyle(2,0x9ce8f2,1);heroG.strokePoints([{x:110,y:25},{x:95,y:83}],false);
+ heroG.fillStyle(0xe8c875,1);heroG.fillPoints([{x:86,y:82},{x:105,y:87},{x:107,y:82},{x:88,y:77}],true);heroG.fillStyle(0x5c344f,1);heroG.fillRoundedRect(92,84,6,18,2);
  heroG.generateTexture('tb-hero',128,160);heroG.destroy();
  makePixelTexture(this,'tb-foe',enemyRows,foePalette);
  const skeletonRows=['....111111....','...1222221...','..123232321..','..122222221..','...1333331...','....34443....','...5555555...','..556555655..','..556555655..','...5555555...','....66.66....','....66.66....'];const bruteRows=['....111111....','...12222221...','..1233333321..','..1233333321..','...1444441...','...55555555...','..5565556555..','..5565556555..','...55555555...','...666..666...','..6666..6666..'];makePixelTexture(this,'tb-skeleton',skeletonRows,{'1':'#181628','2':'#d2d1df','3':'#8b8ca7','4':'#8ef0e4','5':'#363b58','6':'#20243a'});makePixelTexture(this,'tb-brute',bruteRows,{'1':'#171327','2':'#8c304d','3':'#d34c67','4':'#ffba77','5':'#5a2c48','6':'#2a2139'});
