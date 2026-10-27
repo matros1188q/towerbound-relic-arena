@@ -78,13 +78,13 @@ create:function(){
  heroG.generateTexture('tb-hero',128,160);heroG.destroy();
  makePixelTexture(this,'tb-foe',enemyRows,foePalette);
  const skeletonRows=['....111111....','...1222221...','..123232321..','..122222221..','...1333331...','....34443....','...5555555...','..556555655..','..556555655..','...5555555...','....66.66....','....66.66....'];const bruteRows=['....111111....','...12222221...','..1233333321..','..1233333321..','...1444441...','...55555555...','..5565556555..','..5565556555..','...55555555...','...666..666...','..6666..6666..'];makePixelTexture(this,'tb-skeleton',skeletonRows,{'1':'#181628','2':'#d2d1df','3':'#8b8ca7','4':'#8ef0e4','5':'#363b58','6':'#20243a'});makePixelTexture(this,'tb-brute',bruteRows,{'1':'#171327','2':'#8c304d','3':'#d34c67','4':'#ffba77','5':'#5a2c48','6':'#2a2139'});
- this.hero=this.add.image(w*.34,h*.51,'tb-hero').setOrigin(.5,.5).setScale(1.08).setDepth(4);
- this.enemy=this.add.image(w*.67,h*.51,'tb-enemy-atlas',0).setOrigin(.5,.5).setScale(1.08).setDepth(4);
+ this.hero=this.add.image(w*.34,h*.51,'tb-hero').setOrigin(.5,.5).setScale(.76).setDepth(4);
+ this.enemy=this.add.image(w*.67,h*.51,'tb-enemy-atlas',0).setOrigin(.5,.5).setScale(.76).setDepth(4);
  this.phaseLabel=this.add.text(w/2,18,'ПОДГОТОВКА К БОЮ',{fontFamily:'monospace',fontSize:'11px',fontStyle:'bold',color:'#f8ce72',stroke:'#101326',strokeThickness:3}).setOrigin(.5,0).setDepth(12);
- this.heroAura=this.add.circle(w*.34,h*.72,34,0x72e7ed,.08).setDepth(2);
- this.foeAura=this.add.circle(w*.67,h*.72,52,0xe85e78,.12).setDepth(2);
- this.heroShadow=this.add.ellipse(w*.34,h*.76,56,14,0x050711,.65).setDepth(3);
- this.foeShadow=this.add.ellipse(w*.67,h*.76,92,20,0x050711,.7).setDepth(3);
+ this.heroAura=this.add.circle(w*.34,h*.72,27,0x72e7ed,.08).setDepth(2);
+ this.foeAura=this.add.circle(w*.67,h*.72,40,0xe85e78,.12).setDepth(2);
+ this.heroShadow=this.add.ellipse(w*.34,h*.76,46,12,0x050711,.65).setDepth(3);
+ this.foeShadow=this.add.ellipse(w*.67,h*.76,70,16,0x050711,.7).setDepth(3);
  this.tweens.add({targets:this.hero,y:this.hero.y-10,angle:-2,duration:520,yoyo:true,repeat:-1,ease:'Sine.inOut'});
  this.tweens.add({targets:this.enemy,y:this.enemy.y-8,angle:2,duration:680,yoyo:true,repeat:-1,ease:'Sine.inOut',delay:150});
  this.tweens.add({targets:this.heroShadow,scaleX:1.18,alpha:.35,duration:520,yoyo:true,repeat:-1,ease:'Sine.inOut'});
@@ -124,7 +124,7 @@ setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВК
  if(critical){const f=this.add.rectangle(w/2,h/2,w,h,0xffe2a1,.2).setDepth(10);this.tweens.add({targets:f,alpha:0,duration:160,onComplete:()=>f.destroy()});}
 },
 victory:function(){const w=this.scale.width,h=this.scale.height;for(let i=0;i<48;i++){const p=this.add.rectangle(Math.random()*w,-8,3+Math.random()*3,4+Math.random()*4,[0xf8ce72,0x78e7ef,0xb5a0e7][i%3],1).setDepth(10);this.tweens.add({targets:p,y:h+12,x:p.x+(Math.random()-.5)*100,angle:360,duration:900+Math.random()*1200,delay:Math.random()*300,onComplete:()=>p.destroy()});}},
-setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture('tb-enemy-atlas',boss?2:((wave*7+3)%4));this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?1.22:1.08);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
+setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture('tb-enemy-atlas',boss?2:((wave*7+3)%4));this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?.88:.76);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
 update:function(time){if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
 };
 
