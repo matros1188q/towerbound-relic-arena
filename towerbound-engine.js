@@ -123,6 +123,25 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  };
 }
 
+// Guaranteed visible actor layer: independent of Phaser canvas compositing on iOS Safari.
+function ensureVisibleActors(){
+ if(!mount)return;
+ let layer=mount.querySelector('.tb-visible-actors');
+ if(!layer){
+  layer=document.createElement('div');layer.className='tb-visible-actors';layer.setAttribute('aria-hidden','true');
+  Object.assign(layer.style,{position:'absolute',inset:'0',zIndex:'1',pointerEvents:'none',overflow:'hidden'});
+  const make=(cls,emoji,left,label)=>{
+   const el=document.createElement('div');el.className=cls;el.textContent=emoji;el.setAttribute('aria-label',label);
+   Object.assign(el.style,{position:'absolute',left,top:'43%',transform:'translate(-50%,-50%)',fontSize:'clamp(42px,12vw,66px)',lineHeight:'1',filter:'drop-shadow(0 5px 4px #000b)',animation:'tb-actor-float 1.5s ease-in-out infinite alternate',visibility:'visible',opacity:'1'});
+   layer.appendChild(el);return el;
+  };
+  make('tb-visible-hero','🛡️','34%','Hero');
+  make('tb-visible-enemy','👹','67%','Enemy').style.animationDelay='.25s';
+  const style=document.createElement('style');style.textContent='@keyframes tb-actor-float{from{margin-top:0}to{margin-top:-7px}}';mount.appendChild(style);
+  mount.appendChild(layer);
+ }
+}
+ensureVisibleActors();
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:false,antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:true,pixelArt:false,roundPixels:false},scene});
 window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);const s=game.scene.getScene('PixelArena');if(s&&s.impact)s.impact(critical,boss,style);},win:()=>{const s=game.scene.getScene('PixelArena');if(s&&s.victory)s.victory();},wave:(wave,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setWave)s.setWave(wave,boss);},phase:(phase)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setPhase)s.setPhase(phase);}};
 })();
