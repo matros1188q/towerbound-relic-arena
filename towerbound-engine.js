@@ -106,6 +106,10 @@ function ensureDomFx(){
 }
 function domCombatHit(critical=false,boss=false,style='arcane'){
  const layer=ensureDomFx();
+ // Animate the always-visible SVG actors too, not only the Phaser canvas.
+ const actorHero=mount.querySelector('.tb-visible-hero'),actorEnemy=mount.querySelector('.tb-visible-enemy');
+ if(actorHero&&actorHero.animate)actorHero.animate([{translate:'0 0',rotate:'0deg'},{translate:'12px -4px',rotate:critical?'9deg':'5deg'},{translate:'0 0',rotate:'0deg'}],{duration:260,easing:'cubic-bezier(.2,.8,.2,1)'});
+ if(actorEnemy&&actorEnemy.animate)actorEnemy.animate([{translate:'0 0',rotate:'0deg',filter:'brightness(1)'},{translate:'-5px 0',rotate:critical?'-12deg':'-6deg',filter:'brightness(2)'},{translate:'0 0',rotate:'0deg',filter:'brightness(1)'}],{duration:critical?340:260,easing:'ease-out'});
  const colors={fire:'#ff713d',ice:'#7cecff',lightning:'#fff176',nature:'#62f2a1',void:'#c18bff',arcane:'#ffe08a'};
  const color=colors[style]||colors.arcane;
  const orb=document.createElement('i');
