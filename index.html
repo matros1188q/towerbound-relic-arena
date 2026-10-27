@@ -233,6 +233,85 @@ body{background:radial-gradient(ellipse at 50% 0,#55427a 0,#1c203c 34%,#080a13 1
 .title-actions{position:relative;z-index:5}
 .title-screen.is-hidden{display:none!important}
 @media(max-width:700px){.title-art-sigil{height:70%;width:min(70%,300px);top:43%}.title-art-sigil:after{font-size:58px}.title-art:before{top:8%;width:64%}}
+
+/* V700 — illustrated dark-fantasy presentation, bespoke vector key art */
+:root{--gold:#f2cf88;--line:rgba(226,202,157,.22);--panel:rgba(17,20,38,.94);--muted:#aaa8c5;--text:#f5f0e8}
+body{background:radial-gradient(ellipse at 50% -10%,#34304c 0,#17172b 42%,#090b15 100%);background-attachment:fixed}
+button{border-radius:8px;border-color:#756348;background:linear-gradient(180deg,#373348,#1c1c30);transition:filter .18s,transform .18s,border-color .18s}
+button:hover{filter:brightness(1.18);border-color:#d9b56e}
+.primary{background:linear-gradient(180deg,#f4d89b,#c2914e 56%,#8d6037);border:1px solid #ffe8b2;color:#211829;box-shadow:0 0 0 1px #6c4c2e,0 8px 24px #0008,inset 0 1px #fff8;letter-spacing:.07em;text-shadow:0 1px #fff4}
+.app{max-width:1240px;padding-left:clamp(12px,2.2vw,30px);padding-right:clamp(12px,2.2vw,30px)}
+.top{padding:18px 4px 16px;border-bottom:1px solid #c4a16d26;margin-bottom:16px}
+.sigil{border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff1b9,#c19a56 48%,#473044);border:1px solid #ffe9b7;box-shadow:0 0 32px #d8b36a25,inset 0 0 0 4px #17162b;color:#241a2b}
+.brand h1{font-family:Georgia,'Times New Roman',serif;letter-spacing:.09em}
+.eyebrow{letter-spacing:.24em}
+.pill{border-radius:7px;background:linear-gradient(180deg,#29283d,#17182b);border-color:#9d835b44;box-shadow:inset 0 1px #ffffff08}
+.layout{grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);gap:16px}
+.panel{border-radius:10px;background:linear-gradient(145deg,rgba(35,33,53,.97),rgba(15,18,33,.98));border:1px solid #a68a6038;box-shadow:0 14px 36px #0005,inset 0 1px #fff09;backdrop-filter:blur(18px);padding:17px}
+.panelhead{border-bottom:1px solid #b79a6826;padding-bottom:10px;margin-bottom:14px}
+.panelhead h2{font-family:Georgia,'Times New Roman',serif;letter-spacing:.12em;font-size:13px;color:#ead6ae}
+.arena{border-radius:8px;min-height:315px;background:linear-gradient(180deg,#161b35,#29233c 62%,#12172a);border:1px solid #c6a46c55;box-shadow:inset 0 0 45px #05061188}
+.arena:after{content:"";position:absolute;inset:9px;border:1px solid #c9a66a2e;pointer-events:none;border-radius:4px}
+.combat-hud{position:relative;z-index:2}
+.combat-stat{background:#111427d9;border:1px solid #a98d5a44;border-radius:5px}
+.slots{gap:10px}
+.slot{border-radius:7px;background:linear-gradient(145deg,#39344b,#17192c);border:1px solid #8c795849;box-shadow:inset 0 1px #fff0,0 7px 14px #0002;min-height:106px}
+.slot.selected{outline:1px solid #f1d28c;background:linear-gradient(145deg,#5a493f,#262139);box-shadow:0 0 22px #e7c37b24}
+.slot .emoji{font-size:32px;filter:drop-shadow(0 3px 5px #0008)}
+.relic{border-radius:8px;background:linear-gradient(150deg,#353148,#191a2e);border-color:#9d835b42;box-shadow:inset 0 1px #ffffff08,0 8px 18px #0002}
+.relic .emoji{filter:drop-shadow(0 0 10px #dfba7540)}
+.relic button{border-radius:5px}
+.achievement{border-radius:6px;background:#111427;border-color:#a98d5a28}
+.reward-card{border-radius:7px;background:linear-gradient(135deg,#393249,#17192d);border-color:#c5a56b55}
+.title-screen{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:clamp(10px,2.5vw,32px);overflow:auto;background:#080a14}
+.title-screen:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 70% 32%,#60475c55,transparent 44%),linear-gradient(90deg,#080a14 0%,#080a14eF 34%,#080a1480 64%,#080a1430 100%);pointer-events:none}
+.title-card{position:relative;width:min(1160px,100%);min-height:min(740px,calc(100dvh - 24px));display:grid;grid-template-columns:minmax(0,1.06fr) minmax(360px,.94fr);overflow:hidden;border:1px solid #c4a16b75;border-radius:12px;background:linear-gradient(125deg,#141528f7,#17172ce8 55%,#0c1020f7);box-shadow:0 35px 110px #000c,inset 0 0 0 5px #0b0d19,inset 0 0 0 6px #d5b77c2b}
+.title-card:before{content:"";position:absolute;inset:12px;border:1px solid #c9aa6a30;pointer-events:none;z-index:4}
+.title-art{position:relative;min-height:100%;overflow:hidden;background:#11142a}
+.title-illustration{position:absolute;width:100%;height:100%;inset:0;object-fit:cover;object-position:center 52%;display:block;filter:saturate(.88) contrast(1.06)}
+.title-art-vignette{position:absolute;inset:0;background:linear-gradient(90deg,transparent 50%,#111326 100%),linear-gradient(0deg,#101326 0%,transparent 34%,#0a0d1b44 100%);pointer-events:none}
+.title-art-label{position:absolute;bottom:30px;left:30px;right:20px;font:700 10px Georgia,serif;letter-spacing:.3em;color:#f1d69c;text-shadow:0 2px 8px #000}
+.title-art-sigil{display:none}
+.title-content{position:relative;z-index:2;align-self:center;padding:clamp(24px,4vw,56px) clamp(24px,3.6vw,48px) clamp(24px,4vw,56px) clamp(18px,2.5vw,34px)}
+.title-kicker{font-size:10px;letter-spacing:.26em;color:#d8b875;font-weight:800;margin-bottom:20px}
+.title-content h2{font:500 clamp(32px,4.5vw,58px)/.98 Georgia,'Times New Roman',serif;letter-spacing:.025em;color:#f4e7c8;text-shadow:0 4px 24px #000;margin:0 0 22px}
+.title-copy{max-width:450px;font-size:14px;line-height:1.8;color:#c3bfd0;margin:0 0 26px}
+.title-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:24px 0 28px}
+.title-feature{min-width:0;border:1px solid #c7a66b3b;border-radius:6px;background:linear-gradient(145deg,#302b41a8,#141629c9);padding:12px 8px;text-align:center}
+.title-feature span{display:block;font-size:24px;margin-bottom:8px;filter:drop-shadow(0 0 9px #e3bf7740)}
+.title-feature b{display:block;font-size:9px;letter-spacing:.13em;color:#f0d69b}
+.title-feature small{display:block;font-size:10px;color:#a9a5bd;margin-top:5px}
+.title-actions{display:grid;gap:10px}
+.title-actions button{width:100%;min-height:54px;border-radius:6px}
+.title-actions .primary{font-size:12px;letter-spacing:.14em}
+.title-secondary{background:transparent;border-color:#b39b6c55;color:#ded2b7;font-size:11px;letter-spacing:.16em}
+.title-help{display:none;margin-top:14px;padding:14px;background:#0b0e1b;border:1px solid #c9aa6a40;border-radius:6px;color:#c5bfd0;font-size:12px;line-height:2}
+.title-help.open{display:block}
+.title-screen.is-hidden{display:none!important}
+@media(max-width:760px){
+ .title-screen{padding:0;align-items:stretch}
+ .title-card{width:100%;min-height:100dvh;border:0;border-radius:0;grid-template-columns:1fr;grid-template-rows:minmax(280px,42dvh) auto;overflow:auto}
+ .title-card:before{inset:8px}
+ .title-art{min-height:280px}
+ .title-illustration{object-position:center 42%}
+ .title-art-vignette{background:linear-gradient(0deg,#111326 0%,transparent 45%,#0a0d1b30 100%)}
+ .title-art-label{bottom:14px;left:20px;font-size:9px}
+ .title-content{padding:22px 24px 30px}
+ .title-kicker{margin-bottom:12px;font-size:9px}
+ .title-content h2{font-size:clamp(35px,10vw,50px);margin-bottom:14px}
+ .title-copy{font-size:12px;line-height:1.65;margin-bottom:16px}
+ .title-features{margin:16px 0 18px}
+ .title-feature{padding:9px 5px}
+ .title-feature span{font-size:21px}
+ .title-feature b{font-size:8px}
+ .title-feature small{font-size:9px}
+ .title-actions button{min-height:48px}
+ .layout{grid-template-columns:1fr}
+ .panel{padding:13px}
+ .arena{min-height:300px}
+}
+@media(min-width:761px){.title-art{min-height:100%}.title-card{height:min(780px,calc(100dvh - 40px))}}
+
 </style>
 </head>
 <body><main class="app">
@@ -243,8 +322,55 @@ body{background:radial-gradient(ellipse at 50% 0,#55427a 0,#1c203c 34%,#080a13 1
 </section><aside class="rightcol">
 <div class="panel"><div class="panelhead"><h2>Лавка реликвий</h2><span class="sub">Случайный набор</span></div><div class="shopgrid" id="shop"></div><div class="actions" style="margin-top:10px"><button id="refreshBtn">↻ Обновить · 2 🪙</button><button id="sellBtn">♻ Продать выбранную</button></div></div>
 <div class="panel"><div class="panelhead"><h2>Арсенал героя</h2><span class="sub">Синергии</span></div><div id="synergy" class="sub">Добавь реликвии, чтобы открыть бонусы.</div><div id="blessingStatus" class="blessing-status"></div><div style="height:12px"></div><div class="panelhead"><h2>Достижения</h2><span class="sub" id="achievementCount">0 / 6</span></div><div id="achievements" class="achievement-list"></div><div style="height:10px"></div><div class="panelhead"><h2>Хроника</h2><span class="sub">Последние события</span></div><div class="log" id="log"><div>Добро пожаловать на арену. Первая волна ждёт.</div></div></div>
-</aside></div><div class="bottomnote">TOWERBOUND: RELIC ARENA · PIXEL ENGINE · СОХРАНЕНИЕ НА УСТРОЙСТВЕ</div>
-</main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art"><div class="title-art-sigil">⚔</div><div class="title-art-label">ENTER THE RELIC ARENA</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn" onclick="(function(){var s=document.getElementById('titleScreen');if(s){s.classList.add('is-hidden');s.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');})();">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
+</aside></div><div class="bottomnote">TOWERBOUND: RELIC ARENA · RELIC ENGINE · ПРОГРЕСС СОХРАНЯЕТСЯ НА УСТРОЙСТВЕ</div>
+</main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Иллюстрация башни реликвий">
+<svg class="title-illustration" viewBox="0 0 900 1100" role="img" aria-label="Древняя башня над проклятой долиной">
+<defs>
+ <linearGradient id="tbSky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#080c20"/><stop offset=".48" stop-color="#242348"/><stop offset="1" stop-color="#5b3154"/></linearGradient>
+ <radialGradient id="tbMoon"><stop stop-color="#fff9d8"/><stop offset=".62" stop-color="#e8c985"/><stop offset="1" stop-color="#d6a65b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="tbStone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#77708b"/><stop offset=".4" stop-color="#39364f"/><stop offset="1" stop-color="#171a31"/></linearGradient>
+ <linearGradient id="tbGold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0b2"/><stop offset=".45" stop-color="#d7ad65"/><stop offset="1" stop-color="#72502f"/></linearGradient>
+ <linearGradient id="tbCloak" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9d8bc6"/><stop offset=".45" stop-color="#43385f"/><stop offset="1" stop-color="#15182b"/></linearGradient>
+ <filter id="tbGlow"><feGaussianBlur stdDeviation="18"/></filter>
+ <filter id="tbSoft"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<rect width="900" height="1100" fill="url(#tbSky)"/>
+<circle cx="650" cy="220" r="170" fill="#e9bd72" opacity=".13" filter="url(#tbGlow)"/><circle cx="650" cy="220" r="106" fill="url(#tbMoon)"/><circle cx="650" cy="220" r="69" fill="#f2dfaa" opacity=".92"/>
+<g fill="#a89bc7" opacity=".7"><circle cx="128" cy="136" r="2"/><circle cx="254" cy="210" r="2"/><circle cx="370" cy="91" r="2"/><circle cx="780" cy="104" r="2"/><circle cx="520" cy="142" r="2"/><circle cx="86" cy="302" r="2"/><circle cx="818" cy="348" r="2"/><circle cx="340" cy="288" r="2"/><circle cx="715" cy="408" r="2"/></g>
+<path d="M0 620 100 510 190 580 310 425 410 550 515 445 620 565 742 440 900 590V1100H0Z" fill="#24223f"/>
+<path d="M0 730 135 590 235 650 375 520 475 640 605 530 760 670 900 560V1100H0Z" fill="#171b32"/>
+<g opacity=".7" fill="#15172c"><path d="M45 620V430H88V385H112V430H143V620Z"/><path d="M760 640V410H793V360H817V410H850V640Z"/><path d="M165 670V510H195V468H222V510H249V670Z"/></g>
+<ellipse cx="460" cy="850" rx="370" ry="85" fill="#7b4c80" opacity=".18" filter="url(#tbGlow)"/>
+<g stroke="#9d8db6" stroke-width="5" stroke-linejoin="round">
+<path d="M287 770V360L328 309 369 360V770Z" fill="url(#tbStone)"/>
+<path d="M277 366 328 267 379 366Z" fill="#29263f"/><path d="M328 267V220L350 273Z" fill="#b9a1a9" stroke-width="3"/>
+<path d="M369 770V430L414 370 459 430V770Z" fill="url(#tbStone)"/>
+<path d="M356 436 414 322 472 436Z" fill="#343047"/><path d="M414 322V270L435 329Z" fill="url(#tbGold)" stroke-width="3"/>
+<path d="M449 770V285L510 216 571 285V770Z" fill="url(#tbStone)"/>
+<path d="M436 294 510 140 584 294Z" fill="#39334e"/><path d="M510 140V80L536 151Z" fill="url(#tbGold)" stroke-width="3"/>
+<path d="M561 770V390L610 325 659 390V770Z" fill="url(#tbStone)"/>
+<path d="M548 397 610 273 672 397Z" fill="#302b46"/><path d="M610 273V224L632 282Z" fill="#aa8ca8" stroke-width="3"/>
+<path d="M255 770H691V820H255Z" fill="#26263e"/><path d="M239 820H708V852H239Z" fill="#4a405a"/><path d="M225 852H721V879H225Z" fill="#1b1e35"/>
+</g>
+<g fill="#e5bb77" opacity=".9"><path d="M318 400Q328 381 338 400V440H318Z"/><path d="M400 443Q414 415 428 443V489H400Z"/><path d="M494 292Q510 265 526 292V347H494Z"/><path d="M593 411Q610 386 627 411V455H593Z"/></g>
+<g fill="#f9cf7b" opacity=".3" filter="url(#tbSoft)"><circle cx="328" cy="420" r="25"/><circle cx="414" cy="461" r="25"/><circle cx="510" cy="319" r="31"/><circle cx="610" cy="430" r="25"/></g>
+<path d="M0 880Q190 820 335 895T640 875T900 900V1100H0Z" fill="#0d1226"/>
+<g opacity=".8" stroke="#8b75b2" fill="none"><ellipse cx="452" cy="914" rx="250" ry="50" stroke-width="3"/><ellipse cx="452" cy="914" rx="190" ry="36" stroke-width="2"/><path d="M202 914H702M452 864V964M310 879 594 949M310 949 594 879"/></g>
+<g fill="#d8b26b"><path d="M452 864 466 914 452 964 438 914Z"/><circle cx="452" cy="914" r="8" fill="#fff1b0"/></g>
+<g transform="translate(450 770)">
+ <ellipse cy="176" rx="62" ry="14" fill="#030611" opacity=".8"/>
+ <path d="M-30 30Q-42 74-76 154L-48 171-8 111 14 166 53 155 30 65 25 27Z" fill="url(#tbCloak)" stroke="#b2a1cf" stroke-width="3"/>
+ <path d="M-27 30 -17 0 16 0 30 34 9 59 -12 59Z" fill="#d0b17a" stroke="#f2d99a" stroke-width="3"/>
+ <path d="M-25 1Q-12-30 13-18L25 7 11 27-15 24Z" fill="#17182d" stroke="#8d80a7" stroke-width="3"/>
+ <path d="M-12 9 10 9 8 18-9 18Z" fill="#e9d39a"/>
+ <path d="M-31 38 -62 89 -44 104 -9 65M25 40 54 86 38 101 8 65" fill="#39314f" stroke="#8b7ca8" stroke-width="3"/>
+ <path d="M-64 90 -91 56 -84 51 -48 78Z" fill="url(#tbGold)"/><path d="M-93 53 -115 6 -104 0 -78 48Z" fill="#d9d5db" stroke="#fff1c5" stroke-width="3"/>
+ <path d="M-8 66 15 66 9 120 -18 120Z" fill="#1a1c33" stroke="#9c8ab5" stroke-width="2"/>
+</g>
+<g fill="#ffe5a0"><circle cx="250" cy="780" r="3"/><circle cx="680" cy="800" r="2"/><circle cx="716" cy="740" r="3"/><circle cx="170" cy="860" r="2"/><circle cx="740" cy="890" r="2"/><circle cx="350" cy="740" r="2"/></g>
+<rect x="15" y="15" width="870" height="1070" rx="8" fill="none" stroke="#d9b56e" stroke-opacity=".65" stroke-width="2"/>
+<path d="M15 120V15H120M780 15H885V120M15 980V1085H120M780 1085H885V980" fill="none" stroke="#f5dca0" stroke-width="5"/>
+</svg><div class="title-art-vignette"></div><div class="title-art-label">THE RELIC TOWER · SEASON I</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn" onclick="(function(){var s=document.getElementById('titleScreen');if(s){s.classList.add('is-hidden');s.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');})();">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
 <script src="./towerbound-engine.js?v=dom-combat-fx-1"></script>
 <script>
