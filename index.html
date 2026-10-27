@@ -16,6 +16,62 @@
 .reward-card small{display:block;color:#c0c5df;font-size:11px;margin-top:3px}
 @media(min-width:560px){.reward-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.reward-card{grid-template-columns:1fr;text-align:center;align-content:start;min-height:145px}.reward-card .reward-icon{font-size:34px}}
 @media(max-width:700px){.app{padding-left:10px;padding-right:10px}.layout{grid-template-columns:1fr}.top{align-items:flex-start}.brand h1{font-size:17px}.currency{gap:5px}.pill{font-size:12px;padding:7px}.arena{min-height:220px}.rightcol{display:grid;grid-template-columns:1fr}.panel{padding:13px}.slot{min-height:86px}}@media(min-width:701px){.leftcol{display:flex;flex-direction:column;gap:13px}.arena{min-height:300px}.enemies{min-height:110px}}
+
+/* TOWERBOUND UI REFORGE — animated dark-fantasy interface */
+:root{--gold:#ffe29a;--cyan:#83f5ed;--panel:rgba(17,20,39,.82);--line:rgba(200,190,255,.18)}
+body{background:radial-gradient(ellipse at 50% -12%,#514178 0,#20213d 32%,#0c0e1b 72%,#070810 100%);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.22;background-image:linear-gradient(#b6a4ff12 1px,transparent 1px),linear-gradient(90deg,#b6a4ff12 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(to bottom,#000,transparent 85%)}
+.app{max-width:1120px}
+.top{padding-top:22px;animation:tb-enter .7s cubic-bezier(.2,.8,.2,1) both}
+.brand{gap:14px}
+.sigil{width:54px;height:54px;border-radius:18px;font-size:29px;animation:tb-sigil 5s ease-in-out infinite;position:relative}
+.sigil:after{content:"";position:absolute;inset:-5px;border:1px solid #f8d88b55;border-radius:21px;animation:tb-ring 3.5s ease-in-out infinite}
+.brand h1{font-size:clamp(18px,3vw,25px);letter-spacing:.07em}
+.eyebrow{font-size:9px;letter-spacing:.24em}
+.currency .pill{backdrop-filter:blur(16px);background:linear-gradient(145deg,#34314fbb,#111629dd);border-color:#d7c5ff25;box-shadow:inset 0 1px #fff1,0 8px 25px #0003;transition:transform .25s,border-color .25s}
+.currency .pill:hover{transform:translateY(-2px);border-color:#f8d88b77}
+.layout{gap:16px}
+.panel{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(34,35,65,.88),rgba(12,16,31,.91));border:1px solid #c9bcff20;border-radius:22px;box-shadow:0 18px 50px #0004,inset 0 1px #fff0a;animation:tb-enter .65s cubic-bezier(.2,.8,.2,1) both}
+.layout>.leftcol>.panel:nth-child(2){animation-delay:.1s}
+.rightcol>.panel:nth-child(1){animation-delay:.16s}.rightcol>.panel:nth-child(2){animation-delay:.24s}
+.panel:before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,#f8d88b55,#9e8cff55,transparent);pointer-events:none}
+.panelhead h2{letter-spacing:.12em;font-size:12px;color:#e7e2ff}
+.arena{min-height:320px;border-radius:18px;background:#101326;border-color:#d8c8ff2c;box-shadow:inset 0 0 55px #090a18aa,0 0 32px #8f6cff0a}
+.arena #phaser-arena{z-index:0;opacity:1;pointer-events:none}
+.arena #phaser-arena canvas{position:absolute;inset:0;z-index:0}
+.arena .statusrow,.arena .hpbar,.arena .enemies,.arena .battlemsg,.arena .arenafoot{z-index:2}
+.arena .statusrow{font-weight:750;text-shadow:0 2px 6px #000}
+.arena .hpbar{height:8px;border:1px solid #ffffff1c;background:#090b17d9;box-shadow:0 2px 8px #0006}
+.arena .hpbar span{box-shadow:0 0 15px #ff658966}
+.battlemsg{min-height:30px;text-shadow:0 2px 9px #000;letter-spacing:.025em}
+button{border-radius:14px;transition:transform .2s,border-color .2s,filter .2s,box-shadow .2s;box-shadow:inset 0 1px #ffffff12,0 7px 20px #0003}
+button:hover:not(:disabled){filter:brightness(1.12);border-color:#d9c6ff66;transform:translateY(-1px)}
+button:active:not(:disabled){transform:translateY(1px) scale(.99)}
+.primary{background:linear-gradient(135deg,#ffe7a0,#e7ad56 52%,#a86a3e);border-color:#fff0bd;color:#211528;box-shadow:0 0 0 1px #ffdf8b1a,inset 0 1px #fff9,0 8px 28px #d99b3a26;font-weight:950;position:relative;overflow:hidden}
+.primary:after{content:"";position:absolute;inset:-30% auto -30% -45%;width:30%;transform:skewX(-22deg);background:linear-gradient(90deg,transparent,#fff9,transparent);animation:tb-sheen 4.2s ease-in-out infinite}
+#fightBtn{min-height:48px;font-size:14px;letter-spacing:.02em}
+.slot,.relic{background:linear-gradient(150deg,#303151,#171a30);border-color:#b8a1ff20;box-shadow:inset 0 1px #fff1,0 8px 18px #0002}
+.slot{min-height:100px}
+.slot.empty{background:linear-gradient(150deg,#1b2038,#101426);border-color:#c8bcff20}
+.slot:not(.empty){background:linear-gradient(150deg,#34314f,#17192e);border-color:#c7aaff42}
+.slot:not(.empty):hover{transform:translateY(-3px);box-shadow:0 8px 24px #8d72d622,inset 0 1px #fff2}
+.relic{transition:transform .2s,border-color .2s,filter .2s}
+.relic:hover{transform:translateY(-3px);border-color:#ffe29a66;filter:brightness(1.08)}
+.relic strong{font-size:12px;color:#f5edff}
+.relic small{line-height:1.4}
+.achievement{background:#101426aa;border-color:#ffffff14}
+.blessing-chip{background:linear-gradient(120deg,#d9b66b1c,#8f79d21c);border-color:#e4c16d44}
+.modalback{backdrop-filter:blur(12px);background:#060812d9}
+.modal{background:radial-gradient(ellipse at top,#454065,#171a30 58%,#0d1020);border-color:#e8d39c55;box-shadow:0 30px 100px #000c,0 0 60px #a07cff1c;animation:tb-modal .35s cubic-bezier(.2,.9,.2,1) both}
+.toast{box-shadow:0 8px 35px #0006,0 0 25px #f6d58a22}
+.bottomnote{letter-spacing:.14em}
+@keyframes tb-enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tb-sigil{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
+@keyframes tb-ring{0%,100%{transform:scale(1);opacity:.45}50%{transform:scale(1.08);opacity:.9}}
+@keyframes tb-sheen{0%,65%{left:-45%}100%{left:140%}}
+@keyframes tb-modal{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+@media(max-width:700px){.arena{min-height:290px}.top{padding-top:16px}.currency{max-width:145px}.panel{border-radius:18px}.slot{min-height:88px}}
 </style>
 </head>
 <body><main class="app">
@@ -29,7 +85,7 @@
 </aside></div><div class="bottomnote">TOWERBOUND: RELIC ARENA · PIXEL ENGINE · СОХРАНЕНИЕ НА УСТРОЙСТВЕ</div>
 </main><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./towerbound-engine.js?v=pixel-engine-1"></script>
+<script src="./towerbound-engine.js?v=ui-reforge-2"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
@@ -138,7 +194,7 @@ function chooseBlessing(id){
  log('✨ Благословение получено: '+b.name+'.');toast('Получено: '+b.name);save();render();
 }
 function reset(){const meta={...state.meta,runs:state.meta.runs+1};if(window.TowerFX)window.TowerFX.phase('prep');state={gold:12,hp:20,maxHp:24,wave:1,slots:Array(6).fill(null),selected:-1,battle:false,won:false,shop:[],log:[],lastWave:0,blessings:[],freeRefresh:false,meta};save();makeShop();log('Новый поход начинается. Собери отряд и выживи.');render()}
-$('fightBtn').onclick=fight;$('healBtn').onclick=heal;$('refreshBtn').onclick=()=>{if(state.battle)return;if(state.freeRefresh){state.freeRefresh=false;makeShop();toast('Бесплатное обновление использовано');}else{if(state.gold<2)return;state.gold-=2;makeShop();}save();render()};$('sellBtn').onclick=sell;
+$('fightBtn').addEventListener('click',()=>{try{fight()}catch(err){console.error('Towerbound fight failed:',err);state.battle=false;$('fightBtn').disabled=false;$('battlemsg').textContent='Ошибка боя: '+(err&&err.message?err.message:'попробуй перезагрузить игру');toast('Бой не запустился — обнови страницу');}});$('healBtn').onclick=heal;$('refreshBtn').onclick=()=>{if(state.battle)return;if(state.freeRefresh){state.freeRefresh=false;makeShop();toast('Бесплатное обновление использовано');}else{if(state.gold<2)return;state.gold-=2;makeShop();}save();render()};$('sellBtn').onclick=sell;
 makeShop();if(!state.log.length)log('Добро пожаловать на арену. Собери реликвии и переживи 10 волн.');render();save();
 })();
 </script></body></html>
