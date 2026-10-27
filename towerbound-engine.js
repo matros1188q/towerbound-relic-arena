@@ -22,7 +22,7 @@ const enemyRows=[
 const palette={'.':null,'1':'#15172a','2':'#7359a5','3':'#b5a0e7','4':'#f5d38a','5':'#394f77','6':'#212a48','7':'#b94e69','8':'#e8bd78'};
 const foePalette={'.':null,'1':'#141322','2':'#693b55','3':'#c34e69','4':'#ff9a70','5':'#353653','6':'#202236'};
 const scene={key:'PixelArena',
-preload:function(){this.load.image('tb-arena-background','./assets/arena-background.webp?v=1');this.load.spritesheet('tb-enemy-atlas','./assets/enemy-atlas.webp?v=1',{frameWidth:256,frameHeight:256});},
+preload:function(){this.load.image('tb-arena-background','./assets/arena-background.webp?v=1');this.load.spritesheet('tb-enemy-atlas','./assets/enemy-atlas.webp?v=1',{frameWidth:256,frameHeight:256});this.load.spritesheet('tb-knight-idle','https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprite-sheets/knight/idle.png',{frameWidth:384,frameHeight:384});},
 create:function(){
  this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.pixelActors=[];this.fx=[];
  const w=this.scale.width,h=this.scale.height,g=this.add.graphics();g.setDepth(-20);g.setAlpha(.24);this.add.image(w/2,h/2,'tb-arena-background').setDisplaySize(w,h).setDepth(-10);
@@ -42,48 +42,16 @@ create:function(){
  for(let i=0;i<8;i++){let a=i*Math.PI/4,x=w*.5+Math.cos(a)*Math.min(w*.2,h*.2),y=h*.74+Math.sin(a)*Math.min(w*.2,h*.2);g.fillStyle(0xf6d17b,1);g.fillRect(Math.round(x),Math.round(y),4,4);}
  // pillars and brazier lamps
  for(const x of [w*.12,w*.88]){g.fillStyle(0x393450,1);g.fillRect(x-7,h*.48,14,h*.2);g.fillStyle(0x75618f,1);g.fillRect(x-11,h*.47,22,5);g.fillStyle(0xf6b76c,.9);g.fillRect(x-3,h*.43,6,7);g.fillStyle(0xff9c67,.24);g.fillCircle(x,h*.44,12);}
- /* smooth illustrated knight texture (not pixel art) */
- const heroG=this.make.graphics({x:0,y:0,add:false});
- heroG.fillStyle(0x080b16,.65);heroG.fillEllipse(64,148,72,13);
- // cloak silhouette
- heroG.fillGradientStyle(0x38284f,0x38284f,0x171b32,0x171b32,1);heroG.fillPoints([{x:42,y:65},{x:85,y:65},{x:103,y:139},{x:26,y:139}],true);
- heroG.lineStyle(3,0x9c78d0,1);heroG.strokePoints([{x:42,y:65},{x:26,y:139},{x:103,y:139},{x:85,y:65}],true);
- // legs, boots and metal greaves
- heroG.fillStyle(0x252d45,1);heroG.fillRoundedRect(43,113,18,29,5);heroG.fillRoundedRect(67,113,18,29,5);
- heroG.fillStyle(0x111827,1);heroG.fillRoundedRect(35,136,28,13,5);heroG.fillRoundedRect(65,136,28,13,5);
- heroG.lineStyle(2,0xc4a66b,1);heroG.strokeRoundedRect(35,136,28,13,5);heroG.strokeRoundedRect(65,136,28,13,5);
- // arms and shoulder plates
- heroG.fillStyle(0x313e5d,1);heroG.fillRoundedRect(24,70,22,45,8);heroG.fillRoundedRect(80,70,22,45,8);
- heroG.fillStyle(0xb4c4d9,1);heroG.fillRoundedRect(21,72,20,20,7);heroG.fillRoundedRect(84,72,20,20,7);
- heroG.lineStyle(2,0xeff5ff,1);heroG.strokeRoundedRect(21,72,20,20,7);heroG.strokeRoundedRect(84,72,20,20,7);
- // torso breastplate with layered metal gradients
- heroG.fillGradientStyle(0xe2e8f0,0x8a9ab7,0x47516e,0x202941,1);heroG.fillPoints([{x:42,y:63},{x:85,y:63},{x:91,y:103},{x:64,y:119},{x:36,y:103}],true);
- heroG.lineStyle(3,0xf1d18a,1);heroG.strokePoints([{x:42,y:63},{x:85,y:63},{x:91,y:103},{x:64,y:119},{x:36,y:103}],true);
- heroG.fillStyle(0x713f5e,1);heroG.fillPoints([{x:64,y:70},{x:76,y:88},{x:64,y:106},{x:52,y:88}],true);
- heroG.fillStyle(0xffd879,1);heroG.fillPoints([{x:64,y:77},{x:70,y:88},{x:64,y:98},{x:58,y:88}],true);
- // neck and face
- heroG.fillStyle(0x8f5d50,1);heroG.fillRoundedRect(55,49,18,19,5);
- heroG.fillStyle(0xc99b80,1);heroG.fillEllipse(64,43,35,40);
- heroG.fillStyle(0x29273d,1);heroG.fillRoundedRect(45,23,38,20,8);heroG.fillRoundedRect(43,32,9,24,4);heroG.fillRoundedRect(76,32,9,24,4);
- heroG.fillStyle(0xe3e8f0,1);heroG.fillPoints([{x:45,y:34},{x:50,y:15},{x:64,y:7},{x:79,y:15},{x:84,y:34},{x:76,y:29},{x:64,y:24},{x:52,y:29}],true);
- heroG.lineStyle(2,0x9aa8c6,1);heroG.strokePoints([{x:45,y:34},{x:50,y:15},{x:64,y:7},{x:79,y:15},{x:84,y:34}],false);
- heroG.fillStyle(0x15182a,1);heroG.fillRoundedRect(47,31,34,13,5);
- heroG.fillStyle(0x6cf2ef,1);heroG.fillRoundedRect(50,35,11,4,2);heroG.fillRoundedRect(67,35,11,4,2);
- heroG.fillStyle(0x7d405b,1);heroG.fillPoints([{x:48,y:20},{x:64,y:2},{x:80,y:20},{x:64,y:15}],true);
- heroG.fillStyle(0xffd87b,1);heroG.fillCircle(64,19,4);
- // sword in right hand, bright steel edge
- heroG.fillStyle(0xe9f4ff,1);heroG.fillPoints([{x:92,y:82},{x:98,y:84},{x:113,y:34},{x:110,y:24},{x:106,y:34}],true);
- heroG.lineStyle(2,0x9ce8f2,1);heroG.strokePoints([{x:110,y:25},{x:95,y:83}],false);
- heroG.fillStyle(0xe8c875,1);heroG.fillPoints([{x:86,y:82},{x:105,y:87},{x:107,y:82},{x:88,y:77}],true);heroG.fillStyle(0x5c344f,1);heroG.fillRoundedRect(92,84,6,18,2);
- heroG.generateTexture('tb-hero',128,160);heroG.destroy();
+ // The free CC0 AutoSprite knight is loaded as a 5x5 animated sprite sheet.
  makePixelTexture(this,'tb-foe',enemyRows,foePalette);
  const skeletonRows=['....111111....','...1222221...','..123232321..','..122222221..','...1333331...','....34443....','...5555555...','..556555655..','..556555655..','...5555555...','....66.66....','....66.66....'];const bruteRows=['....111111....','...12222221...','..1233333321..','..1233333321..','...1444441...','...55555555...','..5565556555..','..5565556555..','...55555555...','...666..666...','..6666..6666..'];makePixelTexture(this,'tb-skeleton',skeletonRows,{'1':'#181628','2':'#d2d1df','3':'#8b8ca7','4':'#8ef0e4','5':'#363b58','6':'#20243a'});makePixelTexture(this,'tb-brute',bruteRows,{'1':'#171327','2':'#8c304d','3':'#d34c67','4':'#ffba77','5':'#5a2c48','6':'#2a2139'});
- this.hero=this.add.image(w*.34,h*.51,'tb-hero').setOrigin(.5,.5).setScale(.76).setDepth(4);
+ this.anims.create({key:'tb-knight-idle-loop',frames:this.anims.generateFrameNumbers('tb-knight-idle',{start:0,end:24}),frameRate:8,repeat:-1});
+ this.hero=this.add.sprite(w*.34,h*.51,'tb-knight-idle',0).setOrigin(.5,.5).setScale(.38).setDepth(4);this.hero.play('tb-knight-idle-loop');
  this.enemy=this.add.image(w*.67,h*.51,'tb-enemy-atlas',0).setOrigin(.5,.5).setScale(.76).setDepth(4);
  this.phaseLabel=this.add.text(w/2,18,'ПОДГОТОВКА К БОЮ',{fontFamily:'monospace',fontSize:'11px',fontStyle:'bold',color:'#f8ce72',stroke:'#101326',strokeThickness:3}).setOrigin(.5,0).setDepth(12);
- this.heroAura=this.add.circle(w*.34,h*.72,27,0x72e7ed,.08).setDepth(2);
+ this.heroAura=this.add.circle(w*.34,h*.72,24,0x72e7ed,.08).setDepth(2);
  this.foeAura=this.add.circle(w*.67,h*.72,40,0xe85e78,.12).setDepth(2);
- this.heroShadow=this.add.ellipse(w*.34,h*.76,46,12,0x050711,.65).setDepth(3);
+ this.heroShadow=this.add.ellipse(w*.34,h*.76,42,11,0x050711,.65).setDepth(3);
  this.foeShadow=this.add.ellipse(w*.67,h*.76,70,16,0x050711,.7).setDepth(3);
  this.tweens.add({targets:this.hero,y:this.hero.y-10,angle:-2,duration:520,yoyo:true,repeat:-1,ease:'Sine.inOut'});
  this.tweens.add({targets:this.enemy,y:this.enemy.y-8,angle:2,duration:680,yoyo:true,repeat:-1,ease:'Sine.inOut',delay:150});
