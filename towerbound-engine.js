@@ -142,6 +142,7 @@ function ensureVisibleActors(){
  }
 }
 ensureVisibleActors();
+if(!window.Phaser){console.warn('Towerbound: Phaser CDN unavailable; DOM actor fallback remains active.');return;}
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:false,antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:true,pixelArt:false,roundPixels:false},scene});
 window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);const s=game.scene.getScene('PixelArena');if(s&&s.impact)s.impact(critical,boss,style);},win:()=>{const s=game.scene.getScene('PixelArena');if(s&&s.victory)s.victory();},wave:(wave,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setWave)s.setWave(wave,boss);},phase:(phase)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setPhase)s.setPhase(phase);}};
 })();
