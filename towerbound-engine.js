@@ -131,8 +131,11 @@ function ensureVisibleActors(){
   layer=document.createElement('div');layer.className='tb-visible-actors';layer.setAttribute('aria-hidden','true');
   Object.assign(layer.style,{position:'absolute',inset:'0',zIndex:'1',pointerEvents:'none',overflow:'hidden'});
   const make=(cls,emoji,left,label)=>{
-   const el=document.createElement('div');el.className=cls;el.textContent=emoji;el.setAttribute('aria-label',label);
-   Object.assign(el.style,{position:'absolute',left,top:'43%',transform:'translate(-50%,-50%)',fontSize:'clamp(42px,12vw,66px)',lineHeight:'1',filter:'drop-shadow(0 5px 4px #000b)',animation:'tb-actor-float 1.5s ease-in-out infinite alternate',visibility:'visible',opacity:'1'});
+   const el=document.createElement('div');el.className=cls;el.setAttribute('aria-label',label);
+   el.innerHTML=cls==='tb-visible-hero'
+    ? '<svg viewBox="0 0 32 40" width="clamp(48px,14vw,76px)" height="clamp(60px,17vw,94px)" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg"><ellipse cx="16" cy="37" rx="12" ry="2.5" fill="#050711" opacity=".75"/><path d="M8 14H24V28H8Z" fill="#293653"/><path d="M8 14H24V18H8Z" fill="#78e7ef"/><path d="M5 17H9V28H5ZM23 17H27V28H23Z" fill="#4a5b83"/><path d="M9 5H23V16H9Z" fill="#d7e5ee" stroke="#17172b" stroke-width="2"/><path d="M10 8H22V12H10Z" fill="#25324f"/><path d="M12 9H15V11H12ZM18 9H21V11H18Z" fill="#83f5ed"/><path d="M7 4H25V8H7Z" fill="#f8ce72" stroke="#17172b" stroke-width="1.5"/><path d="M14 1H18V5H14Z" fill="#fff0b0"/><path d="M9 27H14V35H9ZM18 27H23V35H18Z" fill="#252842" stroke="#111326" stroke-width="1.5"/><path d="M4 19H7V30H4ZM25 19H28V30H25Z" fill="#f8ce72"/><path d="M2 18H5V27H2Z" fill="#d7e5ee"/></svg>'
+    : '<svg viewBox="0 0 36 40" width="clamp(50px,15vw,82px)" height="clamp(58px,17vw,94px)" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg"><ellipse cx="18" cy="37" rx="14" ry="2.5" fill="#050711" opacity=".75"/><path d="M6 12L2 4L11 8L14 3L19 8L27 4L25 12L31 10L29 24H7Z" fill="#7e304f" stroke="#171326" stroke-width="2"/><path d="M8 13H28V25H8Z" fill="#c34e69"/><path d="M11 15H15V19H11ZM21 15H25V19H21Z" fill="#ffcf7b"/><path d="M12 22H24L21 26H15Z" fill="#30192f"/><path d="M10 25H16V34H10ZM20 25H26V34H20Z" fill="#353653" stroke="#171326" stroke-width="2"/><path d="M5 17H9V28H5ZM27 17H31V28H27Z" fill="#8d3656"/><path d="M13 2L16 7H11ZM23 2L25 7H20Z" fill="#f8ce72"/></svg>';
+   Object.assign(el.style,{position:'absolute',left,top:'43%',transform:'translate(-50%,-50%)',display:'flex',alignItems:'center',justifyContent:'center',filter:'drop-shadow(0 5px 4px #000b)',animation:'tb-actor-float 1.5s ease-in-out infinite alternate',visibility:'visible',opacity:'1'});
    layer.appendChild(el);return el;
   };
   make('tb-visible-hero','🛡️','34%','Hero');
