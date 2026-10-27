@@ -411,6 +411,16 @@ button.primary,.title-actions .primary{color:#21170f;border:1px solid #f1d49a;ba
 .art-enemy-17{filter:hue-rotate(269deg) saturate(1.25)!important;background:radial-gradient(ellipse at 50% 34%,hsl(269 32% 42%),#211923 65%,#0e0d15)!important}
 .art-enemy-18{filter:hue-rotate(306deg) saturate(1.5)!important;background:radial-gradient(ellipse at 50% 34%,hsl(306 32% 30%),#211923 65%,#0e0d15)!important}
 .art-enemy-19{filter:hue-rotate(343deg) saturate(1.75)!important;background:radial-gradient(ellipse at 50% 34%,hsl(343 32% 36%),#211923 65%,#0e0d15)!important}
+
+/* REAL PAINTED ENEMY ATLAS — replace temporary CSS silhouettes with raster artwork */
+.enemy{background-image:url('./assets/enemy-atlas.webp?v=2')!important;background-size:200% 200%!important;background-repeat:no-repeat!important;border:0!important;border-radius:0!important;clip-path:none!important;box-shadow:0 10px 20px #0008!important;filter:drop-shadow(0 8px 10px #0009)!important;image-rendering:auto!important;object-fit:contain}
+.enemy::before,.enemy::after{display:none!important;content:none!important}
+.enemy[class*="art-enemy-"]{background-color:transparent!important}
+.art-enemy-0,.art-enemy-4,.art-enemy-8,.art-enemy-12,.art-enemy-16{background-position:0 0!important}
+.art-enemy-1,.art-enemy-5,.art-enemy-9,.art-enemy-13,.art-enemy-17{background-position:100% 0!important}
+.art-enemy-2,.art-enemy-6,.art-enemy-10,.art-enemy-14,.art-enemy-18{background-position:0 100%!important}
+.art-enemy-3,.art-enemy-7,.art-enemy-11,.art-enemy-15,.art-enemy-19{background-position:100% 100%!important}
+.enemy.boss{background-size:200% 200%!important;transform:scale(1.12);filter:drop-shadow(0 0 16px #e9b96c)!important}
 </style>
 </head>
 <body><main class="app">
