@@ -112,6 +112,14 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  if(actorEnemy&&actorEnemy.animate)actorEnemy.animate([{translate:'0 0',rotate:'0deg',filter:'brightness(1)'},{translate:'-5px 0',rotate:critical?'-12deg':'-6deg',filter:'brightness(2)'},{translate:'0 0',rotate:'0deg',filter:'brightness(1)'}],{duration:critical?340:260,easing:'ease-out'});
  const colors={fire:'#ff713d',ice:'#7cecff',lightning:'#fff176',nature:'#62f2a1',void:'#c18bff',arcane:'#ffe08a'};
  const color=colors[style]||colors.arcane;
+ // Distinct readable silhouettes per damage school; each school has its own projectile motif.
+ const glyphs={fire:'✹',ice:'❄',lightning:'ϟ',nature:'✦',void:'◈',arcane:'✧'};
+ const glyph=document.createElement('b');
+ glyph.textContent=glyphs[style]||glyphs.arcane;
+ Object.assign(glyph.style,{position:'absolute',left:'32%',top:'42%',font:'900 '+(critical?'29px':'22px')+' system-ui',lineHeight:'1',color, textShadow:'0 0 8px '+color+',0 0 18px '+color+',0 2px 4px #000',zIndex:'4',transform:'translate(-50%,-50%) rotate(-20deg)'});
+ layer.appendChild(glyph);
+ const glyphAnim=glyph.animate([{left:'32%',top:'42%',transform:'translate(-50%,-50%) rotate(-20deg) scale(.45)',opacity:0},{left:'48%',top:'47%',transform:'translate(-50%,-50%) rotate(35deg) scale(1.2)',opacity:1,offset:.35},{left:'67%',top:'48%',transform:'translate(-50%,-50%) rotate(110deg) scale('+(critical?1.7:1)+')',opacity:1}],{duration:critical?260:220,easing:'cubic-bezier(.15,.8,.2,1)',fill:'forwards'});
+ glyphAnim.onfinish=()=>glyph.remove();
  const orb=document.createElement('i');
  Object.assign(orb.style,{position:'absolute',left:'31%',top:'48%',width:(critical?18:13)+'px',height:(critical?18:13)+'px',borderRadius:'50%',background:color,boxShadow:'0 0 '+(critical?30:20)+'px '+color+',0 0 5px #fff',border:'2px solid #fff',zIndex:'3',opacity:'1'});
  layer.appendChild(orb);
