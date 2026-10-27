@@ -22,9 +22,10 @@ const enemyRows=[
 const palette={'.':null,'1':'#15172a','2':'#7359a5','3':'#b5a0e7','4':'#f5d38a','5':'#394f77','6':'#212a48','7':'#b94e69','8':'#e8bd78'};
 const foePalette={'.':null,'1':'#141322','2':'#693b55','3':'#c34e69','4':'#ff9a70','5':'#353653','6':'#202236'};
 const scene={key:'PixelArena',
+preload:function(){this.load.image('tb-arena-background','./assets/arena-background.webp?v=1');},
 create:function(){
  this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.pixelActors=[];this.fx=[];
- const w=this.scale.width,h=this.scale.height,g=this.add.graphics();
+ const w=this.scale.width,h=this.scale.height,g=this.add.graphics();g.setDepth(-20);this.add.image(w/2,h/2,'tb-arena-background').setDisplaySize(w,h).setDepth(-10);
  g.fillStyle(0x111428,1);g.fillRect(0,0,w,h);
  // Pixel-art night sky and moon
  g.fillStyle(0x28294a,1);g.fillCircle(w*.78,h*.19,Math.max(12,h*.09));
