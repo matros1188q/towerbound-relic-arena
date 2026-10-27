@@ -936,7 +936,7 @@ function domImpact(critical,boss,style,damage){
 function updateCombatHud(items){const wave=$('hudWave'),powerEl=$('hudPower');if(wave)wave.textContent=String(Math.min(10,state.wave)).padStart(2,'0')+' / 10';if(powerEl)powerEl.textContent=String(Math.round(items.reduce((n,x)=>n+power(x),0)||2))+' · '+(squadInterval(items)/1000).toFixed(2)+'с';}
 let tbActiveCombat=null;
 function updateAbilityHud(){const a=$('activeSkillBtn'),w=$('activeWardBtn');if(a){a.disabled=!tbActiveCombat||tbActiveCombat.skillCooldown>0;a.classList.toggle('tb-ready',!!tbActiveCombat&&tbActiveCombat.skillCooldown===0);$('activeSkillStatus').textContent=!tbActiveCombat?'Зарядится в бою':tbActiveCombat.skillCooldown>0?'Перезарядка: '+tbActiveCombat.skillCooldown+' такт.':'ГОТОВО · Урон по врагу'}if(w){w.disabled=!tbActiveCombat||tbActiveCombat.wardCooldown>0;a&&a.classList.toggle('tb-ready',!!tbActiveCombat&&tbActiveCombat.skillCooldown===0);$('activeWardStatus').textContent=!tbActiveCombat?'Зарядится в бою':tbActiveCombat.wardCooldown>0?'Перезарядка: '+tbActiveCombat.wardCooldown+' такт.':'ГОТОВО · Защита на 3 удара'}}
-$('activeSkillBtn')?.addEventListener('click',()=>{const c=tbActiveCombat;if(!c||c.skillCooldown>0)return;c.enemyHp-=Math.max(8,Math.round(c.attack*1.8));c.skillCooldown=5;domImpact(true,c.boss,'fire',Math.max(8,Math.round(c.attack*1.8)));arenaBanner('🔥 ОГНЕННЫЙ РАЗРЫВ!');$('battlemsg').textContent='🔥 АКТИВНЫЙ НАВЫК · ОГНЕННЫЙ РАЗРЫВ';updateAbilityHud()});
+$('activeSkillBtn')?.addEventListener('click',()=>{const c=tbActiveCombat;if(!c||c.skillCooldown>0)return;const damage=Math.max(8,Math.round(c.attack*1.8));if(c.damage)c.damage(damage);c.skillCooldown=5;domImpact(true,c.boss,'fire',damage);arenaBanner('🔥 ОГНЕННЫЙ РАЗРЫВ!');$('battlemsg').textContent='🔥 АКТИВНЫЙ НАВЫК · ОГНЕННЫЙ РАЗРЫВ';updateAbilityHud()});
 $('activeWardBtn')?.addEventListener('click',()=>{const c=tbActiveCombat;if(!c||c.wardCooldown>0)return;c.wardCharges=3;c.wardCooldown=7;arenaBanner('🛡️ РУНА ЩИТА АКТИВИРОВАНА');$('battlemsg').textContent='🛡️ РУНА ЩИТА · СЛЕДУЮЩИЕ 3 УДАРА ОСЛАБЛЕНЫ';updateAbilityHud()});
 function fight(){
  if(state.battle||state.wave>10)return;
@@ -955,7 +955,8 @@ function fight(){
  msg.textContent = 'ВОЛНА ' + String(state.wave).padStart(2, '0') + (boss ? ' · БОСС' : ' · ВРАГ ОБНАРУЖЕН');
  arenaBanner(boss ? 'БОСС ВЫХОДИТ НА АРЕНУ' : 'ВОЛНА ' + String(state.wave).padStart(2, '0'));
  updateCombatHud(items);$('enemyName').textContent=boss?'БОСС · '+(['Костяной колосс','Королева Бездны'][Math.floor(state.wave/5)%2]):$('enemyName').textContent;
- let burn=0,poison=0;const interval=squadInterval(items);const timer=setInterval(()=>{
+ let burn=0,poison=0;const interval=squadInterval(items);if(tbActiveCombat)tbActiveCombat.damage=(amount)=>{enemyHp-=amount;};
+ const timer=setInterval(()=>{
   if(ended){clearInterval(timer);return}ticks++;if(tbActiveCombat){if(tbActiveCombat.skillCooldown>0)tbActiveCombat.skillCooldown--;if(tbActiveCombat.wardCooldown>0)tbActiveCombat.wardCooldown--;updateAbilityHud()}if(boss&&enemyHp<=maxEnemyHp*.5&&bossPhase===0){bossPhase=1;msg.textContent='⚠ ФАЗА II · ЯРОСТЬ БОССА';arenaBanner('ФАЗА II · ЯРОСТЬ БОССА')}skillCharge++;if(skillCharge>=5){skillCharge=0;const pulse=Math.max(2,Math.round(atk*.42));enemyHp-=pulse;domImpact(true,boss,'fire',pulse);msg.textContent='🔥 ОГНЕННЫЙ ИМПУЛЬС · −'+pulse+' HP'}
   const crit=items.some(x=>x.id==='fang')&&ticks%3===0;
   const style=items.some(x=>x.id==='ember'||x.id==='phoenix')?'fire':items.some(x=>x.id==='frost')?'ice':items.some(x=>x.id==='spark')?'lightning':items.some(x=>x.id==='thorn')?'nature':items.some(x=>x.id==='void')?'void':'arcane';
