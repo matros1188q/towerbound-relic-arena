@@ -22,7 +22,7 @@ const enemyRows=[
 const palette={'.':null,'1':'#15172a','2':'#7359a5','3':'#b5a0e7','4':'#f5d38a','5':'#394f77','6':'#212a48','7':'#b94e69','8':'#e8bd78'};
 const foePalette={'.':null,'1':'#141322','2':'#693b55','3':'#c34e69','4':'#ff9a70','5':'#353653','6':'#202236'};
 const scene={key:'PixelArena',
-preload:function(){this.load.image('tb-arena-background','./assets/arena-background.webp?v=1');this.load.spritesheet('tb-enemy-atlas','./assets/enemy-atlas.webp?v=1',{frameWidth:256,frameHeight:256});this.load.spritesheet('tb-knight-idle','https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprite-sheets/knight/idle.png',{frameWidth:384,frameHeight:384});},
+preload:function(){this.load.image('tb-arena-background','./assets/arena-background.webp?v=1');this.load.spritesheet('tb-enemy-atlas','./assets/enemy-atlas.webp?v=1',{frameWidth:256,frameHeight:256});this.load.spritesheet('tb-knight-idle','https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprite-sheets/knight/idle.png',{frameWidth:384,frameHeight:384,crossOrigin:null});},
 create:function(){
  this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.pixelActors=[];this.fx=[];
  const w=this.scale.width,h=this.scale.height,g=this.add.graphics();g.setDepth(-20);g.setAlpha(.24);this.add.image(w/2,h/2,'tb-arena-background').setDisplaySize(w,h).setDepth(-10);
