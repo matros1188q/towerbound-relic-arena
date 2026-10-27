@@ -45,12 +45,12 @@ create:function(){
  makePixelTexture(this,'tb-hero',heroRows,palette);makePixelTexture(this,'tb-foe',enemyRows,foePalette);
  const skeletonRows=['....111111....','...1222221...','..123232321..','..122222221..','...1333331...','....34443....','...5555555...','..556555655..','..556555655..','...5555555...','....66.66....','....66.66....'];const bruteRows=['....111111....','...12222221...','..1233333321..','..1233333321..','...1444441...','...55555555...','..5565556555..','..5565556555..','...55555555...','...666..666...','..6666..6666..'];makePixelTexture(this,'tb-skeleton',skeletonRows,{'1':'#181628','2':'#d2d1df','3':'#8b8ca7','4':'#8ef0e4','5':'#363b58','6':'#20243a'});makePixelTexture(this,'tb-brute',bruteRows,{'1':'#171327','2':'#8c304d','3':'#d34c67','4':'#ffba77','5':'#5a2c48','6':'#2a2139'});
  this.hero=this.add.image(w*.34,h*.56,'tb-hero').setOrigin(.5,.5).setScale(2.5).setDepth(4);
- this.enemy=this.add.image(w*.67,h*.56,'tb-foe').setOrigin(.5,.5).setScale(2.5).setDepth(4);
+ this.enemy=this.add.image(w*.67,h*.55,'tb-foe').setOrigin(.5,.5).setScale(4.2).setDepth(4);
  this.phaseLabel=this.add.text(w/2,18,'ПОДГОТОВКА К БОЮ',{fontFamily:'monospace',fontSize:'11px',fontStyle:'bold',color:'#f8ce72',stroke:'#101326',strokeThickness:3}).setOrigin(.5,0).setDepth(12);
  this.heroAura=this.add.circle(w*.34,h*.69,24,0x72e7ed,.08).setDepth(2);
- this.foeAura=this.add.circle(w*.67,h*.69,27,0xe85e78,.12).setDepth(2);
+ this.foeAura=this.add.circle(w*.67,h*.70,43,0xe85e78,.12).setDepth(2);
  this.heroShadow=this.add.ellipse(w*.34,h*.69,37,10,0x050711,.65).setDepth(3);
- this.foeShadow=this.add.ellipse(w*.67,h*.69,42,11,0x050711,.7).setDepth(3);
+ this.foeShadow=this.add.ellipse(w*.67,h*.72,76,18,0x050711,.7).setDepth(3);
  this.tweens.add({targets:this.hero,y:this.hero.y-10,angle:-2,duration:520,yoyo:true,repeat:-1,ease:'Sine.inOut'});
  this.tweens.add({targets:this.enemy,y:this.enemy.y-8,angle:2,duration:680,yoyo:true,repeat:-1,ease:'Sine.inOut',delay:150});
  this.tweens.add({targets:this.heroShadow,scaleX:1.18,alpha:.35,duration:520,yoyo:true,repeat:-1,ease:'Sine.inOut'});
@@ -58,7 +58,7 @@ create:function(){
  this.tweens.add({targets:this.phaseLabel,alpha:.58,duration:1100,yoyo:true,repeat:-1,ease:'Sine.inOut'});
  this.tweens.add({targets:this.heroAura,alpha:.22,scale:1.15,duration:1000,yoyo:true,repeat:-1});
  this.tweens.add({targets:this.foeAura,alpha:.25,scale:1.12,duration:900,yoyo:true,repeat:-1});
- this.sparkles=[];for(let i=0;i<18;i++){const x=(i*47+19)%w,y=(i*31+13)%(h*.62),p=this.add.rectangle(x,y,2,2,i%3?0xb5a0e7:0xf8ce72,.8).setDepth(5);this.sparkles.push(p);this.tweens.add({targets:p,alpha:0,y:y-8,duration:1000+i%5*180,delay:i*90,yoyo:true,repeat:-1});}
+ this.sparkles=[]; /* tiny floating pixel particles removed for a clean battlefield */
  this.scale.on('resize',this.onResize,this);
 },
 onResize:function(){if(this.scene.isActive())this.scene.restart();},
@@ -90,8 +90,8 @@ setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВК
  if(critical){const f=this.add.rectangle(w/2,h/2,w,h,0xffe2a1,.2).setDepth(10);this.tweens.add({targets:f,alpha:0,duration:160,onComplete:()=>f.destroy()});}
 },
 victory:function(){const w=this.scale.width,h=this.scale.height;for(let i=0;i<48;i++){const p=this.add.rectangle(Math.random()*w,-8,3+Math.random()*3,4+Math.random()*4,[0xf8ce72,0x78e7ef,0xb5a0e7][i%3],1).setDepth(10);this.tweens.add({targets:p,y:h+12,x:p.x+(Math.random()-.5)*100,angle:360,duration:900+Math.random()*1200,delay:Math.random()*300,onComplete:()=>p.destroy()});}},
-setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture('tb-enemy-atlas',boss?2:((wave*7+3)%4));this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?3.0:2.7);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
-update:function(time){this.sparkles.forEach((p,i)=>{p.x+=Math.sin(time*.001+i)*.22;p.y+=Math.cos(time*.0007+i)*.06;});if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
+setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture('tb-enemy-atlas',boss?2:((wave*7+3)%4));this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?5.4:4.4);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
+update:function(time){if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
 };
 
 // DOM combat FX: visible even when Phaser canvas is hidden by mobile stacking/compositing.
