@@ -771,6 +771,17 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 .art-rune:before,.art-crown:before,.art-starforge:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23f5cb68' stroke='%23fff0bb' stroke-width='2' d='M4 15 19 27 27 7 33 27 49 8 51 29 61 18 54 56H10Z'/%3E%3Cpath fill='none' stroke='%23fff4c9' stroke-width='3' d='M18 43h28'/%3E%3C/svg%3E")!important}
 .art-might:before,.art-precision:before,.art-bossbane:before,.art-fortune:before,.art-discount:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23edc879' stroke='%23fff0b8' stroke-width='2' d='M32 3 39 23 60 24 44 38 49 59 32 47 15 59 20 38 4 24 25 23Z'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23fff5cf'/%3E%3C/svg%3E")!important}
 
+
+/* ART PASS: vivid illustrated relic icons, larger on mobile and desktop */
+.relic-art{width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important;border-radius:13px!important;background:radial-gradient(circle at 50% 35%,#5c466e 0,#242033 55%,#0d101a 100%)!important;box-shadow:inset 0 0 0 1px #e8c987aa,0 5px 18px #0009,0 0 18px color-mix(in srgb,var(--relic-glow,#e8c779) 32%,transparent)!important}
+#shop .relic-art{width:92px!important;height:92px!important;min-width:92px!important;min-height:92px!important;background:radial-gradient(circle at 50% 35%,#73506e 0,#272034 58%,#0b0e17 100%)!important}
+.relic-art:before{inset:5px!important;background-size:contain!important;filter:drop-shadow(0 3px 2px #000d) drop-shadow(0 0 7px var(--relic-glow,#e8c779))!important}
+.relic-art:after{inset:0!important;opacity:.5!important}
+.slot .relic-art{width:76px!important;height:76px!important;min-width:76px!important;min-height:76px!important}
+@media(max-width:700px){.relic-art{width:76px!important;height:76px!important;min-width:76px!important;min-height:76px!important}.slot .relic-art{width:72px!important;height:72px!important;min-width:72px!important;min-height:72px!important}#shop .relic-art{width:84px!important;height:84px!important;min-width:84px!important;min-height:84px!important}}
+.arena{background:radial-gradient(ellipse at 50% 68%,#4a2948 0,#241c35 44%,#0c101a 100%)!important}
+#phaser-arena canvas{image-rendering:auto!important}
+
 </style>
 </head>
 <body><main class="app">
@@ -785,7 +796,7 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 </main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Иллюстрация башни реликвий">
 <img class="title-illustration" src="./assets/towerbound-title-v2.webp?v=1" alt="Древняя башня над проклятой долиной" width="720" height="880" fetchpriority="high"><div class="title-art-vignette"></div><div class="title-art-label">THE RELIC TOWER · SEASON I</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn" onclick="(function(){var s=document.getElementById('titleScreen');if(s){s.classList.add('is-hidden');s.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');})();">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./towerbound-engine.js?v=bestiarum-synergy-4"></script>
+<script src="./towerbound-engine.js?v=illustrated-art-1"></script>
 <script>
 (()=>{'use strict';
 document.addEventListener('click',function(ev){
