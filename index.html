@@ -671,6 +671,62 @@ button.primary,.primary{background:linear-gradient(180deg,#ffe2a0,#d6a253 52%,#8
 #shop .relic-art{width:72px!important;height:72px!important;border:1px solid #c29a65!important;border-radius:9px!important;box-shadow:inset 0 0 20px #0008,0 0 20px #e6ad5422!important}
 .slot{min-height:120px!important}
 @media(max-width:700px){.slot{min-height:106px!important}.relic-art{width:58px!important;height:58px!important}#shop .relic-art{width:64px!important;height:64px!important}}
+
+/* TOWERBOUND — OBSIDIAN RELIC ARENA COMPLETE UI PASS */
+:root{--bg:#080a11;--panel:#171722;--line:#54434c;--text:#f5eee2;--muted:#b1a5a5;--gold:#eac779;--cyan:#7adbd7;--red:#f06b72}
+body{background:radial-gradient(ellipse at 50% -10%,#403040 0,#17131f 37%,#080910 78%);font-family:Inter,system-ui,sans-serif}
+.app{max-width:1120px}
+.top{padding:19px 4px 16px;border-bottom:1px solid #b59a6530;margin-bottom:15px}
+.brand h1{font-family:Cinzel,serif;letter-spacing:.09em;text-transform:uppercase;font-size:clamp(17px,3vw,24px);text-shadow:0 2px 18px #d2a65b35}
+.eyebrow{letter-spacing:.24em;color:#dfbd78}
+.sigil{border-radius:12px;background:linear-gradient(145deg,#f0d18b 0,#8e553b 48%,#30202c 100%);color:#17101b;box-shadow:0 0 0 3px #2d202b,0 0 0 4px #8d704b,0 0 32px #ce9b4933}
+.panel{background:linear-gradient(145deg,#211d29f2,#12131df5 72%);border:1px solid #79604b6b;border-radius:16px;box-shadow:0 18px 40px #0007,inset 0 1px #fff0}
+.panelhead{padding-bottom:10px;border-bottom:1px solid #c5a16c20}
+.panelhead h2{font-family:Cinzel,serif;letter-spacing:.12em;color:#f2d99f}
+.pill{background:linear-gradient(145deg,#2b2634,#17151f);border-color:#8a6d4b80;box-shadow:inset 0 1px #ffffff0a}
+button{border-radius:9px;background:linear-gradient(180deg,#40303b,#211a26);border-color:#84654e80;transition:filter .16s,transform .16s,box-shadow .16s}
+button:not(:disabled):hover{filter:brightness(1.16);box-shadow:0 0 18px #d8a95722}
+button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#ffe7a7;color:#211620;box-shadow:0 5px 18px #c78b3930,inset 0 1px #fff9}
+.arena{background:radial-gradient(ellipse at 50% 70%,#382a3b 0,#1c1b2a 48%,#0c101a 100%);border:1px solid #b18c5b6b;border-radius:12px;box-shadow:inset 0 0 50px #0008}
+.arena:after{content:"";position:absolute;inset:8px;border:1px solid #b89a5d20;pointer-events:none;border-radius:8px}
+.slot,.relic{background:linear-gradient(145deg,#2d2632,#171620 70%);border:1px solid #78604b7d;border-radius:10px;box-shadow:inset 0 1px #fff08,0 6px 14px #0003}
+.slot.empty{background:linear-gradient(145deg,#191923,#10111a);border-color:#594b50}
+.slot.selected{outline:2px solid #e8c77b;box-shadow:0 0 22px #e8c77b30,inset 0 0 15px #e8c77b12}
+.slot .name,.relic strong{font-family:Cinzel,serif;letter-spacing:.015em;color:#f3e7d1}
+.relic small{color:#c0b1b1}
+.slot .rarity{color:#eac779;background:#1b1620d9;border-radius:3px;padding:2px 4px}
+.slot .power{color:#a7e6dc}
+.relic button{background:linear-gradient(180deg,#45323a,#251b27);border-color:#8c6c4c}
+.hpbar{height:9px;border:1px solid #4d333c;background:#100d15}
+.hpbar span{background:linear-gradient(90deg,#9f303e,#ed5f67 55%,#ffb56d);box-shadow:0 0 12px #ed5f6766}
+#enemyName{font-family:Cinzel,serif;letter-spacing:.06em;color:#f0d6b0}
+#fightBtn{font-family:Cinzel,serif;letter-spacing:.07em}
+.achievement{border-radius:8px;background:#11121c;border-color:#4b3a43}
+.achievement.unlocked{background:linear-gradient(145deg,#332a27,#191721);border-color:#b692546e}
+.reward-card{background:linear-gradient(145deg,#302636,#181621);border-color:#8d6a5c;border-radius:10px}
+.reward-card strong{font-family:Cinzel,serif}
+.modal{background:linear-gradient(145deg,#332837,#15141e);border-color:#a2845c;box-shadow:0 25px 100px #000e}
+.toast{background:linear-gradient(135deg,#f1d58e,#c38b49);border:1px solid #fff0bf;box-shadow:0 8px 30px #0008}
+.relic-art{width:60px;height:60px;border-radius:10px;border:1px solid color-mix(in srgb,var(--relic-glow,#d7ad6b) 58%,transparent);background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--relic-glow,#d7ad6b) 25%,#24202a),#100f18 76%);box-shadow:inset 0 0 18px #000c,0 0 16px color-mix(in srgb,var(--relic-glow,#d7ad6b) 16%,transparent)}
+.relic-art:before{inset:10px 13px 9px;background:linear-gradient(145deg,#fff0c4 0%,var(--relic-glow,#d8ad69) 24%,#704b54 53%,#24202b 80%);filter:drop-shadow(0 0 4px var(--relic-glow,#d8ad69))}
+.relic-art:after{mix-blend-mode:screen;opacity:.38}
+.art-ember:before,.art-cinder:before{clip-path:polygon(50% 0,62% 22%,84% 30%,70% 52%,82% 78%,52% 100%,22% 78%,30% 54%,12% 35%,39% 25%)}
+.art-phoenix:before{clip-path:polygon(50% 0,62% 28%,100% 10%,78% 50%,93% 82%,59% 68%,50% 100%,41% 68%,7% 82%,22% 50%,0 10%,38% 28%)}
+.art-frost:before{clip-path:polygon(50% 0,61% 31%,90% 10%,72% 42%,100% 50%,71% 59%,90% 90%,60% 70%,50% 100%,40% 70%,10% 90%,29% 59%,0 50%,29% 42%,10% 10%,39% 31%)}
+.art-thorn:before,.art-venom:before{clip-path:polygon(50% 0,61% 34%,90% 12%,72% 45%,100% 50%,70% 61%,85% 90%,55% 73%,35% 100%,33% 68%,4% 76%,25% 51%,8% 30%,39% 39%)}
+.art-spark:before{clip-path:polygon(58% 0,63% 35%,100% 23%,72% 49%,95% 75%,62% 65%,50% 100%,42% 66%,7% 82%,28% 52%,0 33%,39% 37%)}
+.art-moon:before,.art-mirror:before{clip-path:polygon(64% 0,87% 12%,100% 39%,94% 69%,72% 92%,43% 100%,18% 83%,4% 57%,11% 30%,34% 9%,56% 5%,43% 28%,36% 49%,43% 70%,62% 78%,79% 66%,85% 46%,77% 27%,62% 16%)}
+.art-void:before,.art-oracle:before{clip-path:polygon(50% 0,64% 22%,88% 12%,79% 38%,100% 50%,76% 62%,87% 88%,61% 78%,50% 100%,39% 78%,13% 88%,24% 62%,0 50%,21% 38%,12% 12%,36% 22%)}
+.art-heart:before{clip-path:polygon(50% 95%,9% 53%,4% 30%,20% 10%,39% 12%,50% 30%,61% 12%,80% 10%,96% 30%,91% 53%)}
+.art-hourglass:before{clip-path:polygon(10% 0,90% 0,85% 20%,62% 43%,62% 57%,85% 80%,90% 100%,10% 100%,15% 80%,38% 57%,38% 43%,15% 20%)}
+.art-quiver:before,.art-multishot:before{clip-path:polygon(50% 0,67% 20%,60% 100%,40% 100%,33% 20%)}
+.art-rune:before,.art-crown:before{clip-path:polygon(0 18%,24% 32%,36% 0,50% 30%,65% 0,77% 32%,100% 18%,84% 100%,16% 100%)}
+.art-meteor:before{clip-path:polygon(4% 70%,20% 45%,33% 57%,48% 25%,60% 42%,77% 8%,72% 55%,100% 68%,63% 77%,45% 100%,33% 79%)}
+.art-fang:before{clip-path:polygon(8% 0,50% 24%,92% 0,79% 69%,50% 100%,21% 69%)}
+.art-swift:before{clip-path:polygon(0 30%,65% 30%,49% 4%,100% 50%,49% 96%,65% 70%,0 70%)}
+.art-ember{--relic-glow:#ff642e}.art-phoenix{--relic-glow:#ff9c4a}.art-cinder{--relic-glow:#db4a35}.art-frost{--relic-glow:#79dfff}.art-thorn{--relic-glow:#77d779}.art-venom{--relic-glow:#a5e34f}.art-heart{--relic-glow:#ed657d}.art-spark{--relic-glow:#fff18c}.art-moon{--relic-glow:#a5a9ff}.art-oracle{--relic-glow:#c39bff}.art-void{--relic-glow:#a878f2}.art-hourglass{--relic-glow:#e5c27b}.art-swift{--relic-glow:#8ee4de}.art-multishot{--relic-glow:#e9e0d1}.art-quiver{--relic-glow:#a6d6f5}.art-fang{--relic-glow:#f6b6b1}.art-rune{--relic-glow:#86bfff}.art-mirror{--relic-glow:#9de8ef}.art-meteor{--relic-glow:#ff9a56}.art-crown{--relic-glow:#ffda83}
+@media(max-width:700px){.top{padding-top:12px}.panel{padding:12px}.layout{gap:10px}.slot{min-height:86px}.relic-art{width:54px;height:54px}.currency{max-width:48%}.brand{min-width:0}.brand h1{font-size:15px}}
+
 </style>
 </head>
 <body><main class="app">
