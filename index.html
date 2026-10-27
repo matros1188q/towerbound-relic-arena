@@ -36,8 +36,6 @@ create:function(){
  for(let i=0;i<8;i++){const a=i*Math.PI/4;const x=w*.5+Math.cos(a)*Math.min(w*.28,82),y=h*.73+Math.sin(a)*Math.min(w*.2,46);this.rings.fillStyle(0xf4d68a,.7);this.rings.fillCircle(x,y,2.2);}
  this.core=this.add.circle(w*.5,h*.49,Math.min(w*.07,22),0x8c6ce8,.15);this.core.setStrokeStyle(2,0xd9c6ff,.75);
  this.tweens.add({targets:this.core,scale:1.32,alpha:.3,duration:1400,yoyo:true,repeat:-1,ease:'Sine.inOut'});
- this.particles=this.add.particles(0,0,'__WHITE');
- this.particles.setVisible(false);
  this.sparkles=[];
  for(let i=0;i<26;i++){let s=this.add.circle(Math.random()*w,Math.random()*h,Math.random()*1.8+.5, i%4===0?0xffd77b:0xb8a9ff,Math.random()*.45+.15);this.sparkles.push(s);this.tweens.add({targets:s,y:s.y-12-Math.random()*25,alpha:0,duration:1800+Math.random()*1800,delay:Math.random()*1000,repeat:-1,yoyo:true});}
  this.events.on('resize',()=>this.scene.restart());
