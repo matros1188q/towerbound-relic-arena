@@ -23,7 +23,7 @@ const palette={'.':null,'1':'#15172a','2':'#7359a5','3':'#b5a0e7','4':'#f5d38a',
 const foePalette={'.':null,'1':'#141322','2':'#693b55','3':'#c34e69','4':'#ff9a70','5':'#353653','6':'#202236'};
 const scene={key:'PixelArena',
 create:function(){
- this.cameras.main.setBackgroundColor('#101326');this.pixelActors=[];this.fx=[];
+ this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.pixelActors=[];this.fx=[];
  const w=this.scale.width,h=this.scale.height,g=this.add.graphics();
  g.fillStyle(0x111428,1);g.fillRect(0,0,w,h);
  // Pixel-art night sky and moon
@@ -42,8 +42,10 @@ create:function(){
  // pillars and brazier lamps
  for(const x of [w*.12,w*.88]){g.fillStyle(0x393450,1);g.fillRect(x-7,h*.48,14,h*.2);g.fillStyle(0x75618f,1);g.fillRect(x-11,h*.47,22,5);g.fillStyle(0xf6b76c,.9);g.fillRect(x-3,h*.43,6,7);g.fillStyle(0xff9c67,.24);g.fillCircle(x,h*.44,12);}
  makePixelTexture(this,'tb-hero',heroRows,palette);makePixelTexture(this,'tb-foe',enemyRows,foePalette);
+ const skeletonRows=['....111111....','...1222221...','..123232321..','..122222221..','...1333331...','....34443....','...5555555...','..556555655..','..556555655..','...5555555...','....66.66....','....66.66....'];const bruteRows=['....111111....','...12222221...','..1233333321..','..1233333321..','...1444441...','...55555555...','..5565556555..','..5565556555..','...55555555...','...666..666...','..6666..6666..'];makePixelTexture(this,'tb-skeleton',skeletonRows,{'1':'#181628','2':'#d2d1df','3':'#8b8ca7','4':'#8ef0e4','5':'#363b58','6':'#20243a'});makePixelTexture(this,'tb-brute',bruteRows,{'1':'#171327','2':'#8c304d','3':'#d34c67','4':'#ffba77','5':'#5a2c48','6':'#2a2139'});
  this.hero=this.add.image(w*.34,h*.56,'tb-hero').setOrigin(.5,.5).setScale(2.5).setDepth(4);
  this.enemy=this.add.image(w*.67,h*.56,'tb-foe').setOrigin(.5,.5).setScale(2.5).setDepth(4);
+ this.phaseLabel=this.add.text(w/2,18,'ПОДГОТОВКА К БОЮ',{fontFamily:'monospace',fontSize:'11px',fontStyle:'bold',color:'#f8ce72',stroke:'#101326',strokeThickness:3}).setOrigin(.5,0).setDepth(12);
  this.heroAura=this.add.circle(w*.34,h*.69,24,0x72e7ed,.08).setDepth(2);
  this.foeAura=this.add.circle(w*.67,h*.69,27,0xe85e78,.12).setDepth(2);
  this.heroShadow=this.add.ellipse(w*.34,h*.69,37,10,0x050711,.65).setDepth(3);
@@ -56,8 +58,10 @@ create:function(){
  this.scale.on('resize',this.onResize,this);
 },
 onResize:function(){if(this.scene.isActive())this.scene.restart();},
-impact:function(critical=false,boss=false){
- const w=this.scale.width,h=this.scale.height,target=this.enemy;
+setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВКА К БОЮ',battle:'БОЙ · АТАКА И ЗАЩИТА',reward:'НАГРАДА ЗА ПОБЕДУ',victory:'АРЕНА ПОКОРЕНА',defeat:'ОТРЯД ПАЛ'};if(this.phaseLabel)this.phaseLabel.setText(labels[phase]||labels.prep);if(this.hero&&this.enemy){this.hero.setAlpha(phase==='defeat'?.65:1);this.enemy.setAlpha(phase==='victory'?.35:1);}},
+ impact:function(critical=false,boss=false){
+ const w=this.scale.width,h=this.scale.height,target=this.enemy,hero=this.hero;
+ if(hero){this.tweens.killTweensOf(hero);const hx=hero.x,hy=hero.y;this.tweens.add({targets:hero,x:hx+Math.min(25,w*.045),y:hy-4,duration:95,yoyo:true,ease:'Cubic.Out',onComplete:()=>{if(hero&&hero.active)this.tweens.add({targets:hero,x:hx,y:hy,duration:110,ease:'Cubic.InOut'});}});}
  this.tweens.add({targets:target,x:target.x+12,duration:55,yoyo:true,repeat:3,ease:'Sine.inOut'});
  const x=target.x,y=target.y;const flash=this.add.rectangle(x,y,critical?68:44,critical?68:44,critical?0xffd478:0x8ceaf0,.65).setDepth(8);
  this.tweens.add({targets:flash,alpha:0,scale:2.2,duration:260,onComplete:()=>flash.destroy()});
@@ -65,9 +69,9 @@ impact:function(critical=false,boss=false){
  if(critical){const f=this.add.rectangle(w/2,h/2,w,h,0xffe2a1,.2).setDepth(10);this.tweens.add({targets:f,alpha:0,duration:160,onComplete:()=>f.destroy()});}
 },
 victory:function(){const w=this.scale.width,h=this.scale.height;for(let i=0;i<48;i++){const p=this.add.rectangle(Math.random()*w,-8,3+Math.random()*3,4+Math.random()*4,[0xf8ce72,0x78e7ef,0xb5a0e7][i%3],1).setDepth(10);this.tweens.add({targets:p,y:h+12,x:p.x+(Math.random()-.5)*100,angle:360,duration:900+Math.random()*1200,delay:Math.random()*300,onComplete:()=>p.destroy()});}},
-setWave:function(wave,boss){if(!this.enemy)return;this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?3.15:2.5);this.foeAura.setFillStyle(boss?0xe85e78:0x9b78ed,boss?.2:.12);},
+setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture(boss?'tb-brute':kind);this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?3.15:(wave%4===2?2.9:2.5));this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
 update:function(time){this.sparkles.forEach((p,i)=>{p.x+=Math.sin(time*.0006+i)*.06;});}
 };
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:true,antialias:false,roundPixels:true,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:false,pixelArt:true,roundPixels:true},scene});
-window.TowerFX={hit:(critical,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.impact)s.impact(critical,boss);},win:()=>{const s=game.scene.getScene('PixelArena');if(s&&s.victory)s.victory();},wave:(wave,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setWave)s.setWave(wave,boss);}};
+window.TowerFX={hit:(critical,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.impact)s.impact(critical,boss);},win:()=>{const s=game.scene.getScene('PixelArena');if(s&&s.victory)s.victory();},wave:(wave,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setWave)s.setWave(wave,boss);},phase:(phase)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setPhase)s.setPhase(phase);}};
 })();
