@@ -142,6 +142,28 @@ body{background:radial-gradient(ellipse at 50% 0,#55427a 0,#1c203c 34%,#080a13 1
 @media(min-width:701px){.arena{min-height:390px}.enemies{min-height:190px}}
 @media(prefers-reduced-motion:reduce){.enemy,.arena{animation:none!important}.tb-wave-intro{animation:none!important;opacity:1}}
 
+
+/* MAIN TITLE SCREEN + PLAYER-FACING MENU */
+.title-screen{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(ellipse at 50% 28%,#55457cdd,#111428f5 57%,#070912fa);backdrop-filter:blur(18px);transition:opacity .35s,visibility .35s}
+.title-screen.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.title-card{position:relative;overflow:hidden;width:min(520px,100%);padding:clamp(22px,6vw,38px);border-radius:28px;border:1px solid #ffe2a05c;background:linear-gradient(155deg,#302b4ff5,#12162bf7 66%);box-shadow:0 35px 100px #000b,0 0 60px #a783ff20;text-align:center}
+.title-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#ffe2a0,#a78bfa,transparent)}
+.title-logo{width:84px;height:84px;margin:0 auto 18px;border-radius:27px;display:grid;place-items:center;font-size:46px;background:linear-gradient(145deg,#ffe8a0,#95623c);border:1px solid #fff9;box-shadow:0 0 42px #f3c36c44,inset 0 2px #fff9;animation:tb-sigil 4s ease-in-out infinite}
+.title-kicker{font-size:10px;letter-spacing:.3em;color:#ffe2a0;font-weight:950}
+.title-card h2{font-size:clamp(27px,7vw,42px);line-height:1.03;letter-spacing:.06em;margin:10px 0 12px;color:#fff5dd}
+.title-copy{max-width:380px;margin:0 auto 20px;color:#c2c4df;font-size:13px;line-height:1.65}
+.title-features{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.title-feature{padding:11px 5px;border-radius:14px;border:1px solid #c5b5ff24;background:#0b1020aa}
+.title-feature span{display:block;font-size:22px;margin-bottom:5px}
+.title-feature b{display:block;font-size:10px;color:#f4e9c8}
+.title-feature small{display:block;font-size:9px;color:#aeb5d7;margin-top:3px}
+.title-actions{display:grid;gap:9px}
+.title-actions button{min-height:50px;font-weight:950;letter-spacing:.05em}
+.title-secondary{background:#1a2038;border-color:#c8b8ff3a}
+.title-help{display:none;text-align:left;margin-top:15px;padding:13px;border-radius:14px;background:#080d1c;border:1px solid #c8b8ff2b;color:#d8d9ee;font-size:12px;line-height:1.7}
+.title-help.open{display:block}
+@media(prefers-reduced-motion:reduce){.title-logo{animation:none}.title-screen{transition:none}}
+
 </style>
 </head>
 <body><main class="app">
@@ -153,7 +175,7 @@ body{background:radial-gradient(ellipse at 50% 0,#55427a 0,#1c203c 34%,#080a13 1
 <div class="panel"><div class="panelhead"><h2>Лавка реликвий</h2><span class="sub">Случайный набор</span></div><div class="shopgrid" id="shop"></div><div class="actions" style="margin-top:10px"><button id="refreshBtn">↻ Обновить · 2 🪙</button><button id="sellBtn">♻ Продать выбранную</button></div></div>
 <div class="panel"><div class="panelhead"><h2>Арсенал героя</h2><span class="sub">Синергии</span></div><div id="synergy" class="sub">Добавь реликвии, чтобы открыть бонусы.</div><div id="blessingStatus" class="blessing-status"></div><div style="height:12px"></div><div class="panelhead"><h2>Достижения</h2><span class="sub" id="achievementCount">0 / 6</span></div><div id="achievements" class="achievement-list"></div><div style="height:10px"></div><div class="panelhead"><h2>Хроника</h2><span class="sub">Последние события</span></div><div class="log" id="log"><div>Добро пожаловать на арену. Первая волна ждёт.</div></div></div>
 </aside></div><div class="bottomnote">TOWERBOUND: RELIC ARENA · PIXEL ENGINE · СОХРАНЕНИЕ НА УСТРОЙСТВЕ</div>
-</main><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
+</main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-logo">⚔</div><div class="title-kicker">DARK FANTASY · ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери реликвии, выстрой синергии и переживи десять волн. Каждый поход — новая комбинация силы, риска и наград.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>Собирай</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>Усиливай</b><small>Слияния</small></div><div class="title-feature"><span>👑</span><b>Побеждай</b><small>Боссов</small></div></div><div class="title-actions"><button class="primary" id="enterArenaBtn">⚔ ВОЙТИ НА АРЕНУ</button><button class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии в лавке за золото.<br><b>2.</b> Нажми «Начать волну» — атаки и ответный урон идут автоматически.<br><b>3.</b> Перетащи одинаковые реликвии друг на друга или выбери две по очереди для слияния.<br><b>4.</b> После победы выбери одно благословение. Лечение доступно между волнами.<br><b>Цель:</b> одолеть 10 волн и двух боссов.</div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
 <script src="./towerbound-engine.js?v=dom-combat-fx-1"></script>
 <script>
