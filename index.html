@@ -317,6 +317,76 @@ button:hover{filter:brightness(1.18);border-color:#d9b56e}
 }
 @media(min-width:761px){.title-art{min-height:100%}.title-card{height:min(780px,calc(100dvh - 40px))}}
 
+
+/* DARK FANTASY ROGUELIKE ART DIRECTION V2 */
+:root{--bg:#08090f;--panel:#17151c;--line:#8d765044;--text:#e9e0d0;--muted:#aaa092;--gold:#d9b56d;--cyan:#8bbeb9;--red:#b84e55}
+body{background:#09090e;color:#e9e0d0;background-image:radial-gradient(ellipse at 50% -18%,#49352c 0,transparent 42%),radial-gradient(ellipse at 90% 45%,#1c2030 0,transparent 40%),linear-gradient(180deg,#0b0a0e,#101019 55%,#08080d);font-family:Georgia,'Times New Roman',serif}
+button{border:1px solid #796246;border-radius:5px;background:linear-gradient(180deg,#39302a 0%,#211c1d 48%,#141319 100%);color:#e7d9bc;box-shadow:inset 0 1px #fff2,inset 0 -2px #0008,0 4px 12px #0008;letter-spacing:.035em}
+button:hover:not(:disabled){border-color:#d7b675;filter:brightness(1.15);box-shadow:inset 0 1px #fff3,0 0 16px #b68a4930,0 5px 15px #0008}
+button:focus-visible{outline:2px solid #e2c47e;outline-offset:2px}
+button.primary,.title-actions .primary{color:#21170f;border:1px solid #f1d49a;background:linear-gradient(180deg,#e8ce8b,#b98b4b 52%,#76502e);text-shadow:0 1px #fff5;box-shadow:inset 0 1px #fff8,inset 0 -2px #5a3b22,0 5px 18px #b68a4925}
+.app{max-width:1120px}
+.top{border-bottom:1px solid #9b7a4b30;margin-bottom:14px}
+.sigil{border-radius:4px;border:1px solid #c8a56b;background:radial-gradient(circle at 35% 25%,#e9d29b,#91663c 48%,#28202a 100%);box-shadow:inset 0 0 0 3px #18131a,0 0 24px #d2a45b20}
+.eyebrow{color:#c9a766;letter-spacing:.24em}
+.brand h1{font-family:Georgia,serif;font-weight:500;letter-spacing:.09em;color:#f0e4c9}
+.pill{border-radius:4px;background:linear-gradient(180deg,#28242a,#141319);border-color:#9d7d4a55;color:#d8c7a7}
+.panel{border-radius:7px;border:1px solid #9d7d4a48;background:linear-gradient(145deg,#252029f5 0%,#17151df7 46%,#100f16fa 100%);box-shadow:0 16px 35px #0008,inset 0 1px #f6d9a20b,inset 0 0 0 3px #0002;backdrop-filter:blur(12px)}
+.panel:after{content:"";position:absolute;inset:5px;border:1px solid #c2a16a13;border-radius:3px;pointer-events:none}
+.panelhead{border-bottom:1px solid #b5976330;padding-bottom:9px}
+.panelhead h2{font-family:Georgia,serif;color:#ddc99f;letter-spacing:.14em;font-weight:500}
+.sub{color:#a9a092}
+.arena{border-radius:5px;border:1px solid #b18d5c;background:#100f17;box-shadow:inset 0 0 0 4px #09090f,0 0 0 1px #000;min-height:320px}
+.arena:before{background:linear-gradient(180deg,#07070b15 0%,transparent 35%,#08080dc9 100%),radial-gradient(ellipse at center,transparent 35%,#03030880 100%);z-index:1}
+.arena #phaser-arena{opacity:1!important}
+.statusrow{color:#d9ccb4;text-shadow:0 2px 4px #000}
+.hpbar{height:8px;border:1px solid #72533a;border-radius:2px;background:#09080d;box-shadow:inset 0 1px 4px #000}
+.hpbar span{background:linear-gradient(90deg,#752c34,#c04c49 62%,#e2a35c);box-shadow:0 0 12px #b9443c55}
+.battlemsg{font-family:Georgia,serif;color:#e3c47d;letter-spacing:.08em;text-shadow:0 2px 8px #000}
+.arenafoot button{border-radius:4px;min-height:45px}
+.slot,.relic{border-radius:5px;border:1px solid #8c714d55;background:linear-gradient(145deg,#30272a,#17151d 70%);box-shadow:inset 0 1px #fff1,0 6px 12px #0004}
+.slot.empty{background:linear-gradient(145deg,#17151c,#0e0d13);border-color:#574a3c;color:#70675c}
+.slot.selected{outline:1px solid #e0bd72;background:linear-gradient(145deg,#4b3a2a,#211c20);box-shadow:0 0 18px #d7b56a26}
+.slot .name,.relic strong{font-family:Georgia,serif;color:#e2d1ad;font-size:12px}
+.slot .power{color:#9fcac1}
+.slot .rarity{color:#d5b477}
+.relic{padding:13px 10px}
+.relic small{color:#a9a092}
+.relic button{border-radius:3px}
+.actions button{border-radius:4px}
+.achievement{border-radius:4px;background:linear-gradient(145deg,#201d25,#121117);border-color:#8c714d45;color:#898073}
+.achievement.unlocked{background:linear-gradient(145deg,#453625,#1b1718);border-color:#c5a05c88}
+.achievement strong{color:#b6aa97}
+.achievement.unlocked strong{color:#f0d398}
+.blessing-chip{border-radius:3px;color:#e5ca8b;border-color:#a9844d66;background:#c09a4612}
+.reward-card{border-radius:5px;border-color:#9e7c4c6b;background:linear-gradient(145deg,#39302b,#1c1920 68%,#111017);box-shadow:inset 0 1px #fff1,0 8px 18px #0005}
+.reward-card strong{color:#e8cd8d}
+.reward-card:active{border-color:#f2d18b;box-shadow:0 0 18px #d7b56a22}
+.modalback{background:#050409e8;backdrop-filter:blur(8px)}
+.modal{border-radius:7px;border:1px solid #b99a5e;background:linear-gradient(145deg,#33292b,#1a171e 58%,#0f0e14);box-shadow:0 30px 90px #000e,inset 0 0 0 4px #0a090e}
+.modal h2{font-family:Georgia,serif;font-weight:500;color:#efdcaf;letter-spacing:.04em}
+.modal p{color:#c1b4a0}
+.toast{border-radius:3px;background:linear-gradient(180deg,#e7ce91,#b38a4e);color:#1a120d;border:1px solid #f2dba4}
+.log div{border-bottom-color:#a88b5a1c}
+.bottomnote{color:#7f7568}
+.title-screen{background:#07070b}
+.title-screen:before{background:linear-gradient(90deg,#08070cf5 0%,#0a080bdc 28%,#0a090b45 61%,#08070b25 100%),linear-gradient(0deg,#08070bee,transparent 60%)}
+.title-card{border:1px solid #b18b51;border-radius:5px;background:linear-gradient(115deg,#151218f5,#1b171bf2 55%,#0e0d13f7);box-shadow:0 32px 110px #000e,inset 0 0 0 5px #08080d,inset 0 0 0 6px #a7894b33}
+.title-card:before{inset:10px;border:1px solid #b99a5e2e}
+.title-illustration{filter:saturate(.9) contrast(1.12) brightness(.8)}
+.title-art:before{background:linear-gradient(180deg,#07070b08 15%,transparent 40%,#08070dd9 100%),radial-gradient(ellipse at 50% 44%,transparent 45%,#03030866 100%);box-shadow:inset 0 0 70px #030308a8}
+.title-art-vignette{background:linear-gradient(90deg,transparent 40%,#111017f0 100%),linear-gradient(0deg,#101017 0%,transparent 34%,#0a0a0d22 100%)}
+.title-art-label{color:#e1c384;font-family:Georgia,serif;letter-spacing:.24em}
+.title-kicker{color:#c7a565;letter-spacing:.28em}
+.title-content h2{font-family:Georgia,serif;color:#f0e1c1;font-weight:500;text-shadow:0 5px 24px #000}
+.title-copy{color:#c0b4a3}
+.title-feature{border-radius:4px;border-color:#b18b5140;background:linear-gradient(145deg,#31272a9c,#141219d9);box-shadow:inset 0 1px #fff1}
+.title-feature b{color:#e2c88e}
+.title-feature small{color:#a59a8a}
+.title-actions button{border-radius:4px;letter-spacing:.13em}
+.title-secondary{background:linear-gradient(180deg,#30272a,#151319);border-color:#a98b5b70;color:#dfcfb1}
+@media(max-width:760px){.arena{min-height:300px}.title-card{border:0}.title-art{min-height:280px}.title-content{padding:22px 24px 30px}}
+
 </style>
 </head>
 <body><main class="app">
@@ -331,7 +401,7 @@ button:hover{filter:brightness(1.18);border-color:#d9b56e}
 </main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Иллюстрация башни реликвий">
 <img class="title-illustration" src="./assets/towerbound-title-v2.webp?v=1" alt="Древняя башня над проклятой долиной" width="720" height="880" fetchpriority="high"><div class="title-art-vignette"></div><div class="title-art-label">THE RELIC TOWER · SEASON I</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn" onclick="(function(){var s=document.getElementById('titleScreen');if(s){s.classList.add('is-hidden');s.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');})();">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./towerbound-engine.js?v=painterly-overhaul-1"></script>
+<script src="./towerbound-engine.js?v=dark-roguelike-art-2"></script>
 <script>
 (()=>{'use strict';
 document.addEventListener('click',function(ev){
