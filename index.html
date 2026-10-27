@@ -143,27 +143,38 @@ body{background:radial-gradient(ellipse at 50% 0,#55427a 0,#1c203c 34%,#080a13 1
 @media(prefers-reduced-motion:reduce){.enemy,.arena{animation:none!important}.tb-wave-intro{animation:none!important;opacity:1}}
 
 
-/* MAIN TITLE SCREEN + PLAYER-FACING MENU */
-.title-screen{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(ellipse at 50% 28%,#55457cdd,#111428f5 57%,#070912fa);backdrop-filter:blur(18px);transition:opacity .35s,visibility .35s}
+/* CINEMATIC TITLE SCREEN — full-bleed art direction */
+.title-screen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:auto;padding:20px;background:#080914;isolation:isolate;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s,visibility .35s}
+.title-screen:before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(ellipse at 50% 28%,#a783d344 0,transparent 30%),radial-gradient(ellipse at 15% 70%,#ff9a4b25,transparent 35%),radial-gradient(ellipse at 85% 68%,#7659ff28,transparent 35%),linear-gradient(180deg,#17142c 0%,#0b1020 53%,#080914 100%)}
+.title-screen:after{content:"";position:absolute;inset:0;z-index:-1;opacity:.24;background-image:linear-gradient(#a9a4e012 1px,transparent 1px),linear-gradient(90deg,#a9a4e012 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(transparent,#000 15%,#000 85%,transparent)}
 .title-screen.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.title-card{position:relative;overflow:hidden;width:min(520px,100%);padding:clamp(22px,6vw,38px);border-radius:28px;border:1px solid #ffe2a05c;background:linear-gradient(155deg,#302b4ff5,#12162bf7 66%);box-shadow:0 35px 100px #000b,0 0 60px #a783ff20;text-align:center}
-.title-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#ffe2a0,#a78bfa,transparent)}
-.title-logo{width:84px;height:84px;margin:0 auto 18px;border-radius:27px;display:grid;place-items:center;font-size:46px;background:linear-gradient(145deg,#ffe8a0,#95623c);border:1px solid #fff9;box-shadow:0 0 42px #f3c36c44,inset 0 2px #fff9;animation:tb-sigil 4s ease-in-out infinite}
+.title-card{position:relative;overflow:hidden;width:min(1080px,100%);min-height:min(680px,calc(100dvh - 40px));display:grid;grid-template-columns:minmax(0,1.05fr) minmax(290px,.95fr);align-items:center;gap:clamp(20px,5vw,64px);padding:clamp(24px,5vw,58px);border-radius:30px;border:1px solid #d8c5ff3d;background:linear-gradient(110deg,#17182cf0 0%,#17182ce8 49%,#111528f4 100%);box-shadow:0 36px 110px #000b,0 0 90px #8e72ff16;text-align:left}
+.title-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#ffe2a0,#a78bfa,#8df7ff,transparent)}
+.title-art{position:relative;min-height:430px;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:24px;border:1px solid #d8c5ff2b;background:radial-gradient(ellipse at 50% 50%,#4d386b 0%,#252443 35%,#111529 70%,#0a0d19 100%);box-shadow:inset 0 0 70px #050711cc}
+.title-art:before{content:"";position:absolute;width:78%;aspect-ratio:1;border-radius:50%;border:1px solid #ffe2a04d;box-shadow:0 0 0 18px #d6b8ff08,0 0 0 48px #d6b8ff06,0 0 65px #bb91ff2b;animation:tb-orbit 16s linear infinite}
+.title-art:after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(transparent,#080914)}
+.title-art-sigil{position:relative;z-index:1;font-size:clamp(110px,20vw,220px);line-height:1;filter:drop-shadow(0 0 22px #ffd98d9c) drop-shadow(0 20px 25px #0009);animation:tb-sigil 4s ease-in-out infinite}
+.title-art-label{position:absolute;z-index:2;bottom:26px;left:18px;right:18px;text-align:center;font-size:10px;letter-spacing:.32em;color:#e9d9ff;font-weight:900}
+.title-content{position:relative;z-index:2}
+.title-logo{display:none}
 .title-kicker{font-size:10px;letter-spacing:.3em;color:#ffe2a0;font-weight:950}
-.title-card h2{font-size:clamp(27px,7vw,42px);line-height:1.03;letter-spacing:.06em;margin:10px 0 12px;color:#fff5dd}
-.title-copy{max-width:380px;margin:0 auto 20px;color:#c2c4df;font-size:13px;line-height:1.65}
-.title-features{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
-.title-feature{padding:11px 5px;border-radius:14px;border:1px solid #c5b5ff24;background:#0b1020aa}
-.title-feature span{display:block;font-size:22px;margin-bottom:5px}
+.title-card h2{font-size:clamp(30px,5vw,54px);line-height:.99;letter-spacing:.035em;margin:14px 0;color:#fff5dd;text-shadow:0 5px 28px #0007}
+.title-copy{max-width:440px;margin:0 0 22px;color:#c2c4df;font-size:14px;line-height:1.75}
+.title-features{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}
+.title-feature{padding:12px 7px;border-radius:13px;border:1px solid #c5b5ff24;background:#0b1020aa;text-align:center}
+.title-feature span{display:block;font-size:22px;margin-bottom:6px}
 .title-feature b{display:block;font-size:10px;color:#f4e9c8}
-.title-feature small{display:block;font-size:9px;color:#aeb5d7;margin-top:3px}
-.title-actions{display:grid;gap:9px}
-.title-actions button{min-height:50px;font-weight:950;letter-spacing:.05em}
-.title-secondary{background:#1a2038;border-color:#c8b8ff3a}
+.title-feature small{display:block;font-size:9px;color:#aeb5d7;margin-top:4px}
+.title-actions{display:grid;gap:10px}
+.title-actions button{min-height:54px;font-weight:950;letter-spacing:.07em;cursor:pointer;touch-action:manipulation;position:relative;z-index:5;pointer-events:auto}
+.title-actions .primary{background:linear-gradient(105deg,#ffe5a0,#d6a45b 55%,#ffe7b0);color:#171322;border:1px solid #fff3cc;box-shadow:0 9px 25px #e7b86625,inset 0 1px #fff}
+.title-secondary{background:#1a2038;color:#f1ecff;border:1px solid #c8b8ff3a}
 .title-help{display:none;text-align:left;margin-top:15px;padding:13px;border-radius:14px;background:#080d1c;border:1px solid #c8b8ff2b;color:#d8d9ee;font-size:12px;line-height:1.7}
 .title-help.open{display:block}
-@media(prefers-reduced-motion:reduce){.title-logo{animation:none}.title-screen{transition:none}}
-
+@keyframes tb-orbit{to{transform:rotate(360deg)}}
+@media(max-width:720px){.title-screen{padding:10px;align-items:flex-start}.title-card{grid-template-columns:1fr;gap:16px;min-height:auto;padding:16px;border-radius:22px;margin:auto}.title-art{min-height:190px;height:190px;grid-row:1}.title-art:before{width:45%}.title-art-sigil{font-size:105px}.title-art-label{bottom:12px;font-size:8px}.title-content{grid-row:2}.title-card h2{font-size:clamp(31px,9vw,43px);margin:8px 0}.title-copy{font-size:12px;line-height:1.55;margin-bottom:12px}.title-features{margin:12px 0}.title-feature{padding:8px 4px}.title-feature span{font-size:19px}.title-actions button{min-height:48px}}
+@media(max-height:720px) and (min-width:721px){.title-card{min-height:auto;padding:24px}.title-art{min-height:350px}}
+@media(prefers-reduced-motion:reduce){.title-art:before,.title-art-sigil{animation:none}.title-screen{transition:none}}
 </style>
 </head>
 <body><main class="app">
@@ -175,11 +186,18 @@ body{background:radial-gradient(ellipse at 50% 0,#55427a 0,#1c203c 34%,#080a13 1
 <div class="panel"><div class="panelhead"><h2>Лавка реликвий</h2><span class="sub">Случайный набор</span></div><div class="shopgrid" id="shop"></div><div class="actions" style="margin-top:10px"><button id="refreshBtn">↻ Обновить · 2 🪙</button><button id="sellBtn">♻ Продать выбранную</button></div></div>
 <div class="panel"><div class="panelhead"><h2>Арсенал героя</h2><span class="sub">Синергии</span></div><div id="synergy" class="sub">Добавь реликвии, чтобы открыть бонусы.</div><div id="blessingStatus" class="blessing-status"></div><div style="height:12px"></div><div class="panelhead"><h2>Достижения</h2><span class="sub" id="achievementCount">0 / 6</span></div><div id="achievements" class="achievement-list"></div><div style="height:10px"></div><div class="panelhead"><h2>Хроника</h2><span class="sub">Последние события</span></div><div class="log" id="log"><div>Добро пожаловать на арену. Первая волна ждёт.</div></div></div>
 </aside></div><div class="bottomnote">TOWERBOUND: RELIC ARENA · PIXEL ENGINE · СОХРАНЕНИЕ НА УСТРОЙСТВЕ</div>
-</main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-logo">⚔</div><div class="title-kicker">DARK FANTASY · ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери реликвии, выстрой синергии и переживи десять волн. Каждый поход — новая комбинация силы, риска и наград.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>Собирай</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>Усиливай</b><small>Слияния</small></div><div class="title-feature"><span>👑</span><b>Побеждай</b><small>Боссов</small></div></div><div class="title-actions"><button class="primary" id="enterArenaBtn">⚔ ВОЙТИ НА АРЕНУ</button><button class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии в лавке за золото.<br><b>2.</b> Нажми «Начать волну» — атаки и ответный урон идут автоматически.<br><b>3.</b> Перетащи одинаковые реликвии друг на друга или выбери две по очереди для слияния.<br><b>4.</b> После победы выбери одно благословение. Лечение доступно между волнами.<br><b>Цель:</b> одолеть 10 волн и двух боссов.</div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
+</main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art"><div class="title-art-sigil">⚔</div><div class="title-art-label">ENTER THE RELIC ARENA</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
 <script src="./towerbound-engine.js?v=dom-combat-fx-1"></script>
 <script>
 (()=>{'use strict';
+document.addEventListener('click',function(ev){
+ const enter=ev.target.closest('#enterArenaBtn');
+ if(enter){ev.preventDefault();ev.stopPropagation();const screen=document.getElementById('titleScreen');if(screen){screen.classList.add('is-hidden');screen.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');return;}
+ const how=ev.target.closest('#howToPlayBtn');
+ if(how){ev.preventDefault();const help=document.getElementById('titleHelp');if(help){help.classList.toggle('open');how.textContent=help.classList.contains('open')?'СКРЫТЬ ПРАВИЛА':'КАК ИГРАТЬ';}}
+},true);
+
 const $=id=>document.getElementById(id);
 const pool=[
 {id:'ember',name:'Угольный клинок',emoji:'🔥',rarity:'Обычная',cost:4,atk:5,desc:'Наносит сильный одиночный удар.'},
