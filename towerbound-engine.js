@@ -90,7 +90,7 @@ setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВК
  if(critical){const f=this.add.rectangle(w/2,h/2,w,h,0xffe2a1,.2).setDepth(10);this.tweens.add({targets:f,alpha:0,duration:160,onComplete:()=>f.destroy()});}
 },
 victory:function(){const w=this.scale.width,h=this.scale.height;for(let i=0;i<48;i++){const p=this.add.rectangle(Math.random()*w,-8,3+Math.random()*3,4+Math.random()*4,[0xf8ce72,0x78e7ef,0xb5a0e7][i%3],1).setDepth(10);this.tweens.add({targets:p,y:h+12,x:p.x+(Math.random()-.5)*100,angle:360,duration:900+Math.random()*1200,delay:Math.random()*300,onComplete:()=>p.destroy()});}},
-setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture('tb-enemy-atlas',boss?2:((wave-1)%4));this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?2.8:2.55);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
+setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture('tb-enemy-atlas',boss?2:((wave*7+3)%4));this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?3.0:2.7);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
 update:function(time){this.sparkles.forEach((p,i)=>{p.x+=Math.sin(time*.001+i)*.22;p.y+=Math.cos(time*.0007+i)*.06;});if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
 };
 
