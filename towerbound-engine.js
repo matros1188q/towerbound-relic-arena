@@ -1,6 +1,6 @@
 /* TOWERBOUND PIXEL ENGINE — Phaser 3 scene layer */
 (()=>{'use strict';
-if(!window.Phaser){document.documentElement.classList.add('phaser-fallback');return;}
+if(!window.Phaser){document.documentElement.classList.add('phaser-fallback');/* keep DOM actors alive if the Phaser CDN fails */}
 const mount=document.getElementById('phaser-arena');
 const PALETTE={night:0x101326,stone:0x282b48,stone2:0x393858,edge:0x686184,cyan:0x78e7ef,gold:0xf8ce72,red:0xe85e78,purple:0x9b78ed};
 function makePixelTexture(scene,key,rows,palette,scale=3){
