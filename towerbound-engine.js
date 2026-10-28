@@ -18,7 +18,7 @@ create:function(){
  const ground=this.add.graphics().setDepth(-7);ground.fillStyle(0x17172a,.3);ground.fillRect(0,h*.79,w,h*.21);
  // Local illustrated fantasy sprites (SVG, transparent backgrounds).
  this.hero=this.add.image(w*.34,h*.56,'tb-hero').setOrigin(.5,.5).setScale(Math.min(.9,Math.max(.64,w/700*.82))).setDepth(4).setVisible(true);
- this.enemy=this.add.image(w*.67,h*.51,'tb-foe').setOrigin(.5,.5).setScale(.76).setDepth(4).setVisible(false);
+ this.enemy=this.add.image(w*.67,h*.56,'tb-foe').setOrigin(.5,.5).setScale(Math.min(.9,Math.max(.64,w/700*.82))).setDepth(4).setVisible(true);
  this.phaseLabel=this.add.text(w/2,18,'ПОДГОТОВКА К БОЮ',{fontFamily:'monospace',fontSize:'11px',fontStyle:'bold',color:'#f8ce72',stroke:'#101326',strokeThickness:3}).setOrigin(.5,0).setDepth(12);
  this.heroAura=this.add.circle(w*.34,h*.72,24,0x72e7ed,.08).setDepth(2);
  this.foeAura=this.add.circle(w*.67,h*.72,40,0xe85e78,.12).setDepth(2);
