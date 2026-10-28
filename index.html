@@ -821,7 +821,7 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 </main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Иллюстрация башни реликвий">
 <img class="title-illustration" src="./assets/towerbound-title-v2.webp?v=1" alt="Древняя башня над проклятой долиной" width="720" height="880" fetchpriority="high"><div class="title-art-vignette"></div><div class="title-art-label">THE RELIC TOWER · SEASON I</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn" onclick="(function(){var s=document.getElementById('titleScreen');if(s){s.classList.add('is-hidden');s.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');})();">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./towerbound-engine.js?v=combat-synergies-5"></script>
+<script src="./towerbound-engine.js?v=combat-synergies-6"></script>
 <script>
 (()=>{'use strict';
 document.addEventListener('click',function(ev){
@@ -945,7 +945,7 @@ function fight(){
  let atk=items.reduce((sum,x)=>sum+power(x),0)*(items.length>=3?1.15:1);if(!items.length)atk=2;atk*=1+(metaUpgradeData().power||0)*.05;if(tbActiveCombat)tbActiveCombat.attack=atk;
  if(items.some(x=>x.id==='ember')&&items.some(x=>x.id==='phoenix'))atk*=1.25;
  if(items.some(x=>x.id==='frost')&&items.some(x=>x.id==='spark'))atk+=3*items.length;
- if(items.some(x=>x.id==='oracle'))atk*=1.1;atk*=relicAttackMultiplier(items,state.wave);
+ if(items.some(x=>x.id==='oracle'))atk*=1.1;if(items.some(x=>x.id==='void')&&items.some(x=>x.id==='hourglass'))atk*=1.08;if(items.some(x=>x.id==='stormglass')&&items.some(x=>x.id==='spark'))atk*=1.06;atk*=relicAttackMultiplier(items,state.wave);
  if(items.some(x=>x.id==='thorn'))atk+=items.filter(x=>x.id==='thorn').reduce((n,x)=>n+2*x.level,0);
  if(items.some(x=>x.id==='spark'))atk+=items.filter(x=>x.id==='spark').reduce((n,x)=>n+Math.max(1,items.length-1),0);
  if(state.blessings.includes('might'))atk*=1.12;if(state.blessings.includes('precision'))atk*=1.08;if(state.blessings.includes('bossbane')&&boss)atk*=1.22;
@@ -972,7 +972,7 @@ function fight(){
   }else{
    finish();enemyHp=0;hpText.textContent='0 / '+maxEnemyHp+' HP';bar.style.width='0%';if(enemy){enemy.classList.add('tb-defeated')}
    state.gold+=Math.round(((boss?12:5+Math.floor(state.wave/2))+(state.blessings.filter(x=>x==='fortune').length*3)+(items.some(x=>x.id==='luckycoin')?3:0)+(items.some(x=>x.id==='luckycoin')&&items.some(x=>x.id==='oracle')?4:0))*(state.challenge==='storm'?1.2:1));state.meta.essence+=(boss?3:1);if(boss)state.meta.bosses=(state.meta.bosses||0)+1;
-   state.hp=Math.max(1,Math.min(state.maxHp,heroHp+(items.some(x=>x.id==='heart')?2:0)));log((boss?'👑 Босс повержен! ':'⚔ Волна отражена! ')+'Награда получена.');const done=state.wave===10;state.wave++;state.meta.bestWave=Math.max(state.meta.bestWave,Math.min(10,state.wave));checkAchievements();
+   state.hp=Math.max(1,Math.min(state.maxHp,heroHp+(items.some(x=>x.id==='heart')?(items.some(x=>x.id==='ironbark')?4:2):0)));log((boss?'👑 Босс повержен! ':'⚔ Волна отражена! ')+'Награда получена.');const done=state.wave===10;state.wave++;state.meta.bestWave=Math.max(state.meta.bestWave,Math.min(10,state.wave));checkAchievements();
    if(window.TowerFX){window.TowerFX.win();window.TowerFX.phase(done?'victory':'reward')}
    if(hud)hud.textContent=done?'ПОБЕДА':'ПОБЕДИЛ';msg.textContent='ПОБЕДА! +'+(boss?12:5+Math.floor((state.wave-1)/2))+' 🪙 · Враг повержен';
    if(done){state.gold+=20;state.meta.wins++;checkAchievements();save();render();modal('🏆','АРЕНА ПОКОРЕНА','Ты пережил все 10 волн. +20 золота и эссенция навсегда. Побед: '+state.meta.wins+'.','Играть снова',reset)}
