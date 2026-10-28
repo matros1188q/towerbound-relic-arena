@@ -958,6 +958,13 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 .slot .relic-art{display:grid!important;place-items:center!important;position:relative!important;isolation:isolate!important;overflow:hidden!important}
 .slot .relic-art .tb-relic-image{position:relative!important;inset:auto!important;display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;z-index:6!important;transform:none!important}
 .slot .relic-art:before,.slot .relic-art:after{display:none!important;content:none!important}
+
+/* V11 TOWER SLOT ART: use the same block-card structure as the working relic shop */
+#slots .slot .relic-art{display:grid!important;position:relative!important;place-items:center!important;flex:none!important;width:76px!important;height:76px!important;min-width:76px!important;min-height:76px!important;margin:2px auto 5px!important;padding:0!important;overflow:hidden!important;line-height:0!important;visibility:visible!important;opacity:1!important}
+#slots .slot .relic-art .tb-relic-image{position:absolute!important;inset:5px!important;width:calc(100% - 10px)!important;height:calc(100% - 10px)!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;display:block!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;z-index:20!important;pointer-events:none!important}
+#slots .slot .relic-art:before{z-index:2!important}
+#slots .slot .relic-art.art-image-fallback .tb-relic-image{display:none!important}
+@media(max-width:700px){#slots .slot .relic-art{width:68px!important;height:68px!important;min-width:68px!important;min-height:68px!important}}
 </style>
 </head>
 <body><main class="app">
@@ -1063,7 +1070,7 @@ function render(){
 $('gold').textContent=state.gold;$('hp').textContent=state.hp+'/'+state.maxHp;$('essence').textContent=state.meta.essence;renderMetaPanel();$('waveLabel').textContent=state.wave>10?'ПОБЕДА':'ВОЛНА '+state.wave+' / 10';state.meta.bestWave=Math.max(state.meta.bestWave,state.wave>10?10:state.wave);
 $('slotCount').textContent=state.slots.filter(Boolean).length+' / 6 занято';updateCombatHud(state.slots.filter(Boolean));
 if(state.blessings.length){$('synergy').dataset.blessings=state.blessings.join(',');}
-$('slots').innerHTML=state.slots.map((it,i)=>it?'<div class="slot '+(state.selected===i?'selected':'')+'" data-slot="'+i+'" draggable="true"><span class="rarity">'+it.rarity+'</span><span class="relic-art art-'+it.id+'" aria-hidden="true"><img class="tb-relic-image" src="'+relicImage(it.id)+'" alt="" loading="eager" decoding="async"></span><span class="name">'+it.name+'</span><span class="stars">'+('★'.repeat(it.level))+'</span><span class="power">⚔ '+Math.round(power(it))+'</span></div>':'<div class="slot empty '+(state.selected===i?'selected':'')+'" data-slot="'+i+'"><span class="emoji">＋</span><span class="name">Пустой слот</span><span class="sub">Башня '+(i+1)+'</span></div>').join('');
+$('slots').innerHTML=state.slots.map((it,i)=>it?'<div class="slot '+(state.selected===i?'selected':'')+'" data-slot="'+i+'" draggable="true"><span class="rarity">'+it.rarity+'</span><div class="relic-art art-'+it.id+'" aria-hidden="true"><img class="tb-relic-image" src="'+relicImage(it.id)+'" alt="" loading="eager" decoding="async" onerror="this.style.display='none';this.parentElement.classList.add('art-image-fallback')"></div><span class="name">'+it.name+'</span><span class="stars">'+('★'.repeat(it.level))+'</span><span class="power">⚔ '+Math.round(power(it))+'</span></div>':'<div class="slot empty '+(state.selected===i?'selected':'')+'" data-slot="'+i+'"><span class="emoji">＋</span><span class="name">Пустой слот</span><span class="sub">Башня '+(i+1)+'</span></div>').join('');
 document.querySelectorAll('[data-slot]').forEach(el=>{el.addEventListener('click',()=>selectSlot(+el.dataset.slot));el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',el.dataset.slot)});el.addEventListener('dragover',e=>e.preventDefault());el.addEventListener('drop',e=>{e.preventDefault();merge(+e.dataTransfer.getData('text/plain'),+el.dataset.slot)})});
 renderShop();renderSynergy();renderAchievements();updateEnemy();
 $('fightBtn').disabled=state.battle||state.wave>10;$('fightBtn').textContent=state.wave>10?'✦ Арена пройдена':state.battle?'⚔ Бой идёт…':'⚔ Начать волну';
