@@ -1,12 +1,12 @@
-/* TOWERBOUND PIXEL ENGINE — Phaser 3 scene layer */
+/* TOWERBOUND ILLUSTRATED ENGINE — Phaser 3 scene layer */
 (()=>{'use strict';
 if(!window.Phaser){document.documentElement.classList.add('phaser-fallback');/* keep DOM actors alive if the Phaser CDN fails */}
 const mount=document.getElementById('phaser-arena');
 const PALETTE={night:0x101326,stone:0x282b48,stone2:0x393858,edge:0x686184,cyan:0x78e7ef,gold:0xf8ce72,red:0xe85e78,purple:0x9b78ed};
-const scene={key:'PixelArena',
+const scene={key:'IllustratedArena',
 preload:function(){this.load.image('tb-arena-background','./assets/arena-background.svg?v=2');this.load.image('tb-hero','./assets/hero-illustrated.svg?v=1');this.load.image('tb-foe','./assets/foe-illustrated.svg?v=1');this.load.image('tb-skeleton','./assets/skeleton-illustrated.svg?v=1');this.load.image('tb-brute','./assets/brute-illustrated.svg?v=1');},
 create:function(){
- this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.pixelActors=[];this.fx=[];
+ this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.actorSprites=[];this.fx=[];
  const w=this.scale.width,h=this.scale.height;
  this.add.image(w/2,h/2,'tb-arena-background').setDisplaySize(w,h).setDepth(-10).setAlpha(.94);
  const shade=this.add.graphics().setDepth(-9);
@@ -31,7 +31,7 @@ create:function(){
  this.tweens.add({targets:this.phaseLabel,alpha:.58,duration:1100,yoyo:true,repeat:-1,ease:'Sine.inOut'});
  this.tweens.add({targets:this.heroAura,alpha:.22,scale:1.15,duration:1000,yoyo:true,repeat:-1});
  this.tweens.add({targets:this.foeAura,alpha:.25,scale:1.12,duration:900,yoyo:true,repeat:-1});
- this.sparkles=[]; /* tiny floating pixel particles removed for a clean battlefield */
+ this.sparkles=[];
  this.scale.on('resize',this.onResize,this);
 },
 onResize:function(){if(this.scene.isActive())this.scene.restart();},
@@ -128,5 +128,5 @@ function ensureVisibleActors(){
 ensureVisibleActors();
 if(!window.Phaser){console.warn('Towerbound: Phaser CDN unavailable; DOM actor fallback remains active.');return;}
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:false,antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:true,pixelArt:false,roundPixels:false},scene});
-window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);const s=game.scene.getScene('PixelArena');if(s&&s.impact)s.impact(critical,boss,style);},win:()=>{const s=game.scene.getScene('PixelArena');if(s&&s.victory)s.victory();},wave:(wave,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setWave)s.setWave(wave,boss);},phase:(phase)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setPhase)s.setPhase(phase);}};
+window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);const s=game.scene.getScene('IllustratedArena');if(s&&s.impact)s.impact(critical,boss,style);},win:()=>{const s=game.scene.getScene('PixelArena');if(s&&s.victory)s.victory();},wave:(wave,boss)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setWave)s.setWave(wave,boss);},phase:(phase)=>{const s=game.scene.getScene('PixelArena');if(s&&s.setPhase)s.setPhase(phase);}};
 })();
