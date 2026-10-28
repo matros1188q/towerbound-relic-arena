@@ -110,10 +110,11 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  const colors={fire:'#ff713d',ice:'#7cecff',lightning:'#fff176',nature:'#62f2a1',void:'#c18bff',arcane:'#ffe08a'};
  const color=colors[style]||colors.arcane;
  // Distinct readable silhouettes per damage school; each school has its own projectile motif.
- const glyphs={fire:'✹',ice:'❄',lightning:'ϟ',nature:'✦',void:'◈',arcane:'✧'};
- const glyph=document.createElement('b');
- glyph.textContent=glyphs[style]||glyphs.arcane;
- Object.assign(glyph.style,{position:'absolute',left:'32%',top:'42%',font:'900 '+(critical?'29px':'22px')+' system-ui',lineHeight:'1',color, textShadow:'0 0 8px '+color+',0 0 18px '+color+',0 2px 4px #000',zIndex:'4',transform:'translate(-50%,-50%) rotate(-20deg)'});
+ const abilityArt={fire:'fire',ice:'ice',lightning:'lightning',nature:'nature',void:'void',arcane:'arcane'};
+ const glyph=document.createElement('img');
+ glyph.src='./assets/skills/'+(abilityArt[style]||'arcane')+'.svg?v=2';
+ glyph.alt='';glyph.draggable=false;glyph.decoding='async';
+ Object.assign(glyph.style,{position:'absolute',left:'32%',top:'42%',width:critical?'42px':'34px',height:critical?'42px':'34px',objectFit:'contain',filter:'drop-shadow(0 0 7px '+color+') drop-shadow(0 0 13px '+color+')',zIndex:'4',transform:'translate(-50%,-50%) rotate(-20deg)'});
  layer.appendChild(glyph);
  const glyphAnim=glyph.animate([{left:'32%',top:'42%',transform:'translate(-50%,-50%) rotate(-20deg) scale(.45)',opacity:0},{left:'48%',top:'47%',transform:'translate(-50%,-50%) rotate(35deg) scale(1.2)',opacity:1,offset:.35},{left:'67%',top:'48%',transform:'translate(-50%,-50%) rotate(110deg) scale('+(critical?1.7:1)+')',opacity:1}],{duration:critical?260:220,easing:'cubic-bezier(.15,.8,.2,1)',fill:'forwards'});
  glyphAnim.onfinish=()=>glyph.remove();
