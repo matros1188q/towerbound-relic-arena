@@ -821,7 +821,7 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 </main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Иллюстрация башни реликвий">
 <img class="title-illustration" src="./assets/towerbound-title-v2.webp?v=1" alt="Древняя башня над проклятой долиной" width="720" height="880" fetchpriority="high"><div class="title-art-vignette"></div><div class="title-art-label">THE RELIC TOWER · SEASON I</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn" onclick="(function(){var s=document.getElementById('titleScreen');if(s){s.classList.add('is-hidden');s.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');})();">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./towerbound-engine.js?v=illustrated-skills-2"></script>
+<script src="./towerbound-engine.js?v=illustrated-assets-3"></script>
 <script>
 (()=>{'use strict';
 document.addEventListener('click',function(ev){
@@ -1014,5 +1014,49 @@ function chooseBlessing(id){
 function reset(){const meta={...state.meta,runs:state.meta.runs+1};if(window.TowerFX)window.TowerFX.phase('prep');const u=meta.upgrades||{power:0,vitality:0,fortune:0};state={gold:12+(u.fortune||0)*2,hp:20+(u.vitality||0)*2,maxHp:24+(u.vitality||0)*2,wave:1,slots:Array(6).fill(null),selected:-1,battle:false,won:false,shop:[],log:[],lastWave:0,blessings:[],challenge:state.challenge||'normal',freeRefresh:false,meta:{...meta,upgrades:u}};if(state.challenge==='blood')state.hp=Math.max(1,Math.round(state.maxHp*.8));save();makeShop();log('Новый поход начинается. Собери отряд и выживи.');render()}
 $('fightBtn').addEventListener('click',()=>{try{fight()}catch(err){console.error('Towerbound fight failed:',err);state.battle=false;$('fightBtn').disabled=false;$('battlemsg').textContent='Ошибка боя: '+(err&&err.message?err.message:'попробуй перезагрузить игру');toast('Бой не запустился — обнови страницу');}});$('healBtn').onclick=heal;$('refreshBtn').onclick=()=>{if(state.battle)return;if(state.freeRefresh){state.freeRefresh=false;makeShop();toast('Бесплатное обновление использовано');}else{if(state.gold<2)return;state.gold-=2;makeShop();}save();render()};$('sellBtn').onclick=sell;
 makeShop();if(!state.log.length)log('Добро пожаловать на арену. Собери реликвии и переживи 10 волн.');render();save();
+})();
+</script>
+<script id="tb-symbol-replacement-v1">
+(()=>{'use strict';
+const iconFor=(s)=>{
+ if(/[🔥☄️🕯]/u.test(s))return 'fireball';
+ if(/[❄️]/u.test(s))return 'ice-bolt';
+ if(/[⚡🌩]/u.test(s))return 'lightning';
+ if(/[🛡]/u.test(s))return 'shield';
+ if(/[⚔🗡🏹]/u.test(s))return 'sword';
+ if(/[👑🏆]/u.test(s))return 'crown';
+ if(/[🪙💰]/u.test(s))return 'coin';
+ if(/[❤💚🩸]/u.test(s))return 'health';
+ if(/[🐺🐉🗿🦅]/u.test(s))return 'dragon';
+ if(/[👺👹☠💀]/u.test(s))return 'demon';
+ if(/[🔮💎🌙🪞]/u.test(s))return 'oracle';
+ if(/[🌿🌳🍃]/u.test(s))return 'nature';
+ if(/[🌀✨✦✧⭐🌠]/u.test(s))return 'arcane';
+ if(/[👻]/u.test(s))return 'ghost';
+ return 'arcane';
+};
+const emoji=/\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?)*/gu;
+const convert=(root)=>{
+ if(!root||!document.createTreeWalker)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ for(const node of nodes){
+  const parent=node.parentElement;
+  if(!parent||parent.closest('script,style,textarea,input,code,.tb-symbol-icon'))continue;
+  const value=node.nodeValue;if(!value||!emoji.test(value)){emoji.lastIndex=0;continue;}emoji.lastIndex=0;
+  const frag=document.createDocumentFragment();let last=0;let match;
+  while((match=emoji.exec(value))){
+   if(match.index>last)frag.appendChild(document.createTextNode(value.slice(last,match.index)));
+   const img=document.createElement('img');img.className='tb-symbol-icon tb-symbol-'+iconFor(match[0]);
+   img.src='./assets/icons/'+iconFor(match[0])+'.svg?v=3';img.alt='';img.setAttribute('aria-hidden','true');img.draggable=false;img.decoding='async';
+   img.style.cssText='display:inline-block;width:1.18em;height:1.18em;object-fit:contain;vertical-align:-.22em;filter:drop-shadow(0 1px 2px #0005);margin-inline:.035em';
+   frag.appendChild(img);last=match.index+match[0].length;
+  }
+  if(last){if(last<value.length)frag.appendChild(document.createTextNode(value.slice(last)));node.parentNode.replaceChild(frag,node);}
+  emoji.lastIndex=0;
+ }
+};
+const start=()=>{convert(document.body);const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')convert(record.target.parentElement);for(const added of record.addedNodes){if(added.nodeType===Node.TEXT_NODE)convert(added.parentElement);else if(added.nodeType===Node.ELEMENT_NODE&&added.tagName!=='SCRIPT'&&added.tagName!=='STYLE')convert(added);}}});observer.observe(document.body,{subtree:true,childList:true,characterData:true});};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script></body></html>
