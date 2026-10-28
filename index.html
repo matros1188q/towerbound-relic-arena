@@ -1005,6 +1005,21 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
   #slots{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;visibility:visible!important;opacity:1!important;min-height:180px!important}
   #slots .slot{display:flex!important;visibility:visible!important;opacity:1!important;min-width:0!important}
 }
+
+/* GUARANTEED MOBILE SIDEBAR AND SHOP FALLBACK */
+@media(max-width:700px){
+ .layout{display:flex!important;flex-direction:column!important;overflow:visible!important}
+ .leftcol{display:flex!important;width:100%!important;min-width:0!important}
+ .rightcol{display:contents!important;visibility:visible!important;opacity:1!important}
+ .rightcol>.panel{display:block!important;position:relative!important;visibility:visible!important;opacity:1!important;width:100%!important;min-width:0!important;max-height:none!important;overflow:visible!important}
+ #shop{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;min-height:200px!important;gap:8px!important}
+ #shop>.relic{display:flex!important;flex-direction:column!important;min-height:205px!important;visibility:visible!important;opacity:1!important}
+ #shop .relic-art{display:grid!important;place-items:center!important;position:relative!important;width:68px!important;height:68px!important;min-height:68px!important;margin:0 auto 8px!important}
+ #shop .relic-art .tb-relic-image{display:block!important;position:absolute!important;inset:3px!important;width:calc(100% - 6px)!important;height:calc(100% - 6px)!important;object-fit:contain!important;z-index:3!important}
+ #shop .relic strong,#shop .relic small,#shop .relic button{display:block!important;visibility:visible!important;opacity:1!important}
+ #shop .relic button{margin-top:auto!important;width:100%!important;min-height:38px!important}
+ #slots{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;min-height:170px!important}
+}
 </style>
 </head>
 <body><main class="app">
@@ -1022,7 +1037,12 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 <div class="panel tb-skills-panel"><div class="panelhead"><h2>Активные умения</h2><span class="sub">Заряд в бою</span></div><div class="tb-ability-bar"><button id="activeSkillBtn" class="tb-ability tb-ability-fire" disabled><span class="tb-ability-main"><span class="tb-ability-art"><img src="./assets/icons/fireball.svg?v=6" alt="" aria-hidden="true"></span><span class="tb-ability-copy"><span class="tb-ability-name">ОГНЕННЫЙ РАЗРЫВ</span><small id="activeSkillStatus">Зарядится в бою</small></span></span></button><button id="activeWardBtn" class="tb-ability tb-ability-ward" disabled><span class="tb-ability-main"><span class="tb-ability-art"><img src="./assets/icons/shield.svg?v=6" alt="" aria-hidden="true"></span><span class="tb-ability-copy"><span class="tb-ability-name">РУНА ЩИТА</span><small id="activeWardStatus">Зарядится в бою</small></span></span></button></div></div>
 <div class="panel"><div class="panelhead"><h2>Башни-реликвии</h2><span class="sub" id="slotCount">0 / 6 занято</span></div><div class="slots" id="slots"></div><div class="sub" style="margin-top:10px">Нажми на реликвию, чтобы выбрать её. Перетащи одинаковые друг на друга или выбери две по очереди для слияния.</div></div>
 </section><aside class="rightcol">
-<div class="panel"><div class="panelhead"><h2>Лавка реликвий</h2><span class="sub">Случайный набор</span></div><div class="shopgrid" id="shop"></div><div class="actions" style="margin-top:10px"><button id="refreshBtn">↻ Обновить · 2 🪙</button><button id="sellBtn">♻ Продать выбранную</button></div></div>
+<div class="panel"><div class="panelhead"><h2>Лавка реликвий</h2><span class="sub">Случайный набор</span></div><div class="shopgrid" id="shop">
+<div class="relic"><div class="relic-art"><span style="font-size:42px">🔥</span></div><strong>Угольный осколок</strong><small>Усиливает огненный урон и поджигание.</small><button data-fallback-buy="ember">Купить · 3 🪙</button></div>
+<div class="relic"><div class="relic-art"><span style="font-size:42px">❄️</span></div><strong>Ледяная печать</strong><small>Замедляет врагов и усиливает критический удар.</small><button data-fallback-buy="frost">Купить · 3 🪙</button></div>
+<div class="relic"><div class="relic-art"><span style="font-size:42px">🛡️</span></div><strong>Руна стража</strong><small>Увеличивает защиту героя.</small><button data-fallback-buy="rune">Купить · 4 🪙</button></div>
+<div class="relic"><div class="relic-art"><span style="font-size:42px">⚡</span></div><strong>Грозовой кристалл</strong><small>Добавляет электрический урон.</small><button data-fallback-buy="spark">Купить · 4 🪙</button></div>
+</div><div class="actions" style="margin-top:10px"><button id="refreshBtn">↻ Обновить · 2 🪙</button><button id="sellBtn">♻ Продать выбранную</button></div></div>
 <div class="panel"><div class="panelhead"><h2>Арсенал героя</h2><span class="sub">Синергии</span></div><div id="synergy" class="sub">Добавь реликвии, чтобы открыть бонусы.</div><div id="blessingStatus" class="blessing-status"></div><div style="height:12px"></div><div class="panelhead"><h2>Достижения</h2><span class="sub" id="achievementCount">0 / 6</span></div><div id="achievements" class="achievement-list"></div><div style="height:10px"></div><div class="panelhead"><h2>Хроника</h2><span class="sub">Последние события</span></div><div class="log" id="log"><div>Добро пожаловать на арену. Первая волна ждёт.</div></div></div>
 </aside></div><div class="panel"><div class="panelhead"><h2>Кузница метапрогресса</h2><span class="sub">Эссенция: <b id="metaBank">0</b></span></div><div class="sub">Постоянные улучшения между походами</div><div class="tb-meta-grid"><button class="tb-meta-btn" data-up="power">⚔️ Руническая мощь <b id="metaPower">0/5</b><small>+5% силы за уровень · цена <span id="costPower">2</span> ✦</small></button><button class="tb-meta-btn" data-up="vitality">💚 Жизненная нить <b id="metaVitality">0/5</b><small>+2 максимального здоровья · цена <span id="costVitality">2</span> ✦</small></button><button class="tb-meta-btn" data-up="fortune">🪙 Дар странника <b id="metaFortune">0/5</b><small>+2 стартового золота · цена <span id="costFortune">2</span> ✦</small></button></div><div class="panelhead"><h2>Испытание</h2><span class="sub">Особые правила</span></div><div class="actions"><select id="challengeMode" aria-label="Режим испытания"><option value="normal">Обычный поход</option><option value="elite">Элитные враги · +25% HP</option><option value="blood">Кровавая клятва · −20% HP</option><option value="storm">Шторм · +20% наград</option></select><button id="challengeApply">Применить</button></div><div class="sub" id="challengeInfo">Обычный поход</div></div><div class="bottomnote">TOWERBOUND: RELIC ARENA · RELIC ENGINE · ПРОГРЕСС СОХРАНЯЕТСЯ НА УСТРОЙСТВЕ</div>
 </main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Иллюстрация башни реликвий">
