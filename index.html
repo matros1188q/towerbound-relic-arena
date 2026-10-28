@@ -965,6 +965,17 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 #slots .slot .relic-art:before{z-index:2!important}
 #slots .slot .relic-art.art-image-fallback .tb-relic-image{display:none!important}
 @media(max-width:700px){#slots .slot .relic-art{width:68px!important;height:68px!important;min-width:68px!important;min-height:68px!important}}
+
+/* HOTFIX 2026-10-29: restore relic inventory/shop/ability layout; disable unwanted low-poly 3D overlay */
+#slots{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;min-height:112px;visibility:visible!important;opacity:1!important}
+#slots>.slot{display:flex!important;visibility:visible!important;opacity:1!important;min-height:100px!important}
+#shop{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;min-height:130px;visibility:visible!important;opacity:1!important}
+#shop>.relic{display:block!important;visibility:visible!important;opacity:1!important;min-width:0!important}
+.tb-ability-bar{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:6!important;min-height:54px!important}
+.tb-ability-bar>.tb-ability{display:block!important;visibility:visible!important;opacity:1!important;min-width:0!important}
+.relic-art{position:relative!important;display:grid!important;place-items:center!important;min-height:42px!important;overflow:hidden!important}
+.tb-relic-image{display:block!important;position:absolute!important;inset:4px!important;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;z-index:3!important}
+@media(max-width:390px){#slots{grid-template-columns:repeat(2,minmax(0,1fr))!important}#shop{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
 </head>
 <body><main class="app">
@@ -988,7 +999,7 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 </main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Иллюстрация башни реликвий">
 <img class="title-illustration" src="./assets/towerbound-title-v2.webp?v=1" alt="Древняя башня над проклятой долиной" width="720" height="880" fetchpriority="high"><div class="title-art-vignette"></div><div class="title-art-label">THE RELIC TOWER · SEASON I</div></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn" onclick="(function(){var s=document.getElementById('titleScreen');if(s){s.classList.add('is-hidden');s.setAttribute('aria-hidden','true');}document.body.classList.add('arena-entered');})();">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пережить 10 волн и победить боссов.</div></div></div></div><div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-<script src="./towerbound-engine.js?v=actors-2"></script>
+<script src="./towerbound-engine.js?v=actors-3"></script>
 <script>
 (()=>{'use strict';
 document.addEventListener('click',function(ev){
@@ -1227,4 +1238,4 @@ const convert=(root)=>{
 const start=()=>{convert(document.body);const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')convert(record.target.parentElement);for(const added of record.addedNodes){if(added.nodeType===Node.TEXT_NODE)convert(added.parentElement);else if(added.nodeType===Node.ELEMENT_NODE&&added.tagName!=='SCRIPT'&&added.tagName!=='STYLE')convert(added);}}});observer.observe(document.body,{subtree:true,childList:true,characterData:true});};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
-</script><script type="module" src="./towerbound-3d-models.js?v=3"></script></body></html>
+</script></body></html>
