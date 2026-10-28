@@ -1,6 +1,6 @@
 /* TOWERBOUND 3D MODEL LAYER V1 — CC0 GLB assets, Three.js */
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'https://esm.sh/three@0.180.0';
+import { GLTFLoader } from 'https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
 (()=>{
 'use strict';
 const mount=document.getElementById('phaser-arena');
