@@ -874,6 +874,43 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 .art-laststand:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23f7a96b' stroke='%23ffe0ad' stroke-width='2' d='M32 3 43 24 60 32 43 40 32 61 21 40 4 32 21 24Z'/%3E%3Cpath fill='%23fff1cf' d='M29 14h6v36h-6z'/%3E%3C/svg%3E")!important}
 
 </style>
+
+<style id="tb-iphone-arena-visual-fix-v1">
+/* iPhone-first arena and real ability/relic icon presentation */
+@media(max-width:700px){
+ .app{width:100%;max-width:none;padding-left:9px;padding-right:9px}
+ .top{padding:12px 1px 10px;gap:7px}
+ .brand{min-width:0;gap:8px}.brand h1{font-size:clamp(14px,4vw,18px);letter-spacing:.035em}
+ .eyebrow{font-size:8px;letter-spacing:.12em}
+ .sigil{flex:0 0 43px;width:43px;height:43px;border-radius:13px}
+ .currency{max-width:44%;gap:4px}.pill{padding:6px 7px;font-size:11px}
+ .layout{display:flex;flex-direction:column;gap:10px}
+ .leftcol,.rightcol{display:flex;flex-direction:column;gap:10px;min-width:0}
+ .panel{padding:10px;border-radius:16px}
+ .panelhead{margin-bottom:8px}
+ .arena{min-height:310px;padding:12px 9px 9px}
+ .arena .statusrow{font-size:11px}
+ .arena .enemies{min-height:108px}
+ .arena .battlemsg{min-height:22px;font-size:11px}
+ .arena .arenafoot{gap:6px}
+ .arena .arenafoot button{padding:10px 6px;font-size:12px}
+ .slots{gap:6px}.slot{min-height:82px;padding:7px 3px;border-radius:11px}
+ .slot .name{font-size:9px}.slot .emoji{font-size:23px}
+ .shopgrid{gap:7px}
+ .relic{padding:9px 6px;border-radius:12px;min-width:0}
+ .relic .emoji{display:grid;place-items:center;width:68px;height:68px;margin:0 auto 7px;border:1px solid #e8d29b99;border-radius:13px;background:radial-gradient(ellipse at 50% 35%,#aa8bd455,#242039 70%,#111424);box-shadow:inset 0 1px #fff2,0 5px 16px #0005}
+ .relic .emoji img,.relic .emoji .tb-symbol-icon,.relic img.tb-symbol-icon{width:48px!important;height:48px!important;vertical-align:middle!important;filter:drop-shadow(0 0 8px #b9a0ff66)!important}
+ .relic strong{font-size:12px;line-height:1.25}
+ .relic small{font-size:10px;line-height:1.35;min-height:42px}
+ .relic button{font-size:11px;padding:8px 3px}
+ .reward-card .reward-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:radial-gradient(circle,#8d6acb55,#171b30);border:1px solid #d9b66b55}
+}
+.tb-symbol-icon{object-fit:contain!important}
+.relic .tb-symbol-icon,.slot .tb-symbol-icon{width:1.6em!important;height:1.6em!important;vertical-align:middle!important}
+.relic .emoji .tb-symbol-icon{width:48px!important;height:48px!important}
+#activeSkillBtn:before{content:"";display:inline-block;width:25px;height:25px;vertical-align:middle;margin-right:7px;background:url('./assets/icons/fireball.svg?v=6') center/contain no-repeat;filter:drop-shadow(0 0 5px #ff7d45)}
+#activeWardBtn:before{content:"";display:inline-block;width:25px;height:25px;vertical-align:middle;margin-right:7px;background:url('./assets/icons/shield.svg?v=6') center/contain no-repeat;filter:drop-shadow(0 0 5px #7cecff)}
+</style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="sigil">♜</div><div><div class="eyebrow">ROGUELITE AUTO-BATTLER · SEASON I</div><h1>TOWERBOUND <span style="color:var(--gold)">: RELIC ARENA</span></h1></div></div><div class="currency"><div class="pill">🪙 <span id="gold">12</span></div><div class="pill">❤ <span id="hp">20</span></div><div class="pill gold">✦ <span id="essence">0</span></div></div></header>
