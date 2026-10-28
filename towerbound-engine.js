@@ -17,8 +17,8 @@ create:function(){
  for(let i=0;i<12;i++){const a=i*Math.PI/6,x=w*.5+Math.cos(a)*w*.19,y=h*.75+Math.sin(a)*h*.095;glow.fillStyle(0xf6d17b,.9);glow.fillCircle(x,y,2.2);}
  const ground=this.add.graphics().setDepth(-7);ground.fillStyle(0x17172a,.3);ground.fillRect(0,h*.79,w,h*.21);
  // Local illustrated fantasy sprites (SVG, transparent backgrounds).
- this.hero=this.add.image(w*.34,h*.56,'tb-hero').setOrigin(.5,.5).setScale(Math.min(.9,Math.max(.64,w/700*.82))).setDepth(4).setVisible(true);
- this.enemy=this.add.image(w*.67,h*.56,'tb-foe').setOrigin(.5,.5).setScale(Math.min(.9,Math.max(.64,w/700*.82))).setDepth(4).setVisible(true);
+ this.hero=this.add.image(w*.34,h*.56,'tb-hero').setOrigin(.5,.5).setScale(Math.min(.9,Math.max(.64,w/700*.82))).setDepth(4).setVisible(false);
+ this.enemy=this.add.image(w*.67,h*.56,'tb-foe').setOrigin(.5,.5).setScale(Math.min(.9,Math.max(.64,w/700*.82))).setDepth(4).setVisible(false);
  this.phaseLabel=this.add.text(w/2,18,'ПОДГОТОВКА К БОЮ',{fontFamily:'monospace',fontSize:'11px',fontStyle:'bold',color:'#f8ce72',stroke:'#101326',strokeThickness:3}).setOrigin(.5,0).setDepth(12);
  this.heroAura=this.add.circle(w*.34,h*.72,24,0x72e7ed,.08).setDepth(2);
  this.foeAura=this.add.circle(w*.67,h*.72,40,0xe85e78,.12).setDepth(2);
@@ -63,7 +63,7 @@ setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВК
  if(critical){const f=this.add.rectangle(w/2,h/2,w,h,0xffe2a1,.2).setDepth(10);this.tweens.add({targets:f,alpha:0,duration:160,onComplete:()=>f.destroy()});}
 },
 victory:function(){const w=this.scale.width,h=this.scale.height;for(let i=0;i<48;i++){const p=this.add.rectangle(Math.random()*w,-8,3+Math.random()*3,4+Math.random()*4,[0xf8ce72,0x78e7ef,0xb5a0e7][i%3],1).setDepth(10);this.tweens.add({targets:p,y:h+12,x:p.x+(Math.random()-.5)*100,angle:360,duration:900+Math.random()*1200,delay:Math.random()*300,onComplete:()=>p.destroy()});}},
-setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture(kind==='tb-skeleton'?'tb-skeleton':kind==='tb-brute'?'tb-brute':'tb-foe');const domEnemy=mount&&mount.querySelector('.tb-visible-enemy');if(domEnemy){domEnemy.src='./assets/'+(kind==='tb-skeleton'?'skeleton':kind==='tb-brute'?'brute':'foe')+'-illustrated.svg?v=3';domEnemy.alt=kind==='tb-skeleton'?'Illustrated skeleton':kind==='tb-brute'?'Illustrated brute':'Illustrated enemy';}this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?1.02:.76);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
+setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture(kind==='tb-skeleton'?'tb-skeleton':kind==='tb-brute'?'tb-brute':'tb-foe');const domEnemy=mount&&mount.querySelector('.tb-visible-enemy');if(domEnemy){domEnemy.src='./assets/'+(kind==='tb-skeleton'?'skeleton':kind==='tb-brute'?'brute':'foe')+'-illustrated.svg?v=4';domEnemy.alt=kind==='tb-skeleton'?'Иллюстрированный скелет':kind==='tb-brute'?'Иллюстрированный громила':'Иллюстрированный враг';domEnemy.style.width=boss?'clamp(126px,33vw,215px)':'clamp(110px,28vw,190px)';domEnemy.style.filter=boss?'drop-shadow(0 0 16px #ff687f) drop-shadow(0 10px 10px #000d)':'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)';}this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?1.02:.76);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
 update:function(time){if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
 };
 
@@ -108,7 +108,16 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
 }
 
 // Guaranteed visible actor layer: independent of Phaser canvas compositing on iOS Safari.
-function ensureVisibleActors(){const layer=mount&&mount.querySelector('.tb-visible-actors');if(layer)layer.remove();}
+function ensureVisibleActors(){
+ if(!mount)return;
+ let layer=mount.querySelector('.tb-visible-actors');
+ if(!layer){layer=document.createElement('div');layer.className='tb-visible-actors';layer.setAttribute('aria-hidden','true');Object.assign(layer.style,{position:'absolute',inset:'0',zIndex:'2',display:'block',visibility:'visible',opacity:'1',pointerEvents:'none',overflow:'hidden'});mount.appendChild(layer);}
+ layer.innerHTML='';
+ const addActor=(cls,src,alt,style)=>{const img=document.createElement('img');img.className=cls;img.src=src;img.alt=alt;img.draggable=false;img.decoding='async';img.loading='eager';Object.assign(img.style,{position:'absolute',display:'block',visibility:'visible',opacity:'1',objectFit:'contain',pointerEvents:'none',transform:'translate(-50%,-50%)',filter:'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)',...style});layer.appendChild(img);return img;};
+ addActor('tb-visible-hero','./assets/hero-illustrated.svg?v=4','Герой башни',{left:'34%',top:'49%',width:'clamp(100px,25vw,170px)',height:'68%'});
+ addActor('tb-visible-enemy','./assets/foe-illustrated.svg?v=4','Враг арены',{left:'68%',top:'49%',width:'clamp(110px,28vw,190px)',height:'72%'});
+ return layer;
+}
 ensureVisibleActors();
 if(!window.Phaser){console.warn('Towerbound: Phaser CDN unavailable; DOM actor fallback remains active.');return;}
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:false,antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:true,pixelArt:false,roundPixels:false},scene});
