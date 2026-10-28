@@ -4,7 +4,7 @@ if(!window.Phaser){document.documentElement.classList.add('phaser-fallback');/* 
 const mount=document.getElementById('phaser-arena');
 const PALETTE={night:0x101326,stone:0x282b48,stone2:0x393858,edge:0x686184,cyan:0x78e7ef,gold:0xf8ce72,red:0xe85e78,purple:0x9b78ed};
 const scene={key:'PixelArena',
-preload:function(){this.load.image('tb-arena-background','./assets/arena-background.webp?v=1');this.load.spritesheet('tb-enemy-atlas','./assets/enemy-atlas.webp?v=1',{frameWidth:256,frameHeight:256});this.load.image('tb-hero','./assets/hero-illustrated.svg?v=1');this.load.image('tb-foe','./assets/foe-illustrated.svg?v=1');this.load.image('tb-skeleton','./assets/skeleton-illustrated.svg?v=1');this.load.image('tb-brute','./assets/brute-illustrated.svg?v=1');},
+preload:function(){this.load.image('tb-arena-background','./assets/arena-background.svg?v=2');this.load.image('tb-hero','./assets/hero-illustrated.svg?v=1');this.load.image('tb-foe','./assets/foe-illustrated.svg?v=1');this.load.image('tb-skeleton','./assets/skeleton-illustrated.svg?v=1');this.load.image('tb-brute','./assets/brute-illustrated.svg?v=1');},
 create:function(){
  this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.pixelActors=[];this.fx=[];
  const w=this.scale.width,h=this.scale.height;
