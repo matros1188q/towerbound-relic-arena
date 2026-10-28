@@ -7,6 +7,8 @@ const scene={key:'IllustratedArena',
 preload:function(){this.load.image('tb-arena-background','./assets/arena-background.svg?v=2');this.load.image('tb-hero','./assets/hero-illustrated.svg?v=3');this.load.image('tb-foe','./assets/foe-illustrated.svg?v=3');this.load.image('tb-skeleton','./assets/skeleton-illustrated.svg?v=3');this.load.image('tb-brute','./assets/brute-illustrated.svg?v=3');},
 create:function(){
  this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.actorSprites=[];this.fx=[];
+ // Sync the visible iPhone DOM portraits with the Phaser scene on every scene creation.
+ // The DOM layer is the reliable renderer on iOS Safari; Phaser keeps the combat arena and FX.
  const w=this.scale.width,h=this.scale.height;
  this.add.image(w/2,h/2,'tb-arena-background').setDisplaySize(w,h).setDepth(-10).setAlpha(.94);
  const shade=this.add.graphics().setDepth(-9);
@@ -32,6 +34,8 @@ create:function(){
  this.tweens.add({targets:this.heroAura,alpha:.22,scale:1.15,duration:1000,yoyo:true,repeat:-1});
  this.tweens.add({targets:this.foeAura,alpha:.25,scale:1.12,duration:900,yoyo:true,repeat:-1});
  this.sparkles=[];
+ // Set a deterministic first-wave enemy immediately; do not wait for the first combat event.
+ this.setWave(window.TowerboundWave||1,!!window.TowerboundBoss);
  this.scale.on('resize',this.onResize,this);
 },
 onResize:function(){if(this.scene.isActive())this.scene.restart();},
@@ -63,7 +67,30 @@ setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВК
  if(critical){const f=this.add.rectangle(w/2,h/2,w,h,0xffe2a1,.2).setDepth(10);this.tweens.add({targets:f,alpha:0,duration:160,onComplete:()=>f.destroy()});}
 },
 victory:function(){const w=this.scale.width,h=this.scale.height;for(let i=0;i<48;i++){const p=this.add.rectangle(Math.random()*w,-8,3+Math.random()*3,4+Math.random()*4,[0xf8ce72,0x78e7ef,0xb5a0e7][i%3],1).setDepth(10);this.tweens.add({targets:p,y:h+12,x:p.x+(Math.random()-.5)*100,angle:360,duration:900+Math.random()*1200,delay:Math.random()*300,onComplete:()=>p.destroy()});}},
-setWave:function(wave,boss){if(!this.enemy)return;const kind=wave%4===1?'tb-foe':(wave%4===2?'tb-skeleton':'tb-brute');this.enemy.setTexture(kind==='tb-skeleton'?'tb-skeleton':kind==='tb-brute'?'tb-brute':'tb-foe');const domEnemy=mount&&mount.querySelector('.tb-visible-enemy');if(domEnemy){domEnemy.src='./assets/'+(kind==='tb-skeleton'?'skeleton':kind==='tb-brute'?'brute':'foe')+'-illustrated.svg?v=4';domEnemy.alt=kind==='tb-skeleton'?'Иллюстрированный скелет':kind==='tb-brute'?'Иллюстрированный громила':'Иллюстрированный враг';domEnemy.style.width=boss?'clamp(126px,33vw,215px)':'clamp(110px,28vw,190px)';domEnemy.style.filter=boss?'drop-shadow(0 0 16px #ff687f) drop-shadow(0 10px 10px #000d)':'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)';}this.enemy.setTint(boss?0xff8eaa:0xffffff);this.enemy.setScale(boss?1.02:.76);this.foeAura.setFillStyle(boss?0xe85e78:(wave%4===2?0x78e7ef:0x9b78ed),boss?.2:.12);this.setPhase(this.phase||'prep');},
+setWave:function(wave,boss){
+ if(!this.enemy)return;
+ const n=Math.max(1,Number(wave)||1),slot=(n-1)%3;
+ const kind=slot===0?'tb-foe':slot===1?'tb-skeleton':'tb-brute';
+ const asset=slot===0?'foe':slot===1?'skeleton':'brute';
+ const labels=slot===0?'Страж Бездны':slot===1?'Костяной воин':'Пепельный громила';
+ this.enemy.setTexture(kind);
+ const domEnemy=mount&&mount.querySelector('.tb-visible-enemy');
+ if(domEnemy){
+  const src='./assets/'+asset+'-illustrated.svg?v=6';
+  if(!domEnemy.src.endsWith('/'+asset+'-illustrated.svg?v=6'))domEnemy.src=src;
+  domEnemy.alt=boss?'Босс: '+labels:labels;
+  domEnemy.style.width=boss?'clamp(142px,36vw,236px)':'clamp(118px,30vw,202px)';
+  domEnemy.style.height=boss?'78%':'72%';
+  domEnemy.style.left='68%';domEnemy.style.top='49%';
+  domEnemy.style.filter=boss?'drop-shadow(0 0 18px #ff687f) drop-shadow(0 10px 10px #000d)':'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)';
+  domEnemy.style.animation='tbEnemyIdle 2.8s ease-in-out infinite';
+  domEnemy.onerror=()=>{domEnemy.onerror=null;domEnemy.src='./assets/foe-illustrated.svg?v=6';};
+ }
+ this.enemy.setTint(boss?0xffa1b6:0xffffff);
+ this.enemy.setScale(boss?1.02:.76);
+ if(this.foeAura)this.foeAura.setFillStyle(boss?0xe85e78:(slot===1?0x78e7ef:slot===2?0xff8a45:0x9b78ed),boss?.22:.12);
+ this.setPhase(this.phase||'prep');
+},
 update:function(time){if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
 };
 
@@ -114,8 +141,14 @@ function ensureVisibleActors(){
  if(!layer){layer=document.createElement('div');layer.className='tb-visible-actors';layer.setAttribute('aria-hidden','true');Object.assign(layer.style,{position:'absolute',inset:'0',zIndex:'2',display:'block',visibility:'visible',opacity:'1',pointerEvents:'none',overflow:'hidden'});mount.appendChild(layer);}
  layer.innerHTML='';
  const addActor=(cls,src,alt,style)=>{const img=document.createElement('img');img.className=cls;img.src=src;img.alt=alt;img.draggable=false;img.decoding='async';img.loading='eager';Object.assign(img.style,{position:'absolute',display:'block',visibility:'visible',opacity:'1',objectFit:'contain',pointerEvents:'none',transform:'translate(-50%,-50%)',filter:'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)',...style});layer.appendChild(img);return img;};
- addActor('tb-visible-hero','./assets/hero-illustrated.svg?v=4','Герой башни',{left:'34%',top:'49%',width:'clamp(100px,25vw,170px)',height:'68%'});
- addActor('tb-visible-enemy','./assets/foe-illustrated.svg?v=4','Враг арены',{left:'68%',top:'49%',width:'clamp(110px,28vw,190px)',height:'72%'});
+ if(!document.getElementById('tb-actor-animation-style')){
+  const style=document.createElement('style');style.id='tb-actor-animation-style';
+  style.textContent='@keyframes tbEnemyIdle{0%,100%{translate:0 0;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)}50%{translate:0 -7px;filter:drop-shadow(0 13px 11px #000d) drop-shadow(0 0 17px #e7caff88)}}@keyframes tbHeroIdle{0%,100%{translate:0 0}50%{translate:0 -6px}}';
+  document.head.appendChild(style);
+ }
+ addActor('tb-visible-hero','./assets/hero-illustrated.svg?v=6','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
+ const enemy=addActor('tb-visible-enemy','./assets/foe-illustrated.svg?v=6','Страж Бездны',{left:'68%',top:'49%',width:'clamp(118px,30vw,202px)',height:'72%',animation:'tbEnemyIdle 2.8s ease-in-out infinite'});
+ enemy.onerror=()=>{enemy.onerror=null;enemy.src='./assets/foe-illustrated.svg?v=6';};
  return layer;
 }
 ensureVisibleActors();
