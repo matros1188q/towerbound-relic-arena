@@ -953,6 +953,11 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 .relic-art .tb-relic-image{position:absolute!important;z-index:5!important;inset:7px!important;width:calc(100% - 14px)!important;height:calc(100% - 14px)!important;display:block!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;filter:drop-shadow(0 2px 2px #000) drop-shadow(0 0 7px var(--relic-glow,#f2c978))!important;pointer-events:none!important}
 .slot .relic-art .tb-relic-image{inset:5px!important;width:calc(100% - 10px)!important;height:calc(100% - 10px)!important}
 .relic-art .relic-glyph{display:none!important}
+
+/* RELIC INVENTORY IMAGE FIX V10: keep slot artwork in normal layout flow on iOS Safari */
+.slot .relic-art{display:grid!important;place-items:center!important;position:relative!important;isolation:isolate!important;overflow:hidden!important}
+.slot .relic-art .tb-relic-image{position:relative!important;inset:auto!important;display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;z-index:6!important;transform:none!important}
+.slot .relic-art:before,.slot .relic-art:after{display:none!important;content:none!important}
 </style>
 </head>
 <body><main class="app">
