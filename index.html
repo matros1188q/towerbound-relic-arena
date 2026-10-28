@@ -910,12 +910,58 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 .relic .emoji .tb-symbol-icon{width:48px!important;height:48px!important}
 #activeSkillBtn:before{content:"";display:inline-block;width:25px;height:25px;vertical-align:middle;margin-right:7px;background:url('./assets/icons/fireball.svg?v=6') center/contain no-repeat;filter:drop-shadow(0 0 5px #ff7d45)}
 #activeWardBtn:before{content:"";display:inline-block;width:25px;height:25px;vertical-align:middle;margin-right:7px;background:url('./assets/icons/shield.svg?v=6') center/contain no-repeat;filter:drop-shadow(0 0 5px #7cecff)}
+
+/* ARENA REBUILD 2026-10: battlefield first, controls in a separate compact stack */
+.tb-arena-rebuilt{display:flex!important;flex-direction:column!important;gap:9px!important;min-height:0!important;padding:12px!important;overflow:hidden!important;animation:none!important;background:linear-gradient(160deg,#12162a,#090d19 70%)!important;border:1px solid #c9b77955!important;box-shadow:inset 0 1px #fff1,0 18px 38px #0005!important}
+.tb-arena-rebuilt:before,.tb-arena-rebuilt:after{display:none!important}
+.tb-arena-rebuilt .arena-topline{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;padding:2px 3px 0}
+.tb-arena-rebuilt .arena-target{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tb-arena-rebuilt .arena-kicker{font-size:9px;letter-spacing:.18em;font-weight:900;color:#a7abc8}
+.tb-arena-rebuilt #enemyName{font-size:14px;line-height:1.2;font-weight:900;color:#fff0c5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-arena-rebuilt .arena-hptext{flex-shrink:0;font-size:11px;font-weight:850;color:#f6d6df;font-variant-numeric:tabular-nums}
+.tb-arena-rebuilt .hpbar{position:relative;z-index:5;flex:none;height:7px!important;margin:0 2px 1px!important;border-radius:99px;background:#050710!important}
+.tb-arena-rebuilt .arena-stage{position:relative;isolation:isolate;flex:none;height:clamp(285px,43svh,430px);min-height:285px;width:100%;overflow:hidden;border-radius:15px;border:1px solid #b9a6ed28;background:#101326;box-shadow:inset 0 0 50px #050710aa}
+.tb-arena-rebuilt .arena-stage #phaser-arena{position:absolute!important;inset:0!important;z-index:1!important;width:100%!important;height:100%!important;opacity:1!important;pointer-events:none!important}
+.tb-arena-rebuilt .arena-stage #phaser-arena canvas{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+.tb-arena-rebuilt .stage-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,#070a1790 0%,transparent 20%,transparent 70%,#070a17a8 100%),radial-gradient(ellipse at center,transparent 42%,#080b1b66 100%)}
+.tb-arena-rebuilt .stage-corner{position:absolute;z-index:3;pointer-events:none;width:23px;height:23px;border-color:#e8cc825c}
+.tb-arena-rebuilt .stage-corner-a{top:8px;left:8px;border-top:1px solid;border-left:1px solid}
+.tb-arena-rebuilt .stage-corner-b{right:8px;bottom:8px;border-right:1px solid;border-bottom:1px solid}
+.tb-arena-rebuilt .stage-floor-label{position:absolute;z-index:4;bottom:9px;left:0;right:0;text-align:center;font-size:8px;font-weight:900;letter-spacing:.3em;color:#d7d0f04d;pointer-events:none}
+.tb-arena-rebuilt .combat-hud{position:relative;z-index:5;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0!important}
+.tb-arena-rebuilt .combat-stat{padding:7px 4px!important;border-radius:10px!important;background:#0c1020!important;border-color:#ffffff12!important;box-shadow:inset 0 1px #fff08}
+.tb-arena-rebuilt .combat-stat b{font-size:12px!important;line-height:1.2}
+.tb-arena-rebuilt .combat-stat small{font-size:8px!important;letter-spacing:.08em}
+.tb-arena-rebuilt .battlemsg{min-height:31px!important;margin:0!important;padding:6px 8px!important;font-size:11px!important;line-height:1.3;background:#0c1020!important;border-color:#ffffff12!important}
+.tb-arena-rebuilt .tb-ability-bar{position:relative!important;z-index:5!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0!important}
+.tb-arena-rebuilt .tb-ability{min-width:0!important;min-height:54px!important;padding:7px!important;border-radius:12px!important}
+.tb-arena-rebuilt .tb-ability-main{display:flex!important;align-items:center!important;gap:8px!important}
+.tb-arena-rebuilt .tb-ability-art{width:34px!important;height:34px!important;flex:0 0 34px!important}
+.tb-arena-rebuilt .tb-ability-copy{min-width:0!important;text-align:left!important}
+.tb-arena-rebuilt .tb-ability-name{font-size:9px!important;line-height:1.2!important;letter-spacing:.03em!important}
+.tb-arena-rebuilt .tb-ability-copy small{font-size:9px!important;line-height:1.2!important}
+.tb-arena-rebuilt .arenafoot{position:relative!important;z-index:5!important;display:grid!important;grid-template-columns:1.15fr 1fr!important;gap:7px!important;margin:0!important}
+.tb-arena-rebuilt .arenafoot button{min-width:0;min-height:45px!important;padding:9px 7px!important;font-size:11px!important;line-height:1.2}
+.tb-arena-rebuilt #fightBtn{font-size:12px!important}
+.tb-arena-rebuilt .enemies{display:none!important}
+@media(min-width:701px){.tb-arena-rebuilt .arena-stage{height:clamp(350px,48vh,480px);min-height:350px}}
+@media(max-width:380px){.tb-arena-rebuilt{padding:9px!important;gap:7px!important}.tb-arena-rebuilt .arena-stage{height:290px;min-height:290px}.tb-arena-rebuilt .tb-ability-name{font-size:8px!important}.tb-arena-rebuilt .arenafoot button{font-size:10px!important}}
+@media(prefers-reduced-motion:reduce){.tb-arena-rebuilt{animation:none!important}}
 </style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="sigil">♜</div><div><div class="eyebrow">ROGUELITE AUTO-BATTLER · SEASON I</div><h1>TOWERBOUND <span style="color:var(--gold)">: RELIC ARENA</span></h1></div></div><div class="currency"><div class="pill">🪙 <span id="gold">12</span></div><div class="pill">❤ <span id="hp">20</span></div><div class="pill gold">✦ <span id="essence">0</span></div></div></header>
 <div class="layout"><section class="leftcol">
-<div class="panel"><div class="panelhead"><h2>Поле битвы</h2><span class="sub" id="waveLabel">ВОЛНА 1 / 10</span></div><div class="arena"><div id="phaser-arena" aria-hidden="true"></div><div class="statusrow"><span id="enemyName">Теневой гоблин</span><span id="enemyHpText">18 / 18 HP</span></div><div class="hpbar"><span id="enemyHpBar"></span></div><div class="combat-hud"><div class="combat-stat"><b id="hudWave">01 / 10</b><small>Волна</small></div><div class="combat-stat"><b id="hudPower">0</b><small>Сила отряда</small></div><div class="combat-stat"><b id="hudState">ГОТОВ</b><small>Статус</small></div></div><div class="enemies" id="enemies"><span class="enemy">👺</span></div><div class="battlemsg" id="battlemsg">Собери реликвии и начни бой</div><div class="tb-ability-bar"><button id="activeSkillBtn" class="tb-ability tb-ability-fire" disabled><span class="tb-ability-main"><span class="tb-ability-art"><img src="./assets/icons/fireball.svg?v=6" alt="" aria-hidden="true"></span><span class="tb-ability-copy"><span class="tb-ability-name">ОГНЕННЫЙ РАЗРЫВ</span><small id="activeSkillStatus">Зарядится в бою</small></span></span></button><button id="activeWardBtn" class="tb-ability tb-ability-ward" disabled><span class="tb-ability-main"><span class="tb-ability-art"><img src="./assets/icons/shield.svg?v=6" alt="" aria-hidden="true"></span><span class="tb-ability-copy"><span class="tb-ability-name">РУНА ЩИТА</span><small id="activeWardStatus">Зарядится в бою</small></span></span></button></div><div class="arenafoot"><button class="primary" id="fightBtn">⚔ Начать волну</button><button id="healBtn">✚ Лечение · 5 🪙</button></div></div></div>
+<div class="panel"><div class="panelhead"><h2>Поле битвы</h2><span class="sub" id="waveLabel">ВОЛНА 1 / 10</span></div><div class="arena tb-arena-rebuilt">
+<div class="arena-topline"><div class="arena-target"><span class="arena-kicker">ЦЕЛЬ ВОЛНЫ</span><strong id="enemyName">Теневой гоблин</strong></div><div class="arena-hptext" id="enemyHpText">18 / 18 HP</div></div>
+<div class="hpbar"><span id="enemyHpBar"></span></div>
+<div class="arena-stage"><div class="stage-vignette"></div><div class="stage-corner stage-corner-a"></div><div class="stage-corner stage-corner-b"></div><div id="phaser-arena" aria-hidden="true"></div><div class="stage-floor-label">TOWERBOUND · BATTLEFIELD</div></div>
+<div class="combat-hud"><div class="combat-stat"><b id="hudWave">01 / 10</b><small>ВОЛНА</small></div><div class="combat-stat"><b id="hudPower">0</b><small>СИЛА ОТРЯДА</small></div><div class="combat-stat"><b id="hudState">ГОТОВ</b><small>СОСТОЯНИЕ</small></div></div>
+<div class="battlemsg" id="battlemsg">Собери реликвии и начни бой</div>
+<div class="tb-ability-bar"><button id="activeSkillBtn" class="tb-ability tb-ability-fire" disabled><span class="tb-ability-main"><span class="tb-ability-art"><img src="./assets/icons/fireball.svg?v=6" alt="" aria-hidden="true"></span><span class="tb-ability-copy"><span class="tb-ability-name">ОГНЕННЫЙ РАЗРЫВ</span><small id="activeSkillStatus">Зарядится в бою</small></span></span></button><button id="activeWardBtn" class="tb-ability tb-ability-ward" disabled><span class="tb-ability-main"><span class="tb-ability-art"><img src="./assets/icons/shield.svg?v=6" alt="" aria-hidden="true"></span><span class="tb-ability-copy"><span class="tb-ability-name">РУНА ЩИТА</span><small id="activeWardStatus">Зарядится в бою</small></span></span></button></div>
+<div class="arenafoot"><button class="primary" id="fightBtn">⚔ Начать волну</button><button id="healBtn">✚ Лечение · 5 🪙</button></div>
+<div class="enemies" id="enemies" aria-hidden="true"><span class="enemy">👺</span></div>
+</div></div>
 <div class="panel"><div class="panelhead"><h2>Башни-реликвии</h2><span class="sub" id="slotCount">0 / 6 занято</span></div><div class="slots" id="slots"></div><div class="sub" style="margin-top:10px">Нажми на реликвию, чтобы выбрать её. Перетащи одинаковые друг на друга или выбери две по очереди для слияния.</div></div>
 </section><aside class="rightcol">
 <div class="panel"><div class="panelhead"><h2>Лавка реликвий</h2><span class="sub">Случайный набор</span></div><div class="shopgrid" id="shop"></div><div class="actions" style="margin-top:10px"><button id="refreshBtn">↻ Обновить · 2 🪙</button><button id="sellBtn">♻ Продать выбранную</button></div></div>
