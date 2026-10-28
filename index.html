@@ -1249,7 +1249,7 @@ function fight(){
  msg.textContent = 'ЭТАЖ '+floor+'/10 · СРАЖЕНИЕ '+node+'/4'+(boss?' · БОСС':elite?' · ЭЛИТА':' · ВРАГ ОБНАРУЖЕН');
  arenaBanner(boss ? 'БОСС ЭТАЖА '+floor : elite?'ЭЛИТНЫЙ ВРАГ':'ЭТАЖ '+floor+' · СРАЖЕНИЕ '+node);
  updateCombatHud(items);$('enemyName').textContent=boss?'БОСС · '+(['Костяной колосс','Королева Бездны'][Math.floor(state.wave/5)%2]):$('enemyName').textContent;
- let burn=0,poison=0;if(tbActiveCombat)tbActiveCombat.damage=(amount)=>{enemyHp-=amount;};
+ let burn=0,poison=0,hitCount=0;if(tbActiveCombat)tbActiveCombat.damage=(amount)=>{enemyHp-=amount;};
  const timer=setInterval(()=>{
   if(ended){clearInterval(timer);return}ticks++;if(tbActiveCombat){if(tbActiveCombat.skillCooldown>0)tbActiveCombat.skillCooldown--;if(tbActiveCombat.wardCooldown>0)tbActiveCombat.wardCooldown--;updateAbilityHud()}if(boss&&enemyHp<=maxEnemyHp*.5&&bossPhase===0){bossPhase=1;msg.textContent='⚠ ФАЗА II · ЯРОСТЬ БОССА';arenaBanner('ФАЗА II · ЯРОСТЬ БОССА')}skillCharge++;if(skillCharge>=5){skillCharge=0;const pulse=Math.max(2,Math.round(atk*.42));enemyHp-=pulse;domImpact(true,boss,'fire',pulse);msg.textContent='🔥 ОГНЕННЫЙ ИМПУЛЬС · −'+pulse+' HP'}
   const crit=(items.some(x=>x.id==='fang')&&ticks%3===0)||(items.some(x=>x.id==='bloodmoon')&&ticks%4===0)||(Math.random()<(critT[0]||0)*.025);
