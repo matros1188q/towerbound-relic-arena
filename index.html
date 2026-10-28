@@ -856,6 +856,23 @@ button.primary{background:linear-gradient(180deg,#f3d795,#b98543);border-color:#
 }
 @media(min-width:421px){.arena{min-height:330px!important}.arena #phaser-arena .tb-visible-hero,.arena #phaser-arena .tb-visible-enemy{max-height:62%!important}}
 
+
+/* RELIC SHOP ART RESCUE */
+.relic-art{position:relative!important;isolation:isolate!important;overflow:hidden!important}
+.relic-art:before{content:""!important;display:block!important;visibility:visible!important;opacity:1!important;position:absolute!important;z-index:3!important;inset:7px!important;width:auto!important;height:auto!important;clip-path:none!important;border:0!important;background-color:transparent!important;background-repeat:no-repeat!important;background-position:center!important;background-size:contain!important;filter:drop-shadow(0 2px 2px #000d) drop-shadow(0 0 7px var(--relic-glow,#e8c779))!important;pointer-events:none!important}
+.relic-art:after{content:""!important;display:block!important;visibility:visible!important;opacity:.32!important;position:absolute!important;z-index:1!important;inset:0!important;pointer-events:none!important}
+#shop .relic-art{display:block!important;visibility:visible!important;opacity:1!important}
+#shop .relic-art:before{inset:8px!important}
+.art-stormglass{--relic-glow:#73dff8}.art-bloodpact{--relic-glow:#ff536f}.art-soulchain{--relic-glow:#a98cff}.art-ironbark{--relic-glow:#78c879}.art-starfall{--relic-glow:#ffe68b}.art-echo{--relic-glow:#9de8ef}.art-luckycoin{--relic-glow:#ffdc70}.art-laststand{--relic-glow:#f7a96b}
+.art-stormglass:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2373dff8' stroke='%23e7ffff' stroke-width='2' d='M35 2 14 35h15l-3 27 25-38H36Z'/%3E%3C/svg%3E")!important}
+.art-bloodpact:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23ed435e' stroke='%23ffc0c9' stroke-width='2' d='M32 3C27 15 10 28 13 43a19 19 0 0 0 38 0C54 28 37 15 32 3Z'/%3E%3Cpath fill='%23ffe2a4' d='M32 26c-7 10-8 18 0 23 8-5 7-13 0-23Z'/%3E%3C/svg%3E")!important}
+.art-soulchain:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23c8b4ff' stroke-width='7'%3E%3Crect x='5' y='8' width='28' height='18' rx='9' transform='rotate(35 19 17)'/%3E%3Crect x='30' y='38' width='28' height='18' rx='9' transform='rotate(35 44 47)'/%3E%3Cpath d='m23 25 18 14'/%3E%3C/g%3E%3C/svg%3E")!important}
+.art-ironbark:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2378c879' stroke='%23dcffc8' stroke-width='2' d='M32 3 55 15 51 43 32 60 13 43 9 15Z'/%3E%3Cpath fill='none' stroke='%23eaffd9' stroke-width='4' d='M32 12v39M18 25l14 8 14-8'/%3E%3C/svg%3E")!important}
+.art-starfall:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23ffe68b' stroke='%23fff8d9' stroke-width='2' d='M32 2 40 23 62 24 45 39 50 61 32 48 14 61 19 39 2 24 24 23Z'/%3E%3C/svg%3E")!important}
+.art-echo:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%239de8ef' stroke='%23edffff' stroke-width='2' d='M8 9 32 32 8 55 8 43 20 32 8 21ZM32 9 56 32 32 55 32 43 44 32 32 21Z'/%3E%3C/svg%3E")!important}
+.art-luckycoin:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23f2c95e' stroke='%23fff0a6' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23a8732d' stroke-width='3'/%3E%3Cpath fill='%23a8732d' d='M36 15v5c7 1 10 5 10 10H37c0-3-2-4-5-4s-5 1-5 3c0 6 20 2 20 14 0 6-4 10-11 11v5h-7v-5c-8-1-12-5-12-12h9c0 4 2 6 6 6 3 0 5-1 5-4 0-6-20-2-20-14 0-6 4-9 12-10v-5Z'/%3E%3C/svg%3E")!important}
+.art-laststand:before{content:""!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23f7a96b' stroke='%23ffe0ad' stroke-width='2' d='M32 3 43 24 60 32 43 40 32 61 21 40 4 32 21 24Z'/%3E%3Cpath fill='%23fff1cf' d='M29 14h6v36h-6z'/%3E%3C/svg%3E")!important}
+
 </style>
 </head>
 <body><main class="app">
