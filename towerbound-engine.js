@@ -1,4 +1,4 @@
-/* TOWERBOUND ILLUSTRATED ENGINE — Phaser 3 scene layer */
+/* TOWERBOUND ARENA LAYER FIX 11 — Phaser canvas is the single source of character rendering */
 (()=>{'use strict';
 if(!window.Phaser){document.documentElement.classList.add('phaser-fallback');/* keep DOM actors alive if the Phaser CDN fails */}
 const mount=document.getElementById('phaser-arena');
@@ -108,23 +108,7 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
 }
 
 // Guaranteed visible actor layer: independent of Phaser canvas compositing on iOS Safari.
-function ensureVisibleActors(){
- if(!mount)return;
- let layer=mount.querySelector('.tb-visible-actors');
- if(!layer){
-  layer=document.createElement('div');layer.className='tb-visible-actors';layer.setAttribute('aria-hidden','true');
-  Object.assign(layer.style,{position:'absolute',inset:'0',zIndex:'1',pointerEvents:'none',overflow:'hidden'});
-  const make=(cls,src,left,label)=>{
-   const el=document.createElement('img');el.className=cls;el.src=src;el.alt=label;el.draggable=false;el.decoding='async';
-   Object.assign(el.style,{position:'absolute',left,top:'48%',width:cls==='tb-visible-hero'?'clamp(84px,22vw,140px)':'clamp(92px,25vw,158px)',height:'auto',maxHeight:'75%',objectFit:'contain',transform:'translate(-50%,-50%)',filter:'drop-shadow(0 12px 10px #0009)',animation:'tb-actor-float 1.8s ease-in-out infinite alternate',visibility:'visible',opacity:'1'});
-   layer.appendChild(el);return el;
-  };
-  make('tb-visible-hero','./assets/hero-illustrated.svg?v=3','34%','Illustrated hero');
-  make('tb-visible-enemy','./assets/foe-illustrated.svg?v=3','67%','Illustrated enemy').style.animationDelay='.25s';
-  const style=document.createElement('style');style.textContent='@keyframes tb-actor-float{from{margin-top:0}to{margin-top:-8px}}';mount.appendChild(style);
-  mount.appendChild(layer);
- }
-}
+function ensureVisibleActors(){const layer=mount&&mount.querySelector('.tb-visible-actors');if(layer)layer.remove();}
 ensureVisibleActors();
 if(!window.Phaser){console.warn('Towerbound: Phaser CDN unavailable; DOM actor fallback remains active.');return;}
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:false,antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:true,pixelArt:false,roundPixels:false},scene});
