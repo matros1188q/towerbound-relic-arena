@@ -10,7 +10,7 @@ create:function(){
  const w=this.scale.width,h=this.scale.height;
  this.add.image(w/2,h/2,'tb-arena-background').setDisplaySize(w,h).setDepth(-10).setAlpha(.94);
  const shade=this.add.graphics().setDepth(-9);
- shade.fillGradientStyle(0x090d20,.18,0x090d20,.3,.18,1);shade.fillRect(0,0,w,h);
+ shade.fillStyle(0x090d20,.32);shade.fillRect(0,0,w,h);
  const glow=this.add.graphics().setDepth(-8);
  glow.fillStyle(0x9876d8,.16);glow.fillEllipse(w*.5,h*.75,w*.55,h*.22);
  glow.lineStyle(2,0xf4cf79,.55);glow.strokeEllipse(w*.5,h*.75,w*.42,h*.17);
