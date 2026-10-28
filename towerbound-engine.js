@@ -84,9 +84,9 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  const colors={fire:'#ff713d',ice:'#7cecff',lightning:'#fff176',nature:'#62f2a1',void:'#c18bff',arcane:'#ffe08a'};
  const color=colors[style]||colors.arcane;
  // Distinct readable silhouettes per damage school; each school has its own projectile motif.
- const abilityArt={fire:'fire',ice:'ice',lightning:'lightning',nature:'nature',void:'void',arcane:'arcane'};
+ const abilityArt={fire:'fireball',ice:'ice-bolt',lightning:'lightning',nature:'nature',void:'demon',arcane:'arcane'};
  const glyph=document.createElement('img');
- glyph.src='./assets/skills/'+(abilityArt[style]||'arcane')+'.svg?v=2';
+ glyph.src='./assets/icons/'+(abilityArt[style]||'arcane')+'.svg?v=5';
  glyph.alt='';glyph.draggable=false;glyph.decoding='async';
  Object.assign(glyph.style,{position:'absolute',left:'32%',top:'42%',width:critical?'42px':'34px',height:critical?'42px':'34px',objectFit:'contain',filter:'drop-shadow(0 0 7px '+color+') drop-shadow(0 0 13px '+color+')',zIndex:'4',transform:'translate(-50%,-50%) rotate(-20deg)'});
  layer.appendChild(glyph);
