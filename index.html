@@ -1227,4 +1227,4 @@ const convert=(root)=>{
 const start=()=>{convert(document.body);const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')convert(record.target.parentElement);for(const added of record.addedNodes){if(added.nodeType===Node.TEXT_NODE)convert(added.parentElement);else if(added.nodeType===Node.ELEMENT_NODE&&added.tagName!=='SCRIPT'&&added.tagName!=='STYLE')convert(added);}}});observer.observe(document.body,{subtree:true,childList:true,characterData:true});};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
-</script><script type="module" src="./towerbound-3d-models.js?v=1"></script></body></html>
+</script><script type="module" src="./towerbound-3d-models.js?v=2"></script></body></html>
