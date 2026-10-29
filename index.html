@@ -1837,4 +1837,25 @@ function paint(){document.querySelectorAll('.relic-art').forEach(el=>{
 paint();new MutationObserver(paint).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+<style id="relic-atlas-inner-cell-crop-v5">
+/* Crop a narrow safety margin inside each atlas cell so adjacent paintings can never appear. */
+.relic-art{overflow:hidden!important;background-repeat:no-repeat!important;background-origin:border-box!important;background-clip:border-box!important;}
+</style>
+<script id="relic-atlas-inner-cell-crop-runtime-v5">
+(()=>{'use strict';
+const SRC='https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/13fae98f-1815-4d94-b088-04c2fc11136e.png';
+const P={"ember":[0,0],"frost":[1,0],"thorn":[2,0],"spark":[3,0],"moon":[4,0],"rune":[0,1],"void":[1,1],"phoenix":[2,1],"crown":[3,1],"fang":[4,1],"heart":[0,2],"hourglass":[1,2],"meteor":[2,2],"mirror":[3,2],"oracle":[4,2],"multishot":[0,3],"venom":[1,3],"cinder":[2,3],"swift":[3,3],"quiver":[4,3],"stormglass":[0,4],"bloodpact":[1,4],"soulchain":[2,4],"ironbark":[3,4],"starfall":[4,4],"echo":[0,5],"luckycoin":[1,5],"laststand":[2,5],"glacier":[3,5],"plague":[4,5],"bloodmoon":[0,6],"guardian":[1,6],"soulharvest":[2,6],"wildfire":[3,6],"riftsigil":[4,6],"thorncrown":[0,0],"sunshard":[1,0],"warbanner":[2,0],"mimicseal":[3,0],"icebrand":[4,0],"permafrost":[0,1],"runebinder":[1,1],"astralcompass":[2,1],"goldenacorn":[3,1],"pilgrimseal":[4,1],"abyssalheart":[0,2],"bloodfang":[1,2],"bulwark":[2,2],"dawnblade":[3,2]};
+const Z=1.035, BW=500*Z, BH=700*Z, SX=100/(5*Z-1), SY=100/(7*Z-1);
+function paint(){document.querySelectorAll('.relic-art').forEach(el=>{const c=[...el.classList].find(c=>c.startsWith('art-'));const p=P[c&&c.slice(4)];if(!p)return;
+el.style.setProperty('background-image','url("'+SRC+'")','important');
+el.style.setProperty('background-size',BW+'% '+BH+'%','important');
+el.style.setProperty('background-position',(p[0]*Z*SX)+'% '+(p[1]*Z*SY)+'%','important');
+el.style.setProperty('background-repeat','no-repeat','important');
+el.style.setProperty('overflow','hidden','important');
+el.style.setProperty('background-color','#101425','important');
+});}
+paint();new MutationObserver(paint).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body></html>
