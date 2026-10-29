@@ -1234,6 +1234,57 @@ button{touch-action:manipulation}
 })();
 </script>
 
+
+<style id="tb-relic-layout-repair-20261029">
+/* One authoritative relic-art layer: never draw the legacy CSS glyph over the real PNG. */
+.relic-art,
+#shop .relic-art,
+#stashItems .relic-art,
+#slots .relic-art{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  display:grid!important;place-items:center!important;
+  background:radial-gradient(ellipse at 50% 35%,#253452 0,#111827 72%)!important;
+  background-image:none!important;
+}
+.relic-art::before,.relic-art::after,
+#shop .relic-art::before,#shop .relic-art::after,
+#stashItems .relic-art::before,#stashItems .relic-art::after,
+#slots .relic-art::before,#slots .relic-art::after{
+  content:none!important;display:none!important;background-image:none!important;
+}
+.relic-art>img.tb-relic-image,
+#shop .relic-art>img.tb-relic-image,
+#stashItems .relic-art>img.tb-relic-image,
+#slots .relic-art>img.tb-relic-image{
+  position:relative!important;inset:auto!important;z-index:1!important;
+  display:block!important;width:100%!important;height:100%!important;
+  max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;
+  object-fit:contain!important;object-position:center!important;
+  background:transparent!important;filter:drop-shadow(0 2px 2px #000b)!important;
+}
+#shop .relic-art{width:96px!important;height:96px!important;min-width:96px!important;min-height:96px!important;margin:2px auto 10px!important;border:1px solid #d7b976!important;border-radius:12px!important;padding:5px!important;box-shadow:inset 0 0 18px #0009,0 4px 14px #0006!important}
+#shop .tb-relic-tag{display:none!important}
+#shop>.relic{
+  min-width:0!important;min-height:0!important;height:100%!important;
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  padding:12px!important;gap:0!important;border-radius:15px!important;
+}
+#shop .relic strong{font-size:12px!important;line-height:1.35!important;text-align:center!important;margin:2px 0 5px!important;min-height:32px!important}
+#shop .relic small{font-size:11px!important;line-height:1.4!important;min-height:46px!important;text-align:center!important;flex:1 0 auto!important}
+#shop .relic .rarity-label{display:inline-block!important;margin-bottom:3px!important;letter-spacing:.06em!important}
+#shop .relic button{width:100%!important;min-height:40px!important;margin-top:8px!important;line-height:1.25!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#shop .relic button+button{margin-top:6px!important}
+#shop{align-items:stretch!important;grid-auto-rows:1fr!important}
+body{padding-bottom:calc(100px + env(safe-area-inset-bottom))!important}
+.app{padding-bottom:calc(100px + env(safe-area-inset-bottom))!important}
+@media(max-width:700px){
+  #shop,.shopgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  #shop>.relic{padding:9px!important}
+  #shop .relic-art{width:86px!important;height:86px!important;min-width:86px!important;min-height:86px!important}
+  #shop .relic small{font-size:10px!important;min-height:52px!important}
+  #shop .relic button{font-size:10px!important;padding:9px 4px!important}
+}
+</style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="sigil">♜</div><div><div class="eyebrow">ROGUELITE AUTO-BATTLER · SEASON I</div><h1>TOWERBOUND <span style="color:var(--gold)">: RELIC ARENA</span></h1></div></div><div class="top-actions"><div class="currency"><div class="pill">🪙 <span id="gold">12</span></div><div class="pill">❤ <span id="hp">20</span></div><div class="pill gold">✦ <span id="essence">0</span></div></div><button id="accountOpen" class="account-button" type="button" aria-haspopup="dialog" aria-controls="accountDialog"><span class="account-avatar" id="accountAvatar">♜</span><span class="account-label"><b id="accountName">Игрок</b><small>Локальный профиль</small></span><span aria-hidden="true">⌄</span></button></div></header>
