@@ -8,6 +8,9 @@ req = Request(URL, headers={"User-Agent": "Mozilla/5.0"})
 with urlopen(req, timeout=45) as response:
     raw = response.read()
 im = Image.open(BytesIO(raw)).convert("RGBA")
+# Keep a temporary copy of the exact original atlas in the repo so crop geometry can be inspected.
+Path("assets/relics").mkdir(parents=True, exist_ok=True)
+im.save("assets/relics/_source-atlas.png", optimize=True)
 if im.width < 500 or im.height < 700:
     raise RuntimeError(f"Unexpected atlas size: {im.size}")
 # Original atlas is laid out as 5 columns x 7 rows. Crop the interior of each
