@@ -1718,65 +1718,9 @@ const start=()=>{convert(document.body);const observer=new MutationObserver(reco
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
-<style id="relic-art-atlas-v4">
-/* V4: deterministic unique sprite mapping; 35 distinct cells from the 5x7 painted relic sheet. */
-.relic-art{position:relative!important;background-image:url('https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/13fae98f-1815-4d94-b088-04c2fc11136e.png')!important;background-size:500% 700%!important;background-repeat:no-repeat!important;background-color:#101425!important;overflow:hidden!important}
-.relic-art .tb-relic-image{display:none!important;visibility:hidden!important;opacity:0!important}
-.relic-art>span{display:none!important}
-.relic-art.art-ember{background-position:0% 0%!important}
-.relic-art.art-frost{background-position:25% 0%!important}
-.relic-art.art-thorn{background-position:50% 0%!important}
-.relic-art.art-spark{background-position:75% 0%!important}
-.relic-art.art-moon{background-position:100% 0%!important}
-.relic-art.art-rune{background-position:0% 16.666666666666668%!important}
-.relic-art.art-void{background-position:25% 16.666666666666668%!important}
-.relic-art.art-phoenix{background-position:50% 16.666666666666668%!important}
-.relic-art.art-crown{background-position:75% 16.666666666666668%!important}
-.relic-art.art-fang{background-position:100% 16.666666666666668%!important}
-.relic-art.art-heart{background-position:0% 33.333333333333336%!important}
-.relic-art.art-hourglass{background-position:25% 33.333333333333336%!important}
-.relic-art.art-meteor{background-position:50% 33.333333333333336%!important}
-.relic-art.art-mirror{background-position:75% 33.333333333333336%!important}
-.relic-art.art-oracle{background-position:100% 33.333333333333336%!important}
-.relic-art.art-multishot{background-position:0% 50%!important}
-.relic-art.art-venom{background-position:25% 50%!important}
-.relic-art.art-cinder{background-position:50% 50%!important}
-.relic-art.art-swift{background-position:75% 50%!important}
-.relic-art.art-quiver{background-position:100% 50%!important}
-.relic-art.art-stormglass{background-position:0% 66.66666666666667%!important}
-.relic-art.art-bloodpact{background-position:25% 66.66666666666667%!important}
-.relic-art.art-soulchain{background-position:50% 66.66666666666667%!important}
-.relic-art.art-ironbark{background-position:75% 66.66666666666667%!important}
-.relic-art.art-starfall{background-position:100% 66.66666666666667%!important}
-.relic-art.art-echo{background-position:0% 83.33333333333333%!important}
-.relic-art.art-luckycoin{background-position:25% 83.33333333333333%!important}
-.relic-art.art-laststand{background-position:50% 83.33333333333333%!important}
-.relic-art.art-glacier{background-position:75% 83.33333333333333%!important}
-.relic-art.art-plague{background-position:100% 83.33333333333333%!important}
-.relic-art.art-bloodmoon{background-position:0% 100%!important}
-.relic-art.art-guardian{background-position:25% 100%!important}
-.relic-art.art-soulharvest{background-position:50% 100%!important}
-.relic-art.art-wildfire{background-position:75% 100%!important}
-.relic-art.art-riftsigil{background-position:100% 100%!important}
-.relic-art.art-thorncrown{background-position:0% 0%!important}
-.relic-art.art-sunshard{background-position:25% 0%!important}
-.relic-art.art-warbanner{background-position:50% 0%!important}
-.relic-art.art-mimicseal{background-position:75% 0%!important}
-.relic-art.art-icebrand{background-position:100% 0%!important}
-.relic-art.art-permafrost{background-position:0% 16.666666666666668%!important}
-.relic-art.art-runebinder{background-position:25% 16.666666666666668%!important}
-.relic-art.art-astralcompass{background-position:50% 16.666666666666668%!important}
-.relic-art.art-goldenacorn{background-position:75% 16.666666666666668%!important}
-.relic-art.art-pilgrimseal{background-position:100% 16.666666666666668%!important}
-.relic-art.art-abyssalheart{background-position:0% 33.333333333333336%!important}
-.relic-art.art-bloodfang{background-position:25% 33.333333333333336%!important}
-.relic-art.art-bulwark{background-position:50% 33.333333333333336%!important}
-.relic-art.art-dawnblade{background-position:75% 33.333333333333336%!important}
-</style>
 
-<script id="relic-art-runtime-v5">
-(()=>{const src='https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/13fae98f-1815-4d94-b088-04c2fc11136e.png';const pos={"ember":"0% 0%","frost":"25% 0%","thorn":"50% 0%","spark":"75% 0%","moon":"100% 0%","rune":"0% 16.666666666666668%","void":"25% 16.666666666666668%","phoenix":"50% 16.666666666666668%","crown":"75% 16.666666666666668%","fang":"100% 16.666666666666668%","heart":"0% 33.333333333333336%","hourglass":"25% 33.333333333333336%","meteor":"50% 33.333333333333336%","mirror":"75% 33.333333333333336%","oracle":"100% 33.333333333333336%","multishot":"0% 50%","venom":"25% 50%","cinder":"50% 50%","swift":"75% 50%","quiver":"100% 50%","stormglass":"0% 66.66666666666667%","bloodpact":"25% 66.66666666666667%","soulchain":"50% 66.66666666666667%","ironbark":"75% 66.66666666666667%","starfall":"100% 66.66666666666667%","echo":"0% 83.33333333333333%","luckycoin":"25% 83.33333333333333%","laststand":"50% 83.33333333333333%","glacier":"75% 83.33333333333333%","plague":"100% 83.33333333333333%","bloodmoon":"0% 100%","guardian":"25% 100%","soulharvest":"50% 100%","wildfire":"75% 100%","riftsigil":"100% 100%","thorncrown":"0% 0%","sunshard":"25% 0%","warbanner":"50% 0%","mimicseal":"75% 0%","icebrand":"100% 0%","permafrost":"0% 16.666666666666668%","runebinder":"25% 16.666666666666668%","astralcompass":"50% 16.666666666666668%","goldenacorn":"75% 16.666666666666668%","pilgrimseal":"100% 16.666666666666668%","abyssalheart":"0% 33.333333333333336%","bloodfang":"25% 33.333333333333336%","bulwark":"50% 33.333333333333336%","dawnblade":"75% 33.333333333333336%"};function paint(root=document){root.querySelectorAll('.relic-art').forEach(el=>{const id=[...el.classList].find(c=>c.startsWith('art-'))?.slice(4);if(!id||!pos[id])return;el.style.setProperty('background-image','url("'+src+'")','important');el.style.setProperty('background-size','500% 700%','important');el.style.setProperty('background-position',pos[id],'important');el.style.setProperty('background-repeat','no-repeat','important');el.style.setProperty('background-color','#101425','important');el.querySelectorAll('.tb-relic-image,span').forEach(n=>{n.style.setProperty('display','none','important')});});}paint();new MutationObserver(()=>paint()).observe(document.documentElement,{childList:true,subtree:true});})();
-</script>
+
+
 
 <script id="reuse-arsenal-synergy-art-v1">
 (()=>{'use strict';
