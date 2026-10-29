@@ -1858,4 +1858,30 @@ el.style.setProperty('background-color','#101425','important');
 paint();new MutationObserver(paint).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+<style id="relic-individual-files-v6">
+.relic-art{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important;background-color:transparent!important;overflow:hidden!important;}
+</style>
+<script id="relic-individual-files-runtime-v6">
+(()=>{'use strict';
+const ROOT='./assets/relics/';
+function fix(){
+ document.querySelectorAll('.relic-art').forEach(el=>{
+  const c=[...el.classList].find(v=>v.startsWith('art-'));
+  const id=c&&c.slice(4);
+  if(!id)return;
+  el.style.setProperty('background-image','url("'+ROOT+encodeURIComponent(id)+'.png")','important');
+  el.style.setProperty('background-size','contain','important');
+  el.style.setProperty('background-position','center','important');
+  el.style.setProperty('background-repeat','no-repeat','important');
+  el.style.setProperty('background-color','transparent','important');
+  el.style.setProperty('overflow','hidden','important');
+  const img=el.querySelector('img');
+  if(img)img.style.setProperty('display','none','important');
+ });
+}
+fix();
+new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body></html>
