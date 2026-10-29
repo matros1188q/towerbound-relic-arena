@@ -29,9 +29,7 @@ ids = {
 "stormglass":(0,4),"bloodpact":(1,4),"soulchain":(2,4),"ironbark":(3,4),"starfall":(4,4),
 "echo":(0,5),"luckycoin":(1,5),"laststand":(2,5),"glacier":(3,5),"plague":(4,5),
 "bloodmoon":(0,6),"guardian":(1,6),"soulharvest":(2,6),"wildfire":(3,6),"riftsigil":(4,6),
-"thorncrown":(0,0),"sunshard":(1,0),"warbanner":(2,0),"mimicseal":(3,0),"icebrand":(4,0),
-"permafrost":(0,1),"runebinder":(1,1),"astralcompass":(2,1),"goldenacorn":(3,1),"pilgrimseal":(4,1),
-"abyssalheart":(0,2),"bloodfang":(1,2),"bulwark":(2,2),"dawnblade":(3,2)}
+}
 # These IDs were incorrectly mapped to already-used atlas cells in an earlier version.
 # The game now renders dedicated, name-specific vector art for them; remove stale duplicated PNGs.
 reused_ids = {
