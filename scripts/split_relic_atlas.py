@@ -32,6 +32,18 @@ ids = {
 "thorncrown":(0,0),"sunshard":(1,0),"warbanner":(2,0),"mimicseal":(3,0),"icebrand":(4,0),
 "permafrost":(0,1),"runebinder":(1,1),"astralcompass":(2,1),"goldenacorn":(3,1),"pilgrimseal":(4,1),
 "abyssalheart":(0,2),"bloodfang":(1,2),"bulwark":(2,2),"dawnblade":(3,2)}
+# These IDs were incorrectly mapped to already-used atlas cells in an earlier version.
+# The game now renders dedicated, name-specific vector art for them; remove stale duplicated PNGs.
+reused_ids = {
+    "thorncrown", "sunshard", "warbanner", "mimicseal", "icebrand",
+    "permafrost", "runebinder", "astralcompass", "goldenacorn", "pilgrimseal",
+    "abyssalheart", "bloodfang", "bulwark", "dawnblade",
+}
+for name in reused_ids:
+    stale = out / f"{name}.png"
+    if stale.exists():
+        stale.unlink()
+
 cw, ch = im.width / cols, im.height / rows
 for name, (cx, cy) in ids.items():
     left, top = round(cx*cw), round(cy*ch)
