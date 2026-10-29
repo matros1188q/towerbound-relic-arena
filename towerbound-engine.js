@@ -3,9 +3,11 @@
 if(!window.Phaser){document.documentElement.classList.add('phaser-fallback');/* keep DOM actors alive if the Phaser CDN fails */}
 const mount=document.getElementById('phaser-arena');
 const PALETTE={night:0x101326,stone:0x282b48,stone2:0x393858,edge:0x686184,cyan:0x78e7ef,gold:0xf8ce72,red:0xe85e78,purple:0x9b78ed};
+let arenaScene=null;
 const scene={key:'IllustratedArena',
 preload:function(){this.load.image('tb-arena-background','./assets/arena-background.svg?v=2');this.load.image('tb-hero','./assets/hero-illustrated.svg?v=3');this.load.image('tb-foe','./assets/foe-illustrated.svg?v=3');this.load.image('tb-skeleton','./assets/skeleton-illustrated.svg?v=3');this.load.image('tb-brute','./assets/brute-illustrated.svg?v=3');},
 create:function(){
+ arenaScene=this;
  this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.actorSprites=[];this.fx=[];
  // Sync the visible iPhone DOM portraits with the Phaser scene on every scene creation.
  // The DOM layer is the reliable renderer on iOS Safari; Phaser keeps the combat arena and FX.
@@ -35,7 +37,7 @@ create:function(){
  this.tweens.add({targets:this.foeAura,alpha:.25,scale:1.12,duration:900,yoyo:true,repeat:-1});
  this.sparkles=[];
  // Set a deterministic first-wave enemy immediately; do not wait for the first combat event.
- this.setWave(window.TowerboundWave||1,!!window.TowerboundBoss);
+ scene.setWave.call(this,window.TowerboundWave||1,!!window.TowerboundBoss);
  this.scale.on('resize',this.onResize,this);
 },
 onResize:function(){if(this.scene.isActive())this.scene.restart();},
@@ -89,7 +91,7 @@ setWave:function(wave,boss){
  this.enemy.setTint(boss?0xffa1b6:0xffffff);
  this.enemy.setScale(boss?1.02:.76);
  if(this.foeAura)this.foeAura.setFillStyle(boss?0xe85e78:(slot===1?0x78e7ef:slot===2?0xff8a45:0x9b78ed),boss?.22:.12);
- this.setPhase(this.phase||'prep');
+ scene.setPhase.call(this,this.phase||'prep');
 },
 update:function(time){if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
 };
@@ -154,5 +156,5 @@ function ensureVisibleActors(){
 ensureVisibleActors();
 if(!window.Phaser){console.warn('Towerbound: Phaser CDN unavailable; DOM actor fallback remains active.');return;}
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:false,antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:true,pixelArt:false,roundPixels:false},scene});
-window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);if(window.TowerModels&&window.TowerModels.hit)window.TowerModels.hit(critical,boss);const s=game.scene.getScene('IllustratedArena');if(s&&s.impact)s.impact(critical,boss,style);},win:()=>{const s=game.scene.getScene('IllustratedArena');if(s&&s.victory)s.victory();},wave:(wave,boss)=>{if(window.TowerModels&&window.TowerModels.wave)window.TowerModels.wave(wave,boss);const s=game.scene.getScene('IllustratedArena');if(s&&s.setWave)s.setWave(wave,boss);},phase:(phase)=>{const s=game.scene.getScene('IllustratedArena');if(s&&s.setPhase)s.setPhase(phase);}};
+window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);if(window.TowerModels&&window.TowerModels.hit)window.TowerModels.hit(critical,boss);if(arenaScene&&scene.impact)scene.impact.call(arenaScene,critical,boss,style);},win:()=>{if(arenaScene&&scene.victory)scene.victory.call(arenaScene);},wave:(wave,boss)=>{if(window.TowerModels&&window.TowerModels.wave)window.TowerModels.wave(wave,boss);if(arenaScene&&scene.setWave)scene.setWave.call(arenaScene,wave,boss);},phase:(phase)=>{if(arenaScene&&scene.setPhase)scene.setPhase.call(arenaScene,phase);}};
 })();
