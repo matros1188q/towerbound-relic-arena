@@ -10,7 +10,10 @@ with urlopen(req, timeout=45) as response:
 im = Image.open(BytesIO(raw)).convert("RGBA")
 # Keep a temporary copy of the exact original atlas in the repo so crop geometry can be inspected.
 Path("assets/relics").mkdir(parents=True, exist_ok=True)
-im.save("assets/relics/_source-atlas.png", optimize=True)
+im.thumbnail((900, 900))
+im.convert("RGB").save("assets/relics/_source-atlas-preview.jpg", quality=60, optimize=True)
+# Reopen full-resolution original for actual crops below.
+im = Image.open(BytesIO(raw)).convert("RGBA")
 if im.width < 500 or im.height < 700:
     raise RuntimeError(f"Unexpected atlas size: {im.size}")
 # Original atlas is laid out as 5 columns x 7 rows. Crop the interior of each
