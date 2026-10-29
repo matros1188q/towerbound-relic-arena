@@ -1618,4 +1618,61 @@ const convert=(root)=>{
 const start=()=>{convert(document.body);const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')convert(record.target.parentElement);for(const added of record.addedNodes){if(added.nodeType===Node.TEXT_NODE)convert(added.parentElement);else if(added.nodeType===Node.ELEMENT_NODE&&added.tagName!=='SCRIPT'&&added.tagName!=='STYLE')convert(added);}}});observer.observe(document.body,{subtree:true,childList:true,characterData:true});};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
-</script></body></html>
+</script>
+<style id="relic-art-atlas-v2">
+/* Last-in-document override: relic art was being covered by later in-body styles. */
+.relic-art{position:relative!important;background-image:url('https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/a2dce931-4ded-4dd4-9e88-d42703f75270.webp')!important;background-size:500% 700%!important;background-repeat:no-repeat!important;background-color:#101425!important;overflow:hidden!important}
+.relic-art .tb-relic-image{display:none!important;visibility:hidden!important;opacity:0!important}
+.relic-art>span{display:none!important}
+.relic-art.art-ember{background-position:0% 50%!important}
+.relic-art.art-frost{background-position:100% 50%!important}
+.relic-art.art-thorn{background-position:75% 50%!important}
+.relic-art.art-spark{background-position:25% 66.66666666666667%!important}
+.relic-art.art-moon{background-position:50% 50%!important}
+.relic-art.art-rune{background-position:50% 83.33333333333333%!important}
+.relic-art.art-void{background-position:0% 66.66666666666667%!important}
+.relic-art.art-phoenix{background-position:25% 66.66666666666667%!important}
+.relic-art.art-crown{background-position:75% 50%!important}
+.relic-art.art-fang{background-position:0% 50%!important}
+.relic-art.art-heart{background-position:0% 66.66666666666667%!important}
+.relic-art.art-hourglass{background-position:75% 83.33333333333333%!important}
+.relic-art.art-meteor{background-position:100% 83.33333333333333%!important}
+.relic-art.art-mirror{background-position:50% 50%!important}
+.relic-art.art-oracle{background-position:50% 66.66666666666667%!important}
+.relic-art.art-multishot{background-position:0% 50%!important}
+.relic-art.art-venom{background-position:75% 66.66666666666667%!important}
+.relic-art.art-cinder{background-position:25% 66.66666666666667%!important}
+.relic-art.art-swift{background-position:75% 100%!important}
+.relic-art.art-quiver{background-position:0% 50%!important}
+.relic-art.art-stormglass{background-position:100% 83.33333333333333%!important}
+.relic-art.art-bloodpact{background-position:100% 66.66666666666667%!important}
+.relic-art.art-soulchain{background-position:25% 50%!important}
+.relic-art.art-ironbark{background-position:75% 50%!important}
+.relic-art.art-starfall{background-position:75% 83.33333333333333%!important}
+.relic-art.art-echo{background-position:50% 83.33333333333333%!important}
+.relic-art.art-luckycoin{background-position:100% 83.33333333333333%!important}
+.relic-art.art-laststand{background-position:0% 83.33333333333333%!important}
+.relic-art.art-glacier{background-position:100% 50%!important}
+.relic-art.art-plague{background-position:75% 66.66666666666667%!important}
+.relic-art.art-bloodmoon{background-position:100% 66.66666666666667%!important}
+.relic-art.art-guardian{background-position:0% 83.33333333333333%!important}
+.relic-art.art-soulharvest{background-position:25% 50%!important}
+.relic-art.art-wildfire{background-position:25% 66.66666666666667%!important}
+.relic-art.art-riftsigil{background-position:50% 66.66666666666667%!important}
+.relic-art.art-thorncrown{background-position:75% 50%!important}
+.relic-art.art-sunshard{background-position:25% 83.33333333333333%!important}
+.relic-art.art-warbanner{background-position:0% 50%!important}
+.relic-art.art-mimicseal{background-position:100% 100%!important}
+.relic-art.art-icebrand{background-position:25% 66.66666666666667%!important}
+.relic-art.art-permafrost{background-position:100% 50%!important}
+.relic-art.art-runebinder{background-position:0% 100%!important}
+.relic-art.art-astralcompass{background-position:75% 83.33333333333333%!important}
+.relic-art.art-goldenacorn{background-position:100% 83.33333333333333%!important}
+.relic-art.art-pilgrimseal{background-position:0% 83.33333333333333%!important}
+.relic-art.art-abyssalheart{background-position:0% 66.66666666666667%!important}
+.relic-art.art-bloodfang{background-position:0% 50%!important}
+.relic-art.art-bulwark{background-position:0% 83.33333333333333%!important}
+.relic-art.art-dawnblade{background-position:0% 100%!important}
+.relic-art:not([class*="art-"]){background-image:url('https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/a2dce931-4ded-4dd4-9e88-d42703f75270.webp')!important;background-size:500% 700%!important;background-position:0 100%!important}
+</style>
+</body></html>
