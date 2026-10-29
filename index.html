@@ -1243,6 +1243,51 @@ button{touch-action:manipulation}
 .relic-art.art-bulwark{background-image:url('./assets/relics/bulwark.png')!important;}
 .relic-art.art-dawnblade{background-image:url('./assets/relics/dawnblade.png')!important;}
 </style>
+
+<style id="relic-art-hard-fix-v8">
+/* Hard override: remove atlas sprite rendering entirely. Display one standalone PNG per relic. */
+.relic-art{
+  background-image:none!important;background-color:#101425!important;
+  background-position:center!important;background-size:contain!important;
+  background-repeat:no-repeat!important;overflow:hidden!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+}
+.relic-art>img.tb-relic-image{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  position:relative!important;inset:auto!important;
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+  object-fit:contain!important;object-position:center!important;
+  background:transparent!important;image-rendering:auto!important;
+}
+.relic-art>span{display:none!important}
+</style>
+<script id="relic-art-hard-fix-v8-runtime">
+(()=> {
+ const ids = ["ember","frost","thorn","spark","moon","rune","void","phoenix","crown","fang","heart","hourglass","meteor","mirror","oracle","multishot","venom","cinder","swift","quiver","stormglass","bloodpact","soulchain","ironbark","starfall","echo","luckycoin","laststand","glacier","plague","bloodmoon","guardian","soulharvest","wildfire","riftsigil","thorncrown","sunshard","warbanner","mimicseal","icebrand","permafrost","runebinder","astralcompass","goldenacorn","pilgrimseal","abyssalheart","bloodfang","bulwark","dawnblade"];
+ const known=new Set(ids);
+ function fix(){
+  document.querySelectorAll('.relic-art').forEach(el=>{
+   let id=[...el.classList].find(c=>c.startsWith('art-'))?.slice(4);
+   if(!id){
+    const card=el.closest('.relic');
+    const buy=card?.querySelector('[data-fallback-buy]');
+    if(buy) id=buy.getAttribute('data-fallback-buy');
+   }
+   if(!known.has(id)) return;
+   el.classList.add('art-'+id);
+   let img=el.querySelector('img.tb-relic-image');
+   if(!img){img=document.createElement('img');img.className='tb-relic-image';img.alt='';img.setAttribute('aria-hidden','true');el.replaceChildren(img);}
+   const src='./assets/relics/'+id+'.png?v=8';
+   if(!img.getAttribute('src')?.includes('/'+id+'.png?v=8')) img.src=src;
+   img.loading='eager';img.decoding='async';
+   img.onerror=()=>{el.dataset.artLoadError='true';img.style.display='none';};
+  });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix,{once:true});else fix();
+ new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="sigil">♜</div><div><div class="eyebrow">ROGUELITE AUTO-BATTLER · SEASON I</div><h1>TOWERBOUND <span style="color:var(--gold)">: RELIC ARENA</span></h1></div></div><div class="top-actions"><div class="currency"><div class="pill">🪙 <span id="gold">12</span></div><div class="pill">❤ <span id="hp">20</span></div><div class="pill gold">✦ <span id="essence">0</span></div></div><button id="accountOpen" class="account-button" type="button" aria-haspopup="dialog" aria-controls="accountDialog"><span class="account-avatar" id="accountAvatar">♜</span><span class="account-label"><b id="accountName">Игрок</b><small>Локальный профиль</small></span><span aria-hidden="true">⌄</span></button></div></header>
