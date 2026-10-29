@@ -1223,8 +1223,8 @@ button{touch-action:manipulation}
    el.classList.add('art-'+id);
    let img=el.querySelector('img.tb-relic-image');
    if(!img){img=document.createElement('img');img.className='tb-relic-image';img.alt='';img.setAttribute('aria-hidden','true');el.replaceChildren(img);}
-   const src='./assets/relics/'+id+'.png?v=9';
-   if(!img.getAttribute('src')?.includes('/'+id+'.png?v=9')) img.src=src;
+   const src='./assets/relics/'+id+'.png?v=10';
+   if(!img.getAttribute('src')?.includes('/'+id+'.png?v=10')) img.src=src;
    img.loading='eager';img.decoding='async';
    img.onerror=()=>{if(!img.dataset.fallback){img.dataset.fallback='1';const c=tbRelicArtPalette[id]||['#9a8cff','#e8e2ff'];img.src=relicImageFallback(id,c);return;}el.dataset.artLoadError='true';img.style.display='none';};
   });
@@ -1449,7 +1449,7 @@ const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><
 return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)
 }
 function relicImageFallback(id,c){let n=0;for(let i=0;i<String(id).length;i++)n=(n+String(id).charCodeAt(i)*(i+3))%997;return tbArtSvg(id,c[0],c[1],n%8)}
-function relicImage(id){const key=String(id||'').toLowerCase();const files=new Set(['ember','frost','thorn','spark','moon','rune','void','phoenix','crown','fang','heart','hourglass','meteor','mirror','oracle','multishot','venom','cinder','swift','quiver','stormglass','bloodpact','soulchain','ironbark','starfall','echo','luckycoin','laststand','glacier','plague','bloodmoon','guardian','soulharvest','wildfire','riftsigil','thorncrown','sunshard','warbanner','mimicseal','icebrand','permafrost','runebinder','astralcompass','goldenacorn','pilgrimseal','abyssalheart','bloodfang','bulwark','dawnblade']);if(files.has(key))return './assets/relics/'+key+'.png?v=9';const c=tbRelicArtPalette[key]||['#9a8cff','#e8e2ff'];let n=0;for(let i=0;i<key.length;i++)n=(n+key.charCodeAt(i)*(i+3))%997;return tbArtSvg(key,c[0],c[1],n%8)}
+function relicImage(id){const key=String(id||'').toLowerCase();const files=new Set(['ember','frost','thorn','spark','moon','rune','void','phoenix','crown','fang','heart','hourglass','meteor','mirror','oracle','multishot','venom','cinder','swift','quiver','stormglass','bloodpact','soulchain','ironbark','starfall','echo','luckycoin','laststand','glacier','plague','bloodmoon','guardian','soulharvest','wildfire','riftsigil','thorncrown','sunshard','warbanner','mimicseal','icebrand','permafrost','runebinder','astralcompass','goldenacorn','pilgrimseal','abyssalheart','bloodfang','bulwark','dawnblade']);if(files.has(key))return './assets/relics/'+key+'.png?v=10';const c=tbRelicArtPalette[key]||['#9a8cff','#e8e2ff'];let n=0;for(let i=0;i<key.length;i++)n=(n+key.charCodeAt(i)*(i+3))%997;return tbArtSvg(key,c[0],c[1],n%8)}
 function synergyArtId(name){return tbSynArt[name]||['#a78bfa','#f1caff',7]}
 function synergyArt(name){const a=synergyArtId(name);return tbArtSvg(name,a[0],a[1],a[2])}
 function itemFor(id){return pool.find(x=>x.id===id)}
