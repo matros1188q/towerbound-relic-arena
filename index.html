@@ -1704,4 +1704,30 @@ sync();
 new MutationObserver(sync).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+<style id="relic-art-fit-correction-v1">
+/* Keep the atlas cells proportional to the original 5x7 sheet instead of stretching them square. */
+.relic-art{
+  width:66px!important;height:70.5px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  background-size:500% 700%!important;
+  background-repeat:no-repeat!important;
+  background-origin:border-box!important;
+  background-clip:padding-box!important;
+  image-rendering:auto!important;
+}
+.shopgrid .relic-art{width:66px!important;height:70.5px!important}
+.slot .relic-art,.inventory .relic-art,.tower .relic-art{max-width:100%!important}
+.relic-art>.tb-relic-image,.relic-art img{display:none!important}
+.relic-art:before,.relic-art:after{content:none!important;display:none!important}
+</style>
+<script id="relic-art-fit-correction-runtime-v1">
+(()=>{'use strict';
+const src='https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/13fae98f-1815-4d94-b088-04c2fc11136e.png';
+const positions={"ember":"0% 0%","frost":"25% 0%","thorn":"50% 0%","spark":"75% 0%","moon":"100% 0%","rune":"0% 16.6666667%","void":"25% 16.6666667%","phoenix":"50% 16.6666667%","crown":"75% 16.6666667%","fang":"100% 16.6666667%","heart":"0% 33.3333333%","hourglass":"25% 33.3333333%","meteor":"50% 33.3333333%","mirror":"75% 33.3333333%","oracle":"100% 33.3333333%","multishot":"0% 50%","venom":"25% 50%","cinder":"50% 50%","swift":"75% 50%","quiver":"100% 50%","stormglass":"0% 66.6666667%","bloodpact":"25% 66.6666667%","soulchain":"50% 66.6666667%","ironbark":"75% 66.6666667%","starfall":"100% 66.6666667%","echo":"0% 83.3333333%","luckycoin":"25% 83.3333333%","laststand":"50% 83.3333333%","glacier":"75% 83.3333333%","plague":"100% 83.3333333%","bloodmoon":"0% 100%","guardian":"25% 100%","soulharvest":"50% 100%","wildfire":"75% 100%","riftsigil":"100% 100%","thorncrown":"0% 0%","sunshard":"25% 0%","warbanner":"50% 0%","mimicseal":"75% 0%","icebrand":"100% 0%","permafrost":"0% 16.6666667%","runebinder":"25% 16.6666667%","astralcompass":"50% 16.6666667%","goldenacorn":"75% 16.6666667%","pilgrimseal":"100% 16.6666667%","abyssalheart":"0% 33.3333333%","bloodfang":"25% 33.3333333%","bulwark":"50% 33.3333333%","dawnblade":"75% 33.3333333%"};
+function fix(){document.querySelectorAll('.relic-art').forEach(el=>{const id=[...el.classList].find(c=>c.startsWith('art-'))?.slice(4);if(!positions[id])return;el.style.setProperty('background-image','url("'+src+'")','important');el.style.setProperty('background-size','500% 700%','important');el.style.setProperty('background-position',positions[id],'important');el.style.setProperty('background-repeat','no-repeat','important');el.style.setProperty('aspect-ratio','0.925','important');el.querySelectorAll('img,.tb-relic-image').forEach(img=>img.style.setProperty('display','none','important'));});}
+fix();new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body></html>
