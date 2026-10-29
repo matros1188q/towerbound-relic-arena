@@ -38,7 +38,7 @@ create:function(){
  this.sparkles=[];
  // Set a deterministic first-wave enemy immediately; do not wait for the first combat event.
  scene.setWave.call(this,window.TowerboundWave||1,!!window.TowerboundBoss);
- this.scale.on('resize',this.onResize,this);
+ this.scale.on('resize',scene.onResize,this);
 },
 onResize:function(){if(this.scene.isActive())this.scene.restart();},
 setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВКА К БОЮ',battle:'БОЙ · АТАКА И ЗАЩИТА',reward:'НАГРАДА ЗА ПОБЕДУ',victory:'АРЕНА ПОКОРЕНА',defeat:'ОТРЯД ПАЛ'};if(this.phaseLabel)this.phaseLabel.setText(labels[phase]||labels.prep);if(this.hero&&this.enemy){this.hero.setAlpha(phase==='defeat'?.65:1);this.enemy.setAlpha(phase==='victory'?.35:1);}},
