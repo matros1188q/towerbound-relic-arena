@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/build-relic-art.yml"
       - "scripts/split_relic_atlas.py"
+      - "index.html"
 permissions:
   contents: write
 jobs:
