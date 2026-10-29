@@ -1774,4 +1774,39 @@ function apply(){document.querySelectorAll('.relic-art').forEach(el=>{const cls=
 apply();new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+<style id="relic-art-optical-centering-v3">
+/* Optical centering: some painted objects have transparent padding inside their atlas cells. */
+.relic-art.art-glacier,.relic-art.art-permafrost,.relic-art.art-icebrand,.relic-art.art-frost{
+  background-position:75% 83.3333333%!important;
+}
+.relic-art.art-starfall{
+  background-position:0% 66.6666667%!important;
+}
+.relic-art.art-pilgrimseal{
+  background-position:50% 83.3333333%!important;
+}
+</style>
+<script id="relic-art-optical-centering-runtime-v3">
+(()=>{'use strict';
+const src='https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/13fae98f-1815-4d94-b088-04c2fc11136e.png';
+const fix={
+ glacier:{x:75,y:83.3333333,zoom:1.08,dx:0,dy:0},
+ permafrost:{x:75,y:83.3333333,zoom:1.08,dx:0,dy:0},
+ icebrand:{x:75,y:83.3333333,zoom:1.08,dx:0,dy:0},
+ frost:{x:75,y:83.3333333,zoom:1.08,dx:0,dy:0},
+ starfall:{x:0,y:66.6666667,zoom:1.06,dx:0,dy:0},
+ pilgrimseal:{x:25,y:83.3333333,zoom:1.04,dx:0,dy:0}
+};
+function apply(){document.querySelectorAll('.relic-art').forEach(el=>{
+ const cls=[...el.classList].find(c=>c.startsWith('art-'));const id=cls&&cls.slice(4);const f=fix[id];if(!f)return;
+ el.style.setProperty('background-image','url("'+src+'")','important');
+ el.style.setProperty('background-size',(500*f.zoom)+'% '+(700*f.zoom)+'%','important');
+ el.style.setProperty('background-position',f.x+'% '+f.y+'%','important');
+ el.style.setProperty('background-repeat','no-repeat','important');
+ el.style.setProperty('background-color','#101425','important');
+});}
+apply();new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body></html>
