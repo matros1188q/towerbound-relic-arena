@@ -1,0 +1,30 @@
+name: Build individual relic artwork
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/build-relic-art.yml"
+      - "scripts/split_relic_atlas.py"
+permissions:
+  contents: write
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install Pillow
+      - run: python scripts/split_relic_atlas.py
+      - name: Commit individual PNGs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/relics
+          if git diff --cached --quiet; then
+            echo "No changes to relic art"
+          else
+            git commit -m "Add individually cropped relic artwork"
+            git push
+          fi
