@@ -1117,23 +1117,23 @@ button{touch-action:manipulation}
 
 
 
-<style id="synergy-art-atlas-v2">
-.tb-syn-card-icon.tb-syn-atlas{display:inline-block;width:32px;height:32px;flex:0 0 32px;border-radius:8px;background-image:url('https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/13fae98f-1815-4d94-b088-04c2fc11136e.png');background-size:500% 700%;background-repeat:no-repeat;border:1px solid #8abaff66;box-shadow:0 0 9px #5ab8ff30}
-.tb-syn-card-icon.tb-syn-atlas-0{background-position:0% 0%}
-.tb-syn-card-icon.tb-syn-atlas-1{background-position:25% 0%}
-.tb-syn-card-icon.tb-syn-atlas-2{background-position:50% 0%}
-.tb-syn-card-icon.tb-syn-atlas-3{background-position:75% 0%}
-.tb-syn-card-icon.tb-syn-atlas-4{background-position:100% 0%}
-.tb-syn-card-icon.tb-syn-atlas-5{background-position:0% 16.666666666666668%}
-.tb-syn-card-icon.tb-syn-atlas-6{background-position:25% 16.666666666666668%}
-.tb-syn-card-icon.tb-syn-atlas-7{background-position:50% 16.666666666666668%}
-.tb-syn-card-icon.tb-syn-atlas-8{background-position:75% 16.666666666666668%}
-.tb-syn-card-icon.tb-syn-atlas-9{background-position:100% 16.666666666666668%}
-.tb-syn-card-icon.tb-syn-atlas-10{background-position:0% 33.333333333333336%}
-.tb-syn-card-icon.tb-syn-atlas-11{background-position:25% 33.333333333333336%}
-.tb-syn-card-icon.tb-syn-atlas-12{background-position:50% 33.333333333333336%}
-.tb-syn-card-icon.tb-syn-atlas-13{background-position:75% 33.333333333333336%}
-.tb-syn-card-icon.tb-syn-atlas-14{background-position:100% 33.333333333333336%}
+<style id="synergy-art-local-v3">
+.tb-syn-card-icon.tb-syn-atlas{display:inline-block;width:32px;height:32px;flex:0 0 32px;border-radius:8px;background-color:#171a2b;background-repeat:no-repeat;background-position:center;background-size:contain;border:1px solid #8abaff66;box-shadow:0 0 9px #5ab8ff30}
+.tb-syn-card-icon.tb-syn-atlas-0{background-image:url('./assets/icons/fireball.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-1{background-image:url('./assets/icons/poison.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-2{background-image:url('./assets/icons/lightning.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-3{background-image:url('./assets/icons/demon.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-4{background-image:url('./assets/icons/nature.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-5{background-image:url('./assets/icons/sword.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-6{background-image:url('./assets/icons/ice-bolt.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-7{background-image:url('./assets/icons/arcane.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-8{background-image:url('./assets/icons/coin.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-9{background-image:url('./assets/icons/health.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-10{background-image:url('./assets/icons/shield.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-11{background-image:url('./assets/icons/crown.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-12{background-image:url('./assets/icons/oracle.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-13{background-image:url('./assets/icons/sword.svg?v=10')}
+.tb-syn-card-icon.tb-syn-atlas-14{background-image:url('./assets/icons/ghost.svg?v=10')}
 </style>
 
 <style id="relic-individual-assets-v7">
@@ -1734,31 +1734,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 
 
-<script id="reuse-arsenal-synergy-art-v1">
-(()=>{'use strict';
-const sheet='https://d2ol7oe51mr4n9.cloudfront.net/user_3JJbyBNV18d7ADzwAWtUl75eRYE/13fae98f-1815-4d94-b088-04c2fc11136e.png';
-function sync(){
- const cards=[...document.querySelectorAll('#synergyProgress [data-synergy]')];
- if(!cards.length)return;
- const indexByName=new Map(cards.map((el,i)=>[el.getAttribute('data-synergy'),i%15]));
- document.querySelectorAll('.tb-relic-syn-badge').forEach(badge=>{
-   const img=badge.querySelector('.tb-syn-icon');
-   if(!img)return;
-   const title=badge.getAttribute('title')||'';
-   const name=[...indexByName.keys()].find(n=>title.startsWith(n));
-   if(name===undefined)return;
-   const idx=indexByName.get(name);
-   const icon=document.createElement('span');
-   icon.className='tb-syn-card-icon tb-syn-atlas tb-syn-atlas-'+idx+' tb-syn-reused-art';
-   icon.setAttribute('aria-hidden','true');
-   icon.style.cssText='display:inline-block;width:22px;height:22px;flex:0 0 22px;border-radius:5px;background-image:url("'+sheet+'");background-size:500% 700%;background-repeat:no-repeat;background-position:'+(['0%','25%','50%','75%','100%'][idx%5])+' '+(Math.floor(idx/5)*100/6)+'%;border:1px solid #8abaff66;box-shadow:0 0 6px #5ab8ff30';
-   img.replaceWith(icon);
- });
-}
-sync();
-new MutationObserver(sync).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
+
 
 <style id="tb-relic-final-override">
 html body .relic-art,html body #shop .relic-art,html body #stashItems .relic-art,html body #slots .relic-art{background-image:radial-gradient(ellipse at 50% 35%,#263652,#10131e 75%)!important;background-color:#10131e!important;background-size:auto!important;background-repeat:no-repeat!important;background-position:center!important;overflow:hidden!important;isolation:isolate!important}
