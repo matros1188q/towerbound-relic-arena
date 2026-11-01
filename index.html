@@ -1207,32 +1207,7 @@ button{touch-action:manipulation}
 }
 .relic-art>span{display:none!important}
 </style>
-<script id="relic-art-hard-fix-v8-runtime">
-(()=> {
- const ids = ["ember","frost","thorn","spark","moon","rune","void","phoenix","crown","fang","heart","hourglass","meteor","mirror","oracle","multishot","venom","cinder","swift","quiver","stormglass","bloodpact","soulchain","ironbark","starfall","echo","luckycoin","laststand","glacier","plague","bloodmoon","guardian","soulharvest","wildfire","riftsigil","thorncrown","sunshard","warbanner","mimicseal","icebrand","permafrost","runebinder","astralcompass","goldenacorn","pilgrimseal","abyssalheart","bloodfang","bulwark","dawnblade"];
- const known=new Set(ids);
- function fix(){
-  document.querySelectorAll('.relic-art').forEach(el=>{
-   let id=[...el.classList].find(c=>c.startsWith('art-'))?.slice(4);
-   if(!id){
-    const card=el.closest('.relic');
-    const buy=card?.querySelector('[data-fallback-buy]');
-    if(buy) id=buy.getAttribute('data-fallback-buy');
-   }
-   if(!known.has(id)) return;
-   el.classList.add('art-'+id);
-   let img=el.querySelector('img.tb-relic-image');
-   if(!img){img=document.createElement('img');img.className='tb-relic-image';img.alt='';img.setAttribute('aria-hidden','true');el.replaceChildren(img);}
-   const src=relicImage(id);
-   if(img.getAttribute('src')!==src) img.src=src;
-   img.loading='eager';img.decoding='async';
-   img.onerror=()=>{if(!img.dataset.fallback){img.dataset.fallback='1';const c=tbRelicArtPalette[id]||['#9a8cff','#e8e2ff'];img.src=relicImageFallback(id,c);return;}el.dataset.artLoadError='true';img.style.display='none';};
-  });
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix,{once:true});else fix();
- new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
+<!-- Removed obsolete relic image observer: relicImage() is scoped inside the main game IIFE; renderShop/render() already create image elements. -->
 
 
 <style id="tb-relic-layout-repair-20261029">
