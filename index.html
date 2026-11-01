@@ -1799,4 +1799,4 @@ if(hpEl){let last=hpEl.textContent;new MutationObserver(()=>{const next=hpEl.tex
 if(battleBtn)battleBtn.addEventListener('click',()=>{hero.classList.remove('tb-actor-hit');void hero.offsetWidth;hero.classList.add('tb-actor-hit');setTimeout(()=>hero.classList.remove('tb-actor-hit'),320)});
 [document.getElementById('activeSkillBtn'),document.getElementById('activeWardBtn')].filter(Boolean).forEach((btn,i)=>btn.addEventListener('click',()=>{const target=i===0?foe:hero;target.classList.remove('tb-actor-hit');void target.offsetWidth;target.classList.add('tb-actor-hit');setTimeout(()=>target.classList.remove('tb-actor-hit'),320)}));
 })();
-</script></style></body></html>
+</script></body></html>
