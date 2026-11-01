@@ -115,6 +115,7 @@ function ensureDomFx(){
  mount.appendChild(layer);}
  return layer;
 }
+function appendBoundedFx(layer,node){while(layer.childElementCount>=8){const first=layer.firstElementChild;if(!first)break;first.remove();}layer.appendChild(node);return node;}
 function domCombatHit(critical=false,boss=false,style='arcane'){
  const layer=ensureDomFx();
  // Animate the always-visible SVG actors too, not only the Phaser canvas.
@@ -129,21 +130,21 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  glyph.src='./assets/icons/'+(abilityArt[style]||'arcane')+'.svg?v=5';
  glyph.alt='';glyph.draggable=false;glyph.decoding='async';
  Object.assign(glyph.style,{position:'absolute',left:'32%',top:'42%',width:critical?'42px':'34px',height:critical?'42px':'34px',objectFit:'contain',filter:'drop-shadow(0 0 7px '+color+') drop-shadow(0 0 13px '+color+')',zIndex:'4',transform:'translate(-50%,-50%) rotate(-20deg)'});
- layer.appendChild(glyph);
+ appendBoundedFx(layer,glyph);
  const glyphAnim=glyph.animate([{left:'32%',top:'42%',transform:'translate(-50%,-50%) rotate(-20deg) scale(.45)',opacity:0},{left:'48%',top:'47%',transform:'translate(-50%,-50%) rotate(35deg) scale(1.2)',opacity:1,offset:.35},{left:'67%',top:'48%',transform:'translate(-50%,-50%) rotate(110deg) scale('+(critical?1.7:1)+')',opacity:1}],{duration:critical?260:220,easing:'cubic-bezier(.15,.8,.2,1)',fill:'forwards'});
  glyphAnim.onfinish=()=>glyph.remove();
  const orb=document.createElement('i');
  Object.assign(orb.style,{position:'absolute',left:'31%',top:'48%',width:(critical?18:13)+'px',height:(critical?18:13)+'px',borderRadius:'50%',background:color,boxShadow:'0 0 '+(critical?30:20)+'px '+color+',0 0 5px #fff',border:'2px solid #fff',zIndex:'3',opacity:'1'});
- layer.appendChild(orb);
+ appendBoundedFx(layer,orb);
  const rect=mount.getBoundingClientRect(),dx=Math.max(25,rect.width*.36),dy=(Math.random()-.5)*rect.height*.12;
  const anim=orb.animate([{transform:'translate(0,0) scale(.55)',opacity:0},{transform:'translate('+(-dx*.05)+'px,'+(-dy)+'px) scale(1.25)',opacity:1,offset:.16},{transform:'translate('+dx+'px,'+dy+'px) scale('+(critical?1.65:1)+')',opacity:1}],{duration:critical?230:190,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
  anim.onfinish=()=>{
   orb.remove();
   const burst=document.createElement('i');
   Object.assign(burst.style,{position:'absolute',left:'67%',top:(48+dy/Math.max(1,rect.height)*100)+'%',width:(critical?24:15)+'px',height:(critical?24:15)+'px',borderRadius:'50%',border:(critical?4:3)+'px solid '+color,boxShadow:'0 0 '+(critical?30:18)+'px '+color,zIndex:'3'});
-  layer.appendChild(burst);
+  appendBoundedFx(layer,burst);
   burst.animate([{transform:'translate(-50%,-50%) scale(.35)',opacity:1},{transform:'translate(-50%,-50%) scale('+(critical?3.8:2.8)+')',opacity:0}],{duration:critical?380:300,easing:'ease-out'}).onfinish=()=>burst.remove();
-  if(critical){const flash=document.createElement('b');flash.textContent='CRITICAL!';Object.assign(flash.style,{position:'absolute',left:'67%',top:'29%',transform:'translateX(-50%)',font:'900 15px system-ui',color:'#fff1a6',textShadow:'0 0 12px #ff8c36,0 2px 4px #000',whiteSpace:'nowrap',zIndex:'4'});layer.appendChild(flash);flash.animate([{transform:'translate(-50%,8px) scale(.7)',opacity:0},{transform:'translate(-50%,-12px) scale(1.15)',opacity:1,offset:.25},{transform:'translate(-50%,-34px) scale(1)',opacity:0}],{duration:650,easing:'ease-out'}).onfinish=()=>flash.remove();}
+  if(critical){const flash=document.createElement('b');flash.textContent='CRITICAL!';Object.assign(flash.style,{position:'absolute',left:'67%',top:'29%',transform:'translateX(-50%)',font:'900 15px system-ui',color:'#fff1a6',textShadow:'0 0 12px #ff8c36,0 2px 4px #000',whiteSpace:'nowrap',zIndex:'4'});appendBoundedFx(layer,flash);flash.animate([{transform:'translate(-50%,8px) scale(.7)',opacity:0},{transform:'translate(-50%,-12px) scale(1.15)',opacity:1,offset:.25},{transform:'translate(-50%,-34px) scale(1)',opacity:0}],{duration:650,easing:'ease-out'}).onfinish=()=>flash.remove();}
  };
 }
 
