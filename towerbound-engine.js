@@ -28,8 +28,8 @@ create:function(){
  this.foeAura=this.add.circle(w*.67,h*.72,40,0xe85e78,.12).setDepth(2);
  this.heroShadow=this.add.ellipse(w*.34,h*.76,42,11,0x050711,.65).setDepth(3);
  this.foeShadow=this.add.ellipse(w*.67,h*.76,70,16,0x050711,.7).setDepth(3);
- this.tweens.add({targets:this.hero,y:this.hero.y-10,angle:-2,duration:520,yoyo:true,repeat:-1,ease:'Sine.inOut'});
- this.tweens.add({targets:this.enemy,y:this.enemy.y-8,angle:2,duration:680,yoyo:true,repeat:-1,ease:'Sine.inOut',delay:150});
+
+
  this.tweens.add({targets:this.heroShadow,scaleX:1.18,alpha:.35,duration:520,yoyo:true,repeat:-1,ease:'Sine.inOut'});
  this.tweens.add({targets:this.foeShadow,scaleX:1.15,alpha:.42,duration:680,yoyo:true,repeat:-1,ease:'Sine.inOut'});
  this.tweens.add({targets:this.phaseLabel,alpha:.58,duration:1100,yoyo:true,repeat:-1,ease:'Sine.inOut'});
