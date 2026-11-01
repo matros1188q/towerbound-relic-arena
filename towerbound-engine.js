@@ -40,7 +40,18 @@ create:function(){
  scene.setWave.call(this,window.TowerboundWave||1,!!window.TowerboundBoss);
  this.scale.on('resize',scene.onResize,this);
 },
-onResize:function(){if(this.scene.isActive())this.scene.restart();},
+onResize:function(){
+ if(!this.scene.isActive())return;
+ const w=this.scale.width,h=this.scale.height;
+ if(this._tbResizePending)clearTimeout(this._tbResizePending);
+ this._tbResizePending=setTimeout(()=>{
+  if(!this.scene.isActive())return;
+  const last=this._tbLastSize||{w:700,h:300};
+  if(Math.abs(w-last.w)<36&&Math.abs(h-last.h)<36)return;
+  this._tbLastSize={w,h};
+  this.scene.restart();
+ },220);
+},
 setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВКА К БОЮ',battle:'БОЙ · АТАКА И ЗАЩИТА',reward:'НАГРАДА ЗА ПОБЕДУ',victory:'АРЕНА ПОКОРЕНА',defeat:'ОТРЯД ПАЛ'};if(this.phaseLabel)this.phaseLabel.setText(labels[phase]||labels.prep);if(this.hero&&this.enemy){this.hero.setAlpha(phase==='defeat'?.65:1);this.enemy.setAlpha(phase==='victory'?.35:1);}},
  impact:function(critical=false,boss=false,style='arcane'){
  const w=this.scale.width,h=this.scale.height,target=this.enemy,hero=this.hero;
@@ -93,7 +104,7 @@ setWave:function(wave,boss){
  if(this.foeAura)this.foeAura.setFillStyle(boss?0xe85e78:(slot===1?0x78e7ef:slot===2?0xff8a45:0x9b78ed),boss?.22:.12);
  scene.setPhase.call(this,this.phase||'prep');
 },
-update:function(time){if(this.heroAura)this.heroAura.setAlpha(.08+((Math.sin(time*.004)+1)*.09));if(this.foeAura)this.foeAura.setAlpha(.1+((Math.sin(time*.003+1)+1)*.1));}
+update:function(){/* Ambient alpha is handled by bounded tweens; avoid per-frame JS writes. */}
 };
 
 // DOM combat FX: visible even when Phaser canvas is hidden by mobile stacking/compositing.
@@ -155,6 +166,19 @@ function ensureVisibleActors(){
 }
 ensureVisibleActors();
 if(!window.Phaser){console.warn('Towerbound: Phaser CDN unavailable; DOM actor fallback remains active.');return;}
-const game=new Phaser.Game({type:Phaser.CANVAS,parent:mount,width:700,height:300,backgroundColor:'#101326',pixelArt:false,antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},render:{antialias:true,pixelArt:false,roundPixels:false},scene});
+const tbMobilePerf=window.matchMedia('(max-width:700px)').matches;
+const game=new Phaser.Game({
+ type:Phaser.CANVAS,parent:mount,width:700,height:300,
+ backgroundColor:'#101326',pixelArt:false,antialias:!tbMobilePerf,roundPixels:tbMobilePerf,
+ scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},
+ fps:{target:tbMobilePerf?30:60,forceSetTimeOut:tbMobilePerf},
+ render:{antialias:!tbMobilePerf,pixelArt:false,roundPixels:tbMobilePerf,powerPreference:'low-power',preserveDrawingBuffer:false},
+ scene
+});
+/* tb-performance-guard-v1: suspend renderer while Safari is backgrounded */
+const tbSetRenderSleep=()=>{try{if(document.hidden){if(game.loop&&game.loop.sleep)game.loop.sleep();}else if(game.loop&&game.loop.wake)game.loop.wake();}catch(e){console.warn('Towerbound renderer lifecycle:',e)}};
+document.addEventListener('visibilitychange',tbSetRenderSleep,{passive:true});
+window.addEventListener('pagehide',()=>{try{if(game.loop&&game.loop.sleep)game.loop.sleep()}catch(e){}},{passive:true});
+tbSetRenderSleep();
 window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);if(window.TowerModels&&window.TowerModels.hit)window.TowerModels.hit(critical,boss);if(arenaScene&&scene.impact)scene.impact.call(arenaScene,critical,boss,style);},win:()=>{if(arenaScene&&scene.victory)scene.victory.call(arenaScene);},wave:(wave,boss)=>{if(window.TowerModels&&window.TowerModels.wave)window.TowerModels.wave(wave,boss);if(arenaScene&&scene.setWave)scene.setWave.call(arenaScene,wave,boss);},phase:(phase)=>{if(arenaScene&&scene.setPhase)scene.setPhase.call(arenaScene,phase);}};
 })();
