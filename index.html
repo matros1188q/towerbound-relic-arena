@@ -1762,4 +1762,41 @@ html body #shop .relic button+button{margin-top:6px!important}
 html body #shop{align-items:stretch!important;grid-auto-rows:1fr!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
 html body{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
 @media(max-width:700px){html body #shop .relic-art{width:80px!important;height:80px!important;min-width:80px!important;min-height:80px!important}html body #shop .relic button{font-size:10px!important;padding:9px 4px!important}}
-</style></body></html>
+</style>
+<style id="tb-illustrated-actors-v1">
+.tb-actor-layer{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;isolation:isolate}
+.tb-actor{position:absolute;bottom:8%;width:42%;height:88%;display:flex;align-items:flex-end;justify-content:center;transform-origin:50% 90%;will-change:transform,filter;filter:drop-shadow(0 9px 10px #0009)}
+.tb-actor img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.tb-actor-hero{left:1%;animation:tbActorIdleHero 3.1s ease-in-out infinite}
+.tb-actor-enemy{right:0;width:45%;animation:tbActorIdleEnemy 2.7s ease-in-out infinite;filter:drop-shadow(0 10px 12px #000b) drop-shadow(0 0 13px #e85e7850)}
+.tb-actor-enemy img{transform:scaleX(-1)}
+.tb-actor-aura{position:absolute;left:15%;right:15%;bottom:5%;height:18%;border-radius:50%;background:radial-gradient(ellipse,rgba(120,231,239,.22),transparent 70%);filter:blur(5px)}
+.tb-actor-enemy .tb-actor-aura{background:radial-gradient(ellipse,rgba(232,94,120,.27),transparent 70%)}
+.tb-actor-label{position:absolute;bottom:2%;font:900 8px/1.2 system-ui,sans-serif;letter-spacing:.15em;color:#f5e8c7;text-shadow:0 2px 5px #000;text-align:center;white-space:nowrap}
+.tb-actor-hit{animation:tbActorHit .28s ease-out!important}
+.tb-actor-layer:after{content:"";position:absolute;left:7%;right:7%;bottom:6%;height:1px;background:linear-gradient(90deg,transparent,#e7c77a88,transparent);box-shadow:0 0 16px #e7c77a33}
+@keyframes tbActorIdleHero{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+@keyframes tbActorIdleEnemy{0%,100%{transform:translateY(0) rotate(1deg) scale(1)}50%{transform:translateY(-5px) rotate(-1deg) scale(1.015)}}
+@keyframes tbActorHit{0%{transform:translateX(0) scale(1);filter:brightness(1)}30%{transform:translateX(-9px) scale(1.04);filter:brightness(2.2) drop-shadow(0 0 15px #ffcf79)}65%{transform:translateX(5px) scale(.99);filter:brightness(1.5)}100%{transform:translateX(0) scale(1);filter:brightness(1)}}
+@media(max-width:700px){.tb-arena-rebuilt .arena-stage{height:clamp(190px,57vw,270px)!important;min-height:190px!important;position:relative!important;overflow:hidden!important}.tb-actor{height:89%;width:43%;bottom:8%}.tb-actor-enemy{width:46%}.tb-actor-label{font-size:7px}.tb-arena-rebuilt .stage-floor-label{z-index:6!important;opacity:.65}}
+@media(min-width:701px){.tb-arena-rebuilt .arena-stage{min-height:300px!important}.tb-actor{max-width:280px}.tb-actor-enemy{max-width:310px}}
+@media(prefers-reduced-motion:reduce){.tb-actor-hero,.tb-actor-enemy{animation:none!important}}
+</style>
+<script id="tb-illustrated-actors-v1">
+(()=>{'use strict';
+const stage=document.querySelector('.tb-arena-rebuilt .arena-stage');
+if(!stage||stage.querySelector('.tb-actor-layer'))return;
+const layer=document.createElement('div');layer.className='tb-actor-layer';layer.setAttribute('aria-hidden','true');
+function actor(kind,src,label){const el=document.createElement('div');el.className='tb-actor tb-actor-'+kind;el.innerHTML='<span class="tb-actor-aura"></span><img alt="" draggable="false"><span class="tb-actor-label"></span>';el.querySelector('img').src=src;el.querySelector('.tb-actor-label').textContent=label;layer.appendChild(el);return el}
+const hero=actor('hero','./assets/hero-illustrated.svg?v=4','ГЕРОЙ');
+const foe=actor('enemy','./assets/foe-illustrated.svg?v=4','ПРОТИВНИК');
+stage.appendChild(layer);
+const nameEl=document.getElementById('enemyName'),hpEl=document.getElementById('enemyHpText'),battleBtn=document.getElementById('fightBtn');
+function syncEnemy(){const n=(nameEl?.textContent||'').toLowerCase();let src='./assets/foe-illustrated.svg?v=4',label='ПРОТИВНИК';if(/босс|королев|колосс|древн|титан/.test(n)){src='./assets/brute-illustrated.svg?v=4';label='БОСС'}else if(/кост|скелет|нежит|лич|мертв/.test(n)){src='./assets/skeleton-illustrated.svg?v=4';label='НЕЖИТЬ'}else if(/элит/.test(n)){src='./assets/brute-illustrated.svg?v=4';label='ЭЛИТА'}else if(/гоблин|крыса|паук|тень/.test(n)){label='ВРАГ'}const img=foe.querySelector('img');if(img.getAttribute('src')!==src)img.src=src;foe.querySelector('.tb-actor-label').textContent=label}
+syncEnemy();
+if(nameEl)new MutationObserver(syncEnemy).observe(nameEl,{childList:true,characterData:true,subtree:true});
+if(hpEl){let last=hpEl.textContent;new MutationObserver(()=>{const next=hpEl.textContent;if(next!==last&&document.body.classList.contains('in-battle')){foe.classList.remove('tb-actor-hit');void foe.offsetWidth;foe.classList.add('tb-actor-hit');setTimeout(()=>foe.classList.remove('tb-actor-hit'),320)}last=next}).observe(hpEl,{childList:true,characterData:true,subtree:true})}
+if(battleBtn)battleBtn.addEventListener('click',()=>{hero.classList.remove('tb-actor-hit');void hero.offsetWidth;hero.classList.add('tb-actor-hit');setTimeout(()=>hero.classList.remove('tb-actor-hit'),320)});
+[document.getElementById('activeSkillBtn'),document.getElementById('activeWardBtn')].filter(Boolean).forEach((btn,i)=>btn.addEventListener('click',()=>{const target=i===0?foe:hero;target.classList.remove('tb-actor-hit');void target.offsetWidth;target.classList.add('tb-actor-hit');setTimeout(()=>target.classList.remove('tb-actor-hit'),320)}));
+})();
+</script></style></body></html>
