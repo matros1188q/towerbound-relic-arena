@@ -1794,7 +1794,7 @@ html body{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
 @media(min-width:701px){.tb-arena-rebuilt .arena-stage{min-height:300px!important}.tb-actor{max-width:280px}.tb-actor-enemy{max-width:310px}}
 @media(prefers-reduced-motion:reduce){.tb-actor-hero,.tb-actor-enemy{animation:none!important}}
 </style>
-<script id="tb-illustrated-actors-v1">
+<script id="tb-illustrated-actors-runtime-v1">
 (()=>{'use strict';
 const stage=document.querySelector('.tb-arena-rebuilt .arena-stage');
 if(!stage||stage.querySelector('.tb-actor-layer'))return;
@@ -1838,34 +1838,6 @@ if(battleBtn)battleBtn.addEventListener('click',()=>{hero.classList.remove('tb-a
 [document.getElementById('activeSkillBtn'),document.getElementById('activeWardBtn')].filter(Boolean).forEach((btn,i)=>btn.addEventListener('click',()=>{const target=i===0?foe:hero;target.classList.remove('tb-actor-hit');void target.offsetWidth;target.classList.add('tb-actor-hit');setTimeout(()=>target.classList.remove('tb-actor-hit'),320)}));
 })();
 </script>
-<script id="tb-atlas-engine-v1">
-(()=>{'use strict';
-const DB='towerbound-atlas-v1',STORE='source';
-const W=1536,H=1024;
-const regions={
- hero_01:[392,24,135,238],hero_02:[525,24,135,238],hero_03:[660,24,135,238],hero_04:[795,24,135,238],hero_05:[930,24,155,238],
- synergy_01:[1110,28,78,76],synergy_02:[1190,28,78,76],synergy_03:[1270,28,78,76],synergy_04:[1350,28,78,76],synergy_05:[1430,28,78,76],
- synergy_06:[1110,105,78,76],synergy_07:[1190,105,78,76],synergy_08:[1270,105,78,76],synergy_09:[1350,105,78,76],synergy_10:[1430,105,78,76],
- synergy_11:[1110,182,78,64],synergy_12:[1190,182,78,64],synergy_13:[1270,182,78,64],synergy_14:[1350,182,78,64],synergy_15:[1430,182,78,64]
-};
-const dbOpen=()=>new Promise((ok,no)=>{const q=indexedDB.open(DB,1);q.onupgradeneeded=()=>q.result.createObjectStore(STORE);q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)});
-async function save(blob){const db=await dbOpen();return new Promise((ok,no)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(blob,'atlas');t.oncomplete=ok;t.onerror=()=>no(t.error)})}
-async function load(){const db=await dbOpen();return new Promise((ok,no)=>{const q=db.transaction(STORE).objectStore(STORE).get('atlas');q.onsuccess=()=>ok(q.result||null);q.onerror=()=>no(q.error)})}
-let sourceUrl='';
-function crop(id){const r=regions[id];if(!r||!sourceUrl)return '';const [x,y,w,h]=r;const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+x+' '+y+' '+w+' '+h+'" width="'+w+'" height="'+h+'"><image href="'+sourceUrl+'" x="0" y="0" width="'+W+'" height="'+H+'" preserveAspectRatio="none"/></svg>';return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)}
-function install(blob){if(sourceUrl)URL.revokeObjectURL(sourceUrl);sourceUrl=URL.createObjectURL(blob);document.documentElement.dataset.tbAtlas='ready';window.tbAtlasCrop=crop;window.tbAtlasReady=true;document.dispatchEvent(new CustomEvent('tb-atlas-ready'))}
-function setup(){if(document.getElementById('tbAtlasPanel'))return;
- const panel=document.createElement('div');panel.id='tbAtlasPanel';panel.innerHTML='<button type="button" id="tbAtlasToggle">✦ АРТ-АТЛАС</button><div id="tbAtlasBody" hidden><b>Исходный лист Towerbound</b><p>Загрузи сохранённую картинку один раз. Она сохранится на этом устройстве.</p><label class="tbAtlasUpload">Выбрать изображение<input id="tbAtlasFile" type="file" accept="image/png,image/jpeg,image/webp"></label><small id="tbAtlasStatus">Атлас ещё не загружен</small><div id="tbAtlasPreview"></div></div>';
- const css=document.createElement('style');css.textContent='#tbAtlasPanel{position:fixed;z-index:99999;right:10px;bottom:calc(12px + env(safe-area-inset-bottom));font:12px system-ui;color:#fff}#tbAtlasToggle{border:1px solid #d9b76b;background:linear-gradient(135deg,#47351e,#171a2d);color:#ffe2a0;border-radius:12px;padding:10px 13px;font-weight:800;box-shadow:0 5px 22px #0009}#tbAtlasBody{width:min(290px,calc(100vw - 24px));margin-top:8px;padding:13px;border:1px solid #d9b76b66;border-radius:15px;background:#111729f2;box-shadow:0 12px 40px #000b}#tbAtlasBody p{color:#bac3da;line-height:1.4}.tbAtlasUpload{display:block;text-align:center;padding:11px;border-radius:10px;background:#69502a;color:#fff1c5;font-weight:800}.tbAtlasUpload input{display:none}#tbAtlasStatus{display:block;color:#9fe4c0;margin-top:9px}#tbAtlasPreview{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:10px}#tbAtlasPreview img{width:100%;aspect-ratio:1;object-fit:contain;background:#202840;border-radius:6px}';
- document.head.appendChild(css);document.body.appendChild(panel);
- panel.querySelector('#tbAtlasToggle').onclick=()=>{const b=panel.querySelector('#tbAtlasBody');b.hidden=!b.hidden};
- panel.querySelector('#tbAtlasFile').onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type))return;try{await save(f);install(f);panel.querySelector('#tbAtlasStatus').textContent='Атлас сохранён · '+Math.round(f.size/1024)+' КБ';renderPreview()}catch(err){panel.querySelector('#tbAtlasStatus').textContent='Не удалось сохранить: '+err.message}};
- function renderPreview(){const box=panel.querySelector('#tbAtlasPreview');box.innerHTML='';['hero_01','hero_02','hero_03','hero_04','hero_05','synergy_01','synergy_02','synergy_03','synergy_04','synergy_05'].forEach(id=>{const im=document.createElement('img');im.alt=id;im.src=crop(id);box.appendChild(im)})}
- load().then(blob=>{if(blob){install(blob);panel.querySelector('#tbAtlasStatus').textContent='Атлас загружен из памяти устройства';renderPreview()}}).catch(()=>{});
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
-window.tbAtlasCrop=crop;window.tbAtlasRegions=regions;
-})();
-</script>
+
 
 </body></html>
