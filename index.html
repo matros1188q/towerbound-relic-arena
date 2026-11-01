@@ -1285,6 +1285,18 @@ body{padding-bottom:calc(100px + env(safe-area-inset-bottom))!important}
   #shop .relic button{font-size:10px!important;padding:9px 4px!important}
 }
 </style>
+
+<style id="tb-enemy-visual-variants-v5">
+.tb-actor-enemy{--tb-enemy-tint:#c4b5fd}
+.tb-actor-enemy .tb-actor-aura{background:radial-gradient(ellipse,var(--tb-enemy-tint),transparent 68%)!important;opacity:.3}
+.tb-actor-enemy img{filter:drop-shadow(0 0 9px var(--tb-enemy-tint)) hue-rotate(var(--tb-enemy-hue,0deg));transform-origin:50% 85%}
+.tb-actor-enemy[data-enemy-family="brute"] img{transform:scale(1.12);filter:drop-shadow(0 0 12px var(--tb-enemy-tint)) hue-rotate(var(--tb-enemy-hue,0deg)) contrast(1.08)}
+.tb-actor-enemy[data-enemy-family="skeleton"] img{filter:drop-shadow(0 0 10px var(--tb-enemy-tint)) hue-rotate(var(--tb-enemy-hue,0deg)) saturate(.82)}
+.tb-actor-enemy .tb-actor-label{color:var(--tb-enemy-tint)!important;text-shadow:0 1px 5px #000,0 0 12px var(--tb-enemy-tint)}
+@keyframes tbEnemyIdleV5{0%,100%{translate:0 0;scale:1}50%{translate:0 -3px;scale:1.015}}
+.tb-actor-enemy img{animation:tbEnemyIdleV5 2.6s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.tb-actor-enemy img{animation:none!important}}
+</style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="sigil">♜</div><div><div class="eyebrow">ROGUELITE AUTO-BATTLER · SEASON I</div><h1>TOWERBOUND <span style="color:var(--gold)">: RELIC ARENA</span></h1></div></div><div class="top-actions"><div class="currency"><div class="pill">🪙 <span id="gold">12</span></div><div class="pill">❤ <span id="hp">20</span></div><div class="pill gold">✦ <span id="essence">0</span></div></div><button id="accountOpen" class="account-button" type="button" aria-haspopup="dialog" aria-controls="accountDialog"><span class="account-avatar" id="accountAvatar">♜</span><span class="account-label"><b id="accountName">Игрок</b><small>Локальный профиль</small></span><span aria-hidden="true">⌄</span></button></div></header>
@@ -1792,7 +1804,33 @@ const hero=actor('hero','./assets/hero-illustrated.svg?v=4','ГЕРОЙ');
 const foe=actor('enemy','./assets/foe-illustrated.svg?v=4','ПРОТИВНИК');
 stage.appendChild(layer);
 const nameEl=document.getElementById('enemyName'),hpEl=document.getElementById('enemyHpText'),battleBtn=document.getElementById('fightBtn');
-function syncEnemy(){const n=(nameEl?.textContent||'').toLowerCase();let src='./assets/foe-illustrated.svg?v=4',label='ПРОТИВНИК';if(/босс|королев|колосс|древн|титан/.test(n)){src='./assets/brute-illustrated.svg?v=4';label='БОСС'}else if(/кост|скелет|нежит|лич|мертв/.test(n)){src='./assets/skeleton-illustrated.svg?v=4';label='НЕЖИТЬ'}else if(/элит/.test(n)){src='./assets/brute-illustrated.svg?v=4';label='ЭЛИТА'}else if(/гоблин|крыса|паук|тень/.test(n)){label='ВРАГ'}const img=foe.querySelector('img');if(img.getAttribute('src')!==src)img.src=src;foe.querySelector('.tb-actor-label').textContent=label}
+function syncEnemy(){
+ const n=(nameEl?.textContent||'').toLowerCase();
+ const img=foe.querySelector('img'), labelEl=foe.querySelector('.tb-actor-label');
+ const variants=[
+  [/босс|королев|колосс|древн|титан|повелител|архонт/,'brute','БОСС','#ffb15e'],
+  [/кост|скелет|нежит|лич|мертв|могиль|упыр/,'skeleton','НЕЖИТЬ','#b7c8ff'],
+  [/элит|рыцарь|страж|паладин/,'brute','ЭЛИТА','#e6c77b'],
+  [/гоблин|крыса|крысол|грызун/,'foe','ВРАГ','#9cda76'],
+  [/паук|арахн|жук|насеком/,'foe','ТВАРЬ','#b8e66c'],
+  [/тень|призрак|фантом|дух/,'skeleton','ДУХ','#9e9bff'],
+  [/демон|адск|инферн|плам/,'brute','ДЕМОН','#ff785d'],
+  [/лед|лёд|мороз|снеж|кристалл/,'foe','ЛЁД','#7ceaff'],
+  [/яд|чум|гниль|болот|плесен/,'foe','ЯДОВИТЫЙ','#75df88'],
+  [/кров|вампир|жнец/,'skeleton','КРОВОЖАДНЫЙ','#ff6b85'],
+  [/голем|камен|желез|механ|автомат/,'brute','ГОЛЕМ','#c1a99a'],
+  [/дракон|виверн|змей/,'brute','ДРАКОН','#f7a45b'],
+  [/волк|звер|клык|хищник/,'foe','ЗВЕРЬ','#e1b58b']
+ ];
+ let kind='foe',label='ПРОТИВНИК',tint='#c4b5fd';
+ for(const [re,k,l,c] of variants){if(re.test(n)){kind=k;label=l;tint=c;break}}
+ const src='./assets/'+(kind==='brute'?'brute':kind==='skeleton'?'skeleton':'foe')+'-illustrated.svg?v=5';
+ if(img.getAttribute('src')!==src)img.src=src;
+ labelEl.textContent=label;
+ foe.dataset.enemyFamily=kind;
+ foe.style.setProperty('--tb-enemy-tint',tint);
+ foe.style.setProperty('--tb-enemy-hue',String((Array.from(n).reduce((a,ch)=>a+ch.charCodeAt(0),0)*17)%360)+'deg');
+}
 syncEnemy();
 if(nameEl)new MutationObserver(syncEnemy).observe(nameEl,{childList:true,characterData:true,subtree:true});
 if(hpEl){let last=hpEl.textContent;new MutationObserver(()=>{const next=hpEl.textContent;if(next!==last&&document.body.classList.contains('in-battle')){foe.classList.remove('tb-actor-hit');void foe.offsetWidth;foe.classList.add('tb-actor-hit');setTimeout(()=>foe.classList.remove('tb-actor-hit'),320)}last=next}).observe(hpEl,{childList:true,characterData:true,subtree:true})}
