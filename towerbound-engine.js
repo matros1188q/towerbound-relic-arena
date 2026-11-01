@@ -156,7 +156,7 @@ function ensureVisibleActors(){
  const addActor=(cls,src,alt,style)=>{const img=document.createElement('img');img.className=cls;img.src=src;img.alt=alt;img.draggable=false;img.decoding='async';img.loading='eager';Object.assign(img.style,{position:'absolute',display:'block',visibility:'visible',opacity:'1',objectFit:'contain',pointerEvents:'none',transform:'translate(-50%,-50%)',filter:'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)',...style});layer.appendChild(img);return img;};
  if(!document.getElementById('tb-actor-animation-style')){
   const style=document.createElement('style');style.id='tb-actor-animation-style';
-  style.textContent='@keyframes tbEnemyIdle{0%,100%{translate:0 0;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)}50%{translate:0 -7px;filter:drop-shadow(0 13px 11px #000d) drop-shadow(0 0 17px #e7caff88)}}@keyframes tbHeroIdle{0%,100%{translate:0 0}50%{translate:0 -6px}}';
+  style.textContent='@keyframes tbEnemyIdle{0%,100%{translate:0 0}50%{translate:0 -7px}}@keyframes tbHeroIdle{0%,100%{translate:0 0}50%{translate:0 -6px}}';
   document.head.appendChild(style);
  }
  addActor('tb-visible-hero','./assets/hero-illustrated.svg?v=6','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
