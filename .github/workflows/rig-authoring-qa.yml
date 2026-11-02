@@ -39,6 +39,19 @@ jobs:
           Path('/tmp/annotator.js').write_text('\n'.join(scripts))
           PY
           node --check /tmp/annotator.js
+      - name: Build assistant-seeded Warden visible layers
+        run: |
+          python scripts/build_manual_rig_cutouts.py --annotations annotations/warden-rig-annotations.json --out /tmp/warden-seeded
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/warden-seeded/warden')
+          report=json.loads((root/'report.json').read_text())
+          assert len(report['parts']) >= 10
+          assert report['parts'][0]['canvas_aligned'] is True
+          assert report['ready_for_animation'] is False
+          print('Warden seed exported:', len(report['parts']), 'visible-region layers')
+          PY
       - name: Smoke-test aligned PNG cutout export
         run: |
           python - <<'PY'
