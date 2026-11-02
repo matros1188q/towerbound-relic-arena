@@ -2144,4 +2144,55 @@ setScreen('hero');
 window.TowerboundFlow={setScreen,setPrepTab,get screen(){return current;}};
 })();
 </script>
+
+<style id="TOWERBOUND_ARENA_ENTRY_HARDENING_V1_CSS">
+#titleScreen{z-index:2147483000!important;pointer-events:auto!important}
+#titleScreen::before,#titleScreen::after{pointer-events:none!important}
+#titleScreen .title-card{position:relative;z-index:1}
+#titleScreen .title-content,#titleScreen .title-actions{position:relative;z-index:10!important;pointer-events:auto!important}
+#enterArenaBtn{position:relative!important;z-index:20!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent}
+</style>
+<script id="TOWERBOUND_ARENA_ENTRY_HARDENING_V1">
+(()=>{'use strict';
+if(window.__TB_ARENA_ENTRY_HARDENING_V1__)return;
+window.__TB_ARENA_ENTRY_HARDENING_V1__=true;
+const button=document.getElementById('enterArenaBtn');
+if(!button)return;
+let entered=false;
+function showLegacyHero(){
+ document.body.removeAttribute('data-tb-screen');
+ document.body.classList.remove('tb-flow-hero','tb-flow-map');
+ const layout=document.querySelector('.layout');
+ if(layout)layout.style.removeProperty('display');
+ const hero=document.getElementById('heroSelectPanel');
+ if(hero){hero.hidden=false;hero.style.removeProperty('display');}
+ if(hero)hero.scrollIntoView({block:'start',behavior:'auto'});
+}
+function enterArena(event){
+ if(entered)return;
+ entered=true;
+ if(event){event.preventDefault();event.stopPropagation();}
+ const title=document.getElementById('titleScreen');
+ if(title){title.classList.add('is-hidden');title.setAttribute('aria-hidden','true');title.style.pointerEvents='none';}
+ document.body.classList.add('arena-entered');
+ document.body.classList.remove('map-mode','in-battle');
+ try{
+  const flow=window.TowerboundFlow;
+  if(flow&&typeof flow.setScreen==='function'&&document.getElementById('tbHeroStage')){
+   flow.setScreen('hero');
+  }else{
+   showLegacyHero();
+  }
+ }catch(error){
+  console.error('Towerbound arena entry fallback:',error);
+  showLegacyHero();
+ }
+}
+button.addEventListener('click',enterArena,true);
+if(window.PointerEvent)button.addEventListener('pointerup',enterArena,{capture:true,passive:false});
+button.addEventListener('keydown',event=>{
+ if(event.key==='Enter'||event.key===' '){enterArena(event);}
+});
+})();
+</script>
 </body></html>
