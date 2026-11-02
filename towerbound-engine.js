@@ -124,6 +124,11 @@ setHero:function(heroId){
   if(domHero.dataset.tbArtSrc!==src){domHero.dataset.tbArtSrc=src;domHero.src=src;}
   domHero.alt='Герой: '+id;
   domHero.dataset.tbActorId=id;
+  const idleNames={warden:'tbWardenIdle',ranger:'tbRangerIdle',arcanist:'tbArcanistIdle',reaper:'tbReaperIdle'};
+  domHero.style.animationName=idleNames[id]||'tbWardenIdle';
+  domHero.style.animationDuration=id==='arcanist'?'2.65s':id==='reaper'?'2.15s':id==='ranger'?'2.35s':'2.25s';
+  domHero.style.animationTimingFunction='ease-in-out';
+  domHero.style.animationIterationCount='infinite';
  }
 },
 update:function(){/* Ambient alpha is handled by bounded tweens; avoid per-frame JS writes. */}
@@ -263,7 +268,7 @@ function ensureVisibleActors(){
  const addActor=(cls,src,alt,style)=>{const img=document.createElement('img');img.className=cls;img.src=src;img.alt=alt;img.draggable=false;img.decoding='async';img.loading='eager';Object.assign(img.style,{position:'absolute',display:'block',visibility:'visible',opacity:'1',objectFit:'contain',pointerEvents:'none',transform:'translate(-50%,-50%)',filter:'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)',...style});layer.appendChild(img);return img;};
  if(!document.getElementById('tb-actor-animation-style')){
   const style=document.createElement('style');style.id='tb-actor-animation-style';
-  style.textContent='@keyframes tbEnemyIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)}24%{translate:0 -5px;rotate:-1deg;scale:1.015}50%{translate:0 -10px;rotate:0deg;scale:1.025;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 18px #e7caff88)}76%{translate:0 -4px;rotate:1deg;scale:1.01}}@keyframes tbHeroIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)}22%{translate:0 -4px;rotate:-.7deg;scale:1.012}50%{translate:0 -9px;rotate:0deg;scale:1.025;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 18px #b99cff88)}78%{translate:0 -3px;rotate:.7deg;scale:1.01}}@media(prefers-reduced-motion:reduce){.tb-visible-hero,.tb-visible-enemy{animation:none!important;translate:0 0!important;rotate:0deg!important;scale:1!important}}';
+  style.textContent='@keyframes tbEnemyIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)}24%{translate:0 -5px;rotate:-1deg;scale:1.015}50%{translate:0 -10px;rotate:0deg;scale:1.025;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 18px #e7caff88)}76%{translate:0 -4px;rotate:1deg;scale:1.01}}@keyframes tbWardenIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}22%{translate:-1px -3px;rotate:-.45deg;scale:1.008}50%{translate:0 -8px;rotate:.25deg;scale:1.018;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 17px #b8caff88)}78%{translate:1px -2px;rotate:.4deg;scale:1.006}}@keyframes tbRangerIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}25%{translate:1px -4px;rotate:.65deg;scale:1.01}50%{translate:0 -7px;rotate:-.3deg;scale:1.014;filter:drop-shadow(0 14px 12px #000d) drop-shadow(0 0 16px #8ee8a988)}75%{translate:-1px -2px;rotate:-.7deg;scale:1.005}}@keyframes tbArcanistIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #c18bff66)}25%{translate:0 -5px;rotate:-.35deg;scale:1.012}50%{translate:0 -12px;rotate:0deg;scale:1.02;filter:drop-shadow(0 16px 12px #000d) drop-shadow(0 0 24px #d5a0ffbb)}75%{translate:0 -4px;rotate:.35deg;scale:1.008}}@keyframes tbReaperIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}24%{translate:-1px -3px;rotate:-.8deg;scale:1.008}50%{translate:0 -8px;rotate:.4deg;scale:1.018;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 19px #9e83dbaa)}76%{translate:1px -2px;rotate:.8deg;scale:1.006}}@media(prefers-reduced-motion:reduce){.tb-visible-hero,.tb-visible-enemy{animation:none!important;translate:0 0!important;rotate:0deg!important;scale:1!important}}';
   document.head.appendChild(style);
  }
  addActor('tb-visible-hero','./assets/hero-illustrated.svg?v=6','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
