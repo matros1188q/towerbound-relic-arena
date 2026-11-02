@@ -1,10 +1,11 @@
-name: Free hero pose landmark QA
+name: Free hero pose and cutout visual QA
 on:
   push:
     branches: [main]
     paths:
       - "scripts/analyze_hero_pose.py"
       - "scripts/extract_limb_candidates.py"
+      - "scripts/build_hero_rig_review.py"
       - ".github/workflows/hero-pose-qa.yml"
   workflow_dispatch:
 permissions:
@@ -15,25 +16,29 @@ concurrency:
 jobs:
   pose-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install CPU pose inference
+      - name: Install CPU pose inference and image QA
         run: |
           python -m pip install --upgrade pip
-          pip install "ultralytics>=8.3,<9" "pillow>=10,<12" "numpy<2"
-      - name: Infer candidate body landmarks and render QA previews
+          pip install "ultralytics>=8.3,<9" "pillow>=10,<12" "numpy<2" opencv-python-headless
+      - name: Infer candidate body landmarks
         run: python scripts/analyze_hero_pose.py
-      - name: Generate conservative limb cutout candidates
+      - name: Generate conservative limb mask candidates
         run: python scripts/extract_limb_candidates.py
-      - name: Upload landmark report and previews
+      - name: Build visual review sheets
+        run: python scripts/build_hero_rig_review.py
+      - name: Upload review sheets and raw candidate layers
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hero-pose-qa
+          name: hero-rig-cutout-visual-review
           path: |
             artifacts/pose-analysis/
             artifacts/limb-candidates/
+            artifacts/hero-rig-visual-review/
           if-no-files-found: error
