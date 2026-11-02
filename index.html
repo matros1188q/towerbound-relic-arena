@@ -1643,7 +1643,8 @@ function chooseBlessing(id){
  makeShop();
  log('✨ Благословение получено: '+b.name+'.');toast('Получено: '+b.name);save();render();
 }
-function reset(){const heroId=['warden','arcanist','ranger','reaper'].includes(state.heroId)?state.heroId:'warden';const meta={...state.meta,runs:state.meta.runs+1};if(window.TowerFX)window.TowerFX.phase('prep');const u={power:0,vitality:0,fortune:0,echo:0,scout:0,ward:0,...(meta.upgrades||{})};const startFloor=1;state={gold:12+(u.fortune||0)*2,hp:(heroId==='warden'?23:20)+(u.vitality||0)*2+(u.ward||0)*2,maxHp:(heroId==='warden'?28:24)+(u.vitality||0)*2+(u.ward||0)*2,wave:startFloor,heroId,mapStep:1,level:1,talentPoints:0,talents:{gold:Array(10).fill(0),dodge:Array(10).fill(0),guard:Array(10).fill(0)},heroConfirmed:false,xp:0,xpToNext:22,level:1,talentPoints:0,slots:Array(6).fill(null),inventory:[],floorRewards:{},floorNodesUsed:{},floorSaves:{},mapSideUsed:0,goldSpent:0,selected:-1,battle:false,won:false,shop:[],log:[],lastWave:0,blessings:[],challenge:state.challenge||'normal',routeType:'balanced',freeRefresh:false,meta:{...meta,upgrades:u}};if(state.challenge==='blood')state.hp=Math.max(1,Math.round(state.maxHp*.8));checkAchievements();save();makeShop();log(startFloor>1?'Новый отряд входит в Башню с контрольной точки · этаж '+startFloor+'.':'Новый поход начинается. Собери отряд и выживи.');render()}\nwindow.TowerboundNewRun=()=>reset();
+function reset(){const heroId=['warden','arcanist','ranger','reaper'].includes(state.heroId)?state.heroId:'warden';const meta={...state.meta,runs:state.meta.runs+1};if(window.TowerFX)window.TowerFX.phase('prep');const u={power:0,vitality:0,fortune:0,echo:0,scout:0,ward:0,...(meta.upgrades||{})};const startFloor=1;state={gold:12+(u.fortune||0)*2,hp:(heroId==='warden'?23:20)+(u.vitality||0)*2+(u.ward||0)*2,maxHp:(heroId==='warden'?28:24)+(u.vitality||0)*2+(u.ward||0)*2,wave:startFloor,heroId,mapStep:1,level:1,talentPoints:0,talents:{gold:Array(10).fill(0),dodge:Array(10).fill(0),guard:Array(10).fill(0)},heroConfirmed:false,xp:0,xpToNext:22,level:1,talentPoints:0,slots:Array(6).fill(null),inventory:[],floorRewards:{},floorNodesUsed:{},floorSaves:{},mapSideUsed:0,goldSpent:0,selected:-1,battle:false,won:false,shop:[],log:[],lastWave:0,blessings:[],challenge:state.challenge||'normal',routeType:'balanced',freeRefresh:false,meta:{...meta,upgrades:u}};if(state.challenge==='blood')state.hp=Math.max(1,Math.round(state.maxHp*.8));checkAchievements();save();makeShop();log(startFloor>1?'Новый отряд входит в Башню с контрольной точки · этаж '+startFloor+'.':'Новый поход начинается. Собери отряд и выживи.');render()}
+window.TowerboundNewRun=()=>reset();
 $('fightBtn').onclick=()=>{if(state.battle)return;try{if((state.mapStep||1)>70){toast('Башня уже пройдена — начни новый поход');return;}state.routeType='balanced';save();fight();}catch(err){console.error('Towerbound fight failed:',err);state.battle=false;document.body.classList.remove('in-battle');$('fightBtn').disabled=false;$('fightBtn').textContent='⚔ Повторить бой';$('battlemsg').textContent='Бой не запустился: '+(err&&err.message?err.message:'неизвестная ошибка');toast('Ошибка запуска боя — попробуй ещё раз');}};$('refreshBtn').onclick=()=>{if(state.battle)return;if(state.freeRefresh){state.freeRefresh=false;makeShop();toast('Бесплатное обновление использовано');}else{if(state.gold<2)return;state.gold-=2;state.goldSpent=(state.goldSpent||0)+2;makeShop();}save();render()};$('sellBtn').onclick=sell;
 makeShop();if(!state.log.length)log('Добро пожаловать на арену. Собери реликвии и переживи 10 волн.');render();save();
 })();
@@ -1898,7 +1899,10 @@ body[data-tb-screen] .top{position:sticky!important;top:0!important;z-index:60!i
 #tbFlowWorkspace{width:min(100%,1120px);margin:0 auto;padding:10px 14px 28px;box-sizing:border-box}
 .tb-flow-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 14px;padding:0 2px}
 .tb-flow-caption{font-size:11px;line-height:1.35;color:#aeb5d0;text-align:right}
-.tb-flow-steps{display:flex;align-items:center;gap:6px;min-width:0}\n.tb-flow-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}\n.tb-flow-tools .tb-flow-caption{min-width:0}\n#tbNewGameBtn{flex:0 0 auto;min-height:36px;padding:7px 11px;border:1px solid #d8b96b66;border-radius:10px;background:linear-gradient(145deg,#342b27,#1b1b2a);color:#f2d99d;font-size:10px;font-weight:900;letter-spacing:.045em;white-space:nowrap;box-shadow:inset 0 1px #fff2}
+.tb-flow-steps{display:flex;align-items:center;gap:6px;min-width:0}
+.tb-flow-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.tb-flow-tools .tb-flow-caption{min-width:0}
+#tbNewGameBtn{flex:0 0 auto;min-height:36px;padding:7px 11px;border:1px solid #d8b96b66;border-radius:10px;background:linear-gradient(145deg,#342b27,#1b1b2a);color:#f2d99d;font-size:10px;font-weight:900;letter-spacing:.045em;white-space:nowrap;box-shadow:inset 0 1px #fff2}
 .tb-flow-step{display:flex;align-items:center;gap:6px;color:#77809d;font-size:9px;font-weight:900;letter-spacing:.06em;white-space:nowrap}
 .tb-flow-step:before{content:attr(data-n);width:22px;height:22px;display:grid;place-items:center;border:1px solid #ffffff24;border-radius:50%;background:#11162a;color:#9da5c0;font-size:10px}
 .tb-flow-step.is-current{color:#ffe6ac}
@@ -1970,7 +1974,8 @@ body[data-tb-screen="arena"] #tbFlowWorkspace{display:block}
 @media(max-width:560px){
  #tbFlowWorkspace{padding:7px 10px 20px}
  .tb-flow-top{align-items:flex-start;flex-direction:column;gap:7px;margin-bottom:10px}
- .tb-flow-tools{width:100%}\n .tb-flow-caption{text-align:left;font-size:10px;flex:1}
+ .tb-flow-tools{width:100%}
+ .tb-flow-caption{text-align:left;font-size:10px;flex:1}
  .tb-flow-steps{width:100%;justify-content:space-between;gap:3px}
  .tb-flow-step{gap:4px;font-size:8px;letter-spacing:0}
  .tb-flow-step:before{width:20px;height:20px;font-size:9px}
