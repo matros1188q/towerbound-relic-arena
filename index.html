@@ -2155,7 +2155,7 @@ function setScreen(name){
  document.body.dataset.tbScreen=name;
  document.body.classList.toggle('tb-flow-hero',name==='hero');
  document.body.classList.toggle('tb-flow-map',name==='map');
- Object.entries(stages).forEach(([key,node])=>{node.classList.toggle('is-active',key===name);node.setAttribute('aria-hidden',String(key!==name));});
+ Object.entries(stages).forEach(([key,node])=>{node.classList.toggle('is-active',key===name);node.style.setProperty('display',key===name?'block':'none','important');node.style.setProperty('visibility',key===name?'visible':'hidden','important');node.style.setProperty('opacity',key===name?'1':'0','important');node.style.setProperty('pointer-events',key===name?'auto':'none','important');node.setAttribute('aria-hidden',String(key!==name));});
  document.querySelectorAll('[data-flow-step]').forEach((el,index)=>{const order=['hero','prep','map','arena'];const n=order.indexOf(name),i=order.indexOf(el.dataset.flowStep);el.classList.toggle('is-current',i===n);el.classList.toggle('is-done',i<n);});
  const cap=$('tbFlowCaption');if(cap)cap.textContent=labels[name];
  if(name==='prep'){setPrepTab(prepTab);refreshSummary();const title=$('heroSelectStatus');if(title)title.textContent='Герой выбран · можно менять сборку';}
