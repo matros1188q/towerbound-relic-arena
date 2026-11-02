@@ -93,6 +93,7 @@ setWave:function(wave,boss){
   const heroSrc='./assets/characters/heroes/'+(heroFiles[heroId]||'warden')+'.png?v=arena-art-1';
   if(!domHero.src.includes('/assets/characters/heroes/'+(heroFiles[heroId]||'warden')+'.png'))domHero.src=heroSrc;
   domHero.alt='Герой: '+heroId;
+  domHero.dataset.tbActorId=heroId;
  }
  const idx=(n*7+3)%enemyFiles.length;
  const foeId=boss?(bossFiles[Math.max(0,Math.min(9,Math.ceil(n/7)-1))]||enemyFiles[idx]):enemyFiles[idx];
@@ -102,6 +103,8 @@ setWave:function(wave,boss){
   const src='./assets/characters/'+category+'/'+foeId+'.png?v=arena-art-1';
   if(domEnemy.dataset.tbArtSrc!==src){domEnemy.dataset.tbArtSrc=src;domEnemy.src=src;}
   domEnemy.alt=(boss?'Босс: ':'')+labels[idx];
+  domEnemy.dataset.tbActorId=foeId;
+  domEnemy.dataset.tbBoss=boss?'1':'0';
   domEnemy.style.width=boss?'clamp(156px,39vw,254px)':'clamp(118px,30vw,204px)';
   domEnemy.style.height=boss?'84%':'73%';
   domEnemy.style.left=boss?'68%':'68%';domEnemy.style.top='49%';
@@ -140,8 +143,8 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  const layer=ensureDomFx();
  // Animate the always-visible SVG actors too, not only the Phaser canvas.
  const actorHero=mount.querySelector('.tb-visible-hero'),actorEnemy=mount.querySelector('.tb-visible-enemy');
- if(actorHero&&actorHero.animate)actorHero.animate([{translate:'0 0',rotate:'0deg'},{translate:'12px -4px',rotate:critical?'9deg':'5deg'},{translate:'0 0',rotate:'0deg'}],{duration:260,easing:'cubic-bezier(.2,.8,.2,1)'});
- if(actorEnemy&&actorEnemy.animate)actorEnemy.animate([{translate:'0 0',rotate:'0deg',filter:'brightness(1)'},{translate:'-5px 0',rotate:critical?'-12deg':'-6deg',filter:'brightness(2)'},{translate:'0 0',rotate:'0deg',filter:'brightness(1)'}],{duration:critical?340:260,easing:'ease-out'});
+ const heroId=(actorHero&&actorHero.dataset.tbActorId)||window.TowerboundHeroId||'warden';tbAnimate(actorHero,TB_HERO_MOVES[heroId]||TB_HERO_MOVES.warden,critical?370:300);
+ const hitId=actorEnemy&&actorEnemy.dataset.tbActorId||'shadow-goblin',hitMove=TB_ENEMY_MOVES[tbActorHash(hitId)%TB_ENEMY_MOVES.length];tbAnimate(actorEnemy,hitMove.frames,critical?380:300);
  const colors={fire:'#ff713d',ice:'#7cecff',lightning:'#fff176',nature:'#62f2a1',void:'#c18bff',arcane:'#ffe08a'};
  const color=colors[style]||colors.arcane;
  // Distinct readable silhouettes per damage school; each school has its own projectile motif.
@@ -166,6 +169,35 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
   burst.animate([{transform:'translate(-50%,-50%) scale(.35)',opacity:1},{transform:'translate(-50%,-50%) scale('+(critical?3.8:2.8)+')',opacity:0}],{duration:critical?380:300,easing:'ease-out'}).onfinish=()=>burst.remove();
   if(critical){const flash=document.createElement('b');flash.textContent='CRITICAL!';Object.assign(flash.style,{position:'absolute',left:'67%',top:'29%',transform:'translateX(-50%)',font:'900 15px system-ui',color:'#fff1a6',textShadow:'0 0 12px #ff8c36,0 2px 4px #000',whiteSpace:'nowrap',zIndex:'4'});appendBoundedFx(layer,flash);flash.animate([{transform:'translate(-50%,8px) scale(.7)',opacity:0},{transform:'translate(-50%,-12px) scale(1.15)',opacity:1,offset:.25},{transform:'translate(-50%,-34px) scale(1)',opacity:0}],{duration:650,easing:'ease-out'}).onfinish=()=>flash.remove();}
  };
+}
+
+
+const TB_HERO_MOVES={
+warden:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(17px,-8px) rotate(-11deg) scale(1.04)',offset:.42},{transform:'translate(-3px,2px) rotate(4deg)'},{transform:'translate(0,0) rotate(0)'}],
+arcanist:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-6px,-8px) rotate(-6deg) scale(.96)',offset:.25},{transform:'translate(9px,-3px) rotate(7deg) scale(1.06)',offset:.68},{transform:'translate(0,0) scale(1)'}],
+ranger:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-8px,2px) rotate(-8deg)',offset:.24},{transform:'translate(13px,-2px) rotate(4deg) scale(1.03)',offset:.7},{transform:'translate(0,0) rotate(0)'}],
+reaper:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(10px,-4px) rotate(-15deg)',offset:.35},{transform:'translate(14px,1px) rotate(14deg) scale(1.05)',offset:.66},{transform:'translate(0,0) rotate(0)'}]};
+const TB_ENEMY_MOVES=[
+{kind:'slash',frames:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-15px,-4px) rotate(-9deg)',offset:.55},{transform:'translate(0,0) rotate(0)'}]},
+{kind:'pounce',frames:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-24px,-11px) scale(1.12)',offset:.48},{transform:'translate(5px,2px) scale(.96)'},{transform:'translate(0,0) scale(1)'}]},
+{kind:'slam',frames:[{transform:'translate(0,0) scale(1)'},{transform:'translate(0,-13px) scale(1.08)',offset:.3},{transform:'translate(-12px,5px) scale(1.16)',offset:.58},{transform:'translate(0,0) scale(1)'}]},
+{kind:'ranged',frames:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(7px,-5px) rotate(6deg)',offset:.32},{transform:'translate(-3px,0) rotate(-3deg)'},{transform:'translate(0,0) rotate(0)'}]},
+{kind:'hex',frames:[{transform:'translate(0,0) scale(1)',filter:'brightness(1)'},{transform:'translate(-5px,-8px) scale(1.06)',filter:'brightness(1.8)',offset:.45},{transform:'translate(0,0) scale(1)'}]},
+{kind:'blink',frames:[{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate(-12px,-2px) scale(.84)',opacity:.25,offset:.35},{transform:'translate(-20px,0) scale(1.1)',opacity:1,offset:.7},{transform:'translate(0,0) scale(1)',opacity:1}]}];
+function tbActorHash(id){let n=0;for(let i=0;i<String(id||'').length;i++)n=(n*31+String(id).charCodeAt(i))>>>0;return n;}
+function tbAnimate(actor,frames,duration){if(!actor||!actor.animate)return;try{actor.getAnimations().forEach(a=>a.cancel());actor.animate(frames,{duration,easing:'cubic-bezier(.18,.8,.22,1)',fill:'none'});}catch(e){}}
+function domEnemyAttack(boss,special,heavy,kind,dodged){
+ const layer=ensureDomFx(),hero=mount.querySelector('.tb-visible-hero'),enemy=mount.querySelector('.tb-visible-enemy'),id=enemy&&enemy.dataset.tbActorId||'shadow-goblin',hash=tbActorHash(id);
+ const bossKind={summon:'hex',evade:'blink',frenzy:'pounce',burn:'slam',strike:'slash'}[kind],move=TB_ENEMY_MOVES.find(x=>x.kind===bossKind)||TB_ENEMY_MOVES[hash%TB_ENEMY_MOVES.length];
+ const colors={'bone-colossus':'#f0d7a0','abyss-queen':'#c18bff','ash-patriarch':'#ff874f','ice-abbot':'#8cefff','mirror-executioner':'#d8dcff','soul-devourer':'#d18cff','root-titan':'#79e7a0','void-hunter-boss':'#b28cff','crimson-regent':'#ff526e','heart-of-tower':'#ff6a55'},color=boss?(colors[id]||'#ff7189'):['#ff7189','#ff9a54','#ffbd67','#8cefff','#bb91ff','#c18bff'][hash%6],hard=!!heavy||!!(boss&&special);
+ tbAnimate(enemy,move.frames,hard?460:300);
+ if(hard){const ring=document.createElement('i');Object.assign(ring.style,{position:'absolute',left:'34%',top:'49%',width:'42px',height:'42px',border:'2px solid '+color,borderRadius:'50%',boxShadow:'0 0 15px '+color,zIndex:'5',pointerEvents:'none'});appendBoundedFx(layer,ring);ring.animate([{transform:'translate(-50%,-50%) scale(.35)',opacity:0},{transform:'translate(-50%,-50%) scale(1.2)',opacity:.9,offset:.55},{transform:'translate(-50%,-50%) scale(1.7)',opacity:0}],{duration:360,easing:'ease-out'}).onfinish=()=>ring.remove();}
+ const rect=mount.getBoundingClientRect(),bolt=document.createElement('i'),size=hard?28:move.kind==='slash'?42:15,dx=Math.max(35,rect.width*.35);
+ Object.assign(bolt.style,{position:'absolute',left:'69%',top:move.kind==='slam'?'47%':'46%',width:size+'px',height:move.kind==='slash'?'4px':size+'px',borderRadius:move.kind==='slash'?'4px':'50%',background:move.kind==='slash'?'linear-gradient(90deg,transparent,#fff,'+color+')':color,border:move.kind==='hex'?'2px solid #fff':'0',boxShadow:'0 0 '+(hard?28:18)+'px '+color,zIndex:'6',opacity:'0',pointerEvents:'none'});
+ appendBoundedFx(layer,bolt);
+ bolt.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:'translate(-8px,-4px) scale(1.15)',opacity:1,offset:.18},{transform:'translate(-'+dx+'px,0) scale('+(hard?1.65:1)+')',opacity:dodged?.22:1}],{duration:hard?390:move.kind==='ranged'||move.kind==='hex'?360:270,easing:'cubic-bezier(.12,.78,.2,1)',fill:'forwards'}).onfinish=()=>{bolt.remove();if(!dodged){const hit=document.createElement('i');Object.assign(hit.style,{position:'absolute',left:'34%',top:'49%',width:(hard?66:42)+'px',height:(hard?66:42)+'px',borderRadius:'50%',border:(hard?4:3)+'px solid '+color,boxShadow:'0 0 '+(hard?30:18)+'px '+color,zIndex:'6',pointerEvents:'none'});appendBoundedFx(layer,hit);hit.animate([{transform:'translate(-50%,-50%) scale(.25)',opacity:1},{transform:'translate(-50%,-50%) scale('+(hard?3.4:2.6)+')',opacity:0}],{duration:hard?360:250,easing:'ease-out'}).onfinish=()=>hit.remove();}};
+ if(hero){const reaction=dodged?[{transform:'translateX(0)',opacity:1},{transform:'translateX(-22px) rotate(-5deg) scale(.92)',opacity:.55,offset:.4},{transform:'translateX(-4px)',opacity:1}]:[{transform:'translateX(0)',filter:'brightness(1)'},{transform:'translateX(-8px) rotate(-5deg)',filter:'brightness(1.8)',offset:.25},{transform:'translateX(3px) rotate(2deg)',filter:'brightness(1.2)'},{transform:'translateX(0)',filter:'brightness(1)'}];tbAnimate(hero,reaction,dodged?320:hard?420:280);}
+ if(!dodged){const flash=document.createElement('i');Object.assign(flash.style,{position:'absolute',left:'34%',top:'49%',width:hard?'76px':'48px',height:hard?'76px':'48px',borderRadius:'50%',background:'radial-gradient(circle,'+color+'88,transparent 70%)',zIndex:'4',pointerEvents:'none'});appendBoundedFx(layer,flash);flash.animate([{transform:'translate(-50%,-50%) scale(.4)',opacity:.9},{transform:'translate(-50%,-50%) scale(1.8)',opacity:0}],{duration:hard?420:260,easing:'ease-out'}).onfinish=()=>flash.remove();}
 }
 
 // Guaranteed visible actor layer: independent of Phaser canvas compositing on iOS Safari.
@@ -201,5 +233,5 @@ const tbSetRenderSleep=()=>{try{if(document.hidden){if(game.loop&&game.loop.slee
 document.addEventListener('visibilitychange',tbSetRenderSleep,{passive:true});
 window.addEventListener('pagehide',()=>{try{if(game.loop&&game.loop.sleep)game.loop.sleep()}catch(e){}},{passive:true});
 tbSetRenderSleep();
-window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);if(window.TowerModels&&window.TowerModels.hit)window.TowerModels.hit(critical,boss);if(!tbMobilePerf&&arenaScene&&scene.impact)scene.impact.call(arenaScene,critical,boss,style);},clear:()=>{const fx=mount.querySelector('.tb-dom-fx');if(fx){fx.querySelectorAll('*').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});fx.replaceChildren();}mount.querySelectorAll('.tb-visible-hero,.tb-visible-enemy').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});},win:()=>{if(arenaScene&&scene.victory)scene.victory.call(arenaScene);},hero:(heroId)=>{if(arenaScene&&scene.setHero)scene.setHero.call(arenaScene,heroId);else window.TowerboundHeroId=heroId||'warden';},wave:(wave,boss)=>{if(window.TowerModels&&window.TowerModels.wave)window.TowerModels.wave(wave,boss);if(arenaScene&&scene.setWave)scene.setWave.call(arenaScene,wave,boss);},phase:(phase)=>{if(arenaScene&&scene.setPhase)scene.setPhase.call(arenaScene,phase);}};
+window.TowerFX={enemyAttack:(boss,special,heavy,kind,dodged)=>domEnemyAttack(!!boss,!!special,!!heavy,kind,!!dodged),hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);if(window.TowerModels&&window.TowerModels.hit)window.TowerModels.hit(critical,boss);if(!tbMobilePerf&&arenaScene&&scene.impact)scene.impact.call(arenaScene,critical,boss,style);},clear:()=>{const fx=mount.querySelector('.tb-dom-fx');if(fx){fx.querySelectorAll('*').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});fx.replaceChildren();}mount.querySelectorAll('.tb-visible-hero,.tb-visible-enemy').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});},win:()=>{if(arenaScene&&scene.victory)scene.victory.call(arenaScene);},hero:(heroId)=>{if(arenaScene&&scene.setHero)scene.setHero.call(arenaScene,heroId);else window.TowerboundHeroId=heroId||'warden';},wave:(wave,boss)=>{if(window.TowerModels&&window.TowerModels.wave)window.TowerModels.wave(wave,boss);if(arenaScene&&scene.setWave)scene.setWave.call(arenaScene,wave,boss);},phase:(phase)=>{if(arenaScene&&scene.setPhase)scene.setPhase.call(arenaScene,phase);}};
 })();
