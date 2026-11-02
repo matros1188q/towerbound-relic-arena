@@ -1829,4 +1829,60 @@ window.TowerboundStage4={biomes,bosses,affixes,refresh};
 })();
 </script>
 
+
+<style id="tb-stage5-tactical-css">
+.tb-s5-panel{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0 10px;padding:9px;border:1px solid #c9b77b33;border-radius:13px;background:linear-gradient(145deg,#171d2beF,#111522f5);box-shadow:inset 0 1px #ffffff08}
+.tb-s5-cell{min-width:0;padding:8px;border-radius:9px;background:#ffffff06;border:1px solid #ffffff0c}
+.tb-s5-label{font-size:8px;letter-spacing:1.1px;color:#aab3cb;font-weight:900}
+.tb-s5-value{font-size:12px;font-weight:900;color:#f2e6c5;margin-top:4px;line-height:1.3;overflow-wrap:anywhere}
+.tb-s5-sub{font-size:9px;line-height:1.35;color:#aeb7cc;margin-top:3px}
+.tb-s5-bar{height:4px;border-radius:4px;background:#ffffff12;margin-top:7px;overflow:hidden}
+.tb-s5-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8e82dc,#edcb7d);transition:width .25s}
+.tb-s5-log{margin:0 0 10px;padding:9px 10px;border:1px solid #ffffff12;border-radius:11px;background:#0d111dcc}
+.tb-s5-log-title{font-size:8px;letter-spacing:1.2px;font-weight:900;color:#d8c38e;margin-bottom:5px}
+.tb-s5-log-list{display:flex;flex-direction:column;gap:4px}
+.tb-s5-log-line{font-size:10px;line-height:1.35;color:#c1c8da;overflow-wrap:anywhere}
+.tb-s5-log-line:first-child{color:#f2e7c8}
+.tb-s5-empty{color:#8f99b2}
+@media(max-width:360px){.tb-s5-panel{gap:5px;padding:6px}.tb-s5-cell{padding:6px}.tb-s5-value{font-size:11px}}
+</style>
+<script id="TB_STAGE5_TACTICAL">
+(()=>{'use strict';
+if(window.TB_STAGE5_TACTICAL)return;window.TB_STAGE5_TACTICAL=true;
+const $=id=>document.getElementById(id);
+const lines=[];let lastMessage='',lastEnemy='',lastPhase='',lastHpBucket=-1,lastBattle=false,lastStep=-1,lastKnownHp='';
+function addLog(text){if(!text||text===lastMessage)return;lastMessage=text;lines.unshift({text,at:Date.now()});if(lines.length>4)lines.length=4;renderLog()}
+function ensure(){
+ const arena=document.querySelector('.arena');if(!arena)return;
+ let p=$('tbS5Panel');if(!p){p=document.createElement('section');p.id='tbS5Panel';p.className='tb-s5-panel';p.innerHTML='<div class="tb-s5-cell"><div class="tb-s5-label">СОСТОЯНИЕ ГЕРОЯ</div><div class="tb-s5-value" id="tbS5Hero">Готов к походу</div><div class="tb-s5-sub" id="tbS5HeroSub">Выбери маршрут и собери реликвии</div><div class="tb-s5-bar"><i id="tbS5HeroBar"></i></div></div><div class="tb-s5-cell"><div class="tb-s5-label">УГРОЗА ВПЕРЕДИ</div><div class="tb-s5-value" id="tbS5Threat">Разведка</div><div class="tb-s5-sub" id="tbS5ThreatSub">Ожидание встречи</div><div class="tb-s5-bar"><i id="tbS5ThreatBar"></i></div></div>';const status=arena.querySelector('.statusrow');if(status&&status.parentNode)status.parentNode.insertBefore(p,status.nextSibling);else arena.prepend(p)}
+ let l=$('tbS5Log');if(!l){l=document.createElement('section');l.id='tbS5Log';l.className='tb-s5-log';l.innerHTML='<div class="tb-s5-log-title">ЖУРНАЛ ЭКСПЕДИЦИИ</div><div class="tb-s5-log-list" id="tbS5LogList"><div class="tb-s5-log-line tb-s5-empty">Здесь появятся важные события боя.</div></div>';const msg=$('battlemsg');if(msg&&msg.parentNode)msg.parentNode.insertBefore(l,msg.nextSibling);else arena.appendChild(l)}
+}
+function renderLog(){const el=$('tbS5LogList');if(!el)return;el.innerHTML=lines.length?lines.map(x=>'<div class="tb-s5-log-line">'+x.text.replace(/[<>]/g,'')+'</div>').join(''):'<div class="tb-s5-log-line tb-s5-empty">Здесь появятся важные события боя.</div>'}
+function refresh(){
+ ensure();const s=window.state;if(!s)return;
+ const hp=Math.max(0,Number(s.hp)||0),max=Math.max(1,Number(s.maxHp)||1),pct=Math.max(0,Math.min(100,hp/max*100));
+ const h=$('tbS5Hero'),hs=$('tbS5HeroSub'),hb=$('tbS5HeroBar');if(h)h.textContent=hp+' / '+max+' HP';if(hs)hs.textContent=pct<25?'Критическое состояние — береги здоровье':pct<55?'Здоровье снижено — ищи возможность восстановиться':'Запас здоровья под контролем';if(hb)hb.style.width=pct+'%';
+ const step=Math.max(1,Number(s.mapStep)||1),boss=(step%7===0)||(window.tbActiveCombat&&window.tbActiveCombat.boss),elite=(s.routeType==='elite'),th=$('tbS5Threat'),ts=$('tbS5ThreatSub'),tb=$('tbS5ThreatBar');
+ if(th)th.textContent=boss?'Босс этажа':elite?'Элитный противник':s.battle?'Активный бой':'Следующая встреча';
+ if(ts)ts.textContent=boss?'Следи за фазами и предупреждениями':elite?'Повышенная опасность · повышенная добыча':s.battle?'Используй умение, когда оно готово':'Узлы маршрута открывают разные встречи';
+ if(tb)tb.style.width=(boss?100:elite?75:s.battle?48:20)+'%';
+ const msg=$('battlemsg'),message=msg?msg.textContent.trim():'';if(message&&message!==lastMessage&&s.battle)addLog(message);
+ const enemy=$('enemyName'),enemyText=enemy?enemy.textContent.trim():'';if(enemyText&&enemyText!==lastEnemy){lastEnemy=enemyText;if(s.battle)addLog('Противник: '+enemyText)}
+ const phase=message.includes('ФАЗА II')?'rage':message.includes('ФАЗА')?'phase':'';
+ if(phase&&phase!==lastPhase)addLog('Босс меняет тактику: '+message);lastPhase=phase;
+ const bucket=Math.floor(pct/25);if(s.battle&&bucket!==lastHpBucket){if(lastHpBucket!==-1)addLog(bucket<=0?'Герой на грани поражения!':bucket===1?'Здоровье героя ниже 25%.':bucket===2?'Здоровье героя опустилось ниже 50%.':'Герой восстановил значительную часть здоровья.');lastHpBucket=bucket}
+ if(s.battle&&!lastBattle)addLog('Бой начался. Следи за здоровьем и готовностью умений.');
+ if(!s.battle&&lastBattle){addLog('Бой завершён. Подготовься к следующему узлу.');lastHpBucket=-1;lastPhase=''}
+ lastBattle=!!s.battle;
+ if(step!==lastStep){lastStep=step;if(step>1)addLog('Маршрут обновлён: узел '+step+'/70.')}
+}
+const observer=new MutationObserver(()=>{if(!$('tbS5Panel'))ensure()});
+observer.observe(document.documentElement,{childList:true,subtree:true});
+setInterval(refresh,650);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh,{once:true});else refresh();
+window.TowerboundStage5={refresh,lines};
+})();
+</script>
+
 </body></html>
