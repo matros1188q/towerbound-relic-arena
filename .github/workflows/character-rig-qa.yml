@@ -1,0 +1,39 @@
+name: Character rig asset QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/characters/**'
+      - 'schemas/character-rig.schema.json'
+      - 'scripts/validate_character_rigs.py'
+      - '.github/workflows/character-rig-qa.yml'
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: Fail while any roster character has no rig manifest
+        required: false
+        default: false
+        type: boolean
+permissions:
+  contents: read
+jobs:
+  validate-character-rigs:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source art and rig manifests
+        run: |
+          if [ "${{ inputs.strict }}" = "true" ]; then
+            python scripts/validate_character_rigs.py --strict
+          else
+            python scripts/validate_character_rigs.py
+          fi
+      - name: Upload QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: character-rig-qa-report
+          path: artifacts/character-rig-qa.json
