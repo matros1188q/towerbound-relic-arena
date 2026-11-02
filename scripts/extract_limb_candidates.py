@@ -11,14 +11,14 @@ REPORT=ROOT/"artifacts/pose-analysis/report.json"
 OUT=ROOT/"artifacts/limb-candidates"
 HEROES=("warden","ranger","arcanist","reaper")
 LIMBS={
- "left_upper_arm":("left_shoulder","left_elbow",.105),
- "left_forearm":("left_elbow","left_wrist",.085),
- "right_upper_arm":("right_shoulder","right_elbow",.105),
- "right_forearm":("right_elbow","right_wrist",.085),
- "left_thigh":("left_hip","left_knee",.13),
- "left_shin":("left_knee","left_ankle",.10),
- "right_thigh":("right_hip","right_knee",.13),
- "right_shin":("right_knee","right_ankle",.10)}
+ "left_upper_arm":("left_shoulder","left_elbow",.24),
+ "left_forearm":("left_elbow","left_wrist",.21),
+ "right_upper_arm":("right_shoulder","right_elbow",.24),
+ "right_forearm":("right_elbow","right_wrist",.21),
+ "left_thigh":("left_hip","left_knee",.27),
+ "left_shin":("left_knee","left_ankle",.22),
+ "right_thigh":("right_hip","right_knee",.27),
+ "right_shin":("right_knee","right_ankle",.22)}
 def capsule(a,b,r):
  ax,ay=a; bx,by=b; angle=math.atan2(by-ay,bx-ax)
  pts=[]
