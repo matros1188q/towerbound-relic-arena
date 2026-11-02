@@ -1743,4 +1743,90 @@ input,select,textarea{font-size:16px!important;max-width:100%}
  body.in-battle .tb-skills-panel{max-height:34dvh!important}
 }
 </style>
+
+<style id="tb-stage4-director-css">
+/* STAGE 4 — expedition atmosphere, boss telegraphs, encounter identity */
+.tb-s4-banner{position:relative;isolation:isolate;display:grid;grid-template-columns:38px minmax(0,1fr);gap:10px;align-items:center;margin:8px 0 10px;padding:11px 12px;border:1px solid #d6bd7755;border-radius:13px;background:linear-gradient(115deg,#28223aee,#151b2cee 58%,#30231fee);box-shadow:inset 0 1px #ffffff12,0 8px 22px #0003;overflow:hidden}
+.tb-s4-banner:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 0 50%,var(--s4-glow,#b9a1ff22),transparent 65%)}
+.tb-s4-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#ffffff0c;border:1px solid #ffffff16;font-size:22px}
+.tb-s4-title{font-size:10px;letter-spacing:1.2px;font-weight:900;color:#f1d99d}
+.tb-s4-copy{font-size:11px;line-height:1.4;color:#c5c9d9;margin-top:3px}
+.tb-s4-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.tb-s4-tag{font-size:8px;letter-spacing:.5px;padding:4px 6px;border-radius:5px;border:1px solid #ffffff1b;background:#ffffff09;color:#d6d9e7}
+.tb-s4-tag.danger{color:#ffb2a4;border-color:#ff8e7c44;background:#8c30221c}
+.tb-s4-tag.reward{color:#f4d991;border-color:#e7c16c44;background:#8c6b221c}
+.arena.tb-s4-telegraph{box-shadow:0 0 0 1px #ff8c7c88,0 0 28px #ff4e4e22,inset 0 0 36px #d83b3b0d}
+.arena.tb-s4-telegraph:after{content:"АТАКА БОССА · ПРИГОТОВЬСЯ";position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:5;white-space:nowrap;font-size:9px;letter-spacing:1.2px;font-weight:900;color:#ffe0b4;background:#481e2be8;border:1px solid #ff998866;border-radius:6px;padding:6px 9px;pointer-events:none;animation:tbS4Pulse .75s ease-in-out infinite alternate}
+@keyframes tbS4Pulse{from{opacity:.65;filter:brightness(.9)}to{opacity:1;filter:brightness(1.3)}}
+.tb-s4-banner.boss{border-color:#ff879166;--s4-glow:#f46b862c}
+.tb-s4-banner.elite{border-color:#eac47766;--s4-glow:#eac47722}
+.tb-s4-banner.event{border-color:#8ed9cb66;--s4-glow:#6fe0c322}
+@media(prefers-reduced-motion:reduce){.arena.tb-s4-telegraph:after{animation:none}}
+</style>
+<script id="TB_STAGE4_DIRECTOR">
+(()=>{'use strict';
+if(window.TB_STAGE4_DIRECTOR)return;window.TB_STAGE4_DIRECTOR=true;
+const $=id=>document.getElementById(id);
+const biomes=[
+ {from:1,to:7,name:'ЗАТОНУВШИЕ КАТАКОМБЫ',icon:'☠️',lore:'Камень помнит каждую клятву. Здесь нежить крепче, а реликвии древнее.',color:'#b9a1ff'},
+ {from:8,to:14,name:'ПРОКЛЯТЫЙ ЛЕС',icon:'🌿',lore:'Корни тянутся к теплу живых. Не задерживайся после победы.',color:'#81d6a1'},
+ {from:15,to:21,name:'ЛЕДЯНОЙ МОНАСТЫРЬ',icon:'❄️',lore:'Лёд глушит ярость, но сохраняет силу павших воинов.',color:'#8bd8f5'},
+ {from:22,to:28,name:'ПЕПЕЛЬНЫЕ КУЗНИЦЫ',icon:'🔥',lore:'Каждый удар раздувает жар древних горнов.',color:'#ff9b67'},
+ {from:29,to:35,name:'ЗЕРКАЛЬНЫЙ РАЗЛОМ',icon:'🪞',lore:'Отражение повторяет движения. Не путай его с союзником.',color:'#c8b8ff'},
+ {from:36,to:42,name:'ЗАБЫТЫЙ НЕКРОПОЛЬ',icon:'⚰️',lore:'Души здесь не исчезают — они ждут следующего носителя.',color:'#b6a5d8'},
+ {from:43,to:70,name:'СЕРДЦЕ БЕЗДНЫ',icon:'🌀',lore:'Башня перестала быть местом. Теперь это живое испытание.',color:'#ff8fae'}
+];
+const bosses=[
+ ['Костяной колосс','РАЗЛОМНЫЙ УДАР','Собирает силу перед тяжёлым ударом. Следи за предупреждением.'],
+ ['Королева Бездны','ПРИЗЫВ ПУСТОТЫ','Меняет темп боя и заставляет героя не терять ритм.'],
+ ['Пепельный патриарх','ЖАРОВОЙ ВАЛ','Пламя поднимается волнами — не трать защиту бездумно.'],
+ ['Ледяной аббат','МОРОЗНЫЙ ПРИГОВОР','Длинная схватка проверяет защиту и устойчивость сборки.'],
+ ['Зеркальный палач','ОТРАЖЕНИЕ','Чем дольше длится бой, тем опаснее становится противник.'],
+ ['Пожиратель душ','ГОЛОД БЕЗДНЫ','Испытание на выживаемость и урон по одиночной цели.'],
+ ['Сердце Башни','ПОСЛЕДНИЙ ПУЛЬС','Финальное испытание похода. Используй умение в нужный момент.']
+];
+const affixes=[
+ {name:'НЕУМОЛИМЫЙ',icon:'⚔️',desc:'Ускоренный натиск — держи активное умение наготове.'},
+ {name:'ПАНЦИРНЫЙ',icon:'🛡️',desc:'Бронированный противник — рассчитывай на длинный бой.'},
+ {name:'ОСКВЕРНЁННЫЙ',icon:'☠️',desc:'Проклятая аура — береги запас здоровья.'},
+ {name:'ОХОТНИК',icon:'🎯',desc:'Точный противник — не игнорируй защитные реликвии.'},
+ {name:'ПЕРЕРОЖДЁННЫЙ',icon:'🩸',desc:'Элитная добыча — риск выше, награда заслуженнее.'}
+];
+function getStep(){const s=window.state;return Math.max(1,Math.min(70,Number(s&&s.mapStep)||1))}
+function getRoute(){return (window.state&&window.state.routeType)||'balanced'}
+function ensureBanner(){
+ const arena=document.querySelector('.arena');if(!arena)return;
+ let b=document.getElementById('tbS4Encounter');if(!b){b=document.createElement('section');b.id='tbS4Encounter';b.className='tb-s4-banner';b.setAttribute('aria-live','polite');const row=arena.querySelector('.statusrow');if(row&&row.parentNode)row.parentNode.insertBefore(b,row);else arena.prepend(b)}
+ const step=getStep(),biome=biomes.find(x=>step>=x.from&&step<=x.to)||biomes[0],route=getRoute(),boss=((step-1)%7+1===7)||route==='boss',elite=route==='elite',n=Math.floor((step-1)/7)%bosses.length,affix=affixes[(step*7+Math.floor(step/3))%affixes.length];
+ b.className='tb-s4-banner'+(boss?' boss':elite?' elite':route==='event'?' event':'');
+ const title=boss?bosses[n][0]:elite?'ЭЛИТНЫЙ ПРОТИВНИК':route==='event'?'СЛУЧАЙНАЯ ВСТРЕЧА':'ЭКСПЕДИЦИЯ · '+biome.name;
+ const copy=boss?bosses[n][2]:elite?affix.desc:route==='event'?'Событие может принести лечение, золото или иной поворот похода.':biome.lore;
+ const tags=boss?['БОСС '+(Math.floor((step-1)/7)+1)+'/10',bosses[n][1],'ОСОБАЯ НАГРАДА']:elite?[affix.icon+' '+affix.name,'ЭЛИТА','ПОВЫШЕННАЯ НАГРАДА']:route==='event'?['СОБЫТИЕ','ВЫБОР РИСКА','РЕСУРСЫ']:['БИОМ '+(biomes.indexOf(biome)+1)+'/7','УЗЕЛ '+step+'/70','ПОХОД'];
+ b.innerHTML='<div class="tb-s4-icon">'+(boss?'♛':elite?affix.icon:route==='event'?'✧':biome.icon)+'</div><div><div class="tb-s4-title">'+title+'</div><div class="tb-s4-copy">'+copy+'</div><div class="tb-s4-tags">'+tags.map((x,i)=>'<span class="tb-s4-tag '+(boss&&i===2||elite&&i===2?'reward':boss&&i===1||elite&&i===0?'danger':'')+'">'+x+'</span>').join('')+'</div></div>';
+ b.style.setProperty('--s4-glow',biome.color+'26');
+}
+let telegraphTimer=0,telegraphOn=false;
+function updateTelegraph(){
+ const arena=document.querySelector('.arena');if(!arena)return;
+ const boss=!!(window.tbActiveCombat&&window.tbActiveCombat.boss);
+ const active=!!(window.state&&window.state.battle&&boss);
+ if(!active){arena.classList.remove('tb-s4-telegraph');telegraphOn=false;return}
+ const bar=$('enemyHpBar');const hp=bar?parseFloat(bar.style.width)||100:100;
+ const now=Date.now();
+ // Short visual warning at a predictable cadence; it never changes damage or bypasses the existing combat system.
+ const phase=(now%9000);
+ const next=phase>6100&&phase<7600;
+ if(next&&!telegraphOn){arena.classList.add('tb-s4-telegraph');telegraphOn=true}
+ else if(!next&&telegraphOn){arena.classList.remove('tb-s4-telegraph');telegraphOn=false}
+}
+function refresh(){ensureBanner();updateTelegraph()}
+const mo=new MutationObserver(()=>{if(!document.getElementById('tbS4Encounter'))ensureBanner()});
+mo.observe(document.documentElement,{childList:true,subtree:true});
+setInterval(refresh,700);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh,{once:true});else refresh();
+window.TowerboundStage4={biomes,bosses,affixes,refresh};
+})();
+</script>
+
 </body></html>
