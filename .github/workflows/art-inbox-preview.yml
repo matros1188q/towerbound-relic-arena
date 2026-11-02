@@ -6,7 +6,7 @@ on:
       - "art-inbox/01-characters/**"
       - ".github/workflows/art-inbox-preview.yml"
 permissions:
-  contents: read
+  contents: write
 jobs:
   preview:
     runs-on: ubuntu-latest
@@ -49,6 +49,24 @@ jobs:
                   raw = path.read_bytes()
                   shutil.copy2(path, originals / path.name)
                   cutout_bytes = remove(raw, session=session, post_process_mask=True, alpha_matting=False)
+                  out_im = Image.open(BytesIO(cutout_bytes)).convert("RGBA")
+                  # Restore the Arcanist's saturated violet-blue crystal/staff details,
+                  # which the human segmentation model can mistake for a separate object.
+                  if path.name == "16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.jpg":
+                      original = Image.open(BytesIO(raw)).convert("RGB")
+                      hsv = original.convert("HSV")
+                      for yy in range(0, min(480, original.height)):
+                          for xx in range(680, min(920, original.width)):
+                              hh, ss, vv = hsv.getpixel((xx, yy))
+                              if 150 <= hh <= 250 and ss > 28 and vv > 32:
+                                  rr, gg, bb = original.getpixel((xx, yy))
+                                  aa = 255 if ss >= 60 else max(0, min(255, int((ss - 28) * 8)))
+                                  old = out_im.getpixel((xx, yy))
+                                  if aa > old[3]:
+                                      out_im.putpixel((xx, yy), (rr, gg, bb, aa))
+                  buffer = BytesIO()
+                  out_im.save(buffer, format="PNG", optimize=True)
+                  cutout_bytes = buffer.getvalue()
                   cutout_path = processed / (path.stem + ".png")
                   cutout_path.write_bytes(cutout_bytes)
                   with Image.open(path) as im:
@@ -79,3 +97,81 @@ jobs:
           path: art-preview/
           if-no-files-found: error
           retention-days: 7
+
+      - name: Integrate four hero portraits and update selector cards
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json, shutil
+
+          mapping = [
+              {"id":"warden","source":"7f5c7457-3498-464f-91df-d83335183855.png","path":"assets/characters/heroes/warden.png","note":"Confirmed: armored guardian with tower shield"},
+              {"id":"arcanist","source":"16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.png","path":"assets/characters/heroes/arcanist.png","note":"Confirmed: violet-robed mage; violet-blue crystal details restored from source"},
+              {"id":"ranger","source":"7305bd9e-5b85-49ad-a701-ec8ad192dcd7.png","path":"assets/characters/heroes/ranger.png","note":"Confirmed: hooded archer with bow and quiver"},
+              {"id":"reaper","source":"acea49d3-fa54-45a9-957a-ac057304b6ab.png","path":"assets/characters/heroes/reaper.png","note":"Provisional: dark armored reaper-like warrior; source weapon is a sword, not the specified scythe"}
+          ]
+          for item in mapping:
+              src = Path("art-preview/processed") / item["source"]
+              dst = Path(item["path"])
+              if not src.exists():
+                  raise SystemExit(f"Missing processed portrait: {src}")
+              with Image.open(src) as im:
+                  if im.format != "PNG" or im.mode != "RGBA" or im.size != (1024, 1024):
+                      raise SystemExit(f"Unexpected processed image format for {src}: {im.format}, {im.mode}, {im.size}")
+                  if im.getchannel("A").getextrema() == (255, 255):
+                      raise SystemExit(f"No transparency found in {src}")
+              dst.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(src, dst)
+
+          index_path = Path("index.html")
+          html = index_path.read_text(encoding="utf-8")
+          for hero_id, icon in [("warden","🛡️"),("arcanist","🔮"),("ranger","🏹"),("reaper","💀")]:
+              art = f"art:'./assets/characters/heroes/{hero_id}.png',"
+              old = f"icon:'{icon}',desc:"
+              new = f"icon:'{icon}',{art}desc:"
+              if art not in html:
+                  if html.count(old) != 1:
+                      raise SystemExit(f"Could not safely locate {hero_id} metadata in index.html")
+                  html = html.replace(old, new, 1)
+
+          old_markup = '<div class="tb-hero-emblem">'+h.icon+'</div>'
+          new_markup = '<div class="tb-hero-portrait"><img src="'+h.art+'" alt="'+h.name+'" loading="lazy" decoding="async"></div>'
+          if new_markup not in html:
+              if html.count(old_markup) != 1:
+                  raise SystemExit("Could not safely locate hero card image slot in renderHeroSelect()")
+              html = html.replace(old_markup, new_markup, 1)
+
+          style_id = 'id="tb-hero-portrait-art-v1"'
+          if style_id not in html:
+              style = """<style id="tb-hero-portrait-art-v1">
+          #heroChoices .tb-hero-portrait{width:100%;height:142px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px;background:radial-gradient(ellipse at 50% 42%,#344056 0%,#151b29 72%);border:1px solid #b8c6dd22}
+          #heroChoices .tb-hero-portrait img{display:block;width:100%;height:100%;object-fit:contain;object-position:center center;filter:drop-shadow(0 5px 9px #000b)}
+          @media(max-width:520px){#heroChoices .tb-hero-portrait{height:126px}}
+          </style>
+          """
+              if "</head>" not in html:
+                  raise SystemExit("Missing </head>; refusing to patch hero portrait CSS")
+              html = html.replace("</head>", style + "</head>", 1)
+          index_path.write_text(html, encoding="utf-8")
+
+          manifest = {
+              "pack":"towerbound-heroes-batch-1",
+              "version":"1.0.0",
+              "processing":"rembg isnet-general-use with alpha channel validation",
+              "assets":mapping
+          }
+          Path("assets/characters/heroes/manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
+          print("Prepared 4 transparent hero portraits and hero selector markup.")
+          PY
+      - name: Commit integrated hero portraits
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/characters/heroes index.html
+          if git diff --cached --quiet; then
+            echo "Hero portraits already integrated; no changes to commit."
+          else
+            git commit -m "Add four transparent hero portraits to selector"
+            git push
+          fi
