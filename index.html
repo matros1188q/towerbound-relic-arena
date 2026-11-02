@@ -1291,10 +1291,10 @@ document.addEventListener('click',function(ev){
   const screen=document.getElementById('titleScreen');
   if(screen){screen.classList.add('is-hidden');screen.setAttribute('aria-hidden','true');}
   document.body.classList.add('arena-entered');
-  document.body.classList.add('map-mode');
-  document.body.classList.remove('in-battle');
-  const fight=document.getElementById('fightBtn');
-  if(fight&&!fight.disabled){fight.setAttribute('aria-label','Начать бой');}
+  document.body.classList.remove('map-mode','in-battle');
+  const flow=window.TowerboundFlow;
+  if(flow&&typeof flow.setScreen==='function')flow.setScreen('hero');
+  else setTimeout(()=>{const ready=window.TowerboundFlow;if(ready&&typeof ready.setScreen==='function')ready.setScreen('hero');},0);
   return;
  }
  const how=target&&target.closest?target.closest('#howToPlayBtn'):null;
@@ -2115,7 +2115,8 @@ function setScreen(name){
  window.scrollTo(0,0);
 }
 document.querySelectorAll('[data-prep-tab]').forEach(b=>b.addEventListener('click',()=>setPrepTab(b.dataset.prepTab)));
-$('#tbReadyBtn').addEventListener('click',()=>{refreshSummary();setScreen('map');});\n $('#tbNewGameBtn').addEventListener('click',()=>{const warning=current==='arena'&&window.state?.battle?'Текущий бой и весь поход будут сброшены. Постоянные улучшения и эссенция сохранятся. Начать новую игру?':'Текущий поход будет сброшен. Постоянные улучшения и эссенция сохранятся. Начать новую игру?';if(!window.confirm(warning))return;if(typeof window.TowerboundNewRun!=='function'){window.alert('Не удалось безопасно перезапустить поход. Обнови страницу и попробуй ещё раз.');return;}window.TowerboundNewRun();setPrepTab('shop');const advanced=$('tbAdvancedBuild');if(advanced)advanced.open=false;setScreen('hero');});
+$('#tbReadyBtn').addEventListener('click',()=>{refreshSummary();setScreen('map');});
+ $('#tbNewGameBtn').addEventListener('click',()=>{const warning=current==='arena'&&window.state?.battle?'Текущий бой и весь поход будут сброшены. Постоянные улучшения и эссенция сохранятся. Начать новую игру?':'Текущий поход будет сброшен. Постоянные улучшения и эссенция сохранятся. Начать новую игру?';if(!window.confirm(warning))return;if(typeof window.TowerboundNewRun!=='function'){window.alert('Не удалось безопасно перезапустить поход. Обнови страницу и попробуй ещё раз.');return;}window.TowerboundNewRun();setPrepTab('shop');const advanced=$('tbAdvancedBuild');if(advanced)advanced.open=false;setScreen('hero');});
 $('#tbMapBack').addEventListener('click',()=>setScreen('prep'));
 document.addEventListener('click',ev=>{
  const target=ev.target;
