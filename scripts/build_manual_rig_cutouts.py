@@ -29,7 +29,7 @@ def build(path: Path, out_root: Path):
     output = out_root / hero
     output.mkdir(parents=True, exist_ok=True)
     report = {"schema_version": 1, "hero": hero, "source": str(src.relative_to(ROOT)),
-              "canvas": {"width": width, "height": height}, "parts": [], "status": "manual-polygons-extracted-awaiting-occlusion-and-visual-qa"}
+              "canvas": {"width": width, "height": height}, "parts": [], "joints": data.get("joints", {}), "status": "manual-polygons-extracted-awaiting-occlusion-and-visual-qa"}
     for part, spec in sorted(data.get("parts", {}).items()):
         polygons = spec.get("polygons", [])
         valid = [poly for poly in polygons if isinstance(poly, list) and len(poly) >= 3]
@@ -52,7 +52,7 @@ def build(path: Path, out_root: Path):
         report["parts"].append({"id": part, "file": filename, "polygons": len(valid),
                                 "pixels": int((cut_alpha > 8).sum()), "bbox": bbox,
                                 "canvas_aligned": True})
-    report["status"] = "no-parts" if not report["parts"] else report["status"]
+    report["joint_count"] = len(joints)\n    report["missing_core_joints"] = [name for name in ("pelvis", "neck", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle") if name not in joints]\n    report["status"] = "no-parts" if not report["parts"] else report["status"]
     (output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     return report
 
