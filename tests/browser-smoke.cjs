@@ -49,7 +49,20 @@ async function testJourney(browserType, engine, viewport) {
     await page.locator('#enterArenaBtn').click();
     await page.locator('#heroChoices [data-hero="warden"]').waitFor({ state: 'visible', timeout: 10000 });
     await page.locator('#heroChoices [data-hero="warden"]').click();
-    await page.waitForFunction(() => document.body.dataset.tbScreen === 'prep', null, { timeout: 10000 });
+    await page.waitForTimeout(250);
+    const afterHero = await page.evaluate(() => ({
+      bodyScreen: document.body.dataset.tbScreen || null,
+      flowScreen: window.TowerboundFlow ? window.TowerboundFlow.screen : null,
+      flowReady: !!(window.TowerboundFlow && typeof window.TowerboundFlow.setScreen === 'function'),
+      heroConfirmed: !!(window.state && window.state.heroConfirmed),
+      heroId: window.state && window.state.heroId,
+      heroPanelVisible: !!(document.querySelector('#heroSelectPanel') && !document.querySelector('#heroSelectPanel').hidden),
+      prepStageMounted: !!document.querySelector('#tbPrepStage'),
+      prepStageActive: !!(document.querySelector('#tbPrepStage') && document.querySelector('#tbPrepStage').classList.contains('is-active'))
+    }));
+    if (afterHero.bodyScreen !== 'prep' || afterHero.flowScreen !== 'prep') {
+      throw new Error('Hero selection did not enter prep: ' + JSON.stringify({ afterHero, pageErrors }));
+    }
 
     await page.locator('#tbReadyBtn').click();
     await page.waitForFunction(() => document.body.dataset.tbScreen === 'map', null, { timeout: 10000 });
