@@ -94,7 +94,7 @@ setWave:function(wave,boss){
   if(!domHero.src.includes('/assets/characters/heroes/'+(heroFiles[heroId]||'warden')+'.png'))domHero.src=heroSrc;
   domHero.alt='Герой: '+heroId;
  }
- const idx=(n-1)%enemyFiles.length;
+ const idx=(n*7+3)%enemyFiles.length;
  const foeId=boss?(bossFiles[Math.max(0,Math.min(9,Math.ceil(n/7)-1))]||enemyFiles[idx]):enemyFiles[idx];
  const domEnemy=mount&&mount.querySelector('.tb-visible-enemy');
  if(domEnemy){
