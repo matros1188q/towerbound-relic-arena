@@ -58,7 +58,9 @@ def build(path: Path, out_root: Path):
         report["parts"].append({"id": part, "file": filename, "polygons": len(valid),
                                 "pixels": int((cut_alpha > 8).sum()), "bbox": bbox,
                                 "canvas_aligned": True})
-    report["joint_count"] = len(joints)\n    report["missing_core_joints"] = [name for name in ("pelvis", "neck", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle") if name not in joints]\n    report["status"] = "no-parts" if not report["parts"] else report["status"]
+    report["joint_count"] = len(joints)
+    report["missing_core_joints"] = [name for name in ("pelvis", "neck", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle") if name not in joints]
+    report["status"] = "no-parts" if not report["parts"] else report["status"]
     (output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     return report
 
