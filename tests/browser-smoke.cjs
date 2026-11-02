@@ -48,9 +48,20 @@ async function testJourney(browserType, engine, viewport) {
     await page.locator('#enterArenaBtn').waitFor({ state: 'visible', timeout: 15000 });
     await page.locator('#enterArenaBtn').click();
     await page.locator('#heroChoices [data-hero="warden"]').waitFor({ state: 'visible', timeout: 10000 });
+    await page.evaluate(() => {
+      const flow = window.TowerboundFlow;
+      window.__flowScreenCalls = [];
+      if (flow) {
+        const original = flow.setScreen;
+        flow.setScreen = name => {
+          window.__flowScreenCalls.push({ name, stack: new Error().stack });
+          return original(name);
+        };
+      }
+    });
     await page.locator('#heroChoices [data-hero="warden"]').click();
     await page.waitForTimeout(250);
-    const afterHero = await page.evaluate(() => ({
+    const afterHero = await page.evaluate(() => ({ flowCalls: window.__flowScreenCalls || [], bodyClass: document.body.className, titleHidden: !!(document.querySelector('#titleScreen') && document.querySelector('#titleScreen').classList.contains('is-hidden')),
       bodyScreen: document.body.dataset.tbScreen || null,
       flowScreen: window.TowerboundFlow ? window.TowerboundFlow.screen : null,
       flowReady: !!(window.TowerboundFlow && typeof window.TowerboundFlow.setScreen === 'function'),
