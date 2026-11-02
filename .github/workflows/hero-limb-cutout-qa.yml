@@ -1,0 +1,30 @@
+name: Free hero limb cutout candidates
+on:
+  workflow_run:
+    workflows: ["Free hero pose landmark QA"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cutout-qa:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install image processing
+        run: pip install "numpy<2" "pillow>=10,<12" "opencv-python-headless>=4.10,<5"
+      - name: Generate conservative limb cutout candidates
+        run: python scripts/extract_limb_candidates.py
+      - name: Upload candidate cutouts and visual QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: hero-limb-cutout-candidates
+          path: artifacts/limb-candidates/
+          if-no-files-found: error
