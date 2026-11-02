@@ -66,27 +66,36 @@ jobs:
           from PIL import Image, ImageDraw
           import json, math
           root=Path('/tmp/warden-seeded/warden')
-          source=Image.open('assets/characters/heroes/warden.png').convert('RGBA')
-          names=[p.name for p in root.glob('*.png')]
-          thumb=240
-          cell_w,cell_h=260,290
-          cols=4
-          rows=math.ceil((len(names)+1)/cols)
+          report=json.loads((root/'report.json').read_text())
+          entries=[]
+          for part in report['parts']:
+              base=Image.open(root/part['file']).convert('RGBA')
+              candidate=Image.open(root/(Path(part['file']).stem+'-grabcut-candidate.png')).convert('RGBA')
+              bbox=base.getchannel('A').getbbox()
+              if bbox:
+                  entries.append((part['id'],base.crop(bbox),candidate.crop(bbox)))
+          cell_w,cell_h=330,300
+          cols=3
+          rows=math.ceil((len(entries)+1)/cols)
           sheet=Image.new('RGB',(cols*cell_w,rows*cell_h),(27,25,31))
           draw=ImageDraw.Draw(sheet)
-          def tile(im,x,y,label):
-              bg=Image.new('RGBA',(thumb,thumb),(45,43,50,255))
-              im.thumbnail((thumb,thumb))
-              bg.alpha_composite(im,(0,0))
+          def paste(im,x,y):
+              bg=Image.new('RGBA',(150,245),(45,43,50,255))
+              im.thumbnail((142,238))
+              bg.alpha_composite(im,((150-im.width)//2,(245-im.height)//2))
               sheet.paste(bg.convert('RGB'),(x,y))
-              draw.text((x,y+thumb+8),label,fill=(245,240,230))
-          tile(source,10,10,'SOURCE')
-          for i,name in enumerate(names,1):
-              x=(i%cols)*cell_w+10
-              y=(i//cols)*cell_h+10
-              tile(Image.open(root/name).convert('RGBA'),x,y,name)
-          sheet.save(root/'contact-sheet.jpg',quality=92)
-          print('Contact sheet generated:', len(names), 'layers')
+          source=Image.open('assets/characters/heroes/warden.png').convert('RGBA')
+          source.thumbnail((300,245))
+          sheet.paste(source.convert('RGB'),(10,10))
+          draw.text((10,260),'SOURCE',fill=(245,240,230))
+          for i,(name,base,candidate) in enumerate(entries,1):
+              x=(i%cols)*cell_w+8
+              y=(i//cols)*cell_h+8
+              paste(base,x,y)
+              paste(candidate,x+158,y)
+              draw.text((x,y+250),name+' | polygon / GrabCut',fill=(245,240,230))
+          sheet.save(root/'contact-sheet.jpg',quality=94)
+          print('Cropped part comparison generated:',len(entries),'parts')
           PY
       - name: Upload Warden first-pass rig QA artifact
         uses: actions/upload-artifact@v4
