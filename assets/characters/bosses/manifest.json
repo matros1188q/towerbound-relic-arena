@@ -1,0 +1,114 @@
+{
+  "pack": "towerbound-character-art-v1",
+  "category": "bosses",
+  "assets": [
+    {
+      "filename": "bone-colossus.png",
+      "relative_path": "assets/characters/bosses/bone-colossus.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.bone-colossus",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd",
+      "short_description": "Armored skeletal boss"
+    },
+    {
+      "filename": "abyss-queen.png",
+      "relative_path": "assets/characters/bosses/abyss-queen.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.abyss-queen",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "d9e748b9-ee01-4b29-b3f8-eb9c4ecdf503",
+      "short_description": "Violet tentacled abyss sovereign"
+    },
+    {
+      "filename": "ash-patriarch.png",
+      "relative_path": "assets/characters/bosses/ash-patriarch.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.ash-patriarch",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "c05adc5c-64e2-476a-8a4d-e92eb774c5d8",
+      "short_description": "Ancient hooded staff-bearing patriarch"
+    },
+    {
+      "filename": "ice-abbot.png",
+      "relative_path": "assets/characters/bosses/ice-abbot.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.ice-abbot",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc",
+      "short_description": "Frozen abbot with ice staff"
+    },
+    {
+      "filename": "mirror-executioner.png",
+      "relative_path": "assets/characters/bosses/mirror-executioner.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.mirror-executioner",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "f50e3768-351d-4b8a-9939-ca398bdd65d7",
+      "short_description": "Hooded executioner with a massive axe; source does not clearly show mirror armor"
+    },
+    {
+      "filename": "soul-devourer.png",
+      "relative_path": "assets/characters/bosses/soul-devourer.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.soul-devourer",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "d6021025-d9b9-44da-a245-2c50822ebedc",
+      "short_description": "Undead soul-consuming shaman with green spectral energy"
+    },
+    {
+      "filename": "root-titan.png",
+      "relative_path": "assets/characters/bosses/root-titan.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.root-titan",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "beb6557c-f2db-4426-b741-d0faa9c2d80f",
+      "short_description": "Massive rune-carved stone titan"
+    },
+    {
+      "filename": "void-hunter-boss.png",
+      "relative_path": "assets/characters/bosses/void-hunter-boss.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.void-hunter-boss",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "f3f1e987-472d-41ab-aa6c-f6e11d8068ba",
+      "short_description": "Many-limbed void creature; visual is closer to a giant arachnid than a humanoid hunter"
+    },
+    {
+      "filename": "heart-of-tower.png",
+      "relative_path": "assets/characters/bosses/heart-of-tower.png",
+      "category": "bosses",
+      "exact_asset_id": "boss.heart-of-tower",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "ead1c2a5-2854-4a9c-83b7-d8964fd737cb",
+      "short_description": "Living flesh-and-arcane heart fused to tower masonry"
+    }
+  ]
+}

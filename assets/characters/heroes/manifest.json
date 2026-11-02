@@ -1,31 +1,54 @@
 {
-  "pack": "towerbound-heroes-batch-1",
-  "version": "1.0.0",
-  "processing": "rembg isnet-general-use with alpha channel validation",
+  "pack": "towerbound-character-art-v1",
+  "category": "heroes",
   "assets": [
     {
-      "id": "warden",
-      "source": "7f5c7457-3498-464f-91df-d83335183855.png",
-      "path": "assets/characters/heroes/warden.png",
-      "note": "Confirmed: armored guardian with tower shield"
+      "filename": "warden.png",
+      "relative_path": "assets/characters/heroes/warden.png",
+      "category": "heroes",
+      "exact_asset_id": "hero.warden",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "7f5c7457-3498-464f-91df-d83335183855",
+      "short_description": "Armored guardian with tower shield"
     },
     {
-      "id": "arcanist",
-      "source": "16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.png",
-      "path": "assets/characters/heroes/arcanist.png",
-      "note": "Confirmed: violet-robed mage; violet-blue crystal details restored from source"
+      "filename": "arcanist.png",
+      "relative_path": "assets/characters/heroes/arcanist.png",
+      "category": "heroes",
+      "exact_asset_id": "hero.arcanist",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f",
+      "short_description": "Violet-robed mage with arcane staff"
     },
     {
-      "id": "ranger",
-      "source": "7305bd9e-5b85-49ad-a701-ec8ad192dcd7.png",
-      "path": "assets/characters/heroes/ranger.png",
-      "note": "Confirmed: hooded archer with bow and quiver"
+      "filename": "ranger.png",
+      "relative_path": "assets/characters/heroes/ranger.png",
+      "category": "heroes",
+      "exact_asset_id": "hero.ranger",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "7305bd9e-5b85-49ad-a701-ec8ad192dcd7",
+      "short_description": "Hooded archer with bow and quiver"
     },
     {
-      "id": "reaper",
-      "source": "acea49d3-fa54-45a9-957a-ac057304b6ab.png",
-      "path": "assets/characters/heroes/reaper.png",
-      "note": "Provisional: dark armored reaper-like warrior; source weapon is a sword, not the specified scythe"
+      "filename": "reaper.png",
+      "relative_path": "assets/characters/heroes/reaper.png",
+      "category": "heroes",
+      "exact_asset_id": "hero.reaper",
+      "image_format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparency": true,
+      "source_filename": "acea49d3-fa54-45a9-957a-ac057304b6ab",
+      "short_description": "Dark armored reaper-like warrior; source carries a sword rather than a scythe"
     }
   ]
 }
