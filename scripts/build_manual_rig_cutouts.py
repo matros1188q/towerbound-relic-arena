@@ -58,6 +58,23 @@ def build(path: Path, out_root: Path):
         report["parts"].append({"id": part, "file": filename, "polygons": len(valid),
                                 "pixels": int((cut_alpha > 8).sum()), "bbox": bbox,
                                 "canvas_aligned": True})
+    # Build a source-aligned overlay so reviewers can see whether each polygon
+    # actually covers the intended visible region (isolated thumbnails can hide
+    # grossly misplaced contours).
+    overlay = image.copy()
+    palette = [(255,70,70),(70,180,255),(255,190,60),(100,220,130),
+               (210,120,255),(70,220,210),(255,120,190),(200,200,80)]
+    for index, (part, spec) in enumerate(sorted(data.get("parts", {}).items())):
+        mask_path = output / f"{part.replace('/', '-')}.png"
+        if not mask_path.exists():
+            continue
+        layer = Image.open(mask_path).convert("RGBA")
+        tint = Image.new("RGBA", (width,height), (*palette[index % len(palette)],0))
+        alpha = layer.getchannel("A").point(lambda v: int(v * 0.42))
+        tint.putalpha(alpha)
+        overlay = Image.alpha_composite(overlay, tint)
+    overlay.save(output / "source-overlay.png", optimize=True)
+    report["visual_review"] = "source-overlay.png"
     report["joint_count"] = len(joints)
     core_joints = ("pelvis", "neck", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle")
     required_parts = ("head", "torso", "pelvis", "left_upper_arm", "left_forearm", "left_hand", "right_upper_arm", "right_forearm", "right_hand", "left_thigh", "left_shin", "left_foot", "right_thigh", "right_shin", "right_foot", "weapon", "shield")
