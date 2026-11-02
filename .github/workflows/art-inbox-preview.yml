@@ -92,6 +92,65 @@ jobs:
           (out / "characters-index.json").write_text(json.dumps({"count":len(records),"images":records},ensure_ascii=False,indent=2),encoding="utf-8")
           print(json.dumps({"count":len(records),"files":[r["filename"] for r in records]},ensure_ascii=False))
           PY
+      - name: Remove checkerboard and prepare synergy and skill PNGs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          from rembg import remove, new_session
+          from io import BytesIO
+          import json
+          synergy = [
+              ("🔥 Огонь","fire","7ff81e6b-167f-4c94-85d2-e223531a420c.jpg"),
+              ("☠️ Яд","poison","3aad2655-2998-4edc-b4a5-220da19c3d55.jpg"),
+              ("⚡ Гроза","storm","a9ce1cfb-4899-4681-93f3-b7d1d33d32a7.jpg"),
+              ("🌀 Бездна","abyss","2c4acddd-9364-49c0-bc51-cb2e59e75133.jpg"),
+              ("🌿 Жизнь","life","f71ed8de-2710-440d-bc5c-50b57a95dd8a.jpg"),
+              ("🏹 Залп","volley","0860a6f2-ee03-43da-a57d-4a2454d215d3.jpg"),
+              ("❄️ Лёд","ice","644c2e2b-a9ad-4ac2-85d2-e61f45b1ee94.jpg"),
+              ("🔮 Тайна","mystery","32b37744-fbbd-43fc-8e62-94841fadfb4e.jpg"),
+              ("🪙 Удача","luck","583da39e-7b48-496d-a722-77023039b653.jpg"),
+              ("🩸 Кровь","blood","0740cc09-c099-4bb9-b76a-37abf74b13ac.jpg"),
+              ("🛡️ Стража","guard","3d67af2a-3b9c-4f61-ac94-d528d13c2681.jpg"),
+              ("🌟 Свет","light","a231c118-5ce7-442c-81c8-4e8093c8d799.jpg"),
+              ("⏳ Время","time","0a2023ba-5fa8-4ff3-9105-e5e3c56b22b7.jpg"),
+              ("⚔️ Сталь","steel","4903f62f-355a-4dbf-8fa1-6086e28c359f.jpg"),
+              ("🕯️ Дух","spirit","daa8916f-48fa-4826-8c94-3b6b0db74e8c.jpg")
+          ]
+          skills = [
+              ("fire","8b657d53-18ca-462d-87da-f06a71bc778c.jpg"),
+              ("arcane","c3f26f2a-d280-4aab-86de-c7bd85f7c059.jpg"),
+              ("ice","fc9b8abf-3ae7-428d-aa20-a84a05d20590.jpg"),
+              ("lightning","adf73a7d-58bd-4bbe-8e0d-4a2abe4d7c7d.jpg"),
+              ("nature","89e07ca1-dafe-4142-bfd1-a9b9922b1b34.jpg"),
+              ("void","6513e024-a01f-43ad-ad4f-50410d779fd1.jpg")
+          ]
+          session = new_session("isnet-general-use")
+          out = Path("art-preview/ui-processed")
+          report = {"synergies":[],"skills":[]}
+          for category, rows in [("synergies",synergy),("skills",skills)]:
+              source_root = Path("art-inbox/03-synergies" if category=="synergies" else "art-inbox/04-skills")
+              for row in rows:
+                  label, slug, filename = row if category=="synergies" else (row[0],row[0],row[1])
+                  source = source_root / filename
+                  if not source.is_file():
+                      raise SystemExit(f"Missing source image: {source}")
+                  cutout = remove(source.read_bytes(), session=session, post_process_mask=True, alpha_matting=False)
+                  image = Image.open(BytesIO(cutout)).convert("RGBA")
+                  alpha = image.getchannel("A")
+                  if alpha.getextrema() == (255,255) or alpha.getbbox() is None:
+                      raise SystemExit(f"Background removal did not produce a usable transparent PNG: {filename}")
+                  target = out / category / (slug + ".png")
+                  target.parent.mkdir(parents=True,exist_ok=True)
+                  image.save(target,format="PNG",optimize=True)
+                  report[category].append({
+                      "id":slug,"label":label,"source":filename,"file":str(target),
+                      "width":image.width,"height":image.height,
+                      "alpha_bounds":list(alpha.getbbox()),"bytes":target.stat().st_size
+                  })
+          (out/"qa-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps({"synergies":len(report["synergies"]),"skills":len(report["skills"]),"processed":sum(len(v) for v in report.values())},ensure_ascii=False))
+          PY
       - name: Upload preview artifact
         uses: actions/upload-artifact@v4
         with:
@@ -251,11 +310,95 @@ jobs:
           Path("assets/characters/qa-report.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
           print(json.dumps(summary,ensure_ascii=False))
           PY
+      - name: Integrate synergy emblems and skill artwork
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json, shutil
+          synergies = [
+              {"name":"🔥 Огонь","id":"fire"},
+              {"name":"☠️ Яд","id":"poison"},
+              {"name":"⚡ Гроза","id":"storm"},
+              {"name":"🌀 Бездна","id":"abyss"},
+              {"name":"🌿 Жизнь","id":"life"},
+              {"name":"🏹 Залп","id":"volley"},
+              {"name":"❄️ Лёд","id":"ice"},
+              {"name":"🔮 Тайна","id":"mystery"},
+              {"name":"🪙 Удача","id":"luck"},
+              {"name":"🩸 Кровь","id":"blood"},
+              {"name":"🛡️ Стража","id":"guard"},
+              {"name":"🌟 Свет","id":"light"},
+              {"name":"⏳ Время","id":"time"},
+              {"name":"⚔️ Сталь","id":"steel"},
+              {"name":"🕯️ Дух","id":"spirit"}
+          ]
+          skills = [{"id":x} for x in ["fire","arcane","ice","lightning","nature","void"]]
+          processed = Path("art-preview/ui-processed")
+          for group,items in [("synergies",synergies),("skills",skills)]:
+              target_root=Path("assets")/group
+              target_root.mkdir(parents=True,exist_ok=True)
+              manifest=[]
+              for item in items:
+                  slug=item["id"]
+                  src=processed/group/(slug+".png")
+                  dst=target_root/(slug+".png")
+                  if not src.is_file():
+                      raise SystemExit(f"Missing transparent UI artwork: {src}")
+                  with Image.open(src) as im:
+                      im.load()
+                      if im.format!="PNG" or im.mode!="RGBA" or im.getchannel("A").getextrema()==(255,255):
+                          raise SystemExit(f"Invalid transparent artwork: {src} ({im.format}/{im.mode})")
+                      width,height=im.size
+                      alpha_bounds=list(im.getchannel("A").getbbox() or ())
+                  shutil.copy2(src,dst)
+                  manifest.append({
+                      "id":slug,"name":item.get("name",slug),"path":str(dst),
+                      "format":"png","width":width,"height":height,
+                      "transparent":True,"alpha_bounds":alpha_bounds
+                  })
+              (target_root/"art-manifest.json").write_text(
+                  json.dumps({"pack":"towerbound-ui-art-v1","category":group,"assets":manifest},ensure_ascii=False,indent=2),
+                  encoding="utf-8"
+              )
+          index=Path("index.html")
+          html=index.read_text(encoding="utf-8")
+          syn_map={x["name"]:x["id"]+".png" for x in synergies}
+          declaration="const TB_SYNERGY_ART_FILES="+json.dumps(syn_map,ensure_ascii=False,separators=(",",":"))+";\\n"
+          old_fn="function synergyArt(name){const a=synergyArtId(name);return tbArtSvg(name,a[0],a[1],a[2])}"
+          new_fn=declaration+"function synergyArt(name){const file=TB_SYNERGY_ART_FILES[name];if(file)return './assets/synergies/'+file+'?v=1';const a=synergyArtId(name);return tbArtSvg(name,a[0],a[1],a[2])}"
+          if "const TB_SYNERGY_ART_FILES=" not in html:
+              if html.count(old_fn)!=1:
+                  raise SystemExit("Could not safely locate synergyArt(); refusing to patch index.html")
+              html=html.replace(old_fn,new_fn,1)
+          old_icon='<span class="tb-syn-card-icon tb-syn-atlas tb-syn-atlas-'
+          if old_icon in html:
+              start=html.index(old_icon)
+              end=html.index(' aria-hidden="true"></span>',start)+len(' aria-hidden="true"></span>')
+              html=html[:start]+'<img class="tb-syn-icon tb-syn-progress-icon" src="'+ "'+synergyArt(d.name)+'" +'" alt="" loading="lazy" decoding="async">'+html[end:]
+          for name in ["fire","arcane","ice","lightning","nature","void"]:
+              html=html.replace("./assets/skills/"+name+".svg","./assets/skills/"+name+".png")
+          style_id='id="tb-synergy-skill-art-v1"'
+          if style_id not in html:
+              css="""<style id="tb-synergy-skill-art-v1">
+          .tb-syn-progress-icon{display:block!important;flex:0 0 28px!important;width:28px!important;height:28px!important;object-fit:contain!important;filter:drop-shadow(0 2px 5px #0009) drop-shadow(0 0 5px #c6a6ff55)!important}
+          .tb-relic-syn-badge .tb-syn-icon{display:block!important;width:19px!important;height:19px!important;object-fit:contain!important;filter:drop-shadow(0 1px 3px #0009)!important}
+          .tb-ability-art img{object-fit:contain!important}
+          </style>
+          """
+              if "</head>" not in html:
+                  raise SystemExit("Missing </head>; refusing to add synergy/skill icon styles")
+              html=html.replace("</head>",css+"</head>",1)
+          index.write_text(html,encoding="utf-8")
+          qa={"synergies":len(synergies),"skill_elements":len(skills),"total_ui_art":len(synergies)+len(skills),"gameplay_changed":False}
+          Path("assets/ui-art-qa-report.json").write_text(json.dumps(qa,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(qa,ensure_ascii=False))
+          PY
       - name: Commit integrated hero portraits
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/characters/heroes assets/characters/enemies assets/characters/bosses assets/characters/qa-report.json index.html
+          git add assets/characters/heroes assets/characters/enemies assets/characters/bosses assets/characters/qa-report.json assets/synergies assets/skills/*.png assets/skills/art-manifest.json assets/ui-art-qa-report.json index.html
           if git diff --cached --quiet; then
             echo "Hero portraits already integrated; no changes to commit."
           else
