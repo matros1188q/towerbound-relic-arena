@@ -1471,7 +1471,7 @@ const stash=$('stashItems');if(stash){$('stashCount').textContent=(state.invento
 if(state.blessings.length){$('synergy').dataset.blessings=state.blessings.join(',');}
 $('slots').innerHTML=state.slots.map((it,i)=>it?'<div class="slot '+(state.selected===i?'selected':'')+'" data-slot="'+i+'" draggable="true"><span class="rarity">'+it.rarity+'</span><div class="relic-art art-'+it.id+'" aria-hidden="true"><img class="tb-relic-image" src="'+relicImage(it.id)+'" alt="" loading="eager" decoding="async"></div>'+tbRelicSynergyBadges(it,'Башня')+'<span class="name">'+it.name+'</span><span class="stars">'+('★'.repeat(it.level))+'</span><span class="power">⚔ '+Math.round(power(it))+'</span></div>':'<div class="slot empty '+(state.selected===i?'selected':'')+'" data-slot="'+i+'"><span class="emoji">＋</span><span class="name">Пустой слот</span><span class="sub">Башня '+(i+1)+'</span></div>').join('');
 document.querySelectorAll('[data-slot]').forEach(el=>{el.addEventListener('click',()=>{const idx=+el.dataset.slot;const item=state.slots[idx];if(item)showRelicDetails(item,'Башня');selectSlot(idx)});el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',el.dataset.slot)});el.addEventListener('dragover',e=>e.preventDefault());el.addEventListener('drop',e=>{e.preventDefault();merge(+e.dataTransfer.getData('text/plain'),+el.dataset.slot)})});
-tbProfileUi();renderHeroSelect();renderTalentPanel();renderRouteMap();renderShop();const tp=$('talentPanel'),sp=$('shop')&&$('shop').closest('.panel');if(tp&&sp&&tp.previousElementSibling!==sp)sp.after(tp);renderSynergy();renderAchievements();renderLore();checkAchievements();renderAchievements();updateEnemy();
+tbProfileUi();renderHeroSelect();renderTalentPanel();renderRouteMap();renderShop();const tp=$('talentPanel'),sp=$('shop')&&$('shop').closest('.panel');if(tp&&sp&&!window.__TB_STEP_FLOW_V1__&&tp.previousElementSibling!==sp)sp.after(tp);renderSynergy();renderAchievements();renderLore();checkAchievements();renderAchievements();updateEnemy();
 $('fightBtn').disabled=state.battle||(state.mapStep||1)>70;$('fightBtn').textContent=(state.mapStep||1)>70?'✦ Башня покорена':state.battle?'⚔ Бой идёт…':((((state.mapStep||1)-1)%7+1)===7?'👑 Вызвать босса':'⚔ Начать бой');
 const mapHeal=$('mapHealBtn'),healUsed=state.healUsedAtStep===(state.mapStep||1);if(mapHeal){mapHeal.onclick=heal;mapHeal.disabled=state.hp>=state.maxHp||state.gold<5||state.battle||healUsed||(state.mapStep||1)>70;mapHeal.textContent=healUsed?'✓ Лечение использовано на этом узле':'✚ Лечение у костра · 5 🪙';const hint=$('mapHealHint');if(hint)hint.textContent=healUsed?'Следующая возможность — после продвижения по карте':state.hp>=state.maxHp?'Здоровье уже полностью восстановлено':state.gold<5?'Нужно ещё '+(5-state.gold)+' золота':'Восстановить до 6 HP · один раз за узел';}
 }
@@ -2107,7 +2107,7 @@ function setScreen(name){
  if(name==='prep'){setPrepTab(prepTab);refreshSummary();const title=$('#heroSelectStatus');if(title)title.textContent='Герой выбран · можно менять сборку';}
  if(name==='map'){refreshSummary();const back=$('tbMapBack');if(back)back.focus({preventScroll:true});}
  if(name==='arena'){const panel=$('#tbArenaStageMount .arena');if(panel)panel.setAttribute('aria-label','Поле боя');}
- window.scrollTo({top:0,behavior:'instant'});
+ window.scrollTo(0,0);
 }
 document.querySelectorAll('[data-prep-tab]').forEach(b=>b.addEventListener('click',()=>setPrepTab(b.dataset.prepTab)));
 $('#tbReadyBtn').addEventListener('click',()=>{refreshSummary();setScreen('map');});
