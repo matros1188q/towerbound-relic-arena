@@ -2164,9 +2164,9 @@ function setScreen(name){
  window.scrollTo(0,0);
 }
 document.querySelectorAll('[data-prep-tab]').forEach(b=>b.addEventListener('click',()=>setPrepTab(b.dataset.prepTab)));
-$('#tbReadyBtn').addEventListener('click',()=>{refreshSummary();setScreen('map');});
- $('#tbNewGameBtn').addEventListener('click',()=>{const warning=current==='arena'&&window.state?.battle?'Текущий бой и весь поход будут сброшены. Постоянные улучшения и эссенция сохранятся. Начать новую игру?':'Текущий поход будет сброшен. Постоянные улучшения и эссенция сохранятся. Начать новую игру?';if(!window.confirm(warning))return;if(typeof window.TowerboundNewRun!=='function'){window.alert('Не удалось безопасно перезапустить поход. Обнови страницу и попробуй ещё раз.');return;}window.TowerboundNewRun();setPrepTab('shop');const advanced=$('tbAdvancedBuild');if(advanced)advanced.open=false;setScreen('hero');});
-$('#tbMapBack').addEventListener('click',()=>setScreen('prep'));
+$('tbReadyBtn').addEventListener('click',()=>{refreshSummary();setScreen('map');});
+ $('tbNewGameBtn').addEventListener('click',()=>{const warning=current==='arena'&&window.state?.battle?'Текущий бой и весь поход будут сброшены. Постоянные улучшения и эссенция сохранятся. Начать новую игру?':'Текущий поход будет сброшен. Постоянные улучшения и эссенция сохранятся. Начать новую игру?';if(!window.confirm(warning))return;if(typeof window.TowerboundNewRun!=='function'){window.alert('Не удалось безопасно перезапустить поход. Обнови страницу и попробуй ещё раз.');return;}window.TowerboundNewRun();setPrepTab('shop');const advanced=$('tbAdvancedBuild');if(advanced)advanced.open=false;setScreen('hero');});
+$('tbMapBack').addEventListener('click',()=>setScreen('prep'));
 document.addEventListener('click',ev=>{
  const target=ev.target;
  if(target?.closest?.('#enterArenaBtn')){setTimeout(()=>setScreen(window.state&&window.state.combatResume?'map':'hero'),0);return;}
