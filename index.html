@@ -2160,7 +2160,7 @@ function setScreen(name){
  const cap=$('tbFlowCaption');if(cap)cap.textContent=labels[name];
  if(name==='prep'){setPrepTab(prepTab);refreshSummary();const title=$('heroSelectStatus');if(title)title.textContent='Герой выбран · можно менять сборку';}
  if(name==='map'){refreshSummary();const back=$('tbMapBack');if(back)back.focus({preventScroll:true});}
- if(name==='arena'){const panel=$('tbArenaStageMount .arena');if(panel)panel.setAttribute('aria-label','Поле боя');}
+ if(name==='arena'){const panel=document.querySelector('#tbArenaStageMount .arena');if(panel)panel.setAttribute('aria-label','Поле боя');}
  window.scrollTo(0,0);
 }
 document.querySelectorAll('[data-prep-tab]').forEach(b=>b.addEventListener('click',()=>setPrepTab(b.dataset.prepTab)));
