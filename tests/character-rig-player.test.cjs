@@ -6,3 +6,5 @@ assert.ok(api.validate(duplicate).some(x=>x.includes('duplicate part id')));
 const badClip={schema_version:1,canvas:{width:10,height:10},root:'a',parts:[{id:'a',image:'a.png',parent:null,pivot:[.5,.5]}],clips:[{id:'x',duration_ms:100,tracks:[{part:'a',keyframes:[{at_ms:50},{at_ms:10}]}],events:[{id:'e',at_ms:120}]}]};
 assert.ok(api.validate(badClip).some(x=>x.includes('unordered keyframes')));
 assert.ok(api.validate(badClip).some(x=>x.includes('invalid event')));
+
+assert.ok(api.validate({schema_version:1,canvas:{width:10,height:10},root:'a',parts:[{id:'a',image:'a.png',parent:null,pivot:[1.2,.5]}],clips:[]}).some(x=>x.includes('invalid pivot')));
