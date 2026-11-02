@@ -102,7 +102,7 @@ setWave:function(wave,boss){
   const category=boss&&bossFiles[Math.max(0,Math.min(9,Math.ceil(n/7)-1))]?'bosses':'enemies';
   const src='./assets/characters/'+category+'/'+foeId+'.png?v=arena-art-1';
   if(domEnemy.dataset.tbArtSrc!==src){domEnemy.dataset.tbArtSrc=src;domEnemy.src=src;}
-  domEnemy.alt=(boss?'Босс: ':'')+labels[idx];
+  domEnemy.alt=(boss?'Босс: ':'')+(boss?(["Костяной колосс","Королева Бездны","Пепельный патриарх","Ледяной аббат","Зеркальный палач","Пожиратель душ","Корневой титан","Охотник Бездны","Сердце Башни"][Math.max(0,Math.min(8,Math.ceil(n/7)-1))]||labels[idx]):labels[idx]);
   domEnemy.dataset.tbActorId=foeId;
   domEnemy.dataset.tbBoss=boss?'1':'0';
   domEnemy.style.width=boss?'clamp(156px,39vw,254px)':'clamp(118px,30vw,204px)';
@@ -145,7 +145,7 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  // Animate the always-visible SVG actors too, not only the Phaser canvas.
  const actorHero=mount.querySelector('.tb-visible-hero'),actorEnemy=mount.querySelector('.tb-visible-enemy');
  const heroId=(actorHero&&actorHero.dataset.tbActorId)||window.TowerboundHeroId||'warden';tbAnimate(actorHero,TB_HERO_MOVES[heroId]||TB_HERO_MOVES.warden,critical?370:300);
- const hitId=actorEnemy&&actorEnemy.dataset.tbActorId||'shadow-goblin',hitMove=TB_ENEMY_MOVES[tbActorHash(hitId)%TB_ENEMY_MOVES.length];tbAnimate(actorEnemy,hitMove.frames,critical?380:300);
+ const hitId=actorEnemy&&actorEnemy.dataset.tbActorId||'shadow-goblin',hitBoss=actorEnemy&&actorEnemy.dataset.tbBoss==='1',hitProfile=(hitBoss?TB_BOSS_PROFILES[hitId]:TB_ENEMY_PROFILES[hitId])||TB_ENEMY_PROFILES['shadow-goblin'];tbAnimate(actorEnemy,tbFrames(hitProfile),critical?hitProfile.duration+80:hitProfile.duration);
  const colors={fire:'#ff713d',ice:'#7cecff',lightning:'#fff176',nature:'#62f2a1',void:'#c18bff',arcane:'#ffe08a'};
  const color=colors[style]||colors.arcane;
  // Distinct readable silhouettes per damage school; each school has its own projectile motif.
@@ -178,30 +178,70 @@ warden:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(17px,-8px) 
 arcanist:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-6px,-8px) rotate(-6deg) scale(.96)',offset:.25},{transform:'translate(9px,-3px) rotate(7deg) scale(1.06)',offset:.68},{transform:'translate(0,0) scale(1)'}],
 ranger:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-8px,2px) rotate(-8deg)',offset:.24},{transform:'translate(13px,-2px) rotate(4deg) scale(1.03)',offset:.7},{transform:'translate(0,0) rotate(0)'}],
 reaper:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(10px,-4px) rotate(-15deg)',offset:.35},{transform:'translate(14px,1px) rotate(14deg) scale(1.05)',offset:.66},{transform:'translate(0,0) rotate(0)'}]};
-const TB_ENEMY_MOVES=[
-{kind:'slash',frames:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-15px,-4px) rotate(-9deg)',offset:.55},{transform:'translate(0,0) rotate(0)'}]},
-{kind:'pounce',frames:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-24px,-11px) scale(1.12)',offset:.48},{transform:'translate(5px,2px) scale(.96)'},{transform:'translate(0,0) scale(1)'}]},
-{kind:'slam',frames:[{transform:'translate(0,0) scale(1)'},{transform:'translate(0,-13px) scale(1.08)',offset:.3},{transform:'translate(-12px,5px) scale(1.16)',offset:.58},{transform:'translate(0,0) scale(1)'}]},
-{kind:'ranged',frames:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(7px,-5px) rotate(6deg)',offset:.32},{transform:'translate(-3px,0) rotate(-3deg)'},{transform:'translate(0,0) rotate(0)'}]},
-{kind:'hex',frames:[{transform:'translate(0,0) scale(1)',filter:'brightness(1)'},{transform:'translate(-5px,-8px) scale(1.06)',filter:'brightness(1.8)',offset:.45},{transform:'translate(0,0) scale(1)'}]},
-{kind:'blink',frames:[{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate(-12px,-2px) scale(.84)',opacity:.25,offset:.35},{transform:'translate(-20px,0) scale(1.1)',opacity:1,offset:.7},{transform:'translate(0,0) scale(1)',opacity:1}]}];
+
+// Individual profiles for every illustrated enemy and boss (identity is the exact asset filename).
+const TB_ENEMY_PROFILES={
+"shadow-goblin":{kind:"pounce",color:"#ff746c",reach:22,tilt:12,duration:300},
+"cursed-knight":{kind:"slash",color:"#d7c5ff",reach:13,tilt:10,duration:310},
+"ash-wolf":{kind:"pounce",color:"#ff9a54",reach:25,tilt:14,duration:280},
+"rune-golem":{kind:"slam",color:"#8cefff",reach:10,tilt:6,duration:430},
+"grave-archer":{kind:"ranged",color:"#d9e5ff",reach:8,tilt:5,duration:350},
+"plague-witch":{kind:"hex",color:"#8be9a8",reach:7,tilt:4,duration:380},
+"ash-imp":{kind:"pounce",color:"#ff873f",reach:20,tilt:15,duration:270},
+"swamp-reaper":{kind:"hex",color:"#78d7bb",reach:9,tilt:7,duration:390},
+"bone-warden":{kind:"slam",color:"#d9d5c8",reach:12,tilt:7,duration:420},
+"crimson-executioner":{kind:"slash",color:"#ff526e",reach:17,tilt:14,duration:360},
+"void-hunter":{kind:"blink",color:"#b28cff",reach:19,tilt:16,duration:320},
+"spider-matron":{kind:"pounce",color:"#d9a6ff",reach:23,tilt:12,duration:340},
+"blind-monk":{kind:"slash",color:"#e5e4ce",reach:12,tilt:13,duration:310},
+"stone-minotaur":{kind:"slam",color:"#b6a6ff",reach:15,tilt:8,duration:440},
+"phantom-duelist":{kind:"blink",color:"#c9e2ff",reach:18,tilt:18,duration:290},
+"soul-harvester":{kind:"hex",color:"#82edba",reach:8,tilt:8,duration:400},
+"forest-horror":{kind:"slam",color:"#82b879",reach:13,tilt:7,duration:430},
+"abyss-knight":{kind:"slash",color:"#a68bff",reach:16,tilt:12,duration:340},
+"cursed-alchemist":{kind:"ranged",color:"#9ce6b4",reach:7,tilt:4,duration:370},
+"root-colossus":{kind:"slam",color:"#8cba83",reach:18,tilt:9,duration:460}
+};
+const TB_BOSS_PROFILES={
+"bone-colossus":{kind:"slam",color:"#f0d7a0",reach:25,tilt:8,duration:590},
+"abyss-queen":{kind:"hex",color:"#c18bff",reach:15,tilt:13,duration:540},
+"ash-patriarch":{kind:"ranged",color:"#ff874f",reach:16,tilt:8,duration:560},
+"ice-abbot":{kind:"hex",color:"#8cefff",reach:14,tilt:7,duration:570},
+"mirror-executioner":{kind:"slash",color:"#d8dcff",reach:24,tilt:17,duration:560},
+"soul-devourer":{kind:"hex",color:"#d18cff",reach:13,tilt:9,duration:590},
+"root-titan":{kind:"slam",color:"#79e7a0",reach:28,tilt:6,duration:640},
+"void-hunter-boss":{kind:"pounce",color:"#b28cff",reach:30,tilt:18,duration:520},
+"heart-of-tower":{kind:"slam",color:"#ff6a55",reach:32,tilt:10,duration:680}
+};
+function tbFrames(profile){
+ const r=profile.reach,t=profile.tilt,k=profile.kind;
+ if(k==='pounce')return [{transform:'translate(0,0) scale(1) rotate(0)'},{transform:'translate(-'+r+'px,-'+Math.round(r*.42)+'px) scale(1.12) rotate(-'+t+'deg)',offset:.48},{transform:'translate(5px,2px) scale(.96)'},{transform:'translate(0,0) scale(1)'}];
+ if(k==='slam')return [{transform:'translate(0,0) scale(1)'},{transform:'translate(0,-'+Math.round(r*.55)+'px) scale(1.08)',offset:.3},{transform:'translate(-'+Math.round(r*.7)+'px,'+Math.round(r*.3)+'px) rotate('+t+'deg) scale(1.13)',offset:.62},{transform:'translate(0,0) scale(1)'}];
+ if(k==='ranged'||k==='hex')return [{transform:'translate(0,0) rotate(0) scale(1)',filter:'brightness(1)'},{transform:'translate('+Math.round(r*.3)+'px,-'+Math.round(r*.35)+'px) rotate('+t+'deg) scale(1.08)',filter:'brightness(1.8)',offset:.4},{transform:'translate(-3px,0) rotate(-3deg) scale(1)',filter:'brightness(1)'},{transform:'translate(0,0)'}];
+ if(k==='blink')return [{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate(-'+Math.round(r*.5)+'px,-4px) scale(.78)',opacity:.18,offset:.36},{transform:'translate(-'+r+'px,0) scale(1.13)',opacity:1,offset:.72},{transform:'translate(0,0) scale(1)',opacity:1}];
+ return [{transform:'translate(0,0) rotate(0)'},{transform:'translate(-'+r+'px,-4px) rotate(-'+t+'deg) scale(1.04)',offset:.48},{transform:'translate(3px,1px) rotate(4deg) scale(.98)'},{transform:'translate(0,0) rotate(0)'}];
+}
 function tbActorHash(id){let n=0;for(let i=0;i<String(id||'').length;i++)n=(n*31+String(id).charCodeAt(i))>>>0;return n;}
 function tbAnimate(actor,frames,duration){if(!actor||!actor.animate)return;try{if(actor._tbCombatAnimation)actor._tbCombatAnimation.cancel();actor._tbCombatAnimation=actor.animate(frames,{duration,easing:'cubic-bezier(.18,.8,.22,1)',fill:'none'});actor._tbCombatAnimation.onfinish=()=>{actor._tbCombatAnimation=null;};}catch(e){}}
 function domEnemyAttack(boss,special,heavy,kind,dodged){
- const layer=ensureDomFx(),hero=mount.querySelector('.tb-visible-hero'),enemy=mount.querySelector('.tb-visible-enemy'),id=enemy&&enemy.dataset.tbActorId||'shadow-goblin',hash=tbActorHash(id);
- const bossKind={summon:'hex',evade:'blink',frenzy:'pounce',burn:'slam',strike:'slash'}[kind],move=TB_ENEMY_MOVES.find(x=>x.kind===bossKind)||TB_ENEMY_MOVES[hash%TB_ENEMY_MOVES.length];
- const colors={'bone-colossus':'#f0d7a0','abyss-queen':'#c18bff','ash-patriarch':'#ff874f','ice-abbot':'#8cefff','mirror-executioner':'#d8dcff','soul-devourer':'#d18cff','root-titan':'#79e7a0','void-hunter-boss':'#b28cff','crimson-regent':'#ff526e','heart-of-tower':'#ff6a55'},color=boss?(colors[id]||'#ff7189'):['#ff7189','#ff9a54','#ffbd67','#8cefff','#bb91ff','#c18bff'][hash%6],hard=!!heavy||!!(boss&&special);
- tbAnimate(enemy,move.frames,hard?460:300);
- if(hard){const ring=document.createElement('i');Object.assign(ring.style,{position:'absolute',left:'34%',top:'49%',width:'42px',height:'42px',border:'2px solid '+color,borderRadius:'50%',boxShadow:'0 0 15px '+color,zIndex:'5',pointerEvents:'none'});appendBoundedFx(layer,ring);ring.animate([{transform:'translate(-50%,-50%) scale(.35)',opacity:0},{transform:'translate(-50%,-50%) scale(1.2)',opacity:.9,offset:.55},{transform:'translate(-50%,-50%) scale(1.7)',opacity:0}],{duration:360,easing:'ease-out'}).onfinish=()=>ring.remove();}
- const rect=mount.getBoundingClientRect(),bolt=document.createElement('i'),size=hard?28:move.kind==='slash'?42:15,dx=Math.max(35,rect.width*.35);
- Object.assign(bolt.style,{position:'absolute',left:'69%',top:move.kind==='slam'?'47%':'46%',width:size+'px',height:move.kind==='slash'?'4px':size+'px',borderRadius:move.kind==='slash'?'4px':'50%',background:move.kind==='slash'?'linear-gradient(90deg,transparent,#fff,'+color+')':color,border:move.kind==='hex'?'2px solid #fff':'0',boxShadow:'0 0 '+(hard?28:18)+'px '+color,zIndex:'6',opacity:'0',pointerEvents:'none'});
+ const layer=ensureDomFx(),hero=mount.querySelector('.tb-visible-hero'),enemy=mount.querySelector('.tb-visible-enemy');
+ const id=enemy&&enemy.dataset.tbActorId||'shadow-goblin';
+ const profile=(boss?TB_BOSS_PROFILES[id]:TB_ENEMY_PROFILES[id])||TB_ENEMY_PROFILES['shadow-goblin'];
+ const bossKind={summon:'hex',evade:'blink',frenzy:'pounce',burn:'slam',strike:'slash'}[kind];
+ const attackKind=boss&&bossKind?bossKind:profile.kind;
+ const color=profile.color,hard=!!heavy||!!(boss&&special),duration=profile.duration+(hard?100:0);
+ const frames=tbFrames({...profile,kind:attackKind});
+ tbAnimate(enemy,frames,duration);
+ if(hard){const ring=document.createElement('i');Object.assign(ring.style,{position:'absolute',left:'34%',top:'49%',width:(boss?58:42)+'px',height:(boss?58:42)+'px',border:(boss?3:2)+'px solid '+color,borderRadius:'50%',boxShadow:'0 0 '+(boss?25:15)+'px '+color,zIndex:'5',pointerEvents:'none'});appendBoundedFx(layer,ring);ring.animate([{transform:'translate(-50%,-50%) scale(.35)',opacity:0},{transform:'translate(-50%,-50%) scale(1.2)',opacity:.9,offset:.55},{transform:'translate(-50%,-50%) scale(1.9)',opacity:0}],{duration:boss?520:360,easing:'ease-out'}).onfinish=()=>ring.remove();}
+ const rect=mount.getBoundingClientRect(),bolt=document.createElement('i'),size=hard?(boss?38:28):attackKind==='slash'?42:attackKind==='slam'?24:16,dx=Math.max(35,rect.width*(profile.reach/100));
+ const shape=attackKind==='slash'?'linear-gradient(90deg,transparent,#fff,'+color+')':attackKind==='hex'?'radial-gradient(circle,#fff,'+color+')':color;
+ Object.assign(bolt.style,{position:'absolute',left:'69%',top:attackKind==='slam'?'47%':'46%',width:size+'px',height:attackKind==='slash'?'5px':size+'px',borderRadius:attackKind==='slash'?'4px':'50%',background:shape,border:attackKind==='hex'?'2px solid #fff':'0',boxShadow:'0 0 '+(hard?32:18)+'px '+color,zIndex:'6',opacity:'0',pointerEvents:'none'});
  appendBoundedFx(layer,bolt);
- bolt.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:'translate(-8px,-4px) scale(1.15)',opacity:1,offset:.18},{transform:'translate(-'+dx+'px,0) scale('+(hard?1.65:1)+')',opacity:dodged?.22:1}],{duration:hard?390:move.kind==='ranged'||move.kind==='hex'?360:270,easing:'cubic-bezier(.12,.78,.2,1)',fill:'forwards'}).onfinish=()=>{bolt.remove();if(!dodged){const hit=document.createElement('i');Object.assign(hit.style,{position:'absolute',left:'34%',top:'49%',width:(hard?66:42)+'px',height:(hard?66:42)+'px',borderRadius:'50%',border:(hard?4:3)+'px solid '+color,boxShadow:'0 0 '+(hard?30:18)+'px '+color,zIndex:'6',pointerEvents:'none'});appendBoundedFx(layer,hit);hit.animate([{transform:'translate(-50%,-50%) scale(.25)',opacity:1},{transform:'translate(-50%,-50%) scale('+(hard?3.4:2.6)+')',opacity:0}],{duration:hard?360:250,easing:'ease-out'}).onfinish=()=>hit.remove();}};
- if(hero){const reaction=dodged?[{transform:'translateX(0)',opacity:1},{transform:'translateX(-22px) rotate(-5deg) scale(.92)',opacity:.55,offset:.4},{transform:'translateX(-4px)',opacity:1}]:[{transform:'translateX(0)',filter:'brightness(1)'},{transform:'translateX(-8px) rotate(-5deg)',filter:'brightness(1.8)',offset:.25},{transform:'translateX(3px) rotate(2deg)',filter:'brightness(1.2)'},{transform:'translateX(0)',filter:'brightness(1)'}];tbAnimate(hero,reaction,dodged?320:hard?420:280);}
- if(!dodged){const flash=document.createElement('i');Object.assign(flash.style,{position:'absolute',left:'34%',top:'49%',width:hard?'76px':'48px',height:hard?'76px':'48px',borderRadius:'50%',background:'radial-gradient(circle,'+color+'88,transparent 70%)',zIndex:'4',pointerEvents:'none'});appendBoundedFx(layer,flash);flash.animate([{transform:'translate(-50%,-50%) scale(.4)',opacity:.9},{transform:'translate(-50%,-50%) scale(1.8)',opacity:0}],{duration:hard?420:260,easing:'ease-out'}).onfinish=()=>flash.remove();}
-}
-
-// Guaranteed visible actor layer: independent of Phaser canvas compositing on iOS Safari.
+ const travel=attackKind==='slam'?'translate(-'+dx+'px,10px)':attackKind==='pounce'?'translate(-'+dx+'px,-12px)':'translate(-'+dx+'px,0)';
+ bolt.animate([{transform:'translate(0,0) scale(.45)',opacity:0},{transform:'translate(-8px,-4px) scale(1.15)',opacity:1,offset:.18},{transform:travel+' scale('+(hard?(boss?2:1.65):1)+')',opacity:dodged?.22:1}],{duration:hard?(boss?540:390):duration*.72,easing:'cubic-bezier(.12,.78,.2,1)',fill:'forwards'}).onfinish=()=>{bolt.remove();if(!dodged){const hit=document.createElement('i');Object.assign(hit.style,{position:'absolute',left:'34%',top:'49%',width:(hard?(boss?94:66):42)+'px',height:(hard?(boss?94:66):42)+'px',borderRadius:attackKind==='slash'?'35%':'50%',border:(hard?4:3)+'px solid '+color,boxShadow:'0 0 '+(hard?34:18)+'px '+color,zIndex:'6',pointerEvents:'none'});appendBoundedFx(layer,hit);hit.animate([{transform:'translate(-50%,-50%) scale(.25) rotate(0)',opacity:1},{transform:'translate(-50%,-50%) scale('+(hard?(boss?4:3.4):2.6)+') rotate(55deg)',opacity:0}],{duration:hard?460:250,easing:'ease-out'}).onfinish=()=>hit.remove();}};
+ if(hero){const reaction=dodged?[{transform:'translateX(0)',opacity:1},{transform:'translateX(-22px) rotate(-5deg) scale(.92)',opacity:.55,offset:.4},{transform:'translateX(-4px)',opacity:1}]:[{transform:'translateX(0)',filter:'brightness(1)'},{transform:'translateX(-8px) rotate(-5deg)',filter:'brightness(1.8)',offset:.25},{transform:'translateX(3px) rotate(2deg)',filter:'brightness(1.2)'},{transform:'translateX(0)',filter:'brightness(1)'}];tbAnimate(hero,reaction,dodged?320:hard?(boss?520:420):280);}
+ if(!dodged){const flash=document.createElement('i');Object.assign(flash.style,{position:'absolute',left:'34%',top:'49%',width:hard?(boss?'104px':'76px'):'48px',height:hard?(boss?'104px':'76px'):'48px',borderRadius:'50%',background:'radial-gradient(circle,'+color+'99,transparent 70%)',zIndex:'4',pointerEvents:'none'});appendBoundedFx(layer,flash);flash.animate([{transform:'translate(-50%,-50%) scale(.4)',opacity:.9},{transform:'translate(-50%,-50%) scale('+(boss?2.4:1.8)+')',opacity:0}],{duration:hard?(boss?560:420):260,easing:'ease-out'}).onfinish=()=>flash.remove();}
+}// Guaranteed visible actor layer: independent of Phaser canvas compositing on iOS Safari.
 function ensureVisibleActors(){
  if(!mount)return;
  let layer=mount.querySelector('.tb-visible-actors');
