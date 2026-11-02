@@ -34,6 +34,7 @@ def main():
         "model": MODEL,
         "purpose": "pivot candidates and visual QA only; not a rig or cutout",
         "confidence_threshold": 0.25,
+        "downstream_review_pipeline": "extract_limb_candidates.py",
         "heroes": {}
     }
     for hero in HEROES:
