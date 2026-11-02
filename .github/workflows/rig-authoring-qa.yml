@@ -55,6 +55,7 @@ jobs:
           assert not {'head','torso','shield'} & set(report['suspiciously_small_parts'])
           assert report['ready_for_animation'] is False
           assert (root/'source-overlay.png').is_file()
+          assert report['grabcut_candidate_count'] == len(report['parts'])
           print('Warden seed exported:', len(report['parts']), 'visible-region layers')
           PY
       - name: Create visual QA contact sheet

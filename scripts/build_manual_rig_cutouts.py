@@ -50,6 +50,37 @@ def build(path: Path, out_root: Path):
         cut = image.copy()
         cut_alpha = (alpha * np.asarray(mask, dtype=np.uint16) // 255).astype(np.uint8)
         cut.putalpha(Image.fromarray(cut_alpha, "L"))
+        # Produce a separate GrabCut candidate. The polygon remains the safe
+        # baseline; candidate masks are experimental and never replace it.
+        candidate_name = f"{part.replace('/', '-')}-grabcut-candidate.png"
+        try:
+            import cv2
+            rgb = np.asarray(image.convert("RGB"))
+            poly_mask = np.asarray(mask, dtype=np.uint8)
+            ys0, xs0 = np.where(poly_mask > 0)
+            if len(xs0):
+                pad = 14
+                x0, x1 = max(0, int(xs0.min())-pad), min(width, int(xs0.max())+pad+1)
+                y0, y1 = max(0, int(ys0.min())-pad), min(height, int(ys0.max())+pad+1)
+                roi_poly = poly_mask[y0:y1, x0:x1]
+                labels = np.where(roi_poly > 0, cv2.GC_PR_FGD, cv2.GC_BGD).astype(np.uint8)
+                kernel = np.ones((5,5), np.uint8)
+                sure_fg = cv2.erode(roi_poly, kernel, iterations=2) > 0
+                labels[sure_fg] = cv2.GC_FGD
+                labels[(roi_poly > 0) & (~sure_fg)] = cv2.GC_PR_FGD
+                bgd_model = np.zeros((1,65), np.float64)
+                fgd_model = np.zeros((1,65), np.float64)
+                cv2.grabCut(rgb[y0:y1,x0:x1].copy(), labels, None, bgd_model, fgd_model, 3, cv2.GC_INIT_WITH_MASK)
+                refined = np.where((labels == cv2.GC_FGD) | (labels == cv2.GC_PR_FGD), 255, 0).astype(np.uint8)
+                refined_full = np.zeros((height,width), dtype=np.uint8)
+                refined_full[y0:y1,x0:x1] = refined
+                refined_full = cv2.bitwise_and(refined_full, poly_mask)
+                candidate_alpha = (alpha.astype(np.uint32) * refined_full.astype(np.uint32) // 255).astype(np.uint8)
+                candidate = image.copy()
+                candidate.putalpha(Image.fromarray(candidate_alpha, "L"))
+                candidate.save(output / candidate_name, optimize=True)
+        except Exception as exc:
+            report.setdefault("grabcut_warnings", []).append(f"{part}: {type(exc).__name__}: {exc}")
         # Keep the full source canvas: all parts share exactly the same origin.
         filename = f"{part.replace('/', '-')}.png"
         cut.save(output / filename, optimize=True)
@@ -75,6 +106,8 @@ def build(path: Path, out_root: Path):
         overlay = Image.alpha_composite(overlay, tint)
     overlay.save(output / "source-overlay.png", optimize=True)
     report["visual_review"] = "source-overlay.png"
+    report["segmentation_mode"] = "polygon-baseline-plus-experimental-grabcut-candidates"
+    report["grabcut_candidate_count"] = len(list(output.glob("*-grabcut-candidate.png")))
     report["joint_count"] = len(joints)
     core_joints = ("pelvis", "neck", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle")
     required_parts = ("head", "torso", "pelvis", "left_upper_arm", "left_forearm", "left_hand", "right_upper_arm", "right_forearm", "right_hand", "left_thigh", "left_shin", "left_foot", "right_thigh", "right_shin", "right_foot", "weapon", "shield")
