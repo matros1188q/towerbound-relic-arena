@@ -1639,6 +1639,8 @@ function chooseBlessing(id){
  else if(!state.blessings.includes(id))state.blessings.push(id);
  $('modalback').classList.remove('show');$('rewardChoices').hidden=true;$('modalBtn').hidden=false;
  if(id==='discount')state.freeRefresh=true;
+ /* A fresh shop is part of the post-battle preparation phase. */
+ makeShop();
  log('✨ Благословение получено: '+b.name+'.');toast('Получено: '+b.name);save();render();
 }
 function reset(){const heroId=['warden','arcanist','ranger','reaper'].includes(state.heroId)?state.heroId:'warden';const meta={...state.meta,runs:state.meta.runs+1};if(window.TowerFX)window.TowerFX.phase('prep');const u={power:0,vitality:0,fortune:0,echo:0,scout:0,ward:0,...(meta.upgrades||{})};const startFloor=1;state={gold:12+(u.fortune||0)*2,hp:(heroId==='warden'?23:20)+(u.vitality||0)*2+(u.ward||0)*2,maxHp:(heroId==='warden'?28:24)+(u.vitality||0)*2+(u.ward||0)*2,wave:startFloor,heroId,mapStep:1,level:1,talentPoints:0,talents:{gold:Array(10).fill(0),dodge:Array(10).fill(0),guard:Array(10).fill(0)},heroConfirmed:false,xp:0,xpToNext:22,level:1,talentPoints:0,slots:Array(6).fill(null),inventory:[],floorRewards:{},floorNodesUsed:{},floorSaves:{},mapSideUsed:0,goldSpent:0,selected:-1,battle:false,won:false,shop:[],log:[],lastWave:0,blessings:[],challenge:state.challenge||'normal',routeType:'balanced',freeRefresh:false,meta:{...meta,upgrades:u}};if(state.challenge==='blood')state.hp=Math.max(1,Math.round(state.maxHp*.8));checkAchievements();save();makeShop();log(startFloor>1?'Новый отряд входит в Башню с контрольной точки · этаж '+startFloor+'.':'Новый поход начинается. Собери отряд и выживи.');render()}
@@ -1887,4 +1889,248 @@ window.TowerboundStage5={refresh,lines};
 })();
 </script>
 
+
+<style id="tb-flow-ui-css">
+/* TOWERBOUND FLOW UI — one deliberate decision screen at a time */
+body[data-tb-screen] .layout{display:none!important}
+body[data-tb-screen] .bottomnote{display:none!important}
+body[data-tb-screen] .top{position:sticky!important;top:0!important;z-index:60!important;background:linear-gradient(180deg,#111426f5,#111426e8)!important;backdrop-filter:blur(18px);padding-top:max(8px,env(safe-area-inset-top))}
+#tbFlowWorkspace{width:min(100%,1120px);margin:0 auto;padding:10px 14px 28px;box-sizing:border-box}
+.tb-flow-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 14px;padding:0 2px}
+.tb-flow-caption{font-size:11px;line-height:1.35;color:#aeb5d0;text-align:right}
+.tb-flow-steps{display:flex;align-items:center;gap:6px;min-width:0}
+.tb-flow-step{display:flex;align-items:center;gap:6px;color:#77809d;font-size:9px;font-weight:900;letter-spacing:.06em;white-space:nowrap}
+.tb-flow-step:before{content:attr(data-n);width:22px;height:22px;display:grid;place-items:center;border:1px solid #ffffff24;border-radius:50%;background:#11162a;color:#9da5c0;font-size:10px}
+.tb-flow-step.is-current{color:#ffe6ac}
+.tb-flow-step.is-current:before{border-color:#eac77d;background:#57432d;color:#fff0c8;box-shadow:0 0 16px #e7bd6940}
+.tb-flow-step.is-done:before{content:"✓";border-color:#6dbf9c;color:#a2e8c3;background:#15382d}
+.tb-flow-stage{display:none;min-width:0;animation:tbFlowIn .22s ease-out}
+.tb-flow-stage.is-active{display:block}
+@keyframes tbFlowIn{from{opacity:.55;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.tb-flow-intro{margin:0 0 12px;padding:0 2px}
+.tb-flow-intro h2{font:800 clamp(20px,4vw,27px)/1.1 Cinzel,Georgia,serif;letter-spacing:.02em;color:#f8e9c8;margin:0 0 5px}
+.tb-flow-intro p{margin:0;color:#aeb5cf;font-size:12px;line-height:1.45}
+.tb-flow-panel{width:100%;min-width:0;margin:0 0 12px!important}
+.tb-flow-panel>.panelhead{margin-bottom:10px}
+#tbPrepSummary{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:10px 12px;border:1px solid #d7bf7b30;border-radius:13px;background:linear-gradient(110deg,#26243a,#151a2c)}
+.tb-prep-stat{font-size:10px;color:#c5c9dc;line-height:1.35}
+.tb-prep-stat b{display:block;color:#ffe2a2;font-size:13px;margin-top:2px}
+.tb-prep-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 10px}
+.tb-prep-tab{min-height:45px;padding:9px 5px;border-radius:11px;border:1px solid #ffffff20;background:linear-gradient(160deg,#272a43,#171b2f);color:#b9c0d8;font-size:11px;font-weight:900;letter-spacing:.035em;touch-action:manipulation}
+.tb-prep-tab[aria-selected="true"]{border-color:#e8c77d;background:linear-gradient(150deg,#54442e,#282338);color:#fff0c7;box-shadow:0 0 0 1px #e8c77d28,0 7px 20px #0003}
+.tb-prep-content{display:none;min-width:0}
+.tb-prep-content.is-active{display:block}
+#tbPrepShopMount .shopgrid,#tbPrepStashMount .shopgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#tbPrepShopMount .relic,#tbPrepStashMount .relic{min-width:0;padding:10px 8px}
+#tbPrepShopMount .relic button,#tbPrepStashMount .relic button{min-height:42px;font-size:10px;line-height:1.2}
+#tbPrepSlotsMount .slots{grid-template-columns:repeat(3,minmax(0,1fr))}
+#tbAdvancedBuild{margin:14px 0 110px;border:1px solid #ffffff19;border-radius:14px;background:#11172ad9;overflow:hidden}
+#tbAdvancedBuild>summary{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px;color:#d6c79f;font-size:11px;font-weight:900;letter-spacing:.05em;cursor:pointer;list-style:none}
+#tbAdvancedBuild>summary::-webkit-details-marker{display:none}
+#tbAdvancedBuild>summary:after{content:"＋";font-size:16px;color:#e8c77d}
+#tbAdvancedBuild[open]>summary:after{content:"−"}
+#tbAdvancedContent{display:grid;gap:10px;padding:0 10px 10px}
+#tbAdvancedContent>.panel{margin:0!important}
+.tb-flow-dock{position:sticky;bottom:0;z-index:55;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px -14px -28px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #d9c17b3b;background:linear-gradient(180deg,#15192de8,#0b0e1bf7);backdrop-filter:blur(18px);box-shadow:0 -10px 35px #0006}
+.tb-flow-dock-copy{min-width:0;color:#aeb6cf;font-size:10px;line-height:1.3}
+.tb-flow-dock-copy b{display:block;color:#f1ddae;font-size:12px;margin-bottom:2px}
+#tbReadyBtn{flex:0 0 min(48%,220px);min-height:50px;border-radius:12px;font-size:13px;letter-spacing:.06em;font-weight:1000}
+#tbMapBack{display:block;width:100%;min-height:44px;margin:10px 0 0}
+#tbArenaStageMount>.panel{margin:0!important}
+#tbArenaStageMount .tb-skills-panel{margin-top:10px!important}
+#tbArenaStageMount .arenafoot{display:none!important}
+#tbArenaStageMount .arena{min-height:300px}
+.tb-flow-map #routeMapPanel .tb-map-row.is-future{display:none!important}
+.tb-flow-map #routeMapPanel .tb-map-scene{padding-bottom:8px}
+.tb-flow-map #routeMapPanel .tb-map-nodes{gap:7px}
+.tb-flow-map #routeMapPanel .tb-route-node{min-height:112px;touch-action:manipulation}
+.tb-flow-map #routeMapPanel .tb-map-row-label{margin-bottom:6px}
+.tb-flow-map #routeMapPanel .tb-map-bottom{font-size:10px}
+.tb-flow-map #routeMapPanel>.sub{display:none!important}
+.tb-flow-hero #heroSelectPanel{margin:0!important}
+.tb-flow-hero #heroSelectPanel .shopgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tb-flow-hero .tb-hero-card{min-height:164px!important;padding:12px!important}
+.tb-flow-hero .tb-hero-card strong{font-size:14px}
+.tb-flow-hero .tb-hero-card small{font-size:10px;line-height:1.35}
+.tb-flow-hero .tb-hero-skill{font-size:10px;line-height:1.35}
+#tbFlowWorkspace .panel{box-sizing:border-box}
+#tbFlowWorkspace button{touch-action:manipulation}
+body[data-tb-screen="hero"] #tbFlowWorkspace,
+body[data-tb-screen="prep"] #tbFlowWorkspace,
+body[data-tb-screen="map"] #tbFlowWorkspace,
+body[data-tb-screen="arena"] #tbFlowWorkspace{display:block}
+@media(min-width:820px){
+ #tbFlowWorkspace{padding:14px 20px 40px}
+ #tbPrepShopMount .shopgrid,#tbPrepStashMount .shopgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #tbPrepStage .panel{max-width:none}
+ #tbAdvancedContent{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #tbAdvancedContent>#tbAdvancedSynergyMount{grid-column:1/-1}
+ .tb-flow-dock{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}
+}
+@media(max-width:560px){
+ #tbFlowWorkspace{padding:7px 10px 20px}
+ .tb-flow-top{align-items:flex-start;flex-direction:column;gap:7px;margin-bottom:10px}
+ .tb-flow-caption{text-align:left;font-size:10px}
+ .tb-flow-steps{width:100%;justify-content:space-between;gap:3px}
+ .tb-flow-step{gap:4px;font-size:8px;letter-spacing:0}
+ .tb-flow-step:before{width:20px;height:20px;font-size:9px}
+ .tb-flow-intro h2{font-size:20px}
+ .tb-flow-intro p{font-size:11px}
+ #tbPrepSummary{margin-bottom:8px;padding:8px 10px}
+ .tb-prep-tabs{gap:5px}
+ .tb-prep-tab{font-size:10px;min-height:44px}
+ #tbPrepShopMount .shopgrid,#tbPrepStashMount .shopgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #tbPrepShopMount .relic,#tbPrepStashMount .relic{padding:8px 6px}
+ #tbPrepShopMount .relic strong,#tbPrepStashMount .relic strong{font-size:11px;line-height:1.25}
+ #tbPrepShopMount .relic small,#tbPrepStashMount .relic small{font-size:9px;line-height:1.3}
+ #tbPrepShopMount .relic button,#tbPrepStashMount .relic button{min-height:40px;padding:7px 3px;font-size:9px}
+ #tbPrepSlotsMount .slot{min-height:100px;padding:7px 3px}
+ #tbAdvancedBuild{margin-bottom:110px}
+ #tbArenaStageMount .arena{padding:9px!important}
+ #tbArenaStageMount .arena-stage{min-height:250px}
+ .tb-flow-map #routeMapPanel .tb-route-node{min-height:104px;padding:8px 4px}
+ .tb-flow-map #routeMapPanel .tb-node-icon{font-size:21px}
+ .tb-flow-map #routeMapPanel .tb-route-node b{font-size:10px}
+ .tb-flow-map #routeMapPanel .tb-route-node small{font-size:8px}
+ .tb-flow-dock{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px;gap:8px}
+ #tbReadyBtn{flex-basis:48%;min-height:48px;font-size:12px}
+}
+@media(max-width:360px){
+ #tbPrepShopMount .shopgrid,#tbPrepStashMount .shopgrid{grid-template-columns:1fr}
+ .tb-flow-step{font-size:7px}
+ .tb-flow-step:before{width:18px;height:18px}
+ .tb-flow-map #routeMapPanel .tb-route-nodes{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.tb-flow-stage{animation:none}}
+</style>
+<script id="TB_STEP_FLOW_V1">
+(()=>{'use strict';
+if(window.__TB_STEP_FLOW_V1__)return;window.__TB_STEP_FLOW_V1__=true;
+const $=id=>document.getElementById(id);
+const app=document.querySelector('main.app'),header=app&&app.querySelector('.top');
+if(!app||!header)return;
+const workspace=document.createElement('div');
+workspace.id='tbFlowWorkspace';
+workspace.innerHTML=`
+ <div class="tb-flow-top">
+  <nav class="tb-flow-steps" aria-label="Этапы похода">
+   <span class="tb-flow-step" data-flow-step="hero" data-n="1">ГЕРОЙ</span>
+   <span class="tb-flow-step" data-flow-step="prep" data-n="2">РЕЛИКВИИ</span>
+   <span class="tb-flow-step" data-flow-step="map" data-n="3">КАРТА</span>
+   <span class="tb-flow-step" data-flow-step="arena" data-n="4">БОЙ</span>
+  </nav>
+  <div class="tb-flow-caption" id="tbFlowCaption">Выбери героя, чтобы начать поход</div>
+ </div>
+ <section class="tb-flow-stage tb-flow-hero" id="tbHeroStage">
+  <div class="tb-flow-intro"><h2>Кто войдёт в Башню?</h2><p>Выбери класс. Его стиль боя и активное умение будут сопровождать весь поход.</p></div>
+  <div id="tbHeroStageMount"></div>
+  <div class="sub" style="text-align:center;padding:8px 4px 20px">Выбор героя автоматически откроет подготовку к походу.</div>
+ </section>
+ <section class="tb-flow-stage" id="tbPrepStage">
+  <div class="tb-flow-intro"><h2>Подготовка отряда</h2><p>Купи реликвии, собери сочетания и экипируй до шести предметов перед следующим боем.</p></div>
+  <div id="tbPrepSummary">
+   <span class="tb-prep-stat">ЗОЛОТО<b id="tbPrepGold">—</b></span>
+   <span class="tb-prep-stat">ЭКИПИРОВКА<b id="tbPrepEquipped">0 / 6</b></span>
+   <span class="tb-prep-stat">ХРАНИЛИЩЕ<b id="tbPrepStored">0 / 5</b></span>
+  </div>
+  <nav class="tb-prep-tabs" role="tablist" aria-label="Подготовка реликвий">
+   <button class="tb-prep-tab" type="button" data-prep-tab="shop" role="tab">ЛАВКА</button>
+   <button class="tb-prep-tab" type="button" data-prep-tab="slots" role="tab">ЭКИПИРОВКА</button>
+   <button class="tb-prep-tab" type="button" data-prep-tab="stash" role="tab">ИНВЕНТАРЬ</button>
+  </nav>
+  <div class="tb-prep-content" id="tbPrepShopMount"></div>
+  <div class="tb-prep-content" id="tbPrepSlotsMount"></div>
+  <div class="tb-prep-content" id="tbPrepStashMount"></div>
+  <details id="tbAdvancedBuild">
+   <summary>Синергии, таланты и развитие героя</summary>
+   <div id="tbAdvancedContent">
+    <div id="tbAdvancedSynergyMount"></div>
+    <div id="tbAdvancedTalentMount"></div>
+    <div id="tbAdvancedMetaMount"></div>
+   </div>
+  </details>
+  <div class="tb-flow-dock" id="tbPrepDock">
+   <div class="tb-flow-dock-copy"><b>Сборка готова?</b><span>Следующий шаг — выбор пути.</span></div>
+   <button type="button" class="primary" id="tbReadyBtn">ГОТОВ · К КАРТЕ</button>
+  </div>
+ </section>
+ <section class="tb-flow-stage tb-flow-map" id="tbMapStage">
+  <div class="tb-flow-intro"><h2>Выбери следующий путь</h2><p>Каждый узел меняет риск и награду. Выбор откроет арену и начнёт бой.</p></div>
+  <div id="tbMapStageMount"></div>
+  <button type="button" id="tbMapBack">← Вернуться к реликвиям</button>
+ </section>
+ <section class="tb-flow-stage" id="tbArenaStage">
+  <div class="tb-flow-intro"><h2>Поле битвы</h2><p>Следи за здоровьем, эффектами и зарядом трёх активных умений.</p></div>
+  <div id="tbArenaStageMount"></div>
+ </section>`;
+app.insertBefore(workspace,header.nextSibling);
+const move=(node,id)=>{const target=$(id);if(node&&target){target.appendChild(node);node.classList.add('tb-flow-panel');}};
+const arenaPanel=document.querySelector('.arena.tb-arena-rebuilt')?.closest('.panel');
+const targets=[
+ [$('#heroSelectPanel'),'tbHeroStageMount'],
+ [$('#routeMapPanel'),'tbMapStageMount'],
+ [arenaPanel,'tbArenaStageMount'],
+ [document.querySelector('.tb-skills-panel'),'tbArenaStageMount'],
+ [$('#shop')?.closest('.panel'),'tbPrepShopMount'],
+ [$('#slots')?.closest('.panel'),'tbPrepSlotsMount'],
+ [$('#stashPanel'),'tbPrepStashMount'],
+ [$('#synergy')?.closest('.panel'),'tbAdvancedSynergyMount'],
+ [$('#talentPanel'),'tbAdvancedTalentMount'],
+ [document.querySelector('.tb-meta-grid')?.closest('.panel'),'tbAdvancedMetaMount']
+];
+targets.forEach(([node,id])=>move(node,id));
+const stages={hero:$('#tbHeroStage'),prep:$('#tbPrepStage'),map:$('#tbMapStage'),arena:$('#tbArenaStage')};
+const labels={hero:'Выбери героя, чтобы начать поход',prep:'Подготовь реликвии и экипировку',map:'Выбери противника или особую встречу',arena:'Бой начался · используй активные умения'};
+let current='hero',prepTab='shop';
+function setPrepTab(tab){
+ prepTab=['shop','slots','stash'].includes(tab)?tab:'shop';
+ document.querySelectorAll('[data-prep-tab]').forEach(b=>{const on=b.dataset.prepTab===prepTab;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;});
+ ['shop','slots','stash'].forEach(key=>{const mount=$('tbPrep'+(key==='shop'?'Shop':key==='slots'?'Slots':'Stash')+'Mount');if(mount)mount.classList.toggle('is-active',key===prepTab);});
+}
+function refreshSummary(){
+ const s=window.state;if(!s)return;
+ const g=$('tbPrepGold'),e=$('tbPrepEquipped'),i=$('tbPrepStored');
+ if(g)g.textContent=(s.gold||0)+' 🪙';
+ if(e)e.textContent=(s.slots||[]).filter(Boolean).length+' / 6';
+ if(i)i.textContent=(s.inventory||[]).length+' / 5';
+ const ready=$('tbReadyBtn');if(ready)ready.disabled=!!s.battle||(s.mapStep||1)>70;
+}
+function setScreen(name){
+ if(!stages[name])return;
+ current=name;
+ document.body.dataset.tbScreen=name;
+ document.body.classList.toggle('tb-flow-hero',name==='hero');
+ document.body.classList.toggle('tb-flow-map',name==='map');
+ Object.entries(stages).forEach(([key,node])=>{node.classList.toggle('is-active',key===name);node.setAttribute('aria-hidden',String(key!==name));});
+ document.querySelectorAll('[data-flow-step]').forEach((el,index)=>{const order=['hero','prep','map','arena'];const n=order.indexOf(name),i=order.indexOf(el.dataset.flowStep);el.classList.toggle('is-current',i===n);el.classList.toggle('is-done',i<n);});
+ const cap=$('tbFlowCaption');if(cap)cap.textContent=labels[name];
+ if(name==='prep'){setPrepTab(prepTab);refreshSummary();const title=$('#heroSelectStatus');if(title)title.textContent='Герой выбран · можно менять сборку';}
+ if(name==='map'){refreshSummary();const back=$('tbMapBack');if(back)back.focus({preventScroll:true});}
+ if(name==='arena'){const panel=$('#tbArenaStageMount .arena');if(panel)panel.setAttribute('aria-label','Поле боя');}
+ window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('[data-prep-tab]').forEach(b=>b.addEventListener('click',()=>setPrepTab(b.dataset.prepTab)));
+$('#tbReadyBtn').addEventListener('click',()=>{refreshSummary();setScreen('map');});
+$('#tbMapBack').addEventListener('click',()=>setScreen('prep'));
+document.addEventListener('click',ev=>{
+ const target=ev.target;
+ if(target?.closest?.('#enterArenaBtn')){setTimeout(()=>setScreen('hero'),0);return;}
+ if(target?.closest?.('#heroChoices [data-hero]')){setTimeout(()=>{setScreen('prep');setPrepTab('shop');},40);return;}
+ const mapNode=target?.closest?.('#routeMap [data-mapnode]');
+ if(mapNode&&!mapNode.disabled){
+  const kind=mapNode.dataset.mapnode;
+  if(['enemy','elite','boss','event'].includes(kind))setScreen('arena');
+  else setTimeout(()=>setScreen('map'),80);
+  return;
+ }
+ if(target?.closest?.('[data-blessing]')){setTimeout(()=>{setPrepTab('shop');setScreen('prep');},50);return;}
+ if(target?.closest?.('#modalBtn')){setTimeout(()=>{setScreen('hero');setPrepTab('shop');const advanced=$('tbAdvancedBuild');if(advanced)advanced.open=false;},60);return;}
+ if(target?.closest?.('[data-buy],[data-buy-stash],[data-stash-equip],[data-stash-drop],[data-slot]'))setTimeout(refreshSummary,70);
+},true);
+const observer=new MutationObserver(()=>refreshSummary());
+['tbPrepShopMount','tbPrepSlotsMount','tbPrepStashMount'].forEach(id=>{const el=$(id);if(el)observer.observe(el,{childList:true,subtree:true});});
+setScreen('hero');
+window.TowerboundFlow={setScreen,setPrepTab,get screen(){return current;}};
+})();
+</script>
 </body></html>
