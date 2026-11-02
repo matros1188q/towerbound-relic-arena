@@ -49,6 +49,7 @@ def main():
         detections = []
         if result.keypoints is not None and len(result.keypoints.data):
             scores = result.keypoints.conf
+            boxes = result.boxes.xyxy.cpu().numpy() if result.boxes is not None else None
             for idx, points in enumerate(result.keypoints.xy.cpu().numpy()):
                 confs = scores[idx].cpu().numpy() if scores is not None else np.ones(17)
                 visible = {}
@@ -57,20 +58,29 @@ def main():
                     score = float(confs[joint])
                     if score >= 0.25:
                         visible[name] = {"x": round(x, 2), "y": round(y, 2), "confidence": round(score, 4)}
-                for a, b in SKELETON:
-                    if confs[a] >= 0.25 and confs[b] >= 0.25:
-                        draw.line([tuple(points[a]), tuple(points[b])], fill=(20, 170, 255), width=5)
-                for joint, (x, y) in enumerate(points):
-                    if confs[joint] >= 0.25:
-                        r = 7
-                        draw.ellipse((x-r,y-r,x+r,y+r), fill=(255,70,50), outline=(30,30,30), width=2)
+                bbox = [round(float(v), 2) for v in boxes[idx]] if boxes is not None else None
+                area = max(0.0, (bbox[2]-bbox[0])*(bbox[3]-bbox[1])) if bbox else 0.0
                 detections.append({
                     "person_confidence": round(float(result.boxes.conf[idx]), 4) if result.boxes is not None else None,
-                    "visible_joint_count": len(visible),
-                    "joints": visible
+                    "bbox_xyxy": bbox, "bbox_area": round(area, 2),
+                    "visible_joint_count": len(visible), "joints": visible,
+                    "_points": points.tolist(), "_confidences": confs.tolist()
                 })
-        detections.sort(key=lambda d: (d["visible_joint_count"], d["person_confidence"] or 0), reverse=True)
+        detections.sort(key=lambda d: d["bbox_area"] * max(0.05, d["person_confidence"] or 0), reverse=True)
         best = detections[0] if detections else None
+        if best:
+            points = np.asarray(best.pop("_points"), dtype=float)
+            confs = np.asarray(best.pop("_confidences"), dtype=float)
+            for a, b in SKELETON:
+                if confs[a] >= 0.25 and confs[b] >= 0.25:
+                    draw.line([tuple(points[a]), tuple(points[b])], fill=(20, 170, 255), width=5)
+            for joint, (x, y) in enumerate(points):
+                if confs[joint] >= 0.25:
+                    r = 7
+                    draw.ellipse((x-r,y-r,x+r,y+r), fill=(255,70,50), outline=(30,30,30), width=2)
+        for detection in detections[1:]:
+            detection.pop("_points", None)
+            detection.pop("_confidences", None)
         # A pose is useful only when shoulders, elbows/wrists and hips/legs are present.
         required = ("left_shoulder","right_shoulder","left_elbow","right_elbow",
                     "left_wrist","right_wrist","left_hip","right_hip")
