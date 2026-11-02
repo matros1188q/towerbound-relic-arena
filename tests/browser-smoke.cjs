@@ -47,6 +47,20 @@ async function testJourney(browserType, engine, viewport) {
     await page.goto(globalThis.baseUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.locator('#enterArenaBtn').waitFor({ state: 'visible', timeout: 15000 });
     await page.locator('#enterArenaBtn').click();
+    await page.waitForTimeout(150);
+    const afterEntry = await page.evaluate(() => ({
+      bodyScreen: document.body.dataset.tbScreen || null,
+      flowScreen: window.TowerboundFlow ? window.TowerboundFlow.screen : null,
+      flowReady: !!(window.TowerboundFlow && typeof window.TowerboundFlow.setScreen === 'function'),
+      titleHidden: !!(document.querySelector('#titleScreen') && document.querySelector('#titleScreen').classList.contains('is-hidden')),
+      heroStageActive: !!(document.querySelector('#tbHeroStage') && document.querySelector('#tbHeroStage').classList.contains('is-active')),
+      prepStageActive: !!(document.querySelector('#tbPrepStage') && document.querySelector('#tbPrepStage').classList.contains('is-active')),
+      heroPanelHidden: !!(document.querySelector('#heroSelectPanel') && document.querySelector('#heroSelectPanel').hidden),
+      heroButtonDisplay: document.querySelector('#heroChoices [data-hero="warden"]') ? getComputedStyle(document.querySelector('#heroChoices [data-hero="warden"]')).display : null
+    }));
+    if (afterEntry.bodyScreen !== 'hero' || afterEntry.flowScreen !== 'hero' || !afterEntry.heroStageActive || !afterEntry.titleHidden) {
+      throw new Error('Title entry did not activate hero stage: ' + JSON.stringify({ afterEntry, pageErrors }));
+    }
     await page.locator('#heroChoices [data-hero="warden"]').waitFor({ state: 'visible', timeout: 10000 });
     await page.evaluate(() => {
       const flow = window.TowerboundFlow;
