@@ -126,14 +126,13 @@ jobs:
 
           index_path = Path("index.html")
           html = index_path.read_text(encoding="utf-8")
-          for hero_id, icon in [("warden","🛡️"),("arcanist","🔮"),("ranger","🏹"),("reaper","💀")]:
+          for hero_id in ["warden","arcanist","ranger","reaper"]:
               art = f"art:'./assets/characters/heroes/{hero_id}.png',"
-              old = f"icon:'{icon}',desc:"
-              new = f"icon:'{icon}',{art}desc:"
+              marker = f"id:'{hero_id}',"
               if art not in html:
-                  if html.count(old) != 1:
-                      raise SystemExit(f"Could not safely locate {hero_id} metadata in index.html")
-                  html = html.replace(old, new, 1)
+                  if html.count(marker) != 1:
+                      raise SystemExit(f"Could not safely locate unique ID for {hero_id} in index.html")
+                  html = html.replace(marker, marker + art, 1)
 
           old_markup = '<div class="tb-hero-emblem">'+h.icon+'</div>'
           new_markup = '<div class="tb-hero-portrait"><img src="'+h.art+'" alt="'+h.name+'" loading="lazy" decoding="async"></div>'
