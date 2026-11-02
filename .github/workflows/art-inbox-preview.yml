@@ -222,15 +222,18 @@ jobs:
           ]:
               manifest_items = []
               for item in items:
+                  with Image.open(item["path"]) as final_image:
+                      final_width, final_height = final_image.size
+                      final_alpha = "A" in final_image.getbands() and final_image.getchannel("A").getextrema() != (255,255)
                   manifest_items.append({
                       "filename":Path(item["path"]).name,
                       "relative_path":item["path"],
                       "category":group,
                       "exact_asset_id":("hero." if group=="heroes" else "enemy." if group=="enemies" else "boss.")+item["id"],
                       "image_format":"png",
-                      "width":1024,
-                      "height":1024,
-                      "transparency":True,
+                      "width":final_width,
+                      "height":final_height,
+                      "transparency":final_alpha,
                       "source_filename":item["source"].removesuffix(".png").removesuffix(".jpg"),
                       "short_description":item["note"]
                   })
