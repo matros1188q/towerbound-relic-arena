@@ -2002,6 +2002,11 @@ body[data-tb-screen="arena"] #tbFlowWorkspace{display:block}
  .tb-flow-map #routeMapPanel .tb-route-nodes{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){.tb-flow-stage{animation:none}}
+
+/* TB_FLOW_SCREEN_ISOLATION_V2 */
+body[data-tb-screen] #tbFlowWorkspace .tb-flow-stage{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+body[data-tb-screen="hero"] #tbHeroStage,body[data-tb-screen="prep"] #tbPrepStage,body[data-tb-screen="map"] #tbMapStage,body[data-tb-screen="arena"] #tbArenaStage{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+body[data-tb-screen] #tbFlowWorkspace{position:relative;isolation:isolate;z-index:2}
 </style>
 <script id="TB_STEP_FLOW_V1">
 (()=>{'use strict';
@@ -2119,7 +2124,7 @@ document.addEventListener('click',ev=>{
  const mapNode=target?.closest?.('#routeMap [data-mapnode]');
  if(mapNode&&!mapNode.disabled){
   const kind=mapNode.dataset.mapnode;
-  if(['enemy','elite','boss','event'].includes(kind))setScreen('arena');
+  if(['enemy','elite','boss','event'].includes(kind))setTimeout(()=>setScreen('arena'),0);
   else setTimeout(()=>setScreen('map'),80);
   return;
  }
