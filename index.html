@@ -1767,7 +1767,7 @@ input,select,textarea{font-size:16px!important;max-width:100%}
 </style>
 <script id="TB_STAGE4_DIRECTOR">
 (()=>{'use strict';
-if(window.TB_STAGE4_DIRECTOR)return;window.TB_STAGE4_DIRECTOR=true;
+if(window.__TB_STAGE4_DIRECTOR_LOADED__)return;window.__TB_STAGE4_DIRECTOR_LOADED__=true;
 const $=id=>document.getElementById(id);
 const biomes=[
  {from:1,to:7,name:'ЗАТОНУВШИЕ КАТАКОМБЫ',icon:'☠️',lore:'Камень помнит каждую клятву. Здесь нежить крепче, а реликвии древнее.',color:'#b9a1ff'},
@@ -1850,7 +1850,7 @@ window.TowerboundStage4={biomes,bosses,affixes,refresh};
 </style>
 <script id="TB_STAGE5_TACTICAL">
 (()=>{'use strict';
-if(window.TB_STAGE5_TACTICAL)return;window.TB_STAGE5_TACTICAL=true;
+if(window.__TB_STAGE5_TACTICAL_LOADED__)return;window.__TB_STAGE5_TACTICAL_LOADED__=true;
 const $=id=>document.getElementById(id);
 const lines=[];let lastMessage='',lastEnemy='',lastPhase='',lastHpBucket=-1,lastBattle=false,lastStep=-1,lastKnownHp='';
 function addLog(text){if(!text||text===lastMessage)return;lastMessage=text;lines.unshift({text,at:Date.now()});if(lines.length>4)lines.length=4;renderLog()}
