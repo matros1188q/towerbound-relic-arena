@@ -1,0 +1,67 @@
+name: Art inbox character preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - "art-inbox/01-characters/**"
+      - ".github/workflows/art-inbox-preview.yml"
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build contact sheet and image index
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps, ImageDraw, ImageFont
+          import json, hashlib
+
+          root = Path("art-inbox/01-characters")
+          out = Path("art-preview")
+          out.mkdir(exist_ok=True)
+          files = sorted(p for p in root.iterdir() if p.is_file() and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"})
+          font = ImageFont.load_default()
+          tile_w, tile_h, label_h, cols = 260, 340, 48, 3
+          rows = max(1, (len(files) + cols - 1) // cols)
+          sheet = Image.new("RGB", (cols * tile_w, rows * (tile_h + label_h)), "#151a22")
+          draw = ImageDraw.Draw(sheet)
+          records = []
+          for i, path in enumerate(files):
+              try:
+                  raw = path.read_bytes()
+                  with Image.open(path) as im:
+                      im.load()
+                      fmt = im.format
+                      size = list(im.size)
+                      mode = im.mode
+                      has_alpha = "A" in im.getbands() or "transparency" in im.info
+                      thumb = ImageOps.contain(im.convert("RGBA"), (tile_w - 24, tile_h - 24))
+                      tile = Image.new("RGBA", (tile_w - 16, tile_h - 16), "#222a35")
+                      tile.alpha_composite(thumb, ((tile.width-thumb.width)//2, (tile.height-thumb.height)//2))
+                      x = (i % cols) * tile_w + 8
+                      y = (i // cols) * (tile_h + label_h) + 8
+                      sheet.paste(tile.convert("RGB"), (x, y))
+                      draw.text((x, y + tile_h - 2), path.name[:34], fill="#f2f2f2", font=font)
+                  records.append({"filename":path.name,"relative_path":str(path),"format":fmt,"width":size[0],"height":size[1],"mode":mode,"has_alpha":has_alpha,"bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest()})
+              except Exception as e:
+                  records.append({"filename":path.name,"relative_path":str(path),"error":str(e)})
+          sheet.save(out / "characters-contact-sheet.jpg", quality=88)
+          (out / "characters-index.json").write_text(json.dumps({"count":len(records),"images":records},ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps({"count":len(records),"files":[r["filename"] for r in records]},ensure_ascii=False))
+          PY
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: towerbound-character-preview
+          path: art-preview/
+          if-no-files-found: error
+          retention-days: 7
