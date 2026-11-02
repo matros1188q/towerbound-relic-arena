@@ -167,45 +167,45 @@ jobs:
           import json, shutil
 
           heroes = [
-              {"id":"warden","source":"7f5c7457-3498-464f-91df-d83335183855.png","path":"assets/characters/heroes/warden.png","note":"Armored guardian with tower shield"},
-              {"id":"arcanist","source":"16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.png","path":"assets/characters/heroes/arcanist.png","note":"Violet-robed mage with arcane staff"},
-              {"id":"ranger","source":"7305bd9e-5b85-49ad-a701-ec8ad192dcd7.png","path":"assets/characters/heroes/ranger.png","note":"Hooded archer with bow and quiver"},
-              {"id":"reaper","source":"acea49d3-fa54-45a9-957a-ac057304b6ab.png","path":"assets/characters/heroes/reaper.png","note":"Dark armored reaper-like warrior; source carries a sword rather than a scythe"}
+              {"id":"warden","source":"7f5c7457-3498-464f-91df-d83335183855.jpg","path":"assets/characters/heroes/warden.png","note":"Armored guardian with tower shield"},
+              {"id":"arcanist","source":"16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.jpg","path":"assets/characters/heroes/arcanist.png","note":"Violet-robed mage with arcane staff"},
+              {"id":"ranger","source":"7305bd9e-5b85-49ad-a701-ec8ad192dcd7.jpg","path":"assets/characters/heroes/ranger.png","note":"Hooded archer with bow and quiver"},
+              {"id":"reaper","source":"acea49d3-fa54-45a9-957a-ac057304b6ab.jpg","path":"assets/characters/heroes/reaper.png","note":"Dark armored reaper-like warrior; source carries a sword rather than a scythe"}
           ]
 
           enemies = [
-              {"id":"shadow-goblin","source":"aa933809-05b4-4b67-9f5f-442ffd207371.png","note":"Hunched dark creature with a glowing red eye; closest available shadow-assassin silhouette"},
-              {"id":"cursed-knight","source":"5c8f39fb-19c6-44e4-946c-4ee584214238.png","note":"Black-armored sword knight"},
-              {"id":"ash-wolf","source":"81c5d782-ceb2-4e17-813a-b4c684f70f75.png","note":"Ash-gray supernatural wolf"},
-              {"id":"rune-golem","source":"289412ff-344a-402b-b141-3e739f1d1c1c.png","note":"Large stone-and-root golem with a glowing core"},
-              {"id":"grave-archer","source":"1a06e424-a782-44b7-a0a0-a9f64325ffcb.png","note":"Skeletal archer with a bone bow"},
-              {"id":"plague-witch","source":"52cbe629-d020-4077-8a86-2469a3cda66d.png","note":"Toxic alchemist-witch with potion vials"},
-              {"id":"ash-imp","source":"50bbefaa-97e5-4c6d-8a73-daa03e553525.png","note":"Winged ember demon"},
-              {"id":"swamp-reaper","source":"ba3335bd-e111-4f86-90e6-4f2085cae804.png","note":"Waterlogged swamp wraith with a crooked staff"},
-              {"id":"bone-warden","source":"00cba976-f8e1-4691-af34-7e38bc3e085e.png","note":"Skeletal armored guardian"},
-              {"id":"crimson-executioner","source":"b0b7437e-c2ee-4a59-b644-ffce88f1d442.png","note":"Crimson armored executioner-like warrior"},
-              {"id":"void-hunter","source":"92a10c4d-48e4-4a3c-92e5-bb7bae921f8d.png","note":"Hooded void assassin with violet blades"},
-              {"id":"spider-matron","source":"f3f1e987-472d-41ab-aa6c-f6e11d8068ba.png","note":"Large many-legged spider creature"},
-              {"id":"blind-monk","source":"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.png","note":"Hooded staff-bearing monk-like figure"},
-              {"id":"stone-minotaur","source":"678287f6-5d47-407d-a281-65b1e7eb2463.png","note":"Stone-skinned minotaur with a heavy axe"},
-              {"id":"phantom-duelist","source":"a41493b8-0505-40f2-8351-fb8f1b484c8c.png","note":"Spectral swordsman with a glowing blade"},
-              {"id":"soul-harvester","source":"00478c4a-e6ee-420d-a3f8-dd8c03c4698e.png","note":"Hooded lantern-bearing soul collector"},
-              {"id":"forest-horror","source":"477537a8-9c39-497b-b809-8fb63968d5a9.png","note":"Twisted ancient tree monster"},
-              {"id":"abyss-knight","source":"bd0e9796-5649-4bad-a565-4067b2c602d3.png","note":"Dark armored knight with a violet blade"},
-              {"id":"cursed-alchemist","source":"d6021025-d9b9-44da-a245-2c50822ebedc.png","note":"Undead alchemist with green spectral fumes and skull motifs"},
-              {"id":"root-colossus","source":"64cdadd1-93eb-4490-9df8-e7acf5077cde.png","note":"Huge root-and-bark colossus"}
+              {"id":"shadow-goblin","source":"aa933809-05b4-4b67-9f5f-442ffd207371.jpg","note":"Hunched dark creature with a glowing red eye; closest available shadow-assassin silhouette"},
+              {"id":"cursed-knight","source":"5c8f39fb-19c6-44e4-946c-4ee584214238.jpg","note":"Black-armored sword knight"},
+              {"id":"ash-wolf","source":"81c5d782-ceb2-4e17-813a-b4c684f70f75.jpg","note":"Ash-gray supernatural wolf"},
+              {"id":"rune-golem","source":"289412ff-344a-402b-b141-3e739f1d1c1c.jpg","note":"Large stone-and-root golem with a glowing core"},
+              {"id":"grave-archer","source":"1a06e424-a782-44b7-a0a0-a9f64325ffcb.jpg","note":"Skeletal archer with a bone bow"},
+              {"id":"plague-witch","source":"52cbe629-d020-4077-8a86-2469a3cda66d.jpg","note":"Toxic alchemist-witch with potion vials"},
+              {"id":"ash-imp","source":"50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg","note":"Winged ember demon"},
+              {"id":"swamp-reaper","source":"ba3335bd-e111-4f86-90e6-4f2085cae804.jpg","note":"Waterlogged swamp wraith with a crooked staff"},
+              {"id":"bone-warden","source":"00cba976-f8e1-4691-af34-7e38bc3e085e.jpg","note":"Skeletal armored guardian"},
+              {"id":"crimson-executioner","source":"b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg","note":"Crimson armored executioner-like warrior"},
+              {"id":"void-hunter","source":"92a10c4d-48e4-4a3c-92e5-bb7bae921f8d.jpg","note":"Hooded void assassin with violet blades"},
+              {"id":"spider-matron","source":"f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg","note":"Large many-legged spider creature"},
+              {"id":"blind-monk","source":"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg","note":"Hooded staff-bearing monk-like figure"},
+              {"id":"stone-minotaur","source":"678287f6-5d47-407d-a281-65b1e7eb2463.jpg","note":"Stone-skinned minotaur with a heavy axe"},
+              {"id":"phantom-duelist","source":"a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg","note":"Spectral swordsman with a glowing blade"},
+              {"id":"soul-harvester","source":"00478c4a-e6ee-420d-a3f8-dd8c03c4698e.jpg","note":"Hooded lantern-bearing soul collector"},
+              {"id":"forest-horror","source":"477537a8-9c39-497b-b809-8fb63968d5a9.jpg","note":"Twisted ancient tree monster"},
+              {"id":"abyss-knight","source":"bd0e9796-5649-4bad-a565-4067b2c602d3.jpg","note":"Dark armored knight with a violet blade"},
+              {"id":"cursed-alchemist","source":"d6021025-d9b9-44da-a245-2c50822ebedc.jpg","note":"Undead alchemist with green spectral fumes and skull motifs"},
+              {"id":"root-colossus","source":"64cdadd1-93eb-4490-9df8-e7acf5077cde.jpg","note":"Huge root-and-bark colossus"}
           ]
 
           bosses = [
-              {"id":"bone-colossus","source":"fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd.png","path":"assets/characters/bosses/bone-colossus.png","note":"Armored skeletal boss"},
-              {"id":"abyss-queen","source":"d9e748b9-ee01-4b29-b3f8-eb9c4ecdf503.png","path":"assets/characters/bosses/abyss-queen.png","note":"Violet tentacled abyss sovereign"},
-              {"id":"ash-patriarch","source":"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.png","path":"assets/characters/bosses/ash-patriarch.png","note":"Ancient hooded staff-bearing patriarch"},
-              {"id":"ice-abbot","source":"f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc.png","path":"assets/characters/bosses/ice-abbot.png","note":"Frozen abbot with ice staff"},
-              {"id":"mirror-executioner","source":"f50e3768-351d-4b8a-9939-ca398bdd65d7.png","path":"assets/characters/bosses/mirror-executioner.png","note":"Hooded executioner with a massive axe; source does not clearly show mirror armor"},
-              {"id":"soul-devourer","source":"d6021025-d9b9-44da-a245-2c50822ebedc.png","path":"assets/characters/bosses/soul-devourer.png","note":"Undead soul-consuming shaman with green spectral energy"},
-              {"id":"root-titan","source":"beb6557c-f2db-4426-b741-d0faa9c2d80f.png","path":"assets/characters/bosses/root-titan.png","note":"Massive rune-carved stone titan"},
-              {"id":"void-hunter-boss","source":"f3f1e987-472d-41ab-aa6c-f6e11d8068ba.png","path":"assets/characters/bosses/void-hunter-boss.png","note":"Many-limbed void creature; visual is closer to a giant arachnid than a humanoid hunter"},
-              {"id":"heart-of-tower","source":"ead1c2a5-2854-4a9c-83b7-d8964fd737cb.png","path":"assets/characters/bosses/heart-of-tower.png","note":"Living flesh-and-arcane heart fused to tower masonry"}
+              {"id":"bone-colossus","source":"fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd.jpg","path":"assets/characters/bosses/bone-colossus.png","note":"Armored skeletal boss"},
+              {"id":"abyss-queen","source":"d9e748b9-ee01-4b29-b3f8-eb9c4ecdf503.jpg","path":"assets/characters/bosses/abyss-queen.png","note":"Violet tentacled abyss sovereign"},
+              {"id":"ash-patriarch","source":"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg","path":"assets/characters/bosses/ash-patriarch.png","note":"Ancient hooded staff-bearing patriarch"},
+              {"id":"ice-abbot","source":"f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc.jpg","path":"assets/characters/bosses/ice-abbot.png","note":"Frozen abbot with ice staff"},
+              {"id":"mirror-executioner","source":"f50e3768-351d-4b8a-9939-ca398bdd65d7.jpg","path":"assets/characters/bosses/mirror-executioner.png","note":"Hooded executioner with a massive axe; source does not clearly show mirror armor"},
+              {"id":"soul-devourer","source":"d6021025-d9b9-44da-a245-2c50822ebedc.jpg","path":"assets/characters/bosses/soul-devourer.png","note":"Undead soul-consuming shaman with green spectral energy"},
+              {"id":"root-titan","source":"beb6557c-f2db-4426-b741-d0faa9c2d80f.jpg","path":"assets/characters/bosses/root-titan.png","note":"Massive rune-carved stone titan"},
+              {"id":"void-hunter-boss","source":"f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg","path":"assets/characters/bosses/void-hunter-boss.png","note":"Many-limbed void creature; visual is closer to a giant arachnid than a humanoid hunter"},
+              {"id":"heart-of-tower","source":"ead1c2a5-2854-4a9c-83b7-d8964fd737cb.jpg","path":"assets/characters/bosses/heart-of-tower.png","note":"Living flesh-and-arcane heart fused to tower masonry"}
           ]
 
           all_items = []
