@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "scripts/analyze_hero_pose.py"
+      - "scripts/extract_limb_candidates.py"
       - ".github/workflows/hero-pose-qa.yml"
   workflow_dispatch:
 permissions:
@@ -26,9 +27,13 @@ jobs:
           pip install "ultralytics>=8.3,<9" "pillow>=10,<12" "numpy<2"
       - name: Infer candidate body landmarks and render QA previews
         run: python scripts/analyze_hero_pose.py
+      - name: Generate conservative limb cutout candidates
+        run: python scripts/extract_limb_candidates.py
       - name: Upload landmark report and previews
         uses: actions/upload-artifact@v4
         with:
           name: hero-pose-qa
-          path: artifacts/pose-analysis/
+          path: |
+            artifacts/pose-analysis/
+            artifacts/limb-candidates/
           if-no-files-found: error
