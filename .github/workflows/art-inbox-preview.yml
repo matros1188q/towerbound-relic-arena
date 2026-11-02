@@ -364,7 +364,7 @@ jobs:
           index=Path("index.html")
           html=index.read_text(encoding="utf-8")
           syn_map={x["name"]:x["id"]+".png" for x in synergies}
-          declaration="const TB_SYNERGY_ART_FILES="+json.dumps(syn_map,ensure_ascii=False,separators=(",",":"))+";\\n"
+          declaration="const TB_SYNERGY_ART_FILES="+json.dumps(syn_map,ensure_ascii=False,separators=(",",":"))+";"+chr(10)
           old_fn="function synergyArt(name){const a=synergyArtId(name);return tbArtSvg(name,a[0],a[1],a[2])}"
           new_fn=declaration+"function synergyArt(name){const file=TB_SYNERGY_ART_FILES[name];if(file)return './assets/synergies/'+file+'?v=1';const a=synergyArtId(name);return tbArtSvg(name,a[0],a[1],a[2])}"
           if "const TB_SYNERGY_ART_FILES=" not in html:
@@ -372,6 +372,8 @@ jobs:
                   raise SystemExit("Could not safely locate synergyArt(); refusing to patch index.html")
               html=html.replace(old_fn,new_fn,1)
           old_icon='<span class="tb-syn-card-icon tb-syn-atlas tb-syn-atlas-'
+          if html.count(old_icon)!=1:
+              raise SystemExit("Could not safely locate the synergy progress icon")
           if old_icon in html:
               start=html.index(old_icon)
               end=html.index(' aria-hidden="true"></span>',start)+len(' aria-hidden="true"></span>')
