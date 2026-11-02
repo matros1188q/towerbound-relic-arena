@@ -82,27 +82,47 @@ setPhase:function(phase){this.phase=phase;const labels={prep:'ПОДГОТОВК
 victory:function(){const w=this.scale.width,h=this.scale.height;for(let i=0;i<48;i++){const p=this.add.rectangle(Math.random()*w,-8,3+Math.random()*3,4+Math.random()*4,[0xf8ce72,0x78e7ef,0xb5a0e7][i%3],1).setDepth(10);this.tweens.add({targets:p,y:h+12,x:p.x+(Math.random()-.5)*100,angle:360,duration:900+Math.random()*1200,delay:Math.random()*300,onComplete:()=>p.destroy()});}},
 setWave:function(wave,boss){
  if(!this.enemy)return;
- const n=Math.max(1,Number(wave)||1),slot=(n-1)%3;
- const kind=slot===0?'tb-foe':slot===1?'tb-skeleton':'tb-brute';
- const asset=slot===0?'foe':slot===1?'skeleton':'brute';
- const labels=slot===0?'Страж Бездны':slot===1?'Костяной воин':'Пепельный громила';
- this.enemy.setTexture(kind);
+ const n=Math.max(1,Number(wave)||1),slot=(n-1)%20;
+ const enemyFiles=['shadow-goblin','cursed-knight','ash-wolf','rune-golem','grave-archer','plague-witch','ash-imp','swamp-reaper','bone-warden','crimson-executioner','void-hunter','spider-matron','blind-monk','stone-minotaur','phantom-duelist','soul-harvester','forest-horror','abyss-knight','cursed-alchemist','root-colossus'];
+ const bossFiles=['bone-colossus','abyss-queen','ash-patriarch','ice-abbot','mirror-executioner','soul-devourer','root-titan','void-hunter-boss',null,'heart-of-tower'];
+ const labels=['Теневой гоблин','Проклятый рыцарь','Пепельный волк','Рунный голем','Могильный лучник','Чумная ведьма','Пепельный бес','Болотный жнец','Костяной страж','Багровый палач','Пустотный охотник','Паучья матрона','Слепой монах','Каменный минотавр','Призрачный дуэлянт','Собиратель душ','Лесной ужас','Рыцарь бездны','Проклятый алхимик','Корневой исполин'];
+ const heroFiles={warden:'warden',arcanist:'arcanist',ranger:'ranger',reaper:'reaper'};
+ const domHero=mount&&mount.querySelector('.tb-visible-hero');
+ if(domHero){
+  const heroId=(window.TowerboundHeroId||'warden');
+  const heroSrc='./assets/characters/heroes/'+(heroFiles[heroId]||'warden')+'.png?v=arena-art-1';
+  if(!domHero.src.includes('/assets/characters/heroes/'+(heroFiles[heroId]||'warden')+'.png'))domHero.src=heroSrc;
+  domHero.alt='Герой: '+heroId;
+ }
+ const idx=(n-1)%enemyFiles.length;
+ const foeId=boss?(bossFiles[Math.max(0,Math.min(9,Math.ceil(n/7)-1))]||enemyFiles[idx]):enemyFiles[idx];
  const domEnemy=mount&&mount.querySelector('.tb-visible-enemy');
  if(domEnemy){
-  const src='./assets/'+asset+'-illustrated.svg?v=6';
-  if(!domEnemy.src.endsWith('/'+asset+'-illustrated.svg?v=6'))domEnemy.src=src;
-  domEnemy.alt=boss?'Босс: '+labels:labels;
-  domEnemy.style.width=boss?'clamp(142px,36vw,236px)':'clamp(118px,30vw,202px)';
-  domEnemy.style.height=boss?'78%':'72%';
-  domEnemy.style.left='68%';domEnemy.style.top='49%';
+  const category=boss&&bossFiles[Math.max(0,Math.min(9,Math.ceil(n/7)-1))]?'bosses':'enemies';
+  const src='./assets/characters/'+category+'/'+foeId+'.png?v=arena-art-1';
+  if(domEnemy.dataset.tbArtSrc!==src){domEnemy.dataset.tbArtSrc=src;domEnemy.src=src;}
+  domEnemy.alt=(boss?'Босс: ':'')+labels[idx];
+  domEnemy.style.width=boss?'clamp(156px,39vw,254px)':'clamp(118px,30vw,204px)';
+  domEnemy.style.height=boss?'84%':'73%';
+  domEnemy.style.left=boss?'68%':'68%';domEnemy.style.top='49%';
   domEnemy.style.filter=boss?'drop-shadow(0 0 18px #ff687f) drop-shadow(0 10px 10px #000d)':'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)';
   domEnemy.style.animation='tbEnemyIdle 2.8s ease-in-out infinite';
   domEnemy.onerror=()=>{domEnemy.onerror=null;domEnemy.src='./assets/foe-illustrated.svg?v=6';};
  }
- this.enemy.setTint(boss?0xffa1b6:0xffffff);
+ this.enemy.setTint(0xffffff);
  this.enemy.setScale(boss?1.02:.76);
- if(this.foeAura)this.foeAura.setFillStyle(boss?0xe85e78:(slot===1?0x78e7ef:slot===2?0xff8a45:0x9b78ed),boss?.22:.12);
+ if(this.foeAura)this.foeAura.setFillStyle(boss?0xe85e78:(idx%3===1?0x78e7ef:idx%3===2?0xff8a45:0x9b78ed),boss?.22:.12);
  scene.setPhase.call(this,this.phase||'prep');
+},
+setHero:function(heroId){
+ window.TowerboundHeroId=heroId||'warden';
+ const domHero=mount&&mount.querySelector('.tb-visible-hero');
+ if(domHero){
+  const id=['warden','arcanist','ranger','reaper'].includes(window.TowerboundHeroId)?window.TowerboundHeroId:'warden';
+  const src='./assets/characters/heroes/'+id+'.png?v=arena-art-1';
+  if(domHero.dataset.tbArtSrc!==src){domHero.dataset.tbArtSrc=src;domHero.src=src;}
+  domHero.alt='Герой: '+id;
+ }
 },
 update:function(){/* Ambient alpha is handled by bounded tweens; avoid per-frame JS writes. */}
 };
@@ -181,5 +201,5 @@ const tbSetRenderSleep=()=>{try{if(document.hidden){if(game.loop&&game.loop.slee
 document.addEventListener('visibilitychange',tbSetRenderSleep,{passive:true});
 window.addEventListener('pagehide',()=>{try{if(game.loop&&game.loop.sleep)game.loop.sleep()}catch(e){}},{passive:true});
 tbSetRenderSleep();
-window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);if(window.TowerModels&&window.TowerModels.hit)window.TowerModels.hit(critical,boss);if(!tbMobilePerf&&arenaScene&&scene.impact)scene.impact.call(arenaScene,critical,boss,style);},clear:()=>{const fx=mount.querySelector('.tb-dom-fx');if(fx){fx.querySelectorAll('*').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});fx.replaceChildren();}mount.querySelectorAll('.tb-visible-hero,.tb-visible-enemy').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});},win:()=>{if(arenaScene&&scene.victory)scene.victory.call(arenaScene);},wave:(wave,boss)=>{if(window.TowerModels&&window.TowerModels.wave)window.TowerModels.wave(wave,boss);if(arenaScene&&scene.setWave)scene.setWave.call(arenaScene,wave,boss);},phase:(phase)=>{if(arenaScene&&scene.setPhase)scene.setPhase.call(arenaScene,phase);}};
+window.TowerFX={hit:(critical,boss,style='arcane')=>{domCombatHit(critical,boss,style);if(window.TowerModels&&window.TowerModels.hit)window.TowerModels.hit(critical,boss);if(!tbMobilePerf&&arenaScene&&scene.impact)scene.impact.call(arenaScene,critical,boss,style);},clear:()=>{const fx=mount.querySelector('.tb-dom-fx');if(fx){fx.querySelectorAll('*').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});fx.replaceChildren();}mount.querySelectorAll('.tb-visible-hero,.tb-visible-enemy').forEach(n=>{if(n.getAnimations)n.getAnimations().forEach(a=>a.cancel());});},win:()=>{if(arenaScene&&scene.victory)scene.victory.call(arenaScene);},hero:(heroId)=>{if(arenaScene&&scene.setHero)scene.setHero.call(arenaScene,heroId);else window.TowerboundHeroId=heroId||'warden';},wave:(wave,boss)=>{if(window.TowerModels&&window.TowerModels.wave)window.TowerModels.wave(wave,boss);if(arenaScene&&scene.setWave)scene.setWave.call(arenaScene,wave,boss);},phase:(phase)=>{if(arenaScene&&scene.setPhase)scene.setPhase.call(arenaScene,phase);}};
 })();
