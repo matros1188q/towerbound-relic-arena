@@ -66,7 +66,7 @@ def main():
                     "visible_joint_count": len(visible), "joints": visible,
                     "_points": points.tolist(), "_confidences": confs.tolist()
                 })
-        detections.sort(key=lambda d: d["bbox_area"] * max(0.05, d["person_confidence"] or 0), reverse=True)
+        detections.sort(key=lambda d: (d["visible_joint_count"], d["person_confidence"] or 0), reverse=True)
         best = detections[0] if detections else None
         if best:
             points = np.asarray(best.pop("_points"), dtype=float)
