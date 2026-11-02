@@ -125,6 +125,7 @@ setHero:function(heroId){
   const src='./assets/characters/heroes/'+id+'.png?v=arena-art-1';
   if(domHero.dataset.tbArtSrc!==src){domHero.dataset.tbArtSrc=src;domHero.src=src;}
   domHero.alt='Герой: '+id;
+  domHero.dataset.tbActorId=id;
  }
 },
 update:function(){/* Ambient alpha is handled by bounded tweens; avoid per-frame JS writes. */}
@@ -185,7 +186,7 @@ const TB_ENEMY_MOVES=[
 {kind:'hex',frames:[{transform:'translate(0,0) scale(1)',filter:'brightness(1)'},{transform:'translate(-5px,-8px) scale(1.06)',filter:'brightness(1.8)',offset:.45},{transform:'translate(0,0) scale(1)'}]},
 {kind:'blink',frames:[{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate(-12px,-2px) scale(.84)',opacity:.25,offset:.35},{transform:'translate(-20px,0) scale(1.1)',opacity:1,offset:.7},{transform:'translate(0,0) scale(1)',opacity:1}]}];
 function tbActorHash(id){let n=0;for(let i=0;i<String(id||'').length;i++)n=(n*31+String(id).charCodeAt(i))>>>0;return n;}
-function tbAnimate(actor,frames,duration){if(!actor||!actor.animate)return;try{actor.getAnimations().forEach(a=>a.cancel());actor.animate(frames,{duration,easing:'cubic-bezier(.18,.8,.22,1)',fill:'none'});}catch(e){}}
+function tbAnimate(actor,frames,duration){if(!actor||!actor.animate)return;try{if(actor._tbCombatAnimation)actor._tbCombatAnimation.cancel();actor._tbCombatAnimation=actor.animate(frames,{duration,easing:'cubic-bezier(.18,.8,.22,1)',fill:'none'});actor._tbCombatAnimation.onfinish=()=>{actor._tbCombatAnimation=null;};}catch(e){}}
 function domEnemyAttack(boss,special,heavy,kind,dodged){
  const layer=ensureDomFx(),hero=mount.querySelector('.tb-visible-hero'),enemy=mount.querySelector('.tb-visible-enemy'),id=enemy&&enemy.dataset.tbActorId||'shadow-goblin',hash=tbActorHash(id);
  const bossKind={summon:'hex',evade:'blink',frenzy:'pounce',burn:'slam',strike:'slash'}[kind],move=TB_ENEMY_MOVES.find(x=>x.kind===bossKind)||TB_ENEMY_MOVES[hash%TB_ENEMY_MOVES.length];
