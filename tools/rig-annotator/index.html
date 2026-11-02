@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#111318"><title>Towerbound · Rig Annotator</title>
+<style>
+:root{color-scheme:dark;--bg:#101217;--panel:#1a1e27;--line:#343b49;--gold:#d7b36b;--muted:#aab1bf}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f4f1e9;font:14px/1.4 system-ui,-apple-system,sans-serif}
+header{padding:12px 14px;background:#171b23;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:16px;margin:0;color:var(--gold)}.sub{color:var(--muted);font-size:12px}
+main{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:12px;padding:12px;max-width:1500px;margin:auto}
+.stage{min-width:0;background:#080a0e;border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative;min-height:55vh;display:flex;align-items:center;justify-content:center;touch-action:pan-y}
+canvas{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;object-fit:contain;touch-action:none}
+.side{display:flex;flex-direction:column;gap:10px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}select,button{font:inherit;color:#f7f4ed;background:#252b36;border:1px solid #424b5d;border-radius:8px;padding:10px;min-height:40px}
+select{width:100%}button{cursor:pointer}button.primary{background:#66502b;border-color:#a8874c}button.danger{border-color:#8c4545}button:disabled{opacity:.4}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.full{width:100%}.partlist{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:32vh;overflow:auto}
+.part{padding:8px 6px;text-align:left;font-size:12px;min-height:36px}.part.active{outline:2px solid var(--gold);background:#3b3324}
+.status{font-size:12px;color:var(--muted);min-height:32px}.hint{font-size:12px;color:#c6cbd4}.count{color:var(--gold);font-variant-numeric:tabular-nums}
+@media(max-width:760px){main{grid-template-columns:1fr;padding:8px}.stage{min-height:42vh;max-height:58vh}canvas{max-height:56vh;width:100%;height:auto}.side{display:grid;grid-template-columns:1fr 1fr}.side .wide{grid-column:1/-1}.partlist{max-height:23vh}}
+</style></head>
+<body>
+<header><div><h1>TOWERBOUND / MANUAL RIG CUTOUTS</h1><div class="sub">Контуры частей персонажа · исходное изображение не изменяется</div></div><div class="sub" id="saveState">Автосохранение включено</div></header>
+<main>
+<section class="stage"><canvas id="view" width="1024" height="1024" aria-label="Полотно для разметки"></canvas></section>
+<aside class="side">
+<div class="panel"><label for="hero">Персонаж</label><select id="hero"><option value="warden">Warden</option><option value="ranger">Ranger</option><option value="arcanist">Arcanist</option><option value="reaper">Reaper</option></select><div class="status" id="loadStatus">Загрузка изображения…</div></div>
+<div class="panel"><label>Часть для разметки</label><div class="partlist" id="parts"></div><div class="status" id="partStatus"></div></div>
+<div class="panel wide"><div class="grid"><button class="primary" id="finish">Завершить контур</button><button id="undo">Отменить точку</button><button id="newPoly">Новый контур</button><button class="danger" id="clearPart">Очистить часть</button><button id="zoomIn">Увеличить +</button><button id="zoomOut">Уменьшить −</button></div><p class="hint">Касайся по краю нужной детали, добавляя точки. Замкни контур кнопкой «Завершить». Для одной части можно создать несколько контуров. Контуры можно приближать.</p></div>
+<div class="panel wide"><div class="grid"><button class="primary" id="export">Экспорт JSON</button><button id="import">Импорт JSON</button><button id="clearHero">Очистить героя</button><button id="resetView">Сброс масштаба</button></div><input id="file" type="file" accept="application/json" hidden><div class="status" id="summary"></div></div>
+</aside></main>
+<script>
+(()=>{
+const W=1024,H=1024, heroes=['warden','ranger','arcanist','reaper'];
+const partNames=['head','helmet_or_hood','hair','torso','pelvis','left_upper_arm','left_forearm','left_hand','right_upper_arm','right_forearm','right_hand','left_thigh','left_shin','left_foot','right_thigh','right_shin','right_foot','weapon','shield','bow','staff','quiver','cape_or_cloak','robe_or_skirt','armor_detail'];
+const colors=['#ffd166','#f78c6b','#c792ea','#82aaff','#80cbc4','#ff8fab','#b8e986'];
+const el=id=>document.getElementById(id), canvas=el('view'),ctx=canvas.getContext('2d');
+let hero='warden',part=partNames[0],img=new Image(),data={},draft=[],zoom=1,panX=0,panY=0;
+function blank(){return {schema_version:1,hero,source:'assets/characters/heroes/'+hero+'.png',canvas:{width:W,height:H},parts:{}}}
+function key(){return 'towerbound-rig-annotations-v1-'+hero}
+function save(){try{localStorage.setItem(key(),JSON.stringify(data));el('saveState').textContent='Сохранено на этом устройстве';}catch(e){el('saveState').textContent='Автосохранение недоступно';}}
+function ensure(){if(!data.parts[part])data.parts[part]={color:colors[partNames.indexOf(part)%colors.length],polygons:[]};return data.parts[part]}
+function loadHero(){hero=el('hero').value;draft=[];const raw=localStorage.getItem(key());data=raw?JSON.parse(raw):blank();if(!data.parts)data=blank();img=new Image();img.onload=()=>{el('loadStatus').textContent='Исходник загружен · 1024 × 1024';draw();};img.onerror=()=>el('loadStatus').textContent='Не удалось загрузить PNG';img.src='../../assets/characters/heroes/'+hero+'.png';renderParts();update();}
+function renderParts(){el('parts').innerHTML='';partNames.forEach((p,i)=>{const b=document.createElement('button');b.className='part'+(p===part?' active':'');b.textContent=p.replaceAll('_',' ')+(data.parts[p]?' · '+data.parts[p].polygons.length:'');b.onclick=()=>{part=p;draft=[];renderParts();update();draw();};el('parts').append(b);});}
+function allPoints(){return Object.values(data.parts||{}).reduce((n,v)=>n+v.polygons.reduce((a,p)=>a+p.length,0),0)}
+function update(){const p=ensure();el('partStatus').textContent='Контуров: '+p.polygons.length+' · точек: '+p.polygons.reduce((n,x)=>n+x.length,0);el('summary').textContent='Размечено частей: '+Object.keys(data.parts).filter(k=>data.parts[k].polygons.length).length+' · точек: '+allPoints()+' · герой: '+hero;el('undo').disabled=!draft.length;el('finish').disabled=draft.length<3;}
+function transform(){const side=Math.min(canvas.clientWidth,canvas.clientHeight);const s=side/W*zoom;return {s,ox:(canvas.width-W*s)/2+panX,oy:(canvas.height-H*s)/2+panY}}
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#080a0e';ctx.fillRect(0,0,W,H);if(img.complete&&img.naturalWidth){ctx.save();ctx.globalAlpha=1;ctx.drawImage(img,0,0,W,H);ctx.restore();}
+const drawPoly=(poly,color,alpha)=>{if(poly.length<2)return;ctx.beginPath();ctx.moveTo(poly[0][0],poly[0][1]);poly.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));if(poly.length>=3){ctx.closePath();ctx.fillStyle=color;ctx.globalAlpha=alpha;ctx.fill();}ctx.globalAlpha=1;ctx.strokeStyle=color;ctx.lineWidth=3;ctx.stroke();poly.forEach(p=>{ctx.beginPath();ctx.arc(p[0],p[1],5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();});};
+Object.entries(data.parts||{}).forEach(([name,v])=>v.polygons.forEach(poly=>drawPoly(poly,v.color||'#82aaff',name===part?.23:.08)));
+drawPoly(draft,ensure().color||'#ffd166',.22);if(draft.length){ctx.fillStyle='#fff';ctx.font='18px system-ui';ctx.fillText('Текущий контур: '+draft.length,16,28);}
+}
+function pos(e){const r=canvas.getBoundingClientRect();return [Math.max(0,Math.min(1023,(e.clientX-r.left)*W/r.width)),Math.max(0,Math.min(1023,(e.clientY-r.top)*H/r.height))]}
+canvas.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')e.preventDefault();const p=pos(e);draft.push(p);draw();update();});
+el('finish').onclick=()=>{if(draft.length<3)return;ensure().polygons.push(draft.map(p=>p.map(Math.round)));draft=[];save();renderParts();draw();update();};
+el('undo').onclick=()=>{draft.pop();draw();update();};el('newPoly').onclick=()=>{draft=[];draw();update();};
+el('clearPart').onclick=()=>{if(confirm('Удалить все контуры части '+part+'?')){delete data.parts[part];draft=[];save();renderParts();draw();update();}};
+el('clearHero').onclick=()=>{if(confirm('Удалить всю разметку '+hero+'?')){data=blank();draft=[];save();renderParts();draw();update();}};
+el('zoomIn').onclick=()=>{zoom=Math.min(3,zoom+.25);draw();};el('zoomOut').onclick=()=>{zoom=Math.max(1,zoom-.25);draw();};el('resetView').onclick=()=>{zoom=1;panX=panY=0;draw();};
+el('hero').onchange=loadHero;
+el('export').onclick=()=>{data.hero=hero;data.source='assets/characters/heroes/'+hero+'.png';data.exported_at=new Date().toISOString();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=hero+'-rig-annotations.json';a.click();URL.revokeObjectURL(a.href);};
+el('import').onclick=()=>el('file').click();el('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(x.schema_version!==1||!x.parts)throw Error('Неверный формат');data=x;hero=x.hero||hero;el('hero').value=hero;save();renderParts();draw();update();}catch(err){alert('Не удалось импортировать: '+err.message);}e.target.value='';};
+loadHero();
+})();
+</script></body></html>
