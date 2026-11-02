@@ -55,10 +55,15 @@ async function testJourney(browserType, engine, viewport) {
       titleHidden: !!(document.querySelector('#titleScreen') && document.querySelector('#titleScreen').classList.contains('is-hidden')),
       heroStageActive: !!(document.querySelector('#tbHeroStage') && document.querySelector('#tbHeroStage').classList.contains('is-active')),
       prepStageActive: !!(document.querySelector('#tbPrepStage') && document.querySelector('#tbPrepStage').classList.contains('is-active')),
+      stateBattle: !!(window.state && window.state.battle),
       heroPanelHidden: !!(document.querySelector('#heroSelectPanel') && document.querySelector('#heroSelectPanel').hidden),
-      heroButtonDisplay: document.querySelector('#heroChoices [data-hero="warden"]') ? getComputedStyle(document.querySelector('#heroChoices [data-hero="warden"]')).display : null
+      heroPanelDisplay: document.querySelector('#heroSelectPanel') ? getComputedStyle(document.querySelector('#heroSelectPanel')).display : null,
+      heroPanelRect: document.querySelector('#heroSelectPanel') ? document.querySelector('#heroSelectPanel').getBoundingClientRect().toJSON() : null,
+      heroStageDisplay: document.querySelector('#tbHeroStage') ? getComputedStyle(document.querySelector('#tbHeroStage')).display : null,
+      heroButtonDisplay: document.querySelector('#heroChoices [data-hero="warden"]') ? getComputedStyle(document.querySelector('#heroChoices [data-hero="warden"]')).display : null,
+      heroButtonRect: document.querySelector('#heroChoices [data-hero="warden"]') ? document.querySelector('#heroChoices [data-hero="warden"]').getBoundingClientRect().toJSON() : null
     }));
-    if (afterEntry.bodyScreen !== 'hero' || afterEntry.flowScreen !== 'hero' || !afterEntry.heroStageActive || !afterEntry.titleHidden) {
+    if (afterEntry.bodyScreen !== 'hero' || afterEntry.flowScreen !== 'hero' || !afterEntry.heroStageActive || !afterEntry.titleHidden || afterEntry.heroPanelHidden || !afterEntry.heroButtonRect || afterEntry.heroButtonRect.width===0 || afterEntry.heroButtonRect.height===0) {
       throw new Error('Title entry did not activate hero stage: ' + JSON.stringify({ afterEntry, pageErrors }));
     }
     await page.locator('#heroChoices [data-hero="warden"]').waitFor({ state: 'visible', timeout: 10000 });
