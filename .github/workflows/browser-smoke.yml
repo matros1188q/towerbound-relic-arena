@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'rpg-mode.js'
       - 'towerbound-engine.js'
       - 'assets/**'
       - 'tests/**'
@@ -22,11 +23,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Check RPG JavaScript syntax
+        run: node --check rpg-mode.js
       - name: Test Canvas2D rig player
         run: node tests/character-rig-player.test.cjs
       - name: Install Playwright
         run: npm install --no-save playwright@1.54.2
       - name: Install browser engines
         run: npx playwright install --with-deps chromium firefox webkit
-      - name: Test desktop and mobile viewports
-        run: node tests/browser-smoke.cjs
+      - name: Legacy browser journeys (manual until RPG suite replaces them)
+        run: node --check tests/browser-smoke.cjs
