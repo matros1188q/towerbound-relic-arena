@@ -64,6 +64,7 @@ def build(path: Path, out_root: Path):
     report["missing_core_joints"] = [name for name in core_joints if name not in joints]
     exported_ids = {part["id"] for part in report["parts"]}
     report["missing_required_parts"] = [name for name in required_parts if name not in exported_ids]
+    report["suspiciously_small_parts"] = [part["id"] for part in report["parts"] if part["pixels"] < 2500]
     report["ready_for_rigging"] = not report["missing_core_joints"] and not report["missing_required_parts"]
     report["ready_for_animation"] = False
     report["animation_blockers"] = ["hidden anatomy reconstruction", "layer overlap and edge inspection", "pivot and motion preview"]

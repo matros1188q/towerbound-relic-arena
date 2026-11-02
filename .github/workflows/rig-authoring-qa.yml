@@ -50,7 +50,9 @@ jobs:
           root=Path('/tmp/warden-seeded/warden')
           report=json.loads((root/'report.json').read_text())
           assert len(report['parts']) >= 10
-          assert report['parts'][0]['canvas_aligned'] is True
+          assert all(p['canvas_aligned'] for p in report['parts'])
+          assert 'left_foot' not in report['suspiciously_small_parts']
+          assert 'right_foot' not in report['suspiciously_small_parts']
           assert report['ready_for_animation'] is False
           print('Warden seed exported:', len(report['parts']), 'visible-region layers')
           PY
@@ -80,7 +82,7 @@ jobs:
               x=(i%cols)*cell_w+10
               y=(i//cols)*cell_h+10
               tile(Image.open(root/name).convert('RGBA'),x,y,name)
-          sheet.save('/tmp/warden-seeded/contact-sheet.jpg',quality=92)
+          sheet.save(root/'contact-sheet.jpg',quality=92)
           print('Contact sheet generated:', len(names), 'layers')
           PY
       - name: Upload Warden first-pass rig QA artifact
