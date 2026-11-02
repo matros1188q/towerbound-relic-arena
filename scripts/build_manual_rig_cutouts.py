@@ -26,6 +26,12 @@ def build(path: Path, out_root: Path):
     width, height = image.size
     if (width, height) != (1024, 1024):
         raise ValueError(f"{hero}: expected 1024x1024, got {width}x{height}")
+    joints = data.get("joints", {})
+    invalid = [name for name, point in joints.items()
+               if not isinstance(point, list) or len(point) != 2
+               or any(not isinstance(v, (int, float)) or v < 0 or v >= 1024 for v in point)]
+    if invalid:
+        raise ValueError("Invalid joint coordinates: " + ", ".join(invalid))
     output = out_root / hero
     output.mkdir(parents=True, exist_ok=True)
     report = {"schema_version": 1, "hero": hero, "source": str(src.relative_to(ROOT)),
