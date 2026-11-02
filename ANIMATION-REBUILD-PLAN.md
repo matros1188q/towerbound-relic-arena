@@ -33,3 +33,10 @@ Replace whole-image bobbing with authored 2D cutout rigs and readable attack cho
 
 ## Acceptance gate
 A character is not marked complete merely because it has an animation profile. It must have validated transparent part assets, pivots, at least idle/attack/hit clips, correct impact event timing, and a visual QA result at phone viewport size.
+
+
+## Stage 4 progress — hero rig blueprints authored (art extraction pending)
+- Added `assets/characters/rigs/hero-rig-blueprints.json` with distinct anatomy trees and authored idle/attack/hit/cast choreography for Warden, Ranger, Arcanist and Reaper.
+- Added `docs/HERO-RIG-AUTHORING.md` documenting source-art limitations and acceptance criteria.
+- The four source PNGs are flattened 1024×1024 portraits. No independently authored limb, weapon, cloth or joint-overlap layers are present in the repository. They have not been falsely marked as completed rigs; no crude rectangular slicing has been introduced.
+- Stage 4 remains open until clean transparent part artwork, pivots and validated runtime manifests are produced and visually checked.
