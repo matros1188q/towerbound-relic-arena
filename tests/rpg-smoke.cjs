@@ -7,7 +7,7 @@ assert.equal(await p.locator('.mapbox button').count(),250,'all 250 stages rende
 await p.locator('#profileOpen').click();await p.locator('[data-tab=talents]').click();assert.match(await p.locator('#tbRpg').innerText(),/Таланты/);
 await p.evaluate(()=>{const d=JSON.parse(localStorage.getItem('tb-rpg-v1'));const c=d.chars[0];c.level=10;c.points=9;c.xp=100000;c.bag=[{id:'qa-item',name:'QA Blade',slot:0,rarity:'Эпическая',ri:2,stat:{atk:5,def:2,hp:10,crit:2,evade:1},set:'QA set'}];localStorage.setItem('tb-rpg-v1',JSON.stringify(d));});
 await p.reload();assert.match(await p.locator('#tbRpg').innerText(),/RPG QA/,'character save survives reload');
-await p.evaluate(()=>window.TowerboundRPG.openTab('talents'));await p.locator('[data-branch="0"]').click();assert.match(await p.locator('#tbRpg').innerText(),/Бастион/);
+await p.evaluate(()=>window.TowerboundRPG.openTab('talents'));await p.locator('[data-b="0"]').click();assert.match(await p.locator('#tbRpg').innerText(),/Бастион/);
 await p.locator('[data-t="atk"]').click();assert.ok((await p.locator('#tbRpg').innerText()).includes('Сила · 1/20'));
 await p.evaluate(()=>window.TowerboundRPG.openTab('bag'));await p.locator('[data-e="0"]').click();await p.evaluate(()=>window.TowerboundRPG.openTab('gear'));assert.match(await p.locator('#tbRpg').innerText(),/QA Blade/,'equipment can be equipped and persists');
 await p.evaluate(()=>{window.TowerboundRPG.open();});await p.locator('[data-pick]').first().click();await p.locator('#start').click();await p.locator('#hit').click();await p.locator('#speed').click();assert.match(await p.locator('#speed').innerText(),/×2/);
