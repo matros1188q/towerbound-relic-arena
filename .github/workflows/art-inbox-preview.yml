@@ -135,7 +135,7 @@ jobs:
                   html = html.replace(marker, marker + art, 1)
 
           old_markup = '<div class="tb-hero-emblem">'+h.icon+'</div>'
-          new_markup = '<div class="tb-hero-portrait"><img src="'+h.art+'" alt="'+h.name+'" loading="lazy" decoding="async"></div>'
+          new_markup = """<div class="tb-hero-portrait"><img src="'+h.art+'" alt="'+h.name+'" loading="lazy" decoding="async"></div>"""
           if new_markup not in html:
               if html.count(old_markup) != 1:
                   raise SystemExit("Could not safely locate hero card image slot in renderHeroSelect()")
