@@ -63,7 +63,8 @@ def build(path: Path, out_root: Path):
                 x0, x1 = max(0, int(xs0.min())-pad), min(width, int(xs0.max())+pad+1)
                 y0, y1 = max(0, int(ys0.min())-pad), min(height, int(ys0.max())+pad+1)
                 roi_poly = poly_mask[y0:y1, x0:x1]
-                labels = np.where(roi_poly > 0, cv2.GC_PR_FGD, cv2.GC_BGD).astype(np.uint8)
+                labels = np.full(roi_poly.shape, cv2.GC_PR_BGD, dtype=np.uint8)
+                labels[roi_poly > 0] = cv2.GC_PR_FGD
                 kernel = np.ones((5,5), np.uint8)
                 sure_fg = cv2.erode(roi_poly, kernel, iterations=2) > 0
                 labels[sure_fg] = cv2.GC_FGD
@@ -74,7 +75,8 @@ def build(path: Path, out_root: Path):
                 refined = np.where((labels == cv2.GC_FGD) | (labels == cv2.GC_PR_FGD), 255, 0).astype(np.uint8)
                 refined_full = np.zeros((height,width), dtype=np.uint8)
                 refined_full[y0:y1,x0:x1] = refined
-                refined_full = cv2.bitwise_and(refined_full, poly_mask)
+                # Do not clip to the traced polygon: that prevents edge correction.
+                # The narrow ROI and probable-background labels constrain expansion.
                 candidate_alpha = (alpha.astype(np.uint32) * refined_full.astype(np.uint32) // 255).astype(np.uint8)
                 candidate = image.copy()
                 candidate.putalpha(Image.fromarray(candidate_alpha, "L"))
