@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - "art-inbox/01-characters/**"
+      - "art-inbox/03-synergies/**"
+      - "art-inbox/04-skills/**"
       - ".github/workflows/art-inbox-preview.yml"
 permissions:
   contents: write
