@@ -98,79 +98,162 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Integrate four hero portraits and update selector cards
+      - name: Integrate hero, enemy and boss artwork
         run: |
           python - <<'PY'
           from pathlib import Path
           from PIL import Image
           import json, shutil
 
-          mapping = [
-              {"id":"warden","source":"7f5c7457-3498-464f-91df-d83335183855.png","path":"assets/characters/heroes/warden.png","note":"Confirmed: armored guardian with tower shield"},
-              {"id":"arcanist","source":"16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.png","path":"assets/characters/heroes/arcanist.png","note":"Confirmed: violet-robed mage; violet-blue crystal details restored from source"},
-              {"id":"ranger","source":"7305bd9e-5b85-49ad-a701-ec8ad192dcd7.png","path":"assets/characters/heroes/ranger.png","note":"Confirmed: hooded archer with bow and quiver"},
-              {"id":"reaper","source":"acea49d3-fa54-45a9-957a-ac057304b6ab.png","path":"assets/characters/heroes/reaper.png","note":"Provisional: dark armored reaper-like warrior; source weapon is a sword, not the specified scythe"}
+          heroes = [
+              {"id":"warden","source":"7f5c7457-3498-464f-91df-d83335183855.png","path":"assets/characters/heroes/warden.png","note":"Armored guardian with tower shield"},
+              {"id":"arcanist","source":"16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.png","path":"assets/characters/heroes/arcanist.png","note":"Violet-robed mage with arcane staff"},
+              {"id":"ranger","source":"7305bd9e-5b85-49ad-a701-ec8ad192dcd7.png","path":"assets/characters/heroes/ranger.png","note":"Hooded archer with bow and quiver"},
+              {"id":"reaper","source":"acea49d3-fa54-45a9-957a-ac057304b6ab.png","path":"assets/characters/heroes/reaper.png","note":"Dark armored reaper-like warrior; source carries a sword rather than a scythe"}
           ]
-          for item in mapping:
-              src = Path("art-preview/processed") / item["source"]
+
+          enemies = [
+              {"id":"shadow-goblin","source":"aa933809-05b4-4b67-9f5f-442ffd207371.png","note":"Hunched dark creature with a glowing red eye; closest available shadow-assassin silhouette"},
+              {"id":"cursed-knight","source":"5c8f39fb-19c6-44e4-946c-4ee584214238.png","note":"Black-armored sword knight"},
+              {"id":"ash-wolf","source":"81c5d782-ceb2-4e17-813a-b4c684f70f75.png","note":"Ash-gray supernatural wolf"},
+              {"id":"rune-golem","source":"289412ff-344a-402b-b141-3e739f1d1c1c.png","note":"Large stone-and-root golem with a glowing core"},
+              {"id":"grave-archer","source":"1a06e424-a782-44b7-a0a0-a9f64325ffcb.png","note":"Skeletal archer with a bone bow"},
+              {"id":"plague-witch","source":"52cbe629-d020-4077-8a86-2469a3cda66d.png","note":"Toxic alchemist-witch with potion vials"},
+              {"id":"ash-imp","source":"50bbefaa-97e5-4c6d-8a73-daa03e553525.png","note":"Winged ember demon"},
+              {"id":"swamp-reaper","source":"ba3335bd-e111-4f86-90e6-4f2085cae804.jpg","note":"Waterlogged swamp wraith with a crooked staff"},
+              {"id":"bone-warden","source":"00cba976-f8e1-4691-af34-7e38bc3e085e.jpg","note":"Skeletal armored guardian"},
+              {"id":"crimson-executioner","source":"b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg","note":"Crimson armored executioner-like warrior"},
+              {"id":"void-hunter","source":"92a10c4d-48e4-4a3c-92e5-bb7bae921f8d.jpg","note":"Hooded void assassin with violet blades"},
+              {"id":"spider-matron","source":"f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg","note":"Large many-legged spider creature"},
+              {"id":"blind-monk","source":"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg","note":"Hooded staff-bearing monk-like figure"},
+              {"id":"stone-minotaur","source":"678287f6-5d47-407d-a281-65b1e7eb2463.jpg","note":"Stone-skinned minotaur with a heavy axe"},
+              {"id":"phantom-duelist","source":"a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg","note":"Spectral swordsman with a glowing blade"},
+              {"id":"soul-harvester","source":"00478c4a-e6ee-420d-a3f8-dd8c03c4698e.jpg","note":"Hooded lantern-bearing soul collector"},
+              {"id":"forest-horror","source":"477537a8-9c39-497b-b809-8fb63968d5a9.jpg","note":"Twisted ancient tree monster"},
+              {"id":"abyss-knight","source":"bd0e9796-5649-4bad-a565-4067b2c602d3.jpg","note":"Dark armored knight with a violet blade"},
+              {"id":"cursed-alchemist","source":"d6021025-d9b9-44da-a245-2c50822ebedc.jpg","note":"Undead alchemist with green spectral fumes and skull motifs"},
+              {"id":"root-colossus","source":"64cdadd1-93eb-4490-9df8-e7acf5077cde.jpg","note":"Huge root-and-bark colossus"}
+          ]
+
+          bosses = [
+              {"id":"bone-colossus","source":"fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd.jpg","path":"assets/characters/bosses/bone-colossus.png","note":"Armored skeletal boss"},
+              {"id":"abyss-queen","source":"d9e748b9-ee01-4b29-b3f8-eb9c4ecdf503.jpg","path":"assets/characters/bosses/abyss-queen.png","note":"Violet tentacled abyss sovereign"},
+              {"id":"ash-patriarch","source":"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg","path":"assets/characters/bosses/ash-patriarch.png","note":"Ancient hooded staff-bearing patriarch"},
+              {"id":"ice-abbot","source":"f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc.jpg","path":"assets/characters/bosses/ice-abbot.png","note":"Frozen abbot with ice staff"},
+              {"id":"mirror-executioner","source":"f50e3768-351d-4b8a-9939-ca398bdd65d7.jpg","path":"assets/characters/bosses/mirror-executioner.png","note":"Hooded executioner with a massive axe; source does not clearly show mirror armor"},
+              {"id":"soul-devourer","source":"d6021025-d9b9-44da-a245-2c50822ebedc.jpg","path":"assets/characters/bosses/soul-devourer.png","note":"Undead soul-consuming shaman with green spectral energy"},
+              {"id":"root-titan","source":"beb6557c-f2db-4426-b741-d0faa9c2d80f.jpg","path":"assets/characters/bosses/root-titan.png","note":"Massive rune-carved stone titan"},
+              {"id":"void-hunter-boss","source":"f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg","path":"assets/characters/bosses/void-hunter-boss.png","note":"Many-limbed void creature; visual is closer to a giant arachnid than a humanoid hunter"},
+              {"id":"heart-of-tower","source":"ead1c2a5-2854-4a9c-83b7-d8964fd737cb.jpg","path":"assets/characters/bosses/heart-of-tower.png","note":"Living flesh-and-arcane heart fused to tower masonry"}
+          ]
+
+          all_items = []
+          for item in heroes:
+              item["path"] = item["path"] if "path" in item else f"assets/characters/heroes/{item['id']}.png"
+              all_items.append(item)
+          for item in enemies:
+              item["path"] = f"assets/characters/enemies/{item['id']}.png"
+              all_items.append(item)
+          all_items.extend(bosses)
+
+          processed_dir = Path("art-preview/processed")
+          for item in all_items:
+              src = processed_dir / item["source"]
               dst = Path(item["path"])
               if not src.exists():
-                  raise SystemExit(f"Missing processed portrait: {src}")
+                  raise SystemExit(f"Missing processed artwork for {item['id']}: {src}")
               with Image.open(src) as im:
-                  if im.format != "PNG" or im.mode != "RGBA" or im.size != (1024, 1024):
-                      raise SystemExit(f"Unexpected processed image format for {src}: {im.format}, {im.mode}, {im.size}")
+                  im.load()
+                  if im.format != "PNG" or im.mode != "RGBA":
+                      raise SystemExit(f"Processed asset must be RGBA PNG: {src} ({im.format}/{im.mode})")
                   if im.getchannel("A").getextrema() == (255, 255):
-                      raise SystemExit(f"No transparency found in {src}")
+                      raise SystemExit(f"Alpha channel is fully opaque: {src}")
+                  if im.width < 512 or im.height < 512:
+                      raise SystemExit(f"Unexpectedly small character asset: {src} {im.size}")
               dst.parent.mkdir(parents=True, exist_ok=True)
               shutil.copy2(src, dst)
 
           index_path = Path("index.html")
           html = index_path.read_text(encoding="utf-8")
-          for hero_id in ["warden","arcanist","ranger","reaper"]:
-              art = f"art:'./assets/characters/heroes/{hero_id}.png',"
-              marker = f"id:'{hero_id}',"
-              if art not in html:
-                  if html.count(marker) != 1:
-                      raise SystemExit(f"Could not safely locate unique ID for {hero_id} in index.html")
-                  html = html.replace(marker, marker + art, 1)
 
-          old_markup = """<div class="tb-hero-emblem">'+h.icon+'</div>"""
-          new_markup = """<div class="tb-hero-portrait"><img src="'+h.art+'" alt="'+h.name+'" loading="lazy" decoding="async"></div>"""
-          if new_markup not in html:
-              if html.count(old_markup) != 1:
-                  raise SystemExit("Could not safely locate hero card image slot in renderHeroSelect()")
-              html = html.replace(old_markup, new_markup, 1)
+          # Keep the game profiles and combat logic unchanged; add only art lookup tables.
+          enemy_ids = [x["id"] for x in enemies]
+          boss_by_id = {x["id"]: Path(x["path"]).name for x in bosses}
+          enemy_array = "const TB_ENEMY_ART_FILES=" + json.dumps([f"{x['id']}.png" for x in enemies], ensure_ascii=False) + ";"
+          boss_files = [
+              "bone-colossus.png", "abyss-queen.png", "ash-patriarch.png", "ice-abbot.png",
+              "mirror-executioner.png", "soul-devourer.png", "root-titan.png",
+              "void-hunter-boss.png", None, "heart-of-tower.png"
+          ]
+          boss_array = "const TB_BOSS_ART_FILES=" + json.dumps(boss_files, ensure_ascii=False) + ";"
+          art_constants = enemy_array + boss_array + "\n"
+          if "const TB_ENEMY_ART_FILES=" not in html:
+              if html.count("function updateEnemy(){") != 1:
+                  raise SystemExit("Could not safely locate updateEnemy() for character art lookup tables")
+              html = html.replace("function updateEnemy(){", art_constants + "function updateEnemy(){", 1)
 
-          style_id = 'id="tb-hero-portrait-art-v1"'
+          old_render = """$('enemies').innerHTML='<span class="enemy art-enemy-'+idx+' '+(boss?'boss':'')+'" aria-label="'+(boss?'Босс':archetype.name)+'"></span>'+(boss?'<span class="enemy art-enemy-'+((idx+7)%20)+'"></span>':'')"""
+          new_render = """const bossIndex=Math.max(0,Math.min(9,Math.ceil((state.mapStep||1)/7)-1));const bossSrc=TB_BOSS_ART_FILES[bossIndex];const enemySrc=TB_ENEMY_ART_FILES[idx];const renderCharacter=(src,category,label,extra)=>'<span class="enemy tb-character-enemy '+(extra||'')+'" aria-label="'+label+'"><img class="tb-character-sprite" src="./assets/characters/'+category+'/'+src+'" alt="" loading="eager" decoding="async"></span>';const primaryHtml=boss?(bossSrc?renderCharacter(bossSrc,'bosses',bossProfile.name,'boss'):'<span class="enemy art-enemy-'+idx+' boss" aria-label="Босс"></span>'):renderCharacter(enemySrc,'enemies',archetype.name,'');const secondaryHtml=boss?renderCharacter(TB_ENEMY_ART_FILES[(idx+7)%20],'enemies',archetype.name,'tb-character-secondary'):'';$('enemies').innerHTML=primaryHtml+secondaryHtml"""
+          if new_render not in html:
+              if html.count(old_render) != 1:
+                  raise SystemExit("Could not safely locate the existing enemy/boss rendering expression")
+              html = html.replace(old_render, new_render, 1)
+
+          style_id = 'id="tb-character-battle-art-v1"'
           if style_id not in html:
-              style = """<style id="tb-hero-portrait-art-v1">
-          #heroChoices .tb-hero-portrait{width:100%;height:142px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px;background:radial-gradient(ellipse at 50% 42%,#344056 0%,#151b29 72%);border:1px solid #b8c6dd22}
-          #heroChoices .tb-hero-portrait img{display:block;width:100%;height:100%;object-fit:contain;object-position:center center;filter:drop-shadow(0 5px 9px #000b)}
-          @media(max-width:520px){#heroChoices .tb-hero-portrait{height:126px}}
+              style = """<style id="tb-character-battle-art-v1">
+          #enemies .tb-character-enemy{position:relative!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;width:clamp(70px,15vw,108px)!important;height:clamp(88px,19vw,132px)!important;min-height:0!important;padding:0!important;margin:0 2px!important;overflow:visible!important;background:none!important;background-image:none!important;background-color:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;filter:none!important;font-size:0!important;line-height:0!important;animation:bob 1.4s ease-in-out infinite alternate!important}
+          #enemies .tb-character-enemy.boss{width:clamp(104px,21vw,150px)!important;height:clamp(122px,25vw,178px)!important;z-index:2}
+          #enemies .tb-character-enemy .tb-character-sprite{display:block!important;position:relative!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 7px 12px #000b)!important;pointer-events:none!important}
+          #enemies .tb-character-enemy.tb-character-secondary{width:clamp(58px,12vw,88px)!important;height:clamp(76px,16vw,112px)!important;opacity:.82}
+          #enemies .tb-character-enemy::before,#enemies .tb-character-enemy::after{display:none!important;content:none!important}
           </style>
           """
               if "</head>" not in html:
-                  raise SystemExit("Missing </head>; refusing to patch hero portrait CSS")
+                  raise SystemExit("Missing </head>; refusing to patch enemy sprite CSS")
               html = html.replace("</head>", style + "</head>", 1)
+
           index_path.write_text(html, encoding="utf-8")
 
-          manifest = {
-              "pack":"towerbound-heroes-batch-1",
-              "version":"1.0.0",
-              "processing":"rembg isnet-general-use with alpha channel validation",
-              "assets":mapping
+          for group, items, target in [
+              ("heroes", heroes, "assets/characters/heroes/manifest.json"),
+              ("enemies", enemies, "assets/characters/enemies/manifest.json"),
+              ("bosses", bosses, "assets/characters/bosses/manifest.json")
+          ]:
+              manifest_items = []
+              for item in items:
+                  manifest_items.append({
+                      "filename":Path(item["path"]).name,
+                      "relative_path":item["path"],
+                      "category":group,
+                      "exact_asset_id":("hero." if group=="heroes" else "enemy." if group=="enemies" else "boss.")+item["id"],
+                      "image_format":"png",
+                      "width":1024,
+                      "height":1024,
+                      "transparency":True,
+                      "source_filename":item["source"].removesuffix(".png").removesuffix(".jpg"),
+                      "short_description":item["note"]
+                  })
+              Path(target).write_text(json.dumps({"pack":"towerbound-character-art-v1","category":group,"assets":manifest_items},ensure_ascii=False,indent=2),encoding="utf-8")
+
+          summary = {
+              "heroes":len(heroes),
+              "enemies":len(enemies),
+              "bosses_with_art":len(bosses),
+              "boss_profiles_without_dedicated_art":["boss.crimson-regent"],
+              "total_unique_roles":len(heroes)+len(enemies)+len(bosses)
           }
-          Path("assets/characters/heroes/manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
-          print("Prepared 4 transparent hero portraits and hero selector markup.")
+          Path("assets/characters/qa-report.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps(summary,ensure_ascii=False))
           PY
       - name: Commit integrated hero portraits
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/characters/heroes index.html
+          git add assets/characters/heroes assets/characters/enemies assets/characters/bosses assets/characters/qa-report.json index.html
           if git diff --cached --quiet; then
             echo "Hero portraits already integrated; no changes to commit."
           else
-            git commit -m "Add four transparent hero portraits to selector"
+            git commit -m "Integrate enemy and boss character artwork"
             git push
           fi
