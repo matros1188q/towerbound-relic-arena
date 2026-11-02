@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "method": "open-source semantic segmentation (SegFormer clothes)",
+  "model": "mattmdjaga/segformer_b2_clothes",
+  "status": "semantic-masks-require-visual-qa-and-joint-reconstruction",
+  "heroes": {
+    "warden": {
+      "source": "assets/characters/heroes/warden.png",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "parts": [
+        {
+          "label": "Upper-clothes",
+          "class_id": 4,
+          "file": "upper-clothes.png",
+          "pixels": 309707,
+          "bbox": [
+            196,
+            106,
+            848,
+            941
+          ],
+          "coverage": 0.70302
+        },
+        {
+          "label": "Pants",
+          "class_id": 6,
+          "file": "pants.png",
+          "pixels": 13278,
+          "bbox": [
+            304,
+            769,
+            456,
+            941
+          ],
+          "coverage": 0.03014
+        },
+        {
+          "label": "Dress",
+          "class_id": 7,
+          "file": "dress.png",
+          "pixels": 117,
+          "bbox": [
+            648,
+            881,
+            692,
+            910
+          ],
+          "coverage": 0.00027
+        },
+        {
+          "label": "Left-shoe",
+          "class_id": 9,
+          "file": "left-shoe.png",
+          "pixels": 16349,
+          "bbox": [
+            544,
+            482,
+            813,
+            984
+          ],
+          "coverage": 0.03711
+        },
+        {
+          "label": "Right-shoe",
+          "class_id": 10,
+          "file": "right-shoe.png",
+          "pixels": 10384,
+          "bbox": [
+            196,
+            482,
+            450,
+            953
+          ],
+          "coverage": 0.02357
+        },
+        {
+          "label": "Right-arm",
+          "class_id": 15,
+          "file": "right-arm.png",
+          "pixels": 1808,
+          "bbox": [
+            214,
+            506,
+            265,
+            566
+          ],
+          "coverage": 0.0041
+        },
+        {
+          "label": "Bag",
+          "class_id": 16,
+          "file": "bag.png",
+          "pixels": 202,
+          "bbox": [
+            336,
+            437,
+            352,
+            477
+          ],
+          "coverage": 0.00046
+        }
+      ],
+      "warnings": [
+        "Model labels are semantic clothing categories, not a complete anatomy rig.",
+        "Weapons and overlapping armor may be omitted or assigned to another class.",
+        "Do not animate until boundaries, occlusion patches and pivots pass visual QA."
+      ]
+    },
+    "ranger": {
+      "source": "assets/characters/heroes/ranger.png",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "parts": [
+        {
+          "label": "Hat",
+          "class_id": 1,
+          "file": "hat.png",
+          "pixels": 6582,
+          "bbox": [
+            452,
+            60,
+            578,
+            184
+          ],
+          "coverage": 0.02816
+        },
+        {
+          "label": "Hair",
+          "class_id": 2,
+          "file": "hair.png",
+          "pixels": 9559,
+          "bbox": [
+            422,
+            111,
+            559,
+            261
+          ],
+          "coverage": 0.0409
+        },
+        {
+          "label": "Upper-clothes",
+          "class_id": 4,
+          "file": "upper-clothes.png",
+          "pixels": 112647,
+          "bbox": [
+            354,
+            164,
+            729,
+            840
+          ],
+          "coverage": 0.48194
+        },
+        {
+          "label": "Skirt",
+          "class_id": 5,
+          "file": "skirt.png",
+          "pixels": 1468,
+          "bbox": [
+            575,
+            747,
+            622,
+            812
+          ],
+          "coverage": 0.00628
+        },
+        {
+          "label": "Pants",
+          "class_id": 6,
+          "file": "pants.png",
+          "pixels": 2875,
+          "bbox": [
+            386,
+            668,
+            606,
+            814
+          ],
+          "coverage": 0.0123
+        },
+        {
+          "label": "Belt",
+          "class_id": 8,
+          "file": "belt.png",
+          "pixels": 1586,
+          "bbox": [
+            456,
+            447,
+            516,
+            485
+          ],
+          "coverage": 0.00679
+        },
+        {
+          "label": "Left-shoe",
+          "class_id": 9,
+          "file": "left-shoe.png",
+          "pixels": 19918,
+          "bbox": [
+            581,
+            402,
+            688,
+            997
+          ],
+          "coverage": 0.08522
+        },
+        {
+          "label": "Right-shoe",
+          "class_id": 10,
+          "file": "right-shoe.png",
+          "pixels": 12552,
+          "bbox": [
+            306,
+            489,
+            816,
+            949
+          ],
+          "coverage": 0.0537
+        },
+        {
+          "label": "Face",
+          "class_id": 11,
+          "file": "face.png",
+          "pixels": 3871,
+          "bbox": [
+            462,
+            116,
+            525,
+            203
+          ],
+          "coverage": 0.01656
+        },
+        {
+          "label": "Left-arm",
+          "class_id": 14,
+          "file": "left-arm.png",
+          "pixels": 3029,
+          "bbox": [
+            595,
+            523,
+            745,
+            591
+          ],
+          "coverage": 0.01296
+        },
+        {
+          "label": "Right-arm",
+          "class_id": 15,
+          "file": "right-arm.png",
+          "pixels": 1609,
+          "bbox": [
+            339,
+            476,
+            430,
+            590
+          ],
+          "coverage": 0.00688
+        },
+        {
+          "label": "Scarf",
+          "class_id": 17,
+          "file": "scarf.png",
+          "pixels": 37555,
+          "bbox": [
+            377,
+            169,
+            683,
+            834
+          ],
+          "coverage": 0.16067
+        }
+      ],
+      "warnings": [
+        "Model labels are semantic clothing categories, not a complete anatomy rig.",
+        "Weapons and overlapping armor may be omitted or assigned to another class.",
+        "Do not animate until boundaries, occlusion patches and pivots pass visual QA."
+      ]
+    },
+    "arcanist": {
+      "source": "assets/characters/heroes/arcanist.png",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "parts": [
+        {
+          "label": "Hair",
+          "class_id": 2,
+          "file": "hair.png",
+          "pixels": 3401,
+          "bbox": [
+            432,
+            72,
+            519,
+            153
+          ],
+          "coverage": 0.00858
+        },
+        {
+          "label": "Upper-clothes",
+          "class_id": 4,
+          "file": "upper-clothes.png",
+          "pixels": 26958,
+          "bbox": [
+            207,
+            128,
+            633,
+            793
+          ],
+          "coverage": 0.06802
+        },
+        {
+          "label": "Dress",
+          "class_id": 7,
+          "file": "dress.png",
+          "pixels": 303852,
+          "bbox": [
+            210,
+            150,
+            771,
+            1010
+          ],
+          "coverage": 0.76673
+        },
+        {
+          "label": "Left-shoe",
+          "class_id": 9,
+          "file": "left-shoe.png",
+          "pixels": 1051,
+          "bbox": [
+            555,
+            971,
+            612,
+            1008
+          ],
+          "coverage": 0.00265
+        },
+        {
+          "label": "Right-shoe",
+          "class_id": 10,
+          "file": "right-shoe.png",
+          "pixels": 2940,
+          "bbox": [
+            244,
+            936,
+            390,
+            982
+          ],
+          "coverage": 0.00742
+        },
+        {
+          "label": "Face",
+          "class_id": 11,
+          "file": "face.png",
+          "pixels": 3972,
+          "bbox": [
+            431,
+            108,
+            498,
+            190
+          ],
+          "coverage": 0.01002
+        },
+        {
+          "label": "Left-arm",
+          "class_id": 14,
+          "file": "left-arm.png",
+          "pixels": 3088,
+          "bbox": [
+            710,
+            367,
+            773,
+            429
+          ],
+          "coverage": 0.00779
+        },
+        {
+          "label": "Right-arm",
+          "class_id": 15,
+          "file": "right-arm.png",
+          "pixels": 801,
+          "bbox": [
+            208,
+            547,
+            247,
+            606
+          ],
+          "coverage": 0.00202
+        },
+        {
+          "label": "Bag",
+          "class_id": 16,
+          "file": "bag.png",
+          "pixels": 245,
+          "bbox": [
+            686,
+            720,
+            702,
+            743
+          ],
+          "coverage": 0.00062
+        }
+      ],
+      "warnings": [
+        "Model labels are semantic clothing categories, not a complete anatomy rig.",
+        "Weapons and overlapping armor may be omitted or assigned to another class.",
+        "Do not animate until boundaries, occlusion patches and pivots pass visual QA."
+      ]
+    },
+    "reaper": {
+      "source": "assets/characters/heroes/reaper.png",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "parts": [
+        {
+          "label": "Hat",
+          "class_id": 1,
+          "file": "hat.png",
+          "pixels": 1792,
+          "bbox": [
+            203,
+            57,
+            409,
+            261
+          ],
+          "coverage": 0.00528
+        },
+        {
+          "label": "Hair",
+          "class_id": 2,
+          "file": "hair.png",
+          "pixels": 172,
+          "bbox": [
+            375,
+            49,
+            397,
+            62
+          ],
+          "coverage": 0.00051
+        },
+        {
+          "label": "Upper-clothes",
+          "class_id": 4,
+          "file": "upper-clothes.png",
+          "pixels": 146108,
+          "bbox": [
+            97,
+            146,
+            860,
+            1000
+          ],
+          "coverage": 0.43068
+        },
+        {
+          "label": "Dress",
+          "class_id": 7,
+          "file": "dress.png",
+          "pixels": 106975,
+          "bbox": [
+            26,
+            324,
+            705,
+            959
+          ],
+          "coverage": 0.31533
+        },
+        {
+          "label": "Right-shoe",
+          "class_id": 10,
+          "file": "right-shoe.png",
+          "pixels": 794,
+          "bbox": [
+            274,
+            887,
+            294,
+            950
+          ],
+          "coverage": 0.00234
+        },
+        {
+          "label": "Scarf",
+          "class_id": 17,
+          "file": "scarf.png",
+          "pixels": 19980,
+          "bbox": [
+            208,
+            105,
+            838,
+            972
+          ],
+          "coverage": 0.05889
+        }
+      ],
+      "warnings": [
+        "Model labels are semantic clothing categories, not a complete anatomy rig.",
+        "Weapons and overlapping armor may be omitted or assigned to another class.",
+        "Do not animate until boundaries, occlusion patches and pivots pass visual QA."
+      ]
+    }
+  }
+}
