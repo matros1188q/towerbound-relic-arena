@@ -1,0 +1,96 @@
+{
+  "pack": "towerbound-ui-art-v1",
+  "category": "skills",
+  "assets": [
+    {
+      "id": "fire",
+      "name": "fire",
+      "path": "assets/skills/fire.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        84,
+        117,
+        917,
+        920
+      ]
+    },
+    {
+      "id": "arcane",
+      "name": "arcane",
+      "path": "assets/skills/arcane.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        84,
+        118,
+        917,
+        920
+      ]
+    },
+    {
+      "id": "ice",
+      "name": "ice",
+      "path": "assets/skills/ice.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        124,
+        149,
+        937,
+        908
+      ]
+    },
+    {
+      "id": "lightning",
+      "name": "lightning",
+      "path": "assets/skills/lightning.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        178,
+        168,
+        816,
+        842
+      ]
+    },
+    {
+      "id": "nature",
+      "name": "nature",
+      "path": "assets/skills/nature.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        113,
+        164,
+        931,
+        910
+      ]
+    },
+    {
+      "id": "void",
+      "name": "void",
+      "path": "assets/skills/void.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        196,
+        191,
+        779,
+        827
+      ]
+    }
+  ]
+}
