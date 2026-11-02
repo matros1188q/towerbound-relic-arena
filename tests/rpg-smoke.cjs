@@ -4,7 +4,7 @@ const fs=require('node:fs'),http=require('node:http'),path=require('node:path'),
 await p.goto('http://127.0.0.1:'+srv.address().port);
 await p.locator('#new').click();await p.locator('#name').fill('RPG QA');await p.locator('#confirm').click();
 assert.equal(await p.locator('.mapbox button').count(),250,'all 250 stages render');
-await p.locator('#profile').click();await p.locator('[data-tab=talents]').click();assert.match(await p.locator('.profile').innerText(),/Таланты/);
+await p.locator('#profileOpen').click();await p.locator('[data-tab=talents]').click();assert.match(await p.locator('.profile').innerText(),/Таланты/);
 await p.evaluate(()=>{const d=JSON.parse(localStorage.getItem('tb-rpg-v1'));const c=d.chars[0];c.level=10;c.points=9;c.xp=100000;c.bag=[{id:'qa-item',name:'QA Blade',slot:0,rarity:'Эпическая',ri:2,stat:{atk:5,def:2,hp:10,crit:2,evade:1},set:'QA set'}];localStorage.setItem('tb-rpg-v1',JSON.stringify(d));});
 await p.reload();assert.match(await p.locator('#tbRpg').innerText(),/RPG QA/,'character save survives reload');
 await p.locator('#profile').click();await p.locator('[data-tab=talents]').click();await p.locator('[data-branch="0"]').click();assert.match(await p.locator('.profile').innerText(),/Бастион/);
