@@ -1,0 +1,65 @@
+name: Rig authoring QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/rig-annotator/index.html'
+      - 'scripts/build_manual_rig_cutouts.py'
+      - '.github/workflows/rig-authoring-qa.yml'
+  pull_request:
+    paths:
+      - 'tools/rig-annotator/index.html'
+      - 'scripts/build_manual_rig_cutouts.py'
+      - '.github/workflows/rig-authoring-qa.yml'
+permissions:
+  contents: read
+jobs:
+  authoring-checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image dependencies
+        run: python -m pip install --disable-pip-version-check pillow numpy
+      - name: Compile cutout builder
+        run: python -m py_compile scripts/build_manual_rig_cutouts.py
+      - name: Check embedded annotator JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('tools/rig-annotator/index.html').read_text()
+          scripts = re.findall(r'<script>(.*?)</script>', html, re.S)
+          assert scripts, 'No inline annotator script found'
+          Path('/tmp/annotator.js').write_text('\n'.join(scripts))
+          PY
+          node --check /tmp/annotator.js
+      - name: Smoke-test aligned PNG cutout export
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/warden-rig-annotations.json')
+          p.write_text(json.dumps({
+            'schema_version':1,'hero':'warden',
+            'parts':{'head':{'polygons':[[[100,100],[180,100],[180,180],[100,180]]]}},
+            'joints':{'neck':[140,110],'pelvis':[512,700]}
+          }))
+          PY
+          python scripts/build_manual_rig_cutouts.py --annotations /tmp/warden-rig-annotations.json --out /tmp/rig-cutouts
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('/tmp/rig-cutouts/warden')
+          im=Image.open(root/'head.png')
+          assert im.mode=='RGBA' and im.size==(1024,1024)
+          report=json.loads((root/'report.json').read_text())
+          assert report['joint_count']==2 and report['parts'][0]['canvas_aligned']
+          assert 'left_elbow' in report['missing_core_joints']
+          PY
