@@ -10,7 +10,7 @@ header{padding:12px 14px;background:#171b23;border-bottom:1px solid var(--line);
 h1{font-size:16px;margin:0;color:var(--gold)}.sub{color:var(--muted);font-size:12px}
 main{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:12px;padding:12px;max-width:1500px;margin:auto}
 .stage{min-width:0;background:#080a0e;border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative;min-height:55vh;display:flex;align-items:center;justify-content:center;touch-action:pan-y}
-canvas{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;object-fit:contain;touch-action:none}
+canvas{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;object-fit:contain;touch-action:none;transform-origin:center center;transition:transform .12s ease}
 .side{display:flex;flex-direction:column;gap:10px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
 label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}select,button{font:inherit;color:#f7f4ed;background:#252b36;border:1px solid #424b5d;border-radius:8px;padding:10px;min-height:40px}
 select{width:100%}button{cursor:pointer}button.primary{background:#66502b;border-color:#a8874c}button.danger{border-color:#8c4545}button:disabled{opacity:.4}
@@ -45,9 +45,9 @@ function renderParts(){el('parts').innerHTML='';partNames.forEach((p,i)=>{const 
 function allPoints(){return Object.values(data.parts||{}).reduce((n,v)=>n+v.polygons.reduce((a,p)=>a+p.length,0),0)}
 function update(){const p=ensure();el('partStatus').textContent='Контуров: '+p.polygons.length+' · точек: '+p.polygons.reduce((n,x)=>n+x.length,0);el('summary').textContent='Размечено частей: '+Object.keys(data.parts).filter(k=>data.parts[k].polygons.length).length+' · точек: '+allPoints()+' · герой: '+hero;el('undo').disabled=!draft.length;el('finish').disabled=draft.length<3;}
 function transform(){const side=Math.min(canvas.clientWidth,canvas.clientHeight);const s=side/W*zoom;return {s,ox:(canvas.width-W*s)/2+panX,oy:(canvas.height-H*s)/2+panY}}
-function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#080a0e';ctx.fillRect(0,0,W,H);if(img.complete&&img.naturalWidth){ctx.save();ctx.globalAlpha=1;ctx.drawImage(img,0,0,W,H);ctx.restore();}
+function draw(){canvas.style.transform='scale('+zoom+')';ctx.clearRect(0,0,W,H);ctx.fillStyle='#080a0e';ctx.fillRect(0,0,W,H);if(img.complete&&img.naturalWidth){ctx.save();ctx.globalAlpha=1;ctx.drawImage(img,0,0,W,H);ctx.restore();}
 const drawPoly=(poly,color,alpha)=>{if(poly.length<2)return;ctx.beginPath();ctx.moveTo(poly[0][0],poly[0][1]);poly.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));if(poly.length>=3){ctx.closePath();ctx.fillStyle=color;ctx.globalAlpha=alpha;ctx.fill();}ctx.globalAlpha=1;ctx.strokeStyle=color;ctx.lineWidth=3;ctx.stroke();poly.forEach(p=>{ctx.beginPath();ctx.arc(p[0],p[1],5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();});};
-Object.entries(data.parts||{}).forEach(([name,v])=>v.polygons.forEach(poly=>drawPoly(poly,v.color||'#82aaff',name===part?.23:.08)));
+Object.entries(data.parts||{}).forEach(([name,v])=>v.polygons.forEach(poly=>drawPoly(poly,v.color||'#82aaff',name===part?0.23:0.08)));
 drawPoly(draft,ensure().color||'#ffd166',.22);if(draft.length){ctx.fillStyle='#fff';ctx.font='18px system-ui';ctx.fillText('Текущий контур: '+draft.length,16,28);}
 }
 function pos(e){const r=canvas.getBoundingClientRect();return [Math.max(0,Math.min(1023,(e.clientX-r.left)*W/r.width)),Math.max(0,Math.min(1023,(e.clientY-r.top)*H/r.height))]}
