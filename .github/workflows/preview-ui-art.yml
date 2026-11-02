@@ -1,0 +1,64 @@
+name: Preview synergy and skill artwork
+on:
+  push:
+    branches: [main]
+    paths:
+      - "art-inbox/03-synergies/**"
+      - "art-inbox/04-skills/**"
+      - ".github/workflows/preview-ui-art.yml"
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build visual contact sheets
+        run: |
+          python -m pip install Pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps, ImageDraw, ImageFont
+          import json, shutil
+          out=Path("ui-art-preview")
+          out.mkdir(exist_ok=True)
+          font=ImageFont.load_default()
+          summary={}
+          for group,folder in [("synergies","art-inbox/03-synergies"),("skills","art-inbox/04-skills")]:
+              paths=sorted(p for p in Path(folder).iterdir() if p.is_file() and p.suffix.lower() in {".jpg",".jpeg",".png",".webp"})
+              cols=4
+              tw,th,lh=280,300,52
+              rows=max(1,(len(paths)+cols-1)//cols)
+              sheet=Image.new("RGB",(cols*tw,rows*(th+lh)),"#111827")
+              draw=ImageDraw.Draw(sheet)
+              copy=out/group
+              copy.mkdir(exist_ok=True)
+              items=[]
+              for i,p in enumerate(paths):
+                  with Image.open(p) as im:
+                      im.load()
+                      width,height=im.size
+                      thumb=ImageOps.contain(im.convert("RGB"),(tw-24,th-24))
+                      tile=Image.new("RGB",(tw-16,th-16),"#283244")
+                      tile.paste(thumb,((tile.width-thumb.width)//2,(tile.height-thumb.height)//2))
+                      x=(i%cols)*tw+8
+                      y=(i//cols)*(th+lh)+8
+                      sheet.paste(tile,(x,y))
+                      draw.text((x,y+th-1),p.name[:40],font=font,fill="white")
+                  shutil.copy2(p,copy/p.name)
+                  items.append({"filename":p.name,"width":width,"height":height,"bytes":p.stat().st_size})
+              sheet.save(out/f"{group}-contact-sheet.jpg",quality=94)
+              (out/f"{group}-index.json").write_text(json.dumps({"count":len(items),"images":items},ensure_ascii=False,indent=2),encoding="utf-8")
+              summary[group]=len(items)
+          print(json.dumps(summary))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: towerbound-ui-art-preview
+          path: ui-art-preview/
+          if-no-files-found: error
+          retention-days: 7
