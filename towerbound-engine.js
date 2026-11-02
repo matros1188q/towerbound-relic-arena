@@ -144,7 +144,7 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
  const layer=ensureDomFx();
  // Animate the always-visible SVG actors too, not only the Phaser canvas.
  const actorHero=mount.querySelector('.tb-visible-hero'),actorEnemy=mount.querySelector('.tb-visible-enemy');
- const heroId=(actorHero&&actorHero.dataset.tbActorId)||window.TowerboundHeroId||'warden';tbAnimate(actorHero,TB_HERO_MOVES[heroId]||TB_HERO_MOVES.warden,critical?370:300);
+ const heroId=(actorHero&&actorHero.dataset.tbActorId)||window.TowerboundHeroId||'warden',heroSet=TB_HERO_MOVES[heroId]||TB_HERO_MOVES.warden,heroMove=critical?heroSet.finisher:(style==='arcane'||style==='fire'||style==='ice'||style==='nature'||style==='void'?heroSet.cast:heroSet.attack);tbAnimate(actorHero,heroMove,critical?520:style==='arcane'||style==='fire'||style==='ice'||style==='nature'||style==='void'?390:300);
  const hitId=actorEnemy&&actorEnemy.dataset.tbActorId||'shadow-goblin',hitBoss=actorEnemy&&actorEnemy.dataset.tbBoss==='1',hitProfile=(hitBoss?TB_BOSS_PROFILES[hitId]:TB_ENEMY_PROFILES[hitId])||TB_ENEMY_PROFILES['shadow-goblin'];tbAnimate(actorEnemy,tbFrames(hitProfile),critical?hitProfile.duration+80:hitProfile.duration);
  const colors={fire:'#ff713d',ice:'#7cecff',lightning:'#fff176',nature:'#62f2a1',void:'#c18bff',arcane:'#ffe08a'};
  const color=colors[style]||colors.arcane;
@@ -174,11 +174,23 @@ function domCombatHit(critical=false,boss=false,style='arcane'){
 
 
 const TB_HERO_MOVES={
-warden:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(17px,-8px) rotate(-11deg) scale(1.04)',offset:.42},{transform:'translate(-3px,2px) rotate(4deg)'},{transform:'translate(0,0) rotate(0)'}],
-arcanist:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-6px,-8px) rotate(-6deg) scale(.96)',offset:.25},{transform:'translate(9px,-3px) rotate(7deg) scale(1.06)',offset:.68},{transform:'translate(0,0) scale(1)'}],
-ranger:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-8px,2px) rotate(-8deg)',offset:.24},{transform:'translate(13px,-2px) rotate(4deg) scale(1.03)',offset:.7},{transform:'translate(0,0) rotate(0)'}],
-reaper:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(10px,-4px) rotate(-15deg)',offset:.35},{transform:'translate(14px,1px) rotate(14deg) scale(1.05)',offset:.66},{transform:'translate(0,0) rotate(0)'}]};
-
+warden:{
+attack:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(18px,-7px) rotate(-13deg) scale(1.06)',offset:.42},{transform:'translate(-3px,2px) rotate(4deg)'},{transform:'translate(0,0)'}],
+cast:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-5px,-9px) rotate(-5deg)',offset:.35},{transform:'translate(7px,-2px) scale(1.08)',offset:.72},{transform:'translate(0,0)'}],
+finisher:[{transform:'translate(0,0) scale(1)'},{transform:'translate(4px,-15px) rotate(-8deg)',offset:.3},{transform:'translate(24px,5px) rotate(18deg) scale(1.14)',offset:.68},{transform:'translate(0,0)'}]},
+arcanist:{
+attack:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-6px,-8px) rotate(-6deg) scale(.96)',offset:.25},{transform:'translate(10px,-3px) rotate(8deg) scale(1.07)',offset:.68},{transform:'translate(0,0)'}],
+cast:[{transform:'translate(0,0) scale(1)',filter:'brightness(1)'},{transform:'translate(-8px,-12px) scale(.94)',filter:'brightness(1.7)',offset:.3},{transform:'translate(5px,-5px) scale(1.12)',filter:'brightness(2)',offset:.72},{transform:'translate(0,0)',filter:'brightness(1)'}],
+finisher:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-10px,-8px) rotate(-8deg) scale(.9)',offset:.25},{transform:'translate(14px,-4px) rotate(10deg) scale(1.18)',offset:.68},{transform:'translate(0,0)'}]},
+ranger:{
+attack:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-10px,2px) rotate(-9deg) scale(.97)',offset:.24},{transform:'translate(15px,-3px) rotate(5deg) scale(1.04)',offset:.7},{transform:'translate(0,0)'}],
+cast:[{transform:'translate(0,0)'},{transform:'translate(-13px,-3px) rotate(-12deg)',offset:.35},{transform:'translate(8px,-5px) rotate(7deg) scale(1.05)',offset:.72},{transform:'translate(0,0)'}],
+finisher:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-16px,-7px) rotate(-12deg)',offset:.25},{transform:'translate(20px,-2px) rotate(8deg) scale(1.12)',offset:.7},{transform:'translate(0,0)'}]},
+reaper:{
+attack:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(10px,-5px) rotate(-16deg)',offset:.35},{transform:'translate(16px,2px) rotate(16deg) scale(1.06)',offset:.66},{transform:'translate(0,0)'}],
+cast:[{transform:'translate(0,0) scale(1)'},{transform:'translate(-7px,-10px) rotate(-9deg) scale(.92)',offset:.3},{transform:'translate(9px,0) rotate(10deg) scale(1.1)',offset:.7},{transform:'translate(0,0)'}],
+finisher:[{transform:'translate(0,0) rotate(0)'},{transform:'translate(-9px,-10px) rotate(-18deg)',offset:.24},{transform:'translate(23px,4px) rotate(23deg) scale(1.15)',offset:.68},{transform:'translate(0,0)'}]}
+};
 // Individual profiles for every illustrated enemy and boss (identity is the exact asset filename).
 const TB_ENEMY_PROFILES={
 "shadow-goblin":{kind:"pounce",color:"#ff746c",reach:22,tilt:12,duration:300},
