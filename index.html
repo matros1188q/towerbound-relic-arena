@@ -2121,19 +2121,19 @@ app.insertBefore(workspace,header.nextSibling);
 const move=(node,id)=>{const target=$(id);if(node&&target){target.appendChild(node);node.classList.add('tb-flow-panel');}};
 const arenaPanel=document.querySelector('.arena.tb-arena-rebuilt')?.closest('.panel');
 const targets=[
- [$('#heroSelectPanel'),'tbHeroStageMount'],
- [$('#routeMapPanel'),'tbMapStageMount'],
+ [$('heroSelectPanel'),'tbHeroStageMount'],
+ [$('routeMapPanel'),'tbMapStageMount'],
  [arenaPanel,'tbArenaStageMount'],
  [document.querySelector('.tb-skills-panel'),'tbArenaStageMount'],
- [$('#shop')?.closest('.panel'),'tbPrepShopMount'],
- [$('#slots')?.closest('.panel'),'tbPrepSlotsMount'],
- [$('#stashPanel'),'tbPrepStashMount'],
- [$('#synergy')?.closest('.panel'),'tbAdvancedSynergyMount'],
- [$('#talentPanel'),'tbAdvancedTalentMount'],
+ [$('shop')?.closest('.panel'),'tbPrepShopMount'],
+ [$('slots')?.closest('.panel'),'tbPrepSlotsMount'],
+ [$('stashPanel'),'tbPrepStashMount'],
+ [$('synergy')?.closest('.panel'),'tbAdvancedSynergyMount'],
+ [$('talentPanel'),'tbAdvancedTalentMount'],
  [document.querySelector('.tb-meta-grid')?.closest('.panel'),'tbAdvancedMetaMount']
 ];
 targets.forEach(([node,id])=>move(node,id));
-const stages={hero:$('#tbHeroStage'),prep:$('#tbPrepStage'),map:$('#tbMapStage'),arena:$('#tbArenaStage')};
+const stages={hero:$('tbHeroStage'),prep:$('tbPrepStage'),map:$('tbMapStage'),arena:$('tbArenaStage')};
 const labels={hero:'Выбери героя, чтобы начать поход',prep:'Подготовь реликвии и экипировку',map:'Выбери противника или особую встречу',arena:'Бой начался · используй активные умения'};
 let current='hero',prepTab='shop';
 function setPrepTab(tab){
@@ -2158,9 +2158,9 @@ function setScreen(name){
  Object.entries(stages).forEach(([key,node])=>{node.classList.toggle('is-active',key===name);node.setAttribute('aria-hidden',String(key!==name));});
  document.querySelectorAll('[data-flow-step]').forEach((el,index)=>{const order=['hero','prep','map','arena'];const n=order.indexOf(name),i=order.indexOf(el.dataset.flowStep);el.classList.toggle('is-current',i===n);el.classList.toggle('is-done',i<n);});
  const cap=$('tbFlowCaption');if(cap)cap.textContent=labels[name];
- if(name==='prep'){setPrepTab(prepTab);refreshSummary();const title=$('#heroSelectStatus');if(title)title.textContent='Герой выбран · можно менять сборку';}
+ if(name==='prep'){setPrepTab(prepTab);refreshSummary();const title=$('heroSelectStatus');if(title)title.textContent='Герой выбран · можно менять сборку';}
  if(name==='map'){refreshSummary();const back=$('tbMapBack');if(back)back.focus({preventScroll:true});}
- if(name==='arena'){const panel=$('#tbArenaStageMount .arena');if(panel)panel.setAttribute('aria-label','Поле боя');}
+ if(name==='arena'){const panel=$('tbArenaStageMount .arena');if(panel)panel.setAttribute('aria-label','Поле боя');}
  window.scrollTo(0,0);
 }
 document.querySelectorAll('[data-prep-tab]').forEach(b=>b.addEventListener('click',()=>setPrepTab(b.dataset.prepTab)));
