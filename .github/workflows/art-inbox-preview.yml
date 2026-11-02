@@ -134,7 +134,7 @@ jobs:
                       raise SystemExit(f"Could not safely locate unique ID for {hero_id} in index.html")
                   html = html.replace(marker, marker + art, 1)
 
-          old_markup = '<div class="tb-hero-emblem">'+h.icon+'</div>'
+          old_markup = """<div class="tb-hero-emblem">'+h.icon+'</div>"""
           new_markup = """<div class="tb-hero-portrait"><img src="'+h.art+'" alt="'+h.name+'" loading="lazy" decoding="async"></div>"""
           if new_markup not in html:
               if html.count(old_markup) != 1:
