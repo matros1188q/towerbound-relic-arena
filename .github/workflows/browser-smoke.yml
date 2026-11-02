@@ -1,0 +1,30 @@
+name: Cross-browser smoke tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'towerbound-engine.js'
+      - 'assets/**'
+      - 'tests/**'
+      - '.github/workflows/browser-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: npm install --no-save playwright@1.54.2
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Test desktop and mobile viewports
+        run: node tests/browser-smoke.cjs
