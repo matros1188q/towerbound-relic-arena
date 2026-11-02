@@ -40,3 +40,9 @@ A character is not marked complete merely because it has an animation profile. I
 - Added `docs/HERO-RIG-AUTHORING.md` documenting source-art limitations and acceptance criteria.
 - The four source PNGs are flattened 1024×1024 portraits. No independently authored limb, weapon, cloth or joint-overlap layers are present in the repository. They have not been falsely marked as completed rigs; no crude rectangular slicing has been introduced.
 - Stage 4 remains open until clean transparent part artwork, pivots and validated runtime manifests are produced and visually checked.
+
+
+## Warden occlusion pass — specification authored (2026-11-02)
+- Added `assets/characters/rigs/warden-occlusion-plan.json` with source-space pivots, explicit back-to-front layer order, six reconstruction regions, overlap rules and acceptance checks.
+- Added `docs/WARDEN-OCCLUSION-RECONSTRUCTION.md` so the shield-hidden right arm/hand and pelvis are treated as missing art to reconstruct, not guessed polygon cutouts.
+- This is a planning/QA improvement only. No hidden anatomy pixels were fabricated and Warden remains uncertified until the reconstruction layers exist and pass rotation tests.
