@@ -59,8 +59,20 @@ def build(path: Path, out_root: Path):
                                 "pixels": int((cut_alpha > 8).sum()), "bbox": bbox,
                                 "canvas_aligned": True})
     report["joint_count"] = len(joints)
-    report["missing_core_joints"] = [name for name in ("pelvis", "neck", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle") if name not in joints]
-    report["status"] = "no-parts" if not report["parts"] else report["status"]
+    core_joints = ("pelvis", "neck", "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist", "left_hip", "right_hip", "left_knee", "right_knee", "left_ankle", "right_ankle")
+    required_parts = ("head", "torso", "pelvis", "left_upper_arm", "left_forearm", "left_hand", "right_upper_arm", "right_forearm", "right_hand", "left_thigh", "left_shin", "left_foot", "right_thigh", "right_shin", "right_foot", "weapon", "shield")
+    report["missing_core_joints"] = [name for name in core_joints if name not in joints]
+    exported_ids = {part["id"] for part in report["parts"]}
+    report["missing_required_parts"] = [name for name in required_parts if name not in exported_ids]
+    report["ready_for_rigging"] = not report["missing_core_joints"] and not report["missing_required_parts"]
+    report["ready_for_animation"] = False
+    report["animation_blockers"] = ["hidden anatomy reconstruction", "layer overlap and edge inspection", "pivot and motion preview"]
+    if not report["parts"]:
+        report["status"] = "no-parts"
+    elif not report["ready_for_rigging"]:
+        report["status"] = "incomplete-annotation"
+    else:
+        report["status"] = "complete-annotation-awaiting-visual-qa"
     (output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     return report
 
