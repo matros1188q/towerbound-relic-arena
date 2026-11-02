@@ -1,0 +1,619 @@
+{
+  "schema_version": 1,
+  "stage": 4,
+  "status": "blueprint-authored-awaiting-transparent-part-art",
+  "source_canvas": {
+    "width": 1024,
+    "height": 1024
+  },
+  "heroes": {
+    "warden": {
+      "character_id": "hero.warden",
+      "source_image": "assets/characters/heroes/warden.png",
+      "visual_identity": "armored guardian, sword and tower shield",
+      "parts": [
+        [
+          "pelvis",
+          null
+        ],
+        [
+          "torso",
+          "pelvis"
+        ],
+        [
+          "head",
+          "torso"
+        ],
+        [
+          "left_upper_arm",
+          "torso"
+        ],
+        [
+          "left_forearm",
+          "left_upper_arm"
+        ],
+        [
+          "shield_hand",
+          "left_forearm"
+        ],
+        [
+          "shield",
+          "shield_hand"
+        ],
+        [
+          "right_upper_arm",
+          "torso"
+        ],
+        [
+          "right_forearm",
+          "right_upper_arm"
+        ],
+        [
+          "sword_hand",
+          "right_forearm"
+        ],
+        [
+          "sword",
+          "sword_hand"
+        ],
+        [
+          "left_thigh",
+          "pelvis"
+        ],
+        [
+          "left_shin",
+          "left_thigh"
+        ],
+        [
+          "left_foot",
+          "left_shin"
+        ],
+        [
+          "right_thigh",
+          "pelvis"
+        ],
+        [
+          "right_shin",
+          "right_thigh"
+        ],
+        [
+          "right_foot",
+          "right_shin"
+        ],
+        [
+          "cape",
+          "torso"
+        ]
+      ],
+      "clips": {
+        "idle": {
+          "duration_ms": 1800,
+          "loop": true,
+          "events": [],
+          "motion": "breathing torso, slight head/shoulder counter-motion, cape secondary sway"
+        },
+        "attack": {
+          "duration_ms": 760,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              310
+            ],
+            [
+              "impact",
+              485
+            ],
+            [
+              "recovery",
+              620
+            ]
+          ],
+          "motion": "shield braces; right shoulder and forearm draw sword back; torso rotates; sword arm drives diagonal slash; wrist follow-through; torso recovers"
+        },
+        "hit": {
+          "duration_ms": 420,
+          "loop": false,
+          "events": [
+            [
+              "impact",
+              70
+            ],
+            [
+              "recovery",
+              260
+            ]
+          ],
+          "motion": "shield catches impact, torso recoils, head and cape lag"
+        },
+        "cast": {
+          "duration_ms": 680,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              390
+            ],
+            [
+              "recovery",
+              560
+            ]
+          ],
+          "motion": "shield anchors; sword hand raises; torso leans and releases a defensive rune pulse"
+        }
+      }
+    },
+    "ranger": {
+      "character_id": "hero.ranger",
+      "source_image": "assets/characters/heroes/ranger.png",
+      "visual_identity": "hooded archer with bow and quiver",
+      "parts": [
+        [
+          "pelvis",
+          null
+        ],
+        [
+          "torso",
+          "pelvis"
+        ],
+        [
+          "head",
+          "torso"
+        ],
+        [
+          "hood",
+          "head"
+        ],
+        [
+          "bow_shoulder",
+          "torso"
+        ],
+        [
+          "bow_upper_arm",
+          "bow_shoulder"
+        ],
+        [
+          "bow_forearm",
+          "bow_upper_arm"
+        ],
+        [
+          "bow_hand",
+          "bow_forearm"
+        ],
+        [
+          "bow",
+          "bow_hand"
+        ],
+        [
+          "draw_shoulder",
+          "torso"
+        ],
+        [
+          "draw_upper_arm",
+          "draw_shoulder"
+        ],
+        [
+          "draw_forearm",
+          "draw_upper_arm"
+        ],
+        [
+          "draw_hand",
+          "draw_forearm"
+        ],
+        [
+          "arrow",
+          "draw_hand"
+        ],
+        [
+          "quiver",
+          "torso"
+        ],
+        [
+          "left_thigh",
+          "pelvis"
+        ],
+        [
+          "left_shin",
+          "left_thigh"
+        ],
+        [
+          "left_foot",
+          "left_shin"
+        ],
+        [
+          "right_thigh",
+          "pelvis"
+        ],
+        [
+          "right_shin",
+          "right_thigh"
+        ],
+        [
+          "right_foot",
+          "right_shin"
+        ],
+        [
+          "cloak",
+          "torso"
+        ]
+      ],
+      "clips": {
+        "idle": {
+          "duration_ms": 1900,
+          "loop": true,
+          "events": [],
+          "motion": "subtle breathing, bow hand stabilizes, cloak and hood sway"
+        },
+        "attack": {
+          "duration_ms": 820,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              510
+            ],
+            [
+              "projectile",
+              535
+            ],
+            [
+              "recovery",
+              690
+            ]
+          ],
+          "motion": "bow arm extends; draw elbow travels back; string hand reaches cheek anchor; bow limbs flex; fingers release; arrow leaves on projectile event; arms settle"
+        },
+        "hit": {
+          "duration_ms": 430,
+          "loop": false,
+          "events": [
+            [
+              "impact",
+              60
+            ],
+            [
+              "recovery",
+              280
+            ]
+          ],
+          "motion": "upper body shifts off-line, bow arm dips, cloak lags"
+        },
+        "cast": {
+          "duration_ms": 700,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              410
+            ],
+            [
+              "projectile",
+              440
+            ],
+            [
+              "recovery",
+              590
+            ]
+          ],
+          "motion": "special arrow nocked, draw arm pulls, luminous shot release"
+        }
+      }
+    },
+    "arcanist": {
+      "character_id": "hero.arcanist",
+      "source_image": "assets/characters/heroes/arcanist.png",
+      "visual_identity": "violet-robed mage with arcane staff",
+      "parts": [
+        [
+          "pelvis",
+          null
+        ],
+        [
+          "torso",
+          "pelvis"
+        ],
+        [
+          "head",
+          "torso"
+        ],
+        [
+          "hair_or_hood",
+          "head"
+        ],
+        [
+          "left_upper_arm",
+          "torso"
+        ],
+        [
+          "left_forearm",
+          "left_upper_arm"
+        ],
+        [
+          "spell_hand",
+          "left_forearm"
+        ],
+        [
+          "right_upper_arm",
+          "torso"
+        ],
+        [
+          "right_forearm",
+          "right_upper_arm"
+        ],
+        [
+          "staff_hand",
+          "right_forearm"
+        ],
+        [
+          "staff",
+          "staff_hand"
+        ],
+        [
+          "robe_front",
+          "torso"
+        ],
+        [
+          "robe_left",
+          "pelvis"
+        ],
+        [
+          "robe_right",
+          "pelvis"
+        ],
+        [
+          "left_thigh",
+          "pelvis"
+        ],
+        [
+          "left_foot",
+          "left_thigh"
+        ],
+        [
+          "right_thigh",
+          "pelvis"
+        ],
+        [
+          "right_foot",
+          "right_thigh"
+        ],
+        [
+          "spell_core",
+          "spell_hand"
+        ]
+      ],
+      "clips": {
+        "idle": {
+          "duration_ms": 2100,
+          "loop": true,
+          "events": [],
+          "motion": "breathing, robe hem and sleeves lag, staff crystal pulses"
+        },
+        "attack": {
+          "duration_ms": 780,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              430
+            ],
+            [
+              "projectile",
+              455
+            ],
+            [
+              "recovery",
+              650
+            ]
+          ],
+          "motion": "staff arm lifts and rotates; free hand gathers energy; torso twists; orb grows; palm thrusts; spell projectile event; sleeves and robe settle"
+        },
+        "hit": {
+          "duration_ms": 460,
+          "loop": false,
+          "events": [
+            [
+              "impact",
+              70
+            ],
+            [
+              "recovery",
+              300
+            ]
+          ],
+          "motion": "torso snaps back, staff tilts, spell core flickers"
+        },
+        "cast": {
+          "duration_ms": 900,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              590
+            ],
+            [
+              "projectile",
+              620
+            ],
+            [
+              "recovery",
+              790
+            ]
+          ],
+          "motion": "two-stage channel: staff planted, both arms gather energy, torso rises, hand opens and releases a large arcane burst"
+        }
+      }
+    },
+    "reaper": {
+      "character_id": "hero.reaper",
+      "source_image": "assets/characters/heroes/reaper.png",
+      "visual_identity": "dark armored reaper-like warrior; preserve the source sword silhouette, do not invent a scythe",
+      "parts": [
+        [
+          "pelvis",
+          null
+        ],
+        [
+          "torso",
+          "pelvis"
+        ],
+        [
+          "head",
+          "torso"
+        ],
+        [
+          "helmet_or_hair",
+          "head"
+        ],
+        [
+          "left_upper_arm",
+          "torso"
+        ],
+        [
+          "left_forearm",
+          "left_upper_arm"
+        ],
+        [
+          "left_hand",
+          "left_forearm"
+        ],
+        [
+          "right_upper_arm",
+          "torso"
+        ],
+        [
+          "right_forearm",
+          "right_upper_arm"
+        ],
+        [
+          "weapon_hand",
+          "right_forearm"
+        ],
+        [
+          "sword",
+          "weapon_hand"
+        ],
+        [
+          "left_thigh",
+          "pelvis"
+        ],
+        [
+          "left_shin",
+          "left_thigh"
+        ],
+        [
+          "left_foot",
+          "left_shin"
+        ],
+        [
+          "right_thigh",
+          "pelvis"
+        ],
+        [
+          "right_shin",
+          "right_thigh"
+        ],
+        [
+          "right_foot",
+          "right_shin"
+        ],
+        [
+          "cloth_or_cape",
+          "torso"
+        ]
+      ],
+      "clips": {
+        "idle": {
+          "duration_ms": 2000,
+          "loop": true,
+          "events": [],
+          "motion": "low breathing, slight forward weight shift, cloth trails"
+        },
+        "attack": {
+          "duration_ms": 800,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              330
+            ],
+            [
+              "impact",
+              510
+            ],
+            [
+              "recovery",
+              675
+            ]
+          ],
+          "motion": "wide shoulder wind-up, torso counter-rotation, sword sweeps across body, strong wrist follow-through and recovery"
+        },
+        "hit": {
+          "duration_ms": 440,
+          "loop": false,
+          "events": [
+            [
+              "impact",
+              65
+            ],
+            [
+              "recovery",
+              290
+            ]
+          ],
+          "motion": "armored torso twists, head and cloth lag behind"
+        },
+        "cast": {
+          "duration_ms": 760,
+          "loop": false,
+          "events": [
+            [
+              "anticipation",
+              0
+            ],
+            [
+              "release",
+              460
+            ],
+            [
+              "impact",
+              500
+            ],
+            [
+              "recovery",
+              650
+            ]
+          ],
+          "motion": "weapon raised, dark energy gathers along blade, descending empowered strike"
+        }
+      }
+    }
+  }
+}
