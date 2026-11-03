@@ -179,6 +179,7 @@
    const gained=awardXp(character,base*multiplier);
    const loot=rollLoot(character,enemy,stage,firstClear,false);
    character.stats.kills++;
+   character.silver+=balance.economy.silver_drop[enemy.type]||0;
    stageData.enemyIndex++;
    const done=stageData.enemyIndex>=stageData.mobs.length;
    if(!done)stageData.potionSlotUsed=false;
@@ -208,7 +209,8 @@
    if(!potion)throw new Error("No healing potions available");
    potion.quantity--;
    stage.potionSlotUsed=true;
-   character.run.playerHp=Math.min(maxHp(character),character.run.playerHp+Math.round(maxHp(character)*balance.healing.potion_heal_fraction));
+   const healFraction=potion.healFraction===undefined?balance.healing.potion_heal_fraction:potion.healFraction;
+   character.run.playerHp=Math.min(maxHp(character),character.run.playerHp+Math.round(maxHp(character)*healFraction));
    character.bag=character.bag.filter(item=>item.quantity!==0);
    return character.run.playerHp;
   }
@@ -360,9 +362,10 @@
     state.account.diamonds-=price;
    }
    if(catalogItem.startsWith("heal_")){
-    const stack=character.bag.find(item=>item.type==="healing_potion");
+    const fraction=Number(catalogItem.split("_")[1])/100;
+    const stack=character.bag.find(item=>item.type==="healing_potion"&&item.healFraction===fraction);
     if(stack)stack.quantity=Math.min(balance.healing.potion_stack_limit,stack.quantity+1);
-    else character.bag.push({id:id(),type:"healing_potion",quantity:1});
+    else character.bag.push({id:id(),type:"healing_potion",healFraction:fraction,quantity:1});
    }else if(catalogItem.startsWith("premium_")){
     const days=Number(catalogItem.split("_")[1].replace("d",""))||7;
     state.account.premiumUntil=Math.max(state.account.premiumUntil||0,now())+days*86400000;
@@ -409,7 +412,7 @@
     .sort((a,b)=>b.combatPower-a.combatPower||a.completionMs-b.completionMs);
   }
   function saveSnapshot(){return clone(state);}
-  return{state,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,recalcLevel,
+  return{state,balance,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,finishEnemy,useHealingPotion,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,
