@@ -94,10 +94,7 @@ const {chromium}=require('playwright');
   await page.locator('.tb-systems .tb-system-top [data-action="map"]').click();
   await page.locator('[data-stage="1"]').click();
   await page.locator('[data-action="start"]').click();
-  try{await page.waitForSelector('.tb-arena',{timeout:5000});}catch(error){
-   const diagnostic=await page.evaluate(()=>({ui:window.__TB_REWORK_BEGIN_STAGE_DEBUG,toast:document.querySelector('#tbRpg .tb-toast')?.textContent,runStage:window.TowerboundRework?.state?.characters?.[0]?.run?.stage,screenText:document.querySelector('#tbRpg')?.innerText?.slice(-350)}));
-   throw new Error('Battle start diagnostic: '+JSON.stringify(diagnostic));
-  }
+  await page.waitForSelector('.tb-arena',{timeout:5000});
   assert.equal(await page.locator('#speed').isDisabled(),false,'2x is available on a previously cleared floor');
   await page.locator('#speed').click();
   assert.equal(await page.evaluate(()=>localStorage.getItem('tb-rpg-speed-v2')),'2','speed preference persists');
