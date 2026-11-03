@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.black_dragon.05",
+  "class_id": "dragonkin",
+  "branch_id": "black_dragon",
+  "name": "Сумрачный импульс",
+  "unlock_level": 29,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "debuff",
+  "description": "Сумрачный импульс — black_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

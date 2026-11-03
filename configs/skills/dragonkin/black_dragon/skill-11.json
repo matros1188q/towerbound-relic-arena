@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.black_dragon.11",
+  "class_id": "dragonkin",
+  "branch_id": "black_dragon",
+  "name": "Пробуждение: Теневой сгусток",
+  "unlock_level": 57,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "debuff",
+  "description": "Пробуждение: Теневой сгусток — black_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
