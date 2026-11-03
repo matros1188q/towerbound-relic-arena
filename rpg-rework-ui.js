@@ -61,11 +61,10 @@
  }
  function activeSkill(c){
   const def=classData(c);
-  if(c.level<10){
-   const available=(def.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=c.level);
-   return available[available.length-1]||null;
-  }
-  return skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch&&skill.unlock_level<=c.level).slice(-1)[0]||null;
+  const available=c.level<10
+   ?(def.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=c.level)
+   :skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch&&skill.unlock_level<=c.level);
+  return available.find(skill=>skill.id===c.activeSkillId)||available[available.length-1]||null;
  }
  function profileScreen(){
   const c=live();if(!c)return characterList();
@@ -81,9 +80,10 @@
    else if(!branch)body+='<div class="tb-lock">Сначала выбери специализацию во вкладке «Характеристики».</div>';
    else body+='<div class="tb-talent-grid">'+branch.talents.map(t=>'<div class="tb-talent"><span class="tb-talent-icon">✦</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.effect_template)+' · '+(c.talents[t.id]||0)+'/3</small></div><button data-talent="'+t.id+'" '+(free<=0||(c.talents[t.id]||0)>=3?"disabled":"")+' >＋</button></div>').join("")+'</div>';
   }else if(profileTab==="skills"){
-   const base=(def.base_skills||[]).map(x=>({name:x.name,level:x.unlock_level,type:x.type,branch:"Базовые"})).concat((def.passives||[]).map(x=>({name:x.name,level:x.unlock_level,type:"passive",branch:"Пассивное"})));
-   const branchSkills=skills.filter(x=>x.class_id===c.classId&&(!c.branch||x.branch_id===c.branch)).map(x=>({name:x.name,level:x.unlock_level,type:"active",branch:x.branch_id}));
-   body='<h3>Умения персонажа</h3><div class="tb-skill-list">'+base.concat(branchSkills).map(s=>'<div class="tb-skill-row"><span class="tb-skill-glyph">✧</span><div><b>'+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+'</small></div><strong class="'+(c.level>=s.level?"unlocked":"locked")+'">'+(c.level>=s.level?"ОТКРЫТО":"УР. "+s.level)+'</strong></div>').join("")+'</div>';
+   const base=(def.base_skills||[]).map(x=>({...x,branch:"Базовые"})).concat((def.passives||[]).map(x=>({...x,type:"passive",branch:"Пассивное"})));
+   const branchSkills=c.branch?skills.filter(x=>x.class_id===c.classId&&x.branch_id===c.branch).map(x=>({...x,type:"active",branch:branch?.name||c.branch})):[];
+   const available=base.concat(branchSkills),active=activeSkill(c);
+   body='<h3>Умения персонажа</h3><p>Активное умение на арене: <b>'+esc(active?.name||"не выбрано")+'</b></p><div class="tb-skill-list">'+available.map(s=>'<div class="tb-skill-row"><span class="tb-skill-glyph">✧</span><div><b>'+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+'</small></div><strong class="'+(c.level>=s.unlock_level?"unlocked":"locked")+'">'+(c.level>=s.unlock_level?"ОТКРЫТО":"УР. "+s.unlock_level)+'</strong>'+(s.type==="passive"||c.level<s.unlock_level?"":'<button data-select-skill="'+s.id+'" '+(active?.id===s.id?"disabled":"")+'>'+(active?.id===s.id?"ВЫБРАНО":"ВЫБРАТЬ")+'</button>')+'</div>').join("")+'</div>';
   }else if(profileTab==="gear"){
    body='<h3>Экипировка</h3><div class="tb-gear-grid">'+(c.gear||[]).map((item,index)=>'<div class="tb-gear-slot"><small>СЛОТ '+(index+1)+'</small>'+(item?'<b>'+esc(item.name)+'</b><span>'+esc(item.rarity||"")+' · +'+(item.refine||0)+'</span><small>Гнёзда: '+(item.socketsAvailable||0)+' · Камни: '+(item.sockets||[]).length+'</small><button data-refine="'+item.id+'">ЗАТОЧИТЬ +1</button><button data-socket="'+item.id+'">ДОЛОТО · ГНЕЗДО</button><button data-stone="'+item.id+'">ВСТАВИТЬ КАМЕНЬ</button><button data-enchant="'+item.id+'" '+(!c.heroic?"disabled":"") + '>ЗАЧАРОВАТЬ</button>':'<span class="tb-empty-slot">Пусто</span>')+'</div>').join("")+'</div><div class="tb-bag-items">'+c.bag.filter(x=>x.stats).map(item=>'<div class="tb-bag-item"><span>'+esc(item.name)+'</span><small>'+esc(item.rarity||"Предмет")+'</small><button data-equip="'+item.id+'">НАДЕТЬ</button></div>').join("")+'</div>';
   }else{
@@ -115,6 +115,8 @@
   const c=live(),enemy=engine.currentEnemy(c.id),hp=currentEnemyConfig(enemy,battle.stage);
   battle.enemy=enemy;battle.enemyMax=hp;battle.enemyHp=hp;battle.shield=enemy.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0;
   battle.turns=0;battle.teleportUsed=false;battle.poisonTicks=0;battle.busy=false;
+  battle.dot=null;battle.hot=null;battle.enemyStunned=false;battle.parryChance=0;battle.nextDamageShield=0;
+  battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;
  }
  function battleScreen(){
   const c=live(),enemy=battle.enemy,enemyPct=Math.max(0,battle.enemyHp/battle.enemyMax*100),hp=engine.maxHp(c),heroPct=Math.max(0,c.run.playerHp/hp*100);
@@ -144,15 +146,34 @@
  }
  function enemyCounter(){
   const c=live(),enemy=battle.enemy,damageCfg=balance.combat.enemy_damage;
+  if(battle.dot&&battle.dot.ticks>0){
+   battle.enemyHp=Math.max(0,battle.enemyHp-battle.dot.damage);battle.dot.ticks--;
+   if(battle.enemyHp<=0){finishCurrentEnemy();return;}
+  }
+  if(battle.hot&&battle.hot.ticks>0){
+   c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;
+  }
+  if(battle.enemyStunned){
+   battle.enemyStunned=false;battle.busy=false;save();render();return;
+  }
   let raw=damageCfg.normal_base+battle.stage*damageCfg.normal_per_stage;
   if(enemy.type==="elite")raw*=damageCfg.elite_multiplier;
   if(enemy.type==="boss")raw*=damageCfg.boss_multiplier;
   if(enemy.mechanic==="berserk"&&battle.enemyHp/battle.enemyMax<=balance.elite_mechanics.berserk.health_threshold)raw*=balance.elite_mechanics.berserk.damage_multiplier;
   if(enemy.mechanic==="teleport"&&!battle.teleportUsed){raw*=1+balance.elite_mechanics.teleport.bonus_damage_fraction;battle.teleportUsed=true;}
-  const combatStats=engine.getCombatStats(c),defense=combatStats.defense;
-  let incoming=Math.max(1,Math.round(raw*100/(100+defense)*(1-combatStats.damageReduction)));
-  if(battle.nextDamageShield){incoming=Math.max(0,Math.round(incoming-battle.nextDamageShield));battle.nextDamageShield=0;}
+  if(battle.enemyDamageReductionUntil>Date.now())raw*=1-battle.enemyDamageReduction;
+  const combatStats=engine.getCombatStats(c);
+  let incoming=Math.max(1,Math.round(raw*100/(100+combatStats.defense)*(1-combatStats.damageReduction)));
+  if(battle.nextDamageShield){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
   if(enemy.mechanic==="summon")incoming+=Math.round(incoming*balance.elite_mechanics.summon.minions*balance.elite_mechanics.summon.minion_health_fraction);
+  if(battle.parryChance>0&&Math.random()<battle.parryChance){
+   const riposte=balance.skill_effects.riposte?.damage_multiplier||1.25;
+   battle.enemyHp=Math.max(0,battle.enemyHp-Math.round(combatStats.attack*riposte));
+   battle.parryChance=0;
+   if(battle.enemyHp<=0){finishCurrentEnemy();return;}
+   c.resource=Math.min(c.resourceMax,c.resource+(classData(c).resource_gain_on_defense||0));
+   battle.busy=false;save();render();return;
+  }
   c.run.playerHp=Math.max(0,c.run.playerHp-incoming);
   if(enemy.mechanic==="poison"&&battle.poisonTicks<balance.elite_mechanics.poison.ticks){
    const poison=Math.round(engine.maxHp(c)*balance.elite_mechanics.poison.damage_fraction);
@@ -176,14 +197,23 @@
    if(c.resource<resourceCost){notify("Не хватает ресурса: "+def.resource);return;}
    if(Date.now()<battle.skillReadyAt){notify("Умение ещё перезаряжается");return;}
    c.resource-=resourceCost;
-   if(effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
-   if(effect.shield_fraction)battle.nextDamageShield=Math.round(engine.maxHp(c)*effect.shield_fraction);
+   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
+   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier),ticks:effect.ticks||3};
+   if(effect.type==="shield"&&effect.shield_fraction)battle.nextDamageShield=Math.round(engine.maxHp(c)*effect.shield_fraction);
+   if(effect.type==="dot"&&effect.damage_multiplier)battle.dot={damage:Math.max(1,Math.round(combatStats.attack*effect.damage_multiplier)),ticks:effect.ticks||3};
+   if(effect.type==="buff"){battle.playerDamageBuff=effect.power_multiplier||0;battle.playerBuffUntil=Date.now()+(effect.duration||3)*1000;}
+   if(effect.type==="debuff"){battle.enemyDamageReduction=effect.power_multiplier||0;battle.enemyDamageReductionUntil=Date.now()+(effect.duration||3)*1000;}
+   if(effect.type==="control")battle.enemyStunned=true;
+   if(effect.type==="parry")battle.parryChance=effect.parry_chance||0;
+   if(effect.type==="riposte")damage*=effect.damage_multiplier||1.25;
    damage*=effect.damage_multiplier||combat.player_damage.skill_multiplier;
    const timeScale=balance.combat.combat_speed_base*(c.run.speed2?balance.combat.speed_2x_multiplier:1);
    battle.skillReadyAt=Date.now()+((effect.cooldown||4)*1000/timeScale);
+   c.stats.skillsUsed=(c.stats.skillsUsed||0)+1;
   }else{
    c.resource=Math.min(c.resourceMax,c.resource+(def.resource_gain_per_attack||0));
   }
+  if(battle.playerDamageBuff&&battle.playerBuffUntil>Date.now())damage*=1+battle.playerDamageBuff;
   const critical=Math.random()<combatStats.critChance;
   if(critical)damage*=combat.player_damage.crit_multiplier;
   const variance=1+(Math.random()*2-1)*combat.player_damage.attack_variance;
@@ -229,7 +259,7 @@
   catch(error){notify(error.message);}
  }
  function handleClick(event){
-  const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-equip],[data-refine],[data-socket],[data-buy],[data-shop-tab]");
+  const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-equip],[data-refine],[data-socket],[data-buy],[data-shop-tab]");
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
   if(target.dataset.pick){selectedId=target.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;render();return;}
@@ -239,6 +269,12 @@
   if(target.dataset.shopTab){shopTab=target.dataset.shopTab;render();return;}
   if(target.dataset.branch){try{engine.chooseBranch(live().id,target.dataset.branch);save();render();notify("Специализация выбрана");}catch(error){notify(error.message);}return;}
   if(target.dataset.talent){try{engine.useTalentPoint(live().id,target.dataset.talent,3);save();render();}catch(error){notify(error.message);}return;}
+  if(target.dataset.selectSkill){
+   const c=live(),def=classData(c),base=(def.base_skills||[]).find(skill=>skill.id===target.dataset.selectSkill);
+   const selected=base||skills.find(skill=>skill.id===target.dataset.selectSkill);
+   if(!selected||selected.unlock_level>c.level||(selected.branch_id&&selected.branch_id!==c.branch)){notify("Умение недоступно для текущего уровня или ветки");return;}
+   c.activeSkillId=selected.id;save();render();notify("Активное умение выбрано: "+selected.name);return;
+  }
   if(target.dataset.equip){equipItem(target.dataset.equip);return;}
   if(target.dataset.refine){try{const r=engine.refine(live().id,target.dataset.refine);save();render();notify(r.success?"Заточка успешна: +"+r.refine:r.destroyed?"Предмет разрушен":"Заточка не удалась");}catch(error){notify(error.message);}return;}
   if(target.dataset.socket){try{engine.addSocket(live().id,target.dataset.socket);save();render();notify("Добавлено новое гнездо");}catch(error){notify(error.message);}return;}

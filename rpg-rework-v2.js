@@ -135,7 +135,7 @@
    if(nickname.length<2||nickname.length>18)throw new Error("Character name must be between 2 and 18 characters");
    if(state.characters.some(item=>item.name.toLowerCase()===nickname.toLowerCase()))throw new Error("Character name already exists");
    const character={
-    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],resource:0,resourceMax:classTable[classId].resource_max||100,
+    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],activeSkillId:null,resource:0,resourceMax:classTable[classId].resource_max||100,
     silver:balance.economy.starting_silver,bag:[{id:id(),type:"healing_potion",quantity:balance.healing.starting_potions}],
     gear:[null,null,null,null,null,null],heroic:false,
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
@@ -471,14 +471,17 @@
    const weapon=item.slot==="weapon"||item.slot===0;
    const scroll=character.bag.find(entry=>entry.type==="enchant_scroll"&&entry.slot===(weapon?"weapon":"armor"));
    if(!scroll)throw new Error("No matching enchantment scroll in the backpack");
-   character.bag=character.bag.filter(entry=>entry.id!==scroll.id);
    return weapon?["+15% магической атаки","+15% физической атаки","+15% скорости атаки","+15% шанса крита"]:
     ["+5% магического урона","+5% физического урона","+5% магической защиты","+5% физической защиты"];
   }
   function applyEnchant(characterId,itemId,choice,choices){
    const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId)||character.bag.find(entry=>entry&&entry.id===itemId);
    if(!character.heroic)throw new Error("Enchantment is only available in heroic mode");
-   if(!item||!Array.isArray(choices)||choices.length!==4||!Number.isInteger(choice)||choice<0||choice>=choices.length)throw new Error("Invalid enchantment choice");
+   if(!item||!Array.isArray(choices)||choices.length!==4||!Number.isInteger(choice)||choice<0||choice>=4)throw new Error("Invalid enchantment choice");
+   const weapon=item.slot==="weapon"||item.slot===0;
+   const scroll=character.bag.find(entry=>entry.type==="enchant_scroll"&&entry.slot===(weapon?"weapon":"armor"));
+   if(!scroll)throw new Error("No matching enchantment scroll in the backpack");
+   character.bag=character.bag.filter(entry=>entry.id!==scroll.id);
    item.enchant=choices[choice];return clone(item);
   }
   function purchase(characterId,store,catalogItem){
