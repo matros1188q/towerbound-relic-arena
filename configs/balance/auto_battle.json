@@ -1,0 +1,8 @@
+{
+  "highest_ever_offset": 10,
+  "experience_multiplier": 0.5,
+  "drop_multiplier": 0,
+  "stop_on_boss": true,
+  "stop_on_elite": true,
+  "default_max_stages": 250
+}

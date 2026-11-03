@@ -1,0 +1,24 @@
+{
+  "shield": {
+    "absorb_fraction": 0.25,
+    "uses": 1
+  },
+  "poison": {
+    "damage_fraction": 0.03,
+    "ticks": 3
+  },
+  "berserk": {
+    "health_threshold": 0.3,
+    "damage_multiplier": 2
+  },
+  "teleport": {
+    "bonus_damage_fraction": 0.2
+  },
+  "summon": {
+    "minions": 2,
+    "minion_health_fraction": 0.2
+  },
+  "reflect": {
+    "damage_fraction": 0.15
+  }
+}

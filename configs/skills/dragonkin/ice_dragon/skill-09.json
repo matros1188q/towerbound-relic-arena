@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.ice_dragon.09",
+  "class_id": "dragonkin",
+  "branch_id": "ice_dragon",
+  "name": "Дыхание титана",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "shield",
+  "description": "Дыхание титана — ice_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

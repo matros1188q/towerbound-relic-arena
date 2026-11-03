@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.06",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Линия клинка",
+  "unlock_level": 34,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "parry",
+  "description": "Линия клинка — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

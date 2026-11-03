@@ -1,0 +1,16 @@
+{
+  "id": "elemental.darkness.10",
+  "class_id": "elemental",
+  "branch_id": "darkness",
+  "name": "Вечное проклятие",
+  "unlock_level": 53,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "debuff",
+  "description": "Вечное проклятие — darkness specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

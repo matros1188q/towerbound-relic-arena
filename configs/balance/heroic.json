@@ -1,0 +1,88 @@
+{
+  "unlock_after_stage": 250,
+  "mob_stat_multiplier": 2,
+  "boss_godlike_chance": 0.05,
+  "leaderboards": [
+    "combat_power",
+    "completion_time"
+  ],
+  "dailies": [
+    "map_modifier",
+    "daily_boss",
+    "three_quests",
+    "weekly_rating"
+  ],
+  "map_modifiers": [
+    {
+      "id": "swift_enemies",
+      "name": "Мобы быстрее на 20%",
+      "enemy_attack_speed_multiplier": 1.2,
+      "reward_silver_multiplier": 1.2
+    },
+    {
+      "id": "double_elites",
+      "name": "Элитки ×2",
+      "elite_chance_multiplier": 2,
+      "reward_xp_multiplier": 1.2
+    },
+    {
+      "id": "boss_no_heal",
+      "name": "Боссы без зелий",
+      "boss_no_potion": true,
+      "reward_silver_multiplier": 1.3
+    },
+    {
+      "id": "cursed_levels",
+      "name": "Проклятых уровней ×2",
+      "cursed_stage_multiplier": 2,
+      "reward_xp_multiplier": 1.1
+    }
+  ],
+  "daily_quests": [
+    {
+      "id": "elite_hunter",
+      "name": "Охотник на элиту",
+      "metric": "elite_kills",
+      "target": 10,
+      "reward_silver": 1000
+    },
+    {
+      "id": "tower_climber",
+      "name": "Покоритель этажей",
+      "metric": "stages_cleared",
+      "target": 15,
+      "reward_silver": 1200
+    },
+    {
+      "id": "skill_master",
+      "name": "Мастер умений ветки",
+      "metric": "branch_skills_used",
+      "target": 5,
+      "reward_silver": 800
+    }
+  ],
+  "daily_boss_cost": {
+    "silver": 500,
+    "diamonds": 5
+  },
+  "daily_boss_reward": {
+    "silver": 1500,
+    "diamonds": 3
+  },
+  "weekly_rating": {
+    "period_days": 7,
+    "top": 100,
+    "sort": [
+      "combat_power",
+      "completion_time"
+    ]
+  },
+  "daily_boss": {
+    "health": 2400,
+    "attack": 38,
+    "xp_reward": 600,
+    "silver_reward": 1500
+  },
+  "season_config": "seasons.json",
+  "daily_reset_hour_utc": 0
+}

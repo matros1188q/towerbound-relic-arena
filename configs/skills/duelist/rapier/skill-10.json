@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.10",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Совершенное парирование",
+  "unlock_level": 53,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "parry",
+  "description": "Совершенное парирование — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

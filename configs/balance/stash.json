@@ -1,0 +1,7 @@
+{
+  "slots": 20,
+  "min_rarity": "Эпическая",
+  "bind_on_use": true,
+  "transfer_limit_per_item_per_day": 1,
+  "account_shared": true
+}

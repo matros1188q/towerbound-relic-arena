@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "ghost_ttl_days": 7,
+  "refresh_on": [
+    "death",
+    "restart",
+    "stage_250_clear",
+    "exit"
+  ],
+  "matchmaking": {
+    "tier_window": 1,
+    "expand_to_tier_window": 2,
+    "bot_fallback": true
+  },
+  "daily_duels": {
+    "free": 5,
+    "premium": 10
+  },
+  "win_points": 20,
+  "loss_points": 5,
+  "points_wallet": "account",
+  "cannot_buy_silver": true,
+  "damage_multiplier": 1,
+  "health_multiplier": 1,
+  "control_duration_multiplier": 1,
+  "interface_version": 2
+}

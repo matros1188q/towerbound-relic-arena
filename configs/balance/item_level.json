@@ -1,0 +1,11 @@
+{
+  "min": 1,
+  "max": 120,
+  "source": "map_stage",
+  "formula": "min(map_stage,120)",
+  "stat_bonus_per_level": 0.0007,
+  "can_equip_any_level": true,
+  "slots": 6,
+  "gear_stat_base_curve_divisor": 1.5,
+  "full_set_level_120_bonus": 0.504
+}

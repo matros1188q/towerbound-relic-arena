@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.ice_dragon.14",
+  "class_id": "dragonkin",
+  "branch_id": "ice_dragon",
+  "name": "Высшая техника: Кристальный панцирь",
+  "unlock_level": 72,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Высшая техника: Кристальный панцирь — ice_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

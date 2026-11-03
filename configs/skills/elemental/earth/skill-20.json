@@ -1,0 +1,16 @@
+{
+  "id": "elemental.earth.20",
+  "class_id": "elemental",
+  "branch_id": "earth",
+  "name": "Легендарная форма: Сердце материка",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "control",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "control",
+  "description": "Легендарная форма: Сердце материка — earth specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

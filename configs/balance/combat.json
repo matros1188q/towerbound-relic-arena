@@ -1,0 +1,80 @@
+{
+  "combat_speed_base": 0.5,
+  "speed_2x_multiplier": 2,
+  "speed_2x_experience_multiplier": 0.8,
+  "base_tick_ms": 2500,
+  "first_clear_speed_2x": false,
+  "enemy_hp": {
+    "normal_base": 22,
+    "normal_per_stage": 0.45,
+    "elite_multiplier": 3,
+    "boss_multiplier": 6
+  },
+  "enemy_damage": {
+    "normal_base": 7,
+    "normal_per_stage": 0.12,
+    "elite_multiplier": 1.5,
+    "boss_multiplier": 2.5
+  },
+  "player_damage": {
+    "attack_multiplier": 1,
+    "skill_multiplier": 2.1,
+    "crit_chance": 0.05,
+    "crit_multiplier": 1.5,
+    "attack_variance": 0.15,
+    "crit_damage_bonus_cap": 0.5,
+    "gear_crit_chance_bonus_cap": 0.25
+  },
+  "fight_timing": {
+    "base_response_ms": 2500
+  },
+  "attack_interval": 2.5,
+  "attack_interval_units": "seconds",
+  "attack_interval_applies_to": [
+    "normal",
+    "elite",
+    "boss"
+  ],
+  "attack_interval_authority": "single_source",
+  "vampirism": {
+    "damage_dealer_fraction": 0.0175,
+    "ice_tank_fraction": 0.01,
+    "default_fraction": 0.01,
+    "healer_fraction": 0
+  },
+  "armor_formula": "damage*(1-min(0.75,armor/(armor+100+10*attacker_level)))",
+  "resistance_formula": "damage*(1-min(0.75,resistance/(resistance+100+10*attacker_level)))",
+  "crit_damage_multiplier": 1.5,
+  "telegraphs": {
+    "default_window_ms": 1800,
+    "min_window_ms": 1500,
+    "max_window_ms": 2000,
+    "types": {
+      "strong_hit": {
+        "icon": "⚔",
+        "label": "СИЛЬНЫЙ УДАР",
+        "color": "#ff465e",
+        "damage_multiplier": 1,
+        "uncountered_damage_multiplier": 1,
+        "countered_damage_multiplier": 0.5
+      },
+      "poison": {
+        "icon": "☠",
+        "label": "ЯД / DoT",
+        "color": "#55d86a",
+        "damage_multiplier": 1,
+        "uncountered_damage_multiplier": 1,
+        "countered_damage_multiplier": 0,
+        "cleanses_poison": true
+      },
+      "aoe": {
+        "icon": "➤",
+        "label": "АТАКА ПО ПЛОЩАДИ",
+        "color": "#ffd447",
+        "damage_multiplier": 1,
+        "uncountered_damage_multiplier": 1,
+        "countered_damage_multiplier": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "assassin.bleed.15",
+  "class_id": "assassin",
+  "branch_id": "bleed",
+  "name": "Мастерский приём: Кровавый долг",
+  "unlock_level": 76,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Мастерский приём: Кровавый долг — bleed specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

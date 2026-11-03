@@ -1,0 +1,31 @@
+{
+  "max_resource_by_class": {
+    "assassin": 100,
+    "bishop": 100,
+    "dragonkin": 100,
+    "destroyer": 100,
+    "elemental": 100,
+    "duelist": 5,
+    "shaman": 100
+  },
+  "starting_fraction": 0.58,
+  "action_costs": {
+    "attack_skill": 22,
+    "counter": 18,
+    "ultimate": 42
+  },
+  "class_costs": {
+    "duelist": {
+      "attack_skill": 1,
+      "counter": 1,
+      "ultimate": 2
+    }
+  },
+  "regeneration": {
+    "auto_attack": 3,
+    "kill": 5,
+    "potion": 25
+  },
+  "battle_budget_fraction": 1,
+  "note": "The initial pool plus slow attack and kill regeneration is tuned for about 3–4 of the six panel actions per stage."
+}

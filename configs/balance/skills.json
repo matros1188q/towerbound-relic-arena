@@ -1,0 +1,192 @@
+{
+  "damage_types": [
+    "fire",
+    "ice",
+    "dark",
+    "physical"
+  ],
+  "damage_type_by_branch": {
+    "assassin": {
+      "bleed": "dark",
+      "poison": "dark",
+      "execution": "physical"
+    },
+    "bishop": {
+      "exorcism": "fire",
+      "healing": "fire",
+      "buffs": "fire"
+    },
+    "dragonkin": {
+      "fire_dragon": "fire",
+      "ice_dragon": "ice",
+      "black_dragon": "dark"
+    },
+    "destroyer": {
+      "fists": "physical",
+      "greatsword": "physical",
+      "wand_shield": "physical"
+    },
+    "elemental": {
+      "darkness": "dark",
+      "water": "ice",
+      "earth": "physical"
+    },
+    "duelist": {
+      "dual_swords": "physical",
+      "sword_shield": "physical",
+      "rapier": "physical"
+    },
+    "shaman": {
+      "spirits": "ice",
+      "dark_gods": "dark",
+      "nature": "fire"
+    }
+  },
+  "skills_per_branch": 10,
+  "panel": {
+    "attack_slots": 4,
+    "counter_slot": 5,
+    "ultimate_slot": 6,
+    "slot_count": 6
+  },
+  "counter_abilities": {
+    "assassin": {
+      "id": "shadow",
+      "name": "Тень",
+      "icon": "◒",
+      "cooldown_seconds": 8,
+      "resource_cost": 18,
+      "effect": "evade",
+      "duration_seconds": 1
+    },
+    "bishop": {
+      "id": "barrier",
+      "name": "Барьер",
+      "icon": "✧",
+      "cooldown_seconds": 10,
+      "resource_cost": 18,
+      "effect": "absorb_all"
+    },
+    "dragonkin": {
+      "id": "scale",
+      "name": "Чешуя",
+      "icon": "◆",
+      "cooldown_seconds": 8,
+      "resource_cost": 18,
+      "effect": "damage_reduction",
+      "damage_reduction": 0.5,
+      "duration_seconds": 2
+    },
+    "destroyer": {
+      "id": "roar",
+      "name": "Рёв",
+      "icon": "◉",
+      "cooldown_seconds": 12,
+      "resource_cost": 18,
+      "effect": "stun",
+      "duration_seconds": 1.5
+    },
+    "elemental": {
+      "id": "slow",
+      "name": "Замедление",
+      "icon": "❄",
+      "cooldown_seconds": 10,
+      "resource_cost": 18,
+      "effect": "slow",
+      "speed_reduction": 0.3,
+      "duration_seconds": 3
+    },
+    "duelist": {
+      "id": "parry",
+      "name": "Парирование",
+      "icon": "⚔",
+      "cooldown_seconds": 6,
+      "resource_cost": 1,
+      "effect": "riposte",
+      "damage_multiplier": 1
+    },
+    "shaman": {
+      "id": "cleanse",
+      "name": "Очищение",
+      "icon": "✚",
+      "cooldown_seconds": 10,
+      "resource_cost": 18,
+      "effect": "cleanse",
+      "remove_stacks": 1
+    }
+  },
+  "ultimates": {
+    "assassin": {
+      "id": "shadowstorm",
+      "name": "Теневой шторм",
+      "icon": "✦",
+      "cooldown_seconds": 75,
+      "resource_cost": 42,
+      "effect": "aoe_burst",
+      "damage_multiplier": 2.8,
+      "damage_type": "dark"
+    },
+    "bishop": {
+      "id": "divine_sanctuary",
+      "name": "Святилище",
+      "icon": "✧",
+      "cooldown_seconds": 90,
+      "resource_cost": 42,
+      "effect": "heal_shield",
+      "heal_fraction": 0.35,
+      "shield_fraction": 0.2,
+      "damage_type": "fire"
+    },
+    "dragonkin": {
+      "id": "dragon_breath",
+      "name": "Дыхание дракона",
+      "icon": "🔥",
+      "cooldown_seconds": 75,
+      "resource_cost": 42,
+      "effect": "aoe_burst",
+      "damage_multiplier": 2.8,
+      "damage_type": "fire"
+    },
+    "destroyer": {
+      "id": "worldbreaker",
+      "name": "Сокрушитель миров",
+      "icon": "✹",
+      "cooldown_seconds": 75,
+      "resource_cost": 42,
+      "effect": "single_burst",
+      "damage_multiplier": 3.5,
+      "damage_type": "physical"
+    },
+    "elemental": {
+      "id": "primal_cascade",
+      "name": "Первозданный каскад",
+      "icon": "❄",
+      "cooldown_seconds": 90,
+      "resource_cost": 42,
+      "effect": "aoe_burst",
+      "damage_multiplier": 2.8,
+      "damage_type": "ice"
+    },
+    "duelist": {
+      "id": "perfect_form",
+      "name": "Совершенная форма",
+      "icon": "⚔",
+      "cooldown_seconds": 75,
+      "resource_cost": 2,
+      "effect": "single_burst",
+      "damage_multiplier": 3.5,
+      "damage_type": "physical"
+    },
+    "shaman": {
+      "id": "ancient_spirits",
+      "name": "Духи предков",
+      "icon": "☼",
+      "cooldown_seconds": 90,
+      "resource_cost": 42,
+      "effect": "heal_aoe",
+      "heal_fraction": 0.25,
+      "damage_multiplier": 2,
+      "damage_type": "dark"
+    }
+  }
+}

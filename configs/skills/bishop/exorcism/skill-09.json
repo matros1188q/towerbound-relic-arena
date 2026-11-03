@@ -1,0 +1,16 @@
+{
+  "id": "bishop.exorcism.09",
+  "class_id": "bishop",
+  "branch_id": "exorcism",
+  "name": "Вердикт",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "aoe",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "aoe",
+  "description": "Вердикт — exorcism specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,241 @@
+{
+  "starting_silver": 300,
+  "starting_potions": 3,
+  "starting_premium_hours": 24,
+  "silver_drop": {
+    "normal": 0,
+    "elite": 0,
+    "boss": 0,
+    "stage_brackets": [
+      {
+        "min": 1,
+        "max": 30,
+        "amount": 4
+      },
+      {
+        "min": 31,
+        "max": 70,
+        "amount": 6
+      },
+      {
+        "min": 71,
+        "max": 120,
+        "amount": 9
+      },
+      {
+        "min": 121,
+        "max": 180,
+        "amount": 12
+      },
+      {
+        "min": 181,
+        "max": 250,
+        "amount": 16
+      }
+    ]
+  },
+  "bank_fee": 0.1,
+  "bank_daily_donor_fraction": 0.5,
+  "one_diamond_rub": 1,
+  "diamond_packages": [
+    [
+      100,
+      100
+    ],
+    [
+      300,
+      269
+    ],
+    [
+      500,
+      449
+    ],
+    [
+      1000,
+      900
+    ],
+    [
+      5000,
+      4500
+    ]
+  ],
+  "silver_store": {
+    "xp_10": 900,
+    "xp_20": 1800,
+    "heal_10": 60,
+    "heal_25": 40,
+    "drop_20": 2400,
+    "drop_50": 5200,
+    "premium_7d": 20000,
+    "extra": [
+      {
+        "id": "map_compass",
+        "name": "Компас картографа",
+        "price": 600,
+        "effect": "map_hint"
+      },
+      {
+        "id": "repair_kit",
+        "name": "Набор ремонтника",
+        "price": 900,
+        "effect": "repair_kit"
+      },
+      {
+        "id": "silver_charm",
+        "name": "Серебряный талисман",
+        "price": 1200,
+        "effect": "silver_bonus"
+      },
+      {
+        "id": "xp_hourglass",
+        "name": "Песочные часы",
+        "price": 1500,
+        "effect": "xp_hourglass"
+      },
+      {
+        "id": "potion_case",
+        "name": "Футляр целителя",
+        "price": 1800,
+        "effect": "potion_capacity"
+      }
+    ],
+    "premium_14d": 35000,
+    "premium_30d": 60000
+  },
+  "diamond_store": {
+    "xp_50": 10,
+    "xp_100": 20,
+    "heal_35": 5,
+    "heal_50": 7,
+    "drop_75": 5,
+    "drop_100": 7,
+    "refine_10": 50,
+    "refine_20": 100,
+    "safe_refine": 199,
+    "premium_7d": 99,
+    "premium_14d": 149,
+    "premium_30d": 249,
+    "extra": [
+      {
+        "id": "rescue_seal",
+        "name": "Печать спасения",
+        "price": 29,
+        "effect": "one_rescue"
+      },
+      {
+        "id": "stone_cache",
+        "name": "Сундук камней",
+        "price": 39,
+        "effect": "stone_cache"
+      },
+      {
+        "id": "extra_socket",
+        "name": "Кристалл гнезда",
+        "price": 59,
+        "effect": "socket"
+      },
+      {
+        "id": "pity_token",
+        "name": "Жетон удачи",
+        "price": 79,
+        "effect": "pity"
+      },
+      {
+        "id": "refine_guard",
+        "name": "Защитный оберег",
+        "price": 99,
+        "effect": "refine_guard"
+      }
+    ]
+  },
+  "consumables": {
+    "xp_10": {
+      "kind": "xp",
+      "multiplier": 1.1,
+      "duration_minutes": 60
+    },
+    "xp_20": {
+      "kind": "xp",
+      "multiplier": 1.2,
+      "duration_minutes": 60
+    },
+    "xp_50": {
+      "kind": "xp",
+      "multiplier": 1.5,
+      "duration_minutes": 60
+    },
+    "xp_100": {
+      "kind": "xp",
+      "multiplier": 2,
+      "duration_minutes": 60
+    },
+    "drop_20": {
+      "kind": "drop",
+      "multiplier": 1.2,
+      "duration_minutes": 60
+    },
+    "drop_50": {
+      "kind": "drop",
+      "multiplier": 1.5,
+      "duration_minutes": 60
+    },
+    "drop_75": {
+      "kind": "drop",
+      "multiplier": 1.75,
+      "duration_minutes": 60
+    },
+    "drop_100": {
+      "kind": "drop",
+      "multiplier": 2,
+      "duration_minutes": 60
+    },
+    "refine_10": {
+      "kind": "refine",
+      "chance_bonus": 0.1,
+      "duration_minutes": 60
+    },
+    "refine_20": {
+      "kind": "refine",
+      "chance_bonus": 0.2,
+      "duration_minutes": 60
+    },
+    "map_compass": {
+      "kind": "map_hint"
+    },
+    "repair_kit": {
+      "kind": "repair",
+      "heal_fraction": 0.1
+    },
+    "silver_charm": {
+      "kind": "silver",
+      "multiplier": 1.1,
+      "duration_minutes": 60
+    },
+    "xp_hourglass": {
+      "kind": "xp",
+      "multiplier": 1.05,
+      "duration_minutes": 60
+    },
+    "potion_case": {
+      "kind": "potion_capacity",
+      "quantity": 5
+    },
+    "rescue_seal": {
+      "kind": "rescue"
+    },
+    "stone_cache": {
+      "kind": "stone_cache",
+      "quantity": 3
+    },
+    "extra_socket": {
+      "kind": "socket"
+    },
+    "pity_token": {
+      "kind": "pity"
+    },
+    "refine_guard": {
+      "kind": "safe_refine"
+    }
+  },
+  "starter_pack_once_per_account": true
+}

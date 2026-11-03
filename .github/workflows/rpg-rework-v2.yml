@@ -1,0 +1,45 @@
+name: RPG rework v2 checks
+on:
+  push:
+    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, fix/audit-pass]
+    paths:
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+      - 'rpg-rework-ui.css.js'
+      - 'rpg-mode.js'
+      - 'rpg-expansion.js'
+      - 'index.html'
+      - 'configs/**'
+      - 'tests/**'
+      - '.github/workflows/rpg-rework-v2.yml'
+  pull_request:
+    paths:
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+      - 'rpg-rework-ui.css.js'
+      - 'rpg-mode.js'
+      - 'rpg-expansion.js'
+      - 'index.html'
+      - 'configs/**'
+      - 'tests/**'
+      - '.github/workflows/rpg-rework-v2.yml'
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check rpg-rework-v2.js
+      - run: node --check rpg-rework-ui.js
+      - run: node --check rpg-rework-ui.css.js
+      - run: node --check rpg-mode.js
+      - run: node --check rpg-expansion.js
+      - run: node tests/rpg-expansion-static.cjs
+      - run: node tests/rpg-rework-v2.test.cjs
+      - run: node tests/combat-runtime.test.cjs
+      - run: node tests/full-game-audit.cjs
+      - run: npm install --no-save playwright@1.54.2
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/rpg-smoke.cjs

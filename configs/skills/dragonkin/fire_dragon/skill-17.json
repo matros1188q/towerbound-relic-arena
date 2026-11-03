@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.fire_dragon.17",
+  "class_id": "dragonkin",
+  "branch_id": "fire_dragon",
+  "name": "Знак превосходства: Пылающая чешуя",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "dot",
+  "description": "Знак превосходства: Пылающая чешуя — fire_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

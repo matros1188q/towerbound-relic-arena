@@ -1,0 +1,16 @@
+{
+  "id": "elemental.darkness.07",
+  "class_id": "elemental",
+  "branch_id": "darkness",
+  "name": "Чёрная луна",
+  "unlock_level": 38,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "debuff",
+  "description": "Чёрная луна — darkness specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

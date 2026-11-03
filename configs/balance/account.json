@@ -1,0 +1,13 @@
+{
+  "level_cap": 50,
+  "xp_per_level": 2000000,
+  "xp_silver_bonus_per_level": 0.01,
+  "starter_pack": {
+    "silver": 300,
+    "healing_potions": 3,
+    "premium_hours": 24,
+    "claim_once_per_account": true
+  },
+  "max_characters": 5,
+  "account_pvp_points": true
+}

@@ -1,0 +1,16 @@
+{
+  "id": "bishop.exorcism.20",
+  "class_id": "bishop",
+  "branch_id": "exorcism",
+  "name": "Легендарная форма: Изгнание легиона",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "aoe",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "aoe",
+  "description": "Легендарная форма: Изгнание легиона — exorcism specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

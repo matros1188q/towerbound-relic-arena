@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.fists.11",
+  "class_id": "destroyer",
+  "branch_id": "fists",
+  "name": "Пробуждение: Шквал кастетов",
+  "unlock_level": 57,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "strike",
+  "description": "Пробуждение: Шквал кастетов — fists specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

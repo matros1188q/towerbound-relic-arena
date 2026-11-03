@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.18",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Абсолютная техника: Исцеление души",
+  "unlock_level": 91,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Абсолютная техника: Исцеление души — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

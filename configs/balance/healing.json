@@ -1,0 +1,15 @@
+{
+  "potion_heal_fraction": 0.4,
+  "potion_stack_limit": 25,
+  "starting_potions": 3,
+  "checkpoint_heal_fraction": 0.5,
+  "checkpoint_xp_penalty": 0.2,
+  "checkpoint_penalty_stages": 50,
+  "max_checkpoint_heals_per_run": 5,
+  "potion_belt_slots": 5,
+  "one_potion_per_enemy": true,
+  "potion_slot_consumed_when_unused": true,
+  "boss_potion_limit": 1,
+  "disallow_healing_skills_on_elite": true,
+  "disallow_healing_skills_on_boss": true
+}
