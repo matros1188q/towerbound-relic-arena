@@ -347,10 +347,8 @@
   function createDrop(character,rarity,options){
    options=options||{};
    const itemLevel=itemLevelForStage(options.itemLevel||character.progress.currentStage||1);
-   const scale=1+itemLevel*balance.item_level.stat_bonus_per_level;
    const raw=options.stats||{attack:Math.max(1,Math.round(character.level*1.5)),defense:Math.max(1,Math.round(character.level*.8)),health:Math.max(1,character.level*4)};
    const stats={...raw};
-   for(const key of Object.keys(stats))if(typeof stats[key]==="number"&&["attack","defense","health","crit"].includes(key))stats[key]=Math.round(stats[key]*scale*1000)/1000;
    const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
     itemLevel,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
    character.bag.push(item);character.run.foundItemIds.push(item.id);
@@ -455,19 +453,44 @@
   function useHealingPotion(characterId){
    const character=getChar(characterId),stage=character.run.stage;
    if(!stage)throw new Error("Healing potion can only be used during a battle");
+   if(!difficultyOf(character).potion_belt)throw new Error("Potion belt is disabled in Hardcore");
    if(stage.potionSlotUsed)throw new Error("The healing slot for this enemy has already been consumed");
    const potion=character.bag.find(item=>item.type==="healing_potion"&&item.quantity>0);
    if(!potion)throw new Error("No healing potions available");
-   potion.quantity--;
-   stage.potionSlotUsed=true;
-   const healFraction=potion.healFraction===undefined?balance.healing.potion_heal_fraction:potion.healFraction;
+   potion.quantity--;stage.potionSlotUsed=true;
+   const healFraction=balance.healing.potion_heal_fraction;
    character.run.playerHp=Math.min(maxHp(character),character.run.playerHp+Math.round(maxHp(character)*healFraction));
    character.bag=character.bag.filter(item=>item.quantity!==0);
    return character.run.playerHp;
   }
+  function potionBeltSnapshot(characterId){
+   const character=getChar(characterId),slots=balance.healing.potion_belt_slots;
+   return Array.from({length:slots},(_,index)=>({slot:index,itemId:character.potionBelt?.[index]||null,available:character.bag.reduce((n,item)=>n+(item.type==="healing_potion"?item.quantity||0:0),0)}));
+  }
+  function assignPotionBelt(characterId,slot,itemId){
+   const character=getChar(characterId);
+   if(!difficultyOf(character).potion_belt)throw new Error("Potion belt is disabled in Hardcore");
+   if(!Number.isInteger(slot)||slot<0||slot>=balance.healing.potion_belt_slots)throw new Error("Invalid potion-belt slot");
+   if(!character.bag.some(item=>item.id===itemId&&item.type==="healing_potion"))throw new Error("Healing potion stack not found");
+   character.potionBelt=character.potionBelt||Array(balance.healing.potion_belt_slots).fill(null);
+   character.potionBelt[slot]=itemId;return clone(potionBeltSnapshot(characterId));
+  }
+  function usePotionBelt(characterId,slot){
+   const character=getChar(characterId),entry=potionBeltSnapshot(characterId)[slot];
+   if(!entry)throw new Error("Invalid potion-belt slot");
+   if(entry.itemId&&!character.bag.some(item=>item.id===entry.itemId&&item.quantity>0))throw new Error("Assigned potion stack is empty");
+   return useHealingPotion(characterId);
+  }
+  function setDifficulty(characterId,difficulty){
+   const character=getChar(characterId),definition=balance.difficulty.modes[difficulty];
+   if(!definition)throw new Error("Unknown difficulty");
+   if(character.run.active||character.run.stage)throw new Error("Difficulty can only change between runs");
+   character.difficulty=difficulty;character.run.lives=definition.lives;character.run.playerHp=maxHp(character);return difficulty;
+  }
   function checkpointHeal(characterId){
    const character=getChar(characterId),checkpoint=character.progress.currentStage-1,nextStage=character.progress.currentStage;
    if(character.run.stage)throw new Error("Checkpoint healing is unavailable during combat");
+   if(!difficultyOf(character).checkpoints)throw new Error("Checkpoints are disabled in Hardcore");
    if(!balance.map.checkpoints.includes(checkpoint))throw new Error("Healing is available only just after a checkpoint");
    if(character.run.healingPenaltyUntil>=nextStage)throw new Error("Experience penalty is still active");
    if(character.run.checkpointHeals>=balance.healing.max_checkpoint_heals_per_run)throw new Error("Checkpoint heal limit reached");
@@ -530,6 +553,7 @@
    options=options||{};
    const character=getChar(characterId),limit=Math.min(options.maxStages||balance.auto_battle.default_max_stages,balance.auto_battle.default_max_stages);
    if(character.run.stage)throw new Error("Auto-battle cannot run during manual combat");
+   if(!difficultyOf(character).auto_battle)throw new Error("Auto-battle is disabled in Hardcore");
    const ceiling=character.progress.highestEver-balance.auto_battle.highest_ever_offset;
    const result={cleared:0,xp:0,stopped:null};
    if(ceiling<character.progress.currentStage){result.stopped="Нет ранее пройденных этапов для авто-боя";return result;}
