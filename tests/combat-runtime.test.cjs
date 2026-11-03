@@ -46,6 +46,36 @@ for(const classId of classes){
 }
 {
  const character=engine.createCharacter('Combat QA','assassin');
+ const ordinary=engine.stagePlan(engine.getChar(character.id),1);
+ assert.deepEqual(ordinary.mobs.slice(0,3).map(mob=>mob.role),['healer','poison','tank'],'the first three gauntlet roles are guaranteed in order');
+ assert.ok(ordinary.mobs.every(mob=>mob.weakness&&mob.resistance),'every mob has an elemental weakness and resistance');
+ const bossPlan=engine.stagePlan(engine.getChar(character.id),10);
+ assert.equal(bossPlan.boss,true);
+ assert.equal(bossPlan.mobs.length,1,'boss stages are single-target');
+ assert.equal(bossPlan.mobs[0].role,'boss');
+ const duelist=engine.createCharacter('Resource QA','duelist');
+ const started=engine.beginStage(duelist.id,1);
+ assert.equal(started.mobs.length,ordinary.mobs.length);
+ assert.equal(engine.getChar(duelist.id).resource,Math.round(5*balance.resources.starting_fraction),'Duelist begins with its configured resource budget');
+ assert.equal(balance.skills.panel.attack_slots,4);
+ assert.equal(balance.skills.panel.counter_slot,5);
+ assert.equal(balance.skills.panel.ultimate_slot,6);
+ assert.equal(balance.skills.panel.slot_count,6);
+ assert.equal(balance.resources.action_costs.attack_skill,22);
+ assert.equal(balance.resources.action_costs.counter,18);
+ assert.equal(balance.resources.action_costs.ultimate,42);
+ for(const classId of classes){
+  const classCombos=balance.combos.combos.filter(combo=>combo.class===classId);
+  assert.ok(classCombos.length>=2,classId+' has multiple configured combos');
+  for(const combo of classCombos){
+   assert.ok(combo.chain.length>=2&&combo.chain.length<=3,combo.id+' has a short actionable chain');
+   assert.equal(combo.slot_binding,'selected_attack_loadout');
+   assert.ok(combo.chain.every(slot=>/^slot[1-4]$/.test(slot)),combo.id+' only uses the four attack slots');
+  }
+ }
+}
+{
+ const character=engine.createCharacter('Combat QA 2','assassin');
  const normal=engine.getEnemyStats(character.id,50,{type:'normal'});
  const elite=engine.getEnemyStats(character.id,50,{type:'elite'});
  const boss=engine.getEnemyStats(character.id,50,{type:'boss'});
