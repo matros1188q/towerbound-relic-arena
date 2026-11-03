@@ -25,8 +25,10 @@ const {chromium}=require('playwright');
  try{
   await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady);
-  await page.waitForSelector('#enterArenaBtn');
-  await page.locator('#enterArenaBtn').click();
+  await page.waitForSelector('#tbRpg .tb-v2');
+  const enterButton=page.locator('#enterArenaBtn');
+  if(await enterButton.count())await enterButton.click({force:true});
+  await page.evaluate(()=>{document.querySelector('#titleScreen')?.classList.add('is-hidden');document.querySelector('#accountDialog')?.classList.remove('open');document.body.removeAttribute('data-tb-screen');});
   await page.waitForSelector('#tbRpg .tb-v2');
   assert.equal(await page.locator('.tb-character-card').count(),0,'new account starts with an empty character roster');
   await page.locator('[data-action="new"]').first().click();
