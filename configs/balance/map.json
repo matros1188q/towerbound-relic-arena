@@ -3,8 +3,8 @@
   "boss_every": 10,
   "boss_mob_count": 1,
   "normal_mob_count": 3,
-  "five_mob_every": 5,
-  "seven_mob_every": 25,
+  "five_mob_every": null,
+  "seven_mob_every": null,
   "elite_chance": 0.12,
   "checkpoints": [
     50,
@@ -21,5 +21,59 @@
     "teleport",
     "summon",
     "reflect"
+  ],
+  "gauntlet_ranges": [
+    {
+      "min": 1,
+      "max": 50,
+      "allowed": [
+        3,
+        5
+      ],
+      "weights": [
+        0.625,
+        0.375
+      ]
+    },
+    {
+      "min": 51,
+      "max": 100,
+      "allowed": [
+        3,
+        5,
+        7
+      ],
+      "weights": [
+        0.5,
+        0.3,
+        0.2
+      ]
+    },
+    {
+      "min": 101,
+      "max": 199,
+      "allowed": [
+        3,
+        5
+      ],
+      "weights": [
+        0.625,
+        0.375
+      ]
+    },
+    {
+      "min": 200,
+      "max": 250,
+      "allowed": [
+        3,
+        5,
+        7
+      ],
+      "weights": [
+        0.5,
+        0.3,
+        0.2
+      ]
+    }
   ]
 }
