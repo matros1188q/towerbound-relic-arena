@@ -43,7 +43,12 @@
   "enchantment": {
     "armor_scroll_chance": 0.02,
     "weapon_scroll_chance": 0.01,
-    "heroic_only": true
+    "heroic_only": true,
+    "armor_scroll_source": "any_enemy",
+    "weapon_scroll_source": [
+      "elite",
+      "boss"
+    ]
   },
   "glow_tiers": [
     {
@@ -738,5 +743,11 @@
       "ice_damage_per_level": 0,
       "dark_damage_per_level": 0
     }
-  ]
+  ],
+  "stone_source_types": [
+    "elite",
+    "boss"
+  ],
+  "chisel_source": "any_enemy_any_stage",
+  "item_level_config": "item_level.json"
 }
