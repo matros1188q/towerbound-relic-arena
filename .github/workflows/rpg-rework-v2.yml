@@ -2,9 +2,26 @@ name: RPG rework v2 checks
 on:
   push:
     branches: [feature/rework-v2]
-    paths: ['rpg-rework-v2.js','configs/**','tests/rpg-rework-v2.test.cjs']
+    paths:
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+      - 'rpg-rework-ui.css.js'
+      - 'rpg-mode.js'
+      - 'rpg-expansion.js'
+      - 'index.html'
+      - 'configs/**'
+      - 'tests/**'
+      - '.github/workflows/rpg-rework-v2.yml'
   pull_request:
-    paths: ['rpg-rework-v2.js','configs/**','tests/rpg-rework-v2.test.cjs']
+    paths:
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+      - 'rpg-rework-ui.css.js'
+      - 'rpg-mode.js'
+      - 'rpg-expansion.js'
+      - 'index.html'
+      - 'configs/**'
+      - 'tests/**'
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -14,4 +31,12 @@ jobs:
         with:
           node-version: 22
       - run: node --check rpg-rework-v2.js
+      - run: node --check rpg-rework-ui.js
+      - run: node --check rpg-rework-ui.css.js
+      - run: node --check rpg-mode.js
+      - run: node --check rpg-expansion.js
+      - run: node tests/rpg-expansion-static.cjs
       - run: node tests/rpg-rework-v2.test.cjs
+      - run: npm install --no-save playwright@1.54.2
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/rpg-smoke.cjs
