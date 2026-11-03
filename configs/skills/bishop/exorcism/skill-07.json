@@ -1,0 +1,16 @@
+{
+  "id": "bishop.exorcism.07",
+  "class_id": "bishop",
+  "branch_id": "exorcism",
+  "name": "Священный разлом",
+  "unlock_level": 38,
+  "is_active": true,
+  "effect_template": "aoe",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "aoe",
+  "description": "Священный разлом — exorcism specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

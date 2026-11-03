@@ -1,0 +1,16 @@
+{
+  "id": "bishop.exorcism.06",
+  "class_id": "bishop",
+  "branch_id": "exorcism",
+  "name": "Крылья экзорциста",
+  "unlock_level": 34,
+  "is_active": true,
+  "effect_template": "aoe",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "aoe",
+  "description": "Крылья экзорциста — exorcism specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
