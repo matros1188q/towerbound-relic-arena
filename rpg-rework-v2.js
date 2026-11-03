@@ -601,31 +601,23 @@
     const stage=character.progress.currentStage,plan=stagePlan(character,stage);
     if(plan.boss){result.stopped="Босс требует ручного боя";break;}
     if(plan.mobs.some(enemy=>enemy.type==="elite")){result.stopped="Элитный противник требует ручного боя";break;}
+    const stats=getCombatStats(character),interval=balance.combat.attack_interval,playerHit=Math.max(1,stats.attack*(character.run.speed2?1.0:1));
     let stageXp=0,estimatedDamage=0;
-    const combat=balance.combat,baseStats=balance.classes.base_stats;
-    const gearDefense=(character.gear||[]).reduce((sum,item)=>sum+(item&&item.stats?item.stats.defense||0:0),0);
-    const defense=baseStats.base_defense+(character.level-1)*baseStats.defense_per_level+gearDefense;
-    const attack=baseStats.base_attack+(character.level-1)*baseStats.attack_per_level;
     for(const enemy of plan.mobs){
+     const e=getEnemyStats(character.id,stage,enemy),hits=Math.ceil(e.hp/playerHit);
+     const incomingPerHit=Math.max(1,Math.round(e.damage*mitigationMultiplier(stats.defense,character.level)));
+     estimatedDamage+=hits*incomingPerHit;
      stageXp+=enemyXp(enemy,stage)*xpMultiplier(character,stage,{auto:true});
-     const hpCfg=combat.enemy_hp,damageCfg=combat.enemy_damage;
-     const enemyHp=hpCfg.normal_base+stage*hpCfg.normal_per_stage;
-     const hits=Math.ceil(enemyHp/Math.max(1,attack));
-     const incoming=Math.max(1,Math.round((damageCfg.normal_base+stage*damageCfg.normal_per_stage)*100/(100+defense)));
-     estimatedDamage+=Math.ceil(hits*incoming*0.45);
     }
     if(character.run.playerHp<=estimatedDamage){
-     result.stopped="Симуляция поражения: авто-бой остановлен";
-     character.run.active=false;
-     break;
+     result.stopped="Симуляция поражения: авто-бой остановлен";character.run.active=false;break;
     }
     character.run.playerHp=Math.max(1,character.run.playerHp-estimatedDamage);
     const clear=balance.xp_curve.stage_clear_xp;
     stageXp+=(clear.base+stage*clear.per_stage)*xpMultiplier(character,stage,{auto:true});
-    const gained=awardXp(character,stageXp);
-    result.xp+=gained.amount;result.cleared++;
-    character.progress.highestEver=Math.max(character.progress.highestEver,stage);
-    character.progress.currentStage=stage+1;
+    const gained=awardXp(character,stageXp);result.xp+=gained.amount;result.cleared++;
+    character.progress.highestEver=Math.max(character.progress.highestEver,stage);character.progress.currentStage=stage+1;
+    if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
     character.run.playerHp=maxHp(character);
    }
    if(!result.stopped)result.stopped="Достигнут лимит авто-боя";
