@@ -80,6 +80,7 @@ const {chromium}=require('playwright');
   await page.locator('[data-shop-tab="diamond"]').click();
   assert.match(await page.locator('#tbRpg').innerText(),/Жетон удачи/i,'diamond extras are visible');
   assert.match(await page.locator('#tbRpg').innerText(),/5000 алмазов/,'diamond packs are displayed');
+  await page.locator('[data-action="map"]').click();
   await page.locator('[data-action="systems"]').click();
   await page.waitForSelector('.tb-systems');
   assert.match(await page.locator('.tb-systems').innerText(),/Достижения · 0\/30/,'account systems screen displays achievement catalogue');
