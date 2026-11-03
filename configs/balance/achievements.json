@@ -1,0 +1,313 @@
+{
+  "rewards_have_no_stat_bonuses": true,
+  "achievements": [
+    {
+      "id": "achievement_01",
+      "name": "Первый шаг",
+      "metric": "stages_cleared",
+      "target": 1,
+      "reward": {
+        "silver": 500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_02",
+      "name": "Охотник",
+      "metric": "kills",
+      "target": 10,
+      "reward": {
+        "silver": 600,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_03",
+      "name": "Первые трофеи",
+      "metric": "items_found",
+      "target": 5,
+      "reward": {
+        "silver": 700,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_04",
+      "name": "Кузнец",
+      "metric": "items_salvaged",
+      "target": 1,
+      "reward": {
+        "silver": 800,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_05",
+      "name": "Покоритель",
+      "metric": "stages_cleared",
+      "target": 10,
+      "reward": {
+        "silver": 900,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_06",
+      "name": "Элитный охотник",
+      "metric": "elite_kills",
+      "target": 10,
+      "reward": {
+        "silver": 1000,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_07",
+      "name": "Боссоборец",
+      "metric": "boss_kills",
+      "target": 1,
+      "reward": {
+        "silver": 1200,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_08",
+      "name": "Собиратель",
+      "metric": "items_found",
+      "target": 25,
+      "reward": {
+        "silver": 1500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_09",
+      "name": "Мастер таланта",
+      "metric": "talents_spent",
+      "target": 3,
+      "reward": {
+        "silver": 800,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_10",
+      "name": "Искатель",
+      "metric": "lore_read",
+      "target": 1,
+      "reward": {
+        "silver": 500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_11",
+      "name": "Ветеран",
+      "metric": "runs_completed",
+      "target": 3,
+      "reward": {
+        "silver": 1200,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_12",
+      "name": "Скоростной забег",
+      "metric": "speed_runs",
+      "target": 1,
+      "reward": {
+        "silver": 1500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_13",
+      "name": "Без зелья",
+      "metric": "potionless_bosses",
+      "target": 1,
+      "reward": {
+        "silver": 1000,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_14",
+      "name": "Закалённый",
+      "metric": "hardcore_clears",
+      "target": 1,
+      "reward": {
+        "silver": 2000,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_15",
+      "name": "Легенда башни",
+      "metric": "heroic_clears",
+      "target": 1,
+      "reward": {
+        "silver": 3000,
+        "cosmetic": [
+          "achievement-frame-15"
+        ]
+      }
+    },
+    {
+      "id": "achievement_16",
+      "name": "Покоритель 50",
+      "metric": "highest_stage",
+      "target": 50,
+      "reward": {
+        "silver": 1500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_17",
+      "name": "Покоритель 100",
+      "metric": "highest_stage",
+      "target": 100,
+      "reward": {
+        "silver": 2000,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_18",
+      "name": "Покоритель 150",
+      "metric": "highest_stage",
+      "target": 150,
+      "reward": {
+        "silver": 2500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_19",
+      "name": "Покоритель 200",
+      "metric": "highest_stage",
+      "target": 200,
+      "reward": {
+        "silver": 3000,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_20",
+      "name": "Покоритель 250",
+      "metric": "highest_stage",
+      "target": 250,
+      "reward": {
+        "silver": 5000,
+        "cosmetic": [
+          "achievement-frame-20"
+        ]
+      }
+    },
+    {
+      "id": "achievement_21",
+      "name": "Мастер ремесла",
+      "metric": "materials_crafted",
+      "target": 1,
+      "reward": {
+        "silver": 1200,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_22",
+      "name": "Мастер заточки",
+      "metric": "refine_success",
+      "target": 10,
+      "reward": {
+        "silver": 2000,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_23",
+      "name": "Зачарователь",
+      "metric": "enchants_applied",
+      "target": 1,
+      "reward": {
+        "silver": 1800,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_24",
+      "name": "Коллекционер",
+      "metric": "unique_items",
+      "target": 5,
+      "reward": {
+        "silver": 2500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_25",
+      "name": "Победитель PvP",
+      "metric": "pvp_wins",
+      "target": 1,
+      "reward": {
+        "silver": 500,
+        "cosmetic": [
+          "achievement-frame-25"
+        ]
+      }
+    },
+    {
+      "id": "achievement_26",
+      "name": "Гладиатор",
+      "metric": "pvp_duels",
+      "target": 10,
+      "reward": {
+        "silver": 1500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_27",
+      "name": "Герой",
+      "metric": "heroic_clears",
+      "target": 10,
+      "reward": {
+        "silver": 2500,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_28",
+      "name": "Парагон",
+      "metric": "paragon_level",
+      "target": 10,
+      "reward": {
+        "silver": 2000,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_29",
+      "name": "Хранитель сезона",
+      "metric": "season_clear",
+      "target": 250,
+      "reward": {
+        "silver": 0,
+        "cosmetic": []
+      }
+    },
+    {
+      "id": "achievement_30",
+      "name": "Вечная легенда",
+      "metric": "account_level",
+      "target": 50,
+      "reward": {
+        "silver": 5000,
+        "cosmetic": [
+          "achievement-frame-30"
+        ]
+      }
+    }
+  ]
+}
