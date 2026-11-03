@@ -22,9 +22,10 @@
     }
   },
   "regeneration": {
-    "auto_attack": 3,
+    "auto_attack": 0.2,
     "kill": 5,
-    "potion": 25
+    "potion": 25,
+    "auto_attack_unit": "max_resource_fraction"
   },
   "battle_budget_fraction": 1,
   "note": "The initial pool plus slow attack and kill regeneration is tuned for about 3–4 of the six panel actions per stage."
