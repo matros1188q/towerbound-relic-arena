@@ -211,7 +211,8 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  live.branch='bleed';live.heroic=true;live.progress.highestEver=100;live.progress.currentStage=101;
  const seasonId=Math.floor(baseTime/(90*86400000));e.state.season={id:seasonId,modifier:null,firstClearRewardClaimed:false};
  const plan=e.beginStage(c.id,101);
- assert.equal(plan.mobs[0].type,'elite');
+ assert.equal(plan.stage,101);
+ live.run.stage.mobs[0]={type:'elite',statMultiplier:1,damageType:'physical'};
  const drop=e.finishEnemy(c.id);
  assert.ok(drop.loot.some(item=>item.type==='chisel'));
  assert.ok(drop.loot.some(item=>item.type==='enhancement_stone'));
