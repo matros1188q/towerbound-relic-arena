@@ -118,7 +118,7 @@ const {chromium}=require('playwright');
    rows:getComputedStyle(el.querySelector('.tb-panel-slots')).gridTemplateRows.split(' ').length,
    targetTop:document.querySelector('.tb-target-grid').getBoundingClientRect().top,
    panelTop:el.getBoundingClientRect().top,
-   attackHeight:document.querySelector('#hit').getBoundingClientRect().height,
+   endTurnHeight:document.querySelector('[data-action="end-turn"]').getBoundingClientRect().height,
    heroHpTop:document.querySelector('.tb-battle-hero .tb-healthbar').getBoundingClientRect().top,
    heroHpBottom:document.querySelector('.tb-battle-hero .tb-healthbar').getBoundingClientRect().bottom,
    bodyPosition:getComputedStyle(document.body).position,
@@ -129,7 +129,7 @@ const {chromium}=require('playwright');
   assert.equal(mobilePanel.slotsDisplay,'grid','skill slots use a grid');
   assert.equal(mobilePanel.columns,3,'skills are arranged three per row');
   assert.equal(mobilePanel.rows,2,'skills occupy two rows');
-  assert.ok(mobilePanel.attackHeight<=60,'attack button stays at or below 60px');
+  assert.ok(mobilePanel.endTurnHeight<=60,'End Turn button stays at or below 60px');
   assert.ok(mobilePanel.heroHpTop>=0&&mobilePanel.heroHpBottom<=812,'hero HP bar stays in the viewport');
   assert.equal(mobilePanel.bodyPosition,'fixed','body is fixed while battle is active');
   assert.equal(mobilePanel.bodyOverflow,'hidden','body scrolling is locked during battle');
@@ -150,26 +150,22 @@ const {chromium}=require('playwright');
   });
   assert.ok(landscape.every(r=>r.top>=0&&r.bottom<=375&&r.left>=0&&r.right<=812),'arena, enemies, controls and potions fit in landscape');
   await page.setViewportSize({width:375,height:812});
-  assert.equal(await page.locator('#speed').isDisabled(),false,'2x is available on a previously cleared floor');
-  await page.locator('#speed').click();
-  assert.equal(await page.evaluate(()=>localStorage.getItem('tb-rpg-speed-v2')),'2','speed preference persists');
-  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.speed2),true,'2x toggle is reflected in runtime state');
+  assert.equal(await page.locator('#speed').count(),0,'real-time speed toggle is removed');
+  assert.equal(await page.locator('[data-action="attack"]').count(),0,'real-time Attack control is removed');
   await page.locator('[data-target="0"]').click();
   assert.ok(await page.locator('[data-target="0"]').evaluate(el=>el.classList.contains('selected')),'tap selects a live mob');
-  await page.evaluate(()=>{window.__tbArenaBeforeAttack=document.querySelector('.tb-arena');window.__tbScrollBeforeAttack=window.scrollY;});
-  await page.locator('[data-action="attack"]').click();
-  for(let i=0;i<19;i++)await page.locator('#hit').evaluate(button=>button.click());
-  const noJump=await page.evaluate(()=>({sameArena:window.__tbArenaBeforeAttack===document.querySelector('.tb-arena'),before:window.__tbScrollBeforeAttack,after:window.scrollY}));
-  assert.equal(noJump.sameArena,true,'normal attack updates preserve the existing battle DOM');
-  assert.equal(noJump.after,noJump.before,'20 rapid attack taps do not move the page');
+  await page.evaluate(()=>{window.__tbScrollBeforeTurn=window.scrollY;});
   await page.waitForSelector('.tb-telegraph:not(.tb-telegraph-idle)',{timeout:6000});
   assert.equal(await page.locator('[data-counter]').isEnabled(),true,'counter is available during a telegraph');
   const resourceBeforeCounter=await page.evaluate(()=>window.TowerboundRework.state.characters[0].resource);
   await page.locator('[data-counter]').click();
   await page.waitForFunction(before=>window.TowerboundRework.state.characters[0].resource<before,resourceBeforeCounter);
-  await page.waitForSelector('.tb-telegraph-idle',{timeout:6000});
-  await page.locator('[data-action="attack"]').click();
-  await page.evaluate(()=>{window.TowerboundRework.state.characters[0].run.playerHp=1;window.saveTowerboundRework();});
+  await page.locator('[data-action="end-turn"]').click();
+  await page.waitForFunction(()=>document.querySelector('.tb-arena-top')?.innerText.includes('РАУНД 2')||document.querySelector('[data-action="confirm-death"]'));
+  const noJump=await page.evaluate(()=>({before:window.__tbScrollBeforeTurn,after:window.scrollY}));
+  assert.equal(noJump.after,noJump.before,'End Turn does not move the page');
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=1;window.saveTowerboundRework();});
+  await page.locator('[data-action="end-turn"]').click();
   await page.waitForSelector('[data-action="confirm-death"]',{timeout:7000});
   assert.match(await page.locator('.tb-death-overlay').innerText(),/Персонаж погиб/,'lethal combat damage opens the death overlay');
   assert.ok(await page.locator('#tbRpg').evaluate(el=>el.classList.contains('tb-death-shaking')),'death applies the configured screen-shake VFX');
