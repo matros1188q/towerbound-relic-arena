@@ -1,0 +1,18 @@
+name: RPG expansion checks
+on:
+  pull_request:
+    paths: ['rpg-mode.js','rpg-expansion.js','index.html','tests/rpg-expansion-static.cjs']
+  push:
+    branches: [feat/seven-classes-equipment-economy]
+    paths: ['rpg-mode.js','rpg-expansion.js','index.html','tests/rpg-expansion-static.cjs']
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check rpg-mode.js
+      - run: node --check rpg-expansion.js
+      - run: node tests/rpg-expansion-static.cjs
