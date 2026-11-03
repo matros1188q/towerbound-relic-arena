@@ -5,5 +5,27 @@
   "boss_legendary_chance": 0.05,
   "heroic_godlike_chance": 0.05,
   "boss_pity_misses": 5,
-  "guaranteed_epic_first_clear_boss": true
+  "guaranteed_epic_first_clear_boss": true,
+  "death_item_loss_by_rarity": [
+    {
+      "rarity": "Обычная",
+      "weight": 50
+    },
+    {
+      "rarity": "Редкая",
+      "weight": 25
+    },
+    {
+      "rarity": "Эпическая",
+      "weight": 15
+    },
+    {
+      "rarity": "Легендарная",
+      "weight": 8
+    },
+    {
+      "rarity": "Богоподобная",
+      "weight": 2
+    }
+  ]
 }
