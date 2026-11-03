@@ -80,7 +80,7 @@ const create=e=>e.createCharacter('QA Hero','assassin');
   for(const branch of classConfig.branches){
    const branchId=typeof branch==="string"?branch:branch.id;
    const directory=path.join(__dirname,"../configs/skills",classId,branchId);
-   const files=fs.readdirSync(directory).filter(name=>/^skill-\\d{2}\\.json$/.test(name));
+   const files=fs.readdirSync(directory).filter(name=>/^skill-\d{2}\.json$/.test(name));
    assert.equal(files.length,20,classId+"/"+branchId+" must have 20 separate skill JSON files");
    for(const file of files){const skill=JSON.parse(fs.readFileSync(path.join(directory,file),"utf8"));assert.equal(skill.class_id,classId);assert.equal(skill.branch_id,branchId);assert.ok(skill.id);}
    individualFiles+=files.length;
