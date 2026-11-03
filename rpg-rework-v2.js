@@ -213,15 +213,15 @@
    return character.run.playerHp;
   }
   function checkpointHeal(characterId){
-   const character=getChar(characterId),stage=character.progress.currentStage,checkpoints=balance.map.checkpoints;
+   const character=getChar(characterId),checkpoint=character.progress.currentStage-1,nextStage=character.progress.currentStage;
    if(character.run.stage)throw new Error("Checkpoint healing is unavailable during combat");
-   if(!checkpoints.includes(stage))throw new Error("Healing is available only at checkpoints");
-   if(character.run.healingPenaltyUntil>=stage)throw new Error("Experience penalty is still active");
+   if(!balance.map.checkpoints.includes(checkpoint))throw new Error("Healing is available only just after a checkpoint");
+   if(character.run.healingPenaltyUntil>=nextStage)throw new Error("Experience penalty is still active");
    if(character.run.checkpointHeals>=balance.healing.max_checkpoint_heals_per_run)throw new Error("Checkpoint heal limit reached");
    character.run.playerHp=Math.min(maxHp(character),character.run.playerHp+Math.round(maxHp(character)*balance.healing.checkpoint_heal_fraction));
-   character.run.healingPenaltyUntil=stage===balance.map.total_stages?0:stage+balance.healing.checkpoint_penalty_stages-1;
+   character.run.healingPenaltyUntil=checkpoint===balance.map.total_stages?0:nextStage+balance.healing.checkpoint_penalty_stages-1;
    character.run.checkpointHeals++;
-   return{hp:character.run.playerHp,penaltyUntil:character.run.healingPenaltyUntil,remaining:Math.max(0,character.run.healingPenaltyUntil-stage+1)};
+   return{hp:character.run.playerHp,checkpoint,penaltyUntil:character.run.healingPenaltyUntil,remaining:Math.max(0,character.run.healingPenaltyUntil-nextStage+1)};
   }
   function speed2Allowed(characterId,stage){
    const character=getChar(characterId),target=stage||character.progress.currentStage;
