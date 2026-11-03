@@ -924,10 +924,10 @@
    const character=getChar(characterId),item=(balance.pvp_store.items||[]).find(entry=>entry.id===itemId);
    if(!item)throw new Error("Unknown PvP-store item");
    if(item.kind==="character_item"&&item.classId!==character.classId)throw new Error("This epic belongs to another class");
-   if((state.account.pvpPoints||0)<item.price)throw new Error("Not enough PvP points");
    if(item.kind==="cosmetic"&&(state.account.cosmetics||[]).includes(item.id))throw new Error("Cosmetic already owned");
    if(item.kind==="account_relic"&&(state.account.relics||[]).includes(item.id))throw new Error("Relic already owned");
    if(item.kind==="character_item"&&(state.account.classEpics||[]).includes(item.classId))throw new Error("This class epic has already been claimed");
+   if((state.account.pvpPoints||0)<item.price)throw new Error("Not enough PvP points");
    state.account.pvpPoints-=item.price;
    if(item.kind==="cosmetic"){state.account.cosmetics.push(item.id);return{item:clone(item),account:true,points:state.account.pvpPoints};}
    if(item.kind==="account_relic"){state.account.relics=state.account.relics||[];state.account.relics.push(item.id);return{item:clone(item),account:true,points:state.account.pvpPoints};}
