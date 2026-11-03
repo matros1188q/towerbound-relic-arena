@@ -103,8 +103,40 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('.tb-systems').innerText(),/PvP-арена · 20 очков/,'account PvP points update after ghost duel');
   await page.locator('.tb-systems .tb-system-top [data-action="map"]').click();
   await page.locator('[data-stage="1"]').click();
+  await page.evaluate(()=>{const engine=window.TowerboundRework,c=engine.state.characters[0];engine.setDifficulty(c.id,'easy');window.saveTowerboundRework();});
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('.tb-arena',{timeout:5000});
+  assert.equal(await page.locator('[data-panel-skill]').count(),4,'four attack skills are visible');
+  assert.equal(await page.locator('[data-counter]').count(),1,'class counter occupies slot five');
+  assert.equal(await page.locator('[data-ultimate]').count(),1,'class ultimate occupies slot six');
+  const mobilePanel=await page.locator('.tb-panel-actions').evaluate(el=>({
+   direction:getComputedStyle(el).flexDirection,
+   slotsDirection:getComputedStyle(el.querySelector('.tb-panel-slots')).flexDirection,
+   targetTop:document.querySelector('.tb-target-grid').getBoundingClientRect().top,
+   panelTop:el.getBoundingClientRect().top
+  }));
+  assert.equal(mobilePanel.direction,'column','mobile combat actions stack vertically');
+  assert.equal(mobilePanel.slotsDirection,'column','six skill slots form a vertical bottom stack');
+  assert.ok(mobilePanel.targetTop<mobilePanel.panelTop,'enemy targets stay above the mobile controls');
+  assert.equal(await page.locator('#speed').isDisabled(),false,'2x is available on a previously cleared floor');
+  await page.locator('#speed').click();
+  assert.equal(await page.evaluate(()=>localStorage.getItem('tb-rpg-speed-v2')),'2','speed preference persists');
+  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.speed2),true,'2x toggle is reflected in runtime state');
+  await page.locator('[data-target="1"]').click();
+  assert.ok(await page.locator('[data-target="1"]').evaluate(el=>el.classList.contains('selected')),'tap selects a live mob');
+  await page.locator('[data-action="attack"]').click();
+  await page.waitForSelector('.tb-telegraph:not(.tb-telegraph-idle)',{timeout:6000});
+  assert.equal(await page.locator('[data-counter]').isEnabled(),true,'counter is available during a telegraph');
+  const resourceBeforeCounter=await page.evaluate(()=>window.TowerboundRework.state.characters[0].resource);
+  await page.locator('[data-counter]').click();
+  await page.waitForFunction(before=>window.TowerboundRework.state.characters[0].resource<before,resourceBeforeCounter);
+  await page.waitForSelector('.tb-telegraph-idle',{timeout:6000});
+  await page.locator('[data-action="attack"]').click();
+  await page.evaluate(()=>{window.TowerboundRework.state.characters[0].run.playerHp=1;window.saveTowerboundRework();});
+  await page.waitForSelector('[data-action="confirm-death"]',{timeout:7000});
+  assert.match(await page.locator('.tb-death-overlay').innerText(),/Персонаж погиб/,'lethal combat damage opens the death overlay');
+  await page.locator('[data-action="confirm-death"]').click();
+  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.lives),2,'Easy difficulty consumes one of three lives and keeps the run recoverable');
   assert.equal(await page.locator('#speed').isDisabled(),false,'2x is available on a previously cleared floor');
   await page.locator('#speed').click();
   assert.equal(await page.evaluate(()=>localStorage.getItem('tb-rpg-speed-v2')),'2','speed preference persists');
