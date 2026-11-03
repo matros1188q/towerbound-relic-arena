@@ -151,7 +151,7 @@
  }
  function currentEnemyConfig(enemy,stage){return engine.getEnemyStats(live().id,stage,enemy).hp;}
  function loadBattleEnemy(){
-  const c=live(),enemy=engine.currentEnemy(c.id),enemyStats=engine.getEnemyStats(c.id,battle.stage,enemy),hp=currentEnemyConfig(enemy,battle.stage);
+  const c=live(),enemy=engine.currentEnemy(c),enemyStats=engine.getEnemyStats(c.id,battle.stage,enemy),hp=currentEnemyConfig(enemy,battle.stage);
   battle.enemy=enemy;battle.enemyStats=enemyStats;battle.enemyMax=hp;battle.enemyHp=hp;battle.shield=enemy.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0;
   battle.turns=0;battle.teleportUsed=false;battle.poisonTicks=0;battle.busy=false;
   battle.dot=null;battle.hot=null;battle.enemyStunned=false;battle.parryChance=0;battle.nextDamageShield=0;
