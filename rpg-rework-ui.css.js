@@ -75,6 +75,7 @@
  "#tbRpg .tb-v2 .tb-arena.tb-phase-flash:before{content:\"\";position:absolute;z-index:6;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(244,197,108,.36),transparent 70%);animation:tb-phase-flash .7s ease-out}",
  "#tbRpg .tb-v2 .tb-arena.tb-shaking{animation:tb-screen-shake .28s linear}",
  "#tbRpg .tb-v2 .tb-death-overlay{position:relative;isolation:isolate}",
+ "#tbRpg.tb-death-shaking .tb-death-overlay{animation:tb-screen-shake .42s ease-out}",
  "#tbRpg .tb-v2 .tb-death-overlay:before{content:\"\";position:fixed;z-index:-1;inset:0;background:rgba(0,0,0,.82);pointer-events:none;animation:tb-death-darken .5s ease-out}",
  "@keyframes tb-telegraph-pulse{from{filter:brightness(.88);transform:scale(.995)}to{filter:brightness(1.25);transform:scale(1.01)}}",
  "@keyframes tb-counter-ready{from{filter:brightness(1)}to{filter:brightness(1.35)}}",

@@ -193,7 +193,7 @@
   const c=live(),enemy=battle.enemy,enemyPct=Math.max(0,battle.enemyHp/Math.max(1,battle.enemyMax)*100),hp=engine.maxHp(c),heroPct=Math.max(0,c.run.playerHp/hp*100),unlocked=engine.speed2Allowed(c.id,battle.stage);
   const slots=ensureLoadout(c),counter=counterAbility(c),ultimate=ultimateAbility(c),nextCombos=activeComboNextSlots(),telegraph=battle.telegraph,proc=battle.proc;
   const roleIcon={healer:"✚",poison:"☠",tank:"🛡",normal:"",boss:"♛"};
-  const telegraphMarkup=telegraph?'<div class="tb-telegraph '+telegraph.type+'" style="--telegraph-color:'+telegraph.color+'"><b>'+telegraph.icon+'</b><span>'+esc(telegraph.label)+'</span><small>'+Math.max(0,(telegraph.until-Date.now())/1000).toFixed(1)+' сек</small></div>':'<div class="tb-telegraph-idle">Ожидание телеграфа</div>';
+  const telegraphMarkup=telegraph?(settings().disable_telegraphs?'<div class="tb-telegraph-disabled" aria-hidden="true"></div>':'<div class="tb-telegraph '+telegraph.type+'" style="--telegraph-color:'+telegraph.color+'"><b>'+telegraph.icon+'</b><span>'+esc(telegraph.label)+'</span><small>'+Math.max(0,(telegraph.until-Date.now())/1000).toFixed(1)+' сек</small></div>'):'<div class="tb-telegraph-idle">Ожидание телеграфа</div>';
   const targetCards=battle.enemies.map(target=>{
    const selected=target.index===battle.targetIndex,weak=elementIcon(target.weakness),resist=elementIcon(target.resistance),pct=target.hp/Math.max(1,target.maxHp)*100;
    return '<button type="button" class="tb-target-card '+(selected?'selected ':'')+(!target.alive?'defeated':'')+'" data-target="'+target.index+'" '+(!target.alive?'disabled':'')+'><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":target.type==="elite"?"ЭЛИТА":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+pct+'%"></i></span><small>'+Math.max(0,Math.ceil(target.hp))+' HP</small><span class="tb-target-elements"><span title="Уязвимость">'+weak+'</span><span class="resist" title="Резист">'+resist+'</span></span></button>';
@@ -205,7 +205,7 @@
    return '<button type="button" class="tb-panel-skill '+(next?'combo-next ':'')+'" data-panel-skill="'+(skill?.id||"")+'" data-panel-slot="'+index+'" '+(!skill||battle.busy||battle.paused||cd>Date.now()?'disabled':'')+'><kbd>'+(index+1)+'</kbd><b>'+esc(skill?.name||"Навык не открыт")+'</b><small>'+(skill?elementIcon(skill.damage_type)+" "+elementLabel(skill.damage_type):"Откроется по уровню")+'</small>'+(next?'<em>КОМБО</em>':"")+'</button>';
   }).join("");
   const counterCd=battle.counterReadyAt>Date.now(),ultCd=battle.ultimateReadyAt>Date.now(),remaining=battle.enemies.filter(target=>target.alive).length;
-  const counterButton='<button type="button" class="tb-panel-skill counter '+(telegraph?'telegraph-ready':'')+'" data-counter="1" '+(!telegraph||battle.counterUsed||counterCd||battle.paused||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?'disabled':'')+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>'+counter.icon+' Контр-умение · '+counter.cooldown_seconds+'с</small></button>';
+  const counterButton='<button type="button" class="tb-panel-skill counter '+(telegraph&&!settings().disable_telegraphs?'telegraph-ready':'')+'" data-counter="1" '+(!telegraph||battle.counterUsed||counterCd||battle.paused||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?'disabled':'')+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>'+counter.icon+' Контр-умение · '+counter.cooldown_seconds+'с</small></button>';
   const ultButton='<button type="button" class="tb-panel-skill ultimate" data-ultimate="1" '+(battle.busy||battle.paused||ultCd||c.resource<(ultimate.resource_cost||balance.resources.action_costs.ultimate)?'disabled':'')+'><kbd>6</kbd><b>'+esc(ultimate.name)+'</b><small>'+ultimate.icon+' Ультимейт · '+ultimate.cooldown_seconds+'с</small></button>';
   return header("Арена · этап "+battle.stage,c.name+" · цели "+remaining+"/"+battle.count)+
    '<section class="tb-arena '+(battle.fx&&battle.fx.until>Date.now()?'tb-fx-'+battle.fx.kind:'')+(battle.shakeUntil>Date.now()?' tb-shaking':'')+(battle.phaseFlashUntil>Date.now()?' tb-phase-flash':'')+'"><div class="tb-arena-top"><span class="tb-arena-stage-label">АРЕНА · ЭТАП '+battle.stage+phaseLabel+'</span><span>'+(enemy.type==="boss"?"БОСС":enemy.type==="elite"?"ЭЛИТНЫЙ ПРОТИВНИК":"ПРОТИВНИК")+'</span><button data-action="speed" id="speed" '+(!unlocked?"disabled":"")+'>'+(c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ")+'</button><button data-action="pause" id="pause">'+(battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА")+'</button></div>'+
@@ -215,7 +215,7 @@
    '<div class="tb-panel-actions"><button class="tb-basic-attack" data-action="attack" '+(battle.busy||battle.paused?'disabled':'')+' id="hit">АТАКА</button><div class="tb-panel-slots">'+skillButtons+counterButton+ultButton+'</div></div>'+
    '<div class="tb-combo-status">'+nextCombos.map(x=>'<span>'+esc(x.combo.label)+': следующий слот '+(x.slot+1)+'</span>').join(" · ")+'</div>'+
    '<div class="tb-potion-belt">'+engine.potionBeltSnapshot(c.id).map(slot=>'<button data-belt-use="'+slot.slot+'" '+(!slot.itemId||slot.available<=0||!balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt||c.run.stage.potionUsedTargets?.includes(battle.targetIndex)||battle.busy||battle.paused?'disabled':'')+' title="Доступно зелий: '+slot.available+'">ЗЕЛЬЕ '+(slot.slot+1)+'</button>').join("")+'</div>'+
-   '<div class="tb-combat-note">'+(battle.paused?"ПАУЗА · бой остановлен":battle.busy?"Телеграф атаки · успей применить контр-умение":"Тапни по цели · Tab для смены цели · 1–6 для панели")+'</div><div class="tb-fx-layer" style="--tb-fx-color:'+(battle.fx?.color||"#f3c968")+'" aria-hidden="true"></div></section>';
+   '<div class="tb-combat-note">'+(battle.paused?"ПАУЗА · бой остановлен":settings().disable_telegraphs?"Хардкор: телеграфы скрыты":battle.busy?"Телеграф атаки · успей применить контр-умение":"Тапни по цели · Tab для смены цели · 1–6 для панели")+'</div><div class="tb-fx-layer" style="--tb-fx-color:'+(battle.fx?.color||"#f3c968")+'" aria-hidden="true"></div></section>';
  }
  function beginStage(){
   const c=live();
@@ -248,7 +248,7 @@
   }
  }
  function endFromDamage(){
-  const c=live();stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;battle=null;screen="death";render();save();
+  const c=live();if(!settings().disable_screen_shake){root.classList.add("tb-death-shaking");setTimeout(()=>root.classList.remove("tb-death-shaking"),520);}stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;battle=null;screen="death";render();save();
  }
  function stopBattleStatusLoop(){if(statusTimer){clearInterval(statusTimer);statusTimer=null;}}
  function startBattleStatusLoop(){stopBattleStatusLoop();statusTimer=setInterval(updateBattleStatus,250);}
@@ -344,7 +344,7 @@ function resolveEnemyTelegraph(){
   if(countered&&counterId==="parry")applyTargetDamage(attacker,combatStats.attack*balance.skills.counter_abilities.duelist.damage_multiplier,"physical");
   battle.telegraph=null;battle.counterAction=null;battle.busy=false;
   engine.logCombatEvent(c.id,(countered?"Контр-умение отражает ":"Вражеская атака наносит ")+incoming+" урона");
-  triggerVfx("enemy-hit","physical",phase===4);
+  triggerVfx("enemy-hit","physical",phase===4||attacker.type==="boss");
   if(c.run.playerHp<=0){endFromDamage();return;}
   save();render();
  }
