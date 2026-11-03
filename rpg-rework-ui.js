@@ -85,7 +85,7 @@
    const branchSkills=skills.filter(x=>x.class_id===c.classId&&(!c.branch||x.branch_id===c.branch)).map(x=>({name:x.name,level:x.unlock_level,type:"active",branch:x.branch_id}));
    body='<h3>Умения персонажа</h3><div class="tb-skill-list">'+base.concat(branchSkills).map(s=>'<div class="tb-skill-row"><span class="tb-skill-glyph">✧</span><div><b>'+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+'</small></div><strong class="'+(c.level>=s.level?"unlocked":"locked")+'">'+(c.level>=s.level?"ОТКРЫТО":"УР. "+s.level)+'</strong></div>').join("")+'</div>';
   }else if(profileTab==="gear"){
-   body='<h3>Экипировка</h3><div class="tb-gear-grid">'+(c.gear||[]).map((item,index)=>'<div class="tb-gear-slot"><small>СЛОТ '+(index+1)+'</small>'+(item?'<b>'+esc(item.name)+'</b><span>'+esc(item.rarity||"")+' · +'+(item.refine||0)+'</span><small>Гнёзда: '+(item.socketsAvailable||0)+' · Камни: '+(item.sockets||[]).length+'</small><button data-refine="'+item.id+'">ЗАТОЧИТЬ +1</button><button data-socket="'+item.id+'">ДОЛОТО · ГНЕЗДО</button>':'<span class="tb-empty-slot">Пусто</span>')+'</div>').join("")+'</div><div class="tb-bag-items">'+c.bag.filter(x=>x.stats).map(item=>'<div class="tb-bag-item"><span>'+esc(item.name)+'</span><small>'+esc(item.rarity||"Предмет")+'</small><button data-equip="'+item.id+'">НАДЕТЬ</button></div>').join("")+'</div>';
+   body='<h3>Экипировка</h3><div class="tb-gear-grid">'+(c.gear||[]).map((item,index)=>'<div class="tb-gear-slot"><small>СЛОТ '+(index+1)+'</small>'+(item?'<b>'+esc(item.name)+'</b><span>'+esc(item.rarity||"")+' · +'+(item.refine||0)+'</span><small>Гнёзда: '+(item.socketsAvailable||0)+' · Камни: '+(item.sockets||[]).length+'</small><button data-refine="'+item.id+'">ЗАТОЧИТЬ +1</button><button data-socket="'+item.id+'">ДОЛОТО · ГНЕЗДО</button><button data-stone="'+item.id+'">ВСТАВИТЬ КАМЕНЬ</button><button data-enchant="'+item.id+'" '+(!c.heroic?"disabled":"") + '>ЗАЧАРОВАТЬ</button>':'<span class="tb-empty-slot">Пусто</span>')+'</div>').join("")+'</div><div class="tb-bag-items">'+c.bag.filter(x=>x.stats).map(item=>'<div class="tb-bag-item"><span>'+esc(item.name)+'</span><small>'+esc(item.rarity||"Предмет")+'</small><button data-equip="'+item.id+'">НАДЕТЬ</button></div>').join("")+'</div>';
   }else{
    body='<h3>Рюкзак · '+c.bag.length+'</h3><div class="tb-bag-items">'+(c.bag.length?c.bag.map(item=>'<div class="tb-bag-item"><span>'+esc(item.name||item.type)+'</span><small>'+esc(item.rarity||item.type)+' · '+(item.quantity||1)+'</small>'+(item.stats?'<button data-equip="'+item.id+'">НАДЕТЬ</button>':item.type==="refine_stone"?"<small>Камень заточки</small>":item.type==="enhancement_stone"?"<small>"+esc(item.stoneType.branchId)+" · "+item.stoneType.slot+" · ур."+item.level+"</small>":'')+'</div>').join(""):'<div class="tb-lock">Рюкзак пока пуст.</div>')+'</div>';
   }
@@ -149,10 +149,9 @@
   if(enemy.type==="boss")raw*=damageCfg.boss_multiplier;
   if(enemy.mechanic==="berserk"&&battle.enemyHp/battle.enemyMax<=balance.elite_mechanics.berserk.health_threshold)raw*=balance.elite_mechanics.berserk.damage_multiplier;
   if(enemy.mechanic==="teleport"&&!battle.teleportUsed){raw*=1+balance.elite_mechanics.teleport.bonus_damage_fraction;battle.teleportUsed=true;}
-  const stats=balance.classes.base_stats;
-  const gear=(c.gear||[]).reduce((v,item)=>v+(item&&item.stats?item.stats.defense||0:0),0);
-  const defense=stats.base_defense+(c.level-1)*stats.defense_per_level+gear;
-  let incoming=Math.max(1,Math.round(raw*100/(100+defense)));
+  const combatStats=engine.getCombatStats(c),defense=combatStats.defense;
+  let incoming=Math.max(1,Math.round(raw*100/(100+defense)*(1-combatStats.damageReduction)));
+  if(battle.nextDamageShield){incoming=Math.max(0,Math.round(incoming-battle.nextDamageShield));battle.nextDamageShield=0;}
   if(enemy.mechanic==="summon")incoming+=Math.round(incoming*balance.elite_mechanics.summon.minions*balance.elite_mechanics.summon.minion_health_fraction);
   c.run.playerHp=Math.max(0,c.run.playerHp-incoming);
   if(enemy.mechanic==="poison"&&battle.poisonTicks<balance.elite_mechanics.poison.ticks){
@@ -167,9 +166,8 @@
  function playerAction(useSkill){
   const c=live(),enemy=battle.enemy,effects=balance.skill_effects,combat=balance.combat;
   if(battle.busy)return;
-  const def=classData(c),skill=activeSkill(c),stats=balance.classes.base_stats;
-  const gear=(c.gear||[]).reduce((v,item)=>v+(item&&item.stats?item.stats.attack||0:0),0);
-  let damage=(stats.base_attack+(c.level-1)*stats.attack_per_level+gear)*combat.player_damage.attack_multiplier;
+  const def=classData(c),skill=activeSkill(c),combatStats=engine.getCombatStats(c);
+  let damage=combatStats.attack*combat.player_damage.attack_multiplier*combatStats.damageMultiplier;
   let effect=null,resourceCost=0;
   if(useSkill){
    if(!skill){notify("Нет доступного умения");return;}
@@ -179,14 +177,14 @@
    if(Date.now()<battle.skillReadyAt){notify("Умение ещё перезаряжается");return;}
    c.resource-=resourceCost;
    if(effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
-   if(effect.shield_fraction)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.shield_fraction));
+   if(effect.shield_fraction)battle.nextDamageShield=Math.round(engine.maxHp(c)*effect.shield_fraction);
    damage*=effect.damage_multiplier||combat.player_damage.skill_multiplier;
    const timeScale=balance.combat.combat_speed_base*(c.run.speed2?balance.combat.speed_2x_multiplier:1);
    battle.skillReadyAt=Date.now()+((effect.cooldown||4)*1000/timeScale);
   }else{
    c.resource=Math.min(c.resourceMax,c.resource+(def.resource_gain_per_attack||0));
   }
-  const critical=Math.random()<combat.player_damage.crit_chance;
+  const critical=Math.random()<combatStats.critChance;
   if(critical)damage*=combat.player_damage.crit_multiplier;
   const variance=1+(Math.random()*2-1)*combat.player_damage.attack_variance;
   damage=Math.max(1,Math.round(damage*variance));
@@ -244,6 +242,8 @@
   if(target.dataset.equip){equipItem(target.dataset.equip);return;}
   if(target.dataset.refine){try{const r=engine.refine(live().id,target.dataset.refine);save();render();notify(r.success?"Заточка успешна: +"+r.refine:r.destroyed?"Предмет разрушен":"Заточка не удалась");}catch(error){notify(error.message);}return;}
   if(target.dataset.socket){try{engine.addSocket(live().id,target.dataset.socket);save();render();notify("Добавлено новое гнездо");}catch(error){notify(error.message);}return;}
+  if(target.dataset.stone){try{const c=live(),item=c.gear.find(x=>x&&x.id===target.dataset.stone),stone=c.bag.find(x=>x.type==="enhancement_stone"&&(x.stoneType.class_id||x.stoneType.classId)===c.classId&&(x.stoneType.branch_id||x.stoneType.branchId)===c.branch);if(!item||!stone)throw new Error("Нет подходящего камня");engine.socketStone(c.id,item.id,stone.id);save();render();notify("Камень вставлен");}catch(error){notify(error.message);}return;}
+  if(target.dataset.enchant){try{const c=live(),choices=engine.rollEnchantScroll(c.id,target.dataset.enchant),choice=Number(window.prompt("Выбери зачарование (1–4):\n"+choices.map((x,i)=>(i+1)+". "+x).join("\n")))-1;if(Number.isInteger(choice)&&choice>=0&&choice<4){engine.applyEnchant(c.id,target.dataset.enchant,choice,choices);save();render();notify("Зачарование применено");}else notify("Зачарование отменено");}catch(error){notify(error.message);}return;}
   if(target.dataset.buy){try{engine.purchase(live().id,shopTab,target.dataset.buy);save();render();notify("Покупка совершена");}catch(error){notify(error.message);}return;}
   switch(target.dataset.action){
    case "new":if(engine.state.characters.length>=12){notify("Достигнут лимит персонажей");return;}dialogOpen=true;selectedClass="assassin";render();break;

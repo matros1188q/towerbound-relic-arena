@@ -11,5 +11,63 @@
     "daily_boss",
     "three_quests",
     "weekly_rating"
-  ]
+  ],
+  "map_modifiers": [
+    {
+      "id": "swift_enemies",
+      "name": "Мобы быстрее",
+      "enemy_attack_speed_multiplier": 1.2,
+      "reward_silver_multiplier": 1.2
+    },
+    {
+      "id": "double_elites",
+      "name": "Элитки ×2",
+      "elite_chance_multiplier": 2,
+      "reward_xp_multiplier": 1.2
+    },
+    {
+      "id": "boss_no_heal",
+      "name": "Босс без лечения",
+      "boss_no_potion": true,
+      "reward_silver_multiplier": 1.3
+    }
+  ],
+  "daily_quests": [
+    {
+      "id": "elite_hunter",
+      "name": "Охотник на элиту",
+      "metric": "elite_kills",
+      "target": 20,
+      "reward_silver": 1200
+    },
+    {
+      "id": "tower_climber",
+      "name": "Покоритель этажей",
+      "metric": "stages_cleared",
+      "target": 10,
+      "reward_silver": 900
+    },
+    {
+      "id": "skill_master",
+      "name": "Мастер умений",
+      "metric": "skills_used",
+      "target": 5,
+      "reward_silver": 700
+    }
+  ],
+  "daily_boss_cost": {
+    "silver": 500,
+    "diamonds": 5
+  },
+  "daily_boss_reward": {
+    "silver": 1500,
+    "diamonds": 3
+  },
+  "weekly_rating": {
+    "period_days": 7,
+    "sort": [
+      "combat_power",
+      "completion_time"
+    ]
+  }
 }

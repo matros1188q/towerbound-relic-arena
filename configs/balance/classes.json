@@ -2537,5 +2537,13 @@
       "resource_gain_on_defense": 0,
       "resource_cost_per_skill": 18
     }
+  },
+  "talent_bonuses": {
+    "attack_per_rank": 0.02,
+    "health_per_rank": 0.025,
+    "crit_chance_per_rank": 0.005,
+    "defense_per_rank": 0.02,
+    "attack_speed_per_rank": 0.01,
+    "skill_power_per_rank": 0.01
   }
 }

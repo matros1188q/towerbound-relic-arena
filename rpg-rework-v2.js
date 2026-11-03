@@ -32,19 +32,86 @@
    while(level<balance.xp_curve.max_level&&remaining>=requiredXp(level)){remaining-=requiredXp(level);level++;}
    return level;
   }
+  function equipmentTotals(character){
+   const result={attack:0,defense:0,health:0,crit:0,spellPower:0,fireDamage:0,iceDamage:0,darkDamage:0,attackSpeed:0,setPieces:{}};
+   const refine=balance.equipment.refine_stats_per_level||{attack:0,defense:0,health:0};
+   for(const item of character.gear||[]){
+    if(!item)continue;
+    for(const key of ["attack","defense","health","crit"])result[key]+=(item.stats?.[key]||0);
+    result.attack+=refine.attack*(item.refine||0);result.defense+=refine.defense*(item.refine||0);result.health+=refine.health*(item.refine||0);
+    for(const socket of item.sockets||[]){
+     const stone=socket.stoneType||socket.stone_type||{},level=socket.level||1;
+     result.attack+=(stone.attack_per_level||0)*level;result.defense+=(stone.defense_per_level||0)*level;
+     result.health+=(stone.health_per_level||0)*level;result.crit+=(stone.crit_per_level||0)*level;
+     result.spellPower+=(stone.spell_power_per_level||0)*level;result.fireDamage+=(stone.fire_damage_per_level||0)*level;
+     result.iceDamage+=(stone.ice_damage_per_level||0)*level;result.darkDamage+=(stone.dark_damage_per_level||0)*level;
+    }
+    if(item.enchant){
+     const weapon=item.slot==="weapon"||item.slot===0;
+     const labels=weapon?["+15% магической атаки","+15% физической атаки","+15% скорости атаки","+15% шанса крита"]:
+      ["+5% магического урона","+5% физического урона","+5% магической защиты","+5% физической защиты"];
+     const bonus=(balance.equipment.enchant_bonuses?.[weapon?"weapon":"armor"]||[])[labels.indexOf(item.enchant)]||{};
+     result.attack+=Math.round((item.stats?.attack||0)*((bonus.magic_attack||0)+(bonus.physical_attack||0)));
+     result.attackSpeed+=bonus.attack_speed||0;result.crit+=bonus.critical_chance||0;
+     result.fireDamage+=bonus.magic_damage||0;result.iceDamage+=bonus.physical_damage||0;
+     result.defense+=Math.round((item.stats?.defense||0)*((bonus.magic_defense||0)+(bonus.physical_defense||0)));
+    }
+    if(item.setId)result.setPieces[item.setId]=(result.setPieces[item.setId]||0)+1;
+   }
+   return result;
+  }
+  function setBonusTotals(character){
+   const total={damage:0,damageReduction:0,skillPower:0},gear=equipmentTotals(character);
+   const thresholds=balance.equipment.set_bonus_thresholds||[2,3,5];
+   for(const branch of classTable[character.classId].branches||[]){
+    const set=branch.set;if(!set)continue;
+    const pieces=gear.setPieces[set.id]||0;
+    for(const bonus of set.bonuses||[]){
+     if(pieces<bonus.pieces||!thresholds.includes(bonus.pieces))continue;
+     if(bonus.effect==="specialization_damage")total.damage+=bonus.value;
+     if(bonus.effect==="incoming_damage_reduction")total.damageReduction+=bonus.value;
+     if(bonus.effect==="specialization_power")total.skillPower+=bonus.value;
+    }
+   }
+   return total;
+  }
+  function talentBonusTotals(character){
+   const result={attack:0,health:0,crit:0,defense:0,attackSpeed:0,skillPower:0};
+   const values=balance.classes.talent_bonuses||{},branch=(classTable[character.classId].branches||[]).find(entry=>entry.id===character.branch);
+   for(const talent of branch?.talents||[]){
+    const ranks=character.talents?.[talent.id]||0,key=talent.effect_template;
+    if(key==="attack")result.attack+=ranks*(values.attack_per_rank||0);
+    if(key==="health")result.health+=ranks*(values.health_per_rank||0);
+    if(key==="critical")result.crit+=ranks*(values.crit_chance_per_rank||0);
+    if(key==="defense")result.defense+=ranks*(values.defense_per_rank||0);
+    if(key==="attack_speed")result.attackSpeed+=ranks*(values.attack_speed_per_rank||0);
+    if(key==="skill_power")result.skillPower+=ranks*(values.skill_power_per_rank||0);
+   }
+   return result;
+  }
   function maxHp(character){
-   const stats=balance.classes.base_stats;
-   const gear=(character.gear||[]).reduce((sum,item)=>sum+(item&&item.stats?item.stats.health||0:0),0);
-   return Math.round(stats.base_health+Math.max(0,character.level-1)*stats.health_per_level+gear);
+   const stats=balance.classes.base_stats,gear=equipmentTotals(character),talent=talentBonusTotals(character);
+   return Math.max(1,Math.round((stats.base_health+Math.max(0,character.level-1)*stats.health_per_level+gear.health)*(1+talent.health)));
+  }
+  function getCombatStats(characterOrId){
+   const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
+   const stats=balance.classes.base_stats,gear=equipmentTotals(character),talent=talentBonusTotals(character),sets=setBonusTotals(character);
+   return{attack:Math.round((stats.base_attack+(character.level-1)*stats.attack_per_level+gear.attack)*(1+talent.attack)),
+    defense:Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)),
+    maxHp:maxHp(character),critChance:Math.min(0.75,(balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit),
+    attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed,damageMultiplier:1+sets.damage+sets.skillPower+talent.skillPower,
+    damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
+    iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,setPieces:clone(gear.setPieces),glow:getRefinementGlow(character)};
+  }
+  function getRefinementGlow(character){
+   const items=(character.gear||[]).filter(Boolean);
+   if(!items.length||items.length!==(character.gear||[]).length)return null;
+   const value=Math.min(...items.map(item=>item.refine||0));
+   return balance.equipment.glow_tiers.find(tier=>value>=tier.min&&value<=tier.max)?.color||null;
   }
   function combatPower(character){
-   const stats=balance.classes.base_stats;
-   const totals=(character.gear||[]).reduce((acc,item)=>{
-    if(item&&item.stats)for(const key of Object.keys(item.stats))acc[key]=(acc[key]||0)+item.stats[key];
-    return acc;
-   },{});
-   return Math.round((stats.base_attack+(character.level-1)*stats.attack_per_level+(totals.attack||0))*3+
-    (stats.base_defense+(character.level-1)*stats.defense_per_level+(totals.defense||0))*2+maxHp(character)*0.3+character.level*5);
+   const value=getCombatStats(character);
+   return Math.round(value.attack*3+value.defense*2+value.maxHp*0.3+character.level*5);
   }
   function recalcLevel(character){
    const previous=character.level;
@@ -151,7 +218,7 @@
   }
   function createDrop(character,rarity,options){
    options=options||{};
-   const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",
+   const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,
     stats:{attack:character.level,defense:Math.round(character.level/2),health:character.level*2},
     refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
    character.bag.push(item);
@@ -173,7 +240,11 @@
      else character.pity.legendaryMisses++;
     }
    }else if(enemy.type==="elite"){
-    if(random()<drops.elite_epic_chance)items.push(createDrop(character,"Эпическая"));
+    if(random()<drops.elite_epic_chance){
+     const branches=classTable[character.classId].branches||[],branch=branches.find(entry=>entry.id===character.branch)||branches[0];
+     const slot=["weapon","chest","head","legs","hands","accessory"][Math.floor(random()*6)];
+     items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,name:(branch?.set?.name||"Эпическая вещь")+" · "+slot}));
+    }
    }else if(stage<=30&&random()<drops.normal_item_chance){
     items.push(createDrop(character,random()<drops.normal_rare_weight?"Редкая":"Обычная"));
    }
@@ -359,8 +430,10 @@
    const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId);
    const stone=character.bag.find(entry=>entry.id===stoneId&&entry.type==="enhancement_stone");
    if(!item||!stone)throw new Error("Equipment or stone not found");
+   item.sockets=item.sockets||[];
    if(item.sockets.length>=(item.socketsAvailable||0))throw new Error("Use a chisel to add an equipment socket first");
-   if(stone.stoneType.classId!==character.classId||stone.stoneType.branchId!==character.branch)throw new Error("Stone does not match the active specialization");
+   const stoneClass=stone.stoneType.class_id||stone.stoneType.classId,stoneBranch=stone.stoneType.branch_id||stone.stoneType.branchId;
+   if(stoneClass!==character.classId||stoneBranch!==character.branch)throw new Error("Stone does not match the active specialization");
    item.sockets.push({stoneType:stone.stoneType,level:stone.level});
    character.bag=character.bag.filter(entry=>entry.id!==stoneId);
    return clone(item);
@@ -479,7 +552,7 @@
     .sort((a,b)=>b.combatPower-a.combatPower||a.completionMs-b.completionMs);
   }
   function saveSnapshot(){return clone(state);}
-  return{state,balance,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,recalcLevel,
+  return{state,balance,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,finishEnemy,useHealingPotion,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,
