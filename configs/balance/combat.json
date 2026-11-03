@@ -44,5 +44,37 @@
   },
   "armor_formula": "damage*(1-min(0.75,armor/(armor+100+10*attacker_level)))",
   "resistance_formula": "damage*(1-min(0.75,resistance/(resistance+100+10*attacker_level)))",
-  "crit_damage_multiplier": 1.5
+  "crit_damage_multiplier": 1.5,
+  "telegraphs": {
+    "default_window_ms": 1800,
+    "min_window_ms": 1500,
+    "max_window_ms": 2000,
+    "types": {
+      "strong_hit": {
+        "icon": "⚔",
+        "label": "СИЛЬНЫЙ УДАР",
+        "color": "#ff465e",
+        "damage_multiplier": 1,
+        "uncountered_damage_multiplier": 1,
+        "countered_damage_multiplier": 0.5
+      },
+      "poison": {
+        "icon": "☠",
+        "label": "ЯД / DoT",
+        "color": "#55d86a",
+        "damage_multiplier": 1,
+        "uncountered_damage_multiplier": 1,
+        "countered_damage_multiplier": 0,
+        "cleanses_poison": true
+      },
+      "aoe": {
+        "icon": "➤",
+        "label": "АТАКА ПО ПЛОЩАДИ",
+        "color": "#ffd447",
+        "damage_multiplier": 1,
+        "uncountered_damage_multiplier": 1,
+        "countered_damage_multiplier": 0
+      }
+    }
+  }
 }

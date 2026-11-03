@@ -67,5 +67,49 @@
       "max": 250,
       "amount": 16
     }
-  ]
+  ],
+  "roles": {
+    "guaranteed_order": [
+      "healer",
+      "poison",
+      "tank"
+    ],
+    "normal_remainder": "normal",
+    "healer": {
+      "icon": "✚",
+      "name": "Лекарь",
+      "heal_fraction": 0.1,
+      "interval_ms": 5000,
+      "priority": 1
+    },
+    "poison": {
+      "icon": "☠",
+      "name": "Ядовитый",
+      "damage_fraction_per_second": 0.03,
+      "duration_seconds": 5,
+      "interval_ms": 8000
+    },
+    "tank": {
+      "icon": "🛡",
+      "name": "Танк",
+      "damage_reduction": 0.3
+    },
+    "normal": {
+      "icon": "",
+      "name": "Обычный",
+      "damage_reduction": 0
+    }
+  },
+  "damage_types": [
+    "fire",
+    "ice",
+    "dark",
+    "physical"
+  ],
+  "vulnerability_multiplier": 1.5,
+  "resistance_multiplier": 0.5,
+  "assignment": {
+    "weakness_index_formula": "(stage+index)%4",
+    "resistance_index_offset": 2
+  }
 }
