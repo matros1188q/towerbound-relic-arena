@@ -6,7 +6,7 @@
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
  function classData(c){return balance.classes.classes[c.classId];}
@@ -60,12 +60,36 @@
    '</div><small class="tb-note">Авто-бой доступен только до '+Math.max(0,maxAuto)+' этапа. На боссах и элитках он остановится.</small></aside></div>'+
    '<section class="tb-daily-panel"><div class="tb-daily-heading"><div><div class="tb-eyebrow">ЕЖЕДНЕВНЫЕ ИСПЫТАНИЯ · '+esc(daily.date)+'</div><h3>Задания дня</h3></div><span class="tb-daily-modifier">'+esc(daily.modifier?.name||"Без модификатора")+'</span></div><div class="tb-daily-quests">'+daily.quests.map(q=>'<div class="tb-daily-quest"><div><b>'+esc(q.name)+'</b><small>'+q.progress+'/'+q.target+' · награда '+q.reward_silver+' серебра</small></div><button data-daily-claim="'+q.id+'" '+(!q.complete||q.claimed?"disabled":"")+'>'+(q.claimed?"ПОЛУЧЕНО":"ЗАБРАТЬ")+'</button></div>').join("")+'</div><small class="tb-note">Задания сбрасываются в 00:00 UTC. Прогресс хранится в этом браузере.</small></section><div class="tb-bottom-strip"><span>Персонаж сохраняет уровень, таланты, экипировку и серебро</span><span>'+(c.heroic?"ГЕРОИЧЕСКИЙ РЕЖИМ":"Обычный режим")+'</span></div></section>';
  }
- function activeSkill(c){
-  const def=classData(c);
-  const available=c.level<10
-   ?(def.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=c.level)
-   :skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch&&skill.unlock_level<=c.level);
-  return available.find(skill=>skill.id===c.activeSkillId)||available[available.length-1]||null;
+ function branchSkills(c){return skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch).slice(0,balance.skills.skills_per_branch||10);}
+ function ensureLoadout(c){
+  const unlocked=branchSkills(c).filter(skill=>c.level>=skill.unlock_level);
+  const chosen=(Array.isArray(c.skillLoadout)?c.skillLoadout:[]).filter(id=>unlocked.some(skill=>skill.id===id)).slice(0,4);
+  for(const skill of unlocked){if(chosen.length>=4)break;if(!chosen.includes(skill.id))chosen.push(skill.id);}
+  c.skillLoadout=chosen;return Array.from({length:4},(_,index)=>unlocked.find(skill=>skill.id===chosen[index])||null);
+ }
+ function activeSkill(c){return ensureLoadout(c).find(Boolean)||null;}
+ function counterAbility(c){return balance.skills.counter_abilities[c.classId];}
+ function ultimateAbility(c){return balance.skills.ultimates[c.classId];}
+ function settings(){return engine?.state.account?.settings||{};}
+ function elementIcon(type){return({fire:"🔥",ice:"❄",dark:"☠",physical:"⚔"})[type]||"◇";}
+ function elementLabel(type){return({fire:"Огонь",ice:"Лёд",dark:"Тьма",physical:"Физический"})[type]||type;}
+ function setBattleTarget(index){
+  if(!battle||!battle.enemies[index]||!battle.enemies[index].alive)return;
+  try{engine.selectTarget(live().id,index);}catch(error){notify(error.message);return;}
+  battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(live().id,battle.stage,battle.enemy);
+  battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;
+  save();render();
+ }
+ function updateBossPhase(){
+  if(!battle||battle.enemy?.type!=="boss")return 1;
+  const ratio=battle.enemyHp/Math.max(1,battle.enemyMax),phase=ratio>0.70?1:ratio>0.40?2:ratio>0.10?3:4;
+  if(phase!==battle.bossPhase){battle.bossPhase=phase;battle.phaseFlashUntil=Date.now()+1200;battle.phaseNotice="ФАЗА "+phase;if(!settings().disable_skill_flashes)battle.fx={kind:"phase",color:"#f3c968",until:Date.now()+650};}
+  return phase;
+ }
+ function activeComboNextSlots(){
+  if(!battle)return[];const configs=(balance.combos?.combos||[]).filter(combo=>combo.class===live().classId),slots=[];
+  for(const combo of configs){const progress=battle.comboProgress?.[combo.id]||0,next=combo.chain[progress];if(next)slots.push({combo,slot:Number(String(next).replace("slot",""))-1,progress});}
+  return slots;
  }
  function profileScreen(){
   const c=live();if(!c)return characterList();
@@ -150,38 +174,68 @@
   return header("Забег завершён",c.name+" · "+(c.difficulty||"normal"))+'<section class="tb-death"><div class="tb-death-mark">☠</div><div class="tb-eyebrow">ПОСЛЕДНИЙ ШАНС</div><h1>Персонаж погиб</h1><p>Сложность: '+esc(c.difficulty||"normal")+'. Потеря опыта: '+Math.round(difficulty.xp_loss_fraction*100)+'% опыта текущего забега.</p><div class="tb-death-lives">ОСТАЛОСЬ ЖИЗНЕЙ: <b>'+remaining+' / '+total+'</b></div><div class="tb-death-losses"><div><small>ОПЫТ К ПОТЕРЕ</small><b>'+preview.experienceLoss+'</b></div><div><small>ВОЗМОЖНОЕ СНИЖЕНИЕ</small><b>'+preview.levelsLost+' уровн.</b></div><div><small>ШАНС ПОТЕРИ ВЕЩИ</small><b>'+Math.round(preview.itemLossChance*100)+'%</b></div></div><p>Надетые предметы и боссовый лут защищены. В Hardcore авто-бой, пояс и чекпоинты отключены.</p><button class="tb-danger" data-action="confirm-death">ПОДТВЕРДИТЬ СМЕРТЬ</button><button data-action="map" disabled>ВОЗВРАТА В БОЙ НЕТ</button></section>';
  }
  function currentEnemyConfig(enemy,stage){return engine.getEnemyStats(live().id,stage,enemy).hp;}
- function loadBattleEnemy(){
-  const c=live(),enemy=engine.currentEnemy(c),enemyStats=engine.getEnemyStats(c.id,battle.stage,enemy),hp=currentEnemyConfig(enemy,battle.stage);
-  battle.enemy=enemy;battle.enemyStats=enemyStats;battle.enemyMax=hp;battle.enemyHp=hp;battle.shield=enemy.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0;
-  battle.turns=0;battle.teleportUsed=false;battle.poisonTicks=0;battle.busy=false;
-  battle.dot=null;battle.hot=null;battle.enemyStunned=false;battle.parryChance=0;battle.nextDamageShield=0;
-  battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;battle.pendingKill=false;
+ function loadBattleEnemy(index){
+  const c=live(),stage=c.run.stage;
+  if(!battle.enemies){
+   battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;return{...mob,index:i,id:"enemy-"+i,hp,maxHp:hp,alive:true,attackIntervalMs:stats.attackIntervalMs,shield:mob.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,nextHealAt:Date.now()+(balance.mobs.roles.healer.interval_ms||5000),nextPoisonAt:Date.now()+(balance.mobs.roles.poison.interval_ms||8000),slowedUntil:0};});
+   const healer=battle.enemies.find(enemy=>enemy.role==="healer"&&enemy.alive);index=healer?healer.index:(stage.targetIndex??0);
+  }
+  if(index===undefined||index===null||!battle.enemies[index]?.alive)index=battle.enemies.find(enemy=>enemy.alive)?.index;
+  if(index===undefined)return;
+  engine.selectTarget(c.id,index);battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);
+  battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;
+  battle.telegraph=null;battle.counterAction=null;battle.counterUsed=false;battle.pendingKill=false;battle.enemyStunned=false;battle.dot=null;battle.hot=null;battle.parryChance=0;battle.nextDamageShield=0;battle.teleportUsed=false;
+  battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;
+  battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase():0;
  }
  function battleScreen(){
-  const c=live(),enemy=battle.enemy,enemyPct=Math.max(0,battle.enemyHp/battle.enemyMax*100),hp=engine.maxHp(c),heroPct=Math.max(0,c.run.playerHp/hp*100);
-  const unlocked=engine.speed2Allowed(c.id,battle.stage);
-  const skill=activeSkill(c),speed2=c.run.speed2,belt=engine.potionBeltSnapshot(c.id);
-  return header("Арена · этап "+battle.stage,c.name+" · противник "+(engine.state.characters.find(x=>x.id===c.id).run.stage.enemyIndex+1)+"/"+battle.count)+
-   '<section class="tb-arena"><div class="tb-arena-top"><span class="tb-arena-stage-label">АРЕНА · ЭТАП '+battle.stage+'</span><span>'+(enemy.type==="boss"?"БОСС":enemy.type==="elite"?"ЭЛИТНЫЙ ПРОТИВНИК":"ПРОТИВНИК")+'</span><button data-action="speed" id="speed" '+(!unlocked?"disabled":"")+'>'+(speed2?"×2 ВКЛ":"×2 ВЫКЛ")+'</button><button data-action="pause" id="pause">'+(battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА")+'</button></div><div class="tb-combat-stage '+(enemy.type==="boss"?"boss-fight":"")+'"><div class="tb-battle-enemy"><div class="tb-enemy-crest">'+(enemy.type==="boss"?"♛":enemy.type==="elite"?"✦":"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":enemy.type==="elite"?"Элита башни":"Страж башни")+'</div><div class="tb-enemy-mechanic">'+(enemy.mechanic?("Механика: "+esc(enemy.mechanic)):"")+'</div><div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.max(0,battle.enemyHp)+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div><div class="tb-vs">VS</div><div class="tb-battle-hero"><div class="tb-hero-art '+(engine.getRefinementGlow(c)||"")+'"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><small>'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</small><div class="tb-resourcebar"><span style="width:'+Math.min(100,c.resource/c.resourceMax*100)+'%"></span></div><small>'+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div><div class="tb-battle-actions"><button class="tb-primary" data-action="attack" '+(battle.busy?"disabled":"")+' id="hit">АТАКА</button><button data-action="skill" '+(battle.busy||!skill||Date.now()<battle.skillReadyAt?"disabled":"")+' id="skill">✦ '+(skill?esc(skill.name):"УМЕНИЕ")+'</button></div><div class="tb-potion-belt">'+belt.map(slot=>'<button data-belt-use="'+slot.slot+'" '+(!slot.itemId||slot.available<=0||!balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt||engine.state.characters.find(x=>x.id===c.id).run.stage.potionSlotUsed||battle.busy||battle.paused?"disabled":"")+' title="Доступно зелий: '+slot.available+'">ЗЕЛЬЕ '+(slot.slot+1)+'</button>').join("")+'</div><div class="tb-combat-note">'+(battle.busy?"Противник готовит ответный удар…":"Базовая скорость ×0.5 · ×2 доступна только при повторном прохождении")+'</div></section>';
+  const c=live(),enemy=battle.enemy,enemyPct=Math.max(0,battle.enemyHp/Math.max(1,battle.enemyMax)*100),hp=engine.maxHp(c),heroPct=Math.max(0,c.run.playerHp/hp*100),unlocked=engine.speed2Allowed(c.id,battle.stage);
+  const slots=ensureLoadout(c),counter=counterAbility(c),ultimate=ultimateAbility(c),nextCombos=activeComboNextSlots(),telegraph=battle.telegraph,proc=battle.proc;
+  const roleIcon={healer:"✚",poison:"☠",tank:"🛡",normal:"",boss:"♛"};
+  const telegraphMarkup=telegraph?'<div class="tb-telegraph '+telegraph.type+'" style="--telegraph-color:'+telegraph.color+'"><b>'+telegraph.icon+'</b><span>'+esc(telegraph.label)+'</span><small>'+Math.max(0,(telegraph.until-Date.now())/1000).toFixed(1)+' сек</small></div>':'<div class="tb-telegraph-idle">Ожидание телеграфа</div>';
+  const targetCards=battle.enemies.map(target=>{
+   const selected=target.index===battle.targetIndex,weak=elementIcon(target.weakness),resist=elementIcon(target.resistance),pct=target.hp/Math.max(1,target.maxHp)*100;
+   return '<button type="button" class="tb-target-card '+(selected?'selected ':'')+(!target.alive?'defeated':'')+'" data-target="'+target.index+'" '+(!target.alive?'disabled':'')+'><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":target.type==="elite"?"ЭЛИТА":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+pct+'%"></i></span><small>'+Math.max(0,Math.ceil(target.hp))+' HP</small><span class="tb-target-elements"><span title="Уязвимость">'+weak+'</span><span class="resist" title="Резист">'+resist+'</span></span></button>';
+  }).join("");
+  const phaseLabel=enemy.type==="boss"?' <span class="tb-boss-phase">ФАЗА '+battle.bossPhase+'</span>':"";
+  const procMarkup=proc?'<div class="tb-proc-chip" title="'+esc(proc.name)+'"><b>'+proc.icon+'</b><span>'+esc(proc.name)+'</span><small>'+Math.max(0,Math.ceil((proc.expiresAt-Date.now())/1000))+'s</small></div>':'<div class="tb-proc-empty">ПРОКИ ГОТОВЫ</div>';
+  const skillButtons=slots.map((skill,index)=>{
+   const next=nextCombos.some(x=>x.slot===index),cd=skill?(battle.skillCooldowns?.[skill.id]||0):Infinity;
+   return '<button type="button" class="tb-panel-skill '+(next?'combo-next ':'')+'" data-panel-skill="'+(skill?.id||"")+'" data-panel-slot="'+index+'" '+(!skill||battle.busy||battle.paused||cd>Date.now()?'disabled':'')+'><kbd>'+(index+1)+'</kbd><b>'+esc(skill?.name||"Навык не открыт")+'</b><small>'+(skill?elementIcon(skill.damage_type)+" "+elementLabel(skill.damage_type):"Откроется по уровню")+'</small>'+(next?'<em>КОМБО</em>':"")+'</button>';
+  }).join("");
+  const counterCd=battle.counterReadyAt>Date.now(),ultCd=battle.ultimateReadyAt>Date.now(),remaining=battle.enemies.filter(target=>target.alive).length;
+  const counterButton='<button type="button" class="tb-panel-skill counter '+(telegraph?'telegraph-ready':'')+'" data-counter="1" '+(!telegraph||battle.counterUsed||counterCd||battle.paused||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?'disabled':'')+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>'+counter.icon+' Контр-умение · '+counter.cooldown_seconds+'с</small></button>';
+  const ultButton='<button type="button" class="tb-panel-skill ultimate" data-ultimate="1" '+(battle.busy||battle.paused||ultCd||c.resource<(ultimate.resource_cost||balance.resources.action_costs.ultimate)?'disabled':'')+'><kbd>6</kbd><b>'+esc(ultimate.name)+'</b><small>'+ultimate.icon+' Ультимейт · '+ultimate.cooldown_seconds+'с</small></button>';
+  return header("Арена · этап "+battle.stage,c.name+" · цели "+remaining+"/"+battle.count)+
+   '<section class="tb-arena '+(battle.phaseFlashUntil>Date.now()?' tb-phase-flash':'')+'"><div class="tb-arena-top"><span class="tb-arena-stage-label">АРЕНА · ЭТАП '+battle.stage+phaseLabel+'</span><span>'+(enemy.type==="boss"?"БОСС":enemy.type==="elite"?"ЭЛИТНЫЙ ПРОТИВНИК":"ПРОТИВНИК")+'</span><button data-action="speed" id="speed" '+(!unlocked?"disabled":"")+'>'+(c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ")+'</button><button data-action="pause" id="pause">'+(battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА")+'</button></div>'+
+   '<div class="tb-target-grid">'+targetCards+'</div>'+
+   '<div class="tb-combat-layout"><div class="tb-enemy-focus"><div class="tb-enemy-role-icon">'+(roleIcon[enemy.role]||"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":enemy.type==="elite"?"Элита башни":"Страж башни")+'</div><div class="tb-enemy-vulnerability"><span title="Уязвимость">'+elementIcon(enemy.weakness)+' '+elementLabel(enemy.weakness)+'</span><span class="resist" title="Резист">'+elementIcon(enemy.resistance)+' '+elementLabel(enemy.resistance)+'</span></div>'+telegraphMarkup+'<div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.max(0,Math.ceil(battle.enemyHp))+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div>'+
+   '<div class="tb-battle-hero"><div class="tb-hero-art '+(engine.getRefinementGlow(c)||"")+'"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><small>'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</small><div class="tb-resourcebar"><span style="width:'+Math.min(100,c.resource/c.resourceMax*100)+'%"></span></div><small>'+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small>'+procMarkup+'</div></div>'+
+   '<div class="tb-panel-actions"><button class="tb-basic-attack" data-action="attack" '+(battle.busy||battle.paused?'disabled':'')+' id="hit">АТАКА</button>'+skillButtons+counterButton+ultButton+'</div>'+
+   '<div class="tb-combo-status">'+nextCombos.map(x=>'<span>'+esc(x.combo.label)+': следующий слот '+(x.slot+1)+'</span>').join(" · ")+'</div>'+
+   '<div class="tb-potion-belt">'+engine.potionBeltSnapshot(c.id).map(slot=>'<button data-belt-use="'+slot.slot+'" '+(!slot.itemId||slot.available<=0||!balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt||c.run.stage.potionUsedTargets?.includes(battle.targetIndex)||battle.busy||battle.paused?'disabled':'')+' title="Доступно зелий: '+slot.available+'">ЗЕЛЬЕ '+(slot.slot+1)+'</button>').join("")+'</div>'+
+   '<div class="tb-combat-note">'+(battle.paused?"ПАУЗА · бой остановлен":battle.busy?"Телеграф атаки · успей применить контр-умение":"Тапни по цели · Tab для смены цели · 1–6 для панели")+'</div><div class="tb-fx-layer" aria-hidden="true"></div></section>';
  }
  function beginStage(){
   const c=live();
   try{
-   const plan=engine.beginStage(c.id,selectedStage);
-   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,turns:0,busy:false,skillReadyAt:0,teleportUsed:false,poisonTicks:0};
+   const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
+   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterReadyAt:0,ultimateReadyAt:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,poisonDots:[],telegraph:null,paused:false,proc:null,fx:null};
    if(preferredSpeed2&&engine.speed2Allowed(c.id,plan.stage))engine.setSpeed2(c.id,true,plan.stage);
-   loadBattleEnemy();screen="battle";save();render();
+   loadBattleEnemy();screen="battle";startBattleStatusLoop();save();render();
   }catch(error){notify(error.message);}
  }
  function finishCurrentEnemy(){
-  const c=live(),result=engine.finishEnemy(c.id,{speed2:c.run.speed2});
+  const c=live(),defeated=battle.enemy,result=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:defeated.index});
+  defeated.hp=0;defeated.alive=false;defeated.dead=true;
+  if(c.classId==="destroyer")battle.proc={...balance.procs.destroyer,expiresAt:Date.now()+balance.procs.destroyer.duration_seconds*1000};
   if(result.loot.length)notify("Добыча: "+result.loot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
-   battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этап пройден · HP восстановлено · опыт сохранён");
-  }else{loadBattleEnemy();save();render();}
+   stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этап пройден · HP восстановлено · опыт сохранён");
+  }else{loadBattleEnemy(result.nextTargetIndex);save();render();}
  }
  function endFromDamage(){
-  const c=live();battle=null;screen="death";render();save();
+  const c=live();stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;battle=null;screen="death";render();save();
  }
  function enemyCounter(){
   if(!battle||battle.paused)return;
