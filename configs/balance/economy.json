@@ -3,9 +3,36 @@
   "starting_potions": 3,
   "starting_premium_hours": 24,
   "silver_drop": {
-    "normal": 18,
-    "elite": 42,
-    "boss": 110
+    "normal": 0,
+    "elite": 0,
+    "boss": 0,
+    "stage_brackets": [
+      {
+        "min": 1,
+        "max": 30,
+        "amount": 4
+      },
+      {
+        "min": 31,
+        "max": 70,
+        "amount": 6
+      },
+      {
+        "min": 71,
+        "max": 120,
+        "amount": 9
+      },
+      {
+        "min": 121,
+        "max": 180,
+        "amount": 12
+      },
+      {
+        "min": 181,
+        "max": 250,
+        "amount": 16
+      }
+    ]
   },
   "bank_fee": 0.1,
   "bank_daily_donor_fraction": 0.5,
@@ -36,10 +63,10 @@
     "xp_10": 900,
     "xp_20": 1800,
     "heal_10": 60,
-    "heal_25": 140,
+    "heal_25": 40,
     "drop_20": 2400,
     "drop_50": 5200,
-    "premium_7d": 25000,
+    "premium_7d": 20000,
     "extra": [
       {
         "id": "map_compass",
@@ -71,7 +98,9 @@
         "price": 1800,
         "effect": "potion_capacity"
       }
-    ]
+    ],
+    "premium_14d": 35000,
+    "premium_30d": 60000
   },
   "diamond_store": {
     "xp_50": 10,
@@ -207,5 +236,6 @@
     "refine_guard": {
       "kind": "safe_refine"
     }
-  }
+  },
+  "starter_pack_once_per_account": true
 }
