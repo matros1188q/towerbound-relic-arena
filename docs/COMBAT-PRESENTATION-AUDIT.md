@@ -1,3 +1,18 @@
+## Publication addendum — 2026-11-03
+
+**Published source:** `main`  
+**Publication merge:** PR [#2](https://github.com/matros1188q/towerbound-relic-arena/pull/2), merge commit `cc863ce94970af7d389456c1a7da8cdc941cfce8`  
+**Integrated source branch:** `feature/combat-and-presentation-pass`  
+**Rollback:** the pre-existing backup branches and legacy tags remain available.
+
+The audited seven-class implementation is now merged into `main`. The entry page on `main` references `rpg-mode.js`, `rpg-expansion.js`, `rpg-rework-v2.js`, `rpg-rework-ui.css.js` and `rpg-rework-ui.js`. The published `rpg-mode.js` contains all seven classes: Убийца, Епископ, Драконит, Разрушитель, Владыка стихий, Дуэлянт and Шаман. The 34 balance configs and 420-skill catalog are present on `main`.
+
+The full-game audit and RPG CI passed on the exact feature-branch source commit `7e7717d6f6da28a6978ef46c67dad10be5c68237` (run [41703953943](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/41703953943)). The cross-browser run [41703953941](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/41703953941) was initially cancelled and its retry was still running at the time of this addendum; do not interpret that run as a pass. Physical iPhone Safari has not been manually certified.
+
+The original audit text below records the state at the time it was written. Statements there that `main` was unchanged or that publication was pending are historical, superseded by this addendum.
+
+---
+
 # Combat & Presentation Pass — итоговый аудит
 
 Дата: 2026-11-03  
