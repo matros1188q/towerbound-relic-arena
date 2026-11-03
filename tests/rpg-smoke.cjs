@@ -55,7 +55,7 @@ const {chromium}=require('playwright');
   await page.waitForSelector('#tbRpg .tb-v2');
   await page.locator('[data-action="play"]').click();
   assert.equal(await page.locator('.tb-map-node').count(),250,'all 250 map stages render');
-  await page.locator('[data-action="profile"]').click();
+  await page.locator('.tb-map-actions [data-action="profile"]').click();
   await page.locator('[data-branch="bleed"]').click();
   await page.locator('[data-tab="talents"]').click();
   await page.locator('[data-talent="bleed.talent.1"]').click();
