@@ -1,6 +1,6 @@
 # Towerbound: Relic Arena
 
-Mobile-first fantasy RPG / roguelite prototype. The active seven-class implementation is maintained on the separate branch `feature/balance-and-content-pass`; the repository's `main` branch is intentionally preserved as an older four-class baseline.
+Mobile-first fantasy RPG / roguelite. The active seven-class implementation is now merged into `main` and published through GitHub Pages.
 
 ## Active RPG build
 
@@ -14,9 +14,9 @@ Mobile-first fantasy RPG / roguelite prototype. The active seven-class implement
 
 ## Run the active build
 
-Open `index.html` in a modern browser after checking out `feature/balance-and-content-pass`. The project uses browser JavaScript and localStorage; no build step is required.
+Open the published game at https://matros1188q.github.io/towerbound-relic-arena/ or open `index.html` from `main` in a modern browser. The project uses browser JavaScript and localStorage; no build step is required.
 
-To publish this specific build with GitHub Pages, select **Settings → Pages → Deploy from a branch**, choose `feature/balance-and-content-pass`, and select the repository root folder. Publishing `main` will continue to serve the preserved older baseline until the branch is deliberately merged or Pages is configured to use the feature branch.
+GitHub Pages is intended to publish from `main` / repository root. The seven-class implementation was merged from `feature/combat-and-presentation-pass` in PR #2 (merge commit `cc863ce94970af7d389456c1a7da8cdc941cfce8`).
 
 ## Save data and online-service limits
 
@@ -31,5 +31,6 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 ## Historical baseline
 
 - Preserved rollback point: `backup/balance-pass-before-20261103`.
-- `main` is not modified by the balance/content pass.
-- Existing older branches and draft PRs are retained; they are not silently moved or merged.
+- The pre-publication baseline is preserved by `backup/balance-pass-before-20261103` and the legacy rollback branches/tags.
+- The source feature branch is retained; it is now one merge commit behind `main`.
+- Older branches and PR #1 are retained as history; PR #2 is the publication merge.
