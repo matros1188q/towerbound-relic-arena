@@ -1,0 +1,63 @@
+{
+  "gear_inclusive": true,
+  "base_divisor": 1.5,
+  "level_to_stage_anchors": [
+    {
+      "level": 1,
+      "stage": 1,
+      "hp": 500,
+      "dps": 20
+    },
+    {
+      "level": 4,
+      "stage": 10,
+      "hp": 1800,
+      "dps": 30
+    },
+    {
+      "level": 10,
+      "stage": 30,
+      "hp": 3000,
+      "dps": 55
+    },
+    {
+      "level": 16,
+      "stage": 50,
+      "hp": 4200,
+      "dps": 110
+    },
+    {
+      "level": 31,
+      "stage": 100,
+      "hp": 10000,
+      "dps": 300
+    },
+    {
+      "level": 45,
+      "stage": 150,
+      "hp": 22000,
+      "dps": 1040
+    },
+    {
+      "level": 60,
+      "stage": 200,
+      "hp": 35000,
+      "dps": 2000
+    },
+    {
+      "level": 75,
+      "stage": 250,
+      "hp": 50000,
+      "dps": 4400
+    },
+    {
+      "level": 100,
+      "stage": 251,
+      "hp": 80000,
+      "dps": 12000
+    }
+  ],
+  "item_level_contribution": true,
+  "hp_extrapolation": "linear_between_anchors",
+  "dps_extrapolation": "linear_between_anchors"
+}
