@@ -29,3 +29,15 @@
 - Skill flashes are disabled by `disable_skill_flashes`.
 - Legacy set bonuses are aligned to 2/3/5 pieces and unique-set drops use the selected slot index.
 - The follow-up branch is verified by GitHub Actions run `41646530435`; real-device iPhone Safari behavior is not claimed as tested.
+
+
+## Battle UI rework — 2026-11-03
+
+1. The active battle UI is rendered by `rpg-rework-ui.js` inside `#tbRpg`; the legacy arena in `index.html` is not the active RPG battle view.
+2. The six action buttons are the four configured loadout skills plus the class counter ability (slot 5) and ultimate (slot 6). Five potion slots remain governed by existing potion-belt and difficulty rules.
+3. Battle is a full-screen game mode. The global RPG header is hidden while active; pause and ×2 remain in the arena header.
+4. Target cards remain selectable. Three columns are used up to 768px; wider layouts can fit four. Seven targets use compact rows, never an inner scroll list.
+5. Combat state changes that do not change selected target, roster, pause state, boss phase or telegraph presence update the existing DOM in place. Structural transitions may rebuild once.
+6. Document scrolling and touch panning are locked during battle and restored when leaving it.
+7. The requested annotated Git tag could not be created because no create-tag/ref action is exposed by the connected GitHub integration. A rollback branch, `legacy-pre-battle-ui-rework`, was created at the exact pre-change HEAD `77305b8f6405f7d5a9ba9b8beed158540daab0de`; it is a branch, not a tag.
+8. Physical iPhone Safari cannot be driven by the available GitHub connector. Automated browser checks and final real-device verification must be reported separately.

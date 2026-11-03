@@ -208,7 +208,7 @@
   const counterButton='<button type="button" class="tb-panel-skill counter '+(telegraph&&!settings().disable_telegraphs?'telegraph-ready':'')+'" data-counter="1" '+(!telegraph||battle.counterUsed||counterCd||battle.paused||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?'disabled':'')+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>'+counter.icon+' Контр-умение · '+counter.cooldown_seconds+'с</small></button>';
   const ultButton='<button type="button" class="tb-panel-skill ultimate" data-ultimate="1" '+(battle.busy||battle.paused||ultCd||c.resource<(ultimate.resource_cost||balance.resources.action_costs.ultimate)?'disabled':'')+'><kbd>6</kbd><b>'+esc(ultimate.name)+'</b><small>'+ultimate.icon+' Ультимейт · '+ultimate.cooldown_seconds+'с</small></button>';
   return header("Арена · этап "+battle.stage,c.name+" · цели "+remaining+"/"+battle.count)+
-   '<section class="tb-arena '+(battle.fx&&battle.fx.until>Date.now()?'tb-fx-'+battle.fx.kind:'')+(battle.shakeUntil>Date.now()?' tb-shaking':'')+(battle.phaseFlashUntil>Date.now()?' tb-phase-flash':'')+'"><div class="tb-arena-top"><span class="tb-arena-stage-label">АРЕНА · ЭТАП '+battle.stage+phaseLabel+'</span><span>'+(enemy.type==="boss"?"БОСС":enemy.type==="elite"?"ЭЛИТНЫЙ ПРОТИВНИК":"ПРОТИВНИК")+'</span><button data-action="speed" id="speed" '+(!unlocked?"disabled":"")+'>'+(c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ")+'</button><button data-action="pause" id="pause">'+(battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА")+'</button></div>'+
+   '<section class="tb-arena tb-fixed-battle '+(battle.fx&&battle.fx.until>Date.now()?'tb-fx-'+battle.fx.kind:'')+(battle.shakeUntil>Date.now()?' tb-shaking':'')+(battle.phaseFlashUntil>Date.now()?' tb-phase-flash':'')+'"><div class="tb-arena-top"><span class="tb-arena-stage-label">АРЕНА · ЭТАП '+battle.stage+phaseLabel+'</span><span>'+(enemy.type==="boss"?"БОСС":enemy.type==="elite"?"ЭЛИТНЫЙ ПРОТИВНИК":"ПРОТИВНИК")+'</span><button data-action="speed" id="speed" '+(!unlocked?"disabled":"")+'>'+(c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ")+'</button><button data-action="pause" id="pause">'+(battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА")+'</button></div>'+
    '<div class="tb-target-grid">'+targetCards+'</div>'+
    '<div class="tb-combat-layout"><div class="tb-enemy-focus"><div class="tb-enemy-role-icon">'+(roleIcon[enemy.role]||"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":enemy.type==="elite"?"Элита башни":"Страж башни")+'</div><div class="tb-enemy-vulnerability"><span title="Уязвимость">'+elementIcon(enemy.weakness)+' '+elementLabel(enemy.weakness)+'</span><span class="resist" title="Резист">'+elementIcon(enemy.resistance)+' '+elementLabel(enemy.resistance)+'</span></div>'+telegraphMarkup+'<div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.max(0,Math.ceil(battle.enemyHp))+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div>'+
    '<div class="tb-battle-hero"><div class="tb-hero-art '+(engine.getRefinementGlow(c)||"")+'"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><small>'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</small><div class="tb-resourcebar"><span style="width:'+Math.min(100,c.resource/c.resourceMax*100)+'%"></span></div><small>'+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small>'+procMarkup+'</div></div>'+
@@ -290,6 +290,7 @@
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);
+  if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span"),card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');number.className="tb-floating-damage";number.textContent="-"+dealt;if(card){const box=card.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top)+"px";}layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss")updateBossPhase();
   return{damage,dealt,multiplier,killed:target.hp<=0};
@@ -440,13 +441,59 @@ function resolveEnemyTelegraph(){
   c.run.playerHp=Math.min(c.run.playerHp,engine.maxHp(c));save();render();
  }
  function showScreen(name){screen=name;render();}
+ function battleRenderKey(){
+  if(!battle)return "";
+  return [battle.stage,battle.targetIndex,battle.bossPhase||0,battle.paused?1:0,battle.telegraph?1:0,(battle.enemies||[]).map(x=>x.index+":"+x.role+":"+(x.alive?1:0)).join(",")].join("|");
+ }
+ function updateBattleDOM(){
+  if(!battle)return;
+  const c=live(),arena=root.querySelector(".tb-arena");if(!arena)return;
+  const hp=engine.maxHp(c),hero=root.querySelector(".tb-battle-hero"),heroBars=hero?.querySelectorAll(".tb-healthbar span,.tb-resourcebar span")||[];
+  if(heroBars[0])heroBars[0].style.width=Math.max(0,c.run.playerHp/hp*100)+"%";
+  if(heroBars[1])heroBars[1].style.width=Math.min(100,c.resource/Math.max(1,c.resourceMax)*100)+"%";
+  const heroSmall=hero?.querySelectorAll("small")||[];
+  if(heroSmall[1])heroSmall[1].textContent=Math.ceil(c.run.playerHp)+" / "+hp+" HP";
+  if(heroSmall[2])heroSmall[2].textContent=classData(c).resource+": "+c.resource+"/"+c.resourceMax;
+  const focus=root.querySelector(".tb-enemy-focus"),enemyBar=focus?.querySelector(".tb-healthbar.enemy span");
+  if(enemyBar)enemyBar.style.width=Math.max(0,battle.enemyHp/Math.max(1,battle.enemyMax)*100)+"%";
+  const focusSmall=focus?.querySelectorAll("small")||[];
+  if(focusSmall.length)focusSmall[focusSmall.length-1].textContent=Math.max(0,Math.ceil(battle.enemyHp))+" / "+battle.enemyMax+" HP"+(battle.shield>0?" · Щит "+battle.shield:"");
+  (battle.enemies||[]).forEach(target=>{
+   const card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');if(!card)return;
+   const bar=card.querySelector(".tb-target-hp i");if(bar)bar.style.width=Math.max(0,target.hp/Math.max(1,target.maxHp)*100)+"%";
+   const small=card.querySelectorAll("small");if(small.length)small[small.length-1].textContent=Math.max(0,Math.ceil(target.hp))+" HP";
+   card.disabled=!target.alive;card.classList.toggle("defeated",!target.alive);card.classList.toggle("selected",target.index===battle.targetIndex);
+  });
+  const hit=root.querySelector("#hit");if(hit)hit.disabled=!!(battle.busy||battle.paused);
+  const slots=ensureLoadout(c);
+  root.querySelectorAll("[data-panel-skill]").forEach(button=>{const skill=slots[Number(button.dataset.panelSlot)],cd=skill?(battle.skillCooldowns?.[skill.id]||0):Infinity;button.disabled=!skill||battle.busy||battle.paused||cd>Date.now();});
+  const counter=counterAbility(c),ult=ultimateAbility(c);
+  const counterButton=root.querySelector("[data-counter]");if(counterButton)counterButton.disabled=!battle.telegraph||battle.counterUsed||battle.counterReadyAt>Date.now()||battle.paused||c.resource<(counter.resource_cost||balance.resources.action_costs.counter);
+  const ultButton=root.querySelector("[data-ultimate]");if(ultButton)ultButton.disabled=battle.busy||battle.paused||battle.ultimateReadyAt>Date.now()||c.resource<(ult.resource_cost||balance.resources.action_costs.ultimate);
+  const potionEnabled=balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt&&!c.run.stage.potionUsedTargets?.includes(battle.targetIndex);
+  root.querySelectorAll("[data-belt-use]").forEach(button=>{const slot=engine.potionBeltSnapshot(c.id).find(x=>x.slot===Number(button.dataset.beltUse));button.disabled=!slot||!slot.itemId||slot.available<=0||!potionEnabled||battle.busy||battle.paused;});
+  const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
+  const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
+  const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph)telegraph.textContent=Math.max(0,(battle.telegraph.until-Date.now())/1000).toFixed(1)+" сек";
+  arena.classList.toggle("tb-shaking",!!(battle.shakeUntil>Date.now()));
+  arena.classList.toggle("tb-phase-flash",!!(battle.phaseFlashUntil>Date.now()));
+  ["attack","skill","ultimate","telegraph"].forEach(kind=>arena.classList.toggle("tb-fx-"+kind,!!(battle.fx&&battle.fx.kind===kind&&battle.fx.until>Date.now())));
+  const fx=root.querySelector(".tb-fx-layer");if(fx)fx.style.setProperty("--tb-fx-color",battle.fx?.color||"#f3c968");
+ }
  function render(){
   if(!engine)return;
-  if(screen==="characters")root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
+  const isBattle=screen==="battle"&&!!battle;
+  document.body.classList.toggle("tb-battle-lock",isBattle);
+  document.documentElement.classList.toggle("tb-battle-lock",isBattle);
+  if(isBattle){
+   const existing=root.querySelector(".tb-arena"),key=battleRenderKey();
+   if(existing&&existing.dataset.renderKey===key){updateBattleDOM();return;}
+   root.innerHTML='<div class="tb-v2">'+battleScreen()+'</div>';
+   const arena=root.querySelector(".tb-arena");if(arena)arena.dataset.renderKey=key;
+  }else if(screen==="characters")root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
   else if(screen==="map")root.innerHTML='<div class="tb-v2">'+mapScreen()+'</div>';
   else if(screen==="profile")root.innerHTML='<div class="tb-v2">'+profileScreen()+'</div>';
   else if(screen==="shop")root.innerHTML='<div class="tb-v2">'+shopScreen()+'</div>';
-  else if(screen==="battle"&&battle)root.innerHTML='<div class="tb-v2">'+battleScreen()+'</div>';
   else if(screen==="systems")root.innerHTML='<div class="tb-v2">'+systemsScreen()+'</div>';
   else if(screen==="death")root.innerHTML='<div class="tb-v2">'+deathScreen()+'</div>';
   else root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
