@@ -132,8 +132,8 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
   const enemyStats=e.getEnemyStats(c.id,75,enemy);let enemyHp=enemyStats.hp,turn=0;
   while(enemyHp>0&&turn<1000){
    turn++;
-   let damage=energy>=22?stats.dps*2.5:stats.dps*.5;
-   if(energy>=22)energy-=22;
+   let damage=energy>=balance.resources.action_costs.attack_skill?stats.dps*2.5:stats.dps*.5;
+   if(energy>=balance.resources.action_costs.attack_skill)energy-=balance.resources.action_costs.attack_skill;
    else energy=Math.min(live.resourceMax,energy+Math.round(live.resourceMax*.2));
    if(enemy.role==='tank'&&turn%3===0)damage*=.7;
    enemyHp-=damage;
@@ -159,10 +159,11 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(first.quantity,beforeFirst,'unassigned stack is never consumed');
  assert.equal(live.bag.find(item=>item.id==='second-stack').quantity,1);
  assert.equal(live.run.playerHp,Math.round(e.maxHp(live)*0.6));
- assert.throws(()=>e.usePotionBelt(c.id,0),/slot/);
+ e.usePotionBelt(c.id,0);
+ assert.equal(live.bag.some(item=>item.id==='second-stack'),false,'a potion can be used again on a later turn');
  assert.equal(balance.healing.potion_belt_slots,5);
  assert.equal(balance.healing.potion_stack_limit,25);
- assert.equal(balance.healing.one_potion_per_enemy,true);
+ assert.equal(balance.healing.one_potion_per_enemy,false);
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];

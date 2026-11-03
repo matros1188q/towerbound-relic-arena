@@ -608,7 +608,7 @@
    if(enemy?.type==="boss"&&runModifiers(character).some(modifier=>modifier.boss_no_potion))throw new Error("Daily or seasonal modifier disables potions on bosses");
    if(!difficultyOf(character).potion_belt)throw new Error("Potion belt is disabled in Hardcore");
    stage.potionUsedTargets=stage.potionUsedTargets||[];
-   if(stage.potionUsedTargets.includes(targetIndex))throw new Error("The healing slot for this enemy has already been consumed");
+   
    const potion=character.bag.find(item=>(!stackId||item.id===stackId)&&item.type==="healing_potion"&&item.quantity>0);
    if(!potion)throw new Error("No healing potions available");
    potion.quantity--;stage.potionUsedTargets.push(targetIndex);stage.potionSlotUsed=true;
