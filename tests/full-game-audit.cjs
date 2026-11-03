@@ -10,7 +10,7 @@ const balance=Object.fromEntries(fs.readdirSync(balanceDir).filter(n=>n.endsWith
 const classes=read('configs/balance/classes.json').classes;
 const skillManifest=read('configs/skills/manifest.json');
 const skillCatalog=read('configs/skills/catalog.json');
-const skills=Object.values(skillCatalog);
+const skills=Object.values(skillCatalog);\nconst skillById=new Map(skills.map(skill=>[skill.id,skill]));
 const classIds=['assassin','bishop','dragonkin','destroyer','elemental','duelist','shaman'];
 assert.deepEqual(Object.keys(classes).sort(),classIds.slice().sort(),'exactly seven playable classes are configured');
 assert.equal(Object.keys(balance).length,34,'all 34 runtime balance files are loaded');
@@ -29,7 +29,7 @@ for(const classId of classIds){
   const branchSkills=skillManifest.classes[classId][branch.id];
   assert.equal(branchSkills.length,20,classId+'/'+branch.id+' has twenty skill entries');
   branchSkills.forEach((id,index)=>{
-   const skill=skillCatalog.find?skillCatalog.find(x=>x.id===id):skillCatalog[Number(id.split('.').pop())];
+   const skill=skillById.get(id);
    assert.ok(skill&&skill.id===id,classId+'/'+branch.id+' skill catalog entry exists: '+id);
    assert.equal(skill.class_id,classId);
    assert.equal(skill.branch_id,branch.id);
