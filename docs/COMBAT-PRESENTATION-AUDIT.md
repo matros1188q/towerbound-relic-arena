@@ -113,3 +113,8 @@ The final smoke ran in headless Chromium at mobile viewport dimensions. It is no
 Added `tests/full-game-audit.cjs` and wired it into the RPG CI. It checks all 34 balance files, the seven classes and 21 specializations, all 210 talent definitions and 3 ranks per talent, all 420 skill catalog entries and their 420 individual JSON files, plus the manifest-to-config mapping. It exhaustively builds 250 map plans for each class (1,750 plans total, including 175 boss plans), validates stage counts and enemy matchups, and round-trips a saved active run for every class. It also validates 54 manifest-backed hero/enemy/boss/skill/synergy assets, the relic PNG collection, achievements, tutorial and equipment thresholds.
 
 The cross-browser workflow now runs actual Playwright journeys in Chromium, Firefox and WebKit at desktop and mobile viewport sizes on the working feature branches. Character-rig asset QA and rig-runtime tests are also enabled on those branches. These are automated desktop browser engines; WebKit mobile viewport emulation is not a physical iPhone Safari certification.
+
+
+### Cross-browser test correction
+
+The initial cross-browser script was still driving the retired legacy title/hero flow and failed because its old `#enterArenaBtn` is hidden in the current RPG entry. It has been replaced with journeys against the current RPG UI: boot, seven-class creation screen, character creation, persisted reload, 250-stage map, horizontal-overflow check and uncaught/request failure checks across Chromium, Firefox and WebKit at desktop/mobile viewport sizes.
