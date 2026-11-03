@@ -1,56 +1,47 @@
-# Balance & Content Pass — итоговый аудит
+# Balance & Content Pass — final audit
 
-Рабочая ветка: `feature/balance-and-content-pass`.
+## Final verification
 
-## Git-состояние и сохранность
+<badge>Green · GitHub Actions</badge>
 
-- Точная резервная ветка до начала этой итерации: `backup/balance-pass-before-20261103`, SHA `16bb1fcc63a24b3b476d9ff44024fb66eb6cf419`.
-- `main` остаётся на старой версии из четырёх классов, SHA на момент последней проверки: `23620ee7bd2a7d4d1488fb97d3a41737843749be`.
-- Ветка разработки семиклассовой версии не влита в `main`; текущая работа также остаётся только в feature-ветке.
-- Существующая `legacy-pre-balance-pass` была занята другой, более ранней ревизией. Её не перемещали и не перезаписывали.
-- Git-тег `legacy-before-balance-pass` не создан: используемая интеграция GitHub не предоставила действие создания тегов. Не выдаём резервную ветку за тег.
+- Successful workflow run: `41636072851`.
+- Verified code head for that run: `7cd961478491b43c2517bffa66ed95b35eb2f4bf`.
+- All steps succeeded: `node --check` for the RPG engine/UI/CSS and legacy scripts; static seven-class expansion checks; full engine/config regression suite; Playwright Chromium browser smoke.
+- The later documentation-only commit does not alter runtime code. The most recent runtime code exercised by CI is the successful head above.
 
-## Реализация по пунктам
+## Implemented and checked
 
-| № | Система | Состояние после прохода |
-|---|---|---|
-| 2 | Скорость боя и ×2 | Единый интервал атаки врага — 2.5 с; при ×2 — 1.25 с. ×2 недоступен на первом прохождении и даёт XP ×0.8 на повторах. Таймер интерфейса берётся из боевого движка. |
-| 3 | Кривые HP/DPS | Добавлены кривые по опорным уровням. Движок делит gear-inclusive кривую на 1.5 и применяет бонус предметов. |
-| 4 | Элитки и боссы | Живые HP/урон идут из `mobs.json` и `bosses.json`: элитка ×3 HP/×1.5 урон, босс ×6 HP/×2.5 урон. Новичковое исключение босса карты10 сохранено. |
-| 5 | Гаунтлеты 3/5/7 | Диапазоны исправлены: 1–50 и 101–199 — только 3/5; 51–100 и 200–250 — 3/5/7. Каждая десятая карта остаётся отдельным одиночным боссом. |
-| 6 | Item level | Уровень предмета равен этапу получения, максимум120; бонус — 0.07% за уровень предмета. Шесть предметов ilvl120 дают 50.4%. |
-| 7 | BP и героик | Проверены контрольные значения BP на уровнях75/100 с комплектом ilvl120, тиры PvP и порог входа в героик 15,000 BP. Если BP недостаточно, этап250 остаётся доступным для повторного фарма. |
-| 8 | Пояс зелий | Пять быстрых слотов назначаются на конкретные стеки; UI потребляет именно назначенный стек. Лечение — 40% максимального HP, один расход на врага. Hardcore отключает пояс; модификатор «босс без зелий» блокирует зелье и на ежедневном, и на сезонном уровне. |
-| 9 | Серебро и вампиризм | Серебро за мобов 4/6/9/12/16 по диапазонам карт. Исправлены цены лечения и премиума за серебро. Реальный урон игрока и DoT вызывает вампиризм по классовым коэффициентам; лечение навыками на элитках/боссах ограничено. |
-| 10 | Easy / Normal / Hardcore | Сложности имеют отдельные правила жизней, потери XP/предметов, авто-боя, пояса и чекпоинтов. Экран смерти показывает фактические параметры выбранной сложности. |
-| 11 | Потеря предмета | Выбор только среди незакреплённых рюкзачных предметов с заданными весами редкости. Экипировка и боссовый лут защищены; UI использует рассчитанный шанс. |
-| 12 | Крафт камней | 20 материалов создают камень I уровня под текущую специализацию; пять одинаковых камней объединяются в следующий ранг. Добавлены кнопки крафта и слияния. |
-| 13 | Источники дропа | Правила вынесены в `dropEligibility`: долото — любой враг; камень — элитка/босс с этапа100; свиток брони — любой heroic-враг; свиток оружия — heroic-элитка/босс. Материалы: 10 с элитки, 50 с босса. |
-| 14 | Асинхронный PvP | Ghost-снимки хранятся 7 дней, матчмейкинг расширяет окно тира и использует fallback-бота. Добавлен локальный симулятор дуэли, аккаунтные PvP-очки и покупки в PvP-магазине. Это локальная модель браузера, не глобальный онлайн-сервис. |
-| 15 | Сезон и daily | Сезонный модификатор на 90 дней и ежедневный модификатор разделены, фиксируются при старте забега и влияют на реальные характеристики/награды. Ежедневные задания и дневной босс подключены к состоянию игрока. |
-| 16 | Сопутствующие системы | Добавлены/подключены аккаунтный XP-уровень, однократный стартовый набор, лимит5 персонажей, общий стеш20 слотов, подтверждение сброса/удаления по имени, туториал, 30 достижений, 25 уникальных записей лора, комбат-лог20, настройки, пауза/автопауза и парагон. |
-| 17 | Тесты и конфиги | Регрессионный тест загружает30 balance-конфигов и проверяет основные числовые правила. CI проверяет синтаксис, статический семиклассовый каталог, runtime-тесты и Playwright smoke. |
+| Requirement | Final status |
+|---|---|
+| Combat cadence and ×2 | One configured 2.5-second base enemy interval; ×2 sets 1.25 seconds and retains the 0.8 XP multiplier; first-clear speed restriction remains enforced. |
+| HP/DPS curves | Gear-inclusive character curves use the configured 1.5 divisor and per-item-level bonus; engine and arena UI consume the same enemy-stat source. |
+| Normal / elite / boss | Elite uses ×3 HP and ×1.5 damage; boss uses ×6 HP and ×2.5 damage; stage-10 newbie boss exception is retained. |
+| Enemy groups | Bosses remain solo every tenth stage. Seven-enemy gauntlets are permitted only on configured ranges 51–100 and 200–250; tests avoid boss floors when sampling gauntlet rules. |
+| Item level and BP | Item level is capped at 120, +0.07% main stat per item level; BP anchors and five tiers are regression-tested; heroic requires 15,000 BP. |
+| Potion belt | Five quick slots, assigned-stack consumption, one potion per enemy and +40% maximum HP; Hardcore disables the belt; elite/boss healing-skill restrictions are enforced. |
+| Economy and vampirism | Stage silver brackets 4/6/9/12/16; consumable and premium prices are config-driven; vampirism applies to actual direct and DoT damage with class fractions. |
+| Difficulty and death | Easy / Normal / Hardcore rules for lives, XP loss, checkpoints, auto-battle and belt; backpack item loss is rarity-weighted; equipped and boss-loot items are protected. |
+| Materials and equipment drops | 20 crafting materials create a level-I specialization stone; five matching stones merge to the next rank; elite/boss material rewards are 10/50; salvage converts equipment into materials. |
+| Chisel, enhancement stones and scrolls | Source eligibility is centralized and tested: chisel from any enemy; enhancement stones from elite/boss from stage 100; armor scrolls from heroic enemies; weapon scrolls from heroic elite/boss. |
+| PvP | Seven-day ghost snapshots, tier-window matching with bot fallback, daily limits, account PvP points, duel simulation, PvP store and one class epic per class/account. |
+| Seasons and dailies | Quarterly season modifier locked at run start; daily modifier and three quests; elite-kill and branch-skill metrics feed daily progress; daily boss is available once per day; local weekly top-100 list. |
+| Account and supporting systems | Account level/cap, one-time starter grant, five-character cap, 20-slot shared stash and transfer binding, double-confirm reset/delete, six-step tutorial, 30 achievements, 25 unique lore entries, 20-event combat log, settings, focus pause and paragon. |
+| Regression and browser verification | 30 runtime config files load in engine tests; seven classes / 21 branches / 420 skills; browser smoke covers creation, persistence, map, branch/talent, equip/refine, salvage/craft, shop, settings, tutorial, PvP and ×2. |
 
-## Важные числовые решения
+## Preserved branch state
 
-- (4400 / 1.5 = 2933.33), поэтому оценка «около2925 базового DPS» является приблизительной. При этом +0.07% за уровень предмета и итоговые +50.4% от шести ilvl120 предметов сохранены буквально.
-- Точные серебряные скобки за мобов имеют приоритет над ориентиром 13–14 тысяч за весь маршрут: итоговая сумма зависит от случайной длины гаунтлетов и набора врагов.
-- Скоростное достижение засчитывается за завершённый повторный этап с ×2, а не за первый проход: первый проход и ×2 взаимоисключаются.
-- Daily и season modifiers применяются независимо; если совпадают по ID, один и тот же модификатор не удваивается дважды.
+- Work branch: `feature/balance-and-content-pass`.
+- Exact pre-pass rollback branch: `backup/balance-pass-before-20261103` → `16bb1fcc63a24b3b476d9ff44024fb66eb6cf419`.
+- `main` remained at `23620ee7bd2a7d4d1488fb97d3a41737843749be` during verification.
+- GitHub compare showed the work branch ahead of `main`; no merge was performed.
+- The pre-existing `legacy-pre-balance-pass` branch was not moved because it already referred to an older revision.
+- A Git tag was not created: the connected GitHub actions expose branch creation/commit updates but not a Git-tag creation operation. The exact rollback branch is the available restore point.
+- The older open draft PR #1 remains untouched and targets a different head branch.
 
-## Проверка
+## Boundaries that are not represented as production services
 
-- GitHub Actions подтвердили прохождение `node --check` для движка, UI и legacy-скриптов.
-- `tests/rpg-expansion-static.cjs` прошёл: 7 классов, 21 ветка специализаций, таланты, комплекты и экономика.
-- `tests/rpg-rework-v2.test.cjs` прошёл: все30 конфигов и основные боевые/экономические правила, включая daily modifiers, крафт и награды.
-- Полный Playwright smoke в Chromium прошёл на GitHub Actions run `41633161099` (коммит `03b8fa8a1683cb1d3b36f2ce01061daa8fde55a3`): создание/сохранение персонажа, 7 классов, карта250, ветка/таланты, экипировка/заточка, серебряный и алмазный магазины, экран аккаунта, настройки, туториал, ghost-PvP, вход в бой и переключение ×2.
-- Для нового UI исправлен конфликт со старым глобальным CSS `#tbRpg section { display:flex }`: профиль, магазин, карта и системные экраны теперь имеют явную блочную/вертикальную раскладку. В боевом UI исправлен вызов `currentEnemy`: метод принимает объект персонажа, а не ID.
-- Ручной прогон в реальном Safari/iPhone не выполнялся из GitHub Actions. Автоматическая проверка использует Chromium в CI.
-
-## Границы browser-only прототипа
-
-Сохранения персонажей, ghost-копии, аккаунтные очки, склад, недельный рейтинг и покупки за PvP-очки работают в локальном состоянии браузера. Это не обеспечивает синхронизацию между устройствами, реальный глобальный matchmaking, античит или публичный серверный топ-100. Пакеты алмазов отображаются, но платёжный провайдер не подключён; клиентский код не может подтвердить реальную оплату.
-
-## Последняя точка безопасного отката
-
-`backup/balance-pass-before-20261103` → `16bb1fcc63a24b3b476d9ff44024fb66eb6cf419`.
+- Account data, PvP ghosts, matchmaking, PvP currency, stash and weekly ranking are browser-local. They do not provide cross-device sync, protected global competition or anti-cheat.
+- The daily boss is currently resolved by a deterministic prototype combat-power/round calculation from the account screen, not by a separate full animated arena encounter.
+- Real-money diamond payments are not integrated. Displayed package prices do not prove or grant a payment.
+- Browser UI smoke is executed in headless Chromium at a mobile-sized viewport; this is not a manual iPhone Safari certification.
+- GitHub Pages deployment settings were not changed. To serve this branch, configure Pages to publish `feature/balance-and-content-pass` from the root; publishing `main` still serves the preserved baseline until an explicit merge.
