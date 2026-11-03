@@ -1,0 +1,16 @@
+{
+  "id": "assassin.bleed.18",
+  "class_id": "assassin",
+  "branch_id": "bleed",
+  "name": "Абсолютная техника: Багровый шторм",
+  "unlock_level": 91,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Абсолютная техника: Багровый шторм — bleed specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

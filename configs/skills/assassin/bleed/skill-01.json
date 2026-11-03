@@ -1,0 +1,16 @@
+{
+  "id": "assassin.bleed.01",
+  "class_id": "assassin",
+  "branch_id": "bleed",
+  "name": "Рваная рана",
+  "unlock_level": 10,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "dot",
+  "description": "Рваная рана — bleed specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

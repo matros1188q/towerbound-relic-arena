@@ -1,0 +1,16 @@
+{
+  "id": "assassin.bleed.14",
+  "class_id": "assassin",
+  "branch_id": "bleed",
+  "name": "Высшая техника: Алый водоворот",
+  "unlock_level": 72,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Высшая техника: Алый водоворот — bleed specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

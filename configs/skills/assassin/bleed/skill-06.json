@@ -1,0 +1,16 @@
+{
+  "id": "assassin.bleed.06",
+  "class_id": "assassin",
+  "branch_id": "bleed",
+  "name": "Сердце палача",
+  "unlock_level": 34,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Сердце палача — bleed specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
