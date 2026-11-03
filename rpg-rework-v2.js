@@ -60,7 +60,7 @@
    if(nickname.length<2||nickname.length>18)throw new Error("Character name must be between 2 and 18 characters");
    if(state.characters.some(item=>item.name.toLowerCase()===nickname.toLowerCase()))throw new Error("Character name already exists");
    const character={
-    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],
+    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],resource:0,resourceMax:classTable[classId].resource_max||100,
     silver:balance.economy.starting_silver,bag:[{id:id(),type:"healing_potion",quantity:balance.healing.starting_potions}],
     gear:[null,null,null,null,null,null],heroic:false,
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
@@ -144,7 +144,7 @@
    options=options||{};
    const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",
     stats:{attack:character.level,defense:Math.round(character.level/2),health:character.level*2},
-    refine:0,sockets:[],enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
+    refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
    character.bag.push(item);
    character.run.foundItemIds.push(item.id);
    return item;
@@ -178,6 +178,21 @@
    const base=enemyXp(enemy,stage);
    const gained=awardXp(character,base*multiplier);
    const loot=rollLoot(character,enemy,stage,firstClear,false);
+   const materials=[];
+   if(random()<balance.equipment.chisel_drop_chance){const material={id:id(),type:"chisel",quantity:1,foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);}
+   if(stage>=balance.equipment.stone_unlock_stage&&character.branch&&random()<balance.equipment.stone_drop_chance){
+    const stoneType={classId:character.classId,branchId:character.branch,slot:random()<0.5?"weapon":"armor"};
+    const material={id:id(),type:"enhancement_stone",stoneType,level:1,foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+   }
+   if(stage>=balance.equipment.refine_unlock_stage&&random()<balance.equipment.refine_stone_drop_chance){
+    const material={id:id(),type:"refine_stone",quantity:1,foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+   }
+   if(character.heroic&&random()<balance.equipment.enchantment.armor_scroll_chance){
+    const material={id:id(),type:"enchant_scroll",slot:"armor",foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+   }
+   if(character.heroic&&random()<balance.equipment.enchantment.weapon_scroll_chance){
+    const material={id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+   }
    character.stats.kills++;
    character.silver+=balance.economy.silver_drop[enemy.type]||0;
    stageData.enemyIndex++;
@@ -199,7 +214,7 @@
     }
     if(stage>=balance.map.total_stages&&character.heroic)character.run.active=false;
    }
-   return{xp:gained.amount,loot:clone(loot),stageComplete:done,progress:clone(character.progress),playerHp:character.run.playerHp};
+   return{xp:gained.amount,loot:clone(loot.concat(materials)),stageComplete:done,progress:clone(character.progress),playerHp:character.run.playerHp};
   }
   function useHealingPotion(characterId){
    const character=getChar(characterId),stage=character.run.stage;
@@ -302,11 +317,20 @@
    const result={id:id(),type:"enhancement_stone",stoneType,level:level+1};
    character.bag.push(result);return clone(result);
   }
+  function addSocket(characterId,itemId){
+   const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId)||character.bag.find(entry=>entry&&entry.id===itemId);
+   if(!item)throw new Error("Equipment not found");
+   if((item.socketsAvailable||0)>=balance.equipment.max_sockets)throw new Error("Maximum socket count reached");
+   const chisel=character.bag.find(entry=>entry.type==="chisel");
+   if(!chisel)throw new Error("No chisel available");
+   character.bag=character.bag.filter(entry=>entry.id!==chisel.id);
+   item.socketsAvailable=(item.socketsAvailable||0)+1;return clone(item);
+  }
   function socketStone(characterId,itemId,stoneId){
    const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId);
    const stone=character.bag.find(entry=>entry.id===stoneId&&entry.type==="enhancement_stone");
    if(!item||!stone)throw new Error("Equipment or stone not found");
-   if(item.sockets.length>=balance.equipment.max_sockets)throw new Error("All sockets are occupied");
+   if(item.sockets.length>=(item.socketsAvailable||0))throw new Error("Use a chisel to add an equipment socket first");
    if(stone.stoneType.classId!==character.classId||stone.stoneType.branchId!==character.branch)throw new Error("Stone does not match the active specialization");
    item.sockets.push({stoneType:stone.stoneType,level:stone.level});
    character.bag=character.bag.filter(entry=>entry.id!==stoneId);
@@ -316,9 +340,12 @@
    settings=settings||{};
    const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId)||character.bag.find(entry=>entry&&entry.id===itemId);
    if(!item)throw new Error("Equipment not found");
+   const refineStone=character.bag.find(entry=>entry.type==="refine_stone");
+   if(!refineStone)throw new Error("No refinement stone available");
    if(item.refine>=balance.equipment.refine_max)throw new Error("Maximum refinement reached");
    const tier=balance.equipment.refine_tiers.find(entry=>item.refine>=entry.from&&item.refine<=entry.to);
    if(!tier)throw new Error("No refinement tier configured");
+   character.bag=character.bag.filter(entry=>entry.id!==refineStone.id);
    const safe=!!settings.safe||character.bag.some(entry=>entry.type==="safe_refine");
    const chance=clamp(tier.chance+(settings.chanceBonus||0),0,1);
    const success=random()<chance;
@@ -386,10 +413,11 @@
    return{sent:value,fee,received,donorSilver:donor.silver,receiverSilver:receiver.silver};
   }
   function chooseBranch(characterId,branchId,price){
-   const character=getChar(characterId),available=classTable[character.classId].branches;
+   const character=getChar(characterId),available=classTable[character.classId].branches.map(entry=>typeof entry==="string"?entry:entry.id);
    if(character.level<10)throw new Error("Specialization unlocks at level 10");
    if(!available.includes(branchId))throw new Error("Invalid specialization");
-   const cost=price===undefined?balance.classes.respec_cost:price;
+   if(character.branch===branchId)return branchId;
+   const cost=character.branch===null?0:(price===undefined?balance.classes.respec_cost:price);
    if(character.silver<cost)throw new Error("Not enough silver for specialization change");
    character.silver-=cost;character.branch=branchId;return branchId;
   }
@@ -415,7 +443,7 @@
   return{state,balance,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,finishEnemy,useHealingPotion,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
-   rollLoot,mergeStones,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,
+   rollLoot,mergeStones,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot};
  }
  return{createEngine};
