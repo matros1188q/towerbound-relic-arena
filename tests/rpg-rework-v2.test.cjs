@@ -27,7 +27,7 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  assert.equal(e.stagePlan(c,10).mobs[0].type,'boss');
 }
 {
- const e=engine(),c=create(e),live=e.state.characters[0];live.progress.currentStage=51;live.run.playerHp=50;
+ const e=engine(),c=create(e),live=e.state.characters[0];live.progress.highestEver=50;live.progress.currentStage=51;live.run.playerHp=50;
  const heal=e.checkpointHeal(c.id);
  assert.equal(heal.penaltyUntil,100);assert.equal(heal.remaining,50);
  assert.throws(()=>e.checkpointHeal(c.id),/penalty/);
