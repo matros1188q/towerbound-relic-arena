@@ -2,14 +2,14 @@
 
 Дата: 2026-11-03  
 Рабочая ветка: `feature/combat-and-presentation-pass`  
-Проверенный runtime commit: `ed2659949a0658c4d1a3d766a0af9ea0408effa1`
+Проверенный runtime commit: `2eed2aecbdf5bd82d75a3c6de3ac0482614b66ba` (первый runtime commit этого прохода: `ed2659949a0658c4d1a3d766a0af9ea0408effa1`)
 
 ## Сохранность Git
 
 - `main` не изменялась; проверенный HEAD: `23620ee7bd2a7d4d1488fb97d3a41737843749be`.
 - Исходная семиклассовая версия сохранена тегом `legacy-before-combat-pass` → `f1e0f18e0169e6915425add78ccfafc78e24f2b8`.
 - Резервная ветка `legacy-pre-combat-pass` указывает на тот же исходный commit.
-- Все изменения этого прохода находятся только в `feature/combat-and-presentation-pass`.
+- Рабочая ветка `feature/combat-and-presentation-pass` содержит проверенный результат; `fix/audit-pass` синхронизирована с ней как ветка аудита.
 - Ветка не сливалась в `main`.
 
 ## Реализованная боевая система
