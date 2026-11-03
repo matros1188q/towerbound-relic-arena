@@ -67,7 +67,14 @@ const {chromium}=require('playwright');
   await page.waitForSelector('[data-equip="qa-weapon"]');
   await page.locator('[data-equip="qa-weapon"]').click();
   await page.locator('[data-tab="talents"]').click({force:true});
-  await page.waitForSelector('[data-talent="bleed.talent.1"]');
+  const talentDiagnostic=await page.evaluate(()=>{
+   const c=window.TowerboundRework.state.characters[0],root=document.querySelector('#tbRpg');
+   return{classId:c.classId,level:c.level,xp:c.xp,branch:c.branch,talentPoints:c.talentPoints,
+    tabButtons:[...root.querySelectorAll('[data-tab]')].map(x=>({tab:x.dataset.tab,active:x.classList.contains('active')})),
+    talentButtons:root.querySelectorAll('[data-talent]').length,
+    text:root.innerText.slice(0,1500)};
+  });
+  if(!talentDiagnostic.talentButtons)throw new Error('Talent panel diagnosis: '+JSON.stringify(talentDiagnostic));
   await page.locator('[data-talent="bleed.talent.1"]').click();
   assert.match(await page.locator('.tb-talent').first().innerText(),/1\/3/,'branch talent point is applied');
   await page.locator('[data-tab="gear"]').click({force:true});
