@@ -202,6 +202,24 @@
       "classId": "shaman",
       "rarity": "Эпическая",
       "itemLevel": 120
+    },
+    {
+      "id": "pvp_talent_reset",
+      "category": "consumable",
+      "name": "Сброс талантов",
+      "price": 300,
+      "kind": "consumable",
+      "consumableType": "pvp_talent_reset",
+      "consumableId": "pvp_talent_reset"
+    },
+    {
+      "id": "pvp_xp_potion",
+      "category": "consumable",
+      "name": "Зелье опыта",
+      "price": 100,
+      "kind": "consumable",
+      "consumableType": "xp_10",
+      "consumableId": "xp_10"
     }
   ]
 }
