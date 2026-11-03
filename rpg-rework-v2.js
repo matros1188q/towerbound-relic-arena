@@ -379,8 +379,11 @@
   }
   function purchase(characterId,store,catalogItem){
    const character=getChar(characterId),shop=balance.economy[store+"_store"];
-   if(!shop||!Object.prototype.hasOwnProperty.call(shop,catalogItem))throw new Error("Unknown shop item");
-   const price=shop[catalogItem];
+   if(!shop)throw new Error("Unknown shop");
+   let entry=shop[catalogItem],price=entry;
+   if(entry===undefined&&Array.isArray(shop.extra))entry=shop.extra.find(item=>item.id===catalogItem);
+   if(entry&&typeof entry==="object")price=entry.price;
+   if(!Number.isFinite(price))throw new Error("Unknown shop item");
    if(store==="silver"){
     if(character.silver<price)throw new Error("Not enough silver");
     character.silver-=price;
@@ -396,7 +399,8 @@
    }else if(catalogItem.startsWith("premium_")){
     const days=Number(catalogItem.split("_")[1].replace("d",""))||7;
     state.account.premiumUntil=Math.max(state.account.premiumUntil||0,now())+days*86400000;
-   }else character.bag.push({id:id(),type:catalogItem,quantity:1});
+   }else if(entry&&typeof entry==="object")character.bag.push({id:id(),type:entry.effect||catalogItem,itemId:catalogItem,quantity:1});
+   else character.bag.push({id:id(),type:catalogItem,quantity:1});
    return{characterSilver:character.silver,accountDiamonds:state.account.diamonds,premiumUntil:state.account.premiumUntil};
   }
   function transferSilver(fromId,toId,amount){

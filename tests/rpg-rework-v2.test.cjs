@@ -55,7 +55,7 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  const stone=e.mergeStones(c.id,'branch-weapon',1);assert.equal(stone.level,2);
 }
 {
- const e=engine(),c=create(e),live=e.state.characters[0];live.heroic=true;const weapon={id:'w',slot:'weapon',refine:0,sockets:[],stats:{}};live.gear[0]=weapon;
+ const e=engine(),c=create(e),live=e.state.characters[0];live.heroic=true;live.bag.push({id:'refine-stone',type:'refine_stone'});const weapon={id:'w',slot:'weapon',refine:0,sockets:[],stats:{}};live.gear[0]=weapon;
  assert.equal(e.refine(c.id,'w').success,true);assert.equal(e.getChar(c.id).gear[0].refine,1);
  assert.throws(()=>e.rollEnchantScroll(c.id,'w'),/No enchantment scroll/);
 }
