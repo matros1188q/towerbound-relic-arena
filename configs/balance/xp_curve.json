@@ -21,5 +21,8 @@
     "base": 220,
     "per_stage": 1.5,
     "boss_bonus": 300
-  }
+  },
+  "post_75_xp_per_level": 2500000,
+  "post_75_levels": 25,
+  "post_75_total_xp": 62500000
 }
