@@ -393,30 +393,35 @@
    flags=flags||{};
    const character=getChar(characterId),stageData=character.run.stage,enemy=currentEnemy(character),stage=stageData.stage;
    const firstClear=stage>character.progress.highestEver;
-   const multiplier=xpMultiplier(character,stage,{speed2:!!flags.speed2});
-   const base=enemyXp(enemy,stage);
-   const gained=awardXp(character,base*multiplier);
+   const use2x=flags.speed2===undefined?!!character.run.speed2:!!flags.speed2;
+   const multiplier=xpMultiplier(character,stage,{speed2:use2x});
+   const gained=awardXp(character,enemyXp(enemy,stage)*multiplier);
    const loot=rollLoot(character,enemy,stage,firstClear,false);
    const materials=[],dropBuff=activeBuff(character,"drop"),dropMultiplier=dropBuff?dropBuff.multiplier:1;
-   if(random()<Math.min(1,balance.equipment.chisel_drop_chance*dropMultiplier)){const material={id:id(),type:"chisel",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);}
-   if(stage>=balance.equipment.stone_unlock_stage&&character.branch&&random()<Math.min(1,balance.equipment.stone_drop_chance*dropMultiplier)){
+   const addMaterial=item=>{character.bag.push(item);character.run.foundItemIds.push(item.id);materials.push(item);};
+   if(random()<Math.min(1,balance.equipment.chisel_drop_chance*dropMultiplier))
+    addMaterial({id:id(),type:"chisel",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
+   if((enemy.type==="elite"||enemy.type==="boss")&&stage>=balance.equipment.stone_unlock_stage&&character.branch&&random()<Math.min(1,balance.equipment.stone_drop_chance*dropMultiplier)){
     const slot=random()<0.5?"weapon":"armor";
     const stonePool=balance.equipment.stone_types.filter(type=>type.class_id===character.classId&&type.branch_id===character.branch&&type.slot===slot);
     const stoneType=clone(stonePool[Math.floor(random()*stonePool.length)]||{id:character.classId+"."+character.branch+"."+slot,class_id:character.classId,branch_id:character.branch,slot,attack_per_level:slot==="weapon"?1.5:0,defense_per_level:slot==="armor"?1:0,health_per_level:slot==="armor"?3:0});
-    const material={id:id(),type:"enhancement_stone",stoneType,level:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+    addMaterial({id:id(),type:"enhancement_stone",stoneType,level:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    }
-   if(stage>=balance.equipment.refine_unlock_stage&&random()<Math.min(1,balance.equipment.refine_stone_drop_chance*dropMultiplier)){
-    const material={id:id(),type:"refine_stone",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+   if(enemy.type==="elite"||enemy.type==="boss"){
+    const quantity=enemy.type==="elite"?balance.materials.drops.elite_materials:balance.materials.drops.boss_materials;
+    addMaterial({id:id(),type:"craft_material",quantity,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    }
-   if(character.heroic&&random()<Math.min(1,balance.equipment.enchantment.armor_scroll_chance*dropMultiplier)){
-    const material={id:id(),type:"enchant_scroll",slot:"armor",foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
-   }
-   if(character.heroic&&random()<Math.min(1,balance.equipment.enchantment.weapon_scroll_chance*dropMultiplier)){
-    const material={id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
-   }
+   if(stage>=balance.equipment.refine_unlock_stage&&random()<Math.min(1,balance.equipment.refine_stone_drop_chance*dropMultiplier))
+    addMaterial({id:id(),type:"refine_stone",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
+   if(character.heroic&&random()<Math.min(1,balance.equipment.enchantment.armor_scroll_chance*dropMultiplier))
+    addMaterial({id:id(),type:"enchant_scroll",slot:"armor",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
+   if(character.heroic&&(enemy.type==="elite"||enemy.type==="boss")&&random()<Math.min(1,balance.equipment.enchantment.weapon_scroll_chance*dropMultiplier))
+    addMaterial({id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    character.stats.kills++;
-   const silverBuff=activeBuff(character,"silver");
-   character.silver+=Math.round((balance.economy.silver_drop[enemy.type]||0)*(silverBuff?silverBuff.multiplier:1));
+   const silverBuff=activeBuff(character,"silver"),seasonMod=character.run.season?.modifier;
+   const accountBonus=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
+   const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*(seasonMod?.reward_silver_multiplier||1));
+   character.silver+=silver;
    if(enemy.type==="elite")recordDailyProgress(character.id,"elite_kills",1);
    stageData.enemyIndex++;
    const done=stageData.enemyIndex>=stageData.mobs.length;
@@ -427,19 +432,25 @@
     awardXp(character,bonus);
     character.progress.highestEver=Math.max(character.progress.highestEver,stage);
     recordDailyProgress(character.id,"stages_cleared",1);
-    if(balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
+    if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
     if(stage>character.progress.currentStage-1)character.progress.currentStage=stage+1;
     character.run.stage=null;
     character.run.playerHp=maxHp(character);
-    if(stage>=balance.heroic.unlock_after_stage&&!character.heroic){
-     character.heroic=true;
-     character.run.lives=balance.death.lives_per_run||3;
-     character.progress.currentStage=1;
-     character.progress.highestEver=balance.map.total_stages;
+    if(stage>=balance.seasons.reward_first_clear_stage&&!character.run.seasonRewardClaimed&&firstClear){
+     const reward=balance.seasons.season_reward_cosmetic;
+     if(reward&&!state.account.cosmetics.includes(reward))state.account.cosmetics.push(reward);
+     if(character.run.season&&character.run.season.id===ensureSeason().id)ensureSeason().firstClearRewardClaimed=true;
+     character.run.seasonRewardClaimed=true;
     }
-    if(stage>=balance.map.total_stages&&character.heroic)character.run.active=false;
+    if(stage>=balance.heroic.unlock_after_stage&&!character.heroic){
+     character.heroic=true;character.run.lives=balance.difficulty.modes[character.difficulty].lives;
+     character.progress.currentStage=1;character.progress.highestEver=balance.map.total_stages;
+     publishGhost(character,"stage_250_clear");
+    }else if(stage>=balance.map.total_stages&&character.heroic){
+     character.run.active=false;publishGhost(character,"stage_250_clear");
+    }
    }
-   return{xp:gained.amount,loot:clone(loot.concat(materials)),stageComplete:done,progress:clone(character.progress),playerHp:character.run.playerHp};
+   return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,stageComplete:done,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
   }
   function useHealingPotion(characterId){
    const character=getChar(characterId),stage=character.run.stage;
