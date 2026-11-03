@@ -875,7 +875,7 @@
     id:"bot-"+id(),bot:true,name:"Страж арены",classId:"bot",bp,level:character.level,tier:tier.id,
     stats:{attack:Math.round(getCombatStats(character).attack*.95),defense:getCombatStats(character).defense,maxHp:getCombatStats(character).maxHp}
    };
-   daily.duels++;daily.pending={opponentId:opponent.id,startedAt:now(),tier:tier.id};
+   daily.duels++;daily.pending={opponentId:opponent.id,opponent:clone(opponent),startedAt:now(),tier:tier.id};
    return{opponent,duelsRemaining:limit-daily.duels,points:state.account.pvpPoints||0,tier,bot:!!opponent.bot};
   }
   function resolvePvpDuel(characterId,won){
@@ -887,6 +887,17 @@
    if(won)character.stats.pvpWins=(character.stats.pvpWins||0)+1;
    const result={won:!!won,pointsAwarded:reward,totalPoints:state.account.pvpPoints,opponentId:daily.pending.opponentId};
    daily.pending=null;return result;
+  }
+  function simulatePvpDuel(characterId){
+   const character=getChar(characterId),daily=ensurePvpDaily(),pending=daily.pending;
+   if(!pending?.opponent)throw new Error("No opponent snapshot is available");
+   const own=getCombatStats(character),enemy=pending.opponent.stats||{},enemyAttack=Math.max(1,enemy.attack||1),enemyHp=Math.max(1,enemy.maxHp||1),enemyDefense=Math.max(0,enemy.defense||0);
+   const ownAttack=Math.max(1,own.attack),ownHp=Math.max(1,own.maxHp),ownMitigation=mitigationMultiplier(own.defense,character.level);
+   const enemyMitigation=mitigationMultiplier(enemyDefense,pending.opponent.level||character.level);
+   const ownRounds=Math.ceil(enemyHp/Math.max(1,ownAttack*enemyMitigation));
+   const enemyRounds=Math.ceil(ownHp/Math.max(1,enemyAttack*ownMitigation));
+   const won=ownRounds<=enemyRounds;
+   return{...resolvePvpDuel(characterId,won),rounds:Math.min(ownRounds,enemyRounds),opponent:pending.opponent.name||"Соперник"};
   }
   function purchasePvpItem(characterId,itemId){
    const character=getChar(characterId),item=(balance.pvp_store.items||[]).find(entry=>entry.id===itemId);
@@ -1037,7 +1048,7 @@
    rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,startDailyBoss,completeDailyBoss,pvpSnapshot,
-   ensurePvpDaily,matchmakePvp,resolvePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
+   ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
    tutorialStep,claimTutorialReward,claimAchievement,readLore,logCombatEvent,saveSettings,assignParagon,resetParagon};
  }
  return{createEngine};
