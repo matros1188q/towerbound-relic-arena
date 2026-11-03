@@ -230,11 +230,22 @@
   clearTimeout(pendingTimer);pendingTimer=null;
   const c=live(),defeated=battle.enemy,result=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:defeated.index});
   defeated.hp=0;defeated.alive=false;defeated.dead=true;
-  if(c.classId==="destroyer"){const until=Date.now()+balance.procs.destroyer.duration_seconds*1000;battle.playerDamageBuff=balance.procs.destroyer.value;battle.playerBuffUntil=until;battle.proc={...balance.procs.destroyer,expiresAt:until};}
   if(result.loot.length)notify("Добыча: "+result.loot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
    stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этап пройден · HP восстановлено · опыт сохранён");
-  }else{loadBattleEnemy(result.nextTargetIndex);save();render();}
+  }else{
+   const carryShield=battle.nextDamageShield||0;
+   loadBattleEnemy(result.nextTargetIndex);
+   // A proc earned on the killing hit must survive the target reset.
+   battle.nextDamageShield=carryShield;
+   if(c.classId==="destroyer"){
+    const until=Date.now()+balance.procs.destroyer.duration_seconds*1000;
+    battle.playerDamageBuff=balance.procs.destroyer.value;
+    battle.playerBuffUntil=until;
+    battle.proc={...balance.procs.destroyer,expiresAt:until};
+   }
+   save();render();
+  }
  }
  function endFromDamage(){
   const c=live();stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;battle=null;screen="death";render();save();

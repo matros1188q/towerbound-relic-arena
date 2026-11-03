@@ -81,13 +81,15 @@
    return{...clone(config),ratio};
   }
   function resolveReaction(telegraphType,counterId,classId,baseDamage){
-   const counter=counterId?balance.skills.counter_abilities[classId]:null;
-   let damageMultiplier=counterId?0.5:1,cleansesPoison=false;
-   if(telegraphType==="aoe"&&counterId)damageMultiplier=0;
-   else if(telegraphType==="poison"&&counterId){damageMultiplier=0;cleansesPoison=true;}
+   const configured=counterId?balance.skills.counter_abilities[classId]:null;
+   const counter=configured&&configured.id===counterId?configured:null;
+   let damageMultiplier=counter?0.5:1,cleansesPoison=false;
+   if(telegraphType==="aoe"&&counter)damageMultiplier=0;
+   else if(telegraphType==="poison"&&counter){damageMultiplier=0;cleansesPoison=true;}
    else if(counter){
     if(["evade","absorb_all","stun","riposte"].includes(counter.effect))damageMultiplier=0;
     else if(counter.effect==="damage_reduction"||counter.effect==="slow")damageMultiplier=1-(counter.damage_reduction||0.5);
+    if(counter.effect==="cleanse")cleansesPoison=true;
    }
    return{
     damageMultiplier,

@@ -1,0 +1,67 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {createEngine}=require('../rpg-rework-v2.js');
+
+const configDir=path.join(__dirname,'../configs/balance');
+const balance=Object.fromEntries(fs.readdirSync(configDir)
+ .filter(name=>name.endsWith('.json'))
+ .map(name=>[name.slice(0,-5),JSON.parse(fs.readFileSync(path.join(configDir,name),'utf8'))]));
+let clock=Date.UTC(2026,10,3,12);
+const engine=createEngine(balance,{now:()=>++clock,random:()=>0.25});
+
+const classes=['assassin','bishop','dragonkin','destroyer','elemental','duelist','shaman'];
+assert.deepEqual(Object.keys(balance.procs).sort(),classes.slice().sort(),'all seven class procs are configured');
+assert.deepEqual(Object.keys(balance.skills.counter_abilities).sort(),classes.slice().sort(),'all seven class counters are configured');
+
+for(const classId of classes){
+ const counter=balance.skills.counter_abilities[classId];
+ const reaction=engine.resolveReaction('strong_hit',counter.id,classId,100);
+ assert.equal(reaction.counterName,counter.name,classId+' resolves its own counter');
+ assert.equal(reaction.damage,Math.round(100*reaction.damageMultiplier),classId+' counter damage is deterministic');
+ assert.ok(reaction.damage>=0&&reaction.damage<=100,classId+' counter damage is bounded');
+ const aoe=engine.resolveReaction('aoe',counter.id,classId,100);
+ assert.equal(aoe.damage,0,classId+' can counter an area telegraph');
+ const poison=engine.resolveReaction('poison',counter.id,classId,100);
+ assert.equal(poison.damage,0,classId+' can counter a poison telegraph');
+ assert.equal(poison.cleansesPoison,true,classId+' poison counter clears a poison stack');
+}
+{
+ const e=engine.resolveReaction('strong_hit',null,'shaman',100);
+ assert.equal(e.damage,100);
+ assert.equal(e.cleansesPoison,false);
+ const invalid=engine.resolveReaction('strong_hit','not-a-real-counter','assassin',100);
+ assert.equal(invalid.damage,100,'an unknown counter id cannot grant mitigation');
+ const cleanse=engine.resolveReaction('strong_hit',balance.skills.counter_abilities.shaman.id,'shaman',100);
+ assert.equal(cleanse.cleansesPoison,true,'Shaman cleanse removes an existing DoT even on a non-poison telegraph');
+ assert.equal(cleanse.damage,50);
+}
+{
+ for(const [hp,phase] of [[100,1],[71,1],[70,2],[41,2],[40,3],[11,3],[10,4],[0,4]]){
+  assert.equal(engine.bossPhaseInfo(hp,100).phase,phase,'boss phase boundary at '+hp+'%');
+ }
+ const bossPhase4=engine.bossPhaseInfo(5,100);
+ assert.equal(bossPhase4.damage_multiplier,balance.bosses.phases[3].damage_multiplier);
+}
+{
+ const character=engine.createCharacter('Combat QA','assassin');
+ const normal=engine.getEnemyStats(character.id,50,{type:'normal'});
+ const elite=engine.getEnemyStats(character.id,50,{type:'elite'});
+ const boss=engine.getEnemyStats(character.id,50,{type:'boss'});
+ assert.deepEqual([normal.hp,normal.damage],[550,150]);
+ assert.deepEqual([elite.hp,elite.damage],[1650,225]);
+ assert.deepEqual([boss.hp,boss.damage],[3300,375]);
+ const target={weakness:'fire',resistance:'ice'};
+ assert.equal(engine.damageTypeMultiplier(target,'fire'),balance.mobs.vulnerability_multiplier);
+ assert.equal(engine.damageTypeMultiplier(target,'ice'),balance.mobs.resistance_multiplier);
+ assert.equal(engine.damageTypeMultiplier(target,'dark'),1);
+}
+{
+ const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
+ assert.match(ui,/const carryShield=battle\.nextDamageShield\|\|0;[\s\S]*?loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?battle\.nextDamageShield=carryShield/,'Dragonkin shield proc survives target handoff');
+ assert.match(ui,/loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?if\(c\.classId==="destroyer"\)[\s\S]*?battle\.playerDamageBuff=balance\.procs\.destroyer\.value/,'Destroyer kill proc is applied after the target reset');
+ for(const classId of classes)assert.ok(ui.includes('balance.procs.'+classId),'runtime proc trigger exists for '+classId);
+ assert.match(ui,/function processCombo\([\s\S]*?combo\.bonus\.damage_mult/,'combo completion grants configured damage bonus');
+}
+console.log('Combat runtime regression passed: 7 counters, telegraphs, boss phases, enemy stats, elemental matchups, 7 procs, combos and cross-target proc persistence.');
