@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.09",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Хоровод духов",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "heal",
+  "description": "Хоровод духов — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
