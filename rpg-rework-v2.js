@@ -276,8 +276,8 @@
   }
   function createDrop(character,rarity,options){
    options=options||{};
-   const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,
-    stats:{attack:character.level,defense:Math.round(character.level/2),health:character.level*2},
+   const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
+    stats:options.stats||{attack:character.level,defense:Math.round(character.level/2),health:character.level*2},
     refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
    character.bag.push(item);
    character.run.foundItemIds.push(item.id);
@@ -286,15 +286,23 @@
   function rollLoot(character,enemy,stage,firstClear,automatic){
    if(automatic)return[];
    const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=buff?buff.multiplier:1;
+   const uniqueBossDrop=rarity=>{
+    const configured=classTable[character.classId].unique_items||[];
+    const owned=new Set([...(character.bag||[]),...(character.gear||[]).filter(Boolean)].map(item=>item.uniqueId).filter(Boolean));
+    const available=configured.filter(item=>!owned.has(item.id));
+    if(!available.length)return createDrop(character,rarity,{bossLoot:true});
+    const item=available[Math.floor(random()*available.length)];
+    return createDrop(character,rarity,{bossLoot:true,uniqueId:item.id,name:item.name,slot:item.slot,stats:item.stats});
+   };
    if(enemy.type==="boss"){
     if(firstClear&&drops.guaranteed_epic_first_clear_boss)items.push(createDrop(character,"Эпическая",{bossLoot:true,name:"Трофей первого покорения"}));
     if(character.heroic){
      const guaranteed=character.pity.godlikeMisses>=drops.boss_pity_misses;
-     if(guaranteed||random()<Math.min(1,drops.heroic_godlike_chance*dropMultiplier)){items.push(createDrop(character,"Богоподобная",{bossLoot:true}));character.pity.godlikeMisses=0;}
+     if(guaranteed||random()<Math.min(1,drops.heroic_godlike_chance*dropMultiplier)){items.push(uniqueBossDrop("Богоподобная"));character.pity.godlikeMisses=0;}
      else character.pity.godlikeMisses++;
     }else{
      const guaranteed=character.pity.legendaryMisses>=drops.boss_pity_misses;
-     if(guaranteed||random()<Math.min(1,drops.boss_legendary_chance*dropMultiplier)){items.push(createDrop(character,"Легендарная",{bossLoot:true}));character.pity.legendaryMisses=0;}
+     if(guaranteed||random()<Math.min(1,drops.boss_legendary_chance*dropMultiplier)){items.push(uniqueBossDrop("Легендарная"));character.pity.legendaryMisses=0;}
      else character.pity.legendaryMisses++;
     }
    }else if(enemy.type==="elite"){

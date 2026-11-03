@@ -352,19 +352,43 @@
           "id": "assassin.unique.weapon",
           "slot": "weapon",
           "quality": "Легендарная",
-          "name": "Убийца · реликтовое оружие"
+          "name": "Убийца · реликтовое оружие",
+          "stats": {
+            "attack": 18,
+            "defense": 0,
+            "health": 0,
+            "crit": 0.015
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "assassin.unique.armor",
           "slot": "chest",
           "quality": "Легендарная",
-          "name": "Убийца · реликтовая броня"
+          "name": "Убийца · реликтовая броня",
+          "stats": {
+            "attack": 0,
+            "defense": 14,
+            "health": 48,
+            "crit": 0
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "assassin.unique.charm",
           "slot": "accessory",
           "quality": "Легендарная",
-          "name": "Убийца · печать мастера"
+          "name": "Убийца · печать мастера",
+          "stats": {
+            "attack": 8,
+            "defense": 5,
+            "health": 28,
+            "crit": 0.025
+          },
+          "unique": true,
+          "boss_only": true
         }
       ],
       "resource_gain_per_attack": 12,
@@ -713,19 +737,43 @@
           "id": "bishop.unique.weapon",
           "slot": "weapon",
           "quality": "Легендарная",
-          "name": "Епископ · реликтовое оружие"
+          "name": "Епископ · реликтовое оружие",
+          "stats": {
+            "attack": 18,
+            "defense": 0,
+            "health": 0,
+            "crit": 0.015
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "bishop.unique.armor",
           "slot": "chest",
           "quality": "Легендарная",
-          "name": "Епископ · реликтовая броня"
+          "name": "Епископ · реликтовая броня",
+          "stats": {
+            "attack": 0,
+            "defense": 14,
+            "health": 48,
+            "crit": 0
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "bishop.unique.charm",
           "slot": "accessory",
           "quality": "Легендарная",
-          "name": "Епископ · печать мастера"
+          "name": "Епископ · печать мастера",
+          "stats": {
+            "attack": 8,
+            "defense": 5,
+            "health": 28,
+            "crit": 0.025
+          },
+          "unique": true,
+          "boss_only": true
         }
       ],
       "resource_gain_per_attack": 14,
@@ -1074,19 +1122,43 @@
           "id": "dragonkin.unique.weapon",
           "slot": "weapon",
           "quality": "Легендарная",
-          "name": "Драконит · реликтовое оружие"
+          "name": "Драконит · реликтовое оружие",
+          "stats": {
+            "attack": 18,
+            "defense": 0,
+            "health": 0,
+            "crit": 0.015
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "dragonkin.unique.armor",
           "slot": "chest",
           "quality": "Легендарная",
-          "name": "Драконит · реликтовая броня"
+          "name": "Драконит · реликтовая броня",
+          "stats": {
+            "attack": 0,
+            "defense": 14,
+            "health": 48,
+            "crit": 0
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "dragonkin.unique.charm",
           "slot": "accessory",
           "quality": "Легендарная",
-          "name": "Драконит · печать мастера"
+          "name": "Драконит · печать мастера",
+          "stats": {
+            "attack": 8,
+            "defense": 5,
+            "health": 28,
+            "crit": 0.025
+          },
+          "unique": true,
+          "boss_only": true
         }
       ],
       "resource_gain_per_attack": 10,
@@ -1435,19 +1507,43 @@
           "id": "destroyer.unique.weapon",
           "slot": "weapon",
           "quality": "Легендарная",
-          "name": "Разрушитель · реликтовое оружие"
+          "name": "Разрушитель · реликтовое оружие",
+          "stats": {
+            "attack": 18,
+            "defense": 0,
+            "health": 0,
+            "crit": 0.015
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "destroyer.unique.armor",
           "slot": "chest",
           "quality": "Легендарная",
-          "name": "Разрушитель · реликтовая броня"
+          "name": "Разрушитель · реликтовая броня",
+          "stats": {
+            "attack": 0,
+            "defense": 14,
+            "health": 48,
+            "crit": 0
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "destroyer.unique.charm",
           "slot": "accessory",
           "quality": "Легендарная",
-          "name": "Разрушитель · печать мастера"
+          "name": "Разрушитель · печать мастера",
+          "stats": {
+            "attack": 8,
+            "defense": 5,
+            "health": 28,
+            "crit": 0.025
+          },
+          "unique": true,
+          "boss_only": true
         }
       ],
       "resource_gain_per_attack": 12,
@@ -1796,19 +1892,43 @@
           "id": "elemental.unique.weapon",
           "slot": "weapon",
           "quality": "Легендарная",
-          "name": "Владыка стихий · реликтовое оружие"
+          "name": "Владыка стихий · реликтовое оружие",
+          "stats": {
+            "attack": 18,
+            "defense": 0,
+            "health": 0,
+            "crit": 0.015
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "elemental.unique.armor",
           "slot": "chest",
           "quality": "Легендарная",
-          "name": "Владыка стихий · реликтовая броня"
+          "name": "Владыка стихий · реликтовая броня",
+          "stats": {
+            "attack": 0,
+            "defense": 14,
+            "health": 48,
+            "crit": 0
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "elemental.unique.charm",
           "slot": "accessory",
           "quality": "Легендарная",
-          "name": "Владыка стихий · печать мастера"
+          "name": "Владыка стихий · печать мастера",
+          "stats": {
+            "attack": 8,
+            "defense": 5,
+            "health": 28,
+            "crit": 0.025
+          },
+          "unique": true,
+          "boss_only": true
         }
       ],
       "resource_gain_per_attack": 14,
@@ -2157,19 +2277,43 @@
           "id": "duelist.unique.weapon",
           "slot": "weapon",
           "quality": "Легендарная",
-          "name": "Дуэлянт · реликтовое оружие"
+          "name": "Дуэлянт · реликтовое оружие",
+          "stats": {
+            "attack": 18,
+            "defense": 0,
+            "health": 0,
+            "crit": 0.015
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "duelist.unique.armor",
           "slot": "chest",
           "quality": "Легендарная",
-          "name": "Дуэлянт · реликтовая броня"
+          "name": "Дуэлянт · реликтовая броня",
+          "stats": {
+            "attack": 0,
+            "defense": 14,
+            "health": 48,
+            "crit": 0
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "duelist.unique.charm",
           "slot": "accessory",
           "quality": "Легендарная",
-          "name": "Дуэлянт · печать мастера"
+          "name": "Дуэлянт · печать мастера",
+          "stats": {
+            "attack": 8,
+            "defense": 5,
+            "health": 28,
+            "crit": 0.025
+          },
+          "unique": true,
+          "boss_only": true
         }
       ],
       "resource_gain_per_attack": 1,
@@ -2518,19 +2662,43 @@
           "id": "shaman.unique.weapon",
           "slot": "weapon",
           "quality": "Легендарная",
-          "name": "Шаман · реликтовое оружие"
+          "name": "Шаман · реликтовое оружие",
+          "stats": {
+            "attack": 18,
+            "defense": 0,
+            "health": 0,
+            "crit": 0.015
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "shaman.unique.armor",
           "slot": "chest",
           "quality": "Легендарная",
-          "name": "Шаман · реликтовая броня"
+          "name": "Шаман · реликтовая броня",
+          "stats": {
+            "attack": 0,
+            "defense": 14,
+            "health": 48,
+            "crit": 0
+          },
+          "unique": true,
+          "boss_only": true
         },
         {
           "id": "shaman.unique.charm",
           "slot": "accessory",
           "quality": "Легендарная",
-          "name": "Шаман · печать мастера"
+          "name": "Шаман · печать мастера",
+          "stats": {
+            "attack": 8,
+            "defense": 5,
+            "health": 28,
+            "crit": 0.025
+          },
+          "unique": true,
+          "boss_only": true
         }
       ],
       "resource_gain_per_attack": 10,
