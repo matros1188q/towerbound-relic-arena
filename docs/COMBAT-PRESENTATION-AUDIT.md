@@ -133,3 +133,44 @@ The cross-browser workflow now runs actual Playwright journeys in Chromium, Fire
 ### Cross-browser test correction
 
 The initial cross-browser script was still driving the retired legacy title/hero flow and failed because its old `#enterArenaBtn` is hidden in the current RPG entry. It has been replaced with journeys against the current RPG UI: boot, seven-class creation screen, character creation, persisted reload, 250-stage map, horizontal-overflow check and uncaught/request failure checks across Chromium, Firefox and WebKit at desktop/mobile viewport sizes.
+
+
+# Battle UI rework — audit and implementation report
+
+Date: 2026-11-03  
+Working branch: `fix/battle-ui-rework`  
+Pre-change HEAD: `77305b8f6405f7d5a9ba9b8beed158540daab0de`
+
+## Audit findings
+
+- Active screen: `rpg-rework-ui.js`, `battleScreen()`, `render()`, `updateBattleStatus()`.
+- Styling: `rpg-rework-ui.css.js`; the RPG root previously used `.tb-v2{position:absolute;inset:0;overflow:auto}`.
+- Main jump source: every `render()` replaced `root.innerHTML` with a new battle screen. Combat actions and the 250 ms status loop both called it, destroying and recreating the entire subtree.
+- Layout source: mobile CSS converted the combat layout to one column, made targets a horizontal scroll strip and made controls sticky with their own vertical scrolling. The screen was taller than the viewport.
+- A source scan of active battle JS found no `scrollIntoView`, `window.scrollTo` or `scrollTop` calls. The jump came from DOM replacement and unconstrained overflow.
+
+## What was / what is now
+
+| Area | Before | After |
+|---|---|---|
+| Viewport | Auto-height page and scrollable RPG root | Fixed battle root, `100vh/100dvh`, overflow hidden |
+| Body | Normal document flow | Fixed body and locked overflow/touch panning during battle |
+| Combat updates | Full `root.innerHTML` replacement on attacks and status ticks | Stable battle subtree; HP/resource/target numbers and bars update in place |
+| Header | Global RPG header above arena | Hidden in battle; pause and ×2 remain in arena top row |
+| Hero HP | Hero block below enemy focus | Compact always-visible top HUD with red HP bar and class resource |
+| Enemies | Horizontal scrolling target strip and oversized focus | Responsive compact grid with role, vulnerability, telegraph and HP bars |
+| Actions | Vertical/scrollable skill stack | Attack button and six compact skills in a 2×3 grid |
+| Potions | Large text buttons | Five compact buttons in one row |
+| Combo hints | Persistent text block | Hidden from battle HUD |
+| Damage feedback | No layout-independent damage number in this view | Absolute-positioned animated damage labels |
+| Landscape | Same tall mobile stack | Enemy area centered with control column on the side |
+
+## Files changed
+
+- `rpg-rework-ui.js` — stable battle render key, in-place status updater, potion/skill/HP refresh and floating damage labels.
+- `rpg-rework-ui.css.js` — fixed full-screen battle layout, dark/gold/red HUD, compact target grid, 2×3 skills, potion belt, portrait and landscape rules.
+- `ASSUMPTIONS.md` — battle-specific implementation decisions and limitations.
+
+## Verification boundary
+
+The source-level audit is complete. CI and viewport automation must pass before calling the branch verified. The 375×812 iPhone Safari tap-20-times test and physical rotation test cannot be claimed unless run on a real device.
