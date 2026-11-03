@@ -1,0 +1,71 @@
+{
+  "curves": [
+    {
+      "stage": 1,
+      "hp": 100,
+      "damage": 20
+    },
+    {
+      "stage": 10,
+      "hp": 180,
+      "damage": 60
+    },
+    {
+      "stage": 50,
+      "hp": 550,
+      "damage": 150
+    },
+    {
+      "stage": 100,
+      "hp": 1500,
+      "damage": 400
+    },
+    {
+      "stage": 150,
+      "hp": 5200,
+      "damage": 900
+    },
+    {
+      "stage": 200,
+      "hp": 10000,
+      "damage": 1400
+    },
+    {
+      "stage": 250,
+      "hp": 22000,
+      "damage": 2000
+    }
+  ],
+  "elite": {
+    "hp_multiplier": 3,
+    "damage_multiplier": 1.5
+  },
+  "interpolation": "linear",
+  "silver_brackets": [
+    {
+      "min": 1,
+      "max": 30,
+      "amount": 4
+    },
+    {
+      "min": 31,
+      "max": 70,
+      "amount": 6
+    },
+    {
+      "min": 71,
+      "max": 120,
+      "amount": 9
+    },
+    {
+      "min": 121,
+      "max": 180,
+      "amount": 12
+    },
+    {
+      "min": 181,
+      "max": 250,
+      "amount": 16
+    }
+  ]
+}
