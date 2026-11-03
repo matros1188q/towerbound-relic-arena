@@ -75,6 +75,7 @@
  function elementLabel(type){return({fire:"Огонь",ice:"Лёд",dark:"Тьма",physical:"Физический"})[type]||type;}
  function setBattleTarget(index){
   if(!battle||!battle.enemies[index]||!battle.enemies[index].alive)return;
+  if(battle.telegraph){notify("Сначала разреши телеграф или примени контр-умение");return;}
   try{engine.selectTarget(live().id,index);}catch(error){notify(error.message);return;}
   battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(live().id,battle.stage,battle.enemy);
   battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;
@@ -226,6 +227,7 @@
   }catch(error){notify(error.message);}
  }
  function finishCurrentEnemy(){
+  clearTimeout(pendingTimer);pendingTimer=null;
   const c=live(),defeated=battle.enemy,result=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:defeated.index});
   defeated.hp=0;defeated.alive=false;defeated.dead=true;
   if(c.classId==="destroyer"){const until=Date.now()+balance.procs.destroyer.duration_seconds*1000;battle.playerDamageBuff=balance.procs.destroyer.value;battle.playerBuffUntil=until;battle.proc={...balance.procs.destroyer,expiresAt:until};}
@@ -251,8 +253,7 @@
     enemy.nextHealAt=now+balance.mobs.roles.healer.interval_ms;
    }
    if(enemy.role==="poison"&&now>=enemy.nextPoisonAt){
-    const config=balance.mobs.roles.poison;addPoisonStack(Math.round(engine.maxHp(c)*config.damage_fraction_per_second),config.duration_seconds);
-    enemy.nextPoisonAt=now+config.interval_ms;changed=true;
+    enemy.poisonDue=true;enemy.nextPoisonAt=now+balance.mobs.roles.poison.interval_ms;changed=true;
    }
   }
   for(const dot of battle.poisonDots||[]){
@@ -292,7 +293,7 @@
   }
   const choices=phaseCfg?.patterns||Object.keys(types);
   let type=choices[Math.floor(Math.random()*choices.length)]||"strong_hit";
-  if(target.role==="poison"&&Date.now()>=target.nextPoisonAt-2000)type="poison";
+  if(target.role==="poison"&&target.poisonDue)type="poison";
   const windowMs=Math.max(phaseCfg?1000:telegraphs.min_window_ms,Math.min(telegraphs.max_window_ms,phaseCfg?.telegraph_window_ms||telegraphs.default_window_ms));
   const attackSpeed=phaseCfg?.attack_speed_multiplier||1;
   const slowMultiplier=target.slowedUntil>Date.now()?1/(1-(balance.skills.counter_abilities.elemental.speed_reduction||0.3)):1;
@@ -315,7 +316,7 @@ function resolveEnemyTelegraph(){
   const enemyStats=engine.getEnemyStats(c.id,battle.stage,attacker),bossRatio=attacker.hp/Math.max(1,attacker.maxHp),phase=attacker.type!=="boss"?0:bossRatio>0.70?1:bossRatio>0.40?2:bossRatio>0.10?3:4,phaseCfg=phase?balance.bosses.phases.find(p=>p.phase===phase):null;
   let raw=enemyStats.damage*(phaseCfg?.damage_multiplier||1),countered=!!battle.counterAction,damageMultiplier=countered?0.5:1;
   if(telegraph.type==="aoe"&&countered)damageMultiplier=0;
-  if(telegraph.type==="poison"&&countered){if(battle.poisonDots?.length)battle.poisonDots.shift();damageMultiplier=0;}
+  if(telegraph.type==="poison"&&countered){if(battle.poisonDots?.length)battle.poisonDots.shift();attacker.poisonDue=false;damageMultiplier=0;}
   const counterId=battle.counterAction?.id;
   if(countered&&["shadow","barrier","roar","parry"].includes(counterId))damageMultiplier=0;
   if(countered&&counterId==="scale")damageMultiplier=0.5;
@@ -324,7 +325,7 @@ function resolveEnemyTelegraph(){
   if(countered&&counterId==="cleanse"&&telegraph.type!=="poison")damageMultiplier=0.5;
   if(countered&&telegraph.type==="aoe")damageMultiplier=0;
   if(telegraph.type==="poison"&&!countered&&attacker.role==="poison"){
-   const poison=balance.mobs.roles.poison;addPoisonStack(Math.round(engine.maxHp(c)*poison.damage_fraction_per_second),poison.duration_seconds);attacker.nextPoisonAt=Date.now()+poison.interval_ms;damageMultiplier=0;
+   const poison=balance.mobs.roles.poison;addPoisonStack(Math.round(engine.maxHp(c)*poison.damage_fraction_per_second),poison.duration_seconds);attacker.poisonDue=false;attacker.nextPoisonAt=Date.now()+poison.interval_ms;damageMultiplier=0;
   }
   const combatStats=engine.getCombatStats(c),mitigation=engine.mitigationMultiplier(combatStats.defense,battle.stage);
   let incoming=Math.max(0,Math.round(raw*mitigation*damageMultiplier));
@@ -349,7 +350,7 @@ function resolveEnemyTelegraph(){
   if(counter.effect==="stun")battle.enemyStunned=true;
   if(counter.effect==="riposte"){
    const index=battle.telegraph.targetIndex,target=battle.enemies[index],dealt=applyTargetDamage(target,engine.getCombatStats(c).attack*counter.damage_multiplier,"physical");
-   if(dealt.killed){setBattleTarget(index);finishCurrentEnemy();return;}
+   if(dealt.killed){clearTimeout(pendingTimer);pendingTimer=null;setBattleTarget(index);finishCurrentEnemy();return;}
   }
   save();render();
  }
