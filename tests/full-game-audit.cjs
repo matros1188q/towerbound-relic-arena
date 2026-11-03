@@ -10,7 +10,8 @@ const balance=Object.fromEntries(fs.readdirSync(balanceDir).filter(n=>n.endsWith
 const classes=read('configs/balance/classes.json').classes;
 const skillManifest=read('configs/skills/manifest.json');
 const skillCatalog=read('configs/skills/catalog.json');
-const skills=Object.values(skillCatalog);\nconst skillById=new Map(skills.map(skill=>[skill.id,skill]));
+const skills=Object.values(skillCatalog);
+const skillById=new Map(skills.map(skill=>[skill.id,skill]));
 const classIds=['assassin','bishop','dragonkin','destroyer','elemental','duelist','shaman'];
 assert.deepEqual(Object.keys(classes).sort(),classIds.slice().sort(),'exactly seven playable classes are configured');
 assert.equal(Object.keys(balance).length,34,'all 34 runtime balance files are loaded');

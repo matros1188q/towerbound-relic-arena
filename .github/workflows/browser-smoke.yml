@@ -5,7 +5,11 @@ on:
     paths:
       - 'index.html'
       - 'rpg-mode.js'
-      - 'towerbound-engine.js'\n      - 'rpg-rework-v2.js'\n      - 'rpg-rework-ui.js'\n      - 'rpg-rework-ui.css.js'\n      - 'configs/**'
+      - 'towerbound-engine.js'
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+      - 'rpg-rework-ui.css.js'
+      - 'configs/**'
       - 'assets/**'
       - 'tests/**'
       - '.github/workflows/browser-smoke.yml'
@@ -31,5 +35,5 @@ jobs:
         run: npm install --no-save playwright@1.54.2
       - name: Install browser engines
         run: npx playwright install --with-deps chromium firefox webkit
-      - name: Legacy browser journeys (manual until RPG suite replaces them)
-        run: node --check tests/browser-smoke.cjs
+      - name: Cross-browser journeys
+        run: node tests/browser-smoke.cjs

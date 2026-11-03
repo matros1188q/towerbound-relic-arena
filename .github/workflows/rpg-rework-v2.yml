@@ -38,7 +38,8 @@ jobs:
       - run: node --check rpg-expansion.js
       - run: node tests/rpg-expansion-static.cjs
       - run: node tests/rpg-rework-v2.test.cjs
-      - run: node tests/combat-runtime.test.cjs\n      - run: node tests/full-game-audit.cjs
+      - run: node tests/combat-runtime.test.cjs
+      - run: node tests/full-game-audit.cjs
       - run: npm install --no-save playwright@1.54.2
       - run: npx playwright install --with-deps chromium
       - run: node tests/rpg-smoke.cjs
