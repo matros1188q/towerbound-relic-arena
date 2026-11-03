@@ -43,8 +43,8 @@ for(const classId of classIds){
    assert.ok(detail.description&&detail.effect_template,'skill has readable description and effect');
   });
   const engine=createEngine(balance,{now:(()=>{let t=Date.UTC(2026,10,3);return()=>++t;})(),random:()=>0.2});
-  const character=engine.createCharacter('Q'+classId.slice(0,3)+branch.id.slice(0,4),classId);
-  character.level=100;character.talentPoints=30;
+  engine.createCharacter('Q'+classId.slice(0,3)+branch.id.slice(0,4),classId);
+  const character=engine.state.characters[0];character.level=100;character.talentPoints=30;
   engine.chooseBranch(character.id,branch.id);
   assert.equal(engine.getSkillUnlocks(engine.getChar(character.id),skills).length,20,classId+'/'+branch.id+' unlocks all twenty specialization skills at level 100');
   for(const talent of branch.talents)for(let rank=0;rank<3;rank++)engine.useTalentPoint(character.id,talent.id);
