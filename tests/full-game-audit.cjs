@@ -43,7 +43,7 @@ for(const classId of classIds){
    assert.ok(detail.description&&detail.effect_template,'skill has readable description and effect');
   });
   const engine=createEngine(balance,{now:(()=>{let t=Date.UTC(2026,10,3);return()=>++t;})(),random:()=>0.2});
-  const character=engine.createCharacter('Audit '+classId+' '+branch.id,classId);
+  const character=engine.createCharacter('Q'+classId.slice(0,3)+branch.id.slice(0,4),classId);
   character.level=100;character.talentPoints=30;
   engine.chooseBranch(character.id,branch.id);
   assert.equal(engine.getSkillUnlocks(engine.getChar(character.id),skills).length,20,classId+'/'+branch.id+' unlocks all twenty specialization skills at level 100');
@@ -57,7 +57,7 @@ assert.equal(map.total_stages,250,'tower has 250 stages');
 let stagePlans=0,bossPlans=0;
 for(const classId of classIds){
  const engine=createEngine(balance,{random:()=>0.2,now:()=>Date.UTC(2026,10,3)});
- const c=engine.createCharacter('Map '+classId,classId);
+ const c=engine.createCharacter('Map '+classId.slice(0,12),classId);
  for(let stage=1;stage<=map.total_stages;stage++){
   const plan=engine.stagePlan(c,stage);stagePlans++;
   assert.equal(plan.stage,stage,classId+' stage plan index '+stage);
