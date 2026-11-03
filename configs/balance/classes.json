@@ -366,7 +366,10 @@
           "quality": "Легендарная",
           "name": "Убийца · печать мастера"
         }
-      ]
+      ],
+      "resource_gain_per_attack": 12,
+      "resource_gain_on_defense": 0,
+      "resource_cost_per_skill": 18
     },
     "bishop": {
       "name": "Епископ",
@@ -724,7 +727,10 @@
           "quality": "Легендарная",
           "name": "Епископ · печать мастера"
         }
-      ]
+      ],
+      "resource_gain_per_attack": 14,
+      "resource_gain_on_defense": 0,
+      "resource_cost_per_skill": 20
     },
     "dragonkin": {
       "name": "Драконит",
@@ -1082,7 +1088,10 @@
           "quality": "Легендарная",
           "name": "Драконит · печать мастера"
         }
-      ]
+      ],
+      "resource_gain_per_attack": 10,
+      "resource_gain_on_defense": 0,
+      "resource_cost_per_skill": 18
     },
     "destroyer": {
       "name": "Разрушитель",
@@ -1440,7 +1449,10 @@
           "quality": "Легендарная",
           "name": "Разрушитель · печать мастера"
         }
-      ]
+      ],
+      "resource_gain_per_attack": 12,
+      "resource_gain_on_defense": 7,
+      "resource_cost_per_skill": 18
     },
     "elemental": {
       "name": "Владыка стихий",
@@ -1798,7 +1810,10 @@
           "quality": "Легендарная",
           "name": "Владыка стихий · печать мастера"
         }
-      ]
+      ],
+      "resource_gain_per_attack": 14,
+      "resource_gain_on_defense": 0,
+      "resource_cost_per_skill": 20
     },
     "duelist": {
       "name": "Дуэлянт",
@@ -2156,7 +2171,10 @@
           "quality": "Легендарная",
           "name": "Дуэлянт · печать мастера"
         }
-      ]
+      ],
+      "resource_gain_per_attack": 1,
+      "resource_gain_on_defense": 1,
+      "resource_cost_per_skill": 1
     },
     "shaman": {
       "name": "Шаман",
@@ -2514,7 +2532,10 @@
           "quality": "Легендарная",
           "name": "Шаман · печать мастера"
         }
-      ]
+      ],
+      "resource_gain_per_attack": 10,
+      "resource_gain_on_defense": 0,
+      "resource_cost_per_skill": 18
     }
   }
 }
