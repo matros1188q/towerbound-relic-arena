@@ -48,6 +48,17 @@
   const rarityKey=rarity=>({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[rarity]||String(rarity||"common").toLowerCase());
   const stageSilver=stage=>(balance.mobs.silver_brackets||[]).find(x=>stage>=x.min&&stage<=x.max)?.amount||0;
   const itemLevelForStage=stage=>Math.max(balance.item_level.min,Math.min(balance.item_level.max,Math.floor(Number(stage)||1)));
+  function dropEligibility(enemy,stage,heroic){
+   const eliteOrBoss=enemy?.type==="elite"||enemy?.type==="boss";
+   return{
+    chisel:true,
+    enhancementStone:eliteOrBoss&&stage>=balance.equipment.stone_unlock_stage,
+    craftMaterials:enemy?.type==="elite"?balance.materials.drops.elite_materials:enemy?.type==="boss"?balance.materials.drops.boss_materials:0,
+    refineStone:stage>=balance.equipment.refine_unlock_stage,
+    armorScroll:!!heroic,
+    weaponScroll:!!heroic&&eliteOrBoss
+   };
+  }
   const equipmentItemLevelBonus=character=>(character.gear||[]).reduce((sum,item)=>sum+(item?Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level:0),0);
   const publishGhost=(character,reason)=>{
    const stats=getCombatStats(character),expiry=now()+balance.pvp.ghost_ttl_days*86400000;
@@ -451,25 +462,25 @@
    const multiplier=xpMultiplier(character,stage,{speed2:use2x});
    const gained=awardXp(character,enemyXp(enemy,stage)*multiplier);
    const loot=rollLoot(character,enemy,stage,firstClear,false);
-   const materials=[],dropBuff=activeBuff(character,"drop"),dropMultiplier=dropBuff?dropBuff.multiplier:1;
+   const materials=[],dropBuff=activeBuff(character,"drop"),dropMultiplier=dropBuff?dropBuff.multiplier:1,eligibility=dropEligibility(enemy,stage,character.heroic);
    const addMaterial=item=>{character.bag.push(item);character.run.foundItemIds.push(item.id);materials.push(item);character.stats.items_found=(character.stats.items_found||0)+1;};
-   if(random()<Math.min(1,balance.equipment.chisel_drop_chance*dropMultiplier))
+   if(eligibility.chisel&&random()<Math.min(1,balance.equipment.chisel_drop_chance*dropMultiplier))
     addMaterial({id:id(),type:"chisel",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
-   if((enemy.type==="elite"||enemy.type==="boss")&&stage>=balance.equipment.stone_unlock_stage&&character.branch&&random()<Math.min(1,balance.equipment.stone_drop_chance*dropMultiplier)){
+   if(eligibility.enhancementStone&&character.branch&&random()<Math.min(1,balance.equipment.stone_drop_chance*dropMultiplier)){
     const slot=random()<0.5?"weapon":"armor";
     const stonePool=balance.equipment.stone_types.filter(type=>type.class_id===character.classId&&type.branch_id===character.branch&&type.slot===slot);
     const stoneType=clone(stonePool[Math.floor(random()*stonePool.length)]||{id:character.classId+"."+character.branch+"."+slot,class_id:character.classId,branch_id:character.branch,slot,attack_per_level:slot==="weapon"?1.5:0,defense_per_level:slot==="armor"?1:0,health_per_level:slot==="armor"?3:0});
     addMaterial({id:id(),type:"enhancement_stone",stoneType,level:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    }
-   if(enemy.type==="elite"||enemy.type==="boss"){
-    const quantity=enemy.type==="elite"?balance.materials.drops.elite_materials:balance.materials.drops.boss_materials;
+   if(eligibility.craftMaterials){
+    const quantity=eligibility.craftMaterials;
     addMaterial({id:id(),type:"craft_material",quantity,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    }
-   if(stage>=balance.equipment.refine_unlock_stage&&random()<Math.min(1,balance.equipment.refine_stone_drop_chance*dropMultiplier))
+   if(eligibility.refineStone&&random()<Math.min(1,balance.equipment.refine_stone_drop_chance*dropMultiplier))
     addMaterial({id:id(),type:"refine_stone",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
-   if(character.heroic&&random()<Math.min(1,balance.equipment.enchantment.armor_scroll_chance*dropMultiplier))
+   if(eligibility.armorScroll&&random()<Math.min(1,balance.equipment.enchantment.armor_scroll_chance*dropMultiplier))
     addMaterial({id:id(),type:"enchant_scroll",slot:"armor",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
-   if(character.heroic&&(enemy.type==="elite"||enemy.type==="boss")&&random()<Math.min(1,balance.equipment.enchantment.weapon_scroll_chance*dropMultiplier))
+   if(eligibility.weaponScroll&&random()<Math.min(1,balance.equipment.enchantment.weapon_scroll_chance*dropMultiplier))
     addMaterial({id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    character.stats.kills++;
    if(enemy.type==="boss"){character.stats.boss_kills=(character.stats.boss_kills||0)+1;if(!stageData.potionSlotUsed)character.stats.potionless_bosses=(character.stats.potionless_bosses||0)+1;}
@@ -1042,7 +1053,7 @@
     .sort((a,b)=>b.combatPower-a.combatPower||a.completionMs-b.completionMs);
   }
   function saveSnapshot(){return clone(state);}
-  return{state,balance,accountLevel,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
+  return{state,balance,accountLevel,dropEligibility,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
