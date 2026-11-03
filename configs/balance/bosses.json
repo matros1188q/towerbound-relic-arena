@@ -8,22 +8,13 @@
   },
   "first_hit_at_seconds": 2.5,
   "telegraph": {
-    "window_ms": 1800,
-    "min_window_ms": 1500,
-    "max_window_ms": 2000,
     "phase1": [
-      "strong_hit",
-      "poison"
+      "strong_hit"
     ],
     "phase2": [
-      "strong_hit",
-      "poison",
-      "aoe"
+      "strong_hit"
     ],
-    "phase3": [
-      "strong_hit",
-      "aoe"
-    ],
+    "phase3": [],
     "phase4": [
       "strong_hit"
     ]
@@ -33,50 +24,42 @@
       "phase": 1,
       "min_hp": 0.7,
       "max_hp": 1,
-      "telegraph_window_ms": 1800,
-      "attack_speed_multiplier": 1,
-      "damage_multiplier": 1,
+      "telegraph": true,
       "patterns": [
-        "strong_hit",
-        "poison"
+        "strong_hit"
       ]
     },
     {
       "phase": 2,
       "min_hp": 0.4,
       "max_hp": 0.7,
-      "telegraph_window_ms": 1800,
-      "attack_speed_multiplier": 1,
-      "damage_multiplier": 1,
+      "telegraph": true,
+      "summon_count": 2,
       "patterns": [
-        "strong_hit",
-        "poison",
-        "aoe"
+        "strong_hit"
       ]
     },
     {
       "phase": 3,
       "min_hp": 0.1,
       "max_hp": 0.4,
-      "telegraph_window_ms": 1000,
-      "attack_speed_multiplier": 1.2,
-      "damage_multiplier": 1,
+      "telegraph": false,
+      "immediate_attack": true,
       "patterns": [
-        "strong_hit",
-        "aoe"
+        "strong_hit"
       ]
     },
     {
       "phase": 4,
       "min_hp": 0,
       "max_hp": 0.1,
-      "telegraph_window_ms": 1500,
-      "attack_speed_multiplier": 1.2,
-      "damage_multiplier": 5,
+      "telegraph": true,
+      "damage_flat": 9999,
+      "lethal": true,
+      "player_turn_deadline": 2,
       "patterns": [
         "strong_hit"
-      ],
-      "easy_miss_remaining_hp_fraction": 0.1
+      ]
     }
   ]
 }

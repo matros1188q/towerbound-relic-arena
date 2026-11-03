@@ -50,6 +50,14 @@ async function journey(type,name,viewport,url){
   assert.match(await page.locator('#tbRpg').innerText(),/Cross QA/,name+' restores the saved character after reload');
   await page.locator('[data-action="play"]').click();
   await page.waitForFunction(()=>document.querySelectorAll('.tb-map-node').length===250,{timeout:15000});
+  await page.locator('[data-action="start"]').click();
+  await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
+  assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
+  assert.equal(await page.locator('.tb-basic-attack,[data-action="attack"]').count(),0,name+' removes the real-time Attack button');
+  await page.locator('[data-action="end-turn"]').click();
+  await page.waitForFunction(()=>Number(document.querySelector('.tb-arena-top')?.innerText.match(/РАУНД\s+(\d+)/)?.[1]||0)>=2,{timeout:10000});
+  fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
+  await page.screenshot({path:path.join(root,'artifacts','turn-based-end-turn-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
   const diagnostics=await page.evaluate(()=>({
    width:document.documentElement.clientWidth,
    scrollWidth:document.documentElement.scrollWidth,

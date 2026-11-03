@@ -54,65 +54,61 @@
       "id": "shadow",
       "name": "Тень",
       "icon": "◒",
-      "cooldown_seconds": 8,
       "resource_cost": 18,
       "effect": "evade",
-      "duration_seconds": 1
+      "cooldown_turns": 2
     },
     "bishop": {
       "id": "barrier",
       "name": "Барьер",
       "icon": "✧",
-      "cooldown_seconds": 10,
       "resource_cost": 18,
-      "effect": "absorb_all"
+      "effect": "absorb_all",
+      "cooldown_turns": 2
     },
     "dragonkin": {
       "id": "scale",
       "name": "Чешуя",
       "icon": "◆",
-      "cooldown_seconds": 8,
       "resource_cost": 18,
       "effect": "damage_reduction",
       "damage_reduction": 0.5,
-      "duration_seconds": 2
+      "cooldown_turns": 2
     },
     "destroyer": {
       "id": "roar",
       "name": "Рёв",
       "icon": "◉",
-      "cooldown_seconds": 12,
       "resource_cost": 18,
       "effect": "stun",
-      "duration_seconds": 1.5
+      "cooldown_turns": 2
     },
     "elemental": {
       "id": "slow",
       "name": "Замедление",
       "icon": "❄",
-      "cooldown_seconds": 10,
       "resource_cost": 18,
       "effect": "slow",
       "speed_reduction": 0.3,
-      "duration_seconds": 3
+      "cooldown_turns": 2
     },
     "duelist": {
       "id": "parry",
       "name": "Парирование",
       "icon": "⚔",
-      "cooldown_seconds": 6,
       "resource_cost": 1,
       "effect": "riposte",
-      "damage_multiplier": 1
+      "damage_multiplier": 1,
+      "cooldown_turns": 2
     },
     "shaman": {
       "id": "cleanse",
       "name": "Очищение",
       "icon": "✚",
-      "cooldown_seconds": 10,
       "resource_cost": 18,
       "effect": "cleanse",
-      "remove_stacks": 1
+      "remove_stacks": 1,
+      "cooldown_turns": 2
     }
   },
   "ultimates": {
@@ -120,73 +116,73 @@
       "id": "shadowstorm",
       "name": "Теневой шторм",
       "icon": "✦",
-      "cooldown_seconds": 75,
       "resource_cost": 42,
       "effect": "aoe_burst",
       "damage_multiplier": 2.8,
-      "damage_type": "dark"
+      "damage_type": "dark",
+      "cooldown_turns": 3
     },
     "bishop": {
       "id": "divine_sanctuary",
       "name": "Святилище",
       "icon": "✧",
-      "cooldown_seconds": 90,
       "resource_cost": 42,
       "effect": "heal_shield",
       "heal_fraction": 0.35,
       "shield_fraction": 0.2,
-      "damage_type": "fire"
+      "damage_type": "fire",
+      "cooldown_turns": 3
     },
     "dragonkin": {
       "id": "dragon_breath",
       "name": "Дыхание дракона",
       "icon": "🔥",
-      "cooldown_seconds": 75,
       "resource_cost": 42,
       "effect": "aoe_burst",
       "damage_multiplier": 2.8,
-      "damage_type": "fire"
+      "damage_type": "fire",
+      "cooldown_turns": 3
     },
     "destroyer": {
       "id": "worldbreaker",
       "name": "Сокрушитель миров",
       "icon": "✹",
-      "cooldown_seconds": 75,
       "resource_cost": 42,
       "effect": "single_burst",
       "damage_multiplier": 3.5,
-      "damage_type": "physical"
+      "damage_type": "physical",
+      "cooldown_turns": 3
     },
     "elemental": {
       "id": "primal_cascade",
       "name": "Первозданный каскад",
       "icon": "❄",
-      "cooldown_seconds": 90,
       "resource_cost": 42,
       "effect": "aoe_burst",
       "damage_multiplier": 2.8,
-      "damage_type": "ice"
+      "damage_type": "ice",
+      "cooldown_turns": 3
     },
     "duelist": {
       "id": "perfect_form",
       "name": "Совершенная форма",
       "icon": "⚔",
-      "cooldown_seconds": 75,
       "resource_cost": 2,
       "effect": "single_burst",
       "damage_multiplier": 3.5,
-      "damage_type": "physical"
+      "damage_type": "physical",
+      "cooldown_turns": 3
     },
     "shaman": {
       "id": "ancient_spirits",
       "name": "Духи предков",
       "icon": "☼",
-      "cooldown_seconds": 90,
       "resource_cost": 42,
       "effect": "heal_aoe",
       "heal_fraction": 0.25,
       "damage_multiplier": 2,
-      "damage_type": "dark"
+      "damage_type": "dark",
+      "cooldown_turns": 3
     }
   }
 }

@@ -47,22 +47,22 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  live.progress.highestEver=20;live.progress.currentStage=21;
  assert.equal(e.speed2Allowed(c.id,20),true);
  assert.equal(e.speed2Allowed(c.id,21),false);
- assert.equal(e.combatIntervalMs(c.id),2500);
+ assert.equal(e.combatIntervalMs(c.id),1000);
  e.setSpeed2(c.id,true,20);
- assert.equal(e.combatIntervalMs(c.id),1250);
+ assert.equal(e.combatIntervalMs(c.id),500);
  assert.equal(e.xpMultiplier(e.getChar(c.id),20,{speed2:true}),0.4);
  assert.throws(()=>e.xpMultiplier(e.getChar(c.id),21,{speed2:true}),/disabled/);
  assert.equal(balance.combat.combat_speed_base,0.5);
  assert.equal(balance.combat.speed_2x_multiplier,2);
  assert.equal(balance.combat.speed_2x_experience_multiplier,0.8);
- assert.equal(balance.combat.attack_interval,2.5);
+ assert.equal(balance.combat.attack_interval,1);
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
- assert.ok(Math.abs(e.maxHp(live)-Math.round(500/1.5))<=1);
+ assert.ok(Math.abs(e.maxHp(live)-Math.round(500/1.5*0.5))<=1);
  live.level=75;equipSix(live,'Эпическая');
  const stats=e.getCombatStats(live);
- assert.ok(Math.abs(stats.maxHp-50000)<200,'gear-inclusive HP curve restored by six ilvl120 items');
+ assert.ok(Math.abs(stats.maxHp-25000)<200,'gear-inclusive HP curve restored by six ilvl120 items');
  assert.ok(Math.abs(stats.dps-4400)<20,'gear-inclusive DPS curve restored by six ilvl120 items');
  assert.equal(e.combatPower(live),25580);
  live.level=100;equipSix(live,'Легендарная');
@@ -88,13 +88,13 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const normal=e.getEnemyStats(c.id,50,{type:'normal'});
  const elite=e.getEnemyStats(c.id,50,{type:'elite'});
  const boss=e.getEnemyStats(c.id,50,{type:'boss'});
- assert.deepEqual([normal.hp,normal.damage],[550,150]);
- assert.deepEqual([elite.hp,elite.damage],[1650,225]);
- assert.deepEqual([boss.hp,boss.damage],[3300,375]);
- assert.equal(normal.attackInterval,2.5);
- assert.equal(boss.attackIntervalMs,2500);
+ assert.deepEqual([normal.hp,normal.damage],[183,50]);
+ assert.deepEqual([elite.hp,elite.damage],[549,75]);
+ assert.deepEqual([boss.hp,boss.damage],[1098,125]);
+ assert.equal(normal.attackInterval,1);
+ assert.equal(boss.attackIntervalMs,1000);
  const newbieBoss=e.getEnemyStats(c.id,10,{type:'boss'});
- assert.equal(newbieBoss.damage,120,'map10 newbie boss is the explicit exception');
+ assert.equal(newbieBoss.damage,40,'map10 newbie boss is the explicit exception');
  assert.equal(balance.mobs.elite.hp_multiplier,3);
  assert.equal(balance.mobs.elite.damage_multiplier,1.5);
  assert.equal(balance.bosses.hp_multiplier,6);
@@ -339,7 +339,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const seasonal=live.run.season?.modifier;
  const speedFactors=[seasonal,daily].filter(Boolean).filter((m,i,all)=>all.findIndex(x=>x.id===m.id)===i).map(m=>m.enemy_attack_speed_multiplier||1);
  const factor=speedFactors.reduce((a,b)=>a*b,1);
- assert.equal(enemy.attackIntervalMs,Math.round(2500/factor),'daily and seasonal attack-speed modifiers reach live combat');
+ assert.equal(enemy.attackIntervalMs,Math.round(1000/factor),'daily and seasonal attack-speed modifiers reach live combat');
  live.run.dailyModifier={id:'boss_no_heal',boss_no_potion:true};
  live.run.stage.mobs[live.run.stage.enemyIndex]={type:'boss'};
  assert.throws(()=>e.useHealingPotion(c.id),/modifier disables potions/,'daily boss-no-potion rule is enforced');
