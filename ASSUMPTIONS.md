@@ -20,3 +20,12 @@
 - A 250-stage clear does not auto-enter heroic under 15,000 BP. The final stage remains replayable to allow the character to increase BP.
 - PvP ghost records, account PvP points, stash, cosmetics and weekly rating are browser-local in this prototype. They do not provide globally shared matchmaking, cross-device account sync, anti-cheat or a true public top-100 without an authenticated backend.
 - Purchases with real money are not credited by browser code; diamond pack display is not proof of a completed payment.
+
+## Combat & presentation follow-up — 2026-11-03
+
+- Mobile combat layout uses a vertical bottom stack for the six configured slots; basic attack is separate and target cards stay above the panel.
+- `disable_telegraphs` hides the telegraph warning visual while leaving the counter input available for blind timing.
+- Screen shake is disabled by `disable_screen_shake`; boss-hit and death shake use the same accessibility setting.
+- Skill flashes are disabled by `disable_skill_flashes`.
+- Legacy set bonuses are aligned to 2/3/5 pieces and unique-set drops use the selected slot index.
+- The follow-up branch is verified by GitHub Actions run `41646530435`; real-device iPhone Safari behavior is not claimed as tested.

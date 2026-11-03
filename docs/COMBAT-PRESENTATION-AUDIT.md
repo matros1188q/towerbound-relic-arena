@@ -59,3 +59,50 @@
 - Playwright smoke выполнялся в headless Chromium. Ручная сертификация на реальном iPhone Safari в этом проходе не выполнялась.
 - Это браузерная игра с локальным состоянием; тесты не превращают локальные PvP/аккаунтные данные в серверный глобальный сервис.
 - Реальный тайминг и ощущения боя на устройстве следует оценивать отдельно от автоматического smoke; кодовые проверки и браузерный smoke зелёные.
+
+## Follow-up audit and presentation fixes — 2026-11-03
+
+Final audited branch HEAD: `2eed2aecbdf5bd82d75a3c6de3ac0482614b66ba`.
+
+### Additional defects fixed after the initial combat pass
+
+1. Fixed the legacy unique-set drop path: the selected equipment slot now indexes `names[slot]`; the undefined `ix` reference is removed, and missing set/name data safely aborts the drop.
+2. Aligned the legacy set system with the shared 2/3/5-piece thresholds: two pieces grant +5% profile damage, three grant +10% damage mitigation, and five grant +15% specialization skill power. The skill-power bonus is restricted to skill attacks.
+3. Reworked the mobile combat panel: the six combat slots (four attack skills, counter, ultimate) stack vertically at the bottom; the basic attack remains a separate button; target cards remain above the controls. The mobile breakpoint is below 768px.
+4. The `disable_telegraphs` accessibility/hardcore setting now hides the warning itself rather than only blanking its icon and label. The counter remains available as a blind timing action.
+5. Boss attacks now trigger screen shake in every boss phase, not only phase four. Lethal damage also triggers the death-overlay shake unless screen shake is disabled.
+6. Bumped the UI and CSS script cache versions so clients fetch the updated markup and styles.
+
+### Expanded regression coverage
+
+- Legacy expansion tests assert safe unique-drop indexing and the 2/3/5 set model.
+- Combat tests assert telegraph windows (1.5–2.0s), phase-three 1.0s/×1.2 speed, phase-four 1.5s/×5 damage/Easy 10% remaining HP, +50% vulnerability, −50% resistance, 60–90s ultimate cooldowns, 2–3 combos per class, keyboard controls, accessibility settings and VFX hooks.
+- Playwright smoke now checks the mobile vertical six-slot stack, target selection, a boss telegraph, counter use, lethal boss damage, death overlay, death shake and loss of exactly one Easy-mode life.
+
+### Final CI
+
+GitHub Actions run `41646530435` completed with **SUCCESS** on commit `2eed2aecbdf5bd82d75a3c6de3ac0482614b66ba`. All syntax checks, RPG static/runtime tests, combat regression tests and Playwright Chromium smoke passed.
+
+### Branches, tag and rollback
+
+- `feature/combat-and-presentation-pass` and `fix/audit-pass` contain the audited implementation.
+- `main` remains unchanged at `23620ee7bd2a7d4d1488fb97d3a41737843749be`.
+- `legacy-before-combat-pass` and `legacy-pre-combat-pass` both point to `f1e0f18e0169e6915425add78ccfafc78e24f2b8`.
+- `legacy-pre-audit` preserves the pre-audit working head `6d9ac752187528a32d1a3d766a0af9ea0408effa1` (see branch ref for the exact object ID).
+
+To create a separate working branch from the pre-combat snapshot:
+```bash
+git fetch origin
+git switch -c restore/pre-combat legacy-before-combat-pass
+```
+
+To revert the audit/combat follow-up commits from the feature branch without force-pushing:
+```bash
+git switch feature/combat-and-presentation-pass
+git revert --no-edit 6d9ac752187528a32d0c34cf35082e5f41fdff80..HEAD
+git push origin feature/combat-and-presentation-pass
+```
+
+### Verification boundary
+
+The final smoke ran in headless Chromium at mobile viewport dimensions. It is not a manual certification on a physical iPhone or Safari; that remains unverified.
