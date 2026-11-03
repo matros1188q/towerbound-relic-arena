@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.wand_shield.02",
+  "class_id": "destroyer",
+  "branch_id": "wand_shield",
+  "name": "Магический заслон",
+  "unlock_level": 15,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Магический заслон — wand_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

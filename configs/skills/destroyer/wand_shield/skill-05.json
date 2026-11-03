@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.wand_shield.05",
+  "class_id": "destroyer",
+  "branch_id": "wand_shield",
+  "name": "Каменная кожа",
+  "unlock_level": 29,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "shield",
+  "description": "Каменная кожа — wand_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

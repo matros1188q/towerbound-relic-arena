@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.wand_shield.01",
+  "class_id": "destroyer",
+  "branch_id": "wand_shield",
+  "name": "Руна мощи",
+  "unlock_level": 10,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "shield",
+  "description": "Руна мощи — wand_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
