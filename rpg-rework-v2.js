@@ -819,7 +819,7 @@
    let opponents=valid.filter(ghost=>Math.abs(balance.bp.tiers.findIndex(item=>item.id===ghost.tier)-tierIndex)<=balance.pvp.matchmaking.tier_window);
    let window=balance.pvp.matchmaking.tier_window;
    if(!opponents.length){window=balance.pvp.matchmaking.expand_to_tier_window;opponents=valid.filter(ghost=>Math.abs(balance.bp.tiers.findIndex(item=>item.id===ghost.tier)-tierIndex)<=window);}
-   const opponent=opponents.length?clone(opponents[Math.floor(random()*opponents.length)]:{
+   const opponent=opponents.length?clone(opponents[Math.floor(random()*opponents.length)]):{
     id:"bot-"+id(),bot:true,name:"Страж арены",classId:"bot",bp,level:character.level,tier:tier.id,
     stats:{attack:Math.round(getCombatStats(character).attack*.95),defense:getCombatStats(character).defense,maxHp:getCombatStats(character).maxHp}
    };
@@ -966,7 +966,7 @@
 });
 if(typeof window!=="undefined"){
  window.TowerboundReworkReady=(async()=>{
-  const names=["combat","xp_curve","map","elite_mechanics","death","healing","auto_battle","drop_tables","equipment","economy","heroic","pvp","classes","skill_effects"];
+  const names=["combat","xp_curve","map","elite_mechanics","death","healing","auto_battle","drop_tables","equipment","economy","heroic","pvp","classes","skill_effects","mobs","bosses","character_curves","item_level","bp","difficulty","materials","account","stash","tutorial","achievements","lore","settings","seasons","paragon","pvp_store"];
   const loaded=await Promise.all(names.map(async name=>{
    const response=await fetch("./configs/balance/"+name+".json");
    if(!response.ok)throw new Error("Unable to load balance config: "+name);
