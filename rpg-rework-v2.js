@@ -86,8 +86,9 @@
    return character.daily;
   }
   function recordDailyProgress(characterId,metric,amount){
-   const character=getChar(characterId),daily=ensureDaily(character);
-   daily.progress[metric]=(daily.progress[metric]||0)+Math.max(0,Math.floor(amount||1));
+   const character=getChar(characterId),daily=ensureDaily(character),increment=Math.max(0,Math.floor(amount||1));
+   daily.progress[metric]=(daily.progress[metric]||0)+increment;
+   character.stats[metric]=(character.stats[metric]||0)+increment;
    return daily.progress[metric];
   }
   function dailySnapshot(characterId){
@@ -382,7 +383,14 @@
    character.xp+=value;character.run.experience+=value;
    state.account.xp=Math.max(0,(state.account.xp||0)+value);
    recalcLevel(character);
-   return{amount:value,total:character.xp,level:character.level,levelUp:character.level>before,accountLevel:accountLevel(),accountXp:state.account.xp};
+   const paragon=character.paragon||(character.paragon={level:0,xp:0,stats:{}});
+   if(character.level>=balance.paragon.unlock_level&&paragon.level<balance.paragon.max_level){
+    paragon.xp=(paragon.xp||0)+value;
+    while(paragon.xp>=balance.paragon.xp_per_point&&paragon.level<balance.paragon.max_level){paragon.xp-=balance.paragon.xp_per_point;paragon.level++;}
+    character.stats.paragon_level=paragon.level;
+   }
+   character.stats.account_level=accountLevel();
+   return{amount:value,total:character.xp,level:character.level,levelUp:character.level>before,accountLevel:accountLevel(),accountXp:state.account.xp,paragonLevel:paragon.level};
   }
   function enemyXp(enemy,stage){
    const table=balance.xp_curve.mob_xp;
@@ -398,6 +406,8 @@
    const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
     itemLevel,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
    character.bag.push(item);character.run.foundItemIds.push(item.id);
+   character.stats.items_found=(character.stats.items_found||0)+1;
+   if(item.uniqueId)character.stats.unique_items=(character.stats.unique_items||0)+1;
    return item;
   }
   function rollLoot(character,enemy,stage,firstClear,automatic){
@@ -442,7 +452,7 @@
    const gained=awardXp(character,enemyXp(enemy,stage)*multiplier);
    const loot=rollLoot(character,enemy,stage,firstClear,false);
    const materials=[],dropBuff=activeBuff(character,"drop"),dropMultiplier=dropBuff?dropBuff.multiplier:1;
-   const addMaterial=item=>{character.bag.push(item);character.run.foundItemIds.push(item.id);materials.push(item);};
+   const addMaterial=item=>{character.bag.push(item);character.run.foundItemIds.push(item.id);materials.push(item);character.stats.items_found=(character.stats.items_found||0)+1;};
    if(random()<Math.min(1,balance.equipment.chisel_drop_chance*dropMultiplier))
     addMaterial({id:id(),type:"chisel",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    if((enemy.type==="elite"||enemy.type==="boss")&&stage>=balance.equipment.stone_unlock_stage&&character.branch&&random()<Math.min(1,balance.equipment.stone_drop_chance*dropMultiplier)){
@@ -462,6 +472,8 @@
    if(character.heroic&&(enemy.type==="elite"||enemy.type==="boss")&&random()<Math.min(1,balance.equipment.enchantment.weapon_scroll_chance*dropMultiplier))
     addMaterial({id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    character.stats.kills++;
+   if(enemy.type==="boss"){character.stats.boss_kills=(character.stats.boss_kills||0)+1;if(!stageData.potionSlotUsed)character.stats.potionless_bosses=(character.stats.potionless_bosses||0)+1;}
+   if(use2x&&firstClear)character.stats.speed_runs=(character.stats.speed_runs||0)+1;
    const silverBuff=activeBuff(character,"silver"),seasonMod=character.run.season?.modifier;
    const accountBonus=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
    const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*(seasonMod?.reward_silver_multiplier||1));
@@ -475,12 +487,16 @@
     const bonus=(clear.base+stage*clear.per_stage+(enemy.type==="boss"?clear.boss_bonus:0))*multiplier;
     awardXp(character,bonus);
     character.progress.highestEver=Math.max(character.progress.highestEver,stage);
+    character.stats.highest_stage=Math.max(character.stats.highest_stage||0,stage);
+    if(character.difficulty==="hardcore")character.stats.hardcore_clears=(character.stats.hardcore_clears||0)+1;
+    if(character.heroic)character.stats.heroic_clears=(character.stats.heroic_clears||0)+1;
     recordDailyProgress(character.id,"stages_cleared",1);submitWeeklyRating(character.id);
     if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
     if(stage>character.progress.currentStage-1)character.progress.currentStage=stage+1;
     character.run.stage=null;
     character.run.playerHp=maxHp(character);
     if(stage>=balance.seasons.reward_first_clear_stage&&!character.run.seasonRewardClaimed&&firstClear){
+     character.stats.season_clear=Math.max(character.stats.season_clear||0,stage);
      const reward=balance.seasons.season_reward_cosmetic;
      if(reward&&!state.account.cosmetics.includes(reward))state.account.cosmetics.push(reward);
      if(character.run.season&&character.run.season.id===ensureSeason().id)ensureSeason().firstClearRewardClaimed=true;
@@ -495,7 +511,7 @@
      }
      publishGhost(character,"stage_250_clear");
     }else if(stage>=balance.map.total_stages&&character.heroic){
-     character.run.active=false;publishGhost(character,"stage_250_clear");
+     character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;publishGhost(character,"stage_250_clear");
     }
    }
    return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,stageComplete:done,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
@@ -597,13 +613,14 @@
    character.run.stage=null;character.run.experience=0;character.run.foundItemIds=[];
    character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
    character.run.lives=runEnded?difficulty.lives:livesRemaining;character.run.active=!runEnded;
-   if(runEnded)character.progress.currentStage=balance.death.new_run_stage;
+   if(runEnded){character.progress.currentStage=balance.death.new_run_stage;character.stats.runs_completed=(character.stats.runs_completed||0)+1;}
    character.run.playerHp=maxHp(character);
    return clone(character.lastDeath);
   }
   function voluntaryRestart(characterId){
    const character=getChar(characterId);
    if(character.run.stage)throw new Error("Restart is only available between stages");
+   if(character.run.active)character.stats.runs_completed=(character.stats.runs_completed||0)+1;
    publishGhost(character,"restart");
    const difficulty=difficultyOf(character);
    character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];
@@ -701,7 +718,7 @@
    const refineBuff=activeBuff(character,"refine");
    const chance=clamp(tier.chance+(settings.chanceBonus||0)+(refineBuff?refineBuff.chanceBonus:0),0,1);
    const success=random()<chance;
-   if(success)item.refine++;
+   if(success){item.refine++;character.stats.refine_success=(character.stats.refine_success||0)+1;}
    else if(!safe){
     if(tier.failure==="minus_one")item.refine=Math.max(0,item.refine-1);
     if(tier.failure==="reset_ten")item.refine=10;
@@ -731,13 +748,14 @@
    const scroll=character.bag.find(entry=>entry.type==="enchant_scroll"&&entry.slot===(weapon?"weapon":"armor"));
    if(!scroll)throw new Error("No matching enchantment scroll in the backpack");
    character.bag=character.bag.filter(entry=>entry.id!==scroll.id);
-   item.enchant=choices[choice];return clone(item);
+   item.enchant=choices[choice];character.stats.enchants_applied=(character.stats.enchants_applied||0)+1;return clone(item);
   }
   function activateItem(characterId,itemId){
    const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
    if(!item)throw new Error("Item not found in backpack");
    if(item.type==="healing_potion")throw new Error("Healing potions can only be used during combat");
    const key=item.itemId||item.type;
+   bindItemOnUse(characterId,itemId);
    if(key==="pvp_talent_reset"){character.talents={};character.bag=character.bag.filter(entry=>entry.id!==itemId);return{activated:key,expiresAt:null};}
    const definition=balance.economy.consumables?.[key];
    if(!definition)throw new Error("This item has no active effect");
@@ -835,6 +853,7 @@
    if(spent>=character.talentPoints)throw new Error("No available talent points");
    if((character.talents[talentId]||0)>=max)throw new Error("Talent rank is already maxed");
    character.talents[talentId]=(character.talents[talentId]||0)+1;
+   character.stats.talents_spent=(character.stats.talents_spent||0)+1;
    return character.talents[talentId];
   }
   function ensurePvpDaily(){
@@ -862,6 +881,7 @@
   function resolvePvpDuel(characterId,won){
    const character=getChar(characterId),daily=ensurePvpDaily();
    if(!daily.pending)throw new Error("No PvP duel is active");
+   character.stats.pvp_duels=(character.stats.pvp_duels||0)+1;
    const reward=won?balance.pvp.win_points:balance.pvp.loss_points;
    state.account.pvpPoints=(state.account.pvpPoints||0)+reward;
    if(won)character.stats.pvpWins=(character.stats.pvpWins||0)+1;
@@ -954,7 +974,8 @@
    if(!entry)throw new Error("Unknown achievement");
    character.achievements=character.achievements||[];
    if(character.achievements.includes(achievementId))throw new Error("Achievement already claimed");
-   const progress=character.stats[entry.metric]||character.progress[entry.metric]||0;
+   const derived={highest_stage:character.progress.highestEver||0,lore_read:(character.loreRead||[]).length,paragon_level:character.paragon?.level||0,account_level:accountLevel(),season_clear:character.stats.season_clear||0};
+   const progress=derived[entry.metric]??character.stats[entry.metric]??character.progress[entry.metric]??0;
    if(progress<entry.target)throw new Error("Achievement requirement not reached");
    character.achievements.push(achievementId);character.silver+=entry.reward.silver||0;
    for(const cosmetic of entry.reward.cosmetic||[])if(!state.account.cosmetics.includes(cosmetic))state.account.cosmetics.push(cosmetic);
@@ -966,7 +987,7 @@
    if(character.progress.highestEver<entry.unlock_stage)throw new Error("Lore entry is still locked");
    character.loreRead=character.loreRead||[];
    if(character.loreRead.includes(loreId))return{xp:0,alreadyRead:true};
-   character.loreRead.push(loreId);const reward=awardXp(character,entry.xp_reward||balance.lore.read_xp_reward);
+   character.loreRead.push(loreId);character.stats.lore_read=(character.stats.lore_read||0)+1;const reward=awardXp(character,entry.xp_reward||balance.lore.read_xp_reward);
    return{xp:reward.amount,level:character.level};
   }
   function logCombatEvent(characterId,event){
@@ -993,6 +1014,18 @@
    if(character.silver<cost)throw new Error("Not enough silver to reset paragon");
    character.silver-=cost;character.paragon.stats={};return clone(character.paragon);
   }
+  function salvageItem(characterId,itemId){
+   const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
+   if(!item||!item.rarity)throw new Error("Only equipment can be salvaged");
+   if(item.bossLoot)throw new Error("Boss loot cannot be salvaged");
+   const quantity=balance.materials.salvage[item.rarity];
+   if(!Number.isFinite(quantity))throw new Error("This rarity cannot be salvaged");
+   character.bag=character.bag.filter(entry=>entry.id!==itemId);
+   const stack=character.bag.find(entry=>entry.type==="craft_material");
+   if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});
+   character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;
+   return{quantity,rarity:item.rarity};
+  }
   function leaderboard(){
    return state.characters.map(character=>({id:character.id,name:character.name,classId:character.classId,level:character.level,combatPower:combatPower(character),completionMs:character.stats.completionMs||0}))
     .sort((a,b)=>b.combatPower-a.combatPower||a.completionMs-b.completionMs);
@@ -1001,7 +1034,7 @@
   return{state,balance,accountLevel,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
-   rollLoot,mergeStones,craftStone,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
+   rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
