@@ -50,8 +50,16 @@
    const previous=character.level;
    character.level=levelForXp(character.xp);
    character.talentPoints=Math.max(0,character.level-1);
+   let spent=Object.values(character.talents||{}).reduce((sum,value)=>sum+value,0);
+   if(spent>character.talentPoints){
+    for(const key of Object.keys(character.talents||{}).reverse()){
+     while(character.talents[key]>0&&spent>character.talentPoints){character.talents[key]--;spent--;}
+     if(character.talents[key]<=0)delete character.talents[key];
+     if(spent<=character.talentPoints)break;
+    }
+   }
    if(character.level<10)character.branch=null;
-   return{previous,level:character.level,lost:Math.max(0,previous-character.level)};
+   return{previous,level:character.level,lost:Math.max(0,previous-character.level),talentPoints:character.talentPoints};
   }
   function createCharacter(name,classId){
    const classData=classTable[classId];
@@ -65,7 +73,7 @@
     gear:[null,null,null,null,null,null],heroic:false,
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
     run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
-     checkpointHeals:0,healingPenaltyUntil:0,speed2:false,buffs:{}},
+     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,buffs:{}},
     pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0}
    };
    character.run.playerHp=maxHp(character);
@@ -95,7 +103,7 @@
   function beginRun(character){
    if(character.run.active)return;
    character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,
-    checkpointHeals:0,healingPenaltyUntil:0,speed2:false,playerHp:maxHp(character),startedAt:now()};
+    checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,playerHp:maxHp(character),startedAt:now()};
   }
   function beginStage(characterId,requestedStage){
    const character=getChar(characterId);
@@ -123,7 +131,8 @@
     if(firstClear)throw new Error("2x speed is disabled on first clears");
     multiplier*=balance.combat.speed_2x_experience_multiplier;
    }
-   if(character.run.healingPenaltyUntil>=stage)multiplier*=balance.xp_curve.healing_penalty_multiplier;
+   const penaltyFrom=character.run.healingPenaltyFrom||0;
+   if(penaltyFrom>0&&stage>=penaltyFrom&&stage<=character.run.healingPenaltyUntil)multiplier*=balance.xp_curve.healing_penalty_multiplier;
    return multiplier;
   }
   function awardXp(character,amount){
@@ -179,19 +188,21 @@
    const gained=awardXp(character,base*multiplier);
    const loot=rollLoot(character,enemy,stage,firstClear,false);
    const materials=[];
-   if(random()<balance.equipment.chisel_drop_chance){const material={id:id(),type:"chisel",quantity:1,foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);}
+   if(random()<balance.equipment.chisel_drop_chance){const material={id:id(),type:"chisel",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);}
    if(stage>=balance.equipment.stone_unlock_stage&&character.branch&&random()<balance.equipment.stone_drop_chance){
-    const stoneType={classId:character.classId,branchId:character.branch,slot:random()<0.5?"weapon":"armor"};
-    const material={id:id(),type:"enhancement_stone",stoneType,level:1,foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+    const slot=random()<0.5?"weapon":"armor";
+    const stonePool=balance.equipment.stone_types.filter(type=>type.class_id===character.classId&&type.branch_id===character.branch&&type.slot===slot);
+    const stoneType=clone(stonePool[Math.floor(random()*stonePool.length)]||{id:character.classId+"."+character.branch+"."+slot,class_id:character.classId,branch_id:character.branch,slot,attack_per_level:slot==="weapon"?1.5:0,defense_per_level:slot==="armor"?1:0,health_per_level:slot==="armor"?3:0});
+    const material={id:id(),type:"enhancement_stone",stoneType,level:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
    }
    if(stage>=balance.equipment.refine_unlock_stage&&random()<balance.equipment.refine_stone_drop_chance){
-    const material={id:id(),type:"refine_stone",quantity:1,foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+    const material={id:id(),type:"refine_stone",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
    }
    if(character.heroic&&random()<balance.equipment.enchantment.armor_scroll_chance){
-    const material={id:id(),type:"enchant_scroll",slot:"armor",foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+    const material={id:id(),type:"enchant_scroll",slot:"armor",foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
    }
    if(character.heroic&&random()<balance.equipment.enchantment.weapon_scroll_chance){
-    const material={id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
+    const material={id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"};character.bag.push(material);character.run.foundItemIds.push(material.id);materials.push(material);
    }
    character.stats.kills++;
    character.silver+=balance.economy.silver_drop[enemy.type]||0;
@@ -236,6 +247,7 @@
    if(character.run.healingPenaltyUntil>=nextStage)throw new Error("Experience penalty is still active");
    if(character.run.checkpointHeals>=balance.healing.max_checkpoint_heals_per_run)throw new Error("Checkpoint heal limit reached");
    character.run.playerHp=Math.min(maxHp(character),character.run.playerHp+Math.round(maxHp(character)*balance.healing.checkpoint_heal_fraction));
+   character.run.healingPenaltyFrom=checkpoint===balance.map.total_stages?0:nextStage;
    character.run.healingPenaltyUntil=checkpoint===balance.map.total_stages?0:nextStage+balance.healing.checkpoint_penalty_stages-1;
    character.run.checkpointHeals++;
    return{hp:character.run.playerHp,checkpoint,penaltyUntil:character.run.healingPenaltyUntil,remaining:Math.max(0,character.run.healingPenaltyUntil-nextStage+1)};
@@ -268,7 +280,7 @@
    }
    character.lastDeath={...preview,lostItem:lost?lost.name:null};
    character.run.active=false;character.run.stage=null;character.run.experience=0;character.run.foundItemIds=[];
-   character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
+   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
    character.progress.currentStage=balance.death.new_run_stage;
    character.run.playerHp=maxHp(character);
    return clone(character.lastDeath);
@@ -277,7 +289,7 @@
    const character=getChar(characterId);
    if(character.run.stage)throw new Error("Restart is only available between stages");
    character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];
-   character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
+   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
    character.progress.currentStage=balance.death.new_run_stage;
    character.run.playerHp=maxHp(character);
    return clone(character.progress);
@@ -357,13 +369,14 @@
    settings=settings||{};
    const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId)||character.bag.find(entry=>entry&&entry.id===itemId);
    if(!item)throw new Error("Equipment not found");
-   const refineStone=character.bag.find(entry=>entry.type==="refine_stone");
-   if(!refineStone)throw new Error("No refinement stone available");
    if(item.refine>=balance.equipment.refine_max)throw new Error("Maximum refinement reached");
    const tier=balance.equipment.refine_tiers.find(entry=>item.refine>=entry.from&&item.refine<=entry.to);
    if(!tier)throw new Error("No refinement tier configured");
+   const refineStone=character.bag.find(entry=>entry.type==="refine_stone");
+   if(!refineStone)throw new Error("No refinement stone available");
+   const safeItem=character.bag.find(entry=>entry.type==="safe_refine");
+   const safe=!!settings.safe||!!safeItem;
    character.bag=character.bag.filter(entry=>entry.id!==refineStone.id);
-   const safe=!!settings.safe||character.bag.some(entry=>entry.type==="safe_refine");
    const chance=clamp(tier.chance+(settings.chanceBonus||0),0,1);
    const success=random()<chance;
    if(success)item.refine++;
@@ -375,7 +388,7 @@
      character.bag=character.bag.filter(entry=>entry.id!==itemId);
     }
    }
-   if(safe)character.bag=character.bag.filter(entry=>entry.type!=="safe_refine");
+   if(safeItem)character.bag=character.bag.filter(entry=>entry.id===safeItem.id?false:true);
    return{success,destroyed:tier.failure==="destroy"&&!success&&!safe,refine:item.refine};
   }
   function rollEnchantScroll(characterId,itemId){
@@ -383,8 +396,9 @@
    if(!character.heroic)throw new Error("Enchantment is only available in heroic mode");
    if(!item)throw new Error("Equipment not found");
    const weapon=item.slot==="weapon"||item.slot===0;
-   const chance=weapon?balance.equipment.enchantment.weapon_scroll_chance:balance.equipment.enchantment.armor_scroll_chance;
-   if(random()>=chance)throw new Error("No enchantment scroll dropped");
+   const scroll=character.bag.find(entry=>entry.type==="enchant_scroll"&&entry.slot===(weapon?"weapon":"armor"));
+   if(!scroll)throw new Error("No matching enchantment scroll in the backpack");
+   character.bag=character.bag.filter(entry=>entry.id!==scroll.id);
    return weapon?["+15% магической атаки","+15% физической атаки","+15% скорости атаки","+15% шанса крита"]:
     ["+5% магического урона","+5% физического урона","+5% магической защиты","+5% физической защиты"];
   }
@@ -411,6 +425,10 @@
    if(catalogItem.startsWith("heal_")){
     const fraction=Number(catalogItem.split("_")[1])/100;
     const stack=character.bag.find(item=>item.type==="healing_potion"&&item.healFraction===fraction);
+    if(stack&&stack.quantity>=balance.healing.potion_stack_limit){
+     if(store==="silver")character.silver+=price;else state.account.diamonds+=price;
+     throw new Error("Healing potion stack is full");
+    }
     if(stack)stack.quantity=Math.min(balance.healing.potion_stack_limit,stack.quantity+1);
     else character.bag.push({id:id(),type:"healing_potion",healFraction:fraction,quantity:1});
    }else if(catalogItem.startsWith("premium_")){
@@ -522,7 +540,7 @@ if(typeof window!=="undefined"){
       bag,gear:gear.length?gear:[null,null,null,null,null,null],
       heroic:!!old.heroic,progress:{highestEver:best,currentStage:Math.max(1,Math.min(250,old.stage||1)),checkpoints:[50,100,150,200,250].filter(stage=>best>=stage)},
       run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
-       checkpointHeals:0,healingPenaltyUntil:0,speed2:false,buffs:{}},
+       checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,buffs:{}},
       pity:{legendaryMisses:old.legendaryMisses||0,godlikeMisses:old.godlikeMisses||0},
       stats:{kills:old.kills||0,elapsedMs:0,completionMs:0}
      };
