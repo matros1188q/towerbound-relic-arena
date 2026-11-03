@@ -104,27 +104,64 @@ const {chromium}=require('playwright');
   await page.evaluate(()=>{const engine=window.TowerboundRework,c=engine.state.characters[0];c.level=1;c.gear=[null,null,null,null,null,null];c.talents={};c.progress.highestEver=10;c.progress.currentStage=11;engine.setDifficulty(c.id,'easy');window.saveTowerboundRework();});
   await page.locator('.tb-systems .tb-system-top [data-action="map"]').click();
   await page.locator('[data-stage="10"]').click();
+  await page.setViewportSize({width:375,height:812});
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('.tb-arena',{timeout:5000});
-  assert.equal(await page.locator('[data-panel-skill]').count(),4,'four attack skills are visible');
+  assert.equal(await page.locator('[data-panel-skill]').count(),4,'four configured attack skills are visible');
   assert.equal(await page.locator('[data-counter]').count(),1,'class counter occupies slot five');
   assert.equal(await page.locator('[data-ultimate]').count(),1,'class ultimate occupies slot six');
+  assert.equal(await page.locator('.tb-panel-skill').count(),6,'all six combat buttons are rendered');
   const mobilePanel=await page.locator('.tb-panel-actions').evaluate(el=>({
-   direction:getComputedStyle(el).flexDirection,
-   slotsDirection:getComputedStyle(el.querySelector('.tb-panel-slots')).flexDirection,
+   display:getComputedStyle(el).display,
+   slotsDisplay:getComputedStyle(el.querySelector('.tb-panel-slots')).display,
+   columns:getComputedStyle(el.querySelector('.tb-panel-slots')).gridTemplateColumns.split(' ').length,
+   rows:getComputedStyle(el.querySelector('.tb-panel-slots')).gridTemplateRows.split(' ').length,
    targetTop:document.querySelector('.tb-target-grid').getBoundingClientRect().top,
-   panelTop:el.getBoundingClientRect().top
+   panelTop:el.getBoundingClientRect().top,
+   attackHeight:document.querySelector('#hit').getBoundingClientRect().height,
+   heroHpTop:document.querySelector('.tb-battle-hero .tb-healthbar').getBoundingClientRect().top,
+   heroHpBottom:document.querySelector('.tb-battle-hero .tb-healthbar').getBoundingClientRect().bottom,
+   bodyPosition:getComputedStyle(document.body).position,
+   bodyOverflow:getComputedStyle(document.body).overflow,
+   rootOverflow:getComputedStyle(document.querySelector('#tbRpg .tb-v2')).overflow
   }));
-  assert.equal(mobilePanel.direction,'column','mobile combat actions stack vertically');
-  assert.equal(mobilePanel.slotsDirection,'column','six skill slots form a vertical bottom stack');
+  assert.equal(mobilePanel.display,'grid','mobile combat controls use a fixed grid');
+  assert.equal(mobilePanel.slotsDisplay,'grid','skill slots use a grid');
+  assert.equal(mobilePanel.columns,3,'skills are arranged three per row');
+  assert.equal(mobilePanel.rows,2,'skills occupy two rows');
+  assert.ok(mobilePanel.attackHeight<=60,'attack button stays at or below 60px');
+  assert.ok(mobilePanel.heroHpTop>=0&&mobilePanel.heroHpBottom<=812,'hero HP bar stays in the viewport');
+  assert.equal(mobilePanel.bodyPosition,'fixed','body is fixed while battle is active');
+  assert.equal(mobilePanel.bodyOverflow,'hidden','body scrolling is locked during battle');
+  assert.equal(mobilePanel.rootOverflow,'hidden','battle root does not scroll');
   assert.ok(mobilePanel.targetTop<mobilePanel.panelTop,'enemy targets stay above the mobile controls');
+  const stress=await page.evaluate(()=>{
+   const grid=document.querySelector('.tb-target-grid'),cards=[...grid.querySelectorAll('.tb-target-card')];
+   for(let i=cards.length;i<7;i++){const clone=cards[0].cloneNode(true);clone.dataset.target=String(100+i);grid.appendChild(clone);}
+   return [...grid.querySelectorAll('.tb-target-card')].map(card=>{const r=card.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};});
+  });
+  assert.equal(stress.length,7,'seven target cards fit the stress-test grid');
+  assert.ok(stress.every(r=>r.top>=0&&r.bottom<=812&&r.left>=0&&r.right<=375),'all seven target cards remain inside the mobile viewport');
+  await page.evaluate(()=>document.querySelectorAll('.tb-target-card[data-target^="10"]').forEach(card=>card.remove()));
+  await page.setViewportSize({width:812,height:375});
+  const landscape=await page.evaluate(()=>{
+   const arena=document.querySelector('.tb-arena'),grid=document.querySelector('.tb-target-grid'),actions=document.querySelector('.tb-panel-actions'),potions=document.querySelector('.tb-potion-belt');
+   return [arena,grid,actions,potions].map(el=>{const r=el.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};});
+  });
+  assert.ok(landscape.every(r=>r.top>=0&&r.bottom<=375&&r.left>=0&&r.right<=812),'arena, enemies, controls and potions fit in landscape');
+  await page.setViewportSize({width:375,height:812});
   assert.equal(await page.locator('#speed').isDisabled(),false,'2x is available on a previously cleared floor');
   await page.locator('#speed').click();
   assert.equal(await page.evaluate(()=>localStorage.getItem('tb-rpg-speed-v2')),'2','speed preference persists');
   assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.speed2),true,'2x toggle is reflected in runtime state');
   await page.locator('[data-target="0"]').click();
   assert.ok(await page.locator('[data-target="0"]').evaluate(el=>el.classList.contains('selected')),'tap selects a live mob');
+  await page.evaluate(()=>{window.__tbArenaBeforeAttack=document.querySelector('.tb-arena');window.__tbScrollBeforeAttack=window.scrollY;});
   await page.locator('[data-action="attack"]').click();
+  for(let i=0;i<19;i++)await page.locator('#hit').evaluate(button=>button.click());
+  const noJump=await page.evaluate(()=>({sameArena:window.__tbArenaBeforeAttack===document.querySelector('.tb-arena'),before:window.__tbScrollBeforeAttack,after:window.scrollY}));
+  assert.equal(noJump.sameArena,true,'normal attack updates preserve the existing battle DOM');
+  assert.equal(noJump.after,noJump.before,'20 rapid attack taps do not move the page');
   await page.waitForSelector('.tb-telegraph:not(.tb-telegraph-idle)',{timeout:6000});
   assert.equal(await page.locator('[data-counter]').isEnabled(),true,'counter is available during a telegraph');
   const resourceBeforeCounter=await page.evaluate(()=>window.TowerboundRework.state.characters[0].resource);
@@ -139,6 +176,6 @@ const {chromium}=require('playwright');
   await page.locator('[data-action="confirm-death"]').click();
   assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.lives),2,'Easy difficulty consumes one of three lives and keeps the run recoverable');
   assert.deepEqual(errors,[],'browser runtime must not throw uncaught errors');
-  console.log('Browser smoke passed: seven classes, character persistence, 250-stage map, branch/talent, equip/refine, shop, account systems, settings, tutorial, ghost PvP, combat and persisted ×2 speed.');
+  console.log('Browser smoke passed: seven classes, progression, inventory, shop, systems, combat, fixed 375×812 battle HUD, seven-target viewport stress, landscape layout, stable DOM and 20 rapid attack taps without scroll.');
  }finally{await browser.close();server.close();}
 })().catch(error=>{console.error(error);process.exit(1);});
