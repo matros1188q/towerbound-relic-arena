@@ -55,6 +55,13 @@
   const difficultyOf=character=>balance.difficulty.modes[character.difficulty||balance.difficulty.default]||balance.difficulty.modes.normal;
   const rarityKey=rarity=>({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[rarity]||String(rarity||"common").toLowerCase());
   const stageSilver=stage=>(balance.mobs.silver_brackets||[]).find(x=>stage>=x.min&&stage<=x.max)?.amount||0;
+  const resourceConfig=balance.resources||{starting_fraction:0.58,action_costs:{attack_skill:22,counter:18,ultimate:42},regeneration:{auto_attack:3,kill:5,potion:25}};
+  const damageTypes=balance.mobs.damage_types||["fire","ice","dark","physical"];
+  const damageTypeMultiplier=(target,type)=>{
+   if(target?.weakness===type)return balance.mobs.vulnerability_multiplier||1.5;
+   if(target?.resistance===type)return balance.mobs.resistance_multiplier||0.5;
+   return 1;
+  };
   const itemLevelForStage=stage=>Math.max(balance.item_level.min,Math.min(balance.item_level.max,Math.floor(Number(stage)||1)));
   function dropEligibility(enemy,stage,heroic){
    const eliteOrBoss=enemy?.type==="elite"||enemy?.type==="boss";
@@ -285,7 +292,7 @@
    if(state.characters.some(item=>item.name.toLowerCase()===nickname.toLowerCase()))throw new Error("Character name already exists");
    const starter=!state.account.starterPackClaimed,mode=balance.difficulty.modes[balance.difficulty.default];
    const character={
-    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],activeSkillId:null,resource:0,resourceMax:classTable[classId].resource_max||100,
+    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],activeSkillId:null,skillLoadout:[],resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,
     silver:starter?balance.account.starter_pack.silver:balance.economy.starting_silver,
     bag:starter?[{id:id(),type:"healing_potion",quantity:balance.account.starter_pack.healing_potions}]:[],
     gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
@@ -320,11 +327,18 @@
    const modifiers=runModifiers(character);
    const eliteChance=Math.min(1,map.elite_chance*modifiers.reduce((multiplier,modifier)=>multiplier*(modifier.elite_chance_multiplier||1),1));
    const eliteIndex=!boss&&random()<eliteChance?Math.floor(random()*count):-1;
-   return{stage,boss,count,mobs:Array.from({length:count},(_,index)=>({
-    index,type:boss?"boss":index===eliteIndex?"elite":"normal",
-    mechanic:index===eliteIndex?map.elite_mechanics[Math.floor(random()*map.elite_mechanics.length)]:null,
-    statMultiplier:character.heroic?map.heroic_stat_multiplier:1
-   }))};
+   const roleConfig=balance.mobs.roles||{},roleOrder=roleConfig.guaranteed_order||["healer","poison","tank"];
+   return{stage,boss,count,mobs:Array.from({length:count},(_,index)=>{
+    const role=boss?"boss":roleOrder[index]||roleConfig.normal_remainder||"normal";
+    const weakness=damageTypes[(stage+index)%damageTypes.length],resistance=damageTypes[(stage+index+(roleConfig.assignment_resistance_offset||2))%damageTypes.length];
+    return{
+     index,type:boss?"boss":index===eliteIndex?"elite":"normal",
+     role,roleIcon:roleConfig[role]?.icon||"",
+     mechanic:index===eliteIndex?map.elite_mechanics[Math.floor(random()*map.elite_mechanics.length)]:null,
+     weakness,resistance,
+     statMultiplier:character.heroic?map.heroic_stat_multiplier:1
+    };
+   })};
   }
   function beginRun(character){
    if(character.run.active)return;
@@ -341,14 +355,26 @@
    if(stage<1||stage>balance.map.total_stages)throw new Error("Invalid map stage");
    if(character.run.stage)throw new Error("A stage is already active");
    beginRun(character);
-   const plan=stagePlan(character,stage);
-   character.run.stage={...plan,enemyIndex:0,potionSlotUsed:false,startedAt:now()};
+   const plan=stagePlan(character,stage),previousStage=character.run.stage;
+   character.run.stage={...plan,enemyIndex:0,targetIndex:0,killedIndices:[],potionUsedTargets:[],potionSlotUsed:false,startedAt:now(),bossPhase:1};
+   const startFraction=resourceConfig.starting_fraction??0.58;
+   character.resource=Math.min(character.resourceMax,Math.max(character.resource||0,Math.round(character.resourceMax*startFraction)));
    character.run.speed2=false;
    return clone(character.run.stage);
   }
   function currentEnemy(character){
    if(!character.run.stage)throw new Error("No active battle");
-   return character.run.stage.mobs[character.run.stage.enemyIndex];
+   const stage=character.run.stage,index=stage.targetIndex??stage.enemyIndex;
+   return stage.mobs[index];
+  }
+  function selectTarget(characterId,index){
+   const character=getChar(characterId),stage=character.run.stage;
+   if(!stage)throw new Error("No active battle");
+   if(!Number.isInteger(index)||index<0||index>=stage.mobs.length)throw new Error("Invalid target");
+   if((stage.killedIndices||[]).includes(index))throw new Error("Target is already defeated");
+   stage.targetIndex=index;stage.enemyIndex=index;
+   stage.potionSlotUsed=(stage.potionUsedTargets||[]).includes(index);
+   return clone(stage.mobs[index]);
   }
   function getEnemyStats(characterId,stage,enemy){
    const character=getChar(characterId),curve=balance.mobs.curves;
@@ -368,7 +394,7 @@
    }
    const speedMultiplier=modifiers.reduce((multiplier,modifier)=>multiplier*(modifier.enemy_attack_speed_multiplier||1),1);
    const attackInterval=balance.combat.attack_interval/speedMultiplier;
-   return{hp,damage,attackInterval,attackIntervalMs:Math.round(attackInterval*1000)};
+   return{hp,damage,attackInterval,attackIntervalMs:Math.round(attackInterval*1000),weakness:enemy?.weakness||null,resistance:enemy?.resistance||null,role:enemy?.role||"normal"};
   }
   function mitigationMultiplier(defense,attackerLevel){
    const armor=Math.max(0,Number(defense)||0),level=Math.max(1,Number(attackerLevel)||1);
@@ -466,7 +492,11 @@
   }
   function finishEnemy(characterId,flags){
    flags=flags||{};
-   const character=getChar(characterId),stageData=character.run.stage,enemy=currentEnemy(character),stage=stageData.stage;
+   const character=getChar(characterId),stageData=character.run.stage,targetIndex=Number.isInteger(flags.targetIndex)?flags.targetIndex:(stageData.targetIndex??stageData.enemyIndex),enemy=stageData.mobs[targetIndex],stage=stageData.stage;
+   if(!enemy)throw new Error("Target is not active");
+   stageData.killedIndices=stageData.killedIndices||[];
+   if(stageData.killedIndices.includes(targetIndex))throw new Error("Target is already defeated");
+   const potionUsed=(stageData.potionUsedTargets||[]).includes(targetIndex);
    const firstClear=stage>character.progress.highestEver;
    const use2x=flags.speed2===undefined?!!character.run.speed2:!!flags.speed2;
    const multiplier=xpMultiplier(character,stage,{speed2:use2x});
@@ -493,15 +523,21 @@
    if(eligibility.weaponScroll&&random()<Math.min(1,balance.equipment.enchantment.weapon_scroll_chance*dropMultiplier))
     addMaterial({id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    character.stats.kills++;
-   if(enemy.type==="boss"){character.stats.boss_kills=(character.stats.boss_kills||0)+1;if(!stageData.potionSlotUsed)character.stats.potionless_bosses=(character.stats.potionless_bosses||0)+1;}
+   if(enemy.type==="boss"){character.stats.boss_kills=(character.stats.boss_kills||0)+1;if(!potionUsed)character.stats.potionless_bosses=(character.stats.potionless_bosses||0)+1;}
    const silverBuff=activeBuff(character,"silver"),rewardMultiplier=runModifiers(character).reduce((value,modifier)=>value*(modifier.reward_silver_multiplier||1),1);
    const accountBonus=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
    const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*rewardMultiplier);
    character.silver+=silver;
    if(enemy.type==="elite")recordDailyProgress(character.id,"elite_kills",1);
-   stageData.enemyIndex++;
-   const done=stageData.enemyIndex>=stageData.mobs.length;
-   if(!done)stageData.potionSlotUsed=false;
+   character.resource=Math.min(character.resourceMax,character.resource+(resourceConfig.regeneration?.kill||5));
+   stageData.killedIndices.push(targetIndex);
+   const done=stageData.killedIndices.length>=stageData.mobs.length;
+   const nextTarget=stageData.mobs.findIndex((item,index)=>!stageData.killedIndices.includes(index));
+   stageData.enemyIndex=done?stageData.mobs.length:nextTarget;
+   if(!done){
+    if(stageData.targetIndex===targetIndex)stageData.targetIndex=nextTarget;
+    stageData.potionSlotUsed=(stageData.potionUsedTargets||[]).includes(stageData.targetIndex);
+   }
    if(done){
     if(use2x)character.stats.speed_runs=(character.stats.speed_runs||0)+1;
     const clear=balance.xp_curve.stage_clear_xp;
@@ -535,20 +571,22 @@
      character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;publishGhost(character,"stage_250_clear");
     }
    }
-   return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,stageComplete:done,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
+   return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
   }
   function useHealingPotion(characterId,stackId){
    const character=getChar(characterId),stage=character.run.stage;
    if(!stage)throw new Error("Healing potion can only be used during a battle");
-   const enemy=stage.mobs[stage.enemyIndex];
+   const targetIndex=stage.targetIndex??stage.enemyIndex,enemy=stage.mobs[targetIndex];
    if(enemy?.type==="boss"&&runModifiers(character).some(modifier=>modifier.boss_no_potion))throw new Error("Daily or seasonal modifier disables potions on bosses");
    if(!difficultyOf(character).potion_belt)throw new Error("Potion belt is disabled in Hardcore");
-   if(stage.potionSlotUsed)throw new Error("The healing slot for this enemy has already been consumed");
+   stage.potionUsedTargets=stage.potionUsedTargets||[];
+   if(stage.potionUsedTargets.includes(targetIndex))throw new Error("The healing slot for this enemy has already been consumed");
    const potion=character.bag.find(item=>(!stackId||item.id===stackId)&&item.type==="healing_potion"&&item.quantity>0);
    if(!potion)throw new Error("No healing potions available");
-   potion.quantity--;stage.potionSlotUsed=true;
+   potion.quantity--;stage.potionUsedTargets.push(targetIndex);stage.potionSlotUsed=true;
    const healFraction=balance.healing.potion_heal_fraction;
    character.run.playerHp=Math.min(maxHp(character),character.run.playerHp+Math.round(maxHp(character)*healFraction));
+   character.resource=Math.min(character.resourceMax,character.resource+(resourceConfig.regeneration?.potion||25));
    character.bag=character.bag.filter(item=>item.quantity!==0);
    return character.run.playerHp;
   }
@@ -662,7 +700,9 @@
     const stage=character.progress.currentStage,plan=stagePlan(character,stage);
     if(plan.boss){result.stopped="Босс требует ручного боя";break;}
     if(plan.mobs.some(enemy=>enemy.type==="elite")){result.stopped="Элитный противник требует ручного боя";break;}
-    const stats=getCombatStats(character),interval=balance.combat.attack_interval,playerHit=Math.max(1,stats.attack*(character.run.speed2?1.0:1));
+    const stats=getCombatStats(character),interval=balance.combat.attack_interval,playerHitBase=Math.max(1,stats.attack*(character.run.speed2?1.0:1));
+    const autoTypes=Object.values(balance.skills?.damage_type_by_branch?.[character.classId]||{default:"physical"});
+    const playerHit=Math.max(1,playerHitBase*Math.max(1,...autoTypes.map(type=>damageTypeMultiplier(plan.mobs[0],type))));
     let stageXp=0,estimatedDamage=0;
     for(const enemy of plan.mobs){
      const e=getEnemyStats(character.id,stage,enemy),hits=Math.ceil(e.hp/playerHit);
@@ -1065,8 +1105,8 @@
     .sort((a,b)=>b.combatPower-a.combatPower||a.completionMs-b.completionMs);
   }
   function saveSnapshot(){return clone(state);}
-  return{state,balance,accountLevel,dropEligibility,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
-   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
+  return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
+   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
@@ -1078,7 +1118,7 @@
 });
 if(typeof window!=="undefined"){
  window.TowerboundReworkReady=(async()=>{
-  const names=["combat","xp_curve","map","elite_mechanics","death","healing","auto_battle","drop_tables","equipment","economy","heroic","pvp","classes","skill_effects","mobs","bosses","character_curves","item_level","bp","difficulty","materials","account","stash","tutorial","achievements","lore","settings","seasons","paragon","pvp_store"];
+  const names=["combat","xp_curve","map","elite_mechanics","death","healing","auto_battle","drop_tables","equipment","economy","heroic","pvp","classes","skill_effects","mobs","bosses","character_curves","item_level","bp","difficulty","materials","account","stash","tutorial","achievements","lore","settings","seasons","paragon","pvp_store","resources","skills","combos","procs"];
   const loaded=await Promise.all(names.map(async name=>{
    const response=await fetch("./configs/balance/"+name+".json");
    if(!response.ok)throw new Error("Unable to load balance config: "+name);
