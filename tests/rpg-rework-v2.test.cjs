@@ -44,7 +44,7 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  live.bag.push({id:'found',name:'Found',bossLoot:false});
  const result=e.deathPreview(c.id);assert.equal(result.experienceLoss,300);
  const died=e.confirmDeath(c.id);assert.equal(died.experienceLoss,300);
- const after=e.getChar(c.id);assert.equal(after.progress.currentStage,1);assert.equal(after.progress.highestEver,18);
+ const after=e.getChar(c.id);assert.equal(after.progress.currentStage,19);assert.equal(after.progress.highestEver,18);assert.equal(after.run.lives,2);assert.equal(after.run.active,true);
 }
 {
  const e=engine(),c=create(e),live=e.state.characters[0];live.progress.highestEver=25;live.progress.currentStage=1;
@@ -121,4 +121,13 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  const stats=e.getCombatStats(live);assert.ok(stats.attack>balance.classes.base_stats.base_attack);
  assert.ok(stats.maxHp>balance.classes.base_stats.base_health);assert.ok(stats.damageMultiplier>1,'2-piece set bonus is applied');
 }
-console.log('RPG rework v2 tests passed: character/account, XP, speed, map, checkpoints, healing, death, auto-battle, gear, stones, refine, enchantments, consumables, dailies, daily boss, PvP snapshot, shop, bank and 420 skill files.');
+{
+ const e=engine(),c=create(e),live=e.state.characters[0];
+ live.progress.currentStage=24;live.progress.highestEver=23;live.run.active=true;live.run.lives=3;live.run.experience=100;
+ const first=e.confirmDeath(c.id);assert.equal(first.livesRemaining,2);assert.equal(first.runEnded,false);
+ live.run.experience=100;
+ const second=e.confirmDeath(c.id);assert.equal(second.livesRemaining,1);assert.equal(second.runEnded,false);
+ live.run.experience=100;
+ const third=e.confirmDeath(c.id);assert.equal(third.runEnded,true);assert.equal(live.progress.currentStage,1);assert.equal(live.run.lives,3);assert.equal(live.run.active,false);
+}
+console.log('RPG rework v2 tests passed: character/account, XP, speed, map, checkpoints, healing, death with three lives, auto-battle, gear, stones, refine, enchantments, consumables, dailies, daily boss, PvP snapshot, shop, bank and 420 skill files.');
