@@ -700,12 +700,15 @@
     const stage=character.progress.currentStage,plan=stagePlan(character,stage);
     if(plan.boss){result.stopped="Босс требует ручного боя";break;}
     if(plan.mobs.some(enemy=>enemy.type==="elite")){result.stopped="Элитный противник требует ручного боя";break;}
-    const stats=getCombatStats(character),interval=balance.combat.attack_interval,playerHitBase=Math.max(1,stats.attack*(character.run.speed2?1.0:1));
-    const autoTypes=Object.values(balance.skills?.damage_type_by_branch?.[character.classId]||{default:"physical"});
-    const playerHit=Math.max(1,playerHitBase*Math.max(1,...autoTypes.map(type=>damageTypeMultiplier(plan.mobs[0],type))));
+    const stats=getCombatStats(character),playerHitBase=Math.max(1,stats.attack*(character.run.speed2?1.0:1));
+    const branchTypes=balance.skills?.damage_type_by_branch?.[character.classId]||{};
+    const autoTypes=character.branch?[branchTypes[character.branch]||"physical"]:Object.values(branchTypes);
     let stageXp=0,estimatedDamage=0;
     for(const enemy of plan.mobs){
-     const e=getEnemyStats(character.id,stage,enemy),hits=Math.ceil(e.hp/playerHit);
+     const e=getEnemyStats(character.id,stage,enemy);
+     const bestTypeMultiplier=Math.max(1,...autoTypes.map(type=>damageTypeMultiplier(enemy,type)));
+     const effectiveHit=playerHitBase*bestTypeMultiplier*(enemy.role==="tank"?1-(balance.mobs.roles.tank.damage_reduction||0):1);
+     const hits=Math.ceil(e.hp/Math.max(1,effectiveHit));
      const incomingPerHit=Math.max(1,Math.round(e.damage*mitigationMultiplier(stats.defense,stage)));
      estimatedDamage+=hits*incomingPerHit;
      stageXp+=enemyXp(enemy,stage)*xpMultiplier(character,stage,{auto:true});
