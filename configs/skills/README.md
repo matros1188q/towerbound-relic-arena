@@ -1,5 +1,3 @@
-# Rework v2: skill catalog
+# Каталог умений
 
-The data catalog defines 420 skills (7 classes × 3 specializations × 20 entries). Skill levels are distributed between character levels 10 and 100. Each entry references an effect template in `configs/balance/skill_effects.json`; numerical balance remains configurable.
-
-The records are kept in one generated JSON catalog to keep Git tree writes atomic and avoid hundreds of independent API updates. The IDs are stable and each record can be split into an individual JSON file without changing identifiers.
+Все 420 активных умений хранятся отдельными JSON-файлами: `7 классов × 3 специализации × 20 навыков`. Для каждой ветки есть `skill-01.json` … `skill-20.json`. Общий `catalog.json` используется интерфейсом для быстрого вывода списка, `manifest.json` хранит индекс и уровни открытия. Численные коэффициенты и типы эффектов заданы в `configs/balance/skill_effects.json`.

@@ -75,5 +75,17 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  assert.equal(skills.length,420);
  const counts={};for(const skill of skills){const k=skill.class_id+'/'+skill.branch_id;counts[k]=(counts[k]||0)+1;assert.ok(skill.unlock_level>=10&&skill.unlock_level<=100);}
  assert.equal(Object.keys(counts).length,21);assert.ok(Object.values(counts).every(value=>value===20));
+ let individualFiles=0;
+ for(const [classId,classConfig] of Object.entries(balance.classes.classes)){
+  for(const branch of classConfig.branches){
+   const branchId=typeof branch==="string"?branch:branch.id;
+   const directory=path.join(__dirname,"../configs/skills",classId,branchId);
+   const files=fs.readdirSync(directory).filter(name=>/^skill-\\d{2}\\.json$/.test(name));
+   assert.equal(files.length,20,classId+"/"+branchId+" must have 20 separate skill JSON files");
+   for(const file of files){const skill=JSON.parse(fs.readFileSync(path.join(directory,file),"utf8"));assert.equal(skill.class_id,classId);assert.equal(skill.branch_id,branchId);assert.ok(skill.id);}
+   individualFiles+=files.length;
+  }
+ }
+ assert.equal(individualFiles,420);
 }
 console.log('RPG rework v2 tests passed: character/account split, XP, 250-stage map, speed gate, checkpoints, healing, death, auto-battle, stones, refinement, enchantment guard, shop, bank and 420 skill records.');
