@@ -346,11 +346,14 @@
   }
   function createDrop(character,rarity,options){
    options=options||{};
+   const itemLevel=itemLevelForStage(options.itemLevel||character.progress.currentStage||1);
+   const scale=1+itemLevel*balance.item_level.stat_bonus_per_level;
+   const raw=options.stats||{attack:Math.max(1,Math.round(character.level*1.5)),defense:Math.max(1,Math.round(character.level*.8)),health:Math.max(1,character.level*4)};
+   const stats={...raw};
+   for(const key of Object.keys(stats))if(typeof stats[key]==="number"&&["attack","defense","health","crit"].includes(key))stats[key]=Math.round(stats[key]*scale*1000)/1000;
    const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
-    stats:options.stats||{attack:character.level,defense:Math.round(character.level/2),health:character.level*2},
-    refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
-   character.bag.push(item);
-   character.run.foundItemIds.push(item.id);
+    itemLevel,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
+   character.bag.push(item);character.run.foundItemIds.push(item.id);
    return item;
   }
   function rollLoot(character,enemy,stage,firstClear,automatic){
@@ -360,12 +363,12 @@
     const configured=classTable[character.classId].unique_items||[];
     const owned=new Set([...(character.bag||[]),...(character.gear||[]).filter(Boolean)].map(item=>item.uniqueId).filter(Boolean));
     const available=configured.filter(item=>!owned.has(item.id));
-    if(!available.length)return createDrop(character,rarity,{bossLoot:true});
+    if(!available.length)return createDrop(character,rarity,{bossLoot:true,itemLevel:stage});
     const item=available[Math.floor(random()*available.length)];
-    return createDrop(character,rarity,{bossLoot:true,uniqueId:item.id,name:item.name,slot:item.slot,stats:item.stats});
+    return createDrop(character,rarity,{bossLoot:true,uniqueId:item.id,name:item.name,slot:item.slot,stats:item.stats,itemLevel:stage});
    };
    if(enemy.type==="boss"){
-    if(firstClear&&drops.guaranteed_epic_first_clear_boss)items.push(createDrop(character,"Эпическая",{bossLoot:true,name:"Трофей первого покорения"}));
+    if(firstClear&&drops.guaranteed_epic_first_clear_boss)items.push(createDrop(character,"Эпическая",{bossLoot:true,name:"Трофей первого покорения",itemLevel:stage}));
     if(character.heroic){
      const guaranteed=character.pity.godlikeMisses>=drops.boss_pity_misses;
      if(guaranteed||random()<Math.min(1,drops.heroic_godlike_chance*dropMultiplier)){items.push(uniqueBossDrop("Богоподобная"));character.pity.godlikeMisses=0;}
@@ -379,10 +382,10 @@
     if(random()<Math.min(1,drops.elite_epic_chance*dropMultiplier)){
      const branches=classTable[character.classId].branches||[],branch=branches.find(entry=>entry.id===character.branch)||branches[0];
      const slot=["weapon","chest","head","legs","hands","accessory"][Math.floor(random()*6)];
-     items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,name:(branch?.set?.name||"Эпическая вещь")+" · "+slot}));
+     items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,name:(branch?.set?.name||"Эпическая вещь")+" · "+slot,itemLevel:stage}));
     }
    }else if(stage<=30&&random()<Math.min(1,drops.normal_item_chance*dropMultiplier)){
-    items.push(createDrop(character,random()<drops.normal_rare_weight?"Редкая":"Обычная"));
+    items.push(createDrop(character,random()<drops.normal_rare_weight?"Редкая":"Обычная",{itemLevel:stage}));
    }
    return items;
   }
