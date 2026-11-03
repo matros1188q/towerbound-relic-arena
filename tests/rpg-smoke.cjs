@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),http=require('node:http'),path=require('node:path'),assert=require('node:assert/strict'),{chromium}=require('playwright');
 (async()=>{const root=process.cwd(),srv=http.createServer((q,r)=>{const f=path.join(root,q.url==='/'?'index.html':q.url.split('?')[0].slice(1));fs.readFile(f,(e,d)=>e?r.writeHead(404).end():r.writeHead(200,{'Content-Type':f.endsWith('.js')?'text/javascript':'text/html'}).end(d));});await new Promise(ok=>srv.listen(0,'127.0.0.1',ok));const b=await chromium.launch({headless:true}),p=await b.newPage({viewport:{width:390,height:844}}),errors=[];p.on('pageerror',e=>errors.push(e.message));try{
-await p.goto('http://127.0.0.1:'+srv.address().port);
+await p.goto('http://127.0.0.1:'+srv.address().port);console.log('EXPANSION_BOOT',await p.evaluate(()=>({loaded:!!window.TowerboundExpansion,api:!!window.TowerboundRPG,script:[...document.scripts].map(x=>x.src)})),errors);
 await p.locator('#new').click();await p.locator('#name').fill('RPG QA');await p.locator('#confirm').click();
 assert.equal(await p.locator('.mapbox button').count(),250,'all 250 stages render');
 await p.locator('#profileOpen').click();await p.locator('[data-tab=talents]').click();assert.match(await p.locator('#tbRpg').innerText(),/Таланты/);
