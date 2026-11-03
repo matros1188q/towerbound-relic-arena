@@ -1,0 +1,16 @@
+{
+  "id": "bishop.healing.13",
+  "class_id": "bishop",
+  "branch_id": "healing",
+  "name": "Совершенная форма: Руки милосердия",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "heal",
+  "description": "Совершенная форма: Руки милосердия — healing specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

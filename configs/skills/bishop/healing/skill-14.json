@@ -1,0 +1,16 @@
+{
+  "id": "bishop.healing.14",
+  "class_id": "bishop",
+  "branch_id": "healing",
+  "name": "Высшая техника: Возвращение крови",
+  "unlock_level": 72,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Высшая техника: Возвращение крови — healing specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

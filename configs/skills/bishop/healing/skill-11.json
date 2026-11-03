@@ -1,0 +1,16 @@
+{
+  "id": "bishop.healing.11",
+  "class_id": "bishop",
+  "branch_id": "healing",
+  "name": "Пробуждение: Малое причастие",
+  "unlock_level": 57,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Пробуждение: Малое причастие — healing specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
