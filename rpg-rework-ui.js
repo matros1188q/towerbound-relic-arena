@@ -83,7 +83,7 @@
  }
  function updateBossPhase(){
   if(!battle||battle.enemy?.type!=="boss")return 1;
-  const ratio=battle.enemyHp/Math.max(1,battle.enemyMax),phase=ratio>0.70?1:ratio>0.40?2:ratio>0.10?3:4;
+  const phaseInfo=engine.bossPhaseInfo(battle.enemyHp,battle.enemyMax),phase=phaseInfo.phase;
   if(phase!==battle.bossPhase){battle.bossPhase=phase;battle.phaseFlashUntil=Date.now()+1200;battle.phaseNotice="ФАЗА "+phase;if(!settings().disable_skill_flashes)battle.fx={kind:"phase",color:"#f3c968",until:Date.now()+650};}
   return phase;
  }
@@ -313,22 +313,18 @@ function resolveEnemyTelegraph(){
   if(!battle||battle.paused||!battle.telegraph)return;
   const c=live(),telegraph=battle.telegraph,attacker=battle.enemies[telegraph.targetIndex];
   if(!attacker||!attacker.alive){battle.telegraph=null;battle.busy=false;render();return;}
-  const enemyStats=engine.getEnemyStats(c.id,battle.stage,attacker),bossRatio=attacker.hp/Math.max(1,attacker.maxHp),phase=attacker.type!=="boss"?0:bossRatio>0.70?1:bossRatio>0.40?2:bossRatio>0.10?3:4,phaseCfg=phase?balance.bosses.phases.find(p=>p.phase===phase):null;
-  let raw=enemyStats.damage*(phaseCfg?.damage_multiplier||1),countered=!!battle.counterAction,damageMultiplier=countered?0.5:1;
-  if(telegraph.type==="aoe"&&countered)damageMultiplier=0;
-  if(telegraph.type==="poison"&&countered){if(battle.poisonDots?.length)battle.poisonDots.shift();attacker.poisonDue=false;damageMultiplier=0;}
-  const counterId=battle.counterAction?.id;
-  if(countered&&["shadow","barrier","roar","parry"].includes(counterId))damageMultiplier=0;
-  if(countered&&counterId==="scale")damageMultiplier=0.5;
-  if(countered&&counterId==="slow"){damageMultiplier=0.5;attacker.slowedUntil=Date.now()+balance.skills.counter_abilities.elemental.duration_seconds*1000;}
-  if(countered&&counterId==="roar")attacker.stunnedUntil=Date.now()+balance.skills.counter_abilities.destroyer.duration_seconds*1000;
-  if(countered&&counterId==="cleanse"&&telegraph.type!=="poison")damageMultiplier=0.5;
-  if(countered&&telegraph.type==="aoe")damageMultiplier=0;
-  if(telegraph.type==="poison"&&!countered&&attacker.role==="poison"){
-   const poison=balance.mobs.roles.poison;addPoisonStack(Math.round(engine.maxHp(c)*poison.damage_fraction_per_second),poison.duration_seconds);attacker.poisonDue=false;attacker.nextPoisonAt=Date.now()+poison.interval_ms;damageMultiplier=0;
+  const enemyStats=engine.getEnemyStats(c.id,battle.stage,attacker),phaseInfo=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp):null,phase=phaseInfo?.phase||0,phaseCfg=phaseInfo||null;
+  const raw=enemyStats.damage*(phaseCfg?.damage_multiplier||1),counterId=battle.counterAction?.id,countered=!!counterId;
+  const reaction=engine.resolveReaction(telegraph.type,counterId,c.classId,raw);
+  if(reaction.cleansesPoison&&battle.poisonDots?.length)battle.poisonDots.shift();
+  if(telegraph.type==="poison"&&attacker.role==="poison"&&!countered){
+   const poison=balance.mobs.roles.poison;addPoisonStack(Math.round(engine.maxHp(c)*poison.damage_fraction_per_second),poison.duration_seconds);attacker.poisonDue=false;
+   attacker.nextPoisonAt=Date.now()+poison.interval_ms;
   }
+  if(reaction.stunSeconds)attacker.stunnedUntil=Date.now()+reaction.stunSeconds*1000;
+  if(reaction.attackSpeedReduction)attacker.slowedUntil=Date.now()+reaction.slowSeconds*1000;
   const combatStats=engine.getCombatStats(c),mitigation=engine.mitigationMultiplier(combatStats.defense,battle.stage);
-  let incoming=Math.max(0,Math.round(raw*mitigation*damageMultiplier));
+  let incoming=Math.max(0,Math.round(reaction.damage*mitigation));
   if(phase===4&&!countered){if(c.difficulty==="easy")incoming=Math.round(engine.maxHp(c)*(1-phaseCfg.easy_miss_remaining_hp_fraction));else incoming=Math.max(incoming,c.run.playerHp);}
   if(battle.enemyDamageReductionUntil>Date.now())incoming=Math.round(incoming*(1-battle.enemyDamageReduction));
   if(battle.nextDamageShield){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
