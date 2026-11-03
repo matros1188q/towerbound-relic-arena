@@ -1,0 +1,32 @@
+{
+  "cosmetics": {
+    "frames": {
+      "min": 200,
+      "max": 500
+    },
+    "titles": {
+      "min": 100,
+      "max": 300
+    },
+    "weapon_skins": {
+      "min": 500,
+      "max": 1000
+    }
+  },
+  "unique_relics": {
+    "count": 5,
+    "min": 1500,
+    "max": 2000
+  },
+  "class_epic": {
+    "item_level": 120,
+    "price": 5000,
+    "one_per_class": true
+  },
+  "consumables": {
+    "talent_reset": 300,
+    "xp_potion": 100
+  },
+  "currency": "account_pvp_points",
+  "cannot_exchange_for_silver": true
+}
