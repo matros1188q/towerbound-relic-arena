@@ -1,0 +1,52 @@
+{
+  "default": "normal",
+  "modes": {
+    "easy": {
+      "lives": 3,
+      "xp_loss_fraction": 0.1,
+      "item_loss_chance": 0,
+      "auto_battle": true,
+      "potion_belt": true,
+      "checkpoints": true
+    },
+    "normal": {
+      "lives": 1,
+      "xp_loss_fraction": 0.3,
+      "item_loss_chance": 0.3,
+      "auto_battle": true,
+      "potion_belt": true,
+      "checkpoints": true
+    },
+    "hardcore": {
+      "lives": 1,
+      "xp_loss_fraction": 0.5,
+      "item_loss_chance": 0.5,
+      "auto_battle": false,
+      "potion_belt": false,
+      "checkpoints": false
+    }
+  },
+  "item_loss_by_rarity": [
+    {
+      "rarity": "Обычная",
+      "weight": 50
+    },
+    {
+      "rarity": "Редкая",
+      "weight": 25
+    },
+    {
+      "rarity": "Эпическая",
+      "weight": 15
+    },
+    {
+      "rarity": "Легендарная",
+      "weight": 8
+    },
+    {
+      "rarity": "Богоподобная",
+      "weight": 2
+    }
+  ],
+  "change_only_between_runs": true
+}
