@@ -132,8 +132,8 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
   const enemyStats=e.getEnemyStats(c.id,75,enemy);let enemyHp=enemyStats.hp,turn=0;
   while(enemyHp>0&&turn<1000){
    turn++;
-   let damage=energy>=balance.resources.action_costs.attack_skill?stats.dps*2.5:stats.dps*.5;
-   if(energy>=balance.resources.action_costs.attack_skill)energy-=balance.resources.action_costs.attack_skill;
+   let damage=energy>=22?stats.dps*2.5:stats.dps*.5;
+   if(energy>=22)energy-=22;
    else energy=Math.min(live.resourceMax,energy+Math.round(live.resourceMax*.2));
    if(enemy.role==='tank'&&turn%3===0)damage*=.7;
    enemyHp-=damage;
