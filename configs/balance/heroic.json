@@ -69,5 +69,11 @@
       "combat_power",
       "completion_time"
     ]
+  },
+  "daily_boss": {
+    "health": 2400,
+    "attack": 38,
+    "xp_reward": 600,
+    "silver_reward": 1500
   }
 }

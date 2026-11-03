@@ -118,5 +118,94 @@
         "effect": "refine_guard"
       }
     ]
+  },
+  "consumables": {
+    "xp_10": {
+      "kind": "xp",
+      "multiplier": 1.1,
+      "duration_minutes": 60
+    },
+    "xp_20": {
+      "kind": "xp",
+      "multiplier": 1.2,
+      "duration_minutes": 60
+    },
+    "xp_50": {
+      "kind": "xp",
+      "multiplier": 1.5,
+      "duration_minutes": 60
+    },
+    "xp_100": {
+      "kind": "xp",
+      "multiplier": 2,
+      "duration_minutes": 60
+    },
+    "drop_20": {
+      "kind": "drop",
+      "multiplier": 1.2,
+      "duration_minutes": 60
+    },
+    "drop_50": {
+      "kind": "drop",
+      "multiplier": 1.5,
+      "duration_minutes": 60
+    },
+    "drop_75": {
+      "kind": "drop",
+      "multiplier": 1.75,
+      "duration_minutes": 60
+    },
+    "drop_100": {
+      "kind": "drop",
+      "multiplier": 2,
+      "duration_minutes": 60
+    },
+    "refine_10": {
+      "kind": "refine",
+      "chance_bonus": 0.1,
+      "duration_minutes": 60
+    },
+    "refine_20": {
+      "kind": "refine",
+      "chance_bonus": 0.2,
+      "duration_minutes": 60
+    },
+    "map_compass": {
+      "kind": "map_hint"
+    },
+    "repair_kit": {
+      "kind": "repair",
+      "heal_fraction": 0.1
+    },
+    "silver_charm": {
+      "kind": "silver",
+      "multiplier": 1.1,
+      "duration_minutes": 60
+    },
+    "xp_hourglass": {
+      "kind": "xp",
+      "multiplier": 1.05,
+      "duration_minutes": 60
+    },
+    "potion_case": {
+      "kind": "potion_capacity",
+      "quantity": 5
+    },
+    "rescue_seal": {
+      "kind": "rescue"
+    },
+    "stone_cache": {
+      "kind": "stone_cache",
+      "quantity": 3
+    },
+    "extra_socket": {
+      "kind": "socket"
+    },
+    "pity_token": {
+      "kind": "pity"
+    },
+    "refine_guard": {
+      "kind": "safe_refine"
+    }
   }
 }

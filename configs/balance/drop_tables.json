@@ -1,5 +1,5 @@
 {
-  "normal_item_chance": 0.035,
+  "normal_item_chance": 0.35,
   "normal_rare_weight": 0.12,
   "elite_epic_chance": 0.15,
   "boss_legendary_chance": 0.05,
