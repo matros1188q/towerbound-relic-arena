@@ -470,6 +470,8 @@ function resolveEnemyTelegraph(){
   const counter=counterAbility(c),ult=ultimateAbility(c);
   const counterButton=root.querySelector("[data-counter]");if(counterButton)counterButton.disabled=!battle.telegraph||battle.counterUsed||battle.counterReadyAt>Date.now()||battle.paused||c.resource<(counter.resource_cost||balance.resources.action_costs.counter);
   const ultButton=root.querySelector("[data-ultimate]");if(ultButton)ultButton.disabled=battle.busy||battle.paused||battle.ultimateReadyAt>Date.now()||c.resource<(ult.resource_cost||balance.resources.action_costs.ultimate);
+  const potionEnabled=balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt&&!c.run.stage.potionUsedTargets?.includes(battle.targetIndex);
+  root.querySelectorAll("[data-belt-use]").forEach(button=>{const slot=engine.potionBeltSnapshot(c.id).find(x=>x.slot===Number(button.dataset.beltUse));button.disabled=!slot||!slot.itemId||slot.available<=0||!potionEnabled||battle.busy||battle.paused;});
   const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
   const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
   const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph)telegraph.textContent=Math.max(0,(battle.telegraph.until-Date.now())/1000).toFixed(1)+" сек";
