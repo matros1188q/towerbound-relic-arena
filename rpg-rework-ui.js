@@ -6,7 +6,7 @@
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2";
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
  function classData(c){return balance.classes.classes[c.classId];}
@@ -50,15 +50,15 @@
    nodes+='<button type="button" class="tb-map-node '+(cleared?"cleared ":"")+(selected?"selected ":"")+(isBoss?"boss":"")+'" data-stage="'+stage+'" '+(!accessible?"disabled":"")+'><strong>'+(isBoss?"♛":cleared?"✓":stage)+'</strong><small>'+(isBoss?"БОСС":cleared?"ПРОЙДЕН":"ЭТАП")+'</small></button>';
   }
   return header("Карта 250 уровней",c.name+" · "+clsName(c)+" · Ур. "+c.level)+
-   '<section class="tb-map-screen"><div class="tb-map-top"><div class="tb-hero-chip"><img src="'+portrait(c.classId)+'" alt=""><div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · '+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div><div class="tb-currency"><span>◈ '+c.silver+' серебра</span><span>◆ '+engine.state.account.diamonds+' алмазов</span><span>Мощь '+engine.combatPower(c)+'</span><span>♥ Жизни: '+(c.run.lives||3)+'/3</span></div><div class="tb-map-actions"><button data-action="characters">Персонажи</button><button data-action="shop">МАГАЗИН</button><button data-action="profile">ПЕРСОНАЖ</button></div></div>'+
+   '<section class="tb-map-screen"><div class="tb-map-top"><div class="tb-hero-chip"><img src="'+portrait(c.classId)+'" alt=""><div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · '+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div><div class="tb-currency"><span>◈ '+c.silver+' серебра</span><span>◆ '+engine.state.account.diamonds+' алмазов</span><span>Мощь '+engine.combatPower(c)+'</span><span>♥ Жизни: '+(c.run.lives||balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives)+'/'+balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives+'</span></div><div class="tb-map-actions"><button data-action="characters">Персонажи</button><button data-action="shop">МАГАЗИН</button><button data-action="profile">ПЕРСОНАЖ</button></div></div>'+
    '<div class="tb-progressline"><span>Наивысший этап: <b>'+c.progress.highestEver+'/250</b></span><span>Следующий: <b>'+Math.min(c.progress.currentStage,250)+'</b></span><span>Чекпоинты: <b>'+c.progress.checkpoints.join(" · ")+'</b></span></div>'+
    (penalty?'<div class="tb-penalty">−20% ОПЫТА АКТИВНО · ОСТАЛОСЬ '+remaining+' ЭТАЖЕЙ</div>':"")+
-   '<div class="tb-map-layout"><div class="tb-map-scroll"><div class="tb-map-grid">'+nodes+'</div></div><aside class="tb-stage-panel"><div class="tb-eyebrow">ВЫБРАННЫЙ ЭТАП</div><div class="tb-stage-number">'+selectedStage+'</div><h3>'+(selectedStage%balance.map.boss_every===0?"Боссовый бой":"Гаунтлет")+'</h3><p>'+(selectedStage%balance.map.boss_every===0?"Один босс, отдельное сражение":selectedStage%balance.map.seven_mob_every===0?"7 противников подряд":selectedStage%balance.map.five_mob_every===0?"5 противников подряд":"3 противника подряд")+'</p><small>'+(selectedStage<=c.progress.highestEver?"Повторное прохождение · 50% XP": "Первое прохождение · 100% XP")+'</small><button class="tb-primary tb-wide" data-action="start" id="start">НАЧАТЬ ЭТАП</button>'+
+   '<div class="tb-map-layout"><div class="tb-map-scroll"><div class="tb-map-grid">'+nodes+'</div></div><aside class="tb-stage-panel"><div class="tb-eyebrow">ВЫБРАННЫЙ ЭТАП</div><div class="tb-stage-number">'+selectedStage+'</div><h3>'+(selectedStage%balance.map.boss_every===0?"Боссовый бой":"Гаунтлет")+'</h3><p>'+(selectedStage%balance.map.boss_every===0?"Один босс, отдельное сражение":balance.map.gauntlet_ranges.find(r=>selectedStage>=r.min&&selectedStage<=r.max)?.allowed.join(" / ")+" противника подряд")+'</p><small>'+(selectedStage<=c.progress.highestEver?"Повторное прохождение · 50% XP": "Первое прохождение · 100% XP")+'</small><button class="tb-primary tb-wide" data-action="start" id="start">НАЧАТЬ ЭТАП</button>'+
    '<div class="tb-stage-separator"></div><div class="tb-small-actions">'+button("auto","АВТО-БОЙ ДО "+Math.max(0,maxAuto),maxAuto>=c.progress.currentStage?"":"disabled")+
    button("heal-checkpoint","ХИЛ +50% HP · −20% XP",healReady?"":"disabled")+
    button("restart","НАЧАТЬ ЗАНОВО","")+
    '</div><small class="tb-note">Авто-бой доступен только до '+Math.max(0,maxAuto)+' этапа. На боссах и элитках он остановится.</small></aside></div>'+
-   '<section class="tb-daily-panel"><div class="tb-daily-heading"><div><div class="tb-eyebrow">ЕЖЕДНЕВНЫЕ ИСПЫТАНИЯ · '+esc(daily.date)+'</div><h3>Задания дня</h3></div><span class="tb-daily-modifier">'+esc(daily.modifier?.name||"Без модификатора")+'</span></div><div class="tb-daily-quests">'+daily.quests.map(q=>'<div class="tb-daily-quest"><div><b>'+esc(q.name)+'</b><small>'+q.progress+'/'+q.target+' · награда '+q.reward_silver+' серебра</small></div><button data-daily-claim="'+q.id+'" '+(!q.complete||q.claimed?"disabled":"")+'>'+(q.claimed?"ПОЛУЧЕНО":"ЗАБРАТЬ")+'</button></div>').join("")+'</div><small class="tb-note">Задания сбрасываются по локальной дате устройства. Прогресс хранится в этом браузере.</small></section><div class="tb-bottom-strip"><span>Персонаж сохраняет уровень, таланты, экипировку и серебро</span><span>'+(c.heroic?"ГЕРОИЧЕСКИЙ РЕЖИМ":"Обычный режим")+'</span></div></section>';
+   '<section class="tb-daily-panel"><div class="tb-daily-heading"><div><div class="tb-eyebrow">ЕЖЕДНЕВНЫЕ ИСПЫТАНИЯ · '+esc(daily.date)+'</div><h3>Задания дня</h3></div><span class="tb-daily-modifier">'+esc(daily.modifier?.name||"Без модификатора")+'</span></div><div class="tb-daily-quests">'+daily.quests.map(q=>'<div class="tb-daily-quest"><div><b>'+esc(q.name)+'</b><small>'+q.progress+'/'+q.target+' · награда '+q.reward_silver+' серебра</small></div><button data-daily-claim="'+q.id+'" '+(!q.complete||q.claimed?"disabled":"")+'>'+(q.claimed?"ПОЛУЧЕНО":"ЗАБРАТЬ")+'</button></div>').join("")+'</div><small class="tb-note">Задания сбрасываются в 00:00 UTC. Прогресс хранится в этом браузере.</small></section><div class="tb-bottom-strip"><span>Персонаж сохраняет уровень, таланты, экипировку и серебро</span><span>'+(c.heroic?"ГЕРОИЧЕСКИЙ РЕЖИМ":"Обычный режим")+'</span></div></section>';
  }
  function activeSkill(c){
   const def=classData(c);
@@ -102,22 +102,16 @@
    '<p class="tb-note">Алмазы и премиум принадлежат аккаунту. В этой статической версии покупка алмазов не подключена к платёжному провайдеру.</p></section>';
  }
  function deathScreen(){
-  const c=live(),preview=engine.deathPreview(c.id);
-  return header("Забег завершён",c.name+" · последствия смерти")+'<section class="tb-death"><div class="tb-death-mark">☠</div><div class="tb-eyebrow">ПОСЛЕДНИЙ ШАНС</div><h1>Персонаж погиб</h1><p>Каждая смерть отнимает одну из трёх жизней. Забег продолжается, пока остаётся хотя бы одна жизнь.</p><div class="tb-death-lives">ОСТАЛОСЬ ЖИЗНЕЙ: <b>'+(c.run.lives||3)+' / 3</b></div><div class="tb-death-losses"><div><small>ОПЫТ К ПОТЕРЕ</small><b>'+preview.experienceLoss+'</b></div><div><small>ВОЗМОЖНОЕ СНИЖЕНИЕ</small><b>'+preview.levelsLost+' уровн.</b></div><div><small>ШАНС ПОТЕРИ ВЕЩИ</small><b>30%</b></div></div><p>Из рюкзака может пропасть одна вещь, добытая в этом забеге. Экипировка и боссовый лут защищены. Чекпоинты сохраняются.</p><button class="tb-danger" data-action="confirm-death">ПОДТВЕРДИТЬ СМЕРТЬ</button><button data-action="map" disabled>ВОЗВРАТА В БОЙ НЕТ</button></section>';
+  const c=live(),preview=engine.deathPreview(c.id),difficulty=balance.difficulty.modes[c.difficulty||balance.difficulty.default],total=difficulty.lives,remaining=c.run.lives||total;
+  return header("Забег завершён",c.name+" · "+(c.difficulty||"normal"))+'<section class="tb-death"><div class="tb-death-mark">☠</div><div class="tb-eyebrow">ПОСЛЕДНИЙ ШАНС</div><h1>Персонаж погиб</h1><p>Сложность: '+esc(c.difficulty||"normal")+'. Потеря опыта: '+Math.round(difficulty.xp_loss_fraction*100)+'% опыта текущего забега.</p><div class="tb-death-lives">ОСТАЛОСЬ ЖИЗНЕЙ: <b>'+remaining+' / '+total+'</b></div><div class="tb-death-losses"><div><small>ОПЫТ К ПОТЕРЕ</small><b>'+preview.experienceLoss+'</b></div><div><small>ВОЗМОЖНОЕ СНИЖЕНИЕ</small><b>'+preview.levelsLost+' уровн.</b></div><div><small>ШАНС ПОТЕРИ ВЕЩИ</small><b>'+Math.round(preview.itemLossChance*100)+'%</b></div></div><p>Надетые предметы и боссовый лут защищены. В Hardcore авто-бой, пояс и чекпоинты отключены.</p><button class="tb-danger" data-action="confirm-death">ПОДТВЕРДИТЬ СМЕРТЬ</button><button data-action="map" disabled>ВОЗВРАТА В БОЙ НЕТ</button></section>';
  }
- function currentEnemyConfig(enemy,stage){
-  const base=balance.combat.enemy_hp;
-  let hp=base.normal_base+stage*base.normal_per_stage;
-  if(enemy.type==="elite")hp*=base.elite_multiplier;
-  if(enemy.type==="boss")hp*=base.boss_multiplier;
-  return Math.max(1,Math.round(hp*enemy.statMultiplier));
- }
+ function currentEnemyConfig(enemy,stage){return engine.getEnemyStats(live().id,stage,enemy).hp;}
  function loadBattleEnemy(){
-  const c=live(),enemy=engine.currentEnemy(c.id),hp=currentEnemyConfig(enemy,battle.stage);
-  battle.enemy=enemy;battle.enemyMax=hp;battle.enemyHp=hp;battle.shield=enemy.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0;
+  const c=live(),enemy=engine.currentEnemy(c.id),enemyStats=engine.getEnemyStats(c.id,battle.stage,enemy),hp=currentEnemyConfig(enemy,battle.stage);
+  battle.enemy=enemy;battle.enemyStats=enemyStats;battle.enemyMax=hp;battle.enemyHp=hp;battle.shield=enemy.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0;
   battle.turns=0;battle.teleportUsed=false;battle.poisonTicks=0;battle.busy=false;
   battle.dot=null;battle.hot=null;battle.enemyStunned=false;battle.parryChance=0;battle.nextDamageShield=0;
-  battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;
+  battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;battle.pendingKill=false;
  }
  function battleScreen(){
   const c=live(),enemy=battle.enemy,enemyPct=Math.max(0,battle.enemyHp/battle.enemyMax*100),hp=engine.maxHp(c),heroPct=Math.max(0,c.run.playerHp/hp*100);
@@ -146,33 +140,34 @@
   const c=live();battle=null;screen="death";render();save();
  }
  function enemyCounter(){
-  const c=live(),enemy=battle.enemy,damageCfg=balance.combat.enemy_damage;
+  if(!battle||battle.paused)return;
+  const c=live(),enemy=battle.enemy,enemyStats=engine.getEnemyStats(c.id,battle.stage,enemy);
   if(battle.dot&&battle.dot.ticks>0){
-   battle.enemyHp=Math.max(0,battle.enemyHp-battle.dot.damage);battle.dot.ticks--;
+   const dotDamage=Math.min(battle.enemyHp,battle.dot.damage);battle.enemyHp=Math.max(0,battle.enemyHp-dotDamage);battle.dot.ticks--;if(dotDamage>0)engine.applyVampirism(c.id,dotDamage);
    if(battle.enemyHp<=0){finishCurrentEnemy();return;}
   }
   if(battle.hot&&battle.hot.ticks>0){
    c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;
   }
   if(battle.enemyStunned){
-   battle.enemyStunned=false;battle.busy=false;save();render();return;
+   battle.enemyStunned=false;battle.busy=false;
+   if(battle.pendingKill){battle.pendingKill=false;finishCurrentEnemy();return;}
+   save();render();return;
   }
-  let raw=damageCfg.normal_base+battle.stage*damageCfg.normal_per_stage;
-  if(enemy.type==="elite")raw*=damageCfg.elite_multiplier;
-  if(enemy.type==="boss")raw*=damageCfg.boss_multiplier;
-  raw*=enemy.statMultiplier||1;
+  let raw=enemyStats.damage;
   if(enemy.mechanic==="berserk"&&battle.enemyHp/battle.enemyMax<=balance.elite_mechanics.berserk.health_threshold)raw*=balance.elite_mechanics.berserk.damage_multiplier;
   if(enemy.mechanic==="teleport"&&!battle.teleportUsed){raw*=1+balance.elite_mechanics.teleport.bonus_damage_fraction;battle.teleportUsed=true;}
   if(battle.enemyDamageReductionUntil>Date.now())raw*=1-battle.enemyDamageReduction;
-  const combatStats=engine.getCombatStats(c);
-  let incoming=Math.max(1,Math.round(raw*100/(100+combatStats.defense)*(1-combatStats.damageReduction)));
+  const combatStats=engine.getCombatStats(c),damageType=enemy.damageType||"physical";
+  const mitigation=damageType==="physical"?engine.mitigationMultiplier(combatStats.defense,battle.stage):engine.resistanceMultiplier(combatStats.resists[damageType]||0,battle.stage);
+  let incoming=Math.max(1,Math.round(raw*mitigation*(1-combatStats.damageReduction)));
   if(battle.nextDamageShield){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
   if(enemy.mechanic==="summon")incoming+=Math.round(incoming*balance.elite_mechanics.summon.minions*balance.elite_mechanics.summon.minion_health_fraction);
   if(battle.parryChance>0&&Math.random()<battle.parryChance){
    const riposte=balance.skill_effects.riposte?.damage_multiplier||1.25;
    battle.enemyHp=Math.max(0,battle.enemyHp-Math.round(combatStats.attack*riposte));
    battle.parryChance=0;
-   if(battle.enemyHp<=0){finishCurrentEnemy();return;}
+   if(battle.enemyHp<=0||battle.pendingKill){battle.pendingKill=false;finishCurrentEnemy();return;}
    c.resource=Math.min(c.resourceMax,c.resource+(classData(c).resource_gain_on_defense||0));
    battle.busy=false;save();render();return;
   }
@@ -184,17 +179,20 @@
   c.resource=Math.min(c.resourceMax,c.resource+(classData(c).resource_gain_on_defense||0));
   battle.busy=false;save();
   if(c.run.playerHp<=0){endFromDamage();return;}
+  if(battle.pendingKill){battle.pendingKill=false;finishCurrentEnemy();return;}
+  engine.logCombatEvent(c.id,"Враг нанёс "+incoming+" урона");
   render();
  }
  function playerAction(useSkill){
   const c=live(),enemy=battle.enemy,effects=balance.skill_effects,combat=balance.combat;
-  if(battle.busy)return;
+  if(battle.busy||battle.paused)return;
   const def=classData(c),skill=activeSkill(c),combatStats=engine.getCombatStats(c);
   let damage=combatStats.attack*combat.player_damage.attack_multiplier*combatStats.damageMultiplier;
   let effect=null,resourceCost=0;
   if(useSkill){
    if(!skill){notify("Нет доступного умения");return;}
    effect=effects[skill.effect_template]||effects.strike;
+   if((effect.type==="heal"||effect.type==="hot")&&((enemy.type==="elite"&&balance.healing.disallow_healing_skills_on_elite)||(enemy.type==="boss"&&balance.healing.disallow_healing_skills_on_boss))){notify("Лечение навыками запрещено против элитки и босса");return;}
    resourceCost=def.resource_cost_per_skill||effect.resource_cost||0;
    if(c.resource<resourceCost){notify("Не хватает ресурса: "+def.resource);return;}
    if(Date.now()<battle.skillReadyAt){notify("Умение ещё перезаряжается");return;}
@@ -211,26 +209,25 @@
    damage*=effect.damage_multiplier||combat.player_damage.skill_multiplier;
    const timeScale=balance.combat.combat_speed_base*(c.run.speed2?balance.combat.speed_2x_multiplier:1);
    battle.skillReadyAt=Date.now()+((effect.cooldown||4)*1000/(timeScale*Math.max(0.1,combatStats.attackSpeedMultiplier||1)));
-   c.stats.skillsUsed=(c.stats.skillsUsed||0)+1;
+   c.stats.skillsUsed=(c.stats.skillsUsed||0)+1;if(skill.branch_id)engine.recordDailyProgress(c.id,"branch_skills_used",1);engine.logCombatEvent(c.id,"Использовано умение: "+skill.name);
   }else{
    c.resource=Math.min(c.resourceMax,c.resource+(def.resource_gain_per_attack||0));
   }
   if(battle.playerDamageBuff&&battle.playerBuffUntil>Date.now())damage*=1+battle.playerDamageBuff;
   const critical=Math.random()<combatStats.critChance;
-  if(critical)damage*=combat.player_damage.crit_multiplier;
+  if(critical)damage*=combatStats.critMultiplier;
   const variance=1+(Math.random()*2-1)*combat.player_damage.attack_variance;
   damage=Math.max(1,Math.round(damage*variance));
   if(battle.shield>0){const absorbed=Math.min(battle.shield,damage);battle.shield-=absorbed;damage-=absorbed;}
-  battle.enemyHp=Math.max(0,battle.enemyHp-damage);
+  const dealt=Math.min(battle.enemyHp,damage);battle.enemyHp=Math.max(0,battle.enemyHp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);
   if(enemy.mechanic==="reflect"){
    const reflected=Math.round(damage*balance.elite_mechanics.reflect.damage_fraction);
    c.run.playerHp=Math.max(0,c.run.playerHp-reflected);
   }
   if(c.run.playerHp<=0){endFromDamage();return;}
-  if(battle.enemyHp<=0){finishCurrentEnemy();return;}
-  battle.busy=true;save();render();
-  const speed=balance.combat.combat_speed_base*(c.run.speed2?balance.combat.speed_2x_multiplier:1);
-  setTimeout(enemyCounter,Math.round(combat.fight_timing.base_response_ms/speed));
+  battle.pendingKill=battle.enemyHp<=0;battle.busy=true;save();render();
+  const delay=engine.combatIntervalMs(c.id);
+  clearTimeout(pendingTimer);pendingTimer=setTimeout(()=>{pendingTimer=null;if(!battle)return;if(battle.paused){battle.remainingResponseMs=0;return;}enemyCounter();},delay);
  }
  function equipItem(itemId){
   const c=live(),item=c.bag.find(x=>x.id===itemId);
@@ -287,7 +284,7 @@
   if(target.dataset.enchant){try{const c=live(),choices=engine.rollEnchantScroll(c.id,target.dataset.enchant),choice=Number(window.prompt("Выбери зачарование (1–4):\n"+choices.map((x,i)=>(i+1)+". "+x).join("\n")))-1;if(Number.isInteger(choice)&&choice>=0&&choice<4){engine.applyEnchant(c.id,target.dataset.enchant,choice,choices);save();render();notify("Зачарование применено");}else notify("Зачарование отменено");}catch(error){notify(error.message);}return;}
   if(target.dataset.buy){try{engine.purchase(live().id,shopTab,target.dataset.buy);save();render();notify("Покупка совершена");}catch(error){notify(error.message);}return;}
   switch(target.dataset.action){
-   case "new":if(engine.state.characters.length>=12){notify("Достигнут лимит персонажей");return;}dialogOpen=true;selectedClass="assassin";render();break;
+   case "new":if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей: "+balance.account.max_characters);return;}dialogOpen=true;selectedClass="assassin";render();break;
    case "close":dialogOpen=false;render();break;
    case "confirm-create":createCharacter();break;
    case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
