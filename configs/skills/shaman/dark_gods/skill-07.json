@@ -1,0 +1,16 @@
+{
+  "id": "shaman.dark_gods.07",
+  "class_id": "shaman",
+  "branch_id": "dark_gods",
+  "name": "Око тьмы",
+  "unlock_level": 38,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "debuff",
+  "description": "Око тьмы — dark_gods specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

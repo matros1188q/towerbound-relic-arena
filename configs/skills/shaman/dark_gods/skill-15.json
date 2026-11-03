@@ -1,0 +1,16 @@
+{
+  "id": "shaman.dark_gods.15",
+  "class_id": "shaman",
+  "branch_id": "dark_gods",
+  "name": "Мастерский приём: Жертвоприношение",
+  "unlock_level": 76,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "debuff",
+  "description": "Мастерский приём: Жертвоприношение — dark_gods specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

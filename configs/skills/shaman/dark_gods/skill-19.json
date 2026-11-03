@@ -1,0 +1,16 @@
+{
+  "id": "shaman.dark_gods.19",
+  "class_id": "shaman",
+  "branch_id": "dark_gods",
+  "name": "Возвышение: Глас бездны",
+  "unlock_level": 95,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "debuff",
+  "description": "Возвышение: Глас бездны — dark_gods specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
