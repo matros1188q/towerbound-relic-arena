@@ -1,0 +1,33 @@
+{
+  "season_length_days": 90,
+  "timezone": "UTC",
+  "reward_first_clear_stage": 250,
+  "season_reward_cosmetic": "seasonal-tower-crest",
+  "modifiers": [
+    {
+      "id": "swift_enemies",
+      "name": "Мобы быстрее на 20%",
+      "enemy_attack_speed_multiplier": 1.2,
+      "reward_silver_multiplier": 1.1
+    },
+    {
+      "id": "double_elites",
+      "name": "Элитки ×2",
+      "elite_chance_multiplier": 2,
+      "reward_xp_multiplier": 1.15
+    },
+    {
+      "id": "boss_no_heal",
+      "name": "Боссы без зелий",
+      "boss_no_potion": true,
+      "reward_silver_multiplier": 1.2
+    },
+    {
+      "id": "cursed_levels",
+      "name": "Проклятых уровней ×2",
+      "cursed_stage_multiplier": 2,
+      "reward_xp_multiplier": 1.1
+    }
+  ],
+  "lock_at_run_start": true
+}
