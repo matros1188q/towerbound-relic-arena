@@ -67,7 +67,7 @@ const {chromium}=require('playwright');
   await page.waitForSelector('[data-equip="qa-weapon"]');
   await page.locator('[data-equip="qa-weapon"]').click();
   const navDiagnostic=await page.evaluate(()=>{
-   const button=document.querySelector('#tbRpg .tb-profile .tb-tabs [data-tab="talents]'),r=button.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y);
+   const button=document.querySelector('#tbRpg .tb-profile .tb-tabs [data-tab="talents"]'),r=button.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y);
    const describe=el=>{if(!el)return null;const b=el.getBoundingClientRect(),c=getComputedStyle(el);return{tag:el.tagName,cls:el.className,id:el.id,rect:{x:b.x,y:b.y,w:b.width,h:b.height},z:c.zIndex,pos:c.position,pointer:c.pointerEvents};};
    return{button:describe(button),hit:describe(hit),profile:describe(button.closest('.tb-profile')),top:describe(document.querySelector('#tbRpg .tb-profile-top')),tabs:describe(button.closest('.tb-tabs')),content:describe(document.querySelector('#tbRpg .tb-profile-content'))};
   });
