@@ -88,7 +88,7 @@ GitHub Actions run `41646530435` completed with **SUCCESS** on commit `2eed2aecb
 - `feature/combat-and-presentation-pass` and `fix/audit-pass` contain the audited implementation.
 - `main` remains unchanged at `23620ee7bd2a7d4d1488fb97d3a41737843749be`.
 - `legacy-before-combat-pass` and `legacy-pre-combat-pass` both point to `f1e0f18e0169e6915425add78ccfafc78e24f2b8`.
-- `legacy-pre-audit` preserves the pre-audit working head `6d9ac752187528a32d1a3d766a0af9ea0408effa1` (see branch ref for the exact object ID).
+- `legacy-pre-audit` preserves the pre-audit working head `6d9ac752187528a32d0c34cf35082e5f41fdff80` (see branch ref for the exact object ID).
 
 To create a separate working branch from the pre-combat snapshot:
 ```bash
