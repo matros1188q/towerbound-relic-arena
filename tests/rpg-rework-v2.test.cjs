@@ -213,7 +213,13 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const plan=e.beginStage(c.id,101);
  assert.equal(plan.stage,101);
  live.run.stage.mobs[0]={type:'elite',statMultiplier:1,damageType:'physical'};
+ assert.equal(live.run.stage.mobs[live.run.stage.enemyIndex].type,'elite');
+ const originalChances={chisel:e.balance.equipment.chisel_drop_chance,stone:e.balance.equipment.stone_drop_chance,armor:e.balance.equipment.enchantment.armor_scroll_chance,weapon:e.balance.equipment.enchantment.weapon_scroll_chance};
+ e.balance.equipment.chisel_drop_chance=1;e.balance.equipment.stone_drop_chance=1;
+ e.balance.equipment.enchantment.armor_scroll_chance=1;e.balance.equipment.enchantment.weapon_scroll_chance=1;
  const drop=e.finishEnemy(c.id);
+ e.balance.equipment.chisel_drop_chance=originalChances.chisel;e.balance.equipment.stone_drop_chance=originalChances.stone;
+ e.balance.equipment.enchantment.armor_scroll_chance=originalChances.armor;e.balance.equipment.enchantment.weapon_scroll_chance=originalChances.weapon;
  assert.ok(drop.loot.some(item=>item.type==='chisel'));
  assert.ok(drop.loot.some(item=>item.type==='enhancement_stone'));
  assert.ok(drop.loot.some(item=>item.type==='craft_material'&&item.quantity===10));
