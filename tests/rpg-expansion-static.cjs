@@ -13,6 +13,7 @@ assert.match(source,/const talentNames=/);
 assert.match(source,/const sets=Object\.fromEntries/);
 assert.match(source,/const fullSetNames=Object\.fromEntries/);
 assert.match(source,/function uniqueDrop/);
+assert.match(source,/function onTurn/);
 assert.match(source,/function putStone/);
 assert.match(source,/kind:'weapon'/);
 assert.match(source,/kind:'armor'/);
