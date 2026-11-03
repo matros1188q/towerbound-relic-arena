@@ -197,7 +197,7 @@
     gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
     run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
-     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:3,buffs:{}},
+     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:balance.death.lives_per_run||3,buffs:{}},
     pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0}
    };
    character.run.playerHp=maxHp(character);
@@ -227,7 +227,7 @@
   function beginRun(character){
    if(character.run.active)return;
    character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,
-    checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:Math.max(1,Math.min(3,character.run.lives||3)),playerHp:maxHp(character),startedAt:now()};
+    checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:Math.max(1,Math.min(balance.death.lives_per_run||3,character.run.lives||(balance.death.lives_per_run||3))),playerHp:maxHp(character),startedAt:now()};
   }
   function beginStage(characterId,requestedStage){
    const character=getChar(characterId);
@@ -421,12 +421,13 @@
     character.bag=character.bag.filter(item=>item.id!==lost.id);
    }
    if(rescue)character.bag=character.bag.filter(item=>item.id!==rescue.id);
-   const livesBefore=Math.max(1,Math.min(3,character.run.lives||3));
+   const maxLives=balance.death.lives_per_run||3;
+   const livesBefore=Math.max(1,Math.min(maxLives,character.run.lives||maxLives));
    const livesRemaining=livesBefore-1,runEnded=livesRemaining<=0;
-   character.lastDeath={...preview,itemLossChance:lossChance,lostItem:lost?lost.name:null,livesLost:1,livesRemaining:runEnded?3:livesRemaining,runEnded};
+   character.lastDeath={...preview,itemLossChance:lossChance,lostItem:lost?lost.name:null,livesLost:1,livesRemaining:runEnded?maxLives:livesRemaining,runEnded};
    character.run.stage=null;character.run.experience=0;character.run.foundItemIds=[];
    character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
-   character.run.lives=runEnded?3:livesRemaining;character.run.active=!runEnded;
+   character.run.lives=runEnded?maxLives:livesRemaining;character.run.active=!runEnded;
    if(runEnded)character.progress.currentStage=balance.death.new_run_stage;
    character.run.playerHp=maxHp(character);
    return clone(character.lastDeath);
@@ -729,7 +730,7 @@ if(typeof window!=="undefined"){
       bag,gear:gear.length?gear:[null,null,null,null,null,null],
       heroic:!!old.heroic,progress:{highestEver:best,currentStage:Math.max(1,Math.min(250,old.stage||1)),checkpoints:[50,100,150,200,250].filter(stage=>best>=stage)},
       run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
-       checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:3,buffs:{}},
+       checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:balance.death.lives_per_run||3,buffs:{}},
       pity:{legendaryMisses:old.legendaryMisses||0,godlikeMisses:old.godlikeMisses||0},
       stats:{kills:old.kills||0,elapsedMs:0,completionMs:0}
      };
