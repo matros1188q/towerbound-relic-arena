@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.greatsword.17",
+  "class_id": "destroyer",
+  "branch_id": "greatsword",
+  "name": "Знак превосходства: Мясорубка",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "strike",
+  "description": "Знак превосходства: Мясорубка — greatsword specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
