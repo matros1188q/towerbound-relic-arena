@@ -1,0 +1,16 @@
+{
+  "id": "assassin.poison.09",
+  "class_id": "assassin",
+  "branch_id": "poison",
+  "name": "Корона миазмов",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "dot",
+  "description": "Корона миазмов — poison specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

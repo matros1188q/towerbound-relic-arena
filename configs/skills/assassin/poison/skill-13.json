@@ -1,0 +1,16 @@
+{
+  "id": "assassin.poison.13",
+  "class_id": "assassin",
+  "branch_id": "poison",
+  "name": "Совершенная форма: Змеиный след",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "dot",
+  "description": "Совершенная форма: Змеиный след — poison specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

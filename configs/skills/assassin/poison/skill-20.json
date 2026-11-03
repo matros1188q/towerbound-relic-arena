@@ -1,0 +1,16 @@
+{
+  "id": "assassin.poison.20",
+  "class_id": "assassin",
+  "branch_id": "poison",
+  "name": "Легендарная форма: Пандемия",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Легендарная форма: Пандемия — poison specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
