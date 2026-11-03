@@ -63,10 +63,10 @@ const {chromium}=require('playwright');
    if(!c.bag.some(item=>item.id==='qa-weapon'))c.bag.push({id:'qa-weapon',name:'QA Blade',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10},refine:0,sockets:[],socketsAvailable:0});
    localStorage.setItem('tb-rpg-v2',JSON.stringify(window.TowerboundRework.state));
   });
-  await page.locator('[data-tab="bag"]').click({force:true});
+  await page.locator('#tbRpg .tb-profile .tb-tabs [data-tab="bag"]').click();
   await page.waitForSelector('[data-equip="qa-weapon"]');
   await page.locator('[data-equip="qa-weapon"]').click();
-  await page.locator('[data-tab="talents"]').click({force:true});
+  await page.locator('#tbRpg .tb-profile .tb-tabs [data-tab="talents"]').click();
   const talentDiagnostic=await page.evaluate(()=>{
    const c=window.TowerboundRework.state.characters[0],root=document.querySelector('#tbRpg');
    return{classId:c.classId,level:c.level,xp:c.xp,branch:c.branch,talentPoints:c.talentPoints,
@@ -77,7 +77,7 @@ const {chromium}=require('playwright');
   if(!talentDiagnostic.talentButtons)throw new Error('Talent panel diagnosis: '+JSON.stringify(talentDiagnostic));
   await page.locator('[data-talent="bleed.talent.1"]').click();
   assert.match(await page.locator('.tb-talent').first().innerText(),/1\/3/,'branch talent point is applied');
-  await page.locator('[data-tab="gear"]').click({force:true});
+  await page.locator('#tbRpg .tb-profile .tb-tabs [data-tab="gear"]').click();
   assert.match(await page.locator('.tb-gear-slot').first().innerText(),/QA Blade/,'inventory equipment can be equipped');
   await page.locator('[data-refine="qa-weapon"]').click();
   assert.match(await page.locator('.tb-gear-slot').first().innerText(),/\+1/,'refinement consumes a refine stone');
