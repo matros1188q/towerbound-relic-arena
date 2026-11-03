@@ -290,7 +290,7 @@
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);
-  if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span");number.className="tb-floating-damage";number.textContent="-"+dealt;layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
+  if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span"),card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');number.className="tb-floating-damage";number.textContent="-"+dealt;if(card){const box=card.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top)+"px";}layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss")updateBossPhase();
   return{damage,dealt,multiplier,killed:target.hp<=0};
@@ -475,6 +475,9 @@ function resolveEnemyTelegraph(){
   const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
   const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
   const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph)telegraph.textContent=Math.max(0,(battle.telegraph.until-Date.now())/1000).toFixed(1)+" сек";
+  arena.classList.toggle("tb-shaking",!!(battle.shakeUntil>Date.now()));
+  arena.classList.toggle("tb-phase-flash",!!(battle.phaseFlashUntil>Date.now()));
+  ["attack","skill","ultimate","telegraph"].forEach(kind=>arena.classList.toggle("tb-fx-"+kind,!!(battle.fx&&battle.fx.kind===kind&&battle.fx.until>Date.now())));
   const fx=root.querySelector(".tb-fx-layer");if(fx)fx.style.setProperty("--tb-fx-color",battle.fx?.color||"#f3c968");
  }
  function render(){
