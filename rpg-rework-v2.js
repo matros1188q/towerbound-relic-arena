@@ -344,7 +344,9 @@
    hp=Math.max(1,Math.round(hp*heroic));
    damage=Math.max(1,Math.round(damage*heroic));
    if(modifier?.enemy_damage_multiplier)damage=Math.round(damage*modifier.enemy_damage_multiplier);
-   return{hp,damage,attackInterval:balance.combat.attack_interval,attackIntervalMs:balance.combat.attack_interval*1000};
+   if(modifier?.id==="cursed_levels"&&stage%10===5){hp=Math.round(hp*modifier.cursed_stage_multiplier);damage=Math.round(damage*modifier.cursed_stage_multiplier);}
+   const attackInterval=balance.combat.attack_interval/(modifier?.enemy_attack_speed_multiplier||1);
+   return{hp,damage,attackInterval,attackIntervalMs:Math.round(attackInterval*1000)};
   }
   function mitigationMultiplier(defense,attackerLevel){
    const armor=Math.max(0,Number(defense)||0),level=Math.max(1,Number(attackerLevel)||1);
@@ -501,6 +503,8 @@
   function useHealingPotion(characterId,stackId){
    const character=getChar(characterId),stage=character.run.stage;
    if(!stage)throw new Error("Healing potion can only be used during a battle");
+   const enemy=stage.mobs[stage.enemyIndex];
+   if(enemy?.type==="boss"&&character.run.season?.modifier?.boss_no_potion)throw new Error("Seasonal modifier disables potions on bosses");
    if(!difficultyOf(character).potion_belt)throw new Error("Potion belt is disabled in Hardcore");
    if(stage.potionSlotUsed)throw new Error("The healing slot for this enemy has already been consumed");
    const potion=character.bag.find(item=>(!stackId||item.id===stackId)&&item.type==="healing_potion"&&item.quantity>0);
@@ -513,7 +517,7 @@
   }
   function potionBeltSnapshot(characterId){
    const character=getChar(characterId),slots=balance.healing.potion_belt_slots;
-   return Array.from({length:slots},(_,index)=>({slot:index,itemId:character.potionBelt?.[index]||null,available:character.bag.reduce((n,item)=>n+(item.type==="healing_potion"?item.quantity||0:0),0)}));
+   return Array.from({length:slots},(_,index)=>{const itemId=character.potionBelt?.[index]||null,stack=character.bag.find(item=>item.id===itemId&&item.type==="healing_potion");return{slot:index,itemId,available:stack?.quantity||0};});
   }
   function assignPotionBelt(characterId,slot,itemId){
    const character=getChar(characterId);
@@ -567,14 +571,16 @@
    const character=getChar(characterId),difficulty=difficultyOf(character);
    const loss=Math.round(character.run.experience*difficulty.xp_loss_fraction);
    const levelAfter=levelForXp(Math.max(0,character.xp-loss));
-   const eligible=character.bag.filter(item=>item.type!=="healing_potion"||item.quantity>0).filter(item=>!item.bossLoot);
+   const lossWeights=balance.difficulty.item_loss_by_rarity||[];
+   const eligible=character.bag.filter(item=>!item.bossLoot&&lossWeights.some(entry=>entry.rarity===item.rarity));
    return{experienceLoss:loss,levelsLost:Math.max(0,character.level-levelAfter),itemLossChance:eligible.length?difficulty.item_loss_chance:0,eligibleItems:eligible.length,projectedLevel:levelAfter,difficulty:character.difficulty||balance.difficulty.default,lives:character.run.lives||difficulty.lives};
   }
   function confirmDeath(characterId){
    const character=getChar(characterId),preview=deathPreview(characterId),difficulty=difficultyOf(character);
    const ghost=publishGhost(character,"death");
    character.xp=Math.max(0,character.xp-preview.experienceLoss);recalcLevel(character);
-   const eligible=character.bag.filter(item=>!item.bossLoot);
+   const lossWeights=balance.difficulty.item_loss_by_rarity||[];
+   const eligible=character.bag.filter(item=>!item.bossLoot&&lossWeights.some(entry=>entry.rarity===item.rarity));
    let lost=null;
    const lossChance=difficulty.item_loss_chance;
    if(eligible.length&&lossChance>0&&random()<lossChance){
