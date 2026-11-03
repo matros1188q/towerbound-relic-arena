@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.19",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Возвышение: Тысяча отражений",
+  "unlock_level": 95,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "parry",
+  "description": "Возвышение: Тысяча отражений — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

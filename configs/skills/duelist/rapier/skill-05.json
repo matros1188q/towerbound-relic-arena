@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.05",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Ответ мастера",
+  "unlock_level": 29,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "parry",
+  "description": "Ответ мастера — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
