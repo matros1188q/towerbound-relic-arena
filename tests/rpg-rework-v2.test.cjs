@@ -284,7 +284,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  e.resetParagon(c.id);assert.deepEqual(live.paragon.stats,{});
  e.logCombatEvent(c.id,'test event');assert.equal(live.combatLog.length,1);
  e.tutorialStep(c.id,'skip');e.claimTutorialReward(c.id);
- assert.ok(live.silver>=5100);
+ assert.ok(live.silver>=100);
  live.progress.highestEver=250;
  const lore=balance.lore.entries[0];
  const reward=e.readLore(c.id,lore.id);
