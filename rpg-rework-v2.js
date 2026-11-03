@@ -74,6 +74,32 @@
     weaponScroll:!!heroic&&eliteOrBoss
    };
   }
+  function bossPhaseInfo(currentHp,maxHp){
+   const ratio=clamp((Number(currentHp)||0)/Math.max(1,Number(maxHp)||1),0,1);
+   const phase=ratio>0.70?1:ratio>0.40?2:ratio>0.10?3:4;
+   const config=(balance.bosses.phases||[]).find(item=>item.phase===phase)||{phase};
+   return{...clone(config),ratio};
+  }
+  function resolveReaction(telegraphType,counterId,classId,baseDamage){
+   const counter=counterId?balance.skills.counter_abilities[classId]:null;
+   let damageMultiplier=counterId?0.5:1,cleansesPoison=false;
+   if(telegraphType==="aoe"&&counterId)damageMultiplier=0;
+   else if(telegraphType==="poison"&&counterId){damageMultiplier=0;cleansesPoison=true;}
+   else if(counter){
+    if(["evade","absorb_all","stun","riposte"].includes(counter.effect))damageMultiplier=0;
+    else if(counter.effect==="damage_reduction"||counter.effect==="slow")damageMultiplier=1-(counter.damage_reduction||0.5);
+   }
+   return{
+    damageMultiplier,
+    damage:Math.max(0,Math.round(Math.max(0,Number(baseDamage)||0)*damageMultiplier)),
+    cleansesPoison,
+    stunSeconds:counter?.effect==="stun"?counter.duration_seconds||0:0,
+    attackSpeedReduction:counter?.effect==="slow"?counter.speed_reduction||0:0,
+    slowSeconds:counter?.effect==="slow"?counter.duration_seconds||0:0,
+    riposteMultiplier:counter?.effect==="riposte"?counter.damage_multiplier||1:0,
+    counterName:counter?.name||null
+   };
+  }
   const equipmentItemLevelBonus=character=>(character.gear||[]).reduce((sum,item)=>sum+(item?Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level:0),0);
   const publishGhost=(character,reason)=>{
    const stats=getCombatStats(character),expiry=now()+balance.pvp.ghost_ttl_days*86400000;
@@ -1108,7 +1134,7 @@
     .sort((a,b)=>b.combatPower-a.combatPower||a.completionMs-b.completionMs);
   }
   function saveSnapshot(){return clone(state);}
-  return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
+  return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,bossPhaseInfo,resolveReaction,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
