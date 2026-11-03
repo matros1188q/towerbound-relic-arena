@@ -238,27 +238,37 @@
     }
    }
    if(character.level<10)character.branch=null;
-   return{previous,level:character.level,lost:Math.max(0,previous-character.level),talentPoints:character.talentPoints};
+   character.paragon=character.paragon||{level:0,xp:0,stats:{}};
+   if(character.level>=balance.xp_curve.max_level){
+    const p=balance.paragon,available=Math.min(p.max_level,Math.floor(Math.max(0,character.xp-character.xpAtLevel100||0)/p.xp_per_point));
+    character.paragon.level=Math.max(character.paragon.level||0,available);
+   }
+   return{previous,level:character.level,lost:Math.max(0,previous-character.level),talentPoints:character.talentPoints,paragon:character.paragon.level};
   }
   function createCharacter(name,classId){
    const classData=classTable[classId];
    if(!classData)throw new Error("Unknown character class");
    const nickname=String(name||"").trim();
    if(nickname.length<2||nickname.length>18)throw new Error("Character name must be between 2 and 18 characters");
+   if(state.characters.length>=balance.account.max_characters)throw new Error("Maximum of "+balance.account.max_characters+" characters reached");
    if(state.characters.some(item=>item.name.toLowerCase()===nickname.toLowerCase()))throw new Error("Character name already exists");
+   const starter=!state.account.starterPackClaimed,mode=balance.difficulty.modes[balance.difficulty.default];
    const character={
     id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],activeSkillId:null,resource:0,resourceMax:classTable[classId].resource_max||100,
-    silver:balance.economy.starting_silver,bag:[{id:id(),type:"healing_potion",quantity:balance.healing.starting_potions}],
-    gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,
+    silver:starter?balance.account.starter_pack.silver:balance.economy.starting_silver,
+    bag:starter?[{id:id(),type:"healing_potion",quantity:balance.account.starter_pack.healing_potions}]:[],
+    gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
+    potionBelt:Array(balance.healing.potion_belt_slots).fill(null),achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
-    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
-     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:balance.death.lives_per_run||3,buffs:{}},
-    pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0}
+    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
+    paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
    };
    character.run.playerHp=maxHp(character);
-   state.characters.push(character);
-   state.activeCharacterId=character.id;
-   state.account.premiumUntil=Math.max(state.account.premiumUntil||0,now()+balance.economy.starting_premium_hours*3600000);
+   state.characters.push(character);state.activeCharacterId=character.id;
+   if(starter){
+    state.account.starterPackClaimed=true;
+    state.account.premiumUntil=Math.max(state.account.premiumUntil||0,now()+balance.account.starter_pack.premium_hours*3600000);
+   }
    return clone(character);
   }
   function getSkillUnlocks(character,catalog){
@@ -269,20 +279,28 @@
    return character.level>=skill.unlock_level&&(!skill.branch_id||character.branch===skill.branch_id);
   }
   function stagePlan(character,stage){
-   const map=balance.map;
-   const boss=stage%map.boss_every===0;
-   const count=boss?map.boss_mob_count:(stage%map.seven_mob_every===0?7:(stage%map.five_mob_every===0?5:map.normal_mob_count));
-   const eliteIndex=!boss&&random()<map.elite_chance?Math.floor(random()*count):-1;
+   const map=balance.map,boss=stage%map.boss_every===0,range=(map.gauntlet_ranges||[]).find(item=>stage>=item.min&&stage<=item.max);
+   let count=map.boss_mob_count;
+   if(!boss){
+    const allowed=range?.allowed||[3,5],weights=range?.weights||[0.625,0.375],roll=random();
+    let total=0;count=allowed[allowed.length-1]||map.normal_mob_count;
+    for(let i=0;i<allowed.length;i++){total+=weights[i]||0;if(roll<total){count=allowed[i];break;}}
+   }
+   const modifier=character.run?.season?.modifier||null;
+   const eliteChance=Math.min(1,map.elite_chance*(modifier?.elite_chance_multiplier||1));
+   const eliteIndex=!boss&&random()<eliteChance?Math.floor(random()*count):-1;
    return{stage,boss,count,mobs:Array.from({length:count},(_,index)=>({
     index,type:boss?"boss":index===eliteIndex?"elite":"normal",
     mechanic:index===eliteIndex?map.elite_mechanics[Math.floor(random()*map.elite_mechanics.length)]:null,
-    statMultiplier:character.heroic?balance.map.heroic_stat_multiplier:1
+    statMultiplier:character.heroic?map.heroic_stat_multiplier:1
    }))};
   }
   function beginRun(character){
    if(character.run.active)return;
+   const season=ensureSeason(),difficulty=difficultyOf(character);
    character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,
-    checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:Math.max(1,Math.min(balance.death.lives_per_run||3,character.run.lives||(balance.death.lives_per_run||3))),playerHp:maxHp(character),startedAt:now()};
+    checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
+    difficulty:character.difficulty||balance.difficulty.default,season:clone(season),startedAt:now()};
   }
   function beginStage(characterId,requestedStage){
    const character=getChar(characterId);
@@ -304,24 +322,21 @@
   function xpMultiplier(character,stage,flags){
    flags=flags||{};
    const firstClear=stage>character.progress.highestEver;
-   let multiplier=flags.auto?balance.auto_battle.experience_multiplier:
-    (firstClear?balance.xp_curve.first_clear_multiplier:balance.xp_curve.replay_multiplier);
-   if(flags.speed2){
-    if(firstClear)throw new Error("2x speed is disabled on first clears");
-    multiplier*=balance.combat.speed_2x_experience_multiplier;
-   }
+   let multiplier=flags.auto?balance.auto_battle.experience_multiplier:(firstClear?balance.xp_curve.first_clear_multiplier:balance.xp_curve.replay_multiplier);
+   if(flags.speed2){if(firstClear)throw new Error("2x speed is disabled on first clears");multiplier*=balance.combat.speed_2x_experience_multiplier;}
    const penaltyFrom=character.run.healingPenaltyFrom||0;
    if(penaltyFrom>0&&stage>=penaltyFrom&&stage<=character.run.healingPenaltyUntil)multiplier*=balance.xp_curve.healing_penalty_multiplier;
    const buff=activeBuff(character,"xp");if(buff)multiplier*=buff.multiplier;
+   multiplier*=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
+   const modifier=character.run.season?.modifier;if(modifier?.reward_xp_multiplier)multiplier*=modifier.reward_xp_multiplier;
    return multiplier;
   }
   function awardXp(character,amount){
-   const value=Math.max(0,Math.round(amount));
-   const before=character.level;
-   character.xp+=value;
-   character.run.experience+=value;
+   const value=Math.max(0,Math.round(amount)),before=character.level;
+   character.xp+=value;character.run.experience+=value;
+   state.account.xp=Math.max(0,(state.account.xp||0)+value);
    recalcLevel(character);
-   return{amount:value,total:character.xp,level:character.level,levelUp:character.level>before};
+   return{amount:value,total:character.xp,level:character.level,levelUp:character.level>before,accountLevel:accountLevel(),accountXp:state.account.xp};
   }
   function enemyXp(enemy,stage){
    const table=balance.xp_curve.mob_xp;
