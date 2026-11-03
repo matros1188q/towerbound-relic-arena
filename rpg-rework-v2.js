@@ -547,31 +547,33 @@
    return character.run.speed2?base/balance.combat.speed_2x_multiplier:base;
   }
   function deathPreview(characterId){
-   const character=getChar(characterId),loss=Math.round(character.run.experience*balance.death.run_experience_loss);
+   const character=getChar(characterId),difficulty=difficultyOf(character);
+   const loss=Math.round(character.run.experience*difficulty.xp_loss_fraction);
    const levelAfter=levelForXp(Math.max(0,character.xp-loss));
-   const eligible=character.bag.filter(item=>character.run.foundItemIds.includes(item.id)&&!item.bossLoot);
-   return{experienceLoss:loss,levelsLost:Math.max(0,character.level-levelAfter),itemLossChance:character.bag.some(item=>item.type==="one_rescue")?0:balance.death.inventory_item_loss_chance,eligibleItems:eligible.length,projectedLevel:levelAfter};
+   const eligible=character.bag.filter(item=>item.type!=="healing_potion"||item.quantity>0).filter(item=>!item.bossLoot);
+   return{experienceLoss:loss,levelsLost:Math.max(0,character.level-levelAfter),itemLossChance:eligible.length?difficulty.item_loss_chance:0,eligibleItems:eligible.length,projectedLevel:levelAfter,difficulty:character.difficulty||balance.difficulty.default,lives:character.run.lives||difficulty.lives};
   }
   function confirmDeath(characterId){
-   const character=getChar(characterId),preview=deathPreview(characterId);
-   character.xp=Math.max(0,character.xp-preview.experienceLoss);
-   recalcLevel(character);
-   const eligible=character.bag.filter(item=>character.run.foundItemIds.includes(item.id)&&!item.bossLoot);
+   const character=getChar(characterId),preview=deathPreview(characterId),difficulty=difficultyOf(character);
+   const ghost=publishGhost(character,"death");
+   character.xp=Math.max(0,character.xp-preview.experienceLoss);recalcLevel(character);
+   const eligible=character.bag.filter(item=>!item.bossLoot);
    let lost=null;
-   const rescue=character.bag.find(item=>item.type==="one_rescue");
-   const lossChance=rescue?0:balance.death.inventory_item_loss_chance;
-   if(eligible.length&&random()<lossChance){
-    lost=eligible[Math.floor(random()*eligible.length)];
-    character.bag=character.bag.filter(item=>item.id!==lost.id);
+   const lossChance=difficulty.item_loss_chance;
+   if(eligible.length&&lossChance>0&&random()<lossChance){
+    const entries=balance.difficulty.item_loss_by_rarity||[],weighted=eligible.map(item=>({item,weight:entries.find(x=>x.rarity===item.rarity)?.weight||0})).filter(x=>x.weight>0);
+    if(weighted.length){
+     const total=weighted.reduce((n,x)=>n+x.weight,0),roll=random()*total;let acc=0;
+     const selected=weighted.find(x=>(acc+=x.weight)>roll)||weighted[weighted.length-1];
+     lost=selected.item;character.bag=character.bag.filter(item=>item.id!==lost.id);
+    }
    }
-   if(rescue)character.bag=character.bag.filter(item=>item.id!==rescue.id);
-   const maxLives=balance.death.lives_per_run||3;
-   const livesBefore=Math.max(1,Math.min(maxLives,character.run.lives||maxLives));
+   const livesBefore=Math.max(1,Math.min(difficulty.lives,character.run.lives||difficulty.lives));
    const livesRemaining=livesBefore-1,runEnded=livesRemaining<=0;
-   character.lastDeath={...preview,itemLossChance:lossChance,lostItem:lost?lost.name:null,livesLost:1,livesRemaining:runEnded?maxLives:livesRemaining,runEnded};
+   character.lastDeath={...preview,itemLossChance:lossChance,lostItem:lost?lost.name:null,livesLost:1,livesRemaining:runEnded?difficulty.lives:livesRemaining,runEnded,ghostId:ghost.id};
    character.run.stage=null;character.run.experience=0;character.run.foundItemIds=[];
    character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
-   character.run.lives=runEnded?maxLives:livesRemaining;character.run.active=!runEnded;
+   character.run.lives=runEnded?difficulty.lives:livesRemaining;character.run.active=!runEnded;
    if(runEnded)character.progress.currentStage=balance.death.new_run_stage;
    character.run.playerHp=maxHp(character);
    return clone(character.lastDeath);
@@ -579,10 +581,11 @@
   function voluntaryRestart(characterId){
    const character=getChar(characterId);
    if(character.run.stage)throw new Error("Restart is only available between stages");
+   publishGhost(character,"restart");
+   const difficulty=difficultyOf(character);
    character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];
-   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;character.run.lives=balance.death.lives_per_run||3;
-   character.progress.currentStage=balance.death.new_run_stage;
-   character.run.playerHp=maxHp(character);
+   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;character.run.lives=difficulty.lives;
+   character.progress.currentStage=balance.death.new_run_stage;character.run.playerHp=maxHp(character);
    return clone(character.progress);
   }
   function autoBattle(characterId,options){
