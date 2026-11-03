@@ -13,10 +13,50 @@
   const random=options.random||Math.random;
   const now=options.now||Date.now;
   const state=options.state||{account:{diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[]},bank:{silver:0,transfers:{}},characters:[],activeCharacterId:null};
-  state.account=state.account||{diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[]};
+  state.account={diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[],xp:0,pvpPoints:0,ghosts:[],pvpDaily:null,starterPackClaimed:false,...(state.account||{})};
   state.bank=state.bank||{silver:0,transfers:{}};
   state.characters=state.characters||[];
+  state.stash=Array.isArray(state.stash)?state.stash:[];
+  state.season=state.season||null;
+  state.weeklyRating=state.weeklyRating||[];
   const classTable=balance.classes.classes;
+  const interpolation=(rows,value,xKey,yKey)=>{
+   if(!Array.isArray(rows)||!rows.length)return 0;
+   const sorted=rows.slice().sort((a,b)=>a[xKey]-b[xKey]);
+   if(value<=sorted[0][xKey])return sorted[0][yKey];
+   for(let i=1;i<sorted.length;i++){
+    if(value<=sorted[i][xKey]){
+     const a=sorted[i-1],b=sorted[i],t=(value-a[xKey])/(b[xKey]-a[xKey]);
+     return a[yKey]+(b[yKey]-a[yKey])*t;
+    }
+   }
+   const a=sorted[sorted.length-2]||sorted[0],b=sorted[sorted.length-1];
+   if(a===b)return b[yKey];
+   const t=(value-a[xKey])/(b[xKey]-a[xKey]);
+   return a[yKey]+(b[yKey]-a[yKey])*t;
+  };
+  const accountLevel=()=>Math.min(balance.account.level_cap,1+Math.floor((state.account.xp||0)/balance.account.xp_per_level));
+  const ensureSeason=()=>{
+   const length=(balance.seasons.season_length_days||90)*86400000,seasonId=Math.floor(now()/length);
+   if(!state.season||state.season.id!==seasonId){
+    const pool=balance.seasons.modifiers||[],index=pool.length?Math.floor(random()*pool.length):0;
+    state.season={id:seasonId,startedAt:seasonId*length,modifier:pool[index]?clone(pool[index]):null,firstClearRewardClaimed:false};
+   }
+   return state.season;
+  };
+  const difficultyOf=character=>balance.difficulty.modes[character.difficulty||balance.difficulty.default]||balance.difficulty.modes.normal;
+  const rarityKey=rarity=>({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[rarity]||String(rarity||"common").toLowerCase());
+  const stageSilver=stage=>(balance.mobs.silver_brackets||[]).find(x=>stage>=x.min&&stage<=x.max)?.amount||0;
+  const itemLevelForStage=stage=>Math.max(balance.item_level.min,Math.min(balance.item_level.max,Math.floor(Number(stage)||1)));
+  const equipmentItemLevelBonus=character=>(character.gear||[]).reduce((sum,item)=>sum+(item?Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level:0),0);
+  const publishGhost=(character,reason)=>{
+   const stats=getCombatStats(character),expiry=now()+balance.pvp.ghost_ttl_days*86400000;
+   const ghost={id:id(),characterId:character.id,name:character.name,classId:character.classId,branch:character.branch,level:character.level,bp:combatPower(character),tier:tierForBp(combatPower(character)).id,stats:{attack:stats.attack,dps:stats.dps,defense:stats.defense,maxHp:stats.maxHp,critChance:stats.critChance},gear:clone(character.gear||[]),reason,createdAt:now(),expiresAt:expiry};
+   state.account.ghosts=(state.account.ghosts||[]).filter(item=>item.characterId!==character.id&&item.expiresAt>now());
+   state.account.ghosts.unshift(ghost);state.account.ghosts=state.account.ghosts.slice(0,100);
+   return clone(ghost);
+  };
+  const tierForBp=bp=>(balance.bp.tiers.find(tier=>bp>=tier.min&&(tier.max===null||bp<=tier.max))||balance.bp.tiers[0]);
   const getChar=id=>{
    const character=state.characters.find(item=>item.id===(id||state.activeCharacterId));
    if(!character)throw new Error("Character not found");
