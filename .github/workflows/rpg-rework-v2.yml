@@ -1,7 +1,7 @@
 name: RPG rework v2 checks
 on:
   push:
-    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass]
+    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, fix/audit-pass]
     paths:
       - 'rpg-rework-v2.js'
       - 'rpg-rework-ui.js'
@@ -22,6 +22,7 @@ on:
       - 'index.html'
       - 'configs/**'
       - 'tests/**'
+      - '.github/workflows/rpg-rework-v2.yml'
 jobs:
   test:
     runs-on: ubuntu-24.04
