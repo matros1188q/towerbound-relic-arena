@@ -1,0 +1,23 @@
+{
+  "stone_crafting": {
+    "materials_per_level_1": 20,
+    "merge_count": 5,
+    "max_level": 5
+  },
+  "drops": {
+    "elite_materials": 10,
+    "boss_materials": 50
+  },
+  "salvage": {
+    "common": 1,
+    "rare": 3,
+    "epic": 10,
+    "legendary": 25,
+    "Godlike": 50,
+    "Обычная": 1,
+    "Редкая": 3,
+    "Эпическая": 10,
+    "Легендарная": 25,
+    "Богоподобная": 50
+  }
+}
