@@ -1,7 +1,7 @@
 name: RPG rework v2 checks
 on:
   push:
-    branches: [feature/rework-v2]
+    branches: [feature/rework-v2, feature/balance-and-content-pass]
     paths:
       - 'rpg-rework-v2.js'
       - 'rpg-rework-ui.js'
