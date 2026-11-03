@@ -45,7 +45,7 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('#tbRpg').innerText(),/RPG QA/,'saved roster survives refresh');
   await page.evaluate(()=>{
    const engine=window.TowerboundRework,c=engine.state.characters[0];
-   c.xp=200000;c.level=10;c.talentPoints=9;c.silver=50000;
+   c.xp=200000;c.level=10;c.talentPoints=9;c.branch='bleed';c.silver=50000;
    c.progress.highestEver=1;c.progress.currentStage=2;
    c.bag.push({id:'qa-weapon',name:'QA Blade',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10},refine:0,sockets:[],socketsAvailable:0});
    c.bag.push({id:'qa-refine',type:'refine_stone'});
@@ -57,6 +57,7 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('.tb-map-node').count(),250,'all 250 map stages render');
   await page.locator('.tb-map-actions [data-action="profile"]').click();
   await page.locator('[data-branch="bleed"]').click();
+  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].branch),'bleed','specialization selection persists');
   await page.evaluate(()=>{
    const c=window.TowerboundRework.state.characters[0];
    if(!c.bag.some(item=>item.id==='qa-weapon'))c.bag.push({id:'qa-weapon',name:'QA Blade',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10},refine:0,sockets:[],socketsAvailable:0});
@@ -66,6 +67,7 @@ const {chromium}=require('playwright');
   await page.waitForSelector('[data-equip="qa-weapon"]');
   await page.locator('[data-equip="qa-weapon"]').click();
   await page.locator('[data-tab="talents"]').click({force:true});
+  await page.waitForSelector('[data-talent="bleed.talent.1"]');
   await page.locator('[data-talent="bleed.talent.1"]').click();
   assert.match(await page.locator('.tb-talent').first().innerText(),/1\/3/,'branch talent point is applied');
   await page.locator('[data-tab="gear"]').click({force:true});
