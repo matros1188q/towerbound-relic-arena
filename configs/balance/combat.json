@@ -1,0 +1,7 @@
+{
+  "combat_speed_base": 0.5,
+  "speed_2x_multiplier": 2,
+  "speed_2x_experience_multiplier": 0.8,
+  "base_tick_ms": 1800,
+  "first_clear_speed_2x": false
+}

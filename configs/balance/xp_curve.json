@@ -1,0 +1,25 @@
+{
+  "max_level": 100,
+  "base_multiplier": 1,
+  "base_required": 180,
+  "per_level": 35,
+  "exponent": 1.3,
+  "first_clear_multiplier": 1,
+  "replay_multiplier": 0.5,
+  "auto_battle_multiplier": 0.5,
+  "healing_penalty_multiplier": 0.8,
+  "death_run_keep_multiplier": 0.7,
+  "mob_xp": {
+    "normal_base": 70,
+    "normal_per_stage": 0.55,
+    "elite_base": 120,
+    "elite_per_stage": 0.8,
+    "boss_base": 600,
+    "boss_per_stage": 3
+  },
+  "stage_clear_xp": {
+    "base": 220,
+    "per_stage": 1.5,
+    "boss_bonus": 300
+  }
+}

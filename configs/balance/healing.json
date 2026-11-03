@@ -1,0 +1,9 @@
+{
+  "potion_heal_fraction": 0.25,
+  "potion_stack_limit": 25,
+  "starting_potions": 3,
+  "checkpoint_heal_fraction": 0.5,
+  "checkpoint_xp_penalty": 0.2,
+  "checkpoint_penalty_stages": 50,
+  "max_checkpoint_heals_per_run": 5
+}

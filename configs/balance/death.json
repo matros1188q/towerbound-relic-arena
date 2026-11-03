@@ -1,0 +1,8 @@
+{
+  "run_experience_loss": 0.3,
+  "inventory_item_loss_chance": 0.3,
+  "preserve_boss_loot": true,
+  "preserve_equipped": true,
+  "new_run_stage": 1,
+  "current_run_xp_only": true
+}

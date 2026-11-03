@@ -1,0 +1,15 @@
+{
+  "unlock_after_stage": 250,
+  "mob_stat_multiplier": 2,
+  "boss_godlike_chance": 0.05,
+  "leaderboards": [
+    "combat_power",
+    "completion_time"
+  ],
+  "dailies": [
+    "map_modifier",
+    "daily_boss",
+    "three_quests",
+    "weekly_rating"
+  ]
+}

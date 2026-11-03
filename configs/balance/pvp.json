@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "damage_multiplier": 1,
+  "health_multiplier": 1,
+  "control_duration_multiplier": 1,
+  "interface_version": 1
+}

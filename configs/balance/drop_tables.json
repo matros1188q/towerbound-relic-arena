@@ -1,0 +1,9 @@
+{
+  "normal_item_chance": 0.035,
+  "normal_rare_weight": 0.12,
+  "elite_epic_chance": 0.15,
+  "boss_legendary_chance": 0.05,
+  "heroic_godlike_chance": 0.05,
+  "boss_pity_misses": 5,
+  "guaranteed_epic_first_clear_boss": true
+}

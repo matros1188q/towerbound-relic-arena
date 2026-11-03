@@ -1,0 +1,77 @@
+{
+  "base_stats": {
+    "base_health": 100,
+    "health_per_level": 4,
+    "base_attack": 12,
+    "attack_per_level": 1.5,
+    "base_defense": 5,
+    "defense_per_level": 0.6
+  },
+  "respec_cost": 5000,
+  "talent_reset_cost": 2500,
+  "classes": {
+    "assassin": {
+      "name": "Убийца",
+      "resource": "Комбо",
+      "branches": [
+        "bleed",
+        "poison",
+        "execution"
+      ]
+    },
+    "bishop": {
+      "name": "Епископ",
+      "resource": "Вера",
+      "branches": [
+        "exorcism",
+        "healing",
+        "buffs"
+      ]
+    },
+    "dragonkin": {
+      "name": "Драконит",
+      "resource": "Драконья сущность",
+      "branches": [
+        "fire_dragon",
+        "ice_dragon",
+        "black_dragon"
+      ]
+    },
+    "destroyer": {
+      "name": "Разрушитель",
+      "resource": "Ярость",
+      "branches": [
+        "fists",
+        "greatsword",
+        "wand_shield"
+      ]
+    },
+    "elemental": {
+      "name": "Владыка стихий",
+      "resource": "Стихийный заряд",
+      "branches": [
+        "darkness",
+        "water",
+        "earth"
+      ]
+    },
+    "duelist": {
+      "name": "Дуэлянт",
+      "resource": "Тактические заряды",
+      "branches": [
+        "dual_swords",
+        "sword_shield",
+        "rapier"
+      ]
+    },
+    "shaman": {
+      "name": "Шаман",
+      "resource": "Духовная связь",
+      "branches": [
+        "spirits",
+        "dark_gods",
+        "nature"
+      ]
+    }
+  }
+}

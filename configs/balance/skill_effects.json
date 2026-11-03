@@ -1,0 +1,98 @@
+{
+  "strike": {
+    "type": "strike",
+    "target": "single_enemy",
+    "scaling": "attack",
+    "damage_multiplier": 1.5,
+    "cooldown": 4,
+    "resource_cost": 18,
+    "animation": "slash"
+  },
+  "aoe": {
+    "type": "aoe",
+    "target": "all_enemies",
+    "scaling": "spell_power",
+    "damage_multiplier": 1.1,
+    "cooldown": 6,
+    "resource_cost": 24,
+    "animation": "burst"
+  },
+  "dot": {
+    "type": "dot",
+    "target": "single_enemy",
+    "scaling": "spell_power",
+    "damage_multiplier": 0.45,
+    "ticks": 3,
+    "cooldown": 5,
+    "resource_cost": 20,
+    "animation": "poison"
+  },
+  "heal": {
+    "type": "heal",
+    "target": "self_or_ally",
+    "scaling": "max_health",
+    "heal_multiplier": 0.35,
+    "cooldown": 6,
+    "resource_cost": 28,
+    "animation": "holy"
+  },
+  "buff": {
+    "type": "buff",
+    "target": "self_or_ally",
+    "scaling": "spell_power",
+    "power_multiplier": 0.12,
+    "duration": 3,
+    "cooldown": 7,
+    "resource_cost": 25,
+    "animation": "aura"
+  },
+  "debuff": {
+    "type": "debuff",
+    "target": "single_enemy",
+    "scaling": "spell_power",
+    "power_multiplier": 0.12,
+    "duration": 3,
+    "cooldown": 6,
+    "resource_cost": 22,
+    "animation": "curse"
+  },
+  "shield": {
+    "type": "shield",
+    "target": "self",
+    "scaling": "max_health",
+    "shield_fraction": 0.18,
+    "duration": 2,
+    "cooldown": 7,
+    "resource_cost": 24,
+    "animation": "shield"
+  },
+  "control": {
+    "type": "control",
+    "target": "single_enemy",
+    "scaling": "spell_power",
+    "damage_multiplier": 0.65,
+    "stun_duration": 1,
+    "cooldown": 7,
+    "resource_cost": 24,
+    "animation": "stun"
+  },
+  "execute": {
+    "type": "execute",
+    "target": "single_enemy",
+    "scaling": "attack",
+    "damage_multiplier": 2.1,
+    "below_health_bonus": 0.3,
+    "cooldown": 7,
+    "resource_cost": 32,
+    "animation": "finisher"
+  },
+  "parry": {
+    "type": "parry",
+    "target": "self",
+    "scaling": "defense",
+    "parry_chance": 0.25,
+    "cooldown": 5,
+    "resource_cost": 15,
+    "animation": "counter"
+  }
+}

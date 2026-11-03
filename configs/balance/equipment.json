@@ -1,0 +1,75 @@
+{
+  "chisel_drop_chance": 0.02,
+  "stone_drop_chance": 0.05,
+  "stone_unlock_stage": 100,
+  "refine_stone_drop_chance": 0.1,
+  "refine_unlock_stage": 30,
+  "stone_merge_count": 5,
+  "stone_max_level": 5,
+  "max_sockets": 3,
+  "refine_max": 20,
+  "refine_tiers": [
+    {
+      "from": 0,
+      "to": 2,
+      "chance": 1,
+      "failure": "none"
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "chance": 0.8,
+      "failure": "minus_one"
+    },
+    {
+      "from": 5,
+      "to": 9,
+      "chance": 0.6,
+      "failure": "minus_one"
+    },
+    {
+      "from": 10,
+      "to": 15,
+      "chance": 0.5,
+      "failure": "reset_ten"
+    },
+    {
+      "from": 16,
+      "to": 19,
+      "chance": 0.5,
+      "failure": "destroy"
+    }
+  ],
+  "enchantment": {
+    "armor_scroll_chance": 0.02,
+    "weapon_scroll_chance": 0.01,
+    "heroic_only": true
+  },
+  "glow_tiers": [
+    {
+      "min": 6,
+      "max": 11,
+      "color": "green-soft"
+    },
+    {
+      "min": 12,
+      "max": 15,
+      "color": "green-strong"
+    },
+    {
+      "min": 16,
+      "max": 19,
+      "color": "blue"
+    },
+    {
+      "min": 20,
+      "max": 20,
+      "color": "red"
+    }
+  ],
+  "set_bonus_thresholds": [
+    2,
+    3,
+    5
+  ]
+}
