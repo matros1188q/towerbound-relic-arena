@@ -691,7 +691,7 @@
    if(stacks.reduce((sum,item)=>sum+item.quantity,0)<cost)throw new Error("Not enough crafting materials");
    for(const stack of stacks){if(!remaining)break;const used=Math.min(remaining,stack.quantity);stack.quantity-=used;remaining-=used;}
    character.bag=character.bag.filter(item=>item.type!=="craft_material"||item.quantity>0);
-   const stone={id:id(),type:"enhancement_stone",stoneType:clone(stoneType),level:1};character.bag.push(stone);return clone(stone);
+   const stone={id:id(),type:"enhancement_stone",stoneType:clone(stoneType),level:1};character.bag.push(stone);character.stats.materials_crafted=(character.stats.materials_crafted||0)+1;return clone(stone);
   }
   function addSocket(characterId,itemId){
    const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId)||character.bag.find(entry=>entry&&entry.id===itemId);
@@ -895,7 +895,7 @@
    character.stats.pvp_duels=(character.stats.pvp_duels||0)+1;
    const reward=won?balance.pvp.win_points:balance.pvp.loss_points;
    state.account.pvpPoints=(state.account.pvpPoints||0)+reward;
-   if(won)character.stats.pvpWins=(character.stats.pvpWins||0)+1;
+   if(won){character.stats.pvpWins=(character.stats.pvpWins||0)+1;character.stats.pvp_wins=(character.stats.pvp_wins||0)+1;}
    const result={won:!!won,pointsAwarded:reward,totalPoints:state.account.pvpPoints,opponentId:daily.pending.opponentId};
    daily.pending=null;return result;
   }
