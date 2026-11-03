@@ -4,5 +4,6 @@
   "preserve_boss_loot": true,
   "preserve_equipped": true,
   "new_run_stage": 1,
-  "current_run_xp_only": true
+  "current_run_xp_only": true,
+  "lives_per_run": 3
 }
