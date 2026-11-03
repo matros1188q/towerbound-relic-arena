@@ -267,6 +267,10 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  e.state.account.pvpPoints=1000;
  assert.equal(e.purchasePvpItem(c.id,'pvp_talent_reset').item.id,'pvp_talent_reset');
  assert.equal(e.purchasePvpItem(c.id,'pvp_xp_potion').item.id,'pvp_xp_potion');
+ e.state.account.pvpPoints=6000;
+ assert.equal(e.purchasePvpItem(c.id,'class_epic_assassin').item.itemLevel,120);
+ assert.deepEqual(e.state.account.classEpics,['assassin']);
+ assert.throws(()=>e.purchasePvpItem(c.id,'class_epic_assassin'),/already been claimed/);
  assert.equal(balance.pvp_store.consumables.talent_reset,300);
  assert.equal(balance.pvp_store.consumables.xp_potion,100);
 }
