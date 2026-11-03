@@ -327,6 +327,29 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(balance.xp_curve.post_75_total_xp,62500000);
 }
 {
+ const e=makeEngine(()=>0.2),c=makeCharacter(e),live=e.state.characters[0];
+ const daily=e.dailySnapshot(c.id).modifier;
+ e.beginStage(c.id,1);
+ assert.deepEqual(live.run.dailyModifier,daily,'daily map modifier is frozen when a run begins');
+ const enemy=e.getEnemyStats(c.id,1,{type:'normal'});
+ const seasonal=live.run.season?.modifier;
+ const speedFactors=[seasonal,daily].filter(Boolean).filter((m,i,all)=>all.findIndex(x=>x.id===m.id)===i).map(m=>m.enemy_attack_speed_multiplier||1);
+ const factor=speedFactors.reduce((a,b)=>a*b,1);
+ assert.equal(enemy.attackIntervalMs,Math.round(2500/factor),'daily and seasonal attack-speed modifiers reach live combat');
+ live.run.dailyModifier={id:'boss_no_heal',boss_no_potion:true};
+ live.run.stage.mobs[live.run.stage.enemyIndex]={type:'boss'};
+ assert.throws(()=>e.useHealingPotion(c.id),/modifier disables potions/,'daily boss-no-potion rule is enforced');
+}
+{
+ const e=makeEngine(()=>0.9),c=makeCharacter(e),live=e.state.characters[0];
+ live.progress.highestEver=1;live.progress.currentStage=2;
+ e.beginStage(c.id,1);
+ live.run.stage.mobs=[{type:'normal',statMultiplier:1}];live.run.stage.enemyIndex=0;
+ const result=e.finishEnemy(c.id,{speed2:true});
+ assert.equal(result.stageComplete,true);
+ assert.equal(live.stats.speed_runs,1,'speed-run achievement counts repeat-stage clear once, never first-clear');
+}
+{
  const skills=JSON.parse(fs.readFileSync(path.join(__dirname,'../configs/skills/catalog.json'),'utf8'));
  assert.equal(skills.length,420);
  const branches={};for(const skill of skills){const key=skill.class_id+'/'+skill.branch_id;branches[key]=(branches[key]||0)+1;}
