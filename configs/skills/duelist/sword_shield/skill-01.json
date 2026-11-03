@@ -1,0 +1,16 @@
+{
+  "id": "duelist.sword_shield.01",
+  "class_id": "duelist",
+  "branch_id": "sword_shield",
+  "name": "Стойка бастиона",
+  "unlock_level": 10,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "shield",
+  "description": "Стойка бастиона — sword_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "duelist.sword_shield.11",
+  "class_id": "duelist",
+  "branch_id": "sword_shield",
+  "name": "Пробуждение: Стойка бастиона",
+  "unlock_level": 57,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Пробуждение: Стойка бастиона — sword_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

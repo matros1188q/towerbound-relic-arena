@@ -1,0 +1,16 @@
+{
+  "id": "duelist.sword_shield.17",
+  "class_id": "duelist",
+  "branch_id": "sword_shield",
+  "name": "Знак превосходства: Клятва стража",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "shield",
+  "description": "Знак превосходства: Клятва стража — sword_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
