@@ -57,12 +57,12 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('.tb-map-node').count(),250,'all 250 map stages render');
   await page.locator('.tb-map-actions [data-action="profile"]').click();
   await page.locator('[data-branch="bleed"]').click();
-  await page.locator('[data-tab="bag"]').click({force:true});
   await page.evaluate(()=>{
    const c=window.TowerboundRework.state.characters[0];
    if(!c.bag.some(item=>item.id==='qa-weapon'))c.bag.push({id:'qa-weapon',name:'QA Blade',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10},refine:0,sockets:[],socketsAvailable:0});
    localStorage.setItem('tb-rpg-v2',JSON.stringify(window.TowerboundRework.state));
   });
+  await page.locator('[data-tab="bag"]').click({force:true});
   await page.waitForSelector('[data-equip="qa-weapon"]');
   await page.locator('[data-equip="qa-weapon"]').click();
   await page.locator('[data-tab="talents"]').click({force:true});
