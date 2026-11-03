@@ -35,5 +35,14 @@
     "elite",
     "boss"
   ],
-  "attack_interval_authority": "single_source"
+  "attack_interval_authority": "single_source",
+  "vampirism": {
+    "damage_dealer_fraction": 0.0175,
+    "ice_tank_fraction": 0.01,
+    "default_fraction": 0.01,
+    "healer_fraction": 0
+  },
+  "armor_formula": "damage*(1-min(0.75,armor/(armor+100+10*attacker_level)))",
+  "resistance_formula": "damage*(1-min(0.75,resistance/(resistance+100+10*attacker_level)))",
+  "crit_damage_multiplier": 1.5
 }
