@@ -31,7 +31,7 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  const heal=e.checkpointHeal(c.id);
  assert.equal(heal.penaltyUntil,100);assert.equal(heal.remaining,50);
  assert.throws(()=>e.checkpointHeal(c.id),/penalty/);
- assert.equal(e.xpMultiplier(e.getChar(c.id),50),0.8);
+ assert.equal(e.xpMultiplier(e.getChar(c.id),50),0.5);assert.equal(e.xpMultiplier(e.getChar(c.id),51),0.8);
 }
 {
  const e=engine(),c=create(e);e.beginStage(c.id,1);e.useHealingPotion(c.id);
