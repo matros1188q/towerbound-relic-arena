@@ -10,7 +10,8 @@ for(const id of ['assassin','bishop','dragonkin','destroyer','elemental','duelis
 assert.match(source,/const skills=/);
 assert.match(source,/const passives=/);
 assert.match(source,/const talentNames=/);
-assert.match(source,/const sets=Object\.fromEntries/);\nassert.match(source,/const fullSetNames=Object\.fromEntries/);
+assert.match(source,/const sets=Object\.fromEntries/);
+assert.match(source,/const fullSetNames=Object\.fromEntries/);
 assert.match(source,/function uniqueDrop/);
 assert.match(source,/function putStone/);
 assert.match(source,/kind:'weapon'/);
