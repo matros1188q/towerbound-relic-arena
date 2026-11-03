@@ -150,6 +150,10 @@
  "#tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt{grid-row:6!important}",
  "#tbRpg .tb-v2:has(.tb-arena) .tb-target-card .tb-target-elements{display:flex;grid-column:1/-1;gap:4px;font-size:8px}",
  "@media(orientation:landscape) and (max-height:520px){#tbRpg .tb-v2:has(.tb-arena) .tb-arena{grid-template-rows:auto minmax(0,1fr) auto!important}#tbRpg .tb-v2:has(.tb-arena) .tb-battle-hero{grid-column:1/-1;grid-row:1;margin-left:0;width:100%}#tbRpg .tb-v2:has(.tb-arena) .tb-target-grid{grid-column:1;grid-row:2!important}#tbRpg .tb-v2:has(.tb-arena) .tb-enemy-focus{grid-column:1;grid-row:2!important}#tbRpg .tb-v2:has(.tb-arena) .tb-panel-actions{grid-column:2;grid-row:2!important}#tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt{grid-column:2;grid-row:3!important;align-self:end}}",
+ "#tbRpg .tb-v2:has(.tb-arena)>.tb-header{display:none!important}",
+ "#tbRpg .tb-v2:has(.tb-arena){touch-action:none!important}",
+ "body.tb-battle-lock{touch-action:none!important}",
+ "@media(orientation:landscape) and (max-height:520px){#tbRpg .tb-v2:has(.tb-arena) .tb-arena{grid-template-columns:minmax(0,1fr) minmax(230px,32%)!important;grid-template-rows:auto auto minmax(0,1fr) auto!important}#tbRpg .tb-v2:has(.tb-arena) .tb-arena-top{grid-column:1/-1;grid-row:1}#tbRpg .tb-v2:has(.tb-arena) .tb-battle-hero{grid-column:1/-1;grid-row:2}#tbRpg .tb-v2:has(.tb-arena) .tb-target-grid{grid-column:1;grid-row:3!important;grid-template-columns:repeat(4,minmax(0,1fr))}#tbRpg .tb-v2:has(.tb-arena) .tb-enemy-focus{grid-column:1;grid-row:3!important;align-self:end}#tbRpg .tb-v2:has(.tb-arena) .tb-panel-actions{grid-column:2;grid-row:3!important}#tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt{grid-column:2;grid-row:4!important;align-self:end}}",
  ].join("\n");
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
 })();
