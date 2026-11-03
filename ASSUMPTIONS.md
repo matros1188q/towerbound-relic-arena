@@ -8,3 +8,15 @@
 - Silver drops: 18 normal, 42 elite, 110 boss. This is an initial economy baseline to tune with telemetry.
 - Refinement: +0–2 guaranteed; +3–4 80%; +5–9 60%; +10–15 50% with failure reset to +10; +16–19 50% with destruction on failure.
 - This is a browser prototype: local save data is not cheat-resistant. Production economy and purchases require authenticated server-side persistence.
+
+
+## Balance and content pass — decisions and boundaries
+
+- The active seven-class implementation is on `feature/balance-and-content-pass`. At the start of this pass its HEAD was `16bb1fcc63a24b3b476d9ff44024fb66eb6cf419`; `main` remained the older four-class prototype and was not changed.
+- A precise rollback branch for that starting HEAD is `backup/balance-pass-before-20261103`. The name `legacy-pre-balance-pass` was already occupied by an older rework revision and was not moved. The connected GitHub action set does not expose a Git-tag creation operation, so `legacy-before-balance-pass` could not truthfully be reported as created.
+- The HP/DPS curve is treated as gear-inclusive and divided by 1.5 before item bonuses. The requirement's example base DPS 2925 is approximate: 4400 / 1.5 = 2933.33. Six ilvl120 items yield 50.4%, as explicitly specified.
+- Exact per-mob silver brackets (4/6/9/12/16) take precedence over the broad 13–14k whole-run estimate. The latter depends on random group sizes and is not a second drop rule.
+- A season with `swift_enemies` changes each foe response interval to `2.5 / 1.2` seconds. Under `cursed_levels`, every fifth map stage (5,15,…,245) has doubled foe HP and damage. This is a deterministic interpretation of “cursed levels ×2”.
+- A 250-stage clear does not auto-enter heroic under 15,000 BP. The final stage remains replayable to allow the character to increase BP.
+- PvP ghost records, account PvP points, stash, cosmetics and weekly rating are browser-local in this prototype. They do not provide globally shared matchmaking, cross-device account sync, anti-cheat or a true public top-100 without an authenticated backend.
+- Purchases with real money are not credited by browser code; diamond pack display is not proof of a completed payment.
