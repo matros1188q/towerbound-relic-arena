@@ -16,6 +16,14 @@ This layer adds seven classes alongside the original Warden, Ranger, Arcanist an
 
 Each of the 21 specializations has ten active skills, three passive effects and ten talents with three ranks each. Skill unlock names are tied to the existing 5-level unlock cadence. Combat hooks manage resource generation/spending, branch damage profiles, control, damage-over-time and defensive reactions.
 
+## Забег, жизни и прогресс
+
+- В забеге у персонажа три жизни. Каждая подтверждённая смерть расходует одну жизнь и снимает 30% опыта, заработанного в текущем забеге.
+- После первой и второй смерти герой продолжает с текущего этапа с полным HP; экипировка и ранее сохранённый прогресс башни остаются на месте.
+- После третьей смерти забег завершается, текущий этап возвращается к первому, а лимит жизней восстанавливается до трёх.
+- Повторное прохождение даёт 50% базового опыта. Ускорение ×2 недоступно при первом прохождении этапа.
+- Этапы 1–250 используют гаунтлеты на 3, 5 или 7 противников; каждый десятый этап — отдельный бой с одним боссом. Шанс элитного противника — 12%.
+
 ## Class gear
 
 Each class has three specialization sets. Each set has six item slots and bonuses at 2, 4 and 6 pieces:
