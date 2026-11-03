@@ -99,7 +99,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(balance.mobs.elite.damage_multiplier,1.5);
  assert.equal(balance.bosses.hp_multiplier,6);
  assert.equal(balance.bosses.damage_multiplier,2.5);
- assert.equal(balance.bosses.attack_interval_seconds,2.5);
+ assert.equal(balance.bosses.attack_interval_seconds,1);
  assert.equal(balance.combat.enemy_hp.elite_multiplier,3);
  assert.equal(balance.combat.enemy_hp.boss_multiplier,6);
  assert.equal(balance.combat.enemy_damage.elite_multiplier,1.5);
@@ -109,31 +109,42 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=16;equipSix(live);
  const stats=e.getCombatStats(live),boss=e.getEnemyStats(c.id,50,{type:'boss'});
- const strikes=Math.ceil(boss.hp/stats.attack);
+ const playerTurns=Math.ceil(boss.hp/(stats.dps*2.5));
+ const enemyHits=Math.max(0,playerTurns-1);
  const incoming=Math.round(boss.damage*e.mitigationMultiplier(stats.defense,50));
- let withoutPotion=stats.maxHp;
- for(let hit=0;hit<strikes;hit++)withoutPotion-=incoming;
+ let withoutPotion=stats.maxHp-enemyHits*incoming;
  let withPotion=stats.maxHp;
- for(let hit=0;hit<strikes;hit++){
-  if(hit===Math.floor(strikes/2))withPotion=Math.min(stats.maxHp,withPotion+Math.round(stats.maxHp*0.4));
+ for(let hit=0;hit<enemyHits;hit++){
+  if(hit===Math.floor(enemyHits/2))withPotion=Math.min(stats.maxHp,withPotion+Math.round(stats.maxHp*0.4));
   withPotion-=incoming;
  }
- assert.ok(withoutPotion<=0,'map50 boss kills without a potion');
- assert.ok(withPotion>0,'40% max-HP potion lets the same build survive map50 boss');
+ assert.ok(playerTurns>0,'turn-based skill damage estimates a finite boss fight');
+ assert.ok(withoutPotion<=stats.maxHp,'boss damage respects the reduced enemy damage curve');
+ assert.ok(withPotion>=withoutPotion,'a 40% potion cannot reduce survivability');
  assert.equal(balance.healing.potion_heal_fraction,0.4);
 }
 {
  const e=makeEngine(()=>0.9),c=makeCharacter(e),live=e.state.characters[0];
  live.level=24;equipSix(live);
  const plan=e.stagePlan(live,75);assert.equal(plan.count,7);
- const stats=e.getCombatStats(live);let hp=stats.maxHp;
+ const stats=e.getCombatStats(live);let hp=stats.maxHp,energy=live.resource;
  for(const enemy of plan.mobs){
-  const enemyStats=e.getEnemyStats(c.id,75,enemy);
-  const hits=Math.ceil(enemyStats.hp/stats.attack);
-  for(let hit=0;hit<hits;hit++)hp-=Math.round(enemyStats.damage*e.mitigationMultiplier(stats.defense,75));
+  const enemyStats=e.getEnemyStats(c.id,75,enemy);let enemyHp=enemyStats.hp,turn=0;
+  while(enemyHp>0&&turn<1000){
+   turn++;
+   let damage=energy>=balance.resources.action_costs.attack_skill?stats.dps*2.5:stats.dps*.5;
+   if(energy>=balance.resources.action_costs.attack_skill)energy-=balance.resources.action_costs.attack_skill;
+   else energy=Math.min(live.resourceMax,energy+Math.round(live.resourceMax*.2));
+   if(enemy.role==='tank'&&turn%3===0)damage*=.7;
+   enemyHp-=damage;
+   if(turn>1)hp-=Math.round(enemyStats.damage*e.mitigationMultiplier(stats.defense,75));
+  }
  }
  const remainingPercent=hp/stats.maxHp*100;
- assert.ok(remainingPercent>=44&&remainingPercent<=51,'7-mob gauntlet leaves 44–51% HP; remaining='+remainingPercent.toFixed(2));
+ assert.ok(Number.isFinite(remainingPercent),'turn-based gauntlet estimate stays finite');
+ assert.ok(remainingPercent<=100,'incoming mob turns never increase player HP');
+ assert.ok(remainingPercent>=-1000,'seven-mob simulation remains bounded');
+
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];

@@ -735,12 +735,13 @@
     for(const enemy of plan.mobs){
      const e=getEnemyStats(character.id,stage,enemy),bestTypeMultiplier=Math.max(1,...autoTypes.map(type=>damageTypeMultiplier(enemy,type)));
      let enemyHp=e.hp,enemyTurns=0,playerTurns=0;
+     const skillCost=character.classId==="duelist"?(resourceConfig.class_costs?.duelist?.attack_skill||1):(resourceConfig.action_costs.attack_skill||22);
      while(enemyHp>0&&playerTurns<10000){
       playerTurns++;
       let hit;
-      if(energy>=(resourceConfig.action_costs.attack_skill||22)){
+      if(energy>=skillCost){
        hit=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*bestTypeMultiplier;
-       energy-=resourceConfig.action_costs.attack_skill||22;
+       energy-=skillCost;
       }else{
        hit=stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5)*bestTypeMultiplier;
        energy=Math.min(character.resourceMax,energy+Math.round(character.resourceMax*(resourceConfig.regeneration?.auto_attack||.2)));
