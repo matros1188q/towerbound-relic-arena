@@ -240,8 +240,9 @@
    if(character.level<10)character.branch=null;
    character.paragon=character.paragon||{level:0,xp:0,stats:{}};
    if(character.level>=balance.xp_curve.max_level){
-    const p=balance.paragon,available=Math.min(p.max_level,Math.floor(Math.max(0,character.xp-character.xpAtLevel100||0)/p.xp_per_point));
-    character.paragon.level=Math.max(character.paragon.level||0,available);
+    const p=balance.paragon,threshold=Array.from({length:balance.xp_curve.max_level-1},(_,i)=>requiredXp(i+1)).reduce((a,b)=>a+b,0);
+    character.paragon.xp=Math.max(0,character.xp-threshold);
+    character.paragon.level=Math.min(p.max_level,Math.floor(character.paragon.xp/p.xp_per_point));
    }
    return{previous,level:character.level,lost:Math.max(0,previous-character.level),talentPoints:character.talentPoints,paragon:character.paragon.level};
   }
@@ -803,6 +804,150 @@
    character.talents[talentId]=(character.talents[talentId]||0)+1;
    return character.talents[talentId];
   }
+  function ensurePvpDaily(){
+   const date=dayKey(now());
+   if(!state.account.pvpDaily||state.account.pvpDaily.date!==date)state.account.pvpDaily={date,duels:0,pending:null};
+   return state.account.pvpDaily;
+  }
+  function matchmakePvp(characterId){
+   if(!balance.pvp.enabled)throw new Error("PvP is disabled");
+   const character=getChar(characterId),daily=ensurePvpDaily(),premium=state.account.premiumUntil>now();
+   const limit=premium?balance.pvp.daily_duels.premium:balance.pvp.daily_duels.free;
+   if(daily.duels>=limit)throw new Error("Daily PvP duel limit reached");
+   const bp=combatPower(character),tier=tierForBp(bp),tierIndex=balance.bp.tiers.findIndex(item=>item.id===tier.id);
+   const valid=state.account.ghosts.filter(ghost=>ghost.expiresAt>now()&&ghost.characterId!==character.id);
+   let opponents=valid.filter(ghost=>Math.abs(balance.bp.tiers.findIndex(item=>item.id===ghost.tier)-tierIndex)<=balance.pvp.matchmaking.tier_window);
+   let window=balance.pvp.matchmaking.tier_window;
+   if(!opponents.length){window=balance.pvp.matchmaking.expand_to_tier_window;opponents=valid.filter(ghost=>Math.abs(balance.bp.tiers.findIndex(item=>item.id===ghost.tier)-tierIndex)<=window);}
+   const opponent=opponents.length?clone(opponents[Math.floor(random()*opponents.length)]:{
+    id:"bot-"+id(),bot:true,name:"Страж арены",classId:"bot",bp,level:character.level,tier:tier.id,
+    stats:{attack:Math.round(getCombatStats(character).attack*.95),defense:getCombatStats(character).defense,maxHp:getCombatStats(character).maxHp}
+   };
+   daily.duels++;daily.pending={opponentId:opponent.id,startedAt:now(),tier:tier.id};
+   return{opponent,duelsRemaining:limit-daily.duels,points:state.account.pvpPoints||0,tier,bot:!!opponent.bot};
+  }
+  function resolvePvpDuel(characterId,won){
+   const character=getChar(characterId),daily=ensurePvpDaily();
+   if(!daily.pending)throw new Error("No PvP duel is active");
+   const reward=won?balance.pvp.win_points:balance.pvp.loss_points;
+   state.account.pvpPoints=(state.account.pvpPoints||0)+reward;
+   if(won)character.stats.pvpWins=(character.stats.pvpWins||0)+1;
+   const result={won:!!won,pointsAwarded:reward,totalPoints:state.account.pvpPoints,opponentId:daily.pending.opponentId};
+   daily.pending=null;return result;
+  }
+  function purchasePvpItem(characterId,itemId){
+   const character=getChar(characterId),item=(balance.pvp_store.items||[]).find(entry=>entry.id===itemId);
+   if(!item)throw new Error("Unknown PvP-store item");
+   if((state.account.pvpPoints||0)<item.price)throw new Error("Not enough PvP points");
+   if(item.kind==="cosmetic"&&(state.account.cosmetics||[]).includes(item.id))throw new Error("Cosmetic already owned");
+   if(item.kind==="account_relic"&&(state.account.relics||[]).includes(item.id))throw new Error("Relic already owned");
+   state.account.pvpPoints-=item.price;
+   if(item.kind==="cosmetic"){state.account.cosmetics.push(item.id);return{item:clone(item),account:true,points:state.account.pvpPoints};}
+   if(item.kind==="account_relic"){state.account.relics=state.account.relics||[];state.account.relics.push(item.id);return{item:clone(item),account:true,points:state.account.pvpPoints};}
+   if(item.kind==="character_item"){
+    if(item.classId!==character.classId)throw new Error("This epic belongs to another class");
+    const created=createDrop(character,item.rarity,{name:item.name,slot:"weapon",itemLevel:item.itemLevel,stats:{attack:Math.round(getCombatStats(character).attack*.15),defense:Math.round(getCombatStats(character).defense*.1),health:Math.round(maxHp(character)*.1)}});
+    return{item:created,account:false,points:state.account.pvpPoints};
+   }
+   if(item.kind==="consumable"){
+    character.bag.push({id:id(),type:item.consumableType||item.id,itemId:item.consumableId||item.id,quantity:1});
+    return{item:clone(item),account:false,points:state.account.pvpPoints};
+   }
+   throw new Error("Unsupported PvP-store item type");
+  }
+  function stashDeposit(characterId,itemId){
+   const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
+   const rank={Обычная:0,Редкая:1,Эпическая:2,Легендарная:3,Богоподобная:4};
+   if(!item||rank[item.rarity]===undefined||rank[item.rarity]<rank[balance.stash.min_rarity])throw new Error("Only epic or better equipment can enter shared stash");
+   if(item.bound)throw new Error("Bound items cannot be transferred");
+   if(state.stash.length>=balance.stash.slots)throw new Error("Shared stash is full");
+   character.bag=character.bag.filter(entry=>entry.id!==itemId);
+   state.stash.push({...item,stashOwner:character.id,transfers:0});return clone(item);
+  }
+  function stashWithdraw(characterId,itemId){
+   const character=getChar(characterId),index=state.stash.findIndex(entry=>entry.id===itemId);
+   if(index<0)throw new Error("Stash item not found");
+   const item=state.stash[index],date=dayKey(now());
+   if(item.lastTransferDate===date)throw new Error("This item was already transferred today");
+   if(character.bag.some(entry=>entry.id===item.id)||character.gear.some(entry=>entry?.id===item.id))throw new Error("Item already belongs to this character");
+   state.stash.splice(index,1);character.bag.push({...item,bound:false,transfers:(item.transfers||0)+1,lastTransferDate:date});
+   return clone(item);
+  }
+  function deleteCharacter(characterId,typedName,confirmed){
+   const character=getChar(characterId);
+   if(!confirmed||typedName!==character.name)throw new Error("Double confirmation and exact character name are required");
+   state.characters=state.characters.filter(entry=>entry.id!==characterId);
+   if(state.activeCharacterId===characterId)state.activeCharacterId=state.characters[0]?.id||null;
+   return true;
+  }
+  function resetCharacter(characterId,typedName,confirmed){
+   const old=getChar(characterId);
+   if(!confirmed||typedName!==old.name)throw new Error("Double confirmation and exact character name are required");
+   const name=old.name,classId=old.classId,difficulty=old.difficulty;
+   const index=state.characters.findIndex(entry=>entry.id===characterId);
+   state.characters.splice(index,1);
+   const previousActive=state.activeCharacterId,created=createCharacter(name,classId),live=state.characters.find(entry=>entry.id===created.id);
+   live.difficulty=difficulty;live.run.lives=difficultyOf(live).lives;
+   state.account.starterPackClaimed=true;
+   if(previousActive!==characterId)state.activeCharacterId=previousActive;
+   return clone(live);
+  }
+  function tutorialStep(characterId,step){
+   const character=getChar(characterId),tutorial=character.tutorial||(character.tutorial={completed:false,step:0,rewardClaimed:false});
+   if(tutorial.completed)throw new Error("Tutorial is already complete");
+   if(step==="skip"){tutorial.completed=true;tutorial.step=balance.tutorial.steps;return{completed:true,skipped:true};}
+   const next=Math.min(balance.tutorial.steps,tutorial.step+1);
+   if(step!==undefined&&Number(step)!==next)throw new Error("Complete tutorial steps in order");
+   tutorial.step=next;
+   if(next>=balance.tutorial.steps)tutorial.completed=true;
+   return clone(tutorial);
+  }
+  function claimTutorialReward(characterId){
+   const character=getChar(characterId),tutorial=character.tutorial;
+   if(!tutorial?.completed||tutorial.rewardClaimed)throw new Error("Tutorial reward is unavailable");
+   character.silver+=balance.tutorial.reward.silver;
+   character.bag.push({id:id(),type:"healing_potion",quantity:balance.tutorial.reward.healing_potions});
+   tutorial.rewardClaimed=true;return{silver:character.silver,reward:clone(balance.tutorial.reward)};
+  }
+  function claimAchievement(characterId,achievementId){
+   const character=getChar(characterId),entry=balance.achievements.achievements.find(item=>item.id===achievementId);
+   if(!entry)throw new Error("Unknown achievement");
+   character.achievements=character.achievements||[];
+   if(character.achievements.includes(achievementId))throw new Error("Achievement already claimed");
+   const progress=character.stats[entry.metric]||character.progress[entry.metric]||0;
+   if(progress<entry.target)throw new Error("Achievement requirement not reached");
+   character.achievements.push(achievementId);character.silver+=entry.reward.silver||0;
+   for(const cosmetic of entry.reward.cosmetic||[])if(!state.account.cosmetics.includes(cosmetic))state.account.cosmetics.push(cosmetic);
+   return clone(entry.reward);
+  }
+  function readLore(characterId,loreId){
+   const character=getChar(characterId),entry=balance.lore.entries.find(item=>item.id===loreId);
+   if(!entry)throw new Error("Unknown lore entry");
+   if(character.progress.highestEver<entry.unlock_stage)throw new Error("Lore entry is still locked");
+   character.loreRead=character.loreRead||[];
+   if(character.loreRead.includes(loreId))return{xp:0,alreadyRead:true};
+   character.loreRead.push(loreId);const reward=awardXp(character,entry.xp_reward||balance.lore.read_xp_reward);
+   return{xp:reward.amount,level:character.level};
+  }
+  function logCombatEvent(characterId,event){
+   const character=getChar(characterId),settings=state.account.settings||balance.settings;
+   if(settings.combatLogEnabled===false||settings.combat_log_toggle===false)return false;
+   character.combatLog=character.combatLog||[];
+   character.combatLog.push({at:now(),event:String(event).slice(0,240)});
+   character.combatLog=character.combatLog.slice(-balance.settings.combat_log_max_events);
+   return true;
+  }
+  function saveSettings(values){
+   state.account.settings={...(state.account.settings||{}),...values};return clone(state.account.settings);
+  }
+  function assignParagon(characterId,stat){
+   const character=getChar(characterId),allowed=balance.paragon.stats;
+   if(character.level<balance.xp_curve.max_level)throw new Error("Paragon unlocks at character level 100");
+   if(!allowed.includes(stat))throw new Error("Unknown paragon stat");
+   const spent=Object.values(character.paragon.stats||{}).reduce((a,b)=>a+b,0);
+   if(spent>=character.paragon.level)throw new Error("No paragon points available");
+   character.paragon.stats[stat]=(character.paragon.stats[stat]||0)+1;return clone(character.paragon);
+  }
   function leaderboard(){
    return state.characters.map(character=>({id:character.id,name:character.name,classId:character.classId,level:character.level,combatPower:combatPower(character),completionMs:character.stats.completionMs||0}))
     .sort((a,b)=>b.combatPower-a.combatPower||a.completionMs-b.completionMs);
@@ -813,7 +958,9 @@
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
-   recordDailyProgress,dailySnapshot,claimDailyQuest,startDailyBoss,completeDailyBoss,pvpSnapshot};
+   recordDailyProgress,dailySnapshot,claimDailyQuest,startDailyBoss,completeDailyBoss,pvpSnapshot,
+   ensurePvpDaily,matchmakePvp,resolvePvpDuel,purchasePvpItem,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
+   tutorialStep,claimTutorialReward,claimAchievement,readLore,logCombatEvent,saveSettings,assignParagon};
  }
  return{createEngine};
 });
