@@ -114,9 +114,9 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  assert.equal(pvp.source,'pvp');assert.equal(pvp.maxHp,Math.round(e.maxHp(c)*balance.pvp.health_multiplier));
 }
 {
- assert.equal(balance.balance.equipment.stone_types.length,42);
+ assert.equal(balance.equipment.stone_types.length,42);
  const e=engine(),c=create(e),live=e.state.characters[0];live.branch='bleed';
- live.gear[0]={id:'set1',slot:'weapon',setId:balance.balance.classes.classes.assassin.branches[0].set.id,stats:{attack:10,defense:2,health:5},refine:2,sockets:[{stoneType:balance.balance.equipment.stone_types[0],level:1}],socketsAvailable:1};
+ live.gear[0]={id:'set1',slot:'weapon',setId:balance.classes.classes.assassin.branches[0].set.id,stats:{attack:10,defense:2,health:5},refine:2,sockets:[{stoneType:balance.equipment.stone_types[0],level:1}],socketsAvailable:1};
  live.gear[1]={id:'set2',slot:'chest',setId:balance.classes.classes.assassin.branches[0].set.id,stats:{attack:0,defense:4,health:15},refine:0,sockets:[],socketsAvailable:0};
  const stats=e.getCombatStats(live);assert.ok(stats.attack>balance.classes.base_stats.base_attack);
  assert.ok(stats.maxHp>balance.classes.base_stats.base_health);assert.ok(stats.damageMultiplier>1,'2-piece set bonus is applied');
