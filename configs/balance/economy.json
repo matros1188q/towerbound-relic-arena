@@ -41,11 +41,36 @@
     "drop_50": 5200,
     "premium_7d": 25000,
     "extra": [
-      "Компас картографа",
-      "Набор ремонтника",
-      "Серебряный талисман",
-      "Песочные часы",
-      "Футляр целителя"
+      {
+        "id": "map_compass",
+        "name": "Компас картографа",
+        "price": 600,
+        "effect": "map_hint"
+      },
+      {
+        "id": "repair_kit",
+        "name": "Набор ремонтника",
+        "price": 900,
+        "effect": "repair_kit"
+      },
+      {
+        "id": "silver_charm",
+        "name": "Серебряный талисман",
+        "price": 1200,
+        "effect": "silver_bonus"
+      },
+      {
+        "id": "xp_hourglass",
+        "name": "Песочные часы",
+        "price": 1500,
+        "effect": "xp_hourglass"
+      },
+      {
+        "id": "potion_case",
+        "name": "Футляр целителя",
+        "price": 1800,
+        "effect": "potion_capacity"
+      }
     ]
   },
   "diamond_store": {
@@ -62,11 +87,36 @@
     "premium_14d": 149,
     "premium_30d": 249,
     "extra": [
-      "Печать спасения",
-      "Сундук камней",
-      "Кристалл гнезда",
-      "Жетон удачи",
-      "Защитный оберег"
+      {
+        "id": "rescue_seal",
+        "name": "Печать спасения",
+        "price": 29,
+        "effect": "one_rescue"
+      },
+      {
+        "id": "stone_cache",
+        "name": "Сундук камней",
+        "price": 39,
+        "effect": "stone_cache"
+      },
+      {
+        "id": "extra_socket",
+        "name": "Кристалл гнезда",
+        "price": 59,
+        "effect": "socket"
+      },
+      {
+        "id": "pity_token",
+        "name": "Жетон удачи",
+        "price": 79,
+        "effect": "pity"
+      },
+      {
+        "id": "refine_guard",
+        "name": "Защитный оберег",
+        "price": 99,
+        "effect": "refine_guard"
+      }
     ]
   }
 }

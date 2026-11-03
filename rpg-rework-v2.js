@@ -294,8 +294,25 @@
     const stage=character.progress.currentStage,plan=stagePlan(character,stage);
     if(plan.boss){result.stopped="Босс требует ручного боя";break;}
     if(plan.mobs.some(enemy=>enemy.type==="elite")){result.stopped="Элитный противник требует ручного боя";break;}
-    let stageXp=0;
-    for(const enemy of plan.mobs)stageXp+=enemyXp(enemy,stage)*xpMultiplier(character,stage,{auto:true});
+    let stageXp=0,estimatedDamage=0;
+    const combat=balance.combat,baseStats=balance.classes.base_stats;
+    const gearDefense=(character.gear||[]).reduce((sum,item)=>sum+(item&&item.stats?item.stats.defense||0:0),0);
+    const defense=baseStats.base_defense+(character.level-1)*baseStats.defense_per_level+gearDefense;
+    const attack=baseStats.base_attack+(character.level-1)*baseStats.attack_per_level;
+    for(const enemy of plan.mobs){
+     stageXp+=enemyXp(enemy,stage)*xpMultiplier(character,stage,{auto:true});
+     const hpCfg=combat.enemy_hp,damageCfg=combat.enemy_damage;
+     const enemyHp=hpCfg.normal_base+stage*hpCfg.normal_per_stage;
+     const hits=Math.ceil(enemyHp/Math.max(1,attack));
+     const incoming=Math.max(1,Math.round((damageCfg.normal_base+stage*damageCfg.normal_per_stage)*100/(100+defense)));
+     estimatedDamage+=Math.ceil(hits*incoming*0.45);
+    }
+    if(character.run.playerHp<=estimatedDamage){
+     result.stopped="Симуляция поражения: авто-бой остановлен";
+     character.run.active=false;
+     break;
+    }
+    character.run.playerHp=Math.max(1,character.run.playerHp-estimatedDamage);
     const clear=balance.xp_curve.stage_clear_xp;
     stageXp+=(clear.base+stage*clear.per_stage)*xpMultiplier(character,stage,{auto:true});
     const gained=awardXp(character,stageXp);
@@ -310,7 +327,7 @@
   function mergeStones(characterId,stoneType,level){
    const character=getChar(characterId),count=balance.equipment.stone_merge_count;
    if(level>=balance.equipment.stone_max_level)throw new Error("Maximum enhancement stone level reached");
-   const stones=character.bag.filter(item=>item.type==="enhancement_stone"&&item.level===level&&item.stoneType===stoneType);
+   const stones=character.bag.filter(item=>item.type==="enhancement_stone"&&item.level===level&&JSON.stringify(item.stoneType)===JSON.stringify(stoneType));
    if(stones.length<count)throw new Error("Not enough matching enhancement stones");
    const remove=new Set(stones.slice(0,count).map(item=>item.id));
    character.bag=character.bag.filter(item=>!remove.has(item.id));
@@ -461,7 +478,63 @@ if(typeof window!=="undefined"){
    return[name,await response.json()];
   }));
   const balance=Object.fromEntries(loaded);
-  const persisted=(()=>{try{return JSON.parse(localStorage.getItem("tb-rpg-v2")||"null");}catch(error){return null;}})();
+  const persisted=(()=>{
+   try{
+    const current=JSON.parse(localStorage.getItem("tb-rpg-v2")||"null");
+    if(current)return current;
+    const legacy=JSON.parse(localStorage.getItem("tb-rpg-v1")||"null");
+    if(!legacy||!Array.isArray(legacy.chars)||!legacy.chars.length)return null;
+    const classMap={warden:"destroyer",ranger:"duelist",arcanist:"elemental",reaper:"assassin"};
+    const branchMap={
+     assassin:["bleed","poison","execution"],bishop:["exorcism","healing","buffs"],
+     dragonkin:["fire_dragon","ice_dragon","black_dragon"],destroyer:["fists","greatsword","wand_shield"],
+     elemental:["darkness","water","earth"],duelist:["dual_swords","sword_shield","rapier"],
+     shaman:["spirits","dark_gods","nature"]
+    };
+    const mapItem=item=>{
+     if(!item||typeof item!=="object")return item;
+     const stats=item.stats||item.stat||{};
+     const mapped={...item,stats:{attack:stats.attack??stats.atk??0,defense:stats.defense??stats.def??0,health:stats.health??stats.hp??0},
+      sockets:Array.isArray(item.sockets)?item.sockets:[],socketsAvailable:item.socketsAvailable||0,
+      refine:item.refine||0,bossLoot:!!item.bossLoot};
+     if(item.type==="potion"||item.type==="heal")mapped.type="healing_potion";
+     if(mapped.type==="healing_potion")mapped.quantity=item.quantity||1;
+     delete mapped.stat;
+     return mapped;
+    };
+    const characters=legacy.chars.map(old=>{
+     const classId=classMap[old.cls]||old.cls;
+     if(!balance.classes.classes[classId])return null;
+     const branches=branchMap[classId]||[];
+     const branchIndex=Number.isInteger(old.branch)?old.branch:(/^\\d+$/.test(String(old.branch))?Number(old.branch):-1);
+     const branch=branches.includes(old.branch)?old.branch:(branchIndex>=0?branches[branchIndex]||null:null);
+     const gear=(old.gear||[]).map(item=>item?mapItem(item):null);
+     const bag=(old.bag||[]).map(mapItem).filter(Boolean);
+     if(!bag.some(item=>item.type==="healing_potion"))bag.push({id:"legacy-potions-"+old.id,type:"healing_potion",quantity:balance.healing.starting_potions});
+     const level=Math.min(balance.xp_curve.max_level,Math.max(1,old.level||1));
+     const best=Math.max(0,(old.bestStage||1)-1,(old.stage||1)-1);
+     return{
+      id:old.id||"legacy-"+Math.random().toString(36).slice(2),name:old.name||"Герой",classId,legacyClassId:old.cls,
+      level,xp:Math.max(0,old.xp||0),talentPoints:Math.max(0,level-1),branch,
+      talents:{},legacyTalents:old.tal||{},unlockedSkills:[],resource:0,
+      resourceMax:balance.classes.classes[classId].resource_max||100,
+      silver:Math.max(0,old.silver||balance.economy.starting_silver),
+      bag,gear:gear.length?gear:[null,null,null,null,null,null],
+      heroic:!!old.heroic,progress:{highestEver:best,currentStage:Math.max(1,Math.min(250,old.stage||1)),checkpoints:[50,100,150,200,250].filter(stage=>best>=stage)},
+      run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
+       checkpointHeals:0,healingPenaltyUntil:0,speed2:false,buffs:{}},
+      pity:{legendaryMisses:old.legendaryMisses||0,godlikeMisses:old.godlikeMisses||0},
+      stats:{kills:old.kills||0,elapsedMs:0,completionMs:0}
+     };
+    }).filter(Boolean);
+    const active=legacy.active||legacy.chars.find(x=>x.id===legacy.active)?.id||characters[0]?.id||null;
+    const account={diamonds:legacy.chars.reduce((sum,char)=>sum+Math.max(0,char.diamonds||0),0),
+     premiumUntil:legacy.chars.reduce((max,char)=>Math.max(max,char.ext?.premiumUntil||0),0),unlocks:[],cosmetics:[]};
+    const migrated={account,bank:{silver:0,transfers:{}},characters,activeCharacterId:active};
+    localStorage.setItem("tb-rpg-v2",JSON.stringify(migrated));
+    return migrated;
+   }catch(error){console.warn("[Towerbound] legacy save migration skipped",error);return null;}
+  })();
   const engine=window.TowerboundReworkCore.createEngine(balance,{state:persisted||undefined});
   window.TowerboundRework=engine;
   window.saveTowerboundRework=()=>localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));
