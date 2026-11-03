@@ -2,7 +2,7 @@
   "combat_speed_base": 0.5,
   "speed_2x_multiplier": 2,
   "speed_2x_experience_multiplier": 0.8,
-  "base_tick_ms": 1800,
+  "base_tick_ms": 2500,
   "first_clear_speed_2x": false,
   "enemy_hp": {
     "normal_base": 22,
@@ -20,10 +20,20 @@
     "attack_multiplier": 1,
     "skill_multiplier": 2.1,
     "crit_chance": 0.05,
-    "crit_multiplier": 1.8,
-    "attack_variance": 0.15
+    "crit_multiplier": 1.5,
+    "attack_variance": 0.15,
+    "crit_damage_bonus_cap": 0.5,
+    "gear_crit_chance_bonus_cap": 0.25
   },
   "fight_timing": {
-    "base_response_ms": 1800
-  }
+    "base_response_ms": 2500
+  },
+  "attack_interval": 2.5,
+  "attack_interval_units": "seconds",
+  "attack_interval_applies_to": [
+    "normal",
+    "elite",
+    "boss"
+  ],
+  "attack_interval_authority": "single_source"
 }
