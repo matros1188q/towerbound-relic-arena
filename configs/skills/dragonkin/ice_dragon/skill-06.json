@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.ice_dragon.06",
+  "class_id": "dragonkin",
+  "branch_id": "ice_dragon",
+  "name": "Сковывающий иней",
+  "unlock_level": 34,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Сковывающий иней — ice_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

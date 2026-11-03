@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.ice_dragon.13",
+  "class_id": "dragonkin",
+  "branch_id": "ice_dragon",
+  "name": "Совершенная форма: Морозный рёв",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "shield",
+  "description": "Совершенная форма: Морозный рёв — ice_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
