@@ -166,12 +166,21 @@
  }
  function beginStage(){
   const c=live();
+  window.__TB_REWORK_BEGIN_STAGE_DEBUG={phase:"entered",screen,selectedStage,characterId:c?.id||null};
   try{
    const plan=engine.beginStage(c.id,selectedStage);
+   window.__TB_REWORK_BEGIN_STAGE_DEBUG={phase:"engine-stage-created",plan,runStage:engine.getChar(c.id).run.stage};
    battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,turns:0,busy:false,skillReadyAt:0,teleportUsed:false,poisonTicks:0};
    if(preferredSpeed2&&engine.speed2Allowed(c.id,plan.stage))engine.setSpeed2(c.id,true,plan.stage);
-   loadBattleEnemy();screen="battle";save();render();
-  }catch(error){notify(error.message);}
+   loadBattleEnemy();
+   window.__TB_REWORK_BEGIN_STAGE_DEBUG={phase:"enemy-loaded",screen,battleStage:battle.stage,enemy:battle.enemy};
+   screen="battle";save();render();
+   window.__TB_REWORK_BEGIN_STAGE_DEBUG={phase:"render-complete",screen,battleStage:battle?.stage,arena:!!root.querySelector(".tb-arena")};
+  }catch(error){
+   window.__TB_REWORK_BEGIN_STAGE_DEBUG={phase:"error",screen,error:String(error?.stack||error),runStage:engine.getChar(c.id).run.stage};
+   console.error("Towerbound beginStage failed",error);
+   notify(error.message);
+  }
  }
  function finishCurrentEnemy(){
   const c=live(),result=engine.finishEnemy(c.id,{speed2:c.run.speed2});
