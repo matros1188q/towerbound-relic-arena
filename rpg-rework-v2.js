@@ -122,6 +122,7 @@
   }
   function requiredXp(level){
    const curve=balance.xp_curve;
+   if(level>=75&&curve.post_75_xp_per_level)return curve.post_75_xp_per_level;
    return Math.max(1,Math.round((curve.base_required+curve.per_level*Math.pow(level,curve.exponent))*curve.base_multiplier));
   }
   function levelForXp(total){
@@ -130,11 +131,12 @@
    return level;
   }
   function equipmentTotals(character){
-   const result={attack:0,defense:0,health:0,crit:0,spellPower:0,fireDamage:0,iceDamage:0,darkDamage:0,attackSpeed:0,setPieces:{}};
+   const result={attack:0,defense:0,health:0,crit:0,critDamage:0,spellPower:0,fireDamage:0,iceDamage:0,darkDamage:0,fireResist:0,iceResist:0,darkResist:0,physicalResist:0,attackSpeed:0,setPieces:{},itemLevelBonus:0};
    const refine=balance.equipment.refine_stats_per_level||{attack:0,defense:0,health:0};
    for(const item of character.gear||[]){
     if(!item)continue;
-    for(const key of ["attack","defense","health","crit"])result[key]+=(item.stats?.[key]||0);
+    result.itemLevelBonus+=Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level;
+    for(const key of ["attack","defense","health","crit","critDamage","spellPower","fireDamage","iceDamage","darkDamage","fireResist","iceResist","darkResist","physicalResist"])result[key]+=(item.stats?.[key]||0);
     result.attack+=refine.attack*(item.refine||0);result.defense+=refine.defense*(item.refine||0);result.health+=refine.health*(item.refine||0);
     for(const socket of item.sockets||[]){
      const stone=socket.stoneType||socket.stone_type||{},level=socket.level||1;
@@ -150,7 +152,7 @@
      const bonus=(balance.equipment.enchant_bonuses?.[weapon?"weapon":"armor"]||[])[labels.indexOf(item.enchant)]||{};
      result.attack+=Math.round((item.stats?.attack||0)*((bonus.magic_attack||0)+(bonus.physical_attack||0)));
      result.attackSpeed+=bonus.attack_speed||0;result.crit+=bonus.critical_chance||0;
-     result.fireDamage+=bonus.magic_damage||0;result.iceDamage+=bonus.physical_damage||0;
+     result.critDamage+=bonus.critical_damage||0;result.fireDamage+=bonus.magic_damage||0;result.iceDamage+=bonus.physical_damage||0;
      result.defense+=Math.round((item.stats?.defense||0)*((bonus.magic_defense||0)+(bonus.physical_defense||0)));
     }
     if(item.setId)result.setPieces[item.setId]=(result.setPieces[item.setId]||0)+1;
@@ -188,17 +190,27 @@
   }
   function maxHp(character){
    const stats=balance.classes.base_stats,gear=equipmentTotals(character),talent=talentBonusTotals(character);
-   return Math.max(1,Math.round((stats.base_health+Math.max(0,character.level-1)*stats.health_per_level+gear.health)*(1+talent.health)));
+   const curve=balance.character_curves.level_to_stage_anchors;
+   const base=curve?.length?interpolation(curve,character.level,"level","hp")/(balance.character_curves.base_divisor||1.5):
+    stats.base_health+Math.max(0,character.level-1)*stats.health_per_level;
+   return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)));
   }
   function getCombatStats(characterOrId){
    const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
    const stats=balance.classes.base_stats,gear=equipmentTotals(character),talent=talentBonusTotals(character),sets=setBonusTotals(character);
-   return{attack:Math.round((stats.base_attack+(character.level-1)*stats.attack_per_level+gear.attack)*(1+talent.attack)),
-    defense:Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)),
-    maxHp:maxHp(character),critChance:Math.min(0.75,(balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit),
+   const anchors=balance.character_curves.level_to_stage_anchors;
+   const baseDps=anchors?.length?interpolation(anchors,character.level,"level","dps")/(balance.character_curves.base_divisor||1.5):
+    stats.base_attack+(character.level-1)*stats.attack_per_level;
+   const dps=Math.max(1,(baseDps*(1+gear.itemLevelBonus)+gear.attack)*(1+talent.attack));
+   const attack=Math.max(1,Math.round(dps*balance.combat.attack_interval));
+   const defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense));
+   const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
+   const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
+   return{attack,dps,defense,armor:defense,maxHp:maxHp(character),critChance,critMultiplier,
     attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed,damageMultiplier:1+sets.damage+sets.skillPower+talent.skillPower,
     damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
-    iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,setPieces:clone(gear.setPieces),glow:getRefinementGlow(character)};
+    iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,resists:{fire:gear.fireResist,ice:gear.iceResist,dark:gear.darkResist,physical:gear.physicalResist},
+    setPieces:clone(gear.setPieces),glow:getRefinementGlow(character),itemLevelBonus:gear.itemLevelBonus};
   }
   function getRefinementGlow(character){
    const items=(character.gear||[]).filter(Boolean);
@@ -207,8 +219,11 @@
    return balance.equipment.glow_tiers.find(tier=>value>=tier.min&&value<=tier.max)?.color||null;
   }
   function combatPower(character){
-   const value=getCombatStats(character);
-   return Math.round(value.attack*3+value.defense*2+value.maxHp*0.3+character.level*5);
+   const base=interpolation(balance.bp.base_by_level,character.level,"level","bp");
+   const weight=interpolation(balance.bp.item_level_bp_per_level,character.level,"level","weight");
+   const rarity=balance.bp.rarity_bp_per_item||{};
+   const gear=(character.gear||[]).filter(Boolean).reduce((sum,item)=>sum+(rarity[rarityKey(item.rarity)]||rarity[item.rarity]||0)+Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*weight,0);
+   return Math.round(base+gear);
   }
   function recalcLevel(character){
    const previous=character.level;
