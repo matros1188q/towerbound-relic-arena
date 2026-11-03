@@ -44,6 +44,14 @@
    }
    return state.season;
   };
+  const dailyModifierForNow=()=>{
+   const pool=balance.heroic.map_modifiers||[];
+   return pool.length?clone(pool[Math.floor(now()/86400000)%pool.length]):null;
+  };
+  const runModifiers=character=>{
+   const values=[character.run?.season?.modifier,character.run?.dailyModifier].filter(Boolean);
+   return values.filter((modifier,index)=>values.findIndex(other=>other.id===modifier.id)===index);
+  };
   const difficultyOf=character=>balance.difficulty.modes[character.difficulty||balance.difficulty.default]||balance.difficulty.modes.normal;
   const rarityKey=rarity=>({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[rarity]||String(rarity||"common").toLowerCase());
   const stageSilver=stage=>(balance.mobs.silver_brackets||[]).find(x=>stage>=x.min&&stage<=x.max)?.amount||0;
@@ -105,8 +113,7 @@
   function dailySnapshot(characterId){
    const character=getChar(characterId),daily=ensureDaily(character);
    const quests=balance.heroic.daily_quests.map(quest=>({...clone(quest),progress:daily.progress[quest.metric]||0,complete:(daily.progress[quest.metric]||0)>=quest.target,claimed:daily.claimed.includes(quest.id)}));
-   const mods=balance.heroic.map_modifiers||[],dayNumber=Math.floor(now()/86400000);
-   return{date:daily.date,modifier:mods.length?clone(mods[dayNumber%mods.length]):null,quests,boss:clone(daily.boss)};
+   return{date:daily.date,modifier:dailyModifierForNow(),quests,boss:clone(daily.boss)};
   }
   function claimDailyQuest(characterId,questId){
    const character=getChar(characterId),daily=ensureDaily(character),quest=balance.heroic.daily_quests.find(item=>item.id===questId);
@@ -310,8 +317,8 @@
     let total=0;count=allowed[allowed.length-1]||map.normal_mob_count;
     for(let i=0;i<allowed.length;i++){total+=weights[i]||0;if(roll<total){count=allowed[i];break;}}
    }
-   const modifier=character.run?.season?.modifier||null;
-   const eliteChance=Math.min(1,map.elite_chance*(modifier?.elite_chance_multiplier||1));
+   const modifiers=runModifiers(character);
+   const eliteChance=Math.min(1,map.elite_chance*modifiers.reduce((multiplier,modifier)=>multiplier*(modifier.elite_chance_multiplier||1),1));
    const eliteIndex=!boss&&random()<eliteChance?Math.floor(random()*count):-1;
    return{stage,boss,count,mobs:Array.from({length:count},(_,index)=>({
     index,type:boss?"boss":index===eliteIndex?"elite":"normal",
@@ -324,7 +331,7 @@
    const season=ensureSeason(),difficulty=difficultyOf(character);
    character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,
     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
-    difficulty:character.difficulty||balance.difficulty.default,season:clone(season),startedAt:now()};
+    difficulty:character.difficulty||balance.difficulty.default,season:clone(season),dailyModifier:dailyModifierForNow(),startedAt:now()};
   }
   function beginStage(characterId,requestedStage){
    const character=getChar(characterId);
@@ -352,12 +359,15 @@
     if(stage<=balance.bosses.newbie_exception.max_stage)damage*=balance.bosses.newbie_exception.damage_multiplier;
    }
    const heroic=character.heroic?balance.heroic.mob_stat_multiplier:1;
-   const modifier=character.run.season?.modifier;
+   const modifiers=runModifiers(character);
    hp=Math.max(1,Math.round(hp*heroic));
    damage=Math.max(1,Math.round(damage*heroic));
-   if(modifier?.enemy_damage_multiplier)damage=Math.round(damage*modifier.enemy_damage_multiplier);
-   if(modifier?.id==="cursed_levels"&&stage%10===5){hp=Math.round(hp*modifier.cursed_stage_multiplier);damage=Math.round(damage*modifier.cursed_stage_multiplier);}
-   const attackInterval=balance.combat.attack_interval/(modifier?.enemy_attack_speed_multiplier||1);
+   for(const modifier of modifiers){
+    if(modifier.enemy_damage_multiplier)damage=Math.round(damage*modifier.enemy_damage_multiplier);
+    if(modifier.id==="cursed_levels"&&stage%10===5){hp=Math.round(hp*modifier.cursed_stage_multiplier);damage=Math.round(damage*modifier.cursed_stage_multiplier);}
+   }
+   const speedMultiplier=modifiers.reduce((multiplier,modifier)=>multiplier*(modifier.enemy_attack_speed_multiplier||1),1);
+   const attackInterval=balance.combat.attack_interval/speedMultiplier;
    return{hp,damage,attackInterval,attackIntervalMs:Math.round(attackInterval*1000)};
   }
   function mitigationMultiplier(defense,attackerLevel){
@@ -386,7 +396,7 @@
    if(penaltyFrom>0&&stage>=penaltyFrom&&stage<=character.run.healingPenaltyUntil)multiplier*=balance.xp_curve.healing_penalty_multiplier;
    const buff=activeBuff(character,"xp");if(buff)multiplier*=buff.multiplier;
    multiplier*=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
-   const modifier=character.run.season?.modifier;if(modifier?.reward_xp_multiplier)multiplier*=modifier.reward_xp_multiplier;
+   for(const modifier of runModifiers(character))if(modifier.reward_xp_multiplier)multiplier*=modifier.reward_xp_multiplier;
    return multiplier;
   }
   function awardXp(character,amount){
@@ -484,16 +494,16 @@
     addMaterial({id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    character.stats.kills++;
    if(enemy.type==="boss"){character.stats.boss_kills=(character.stats.boss_kills||0)+1;if(!stageData.potionSlotUsed)character.stats.potionless_bosses=(character.stats.potionless_bosses||0)+1;}
-   if(use2x&&firstClear)character.stats.speed_runs=(character.stats.speed_runs||0)+1;
-   const silverBuff=activeBuff(character,"silver"),seasonMod=character.run.season?.modifier;
+   const silverBuff=activeBuff(character,"silver"),rewardMultiplier=runModifiers(character).reduce((value,modifier)=>value*(modifier.reward_silver_multiplier||1),1);
    const accountBonus=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
-   const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*(seasonMod?.reward_silver_multiplier||1));
+   const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*rewardMultiplier);
    character.silver+=silver;
    if(enemy.type==="elite")recordDailyProgress(character.id,"elite_kills",1);
    stageData.enemyIndex++;
    const done=stageData.enemyIndex>=stageData.mobs.length;
    if(!done)stageData.potionSlotUsed=false;
    if(done){
+    if(use2x)character.stats.speed_runs=(character.stats.speed_runs||0)+1;
     const clear=balance.xp_curve.stage_clear_xp;
     const bonus=(clear.base+stage*clear.per_stage+(enemy.type==="boss"?clear.boss_bonus:0))*multiplier;
     awardXp(character,bonus);
@@ -531,7 +541,7 @@
    const character=getChar(characterId),stage=character.run.stage;
    if(!stage)throw new Error("Healing potion can only be used during a battle");
    const enemy=stage.mobs[stage.enemyIndex];
-   if(enemy?.type==="boss"&&character.run.season?.modifier?.boss_no_potion)throw new Error("Seasonal modifier disables potions on bosses");
+   if(enemy?.type==="boss"&&runModifiers(character).some(modifier=>modifier.boss_no_potion))throw new Error("Daily or seasonal modifier disables potions on bosses");
    if(!difficultyOf(character).potion_belt)throw new Error("Potion belt is disabled in Hardcore");
    if(stage.potionSlotUsed)throw new Error("The healing slot for this enemy has already been consumed");
    const potion=character.bag.find(item=>(!stackId||item.id===stackId)&&item.type==="healing_potion"&&item.quantity>0);
