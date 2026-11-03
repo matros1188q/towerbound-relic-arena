@@ -28,5 +28,180 @@
     "xp_potion": 100
   },
   "currency": "account_pvp_points",
-  "cannot_exchange_for_silver": true
+  "cannot_exchange_for_silver": true,
+  "items": [
+    {
+      "id": "frame_iron",
+      "category": "frame",
+      "name": "Железная рамка",
+      "price": 200,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "frame_ashen",
+      "category": "frame",
+      "name": "Пепельная рамка",
+      "price": 350,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "frame_void",
+      "category": "frame",
+      "name": "Рамка Бездны",
+      "price": 500,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "title_slayer",
+      "category": "title",
+      "name": "Истребитель",
+      "price": 100,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "title_tower",
+      "category": "title",
+      "name": "Покоритель Башни",
+      "price": 200,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "title_eternal",
+      "category": "title",
+      "name": "Вечный",
+      "price": 300,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "skin_cinder",
+      "category": "weapon_skin",
+      "name": "Пепельный клинок",
+      "price": 500,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "skin_glacier",
+      "category": "weapon_skin",
+      "name": "Ледник",
+      "price": 750,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "skin_void",
+      "category": "weapon_skin",
+      "name": "Пустотная сталь",
+      "price": 1000,
+      "kind": "cosmetic"
+    },
+    {
+      "id": "relic_mirror",
+      "category": "relic",
+      "name": "Зеркало вызова",
+      "price": 1500,
+      "kind": "account_relic",
+      "rarity": "Легендарная"
+    },
+    {
+      "id": "relic_ember",
+      "category": "relic",
+      "name": "Сердце углей",
+      "price": 1600,
+      "kind": "account_relic",
+      "rarity": "Легендарная"
+    },
+    {
+      "id": "relic_oath",
+      "category": "relic",
+      "name": "Клятва стража",
+      "price": 1700,
+      "kind": "account_relic",
+      "rarity": "Легендарная"
+    },
+    {
+      "id": "relic_abyss",
+      "category": "relic",
+      "name": "Осколок бездны",
+      "price": 1800,
+      "kind": "account_relic",
+      "rarity": "Легендарная"
+    },
+    {
+      "id": "relic_crown",
+      "category": "relic",
+      "name": "Корона забытого",
+      "price": 2000,
+      "kind": "account_relic",
+      "rarity": "Легендарная"
+    },
+    {
+      "id": "class_epic_assassin",
+      "category": "class_epic",
+      "name": "Уникальный эпик · assassin",
+      "price": 5000,
+      "kind": "character_item",
+      "classId": "assassin",
+      "rarity": "Эпическая",
+      "itemLevel": 120
+    },
+    {
+      "id": "class_epic_bishop",
+      "category": "class_epic",
+      "name": "Уникальный эпик · bishop",
+      "price": 5000,
+      "kind": "character_item",
+      "classId": "bishop",
+      "rarity": "Эпическая",
+      "itemLevel": 120
+    },
+    {
+      "id": "class_epic_dragonkin",
+      "category": "class_epic",
+      "name": "Уникальный эпик · dragonkin",
+      "price": 5000,
+      "kind": "character_item",
+      "classId": "dragonkin",
+      "rarity": "Эпическая",
+      "itemLevel": 120
+    },
+    {
+      "id": "class_epic_destroyer",
+      "category": "class_epic",
+      "name": "Уникальный эпик · destroyer",
+      "price": 5000,
+      "kind": "character_item",
+      "classId": "destroyer",
+      "rarity": "Эпическая",
+      "itemLevel": 120
+    },
+    {
+      "id": "class_epic_elemental",
+      "category": "class_epic",
+      "name": "Уникальный эпик · elemental",
+      "price": 5000,
+      "kind": "character_item",
+      "classId": "elemental",
+      "rarity": "Эпическая",
+      "itemLevel": 120
+    },
+    {
+      "id": "class_epic_duelist",
+      "category": "class_epic",
+      "name": "Уникальный эпик · duelist",
+      "price": 5000,
+      "kind": "character_item",
+      "classId": "duelist",
+      "rarity": "Эпическая",
+      "itemLevel": 120
+    },
+    {
+      "id": "class_epic_shaman",
+      "category": "class_epic",
+      "name": "Уникальный эпик · shaman",
+      "price": 5000,
+      "kind": "character_item",
+      "classId": "shaman",
+      "rarity": "Эпическая",
+      "itemLevel": 120
+    }
+  ]
 }
