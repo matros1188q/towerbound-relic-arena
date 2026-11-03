@@ -15,6 +15,18 @@ const classes=['assassin','bishop','dragonkin','destroyer','elemental','duelist'
 assert.deepEqual(Object.keys(balance.procs).sort(),classes.slice().sort(),'all seven class procs are configured');
 assert.deepEqual(Object.keys(balance.skills.counter_abilities).sort(),classes.slice().sort(),'all seven class counters are configured');
 
+assert.equal(balance.combat.telegraphs.default_window_ms,1800,'default telegraph window is 1.8s');
+assert.equal(balance.combat.telegraphs.min_window_ms,1500,'telegraph minimum is 1.5s');
+assert.equal(balance.combat.telegraphs.max_window_ms,2000,'telegraph maximum is 2.0s');
+assert.equal(balance.bosses.phases.length,4,'four boss phases are configured');
+assert.equal(balance.bosses.phases[2].telegraph_window_ms,1000,'phase three telegraph is 1.0s');
+assert.equal(balance.bosses.phases[2].attack_speed_multiplier,1.2,'phase three attacks are 20% faster');
+assert.equal(balance.bosses.phases[3].telegraph_window_ms,1500,'phase four telegraph is 1.5s');
+assert.equal(balance.bosses.phases[3].damage_multiplier,5,'phase four hit is five times stronger');
+assert.equal(balance.bosses.phases[3].easy_miss_remaining_hp_fraction,0.1,'Easy phase-four hit leaves 10% max HP');
+assert.equal(balance.mobs.vulnerability_multiplier,1.5,'vulnerability is +50%');
+assert.equal(balance.mobs.resistance_multiplier,0.5,'resistance is -50%');
+for(const classId of classes){const ultimate=balance.skills.ultimates[classId];assert.ok(ultimate.cooldown_seconds>=60&&ultimate.cooldown_seconds<=90,classId+' ultimate cooldown is 60–90s');}
 for(const classId of classes){
  const counter=balance.skills.counter_abilities[classId];
  const reaction=engine.resolveReaction('strong_hit',counter.id,classId,100);
@@ -66,7 +78,7 @@ for(const classId of classes){
  assert.equal(balance.resources.action_costs.ultimate,42);
  for(const classId of classes){
   const classCombos=balance.combos.combos.filter(combo=>combo.class===classId);
-  assert.ok(classCombos.length>=2,classId+' has multiple configured combos');
+  assert.ok(classCombos.length>=2&&classCombos.length<=3,classId+' has 2–3 configured combos');
   for(const combo of classCombos){
    assert.ok(combo.chain.length>=2&&combo.chain.length<=3,combo.id+' has a short actionable chain');
    assert.equal(combo.slot_binding,'selected_attack_loadout');
@@ -89,9 +101,17 @@ for(const classId of classes){
 }
 {
  const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
+ const css=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8');
  assert.match(ui,/const carryShield=battle\.nextDamageShield\|\|0;[\s\S]*?loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?battle\.nextDamageShield=carryShield/,'Dragonkin shield proc survives target handoff');
  assert.match(ui,/loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?if\(c\.classId==="destroyer"\)[\s\S]*?battle\.playerDamageBuff=balance\.procs\.destroyer\.value/,'Destroyer kill proc is applied after the target reset');
  for(const classId of classes)assert.ok(ui.includes('balance.procs.'+classId),'runtime proc trigger exists for '+classId);
  assert.match(ui,/function processCombo\([\s\S]*?combo\.bonus\.damage_mult/,'combo completion grants configured damage bonus');
+ assert.match(ui,/triggerVfx\("enemy-hit","physical",phase===4\|\|attacker\.type==="boss"\)/,'every boss hit triggers the screen-shake path');
+ assert.match(ui,/root\.classList\.add\("tb-death-shaking"\)/,'death applies screen shake unless disabled');
+ assert.match(ui,/settings\(\)\.disable_telegraphs\?'<div class="tb-telegraph-disabled"/,'telegraph accessibility toggle hides the warning');
+ assert.match(ui,/data-setting="disable_screen_shake"[\s\S]*?data-setting="disable_skill_flashes"[\s\S]*?data-setting="disable_telegraphs"/,'all three accessibility settings are exposed');
+ assert.match(ui,/function handleBattleKeys\([\s\S]*?event\.key==="Tab"[\s\S]*?\^\[1-6\]\$/,'keyboard supports target cycling and slots 1–6');
+ assert.match(css,/tb-panel-slots\{display:flex;flex-direction:column/,'mobile six-slot panel is vertical');
+ assert.match(css,/tb-death-shaking \.tb-death-overlay\{animation:tb-screen-shake/,'death overlay uses the screen-shake animation');
 }
 console.log('Combat runtime regression passed: 7 counters, telegraphs, boss phases, enemy stats, elemental matchups, 7 procs, combos and cross-target proc persistence.');
