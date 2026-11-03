@@ -77,7 +77,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(e.stagePlan(c,1).count,5);
  assert.equal(e.stagePlan(c,25).count,5,'no 7-mob gauntlets on 1–50');
  assert.equal(e.stagePlan(c,75).count,7);
- assert.equal(e.stagePlan(c,150).count,5,'no 7-mob gauntlets on 101–199');
+ assert.equal(e.stagePlan(c,151).count,5,'no 7-mob gauntlets on non-boss stages 101–199');
  assert.equal(e.stagePlan(c,225).count,7);
  for(const stage of [10,20,30,40,50]){const plan=e.stagePlan(c,stage);assert.equal(plan.count,1);assert.equal(plan.mobs[0].type,'boss');}
  assert.deepEqual(balance.map.gauntlet_ranges.map(range=>range.allowed),[[3,5],[3,5,7],[3,5],[3,5,7]]);
