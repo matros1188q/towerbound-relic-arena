@@ -171,6 +171,9 @@ Pre-change HEAD: `77305b8f6405f7d5a9ba9b8beed158540daab0de`
 - `rpg-rework-ui.css.js` — fixed full-screen battle layout, dark/gold/red HUD, compact target grid, 2×3 skills, potion belt, portrait and landscape rules.
 - `ASSUMPTIONS.md` — battle-specific implementation decisions and limitations.
 
-## Verification boundary
+## Verification
 
-The source-level audit is complete. CI and viewport automation must pass before calling the branch verified. The 375×812 iPhone Safari tap-20-times test and physical rotation test cannot be claimed unless run on a real device.
+- RPG rework CI: **passed** — [run 41712146543](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/41712146543). Includes all five `node --check` checks, RPG static/runtime tests, combat runtime test, full-game audit and Chromium browser smoke.
+- RPG expansion/browser smoke: **passed** — [run 41712146553](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/41712146553).
+- The Playwright smoke exercised a 375×812 viewport, all six skill buttons, a seven-card target-grid stress layout, portrait/landscape viewport containment, stable battle DOM identity and 20 rapid attack taps with unchanged `window.scrollY`.
+- This is automated Chromium coverage, not a physical iPhone Safari certification. The exact real-device tap/rotation check remains manual.
