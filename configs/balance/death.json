@@ -5,5 +5,28 @@
   "preserve_equipped": true,
   "new_run_stage": 1,
   "current_run_xp_only": true,
-  "lives_per_run": 3
+  "lives_per_run": 1,
+  "loss_by_difficulty": true,
+  "item_loss_by_rarity": [
+    {
+      "rarity": "Обычная",
+      "weight": 50
+    },
+    {
+      "rarity": "Редкая",
+      "weight": 25
+    },
+    {
+      "rarity": "Эпическая",
+      "weight": 15
+    },
+    {
+      "rarity": "Легендарная",
+      "weight": 8
+    },
+    {
+      "rarity": "Богоподобная",
+      "weight": 2
+    }
+  ]
 }
