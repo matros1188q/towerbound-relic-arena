@@ -10,7 +10,7 @@ function startServer(){
  const server=http.createServer((req,res)=>{
   try{
    const url=new URL(req.url,'http://127.0.0.1');
-   const relative=url.pathname==='/'?'index.html':decodeURIComponent(url.pathname).replace(/^\\/+/, '');
+   const relative=url.pathname==='/'?'index.html':decodeURIComponent(url.pathname.slice(1));
    const file=path.resolve(root,relative);
    if(file!==root&&!file.startsWith(root+path.sep)){res.writeHead(403).end('Forbidden');return;}
    fs.readFile(file,(error,data)=>{
@@ -26,8 +26,8 @@ async function journey(type,name,viewport,url){
  const context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',isMobile:viewport.width<500,hasTouch:viewport.width<500});
  const page=await context.newPage(),errors=[],failed=[];
  page.on('pageerror',error=>errors.push(error.message));
- page.on('requestfailed',request=>{if(!/fonts\\.(googleapis|gstatic)\\.com/.test(request.url()))failed.push(request.url()+': '+request.failure()?.errorText);});
- await page.route(/^https:\\/\\/(cdn\\.jsdelivr\\.net|fonts\\.googleapis\\.com|fonts\\.gstatic\\.com)\\//,route=>route.abort());
+ page.on('requestfailed',request=>{const url=request.url();if(!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com'))failed.push(url+': '+request.failure()?.errorText);});
+ await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());\n await page.route('https://fonts.googleapis.com/**',route=>route.abort());\n await page.route('https://fonts.gstatic.com/**',route=>route.abort());
  try{
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady,{timeout:20000});
