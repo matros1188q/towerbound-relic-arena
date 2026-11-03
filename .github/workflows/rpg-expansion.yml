@@ -1,7 +1,7 @@
 name: RPG expansion checks
 on:
   pull_request:
-    paths: ['rpg-mode.js','rpg-expansion.js','index.html','tests/rpg-expansion-static.cjs']
+    paths: ['rpg-mode.js','rpg-expansion.js','index.html','tests/rpg-expansion-static.cjs','tests/rpg-smoke.cjs']
   push:
     branches: [feat/seven-classes-equipment-economy]
     paths: ['rpg-mode.js','rpg-expansion.js','index.html','tests/rpg-expansion-static.cjs']
