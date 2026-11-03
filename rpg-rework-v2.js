@@ -319,6 +319,38 @@
    if(!character.run.stage)throw new Error("No active battle");
    return character.run.stage.mobs[character.run.stage.enemyIndex];
   }
+  function getEnemyStats(characterId,stage,enemy){
+   const character=getChar(characterId),curve=balance.mobs.curves;
+   let hp=interpolation(curve,stage,"stage","hp"),damage=interpolation(curve,stage,"stage","damage");
+   if(enemy?.type==="elite"){hp*=balance.mobs.elite.hp_multiplier;damage*=balance.mobs.elite.damage_multiplier;}
+   if(enemy?.type==="boss"){
+    hp*=balance.bosses.hp_multiplier;damage*=balance.bosses.damage_multiplier;
+    if(stage<=balance.bosses.newbie_exception.max_stage)damage*=balance.bosses.newbie_exception.damage_multiplier;
+   }
+   const heroic=character.heroic?balance.heroic.mob_stat_multiplier:1;
+   const modifier=character.run.season?.modifier;
+   hp=Math.max(1,Math.round(hp*heroic));
+   damage=Math.max(1,Math.round(damage*heroic));
+   if(modifier?.enemy_damage_multiplier)damage=Math.round(damage*modifier.enemy_damage_multiplier);
+   return{hp,damage,attackInterval:balance.combat.attack_interval,attackIntervalMs:balance.combat.attack_interval*1000};
+  }
+  function mitigationMultiplier(defense,attackerLevel){
+   const armor=Math.max(0,Number(defense)||0),level=Math.max(1,Number(attackerLevel)||1);
+   return 1-Math.min(0.75,armor/(armor+100+10*level));
+  }
+  function resistanceMultiplier(resistance,attackerLevel){
+   return mitigationMultiplier(resistance,attackerLevel);
+  }
+  function applyVampirism(characterId,damage){
+   const character=getChar(characterId),classId=character.classId;
+   let fraction=balance.combat.vampirism?.default_fraction??0.01;
+   if(classId==="bishop")fraction=0;
+   else if(["destroyer","assassin","duelist"].includes(classId))fraction=balance.combat.vampirism?.damage_dealer_fraction??0.0175;
+   else if(classId==="dragonkin"&&character.branch==="ice_dragon")fraction=balance.combat.vampirism?.ice_tank_fraction??0.01;
+   const healed=Math.max(0,Math.floor(Math.max(0,damage)*fraction));
+   const before=character.run.playerHp;character.run.playerHp=Math.min(maxHp(character),before+healed);
+   return{healed:character.run.playerHp-before,hp:character.run.playerHp,fraction};
+  }
   function xpMultiplier(character,stage,flags){
    flags=flags||{};
    const firstClear=stage>character.progress.highestEver;
@@ -509,6 +541,10 @@
    if(enabled&&!speed2Allowed(characterId,stage||character.run.stage?.stage))throw new Error("2x is only available on previously cleared stages");
    character.run.speed2=!!enabled;
    return character.run.speed2;
+  }
+  function combatIntervalMs(characterId){
+   const character=getChar(characterId),base=balance.combat.attack_interval*1000;
+   return character.run.speed2?base/balance.combat.speed_2x_multiplier:base;
   }
   function deathPreview(characterId){
    const character=getChar(characterId),loss=Math.round(character.run.experience*balance.death.run_experience_loss);
@@ -778,7 +814,7 @@
   }
   function saveSnapshot(){return clone(state);}
   return{state,balance,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
-   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,finishEnemy,useHealingPotion,checkpointHeal,
+   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
