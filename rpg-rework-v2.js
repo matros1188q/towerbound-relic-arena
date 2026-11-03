@@ -398,7 +398,7 @@
    const character=getChar(characterId),loss=Math.round(character.run.experience*balance.death.run_experience_loss);
    const levelAfter=levelForXp(Math.max(0,character.xp-loss));
    const eligible=character.bag.filter(item=>character.run.foundItemIds.includes(item.id)&&!item.bossLoot);
-   return{experienceLoss:loss,levelsLost:Math.max(0,character.level-levelAfter),itemLossChance:balance.death.inventory_item_loss_chance,eligibleItems:eligible.length,projectedLevel:levelAfter};
+   return{experienceLoss:loss,levelsLost:Math.max(0,character.level-levelAfter),itemLossChance:character.bag.some(item=>item.type==="one_rescue")?0:balance.death.inventory_item_loss_chance,eligibleItems:eligible.length,projectedLevel:levelAfter};
   }
   function confirmDeath(characterId){
    const character=getChar(characterId),preview=deathPreview(characterId);

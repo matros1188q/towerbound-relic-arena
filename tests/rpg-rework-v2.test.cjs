@@ -6,7 +6,7 @@ const {createEngine}=require('../rpg-rework-v2.js');
 const names=['combat','xp_curve','map','elite_mechanics','death','healing','auto_battle','drop_tables','equipment','economy','heroic','pvp','classes','skill_effects'];
 const balance=Object.fromEntries(names.map(name=>[name,JSON.parse(fs.readFileSync(path.join(__dirname,'../configs/balance/'+name+'.json'),'utf8'))]));
 let tick=0;const now=()=>Date.UTC(2026,10,3)+tick++;const random=()=>0.2;
-const engine=()=>createEngine(balance,{now,random});
+const engine=(randomSource=random)=>createEngine(balance,{now,random:randomSource});
 const create=e=>e.createCharacter('QA Hero','assassin');
 {
  const e=engine(),c=create(e);
@@ -58,6 +58,10 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  const e=engine(),c=create(e),live=e.state.characters[0];live.heroic=true;live.bag.push({id:'refine-stone',type:'refine_stone'});const weapon={id:'w',slot:'weapon',refine:0,sockets:[],stats:{}};live.gear[0]=weapon;
  assert.equal(e.refine(c.id,'w').success,true);assert.equal(e.getChar(c.id).gear[0].refine,1);
  assert.throws(()=>e.rollEnchantScroll(c.id,'w'),/enchantment scroll/);
+ live.bag.push({id:'armor-scroll',type:'enchant_scroll',slot:'weapon'});
+ const choices=e.rollEnchantScroll(c.id,'w');assert.equal(choices.length,4);
+ assert.ok(e.getChar(c.id).bag.some(item=>item.id==='armor-scroll'),'scroll remains until enchantment is confirmed');
+ e.applyEnchant(c.id,'w',0,choices);assert.ok(!e.getChar(c.id).bag.some(item=>item.id==='armor-scroll'),'scroll is spent when enchantment is applied');
 }
 {
  const e=engine(),c=create(e),other=e.createCharacter('Second','bishop');
@@ -88,4 +92,33 @@ const create=e=>e.createCharacter('QA Hero','assassin');
  }
  assert.equal(individualFiles,420);
 }
-console.log('RPG rework v2 tests passed: character/account split, XP, 250-stage map, speed gate, checkpoints, healing, death, auto-battle, stones, refinement, enchantment guard, shop, bank and 420 skill records.');
+{
+ const e=engine(),c=create(e),live=e.state.characters[0];
+ live.silver=10000;e.purchase(c.id,'silver','xp_10');
+ const potion=live.bag.find(item=>item.type==='xp_10');assert.ok(potion);
+ e.activateItem(c.id,potion.id);live.progress.highestEver=1;
+ assert.equal(e.xpMultiplier(e.getChar(c.id),2),1.1,'XP potion affects actual XP');
+}
+{
+ const e=engine(),c=create(e),live=e.state.characters[0];live.silver=1000;
+ for(let i=0;i<20;i++)e.recordDailyProgress(c.id,'elite_kills',1);
+ const daily=e.dailySnapshot(c.id);assert.equal(daily.quests.find(q=>q.id==='elite_hunter').complete,true);
+ const claim=e.claimDailyQuest(c.id,'elite_hunter');assert.equal(claim.rewardSilver,1200);
+ assert.throws(()=>e.claimDailyQuest(c.id,'elite_hunter'),/already claimed/);
+ const boss=e.startDailyBoss(c.id,'silver');assert.equal(boss.cost,500);
+ const reward=e.completeDailyBoss(c.id,true);assert.equal(reward.reward.diamonds,3);
+ assert.throws(()=>e.startDailyBoss(c.id,'silver'),/already been attempted/);
+}
+{
+ const e=engine(),c=create(e),pvp=e.pvpSnapshot(c.id);
+ assert.equal(pvp.source,'pvp');assert.equal(pvp.maxHp,Math.round(e.maxHp(c)*balance.pvp.health_multiplier));
+}
+{
+ assert.equal(balance.equipment.stone_types.length,42);
+ const e=engine(),c=create(e),live=e.state.characters[0];live.branch='bleed';
+ live.gear[0]={id:'set1',slot:'weapon',setId:classes.classes.assassin.branches[0].set.id,stats:{attack:10,defense:2,health:5},refine:2,sockets:[{stoneType:equipment.stone_types[0],level:1}],socketsAvailable:1};
+ live.gear[1]={id:'set2',slot:'chest',setId:classes.classes.assassin.branches[0].set.id,stats:{attack:0,defense:4,health:15},refine:0,sockets:[],socketsAvailable:0};
+ const stats=e.getCombatStats(live);assert.ok(stats.attack>balance.classes.base_stats.base_attack);
+ assert.ok(stats.maxHp>balance.classes.base_stats.base_health);assert.ok(stats.damageMultiplier>1,'2-piece set bonus is applied');
+}
+console.log('RPG rework v2 tests passed: character/account, XP, speed, map, checkpoints, healing, death, auto-battle, gear, stones, refine, enchantments, consumables, dailies, daily boss, PvP snapshot, shop, bank and 420 skill files.');
