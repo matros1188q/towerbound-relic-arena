@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.fire_dragon.16",
+  "class_id": "dragonkin",
+  "branch_id": "fire_dragon",
+  "name": "Предельная форма: Метеоритный рёв",
+  "unlock_level": 81,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "dot",
+  "description": "Предельная форма: Метеоритный рёв — fire_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
