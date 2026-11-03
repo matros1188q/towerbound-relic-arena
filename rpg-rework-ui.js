@@ -2,7 +2,7 @@
  "use strict";
  const root=document.getElementById("tbRpg");
  if(!root)return;
- const classPortraits={assassin:"reaper",bishop:"arcanist",dragonkin:"warden",destroyer:"warden",elemental:"arcanist",duelist:"ranger",shaman:"reaper"};
+ const classPortraits={assassin:"reaper",bishop:"warden",dragonkin:"warden",destroyer:"reaper",elemental:"arcanist",duelist:"ranger",shaman:"arcanist"};
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
