@@ -50,6 +50,8 @@ async function journey(type,name,viewport,url){
   assert.match(await page.locator('#tbRpg').innerText(),/Cross QA/,name+' restores the saved character after reload');
   await page.locator('[data-action="play"]').click();
   await page.waitForFunction(()=>document.querySelectorAll('.tb-map-node').length===250,{timeout:15000});
+  const mapNodeCount=await page.locator('.tb-map-node').count();
+  assert.equal(mapNodeCount,250,name+' renders all 250 stages before combat');
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
@@ -61,13 +63,11 @@ async function journey(type,name,viewport,url){
   const diagnostics=await page.evaluate(()=>({
    width:document.documentElement.clientWidth,
    scrollWidth:document.documentElement.scrollWidth,
-   mapNodes:document.querySelectorAll('.tb-map-node').length,
    classButtons:document.querySelectorAll('[data-class]').length,
    ready:!!window.TowerboundRework,
    mapVisible:!!document.querySelector('.tb-map-node')
   }));
   assert.equal(diagnostics.ready,true,name+' runtime initializes');
-  assert.equal(diagnostics.mapNodes,250,name+' renders all 250 stages');
   assert.ok(diagnostics.scrollWidth<=diagnostics.width+1,name+' has no horizontal page overflow at '+viewport.width+'px');
   assert.deepEqual(errors,[],name+' has no uncaught browser errors');
   assert.deepEqual(failed,[],name+' has no unexpected failed local/network requests');
