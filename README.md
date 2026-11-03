@@ -15,3 +15,7 @@ Open `index.html` in a modern browser. On GitHub Pages, publish the `main` branc
 - Progress is saved in the browser using localStorage.
 
 Designed as an original game prototype for touch screens. No accounts or paid APIs are required.
+
+## RPG expansion
+
+Seven additional classes, 21 specializations, talent trees, class sets, sockets, stones, refinement, heroic enchantments and silver/diamond shop UI are documented in [docs/RPG-EXPANSION.md](docs/RPG-EXPANSION.md). The expansion is loaded automatically from `rpg-expansion.js`.
