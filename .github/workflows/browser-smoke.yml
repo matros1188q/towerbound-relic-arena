@@ -1,11 +1,11 @@
 name: Cross-browser smoke tests
 on:
   push:
-    branches: [main]
+    branches: [main, feature/combat-and-presentation-pass, fix/audit-pass]
     paths:
       - 'index.html'
       - 'rpg-mode.js'
-      - 'towerbound-engine.js'
+      - 'towerbound-engine.js'\n      - 'rpg-rework-v2.js'\n      - 'rpg-rework-ui.js'\n      - 'rpg-rework-ui.css.js'\n      - 'configs/**'
       - 'assets/**'
       - 'tests/**'
       - '.github/workflows/browser-smoke.yml'
