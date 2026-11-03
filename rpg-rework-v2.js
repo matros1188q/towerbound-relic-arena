@@ -360,6 +360,7 @@
     character.run.playerHp=maxHp(character);
     if(stage>=balance.heroic.unlock_after_stage&&!character.heroic){
      character.heroic=true;
+     character.run.lives=balance.death.lives_per_run||3;
      character.progress.currentStage=1;
      character.progress.highestEver=balance.map.total_stages;
     }
@@ -436,7 +437,7 @@
    const character=getChar(characterId);
    if(character.run.stage)throw new Error("Restart is only available between stages");
    character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];
-   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
+   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;character.run.lives=balance.death.lives_per_run||3;
    character.progress.currentStage=balance.death.new_run_stage;
    character.run.playerHp=maxHp(character);
    return clone(character.progress);
