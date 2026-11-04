@@ -146,7 +146,7 @@
  }
   function systemsScreen(){
   const c=live();if(!c)return characterList();
-  const account=engine.state.account,prefs={volume_master:.8,volume_music:.7,volume_effects:.8,language:"ru",disable_refinement_glow:false,disable_particles:false,invert_camera:false,combat_log_toggle:true,...(account.settings||{})};
+  const account=engine.state.account,prefs={sound_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,language:"ru",disable_refinement_glow:false,disable_particles:false,invert_camera:false,combat_log_toggle:true,...(account.settings||{})};
   const daily=engine.dailySnapshot(c.id),tutorial=c.tutorial||{completed:false,step:0,rewardClaimed:false};
   const rank={Обычная:0,Редкая:1,Эпическая:2,Легендарная:3,Богоподобная:4};
   const claimed=c.achievements||[];
@@ -168,7 +168,7 @@
   }).join("");
   const paragon=c.paragon||{level:0,xp:0,stats:{}};
   const paragonRows=balance.paragon.stats.map(stat=>'<div class="tb-system-row"><div><b>'+esc(stat)+'</b><small>Ранг '+(paragon.stats?.[stat]||0)+'</small></div><button data-paragon-stat="'+stat+'" '+(c.level<balance.paragon.unlock_level||Object.values(paragon.stats||{}).reduce((a,b)=>a+b,0)>=paragon.level?'disabled':'')+'>+1</button></div>').join("");
-  const settings='<div class="tb-system-settings"><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Easy</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Normal</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Hardcore</option></select></label></div>';
+  const settings='<div class="tb-system-settings"><label>Звуковое сопровождение <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Easy</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Normal</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Hardcore</option></select></label></div>';
   const pending=account.pvpDaily?.pending;
   const weekly=engine.weeklyLeaderboard();
   const activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier;
@@ -215,8 +215,8 @@
   const roleIcon={healer:"✚",poison:"☠",tank:"🛡",normal:"",boss:"♛"};
   const telegraphMarkup=telegraph?(settings().disable_telegraphs?'<div class="tb-telegraph-disabled" aria-hidden="true"></div>':'<div class="tb-telegraph '+telegraph.type+'" style="--telegraph-color:'+telegraph.color+'"><b>'+telegraph.icon+'</b><span>'+esc(telegraph.label)+'</span><small>'+Math.max(0,(telegraph.until-Date.now())/1000).toFixed(1)+' сек</small></div>'):'<div class="tb-telegraph-idle">Ожидание телеграфа</div>';
   const targetCards=battle.enemies.map(target=>{
-   const selected=target.index===battle.targetIndex,weak=elementIcon(target.weakness),resist=elementIcon(target.resistance),pct=target.hp/Math.max(1,target.maxHp)*100;
-   return '<button type="button" class="tb-target-card '+(selected?'selected ':'')+(!target.alive?'defeated':'')+'" data-target="'+target.index+'" '+(!target.alive?'disabled':'')+'><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":target.type==="elite"?"ЭЛИТА":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+pct+'%"></i></span><small>'+Math.max(0,Math.ceil(target.hp))+' HP</small><span class="tb-target-elements"><span title="Уязвимость">'+weak+'</span><span class="resist" title="Резист">'+resist+'</span></span></button>';
+   const selected=target.index===battle.targetIndex,charging=!!(telegraph&&telegraph.targetIndex===target.index),weak=elementIcon(target.weakness),resist=elementIcon(target.resistance),pct=target.hp/Math.max(1,target.maxHp)*100;
+   return '<button type="button" class="tb-target-card '+(selected?'selected ':'')+(charging?'telegraph-target ':'')+(!target.alive?'defeated':'')+'" data-target="'+target.index+'" '+(!target.alive?'disabled':'')+'><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span>'+(charging?'<span class="tb-target-warning">⚠</span>':'')+<b>'+(target.type==="boss"?"БОСС":target.type==="elite"?"ЭЛИТА":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+pct+'%"></i></span><small>'+Math.max(0,Math.ceil(target.hp))+' HP</small><span class="tb-target-elements"><span title="Уязвимость">'+weak+'</span><span class="resist" title="Резист">'+resist+'</span></span></button>';
   }).join("");
   const phaseLabel=enemy.type==="boss"?' <span class="tb-boss-phase">ФАЗА '+battle.bossPhase+'</span>':"";
   const procMarkup=proc?'<div class="tb-proc-chip" title="'+esc(proc.name)+'"><b>'+proc.icon+'</b><span>'+esc(proc.name)+'</span><small>'+Math.max(0,Math.ceil((proc.expiresAt-Date.now())/1000))+'s</small></div>':'<div class="tb-proc-empty">ПРОКИ ГОТОВЫ</div>';
@@ -232,7 +232,7 @@
    '<div class="tb-target-grid">'+targetCards+'</div>'+
    '<div class="tb-combat-layout"><div class="tb-enemy-focus"><div class="tb-enemy-role-icon">'+(roleIcon[enemy.role]||"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":enemy.type==="elite"?"Элита башни":"Страж башни")+'</div><div class="tb-enemy-vulnerability"><span title="Уязвимость">'+elementIcon(enemy.weakness)+' '+elementLabel(enemy.weakness)+'</span><span class="resist" title="Резист">'+elementIcon(enemy.resistance)+' '+elementLabel(enemy.resistance)+'</span></div>'+telegraphMarkup+'<div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.max(0,Math.ceil(battle.enemyHp))+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div>'+
    '<div class="tb-battle-hero"><div class="tb-hero-art '+(engine.getRefinementGlow(c)||"")+'"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><small>'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</small><div class="tb-resourcebar"><span style="width:'+Math.min(100,c.resource/c.resourceMax*100)+'%"></span></div><small>'+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small>'+procMarkup+'</div></div>'+
-   '<div class="tb-panel-actions"><button class="tb-basic-attack" data-action="attack" '+(battle.busy||battle.paused?'disabled':'')+' id="hit">АТАКА</button><div class="tb-panel-slots">'+skillButtons+counterButton+ultButton+'</div></div>'+
+   '<div class="tb-panel-actions '+(!battle.busy&&!battle.paused?"tb-player-turn":"")+'"><button class="tb-basic-attack" data-action="attack" '+(battle.busy||battle.paused?'disabled':'')+' id="hit">АТАКА</button><div class="tb-panel-slots">'+skillButtons+counterButton+ultButton+'</div></div>'+
    '<div class="tb-combo-status">'+nextCombos.map(x=>'<span>'+esc(x.combo.label)+': следующий слот '+(x.slot+1)+'</span>').join(" · ")+'</div>'+
    '<div class="tb-potion-belt">'+engine.potionBeltSnapshot(c.id).map(slot=>'<button data-belt-use="'+slot.slot+'" '+(!slot.itemId||slot.available<=0||!balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt||c.run.stage.potionUsedTargets?.includes(battle.targetIndex)||battle.busy||battle.paused?'disabled':'')+' title="Доступно зелий: '+slot.available+'">ЗЕЛЬЕ '+(slot.slot+1)+'</button>').join("")+'</div>'+
    '<div class="tb-combat-note">'+(battle.paused?"ПАУЗА · бой остановлен":settings().disable_telegraphs?"Хардкор: телеграфы скрыты":battle.busy?"Телеграф атаки · успей применить контр-умение":"Тапни по цели · Tab для смены цели · 1–6 для панели")+'</div><div class="tb-fx-layer" style="--tb-fx-color:'+(battle.fx?.color||"#f3c968")+'" aria-hidden="true"></div></section>';
@@ -346,7 +346,7 @@
   clearTimeout(pendingTimer);render();
   const showTelegraph=()=>{
    if(!battle||battle.paused)return;
-   battle.telegraph={type,targetIndex:target.index,startedAt:Date.now(),until:Date.now()+windowMs,windowMs,icon:visual.icon,label:visual.label,color:visual.color||"#ff465e"};
+   battle.telegraph={type,targetIndex:target.index,startedAt:Date.now(),until:Date.now()+windowMs,windowMs,icon:visual.icon,label:visual.label,color:"#ff3d4f"};
    triggerVfx("telegraph",type==="poison"?"dark":type==="aoe"?"fire":"physical",false);render();
    pendingTimer=setTimeout(()=>{pendingTimer=null;resolveEnemyTelegraph();},windowMs);
   };
@@ -404,13 +404,14 @@ function resolveEnemyTelegraph(){
  }
  function useUltimate(){
   if(!battle||battle.busy||battle.paused)return;
-  const c=live(),ultimate=ultimateAbility(c),resources=balance.resources,now=Date.now(),cost=ultimate.resource_cost??resources.action_costs.ultimate;
+  const c=live(),ultimate=ultimateAbility(c),resources=balance.resources,now=Date.now(),cost=ultimate.resource_cost??resources.action_costs.ultimate,hpBefore=c.run.playerHp;
   if(battle.ultimateReadyAt>now){notify("Ультимейт ещё перезаряжается");return;}
   if(c.resource<cost){notify("Не хватает ресурса для ультимейта");return;}
   c.resource-=cost;battle.ultimateReadyAt=now+ultimate.cooldown_seconds*1000;
   const stats=engine.getCombatStats(c);
   if(ultimate.effect==="heal_shield"||ultimate.effect==="heal_aoe")c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*ultimate.heal_fraction));
   if(ultimate.effect==="heal_shield")battle.nextDamageShield=Math.round(engine.maxHp(c)*ultimate.shield_fraction);
+  if(c.run.playerHp>hpBefore)showFloatingText("player","+"+Math.round(c.run.playerHp-hpBefore),"#58e38b");
   if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive))applyTargetDamage(target,stats.attack*ultimate.damage_multiplier,ultimate.damage_type);}
   else if(ultimate.effect==="single_burst")applyTargetDamage(battle.enemy,stats.attack*ultimate.damage_multiplier,ultimate.damage_type);
   triggerVfx("ultimate",ultimate.damage_type,false);
@@ -508,6 +509,7 @@ function resolveEnemyTelegraph(){
   const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
   const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
   const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph)telegraph.textContent=Math.max(0,(battle.telegraph.until-Date.now())/1000).toFixed(1)+" сек";
+  root.querySelector(".tb-panel-actions")?.classList.toggle("tb-player-turn",!battle.busy&&!battle.paused);
   arena.classList.toggle("tb-shaking",!!(battle.shakeUntil>Date.now()));
   arena.classList.toggle("tb-phase-flash",!!(battle.phaseFlashUntil>Date.now()));
   ["attack","skill","ultimate","telegraph"].forEach(kind=>arena.classList.toggle("tb-fx-"+kind,!!(battle.fx&&battle.fx.kind===kind&&battle.fx.until>Date.now())));
@@ -544,6 +546,7 @@ function resolveEnemyTelegraph(){
   const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-target],[data-panel-skill],[data-counter],[data-ultimate]");
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
+  playSfx("click");
   if(target.dataset.pick){selectedId=target.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;render();return;}
   if(target.dataset.class){selectedClass=target.dataset.class;render();return;}
   if(target.dataset.stage){selectedStage=Number(target.dataset.stage);render();return;}
@@ -562,7 +565,7 @@ function resolveEnemyTelegraph(){
    c.activeSkillId=selected.id;save();render();notify("Активное умение выбрано: "+selected.name);return;
   }
   if(target.dataset.beltAssign){const slot=Number(window.prompt("Назначить в слот пояса (1–5):"))-1;try{engine.assignPotionBelt(live().id,slot,target.dataset.beltAssign);save();render();notify("Зелье назначено в слот "+(slot+1));}catch(error){notify(error.message);}return;}
-  if(target.dataset.beltUse!==undefined){try{engine.usePotionBelt(live().id,Number(target.dataset.beltUse));save();render();notify("Зелье использовано · +40% максимального HP");}catch(error){notify(error.message);}return;}
+  if(target.dataset.beltUse!==undefined){try{const before=live().run.playerHp;engine.usePotionBelt(live().id,Number(target.dataset.beltUse));if(live().run.playerHp>before)showFloatingText("player","+"+Math.round(live().run.playerHp-before),"#58e38b");save();render();notify("Зелье использовано · +40% максимального HP");}catch(error){notify(error.message);}return;}
   if(target.dataset.achievement){try{const reward=engine.claimAchievement(live().id,target.dataset.achievement);save();render();notify("Достижение получено · "+(reward.silver||0)+" серебра");}catch(error){notify(error.message);}return;}
   if(target.dataset.lore){try{const result=engine.readLore(live().id,target.dataset.lore);save();render();notify(result.alreadyRead?"Уже прочитано":"Лор прочитан · +"+result.xp+" XP");}catch(error){notify(error.message);}return;}
   if(target.dataset.stashDeposit){try{engine.stashDeposit(live().id,target.dataset.stashDeposit);save();render();notify("Предмет помещён в общий стеш");}catch(error){notify(error.message);}return;}
