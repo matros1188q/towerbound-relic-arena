@@ -166,6 +166,13 @@
  "#tbRpg .tb-v2:has(.tb-arena) .tb-target-warning{position:absolute;z-index:4;top:-13px;right:-5px;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#5d111d;border:2px solid #ff4b5f;color:#fff;font:900 23px/1 system-ui,sans-serif;text-shadow:0 0 10px #ff142f;box-shadow:0 0 18px #ff243e;animation:tb-warning-pulse .42s ease-in-out infinite alternate}",
  "@keyframes tb-player-turn-glow{from{box-shadow:0 0 0 1px #d7b87522,0 0 7px #d7b87518}to{box-shadow:0 0 0 2px #d7b87566,0 0 20px #d7b87555}}",
  "@keyframes tb-warning-pulse{from{filter:brightness(.85);transform:scale(.96)}to{filter:brightness(1.35);transform:scale(1.06)}}",
+
+ "#tbRpg .tb-v2 .tb-gear-slot.rarity-common,#tbRpg .tb-v2 .tb-bag-item.rarity-common{background:linear-gradient(145deg,#555,#303030)!important;border-color:#888!important;color:#fff!important}",
+ "#tbRpg .tb-v2 .tb-gear-slot.rarity-rare,#tbRpg .tb-v2 .tb-bag-item.rarity-rare{background:linear-gradient(145deg,#2b5c8f,#173653)!important;border-color:#5c9bd1!important;color:#fff!important}",
+ "#tbRpg .tb-v2 .tb-gear-slot.rarity-epic,#tbRpg .tb-v2 .tb-bag-item.rarity-epic{background:linear-gradient(145deg,#6a0dad,#3d0866)!important;border-color:#b66be8!important;color:#fff!important}",
+ "#tbRpg .tb-v2 .tb-gear-slot.rarity-legendary,#tbRpg .tb-v2 .tb-bag-item.rarity-legendary{background:linear-gradient(145deg,#ff8c00,#914500)!important;border-color:#ffc16b!important;color:#fff!important}",
+ "#tbRpg .tb-v2 .tb-gear-slot.rarity-godlike,#tbRpg .tb-v2 .tb-bag-item.rarity-godlike{background:linear-gradient(145deg,#dc143c,#650018)!important;border-color:#ff718e!important;color:#fff!important;box-shadow:0 0 18px #dc143c44}",
+ "#tbRpg .tb-v2 .tb-gear-slot[class*='rarity-'] b,#tbRpg .tb-v2 .tb-gear-slot[class*='rarity-'] span,#tbRpg .tb-v2 .tb-bag-item[class*='rarity-'] small,#tbRpg .tb-v2 .tb-bag-item[class*='rarity-'] span{color:#fff!important}",
  ].join("\n");
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
 })();
