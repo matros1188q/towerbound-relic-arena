@@ -280,7 +280,7 @@
    const base=curve?.length?interpolation(curve,character.level,"level","hp")/(balance.character_curves.base_divisor||1.5):
     stats.base_health+Math.max(0,character.level-1)*stats.health_per_level;
    const progression=character.progression||{},runeHealth=(progression.runewords||[]).reduce((value,word)=>value*(1+(word.health||0)),1);
-   return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+(progression.bonusHp||0))*runeHealth));
+   return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+(progression.bonusHp||0))*runeHealth*(balance.combat.turn_based?.player_hp_multiplier??1)));
   }
   function getCombatStats(characterOrId){
    const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
@@ -294,7 +294,7 @@
    const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
    const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),critChance,critMultiplier,
-    attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed,damageMultiplier:1+sets.damage+sets.skillPower+talent.skillPower,
+    speed:1+talent.attackSpeed+gear.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed,damageMultiplier:1+sets.damage+sets.skillPower+talent.skillPower,
     damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
     iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,resists:{fire:gear.fireResist,ice:gear.iceResist,dark:gear.darkResist,physical:gear.physicalResist},
     setPieces:clone(gear.setPieces),glow:getRefinementGlow(character),itemLevelBonus:gear.itemLevelBonus};
@@ -385,7 +385,7 @@
     return{
      index,type:boss?"boss":index===eliteIndex?"elite":"normal",
      mobId:chapterMobs.length?chapterMobs[Math.floor(random()*chapterMobs.length)]:null,
-     role,heroicTrait:character.heroic?(role==="healer"?"medic":role==="tank"?"reflector":role==="poison"?"volatile":null):null,runShieldFraction:runModifiers(character).reduce((v,m)=>Math.max(v,m.all_enemies_shield_fraction||0),0),roleIcon:roleConfig[role]?.icon||"",
+     role,heroicTrait:character.heroic?(role==="healer"?"medic":role==="tank"?"reflector":role==="poison"?"volatile":null):null,runShieldFraction:runModifiers(character).reduce((v,m)=>Math.max(v,m.all_enemies_shield_fraction||0),0),roleIcon:roleConfig[role]?.icon||"",speed:roleConfig[role]?.speed||1,
      mechanic:index===eliteIndex?map.elite_mechanics[Math.floor(random()*map.elite_mechanics.length)]:null,
      weakness,resistance,
      statMultiplier:character.heroic?map.heroic_stat_multiplier:1
@@ -445,8 +445,8 @@
    }
    const heroic=character.heroic?balance.heroic.mob_stat_multiplier:1;
    const modifiers=runModifiers(character);
-   hp=Math.max(1,Math.round(hp*heroic));
-   damage=Math.max(1,Math.round(damage*heroic));
+   hp=Math.max(1,Math.round(hp*heroic*(balance.combat.turn_based?.enemy_hp_multiplier??1)));
+   damage=Math.max(1,Math.round(damage*heroic*(balance.combat.turn_based?.enemy_damage_multiplier??1)));
    for(const modifier of modifiers){
     if(modifier.enemy_damage_multiplier)damage=Math.round(damage*modifier.enemy_damage_multiplier);
     if(modifier.id==="cursed_levels"&&stage%10===5){hp=Math.round(hp*modifier.cursed_stage_multiplier);damage=Math.round(damage*modifier.cursed_stage_multiplier);}
@@ -772,24 +772,37 @@
    while(result.cleared<limit&&character.progress.currentStage<=ceiling){
     const stage=character.progress.currentStage,plan=stagePlan(character,stage);
     if(plan.boss){result.stopped="Босс требует ручного боя";break;}
-    if(plan.mobs.some(enemy=>enemy.type==="elite")){result.stopped="Элитный противник требует ручного боя";break;}
-    const stats=getCombatStats(character),playerHitBase=Math.max(1,stats.attack*(character.run.speed2?1.0:1));
-    const branchTypes=balance.skills?.damage_type_by_branch?.[character.classId]||{};
+    
+    const stats=getCombatStats(character),branchTypes=balance.skills?.damage_type_by_branch?.[character.classId]||{};
     const autoTypes=character.branch?[branchTypes[character.branch]||"physical"]:Object.values(branchTypes);
-    let stageXp=0,estimatedDamage=0;
+    const energyStart=character.resource||Math.round(character.resourceMax*(resourceConfig.starting_fraction||.58));
+    let energy=energyStart,stageXp=0,estimatedDamage=0;
     for(const enemy of plan.mobs){
-     const e=getEnemyStats(character.id,stage,enemy);
-     const bestTypeMultiplier=Math.max(1,...autoTypes.map(type=>damageTypeMultiplier(enemy,type)));
-     const effectiveHit=playerHitBase*bestTypeMultiplier*(enemy.role==="tank"?1-(balance.mobs.roles.tank.damage_reduction||0):1);
-     const hits=Math.ceil(e.hp/Math.max(1,effectiveHit));
-     const incomingPerHit=Math.max(1,Math.round(e.damage*mitigationMultiplier(stats.defense,stage)));
-     estimatedDamage+=hits*incomingPerHit;
+     const e=getEnemyStats(character.id,stage,enemy),bestTypeMultiplier=Math.max(1,...autoTypes.map(type=>damageTypeMultiplier(enemy,type)));
+     let enemyHp=e.hp,enemyTurns=0,playerTurns=0;
+     const skillCost=character.classId==="duelist"?(resourceConfig.class_costs?.duelist?.attack_skill||1):(resourceConfig.action_costs.attack_skill||22);
+     while(enemyHp>0&&playerTurns<10000){
+      playerTurns++;
+      let hit;
+      if(energy>=skillCost){
+       hit=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*bestTypeMultiplier;
+       energy-=skillCost;
+      }else{
+       hit=stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5)*bestTypeMultiplier;
+       energy=Math.min(character.resourceMax,energy+Math.round(character.resourceMax*(resourceConfig.regeneration?.auto_attack||.2)));
+      }
+      if(enemy.role==="tank"&&playerTurns%3===0)hit*=1-(balance.mobs.roles.tank.shield_fraction||.3);
+      enemyHp-=Math.max(1,Math.round(hit));
+      enemyTurns++;
+      if(enemyTurns%2===0||enemy.type==="boss"){
+       const incoming=Math.max(1,Math.round(e.damage*mitigationMultiplier(stats.defense,stage)));
+       estimatedDamage+=incoming;
+      }
+     }
+     if(playerTurns>=10000)throw new Error("Auto-battle simulation exceeded its turn safety limit");
      stageXp+=enemyXp(enemy,stage)*xpMultiplier(character,stage,{auto:true});
     }
-    if(character.run.playerHp<=estimatedDamage){
-     result.stopped="Симуляция поражения: авто-бой остановлен";character.run.active=false;break;
-    }
-    character.run.playerHp=Math.max(1,character.run.playerHp-estimatedDamage);
+    character.resource=energy;
     const clear=balance.xp_curve.stage_clear_xp;
     stageXp+=(clear.base+stage*clear.per_stage)*xpMultiplier(character,stage,{auto:true});
     const gained=awardXp(character,stageXp);result.xp+=gained.amount;result.cleared++;
