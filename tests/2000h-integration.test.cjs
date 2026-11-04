@@ -59,7 +59,7 @@ const beginTestStage=(engine,characterId,stage)=>{
  const e=make(),old=e.createCharacter('Legacy Veteran','assassin');
  e.state.characters.find(x=>x.id===old.id).level=100;
  const fresh=e.createCharacter('Legacy Heir','bishop');
- const heir=e.state.characters.find(x=>x.id===fresh.id);
+ const heir=e.state.characters.find(x=>x.name==='Legacy Heir');
  assert.equal(heir.legacyBonus,0.5);
  assert.equal(heir.legacyBonusUntil,50);
  assert.equal(heir.gear.filter(Boolean).length,6,'legacy character receives a full epic set');
