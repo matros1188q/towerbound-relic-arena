@@ -5,31 +5,32 @@
   "base_tick_ms": 2500,
   "first_clear_speed_2x": false,
   "enemy_hp": {
-    "normal_base": 22,
-    "normal_per_stage": 0.45,
+    "normal_base": 7,
+    "normal_per_stage": 1,
     "elite_multiplier": 3,
     "boss_multiplier": 6
   },
   "enemy_damage": {
-    "normal_base": 7,
-    "normal_per_stage": 0.12,
+    "normal_base": 2,
+    "normal_per_stage": 1,
     "elite_multiplier": 1.5,
     "boss_multiplier": 2.5
   },
   "player_damage": {
-    "attack_multiplier": 1,
-    "skill_multiplier": 2.1,
+    "attack_multiplier": 0.5,
+    "skill_multiplier": 2.5,
     "crit_chance": 0.05,
     "crit_multiplier": 1.5,
     "attack_variance": 0.15,
     "crit_damage_bonus_cap": 0.5,
-    "gear_crit_chance_bonus_cap": 0.25
+    "gear_crit_chance_bonus_cap": 0.25,
+    "ultimate_multiplier": 6
   },
   "fight_timing": {
-    "base_response_ms": 2500
+    "turn_based": true
   },
-  "attack_interval": 2.5,
-  "attack_interval_units": "seconds",
+  "attack_interval": 1,
+  "attack_interval_units": "turns",
   "attack_interval_applies_to": [
     "normal",
     "elite",
@@ -46,9 +47,9 @@
   "resistance_formula": "damage*(1-min(0.75,resistance/(resistance+100+10*attacker_level)))",
   "crit_damage_multiplier": 1.5,
   "telegraphs": {
-    "default_window_ms": 1800,
-    "min_window_ms": 1500,
-    "max_window_ms": 2000,
+    "default_window_ms": 0,
+    "min_window_ms": 0,
+    "max_window_ms": 0,
     "types": {
       "strong_hit": {
         "icon": "⚔",
@@ -56,7 +57,7 @@
         "color": "#ff465e",
         "damage_multiplier": 1,
         "uncountered_damage_multiplier": 1,
-        "countered_damage_multiplier": 0.5
+        "countered_damage_multiplier": 0
       },
       "poison": {
         "icon": "☠",
@@ -75,6 +76,23 @@
         "uncountered_damage_multiplier": 1,
         "countered_damage_multiplier": 0
       }
+    }
+  },
+  "turn_based": {
+    "enabled": true,
+    "auto_attack_dps_multiplier": 0.5,
+    "skill_dps_multiplier": 2.5,
+    "ultimate_dps_multiplier": 6,
+    "player_hp_multiplier": 0.5,
+    "enemy_hp_multiplier": 1,
+    "enemy_damage_multiplier": 1,
+    "counter_damage_multiplier": 0,
+    "resource_regeneration_fraction": 0.2,
+    "cooldown_unit": "turns",
+    "player_turn_actions": {
+      "skills": 1,
+      "potions": 1,
+      "end_turn": true
     }
   }
 }
