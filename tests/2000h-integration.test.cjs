@@ -28,6 +28,9 @@ const make=()=>createEngine(balance,{random:()=>0.1,now:()=>Date.UTC(2026,10,4,1
  const q=e.weeklySnapshot(c.id).find(x=>x.id==='elite');
  assert.equal(q.complete,true);
  assert.ok(q.week,'weekly snapshot carries the ISO week key');
+ const alt=e.createCharacter('Weekly Shared','duelist');
+ e.recordWeeklyProgress(alt.id,'boss_kills',1);
+ assert.equal(e.weeklySnapshot(c.id).find(x=>x.id==='bosses').progress,1,'weekly progress is account-wide');
  e.state.account.diamonds=0;
  const reward=e.claimWeeklyQuest(c.id,'elite');
  assert.equal(reward.diamonds,2);
@@ -78,7 +81,7 @@ const make=()=>createEngine(balance,{random:()=>0.1,now:()=>Date.UTC(2026,10,4,1
  const result=e.simulatePvpDuel(c.id);
  assert.equal(result.normalized,true);
  assert.ok(result.stats.maxHp>0&&result.stats.attack>0);
- assert.equal(result.stats.maxHp,result.stats.maxHp);
+ assert.ok(result.tier,'normalization is applied against the current PvP rank');
 }
 {
  const e=make(),created=e.createCharacter('Chapter QA','dragonkin'),c=e.state.characters.find(x=>x.id===created.id);
