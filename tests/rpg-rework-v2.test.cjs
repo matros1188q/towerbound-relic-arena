@@ -145,7 +145,12 @@ if(balance.combat.turn_based?.enabled){
  assert.ok(withPotion>0,'40% max-HP potion lets the same build survive map50 boss');
  assert.equal(balance.healing.potion_heal_fraction,0.4);
 }
-{
+if(balance.combat.turn_based?.enabled){
+ const e=makeEngine(()=>0.9),c=makeCharacter(e),live=e.state.characters[0];
+ live.level=24;equipSix(live);
+ const plan=e.stagePlan(live,75);assert.equal(plan.count,7);
+ assert.ok(plan.mobs.every(enemy=>enemy.role),'turn-based gauntlet mobs carry their role actions');
+}else{
  const e=makeEngine(()=>0.9),c=makeCharacter(e),live=e.state.characters[0];
  live.level=24;equipSix(live);
  const plan=e.stagePlan(live,75);assert.equal(plan.count,7);
@@ -171,10 +176,15 @@ if(balance.combat.turn_based?.enabled){
  assert.equal(first.quantity,beforeFirst,'unassigned stack is never consumed');
  assert.equal(live.bag.find(item=>item.id==='second-stack').quantity,1);
  assert.equal(live.run.playerHp,Math.round(e.maxHp(live)*0.6));
- assert.throws(()=>e.usePotionBelt(c.id,0),/slot/);
+ if(balance.combat.turn_based?.enabled){
+  assert.equal(balance.healing.one_potion_per_enemy,false,'turn-based mode enforces potion use once per player turn in the UI');
+  assert.equal(balance.combat.turn_based.player_turn_actions.potions,1);
+ }else{
+  assert.throws(()=>e.usePotionBelt(c.id,0),/slot/);
+  assert.equal(balance.healing.one_potion_per_enemy,true);
+ }
  assert.equal(balance.healing.potion_belt_slots,5);
  assert.equal(balance.healing.potion_stack_limit,25);
- assert.equal(balance.healing.one_potion_per_enemy,true);
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
