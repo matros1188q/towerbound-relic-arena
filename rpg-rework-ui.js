@@ -325,8 +325,10 @@
   const c=live();
   try{
    const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
+   if(routeChoice==="elite"&&!plan.boss&&c.run.stage?.mobs?.length){c.run.stage.mobs[0].type="elite";c.run.stage.mobs[0].mechanic="shield";}
+   if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
+   selectedStage=plan.stage;
    battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null};
-   
    loadBattleEnemy();syncInitiative();advanceToPlayerTurn();screen="battle";save();render();
   }catch(error){notify(error.message);}
  }
@@ -462,6 +464,9 @@
   if(c.classId==="assassin"&&battle.assassinNextHit){damage*=balance.procs.assassin.value;battle.assassinNextHit=false;battle.proc=null;}
   if(c.classId==="elemental"&&battle.elementalNextBonus){damage*=balance.procs.elemental.value;battle.elementalNextBonus=false;battle.proc=null;}
   if(battle.playerDamageBuff&&(battle.playerDamageBuffTurns||0)>0)damage*=1+battle.playerDamageBuff;
+  const runModifier=(balance.run_modifiers?.modifiers||[]).find(x=>x.id===c.run.runModifierId)||{};
+  if(runModifier.player_damage_multiplier)damage*=runModifier.player_damage_multiplier;
+  if(runModifier.low_hp_threshold&&c.run.playerHp/engine.maxHp(c)<=runModifier.low_hp_threshold)damage*=runModifier.low_hp_damage_multiplier||1;
   const critical=guaranteedCrit||Math.random()<stats.critChance;if(critical)damage*=stats.critMultiplier;
   const target=battle.enemy;
   let result={killed:false,dealt:0};
@@ -473,7 +478,8 @@
   if(c.classId==="dragonkin"&&battle.attacksThisFight>=balance.procs.dragonkin.attacks_required&&!battle.dragonkinProc){battle.nextDamageShield=Math.round(engine.maxHp(c)*balance.procs.dragonkin.value);battle.dragonkinProc=true;battle.proc={...balance.procs.dragonkin};}
   if(c.classId==="shaman"&&battle.buffsUsed>=balance.procs.shaman.buffs_required){battle.poisonStacks=0;battle.buffsUsed=0;battle.proc={...balance.procs.shaman};}
   if(target.mechanic==="reflect"&&result.dealt>0)c.run.playerHp=Math.max(0,c.run.playerHp-Math.round(result.dealt*balance.elite_mechanics.reflect.damage_fraction));
-  if(skill.branch_id)engine.recordDailyProgress(c.id,"branch_skills_used",1);
+  if(skill.branch_id){engine.recordDailyProgress(c.id,"branch_skills_used",1);engine.recordWeeklyProgress(c.id,"branch_skills_used",1);}
+  c.progression=c.progression||{};c.progression.skillMastery=c.progression.skillMastery||{};const mastery=(c.progression.skillMastery[skill.id]||0)+1;c.progression.skillMastery[skill.id]=mastery;if(mastery===100)notify("Мастерство освоено: "+skill.name+" · откат −1 ход");
   engine.logCombatEvent(c.id,"Использовано умение: "+skill.name);triggerVfx("skill",damageType,critical);
   if(c.run.playerHp<=0){endFromDamage();return;}
   if(target.hp<=0){finishCurrentEnemy();return;}save();render();
