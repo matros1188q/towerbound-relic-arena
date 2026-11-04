@@ -1,0 +1,28 @@
+name: Preserve pre-combat-visuals baseline tag
+on:
+  push:
+    branches: [feature/combat-visuals-20]
+    paths: [.github/workflows/preserve-combat-visuals-baseline.yml]
+permissions:
+  contents: write
+jobs:
+  tag-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create immutable baseline tag
+        env:
+          BASELINE_SHA: 79c7bdff58dbd345df2cb2b69fa5713f86199790
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git fetch --force origin
+          if git show-ref --tags --verify --quiet refs/tags/legacy-before-combat-visuals; then
+            existing="$(git rev-list -n 1 legacy-before-combat-visuals)"
+            test "$existing" = "$BASELINE_SHA"
+          else
+            git tag legacy-before-combat-visuals "$BASELINE_SHA"
+            git push origin refs/tags/legacy-before-combat-visuals
+          fi
