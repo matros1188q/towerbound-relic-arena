@@ -7,7 +7,7 @@ for(const [name,re] of [
  ['skill mastery',/skillMastery/],['cooldown reduction',/Math\.max\(1,\(effect\.cooldown\|\|4\)-mastered\)/],
  ['mythic upgrade',/function mythic\(c\)/],['prestige',/function prestige\(c\)/],
  ['black market',/function market\(c,mode\)/],['slot crafting',/function craft\(c,slot\)/],
- ['rune words',/function runeword\(c\)/],['28-day calendar',/calendar/],
+ ['rune words',/function runeword\(c\)/],['distinct rune effects',/Песнь войны.*Каменная клятва.*Живой источник/],['28-day calendar',/calendar/],
  ['bestiary',/v\.kills>=100/],['reincarnation',/Реинкарнация/],['stone exchange',/function exchange\(c\)/],
  ['best gear',/function equip\(c\)/],['inventory sorting',/function sort\(c\)/],['grey salvage',/function salvage\(c\)/],
  ['bulk potions',/for\(let i=0;i<10;i\+\+\)/],['x3 farm',/farmSpeed=live\(\)\.progression\?\.speed3\?3:1/],
@@ -17,4 +17,4 @@ for(const [name,re] of [
  ['elite notes',/enemy\.type==='elite'/],['chapter palette',/palettes=\[/],['secret room chance',/Math\.random\(\)<\.01/]
 ])assert.match(name==='x3 farm'?ui:fx,re,name);
 assert.match(html,/progression-24\.js\?v=1/);
-console.log('Progression systems static checks passed.');
+const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');assert.match(core,/progression\.runewords.*word\.health/);assert.match(core,/permanentXpBonus/);console.log('Progression systems static checks passed.');
