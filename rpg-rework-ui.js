@@ -96,7 +96,7 @@
  function elementLabel(type){return({fire:"Огонь",ice:"Лёд",dark:"Тьма",physical:"Физический"})[type]||type;}
  function setBattleTarget(index){
   if(!battle||!battle.enemies[index]||!battle.enemies[index].alive)return;
-  if(battle.telegraph){notify("Сначала разреши телеграф или примени контр-умение");return;}
+  if(battle.telegraph&&battle.busy){notify("Дождись завершения хода противника");return;}
   try{engine.selectTarget(live().id,index);}catch(error){notify(error.message);return;}
   battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(live().id,battle.stage,battle.enemy);
   battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;
@@ -121,10 +121,11 @@
  }
  function syncInitiative(){battle.turnOrder=buildInitiative();battle.turnIndex=0;battle.actor=battle.turnOrder[0]||{type:"player",id:"player",name:live().name};}
  function showPlayerTurn(){
-  battle.actor={type:"player",id:"player",name:live().name};battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
+  battle.actor={type:"player",id:"player",name:live().name};battle.busy=false;battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
   for(const id of Object.keys(battle.skillCooldowns||{}))battle.skillCooldowns[id]=Math.max(0,battle.skillCooldowns[id]-1);
   battle.counterCooldownTurns=Math.max(0,(battle.counterCooldownTurns||0)-1);battle.ultimateCooldownTurns=Math.max(0,(battle.ultimateCooldownTurns||0)-1);
-  
+  const preview=(battle.enemies||[]).find(enemy=>enemy.alive);
+  battle.telegraph=preview?{type:"strong_hit",targetIndex:preview.index,label:"ВРАГ ГОТОВИТ АТАКУ · ЗАВЕРШИ ХОД",icon:"⚔",color:"#ff465e"}:null;
  }
  function addSummonedBossMobs(){
   if(battle.bossAddsSummoned)return;const c=live();battle.bossAddsSummoned=true;
@@ -140,7 +141,7 @@
  function applyEnemyHit(attacker,raw){
   const c=live(),phase=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp).phase:0;
   if(battle.counterPrimed&&!battle.counterConsumed&&(battle.counterTargetIndex===undefined||battle.counterTargetIndex===attacker.index)){
-   battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=undefined;
+   battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=battle.telegraph?.targetIndex;
    const reflected=applyTargetDamage(attacker,raw,"physical");notify("100% отражение · "+reflected.dealt+" урона");
    if(reflected.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();}
    return;
@@ -178,7 +179,7 @@
   if(!battle||screen!=="battle")return;
   if(battle.paused){pendingTimer=setTimeout(()=>runEnemyTurnQueue(queue,index),250);return;}
   if(index>=queue.length){
-   battle.playerTurnCount=(battle.playerTurnCount||0)+1;
+   battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;
    if((battle.poisonStacks||0)>0){
     const c=live(),tick=Math.round(engine.maxHp(c)*.05*battle.poisonStacks);
     c.run.playerHp=Math.max(0,c.run.playerHp-tick);
@@ -484,7 +485,7 @@
   if(runModifier.player_damage_multiplier)damage*=runModifier.player_damage_multiplier;
   if(runModifier.low_hp_threshold&&c.run.playerHp/engine.maxHp(c)<=runModifier.low_hp_threshold)damage*=runModifier.low_hp_damage_multiplier||1;
   const critical=guaranteedCrit||Math.random()<stats.critChance;if(critical)damage*=stats.critMultiplier;
-  const target=battle.enemy,hadBossCast=!!battle.telegraph;
+  const target=battle.enemy,hadBossCast=!!(battle.telegraph&&battle.enemy?.type==="boss");
   let result={killed:false,dealt:0};
   battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
   if(effect.type==="aoe"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType);if(enemy===target)result=hit;}}
