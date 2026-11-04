@@ -320,7 +320,7 @@
   if(target.role==="tank"&&target.alive)multiplier*=1-balance.mobs.roles.tank.damage_reduction;
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
-  const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism")target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&rawDamage>2*target.hp)battle.overkillBonus=true;
+  const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism")target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&rawDamage>2*hpBeforeHit)battle.overkillBonus=true;
   if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ff596b");playSfx(options.critical?"crit":"hit");}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss")updateBossPhase();
