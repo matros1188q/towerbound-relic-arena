@@ -140,7 +140,7 @@
  function applyEnemyHit(attacker,raw){
   const c=live(),phase=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp).phase:0;
   if(battle.counterPrimed&&!battle.counterConsumed&&(battle.counterTargetIndex===undefined||battle.counterTargetIndex===attacker.index)){
-   battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=null;
+   battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=undefined;
    const reflected=applyTargetDamage(attacker,raw,"physical");notify("100% отражение · "+reflected.dealt+" урона");
    if(reflected.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();}
    return;
@@ -431,7 +431,7 @@
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.counterPrimed||(battle.counterCooldownTurns||0)>0)return;
   const c=live(),counter=counterAbility(c),cost=counter.resource_cost??balance.resources.action_costs.counter;
   if(c.resource<cost){notify("Не хватает ресурса для контр-умения");return;}
-  c.resource-=cost;battle.counterPrimed=true;battle.playerSkillUsed=true;battle.counterCooldownTurns=Math.max(1,counter.cooldown_turns||2);battle.counterAction=counter;battle.counterTargetIndex=null;
+  c.resource-=cost;battle.counterPrimed=true;battle.playerSkillUsed=true;battle.counterCooldownTurns=Math.max(1,counter.cooldown_turns||2);battle.counterAction=counter;battle.counterTargetIndex=undefined;
   notify("Контр-умение готово: следующая атака противника будет отражена на 100%");save();render();
  }
  function processCombo(slot){
