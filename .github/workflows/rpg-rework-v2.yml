@@ -47,6 +47,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: 2000h-fix-screenshots
-          path: artifacts/2000h-*.png
+          name: mobile-ui-layout-checks
+          path: artifacts/*.png
           if-no-files-found: warn
