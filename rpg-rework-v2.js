@@ -385,8 +385,8 @@
    // the UI battle object is recreated. Re-entering that same stage is a
    // resume operation, not a second stage start.
    if(character.run.stage){
-    if(Number(character.run.stage.stage)===Number(stage))return clone(character.run.stage);
-    throw new Error("Another stage is already active. Resume or finish it first.");
+    // The saved stage is authoritative; map selection may be stale after reload.
+    return clone(character.run.stage);
    }
    beginRun(character);
    const plan=stagePlan(character,stage),previousStage=character.run.stage;
