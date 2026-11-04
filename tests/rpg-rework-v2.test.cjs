@@ -68,10 +68,11 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
- assert.ok(Math.abs(e.maxHp(live)-Math.round(500/1.5))<=1);
+ const turnHpScale=balance.combat.turn_based?.player_hp_multiplier??1;
+ assert.ok(Math.abs(e.maxHp(live)-Math.round(500/1.5*turnHpScale))<=1);
  live.level=75;equipSix(live,'Эпическая');
  const stats=e.getCombatStats(live);
- assert.ok(Math.abs(stats.maxHp-50000)<200,'gear-inclusive HP curve restored by six ilvl120 items');
+ assert.ok(Math.abs(stats.maxHp-50000*turnHpScale)<200,'gear-inclusive HP curve respects the selected combat mode');
  assert.ok(Math.abs(stats.dps-4400)<20,'gear-inclusive DPS curve restored by six ilvl120 items');
  assert.equal(e.combatPower(live),25580);
  live.level=100;equipSix(live,'Легендарная');
