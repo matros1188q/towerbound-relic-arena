@@ -444,6 +444,7 @@ function resolveEnemyTelegraph(){
    const combo=processCombo(slotIndex);if(combo){damage*=combo.bonus.damage_mult||1;guaranteedCrit=!!combo.bonus.guaranteed_crit;}
    if(skill.branch_id)engine.recordDailyProgress(c.id,"branch_skills_used",1);
    engine.logCombatEvent(c.id,"Использовано умение: "+skill.name);
+   c.progression=c.progression||{};c.progression.skillMastery=c.progression.skillMastery||{};const mastery=(c.progression.skillMastery[skill.id]||0)+1;c.progression.skillMastery[skill.id]=mastery;if(mastery===100)notify("Мастерство освоено: "+skill.name+" · откат −1 ход");
   }else{c.resource=Math.min(c.resourceMax,c.resource+(resources.regeneration.auto_attack||3));}
   if(battle.playerDamageBuff&&battle.playerBuffUntil>Date.now())damage*=1+battle.playerDamageBuff;
   if(c.classId==="assassin"&&battle.assassinNextHit){damage*=balance.procs.assassin.value;battle.assassinNextHit=false;battle.proc=null;}
