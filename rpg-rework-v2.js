@@ -50,8 +50,20 @@
   };
   const runModifiers=character=>{
    const values=[character.run?.season?.modifier,character.run?.dailyModifier].filter(Boolean);
+   const selected=(balance.run_modifiers?.modifiers||[]).find(item=>item.id===character.run?.runModifierId);if(selected)values.push({...selected,...(selected.effects||{})});
    return values.filter((modifier,index)=>values.findIndex(other=>other.id===modifier.id)===index);
   };
+  const weekKey=()=>{const d=new Date(now());d.setUTCHours(0,0,0,0);d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));return d.toISOString().slice(0,10);};
+  function weeklyState(c){const key=weekKey();if(!state.account.weekly||state.account.weekly.week!==key)state.account.weekly={week:key,progress:{},claimed:[]};return state.account.weekly;}
+  function recordWeeklyProgress(c,metric,n){const w=weeklyState(c);w.progress[metric]=(w.progress[metric]||0)+Math.max(0,Number(n)||0);return w.progress[metric];}function recordWeeklyRun(c){if(c.run.weeklyCompletionCounted)return false;recordWeeklyProgress(c,"runs_completed",1);c.run.weeklyCompletionCounted=true;return true;}
+  function weeklySnapshot(cid){const c=getChar(cid),w=weeklyState(c);return(balance.weekly_quests?.quests||[]).map(q=>({...clone(q),week:w.week,progress:w.progress[q.metric]||0,complete:(w.progress[q.metric]||0)>=q.target,claimed:w.claimed.includes(q.id)}));}
+  function claimWeeklyQuest(cid,qid){const c=getChar(cid),w=weeklyState(c),q=weeklySnapshot(cid).find(x=>x.id===qid);if(!q||!q.complete||q.claimed)throw new Error("Weekly quest is not ready");w.claimed.push(qid);c.silver+=(q.reward.silver||0);state.account.diamonds+=(q.reward.diamonds||0);return clone(q.reward);}
+  function runModifierOptions(cid){const c=getChar(cid);if(c.run.active||c.run.stage)return[];if(!Array.isArray(c.run.offeredModifierIds)||c.run.offeredModifierIds.length!==3){const pool=(balance.run_modifiers?.modifiers||[]).slice(),picked=[];while(pool.length&&picked.length<3)picked.push(pool.splice(Math.floor(random()*pool.length),1)[0].id);c.run.offeredModifierIds=picked;}return c.run.offeredModifierIds.map(id=>(balance.run_modifiers.modifiers||[]).find(x=>x.id===id)).filter(Boolean).map(clone);}
+  function setRunModifier(cid,mid){const c=getChar(cid);if(c.run.active||c.run.stage)throw new Error("Choose a modifier before starting a run");const m=(balance.run_modifiers?.modifiers||[]).find(x=>x.id===mid);if(!m)throw new Error("Unknown modifier");if(!runModifierOptions(cid).some(x=>x.id===mid))throw new Error("Choose one of the three offered modifiers");c.run.runModifierId=mid;return clone(m);}
+  function reviveFromDeath(cid){const c=getChar(cid);if(!c.run.stage)throw new Error("No active battle to revive");if(c.run.playerHp>0)throw new Error("Revive is available only after death");if(c.run.rescueUsed)throw new Error("Revive already used this run");const stage=c.run.stage.stage||c.progress.currentStage,price=Math.max(5,Math.min(50,Math.round(5+(stage-50)*.225)));if((state.account.diamonds||0)<price)throw new Error("Need "+price+" diamonds");state.account.diamonds-=price;c.run.rescueUsed=true;c.run.playerHp=Math.max(1,Math.round(maxHp(c)*.5));c.run.active=true;return{price,hp:c.run.playerHp,maxHp:maxHp(c)};}
+  function chapterForStage(stage){return(balance.chapters?.chapters||[]).find(x=>stage>=x.stages[0]&&stage<=x.stages[1])||null;}
+  function buyCosmeticChest(cid){const chest=(balance.cosmetics?.chests||[]).find(x=>x.id===cid);if(!chest)throw new Error("Unknown chest");const owned=state.account.cosmetics||(state.account.cosmetics=[]),pool=(balance.cosmetics.items||[]).filter(x=>chest.pool.includes(x.id)&&!owned.includes(x.id));if(!pool.length)throw new Error("Chest collection completed");if((state.account.diamonds||0)<chest.price)throw new Error("Not enough diamonds");const item=pool[Math.floor(random()*pool.length)];state.account.diamonds-=chest.price;owned.push(item.id);return clone(item);}
+  function equipCosmetic(cosmeticId){const item=(balance.cosmetics?.items||[]).find(x=>x.id===cosmeticId);if(!item||!(state.account.cosmetics||[]).includes(cosmeticId))throw new Error("Cosmetic is not owned");state.account.activeCosmetics=state.account.activeCosmetics||{};state.account.activeCosmetics[item.type]=item.id;return clone(item);}
   const difficultyOf=character=>balance.difficulty.modes[character.difficulty||balance.difficulty.default]||balance.difficulty.modes.normal;
   const rarityKey=rarity=>({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[rarity]||String(rarity||"common").toLowerCase());
   const stageSilver=stage=>(balance.mobs.silver_brackets||[]).find(x=>stage>=x.min&&stage<=x.max)?.amount||0;
@@ -104,8 +116,8 @@
   }
   const equipmentItemLevelBonus=character=>(character.gear||[]).reduce((sum,item)=>sum+(item?Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level:0),0);
   const publishGhost=(character,reason)=>{
-   const stats=getCombatStats(character),expiry=now()+balance.pvp.ghost_ttl_days*86400000;
-   const ghost={id:id(),characterId:character.id,name:character.name,classId:character.classId,branch:character.branch,level:character.level,bp:combatPower(character),tier:tierForBp(combatPower(character)).id,stats:{attack:stats.attack,dps:stats.dps,defense:stats.defense,maxHp:stats.maxHp,critChance:stats.critChance},gear:clone(character.gear||[]),reason,createdAt:now(),expiresAt:expiry};
+   const stats=pvpSnapshot(character.id),expiry=now()+balance.pvp.ghost_ttl_days*86400000;
+   const ghost={id:id(),characterId:character.id,name:character.name,classId:character.classId,branch:character.branch,level:character.level,bp:combatPower(character),tier:tierForBp(combatPower(character)).id,skillLoadout:clone(character.skillLoadout||[]),talents:clone(character.talents||{}),stats:{attack:stats.attack,defense:stats.defense,maxHp:stats.maxHp,controlDurationMultiplier:stats.controlDurationMultiplier,normalized:true},gear:clone(character.gear||[]),reason,createdAt:now(),expiresAt:expiry};
    state.account.ghosts=(state.account.ghosts||[]).filter(item=>item.characterId!==character.id&&item.expiresAt>now());
    state.account.ghosts.unshift(ghost);state.account.ghosts=state.account.ghosts.slice(0,100);
    return clone(ghost);
@@ -181,9 +193,18 @@
    character.silver+=reward.silver||0;state.account.diamonds+=reward.diamonds||0;
    return{won:true,reward:clone(reward),silver:character.silver,diamonds:state.account.diamonds};
   }
+  function pvpRankStats(tierId){
+   const tier=(balance.bp.tiers||[]).find(x=>x.id===tierId)||balance.bp.tiers[0];
+   const rankLevel=({bronze:20,silver:40,gold:60,platinum:80,diamond:100})[tier?.id]||40;
+   const anchors=balance.character_curves.level_to_stage_anchors||[],divisor=balance.character_curves.base_divisor||1.5,pvp=balance.pvp;
+   const attack=Math.max(1,Math.round(interpolation(anchors,rankLevel,"level","dps")/divisor*balance.combat.attack_interval*pvp.damage_multiplier));
+   const maxHp=Math.max(1,Math.round(interpolation(anchors,rankLevel,"level","hp")/divisor*pvp.health_multiplier));
+   const defense=Math.round(balance.classes.base_stats.base_defense+(rankLevel-1)*balance.classes.base_stats.defense_per_level);
+   return{tier:tier?.id||"bronze",rankLevel,attack,maxHp,defense,controlDurationMultiplier:pvp.control_duration_multiplier};
+  }
   function pvpSnapshot(characterId){
-   const character=getChar(characterId),stats=getCombatStats(character),pvp=balance.pvp;
-   return{classId:character.classId,level:character.level,attack:Math.round(stats.attack*pvp.damage_multiplier),defense:stats.defense,maxHp:Math.round(stats.maxHp*pvp.health_multiplier),controlDurationMultiplier:pvp.control_duration_multiplier,source:"pvp"};
+   const character=getChar(characterId),tier=tierForBp(combatPower(character)),stats=pvpRankStats(tier.id);
+   return{classId:character.classId,level:character.level,tier:tier.id,attack:stats.attack,defense:stats.defense,maxHp:stats.maxHp,controlDurationMultiplier:stats.controlDurationMultiplier,normalized:true,gearImpact:false,source:"pvp"};
   }
   function requiredXp(level){
    const curve=balance.xp_curve;
@@ -319,9 +340,9 @@
    if(nickname.length<2||nickname.length>18)throw new Error("Character name must be between 2 and 18 characters");
    if(state.characters.length>=balance.account.max_characters)throw new Error("Maximum of "+balance.account.max_characters+" characters reached");
    if(state.characters.some(item=>item.name.toLowerCase()===nickname.toLowerCase()))throw new Error("Character name already exists");
-   const starter=!state.account.starterPackClaimed,mode=balance.difficulty.modes[balance.difficulty.default];
+   const starter=!state.account.starterPackClaimed,mode=balance.difficulty.modes[balance.difficulty.default],legacyEligible=state.characters.some(x=>x.level>=100);
    const character={
-    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:(classData.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=1).map(skill=>skill.id),activeSkillId:(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1)?.id||null,skillLoadout:(()=>{const first=(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1);return first?[first.id]:[];})(),resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,
+    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:(classData.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=1).map(skill=>skill.id),activeSkillId:(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1)?.id||null,skillLoadout:(()=>{const first=(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1);return first?[first.id]:[];})(),resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,legacyBonus:legacyEligible?0.5:0,legacyBonusUntil:legacyEligible?50:0,legacyGranted:legacyEligible,
     silver:starter?balance.account.starter_pack.silver:balance.economy.starting_silver,
     bag:[{id:id(),type:"healing_potion",quantity:balance.economy.starting_potions??balance.account.starter_pack.healing_potions??3}],
     gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
@@ -330,6 +351,7 @@
     run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
     paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
    };
+   if(legacyEligible)character.gear=["weapon","chest","head","legs","hands","accessory"].map((slot,i)=>({id:"legacy-"+character.id+"-"+slot,name:"Наследие · "+slot,slot,itemLevel:50,rarity:"Эпическая",stats:{attack:i===0?18:4,defense:i===0?2:8,health:18},refine:0,sockets:[],socketsAvailable:0,bossLoot:false}));
    character.run.playerHp=maxHp(character);
    state.characters.push(character);state.activeCharacterId=character.id;
    if(starter){
@@ -356,13 +378,14 @@
    const modifiers=runModifiers(character);
    const eliteChance=Math.min(1,map.elite_chance*modifiers.reduce((multiplier,modifier)=>multiplier*(modifier.elite_chance_multiplier||1),1));
    const eliteIndex=!boss&&random()<eliteChance?Math.floor(random()*count):-1;
-   const roleConfig=balance.mobs.roles||{},roleOrder=roleConfig.guaranteed_order||["healer","poison","tank"];
+   const roleConfig=balance.mobs.roles||{},roleOrder=roleConfig.guaranteed_order||["healer","poison","tank"],chapter=chapterForStage(stage),chapterMobs=chapter?.mob_pool||chapter?.mobs||[];
    return{stage,boss,count,mobs:Array.from({length:count},(_,index)=>{
     const role=boss?"boss":roleOrder[index]||roleConfig.normal_remainder||"normal";
     const weakness=damageTypes[(stage+index)%damageTypes.length],resistance=damageTypes[(stage+index+(roleConfig.assignment_resistance_offset||2))%damageTypes.length];
     return{
      index,type:boss?"boss":index===eliteIndex?"elite":"normal",
-     role,roleIcon:roleConfig[role]?.icon||"",
+     mobId:chapterMobs.length?chapterMobs[Math.floor(random()*chapterMobs.length)]:null,
+     role,heroicTrait:character.heroic?(role==="healer"?"medic":role==="tank"?"reflector":role==="poison"?"volatile":null):null,runShieldFraction:runModifiers(character).reduce((v,m)=>Math.max(v,m.all_enemies_shield_fraction||0),0),roleIcon:roleConfig[role]?.icon||"",
      mechanic:index===eliteIndex?map.elite_mechanics[Math.floor(random()*map.elite_mechanics.length)]:null,
      weakness,resistance,
      statMultiplier:character.heroic?map.heroic_stat_multiplier:1
@@ -371,8 +394,9 @@
   }
   function beginRun(character){
    if(character.run.active)return;
+   if(!character.run.runModifierId)throw new Error("Choose one of three run modifiers before starting");
    const season=ensureSeason(),difficulty=difficultyOf(character);
-   character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,
+   character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,rescueUsed:false,weeklyCompletionCounted:false,
     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
     difficulty:character.difficulty||balance.difficulty.default,season:clone(season),dailyModifier:dailyModifierForNow(),startedAt:now()};
   }
@@ -462,7 +486,8 @@
    return multiplier;
   }
   function awardXp(character,amount){
-   const value=Math.max(0,Math.round(amount)),before=character.level;
+   const legacyCap=character.legacyBonusUntil?Array.from({length:Math.max(0,character.legacyBonusUntil-1)},(_,i)=>requiredXp(i+1)).reduce((sum,x)=>sum+x,0):0;
+   const legacyRemaining=Math.max(0,legacyCap-character.xp),legacyAmount=Math.min(Math.max(0,amount),legacyRemaining),value=Math.max(0,Math.round(legacyAmount*(1+(character.legacyBonus||0))+Math.max(0,amount-legacyRemaining))),before=character.level;
    character.xp+=value;character.run.experience+=value;
    state.account.xp=Math.max(0,(state.account.xp||0)+value);
    recalcLevel(character);
@@ -488,14 +513,16 @@
    const stats={...raw};
    const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
     itemLevel,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
-   character.bag.push(item);character.run.foundItemIds.push(item.id);
+   const prefs=state.account.settings||{},threshold=Number(prefs.autoSalvageBelow||0),auto=!!prefs.autoSalvage&&["Обычная","Редкая"].includes(rarity)&&itemLevel<threshold&&!item.bossLoot;
+   if(auto){const quantity=balance.materials.salvage[rarity]||0,stack=character.bag.find(x=>x.type==="craft_material");if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;item.autoSalvaged=true;item.type="auto_salvage";item.quantity=quantity;item.name="Авто-разбор · "+rarity;recordWeeklyProgress(character,"items_salvaged",1);}else character.bag.push(item);
+   character.run.foundItemIds.push(item.id);
    character.stats.items_found=(character.stats.items_found||0)+1;
    if(item.uniqueId)character.stats.unique_items=(character.stats.unique_items||0)+1;
    return item;
   }
   function rollLoot(character,enemy,stage,firstClear,automatic){
    if(automatic)return[];
-   const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=buff?buff.multiplier:1;
+   const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
    const uniqueBossDrop=rarity=>{
     const configured=classTable[character.classId].unique_items||[];
     const owned=new Set([...(character.bag||[]),...(character.gear||[]).filter(Boolean)].map(item=>item.uniqueId).filter(Boolean));
@@ -569,7 +596,10 @@
    const accountBonus=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
    const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*rewardMultiplier);
    character.silver+=silver;
-   if(enemy.type==="elite")recordDailyProgress(character.id,"elite_kills",1);
+   if(enemy.type==="elite"){recordDailyProgress(character.id,"elite_kills",1);recordWeeklyProgress(character,"elite_kills",1);}
+   if(enemy.type==="boss")recordWeeklyProgress(character,"boss_kills",1);
+   if(enemy.type==="elite"||enemy.type==="boss")recordWeeklyProgress(character,"elite_boss_kills",1);
+   recordWeeklyProgress(character,"kills",1);
    character.resource=Math.min(character.resourceMax,character.resource+(resourceConfig.regeneration?.kill||5));
    stageData.killedIndices.push(targetIndex);
    const done=stageData.killedIndices.length>=stageData.mobs.length;
@@ -588,7 +618,7 @@
     character.stats.highest_stage=Math.max(character.stats.highest_stage||0,stage);
     if(character.difficulty==="hardcore")character.stats.hardcore_clears=(character.stats.hardcore_clears||0)+1;
     if(character.heroic)character.stats.heroic_clears=(character.stats.heroic_clears||0)+1;
-    recordDailyProgress(character.id,"stages_cleared",1);submitWeeklyRating(character.id);
+    recordDailyProgress(character.id,"stages_cleared",1);recordWeeklyProgress(character,"stages_cleared",1);if(character.heroic)recordWeeklyProgress(character,"heroic_stages",1);submitWeeklyRating(character.id);
     if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
     if(stage>character.progress.currentStage-1)character.progress.currentStage=stage+1;
     character.run.stage=null;
@@ -600,6 +630,7 @@
      if(character.run.season&&character.run.season.id===ensureSeason().id)ensureSeason().firstClearRewardClaimed=true;
      character.run.seasonRewardClaimed=true;
     }
+    if(stage>=balance.map.total_stages&&firstClear)recordWeeklyRun(character);
     if(stage>=balance.heroic.unlock_after_stage&&!character.heroic){
      if(combatPower(character)>=balance.bp.heroic_min_bp){
       character.heroic=true;character.run.lives=balance.difficulty.modes[character.difficulty].lives;
@@ -609,7 +640,7 @@
      }
      publishGhost(character,"stage_250_clear");
     }else if(stage>=balance.map.total_stages&&character.heroic){
-     character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;publishGhost(character,"stage_250_clear");
+     character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);character.run.runModifierId=null;character.run.offeredModifierIds=null;publishGhost(character,"stage_250_clear");
     }
    }
    return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
@@ -713,17 +744,17 @@
    character.run.stage=null;character.run.experience=0;character.run.foundItemIds=[];
    character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
    character.run.lives=runEnded?difficulty.lives:livesRemaining;character.run.active=!runEnded;
-   if(runEnded){character.progress.currentStage=balance.death.new_run_stage;character.stats.runs_completed=(character.stats.runs_completed||0)+1;}
+   if(runEnded){character.progress.currentStage=balance.death.new_run_stage;character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);character.run.runModifierId=null;character.run.offeredModifierIds=null;}
    character.run.playerHp=maxHp(character);
    return clone(character.lastDeath);
   }
   function voluntaryRestart(characterId){
    const character=getChar(characterId);
    if(character.run.stage)throw new Error("Restart is only available between stages");
-   if(character.run.active)character.stats.runs_completed=(character.stats.runs_completed||0)+1;
    publishGhost(character,"restart");
    const difficulty=difficultyOf(character);
-   character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];
+   if(character.run.active){character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);}
+   character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];character.run.runModifierId=null;character.run.offeredModifierIds=null;
    character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;character.run.lives=difficulty.lives;
    character.progress.currentStage=balance.death.new_run_stage;character.run.playerHp=maxHp(character);
    return clone(character.progress);
@@ -733,6 +764,7 @@
    const character=getChar(characterId),limit=Math.min(options.maxStages||balance.auto_battle.default_max_stages,balance.auto_battle.default_max_stages);
    if(character.run.stage)throw new Error("Auto-battle cannot run during manual combat");
    if(!difficultyOf(character).auto_battle)throw new Error("Auto-battle is disabled in Hardcore");
+   if(!character.run.runModifierId)throw new Error("Choose a run modifier before auto-battle");
    const ceiling=character.progress.highestEver-balance.auto_battle.highest_ever_offset;
    const result={cleared:0,xp:0,stopped:null};
    if(ceiling<character.progress.currentStage){result.stopped="Нет ранее пройденных этапов для авто-боя";return result;}
@@ -978,7 +1010,7 @@
    if(!opponents.length){window=balance.pvp.matchmaking.expand_to_tier_window;opponents=valid.filter(ghost=>Math.abs(balance.bp.tiers.findIndex(item=>item.id===ghost.tier)-tierIndex)<=window);}
    const opponent=opponents.length?clone(opponents[Math.floor(random()*opponents.length)]):{
     id:"bot-"+id(),bot:true,name:"Страж арены",classId:"bot",bp,level:character.level,tier:tier.id,
-    stats:{attack:Math.round(getCombatStats(character).attack*.95),defense:getCombatStats(character).defense,maxHp:getCombatStats(character).maxHp}
+    stats:{...pvpRankStats(tier.id)}
    };
    daily.duels++;daily.pending={opponentId:opponent.id,opponent:clone(opponent),startedAt:now(),tier:tier.id};
    return{opponent,duelsRemaining:limit-daily.duels,points:state.account.pvpPoints||0,tier,bot:!!opponent.bot};
@@ -994,15 +1026,11 @@
    daily.pending=null;return result;
   }
   function simulatePvpDuel(characterId){
-   const character=getChar(characterId),daily=ensurePvpDaily(),pending=daily.pending;
-   if(!pending?.opponent)throw new Error("No opponent snapshot is available");
-   const own=getCombatStats(character),enemy=pending.opponent.stats||{},enemyAttack=Math.max(1,enemy.attack||1),enemyHp=Math.max(1,enemy.maxHp||1),enemyDefense=Math.max(0,enemy.defense||0);
-   const ownAttack=Math.max(1,own.attack),ownHp=Math.max(1,own.maxHp),ownMitigation=mitigationMultiplier(own.defense,character.level);
-   const enemyMitigation=mitigationMultiplier(enemyDefense,pending.opponent.level||character.level);
-   const ownRounds=Math.ceil(enemyHp/Math.max(1,ownAttack*enemyMitigation));
-   const enemyRounds=Math.ceil(ownHp/Math.max(1,enemyAttack*ownMitigation));
-   const won=ownRounds<=enemyRounds;
-   return{...resolvePvpDuel(characterId,won),rounds:Math.min(ownRounds,enemyRounds),opponent:pending.opponent.name||"Соперник"};
+   const character=getChar(characterId),daily=ensurePvpDaily(),pending=daily.pending;if(!pending?.opponent)throw new Error("No opponent snapshot is available");
+   const tier=(balance.bp.tiers||[]).find(x=>x.id===pending.tier)||balance.bp.tiers[0],stats=pvpRankStats(tier?.id);
+   const comboScore=(classId,loadout)=>{const selected=loadout||[];return selected.length*5+(balance.combos.combos||[]).filter(combo=>combo.class===classId&&combo.chain.every(slot=>!!selected[Number(String(slot).replace("slot",""))-1])).reduce((sum,combo)=>sum+combo.chain.length*8,0);};
+   const own=comboScore(character.classId,character.skillLoadout),enemy=comboScore(pending.opponent.classId,pending.opponent.skillLoadout),won=own>enemy||(own===enemy&&random()>=.5);
+   const result=resolvePvpDuel(characterId,won);return{...result,rounds:Math.ceil(stats.maxHp/stats.attack),opponent:pending.opponent.name||"Соперник",normalized:true,tier:tier?.name||"Ранг",stats:{attack:stats.attack,maxHp:stats.maxHp,defense:stats.defense},skillScore:own};
   }
   function purchasePvpItem(characterId,itemId){
    const character=getChar(characterId),item=(balance.pvp_store.items||[]).find(entry=>entry.id===itemId);
@@ -1141,7 +1169,7 @@
    character.bag=character.bag.filter(entry=>entry.id!==itemId);
    const stack=character.bag.find(entry=>entry.type==="craft_material");
    if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});
-   character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;
+   character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;recordWeeklyProgress(character,"items_salvaged",1);
    return{quantity,rarity:item.rarity};
   }
   function leaderboard(){
@@ -1156,13 +1184,14 @@
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
-   tutorialStep,claimTutorialReward,claimAchievement,readLore,logCombatEvent,saveSettings,assignParagon,resetParagon};
+   tutorialStep,claimTutorialReward,claimAchievement,readLore,logCombatEvent,saveSettings,assignParagon,resetParagon,
+   setRunModifier,runModifierOptions,reviveFromDeath,weeklySnapshot,recordWeeklyProgress:(characterId,metric,amount)=>recordWeeklyProgress(getChar(characterId),metric,amount),claimWeeklyQuest,buyCosmeticChest,equipCosmetic,chapterForStage};
  }
  return{createEngine};
 });
 if(typeof window!=="undefined"){
  window.TowerboundReworkReady=(async()=>{
-  const names=["combat","xp_curve","map","elite_mechanics","death","healing","auto_battle","drop_tables","equipment","economy","heroic","pvp","classes","skill_effects","mobs","bosses","character_curves","item_level","bp","difficulty","materials","account","stash","tutorial","achievements","lore","settings","seasons","paragon","pvp_store","resources","skills","combos","procs"];
+  const names=["combat","xp_curve","map","elite_mechanics","death","healing","auto_battle","drop_tables","equipment","economy","heroic","pvp","classes","skill_effects","mobs","bosses","character_curves","item_level","bp","difficulty","materials","account","stash","tutorial","achievements","lore","settings","seasons","paragon","pvp_store","resources","skills","combos","procs","run_modifiers","heroic_mobs","chapters","weekly_quests","cosmetics","skill_combos"];
   const loaded=await Promise.all(names.map(async name=>{
    const response=await fetch("./configs/balance/"+name+".json");
    if(!response.ok)throw new Error("Unable to load balance config: "+name);
@@ -1232,3 +1261,4 @@ if(typeof window!=="undefined"){
   return engine;
  })().catch(error=>{console.error("[Towerbound rework v2] config load failed",error);return null;});
 }
+// 2000h release gate: keep legacy-before-2000h-fixes immutable; gameplay changes stay on feature/2000h-fixes.
