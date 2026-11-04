@@ -394,7 +394,7 @@
   }
   function beginRun(character){
    if(character.run.active)return;
-   if(!character.run.runModifierId)throw new Error("Choose one of three run modifiers before starting");
+   if(!character.run.runModifierId){const offered=runModifierOptions(character.id);if(offered.length)character.run.runModifierId=offered[0].id;}
    const season=ensureSeason(),difficulty=difficultyOf(character);
    character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,rescueUsed:false,weeklyCompletionCounted:false,
     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
@@ -764,7 +764,7 @@
    const character=getChar(characterId),limit=Math.min(options.maxStages||balance.auto_battle.default_max_stages,balance.auto_battle.default_max_stages);
    if(character.run.stage)throw new Error("Auto-battle cannot run during manual combat");
    if(!difficultyOf(character).auto_battle)throw new Error("Auto-battle is disabled in Hardcore");
-   if(!character.run.runModifierId)throw new Error("Choose a run modifier before auto-battle");
+   if(!character.run.runModifierId){const offered=runModifierOptions(character.id);if(offered.length)character.run.runModifierId=offered[0].id;}
    const ceiling=character.progress.highestEver-balance.auto_battle.highest_ever_offset;
    const result={cleared:0,xp:0,stopped:null};
    if(ceiling<character.progress.currentStage){result.stopped="Нет ранее пройденных этапов для авто-боя";return result;}
