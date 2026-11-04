@@ -513,7 +513,7 @@
   }
   function rollLoot(character,enemy,stage,firstClear,automatic){
    if(automatic)return[];
-   const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):(m.normal_loot_multiplier||1)),1);
+   const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
    const uniqueBossDrop=rarity=>{
     const configured=classTable[character.classId].unique_items||[];
     const owned=new Set([...(character.bag||[]),...(character.gear||[]).filter(Boolean)].map(item=>item.uniqueId).filter(Boolean));
