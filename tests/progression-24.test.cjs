@@ -10,11 +10,12 @@ for(const [name,re] of [
  ['rune words',/function runeword\(c\)/],['distinct rune effects',/Песнь войны.*Каменная клятва.*Живой источник/],['28-day calendar',/calendar/],
  ['bestiary',/v\.kills>=100/],['reincarnation',/Реинкарнация/],['stone exchange',/function exchange\(c\)/],
  ['best gear',/function equip\(c\)/],['inventory sorting',/function sort\(c\)/],['grey salvage',/function salvage\(c\)/],
- ['bulk potions',/for\(let i=0;i<10;i\+\+\)/],['x3 farm',/farmSpeed=live\(\)\.progression\?\.speed3\?3:1/],
+ ['bulk potions',/for\(let i=0;i<10;i\+\+\)/],['configured potion SKU',/heal_25/],['x3 farm',/farmSpeed=live\(\)\.progression\?\.speed3\?3:1/],
  ['offline silver',/h\*100/],['cloud placeholder',/tb-progression-cloud-draft/],
  ['push permission',/Notification\.requestPermission/],['hardcore telegraphs',/disable_telegraphs/],
  ['language',/tb-progression-lang/],['energy saving',/tbp-low-effects/],
  ['elite notes',/enemy\.type==='elite'/],['chapter palette',/palettes=\[/],['secret room chance',/Math\.random\(\)<\.01/]
 ])assert.match(name==='x3 farm'||name==='cooldown reduction'?ui:fx,re,name);
+assert.match(fx,/engine\.purchase\(c\.id,'silver','heal_25'\)/);assert.doesNotMatch(fx,/heal_40/);
 assert.match(html,/progression-24\.js\?v=1/);
 const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');assert.match(core,/progression\.runewords.*word\.health/);assert.match(core,/permanentXpBonus/);console.log('Progression systems static checks passed.');
