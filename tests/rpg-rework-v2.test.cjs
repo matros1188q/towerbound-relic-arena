@@ -50,15 +50,21 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  live.progress.highestEver=20;live.progress.currentStage=21;
  assert.equal(e.speed2Allowed(c.id,20),true);
  assert.equal(e.speed2Allowed(c.id,21),false);
- assert.equal(e.combatIntervalMs(c.id),2500);
- e.setSpeed2(c.id,true,20);
- assert.equal(e.combatIntervalMs(c.id),1250);
- assert.equal(e.xpMultiplier(e.getChar(c.id),20,{speed2:true}),0.4);
- assert.throws(()=>e.xpMultiplier(e.getChar(c.id),21,{speed2:true}),/disabled/);
- assert.equal(balance.combat.combat_speed_base,0.5);
- assert.equal(balance.combat.speed_2x_multiplier,2);
- assert.equal(balance.combat.speed_2x_experience_multiplier,0.8);
- assert.equal(balance.combat.attack_interval,2.5);
+ if(balance.combat.turn_based?.enabled){
+  assert.equal(e.combatIntervalMs(c.id),1000,'turn-based action cadence is one second per turn');
+  assert.equal(balance.combat.attack_interval_units,'turns');
+  assert.equal(balance.combat.turn_based.enabled,true);
+ }else{
+  assert.equal(e.combatIntervalMs(c.id),2500);
+  e.setSpeed2(c.id,true,20);
+  assert.equal(e.combatIntervalMs(c.id),1250);
+  assert.equal(e.xpMultiplier(e.getChar(c.id),20,{speed2:true}),0.4);
+  assert.throws(()=>e.xpMultiplier(e.getChar(c.id),21,{speed2:true}),/disabled/);
+  assert.equal(balance.combat.combat_speed_base,0.5);
+  assert.equal(balance.combat.speed_2x_multiplier,2);
+  assert.equal(balance.combat.speed_2x_experience_multiplier,0.8);
+  assert.equal(balance.combat.attack_interval,2.5);
+ }
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
