@@ -453,7 +453,8 @@
   const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike;let cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill||1):(effect.resource_cost??balance.resources.action_costs.attack_skill);if(battle.freeSkillCharges>0){cost=0;battle.freeSkillCharges--;}
   if(c.resource<cost){notify("Не хватает ресурса: "+classData(c).resource);return;}
   c.resource-=cost;battle.playerSkillUsed=true;battle.skillCooldowns=battle.skillCooldowns||{};
-  battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns||2);
+  const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0,cooldownTurns=effect.cooldown_turns||effect.cooldown||4;
+  battle.skillCooldowns[skill.id]=Math.max(1,cooldownTurns-mastered);
   let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1),guaranteedCrit=false;
   const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();const damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
