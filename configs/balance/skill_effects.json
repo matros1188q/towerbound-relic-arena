@@ -4,18 +4,18 @@
     "target": "single_enemy",
     "scaling": "attack",
     "damage_multiplier": 1.5,
-    "cooldown": 4,
     "resource_cost": 18,
-    "animation": "slash"
+    "animation": "slash",
+    "cooldown_turns": 4
   },
   "aoe": {
     "type": "aoe",
     "target": "all_enemies",
     "scaling": "spell_power",
     "damage_multiplier": 1.1,
-    "cooldown": 6,
     "resource_cost": 24,
-    "animation": "burst"
+    "animation": "burst",
+    "cooldown_turns": 6
   },
   "dot": {
     "type": "dot",
@@ -23,18 +23,18 @@
     "scaling": "spell_power",
     "damage_multiplier": 0.45,
     "ticks": 3,
-    "cooldown": 5,
     "resource_cost": 20,
-    "animation": "poison"
+    "animation": "poison",
+    "cooldown_turns": 5
   },
   "heal": {
     "type": "heal",
     "target": "self_or_ally",
     "scaling": "max_health",
     "heal_multiplier": 0.35,
-    "cooldown": 6,
     "resource_cost": 28,
-    "animation": "holy"
+    "animation": "holy",
+    "cooldown_turns": 6
   },
   "buff": {
     "type": "buff",
@@ -42,9 +42,9 @@
     "scaling": "spell_power",
     "power_multiplier": 0.12,
     "duration": 3,
-    "cooldown": 7,
     "resource_cost": 25,
-    "animation": "aura"
+    "animation": "aura",
+    "cooldown_turns": 7
   },
   "debuff": {
     "type": "debuff",
@@ -52,9 +52,9 @@
     "scaling": "spell_power",
     "power_multiplier": 0.12,
     "duration": 3,
-    "cooldown": 6,
     "resource_cost": 22,
-    "animation": "curse"
+    "animation": "curse",
+    "cooldown_turns": 6
   },
   "shield": {
     "type": "shield",
@@ -62,9 +62,9 @@
     "scaling": "max_health",
     "shield_fraction": 0.18,
     "duration": 2,
-    "cooldown": 7,
     "resource_cost": 24,
-    "animation": "shield"
+    "animation": "shield",
+    "cooldown_turns": 7
   },
   "control": {
     "type": "control",
@@ -72,9 +72,9 @@
     "scaling": "spell_power",
     "damage_multiplier": 0.65,
     "stun_duration": 1,
-    "cooldown": 7,
     "resource_cost": 24,
-    "animation": "stun"
+    "animation": "stun",
+    "cooldown_turns": 7
   },
   "execute": {
     "type": "execute",
@@ -82,17 +82,17 @@
     "scaling": "attack",
     "damage_multiplier": 2.1,
     "below_health_bonus": 0.3,
-    "cooldown": 7,
     "resource_cost": 32,
-    "animation": "finisher"
+    "animation": "finisher",
+    "cooldown_turns": 7
   },
   "parry": {
     "type": "parry",
     "target": "self",
     "scaling": "defense",
     "parry_chance": 0.25,
-    "cooldown": 5,
     "resource_cost": 15,
-    "animation": "counter"
+    "animation": "counter",
+    "cooldown_turns": 5
   }
 }
