@@ -38,5 +38,5 @@ assert.match(ui,/tb-target-warning/);
 assert.match(ui,/base_skills/);
 assert.match(css,/tb-player-turn-glow/);
 assert.match(css,/tb-warning-pulse/);
-for(const color of ['#4a4a4a','#2b5c8f','#6a0dad','#ff8c00','#dc143c'])assert.ok(css.includes(color),'rarity color '+color);
+for(const color of ['#4a4a4a','#2b5c8f','#6a0dad','#ff8c00','#8b0000','#dc143c'])assert.ok(css.includes(color),'rarity color '+color);
 console.log('Game Feel checks passed: starter economy, base skills, guaranteed boss loot, SFX, floating text, telegraphs and rarity colors.');
