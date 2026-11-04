@@ -1014,8 +1014,9 @@
   function simulatePvpDuel(characterId){
    const character=getChar(characterId),daily=ensurePvpDaily(),pending=daily.pending;if(!pending?.opponent)throw new Error("No opponent snapshot is available");
    const tier=(balance.bp.tiers||[]).find(x=>x.id===pending.tier)||balance.bp.tiers[0],stats=pvpRankStats(tier?.id);
-   const own=(character.skillLoadout||[]).length*10+(balance.combos.combos||[]).filter(x=>x.class===character.classId).length*5,enemy=(pending.opponent.skillLoadout||[]).length*10+(balance.combos.combos||[]).filter(x=>x.class===pending.opponent.classId).length*5;
-   const result=resolvePvpDuel(characterId,own>=enemy);return{...result,rounds:Math.ceil(stats.maxHp/stats.attack),opponent:pending.opponent.name||"Соперник",normalized:true,tier:tier?.name||"Ранг",stats:{attack:stats.attack,maxHp:stats.maxHp,defense:stats.defense},skillScore:own};
+   const comboScore=(classId,loadout)=>{const selected=loadout||[];return selected.length*5+(balance.combos.combos||[]).filter(combo=>combo.class===classId&&combo.chain.every(slot=>!!selected[Number(String(slot).replace("slot",""))-1])).reduce((sum,combo)=>sum+combo.chain.length*8,0);};
+   const own=comboScore(character.classId,character.skillLoadout),enemy=comboScore(pending.opponent.classId,pending.opponent.skillLoadout),won=own>enemy||(own===enemy&&random()>=.5);
+   const result=resolvePvpDuel(characterId,won);return{...result,rounds:Math.ceil(stats.maxHp/stats.attack),opponent:pending.opponent.name||"Соперник",normalized:true,tier:tier?.name||"Ранг",stats:{attack:stats.attack,maxHp:stats.maxHp,defense:stats.defense},skillScore:own};
   }
   function purchasePvpItem(characterId,itemId){
    const character=getChar(characterId),item=(balance.pvp_store.items||[]).find(entry=>entry.id===itemId);
