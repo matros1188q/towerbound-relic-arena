@@ -75,7 +75,7 @@ const {chromium}=require('playwright');
   await page.screenshot({path:path.join(screenshots,'2000h-run-modifiers.png'),fullPage:true});
   await page.locator('[data-run-modifier]').first().click();
   await page.evaluate(()=>{window.TowerboundRework.state.account.diamonds=50;window.saveTowerboundRework();});
-  await page.locator('.tb-map-actions [data-action="profile"]').click();
+  await page.locator('.tb-header-side [data-action="profile"]').click();
   await page.locator('[data-branch="bleed"]').click();
   assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].branch),'bleed','specialization selection persists');
   await page.evaluate(()=>{
