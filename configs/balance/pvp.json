@@ -23,5 +23,17 @@
   "damage_multiplier": 1,
   "health_multiplier": 1,
   "control_duration_multiplier": 1,
-  "interface_version": 2
+  "interface_version": 2,
+  "normalization": {
+    "enabled": true,
+    "scope": "rank",
+    "stats": [
+      "attack",
+      "maxHp",
+      "defense"
+    ],
+    "outcome": "skill_loadout_and_combo_score",
+    "gear_impact": false,
+    "item_level_impact": false
+  }
 }
