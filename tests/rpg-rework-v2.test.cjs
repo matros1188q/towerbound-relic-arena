@@ -9,7 +9,7 @@ const configNames=[
  'equipment','economy','heroic','pvp','classes','skill_effects','mobs','bosses',
  'character_curves','item_level','bp','difficulty','materials','account','stash',
  'tutorial','achievements','lore','settings','seasons','paragon','pvp_store',
- 'run_modifiers','heroic_mobs','chapters','weekly_quests','cosmetics','skill_combos'
+ 'run_modifiers','heroic_mobs','chapters','weekly_quests','cosmetics','skill_combos','resources','skills','combos','procs'
 ];
 const balance=Object.fromEntries(configNames.map(name=>[
  name,JSON.parse(fs.readFileSync(path.join(__dirname,'../configs/balance/'+name+'.json'),'utf8'))
@@ -19,6 +19,14 @@ const baseTime=Date.UTC(2026,10,3,9);
 const now=()=>baseTime+(tick++);
 const makeEngine=(random=()=>0.2)=>createEngine(balance,{now,random});
 const makeCharacter=(engine,name='QA Hero',classId='assassin')=>engine.createCharacter(name,classId);
+const beginTestStage=(engine,characterId,stage)=>{
+ const live=engine.state.characters.find(x=>x.id===characterId);
+ if(!live.run.runModifierId){
+  live.run.offeredModifierIds=['arcane_hunt','last_stand','elite_bounty'];
+  engine.setRunModifier(characterId,'arcane_hunt');
+ }
+ return engine.beginStage(characterId,stage);
+};
 const equipSix=(character,rarity='Эпическая')=>{
  character.gear=['weapon','chest','head','legs','hands','accessory'].map((slot,index)=>({
   id:'qa-'+slot+'-'+index,slot,itemLevel:120,rarity,stats:{attack:0,defense:0,health:0},
@@ -26,7 +34,7 @@ const equipSix=(character,rarity='Эпическая')=>{
  }));
 };
 
-assert.equal(configNames.length,36,'all runtime balance configs are covered');
+assert.equal(configNames.length,40,'all runtime balance configs are covered');
 for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='object',name+' config parsed');
 
 {
@@ -140,7 +148,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.progress.highestEver=10;live.progress.currentStage=11;
  live.bag.push({id:'second-stack',type:'healing_potion',quantity:2});
- e.beginStage(c.id,11);live.run.playerHp=Math.round(e.maxHp(live)*0.2);
+ beginTestStage(e,c.id,11);live.run.playerHp=Math.round(e.maxHp(live)*0.2);
  const first=live.bag.find(item=>item.type==='healing_potion');
  e.assignPotionBelt(c.id,0,'second-stack');
  const beforeFirst=first.quantity;
@@ -162,7 +170,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.throws(()=>e.checkpointHeal(c.id),/Hardcore/);
  e.setDifficulty(c.id,'easy');assert.equal(live.run.lives,3);
  e.setDifficulty(c.id,'normal');assert.equal(live.run.lives,1);
- e.beginStage(c.id,1);
+ beginTestStage(e,c.id,1);
  assert.throws(()=>e.setDifficulty(c.id,'easy'),/between runs/);
  assert.equal(balance.difficulty.modes.easy.xp_loss_fraction,0.1);
  assert.equal(balance.difficulty.modes.normal.xp_loss_fraction,0.3);
@@ -214,7 +222,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const e=createEngine(testBalance,{now,random:()=>0}),c=makeCharacter(e),live=e.state.characters[0];
  live.branch=testBalance.equipment.stone_types.find(type=>type.class_id==='assassin').branch_id;live.heroic=true;live.progress.highestEver=100;live.progress.currentStage=101;
  const seasonId=Math.floor(baseTime/(90*86400000));e.state.season={id:seasonId,modifier:null,firstClearRewardClaimed:false};
- const plan=e.beginStage(c.id,101);
+ const plan=beginTestStage(e,c.id,101);
  assert.equal(plan.stage,101);
  live.run.stage.mobs[0]={type:'elite',statMultiplier:1,damageType:'physical'};
  assert.equal(e.currentEnemy(live).type,'elite');
@@ -334,7 +342,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 {
  const e=makeEngine(()=>0.2),c=makeCharacter(e),live=e.state.characters[0];
  const daily=e.dailySnapshot(c.id).modifier;
- e.beginStage(c.id,1);
+ beginTestStage(e,c.id,1);
  assert.deepEqual(live.run.dailyModifier,daily,'daily map modifier is frozen when a run begins');
  const enemy=e.getEnemyStats(c.id,1,{type:'normal'});
  const seasonal=live.run.season?.modifier;
@@ -348,7 +356,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 {
  const e=makeEngine(()=>0.9),c=makeCharacter(e),live=e.state.characters[0];
  live.progress.highestEver=1;live.progress.currentStage=2;
- e.beginStage(c.id,1);
+ beginTestStage(e,c.id,1);
  live.run.stage.mobs=[{type:'normal',statMultiplier:1}];live.run.stage.enemyIndex=0;
  const result=e.finishEnemy(c.id,{speed2:true});
  assert.equal(result.stageComplete,true);
@@ -368,7 +376,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const offered=e.runModifierOptions(c.id);
  assert.equal(offered.length,3,'exactly three run modifiers are offered');
  e.setRunModifier(c.id,'iron_skin');
- e.beginStage(c.id,1);
+ beginTestStage(e,c.id,1);
  assert.ok(live.run.stage.mobs.every(m=>m.runShieldFraction===0.25),'run-wide enemy shield modifier reaches every mob');
  assert.equal(e.getEnemyStats(c.id,1,live.run.stage.mobs[0]).damage>0,true);
 }
@@ -384,13 +392,13 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
- e.state.account.diamonds=50;e.beginStage(c.id,1);live.run.playerHp=0;
+ e.state.account.diamonds=50;beginTestStage(e,c.id,1);live.run.playerHp=0;
  const revived=e.reviveFromDeath(c.id);
  assert.equal(revived.price,5);
  assert.equal(live.run.playerHp,Math.round(e.maxHp(live)*0.5));
  assert.throws(()=>e.reviveFromDeath(c.id),/only after death|already used/);
  const other=makeEngine(),d=makeCharacter(other),char=other.state.characters[0];
- other.state.account.diamonds=50;char.progress.highestEver=249;char.progress.currentStage=250;other.beginStage(d.id,250);char.run.playerHp=0;
+ other.state.account.diamonds=50;char.progress.highestEver=249;char.progress.currentStage=250;beginTestStage(other,d.id,250);char.run.playerHp=0;
  assert.equal(other.reviveFromDeath(d.id).price,50);
 }
 {
@@ -447,4 +455,4 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(e.weeklySnapshot(c.id).length,7);
 }
 
-console.log('RPG balance/content checks passed: 36 configs, combat cadence, curves, bosses, gauntlets, item level/BP, belt, difficulty, death rarity, crafting, drop sources, vampirism, PvP, seasons, account progression and support systems.');
+console.log('RPG balance/content checks passed: 40 configs, combat cadence, curves, bosses, gauntlets, item level/BP, belt, difficulty, death rarity, crafting, drop sources, vampirism, PvP, seasons, account progression and support systems.');
