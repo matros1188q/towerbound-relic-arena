@@ -1248,3 +1248,4 @@ if(typeof window!=="undefined"){
   return engine;
  })().catch(error=>{console.error("[Towerbound rework v2] config load failed",error);return null;});
 }
+// 2000h release gate: keep legacy-before-2000h-fixes immutable; gameplay changes stay on feature/2000h-fixes.
