@@ -320,9 +320,9 @@
    if(state.characters.some(item=>item.name.toLowerCase()===nickname.toLowerCase()))throw new Error("Character name already exists");
    const starter=!state.account.starterPackClaimed,mode=balance.difficulty.modes[balance.difficulty.default];
    const character={
-    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:[],activeSkillId:null,skillLoadout:[],resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,
+    id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:(classData.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=1).map(skill=>skill.id),activeSkillId:(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1)?.id||null,skillLoadout:(()=>{const first=(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1);return first?[first.id]:[];})(),resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,
     silver:starter?balance.account.starter_pack.silver:balance.economy.starting_silver,
-    bag:starter?[{id:id(),type:"healing_potion",quantity:balance.account.starter_pack.healing_potions}]:[],
+    bag:[{id:id(),type:"healing_potion",quantity:balance.economy.starting_potions??balance.account.starter_pack.healing_potions??3}],
     gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
     potionBelt:Array(balance.healing.potion_belt_slots).fill(null),achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},

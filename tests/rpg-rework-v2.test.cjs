@@ -31,8 +31,11 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  assert.equal(c.level,1);
- assert.equal(c.silver,balance.account.starter_pack.silver);
- assert.equal(c.bag.find(item=>item.type==='healing_potion').quantity,3);
+ assert.equal(c.silver,100,'a new level-one character starts with 100 silver');
+ assert.equal(c.bag.find(item=>item.type==='healing_potion').quantity,3,'three healing potions are granted to every new character');
+ const starterSkill=balance.classes.classes.assassin.base_skills.find(skill=>skill.type==='active'&&skill.unlock_level===1);
+ assert.equal(c.activeSkillId,starterSkill.id,'level one starts with an active class skill');
+ assert.ok(c.skillLoadout.includes(starterSkill.id),'the level-one skill is assigned to the combat bar');
  assert.ok(e.state.account.premiumUntil>now(),'one-time 24h account premium was granted');
  assert.equal(e.accountLevel(),1);
  e.awardXp(live,2_000_000);
@@ -359,5 +362,13 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const branches={};for(const skill of skills){const key=skill.class_id+'/'+skill.branch_id;branches[key]=(branches[key]||0)+1;}
  assert.equal(Object.keys(branches).length,21);
  assert.ok(Object.values(branches).every(count=>count===20));
+}
+{
+ const e=makeEngine(()=>0.2),c=makeCharacter(e),live=e.state.characters[0];
+ live.progress.highestEver=3;live.progress.currentStage=4;
+ e.beginStage(c.id,3);
+ live.run.stage.mobs[0]={...live.run.stage.mobs[0],type:'boss'};
+ const result=e.finishEnemy(c.id,{targetIndex:0});
+ assert.ok(result.loot.some(item=>['Редкая','Эпическая'].includes(item.rarity)),'every boss from stage 3 guarantees rare or epic loot, including repeat clears');
 }
 console.log('RPG balance/content checks passed: 30 configs, combat cadence, curves, bosses, gauntlets, item level/BP, belt, difficulty, death rarity, crafting, drop sources, vampirism, PvP, seasons, account progression and support systems.');

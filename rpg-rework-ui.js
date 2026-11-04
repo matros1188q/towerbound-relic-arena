@@ -459,6 +459,7 @@ function resolveEnemyTelegraph(){
   if(c.classId==="dragonkin"&&battle.attacksThisFight>=balance.procs.dragonkin.attacks_required&&!battle.dragonkinProc){battle.nextDamageShield=Math.round(engine.maxHp(c)*balance.procs.dragonkin.value);battle.dragonkinProc=true;battle.proc={...balance.procs.dragonkin,expiresAt:Date.now()+8000};}
   if(c.classId==="shaman"&&battle.buffsUsed>=balance.procs.shaman.buffs_required){battle.poisonDots=[];battle.buffsUsed=0;battle.proc={...balance.procs.shaman,expiresAt:Date.now()+5000};}
   if(enemy.mechanic==="reflect"&&dealt.dealt>0)c.run.playerHp=Math.max(0,c.run.playerHp-Math.round(dealt.dealt*balance.elite_mechanics.reflect.damage_fraction));
+  if(c.run.playerHp<playerHpBefore){const reflected=Math.round(playerHpBefore-c.run.playerHp);showFloatingText("player","-"+reflected,"#ff596b");playSfx("hurt");if(!settings().disable_screen_shake)battle.shakeUntil=Date.now()+280;}
   if(c.run.playerHp>playerHpBefore)showFloatingText("player","+"+Math.round(c.run.playerHp-playerHpBefore),"#58e38b");
   if(c.run.playerHp<=0){endFromDamage();return;}
   triggerVfx(skill?"skill":"attack",damageType,critical);
@@ -539,7 +540,7 @@ function resolveEnemyTelegraph(){
  }
  function createCharacter(){
   const name=root.querySelector("#name")?.value||"";
-  try{const created=engine.createCharacter(name,selectedClass);selectedId=created.id;engine.state.activeCharacterId=created.id;dialogOpen=false;screen="characters";selectedStage=1;save();render();notify("Персонаж создан · стартовый набор: 300 серебра, 3 зелья и 24 часа премиума");}
+  try{const created=engine.createCharacter(name,selectedClass);selectedId=created.id;engine.state.activeCharacterId=created.id;dialogOpen=false;screen="characters";selectedStage=1;save();render();notify("Персонаж создан · стартовый набор: 100 серебра, 3 зелья и 24 часа премиума");}
   catch(error){notify(error.message);}
  }
  function handleClick(event){
