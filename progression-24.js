@@ -28,7 +28,7 @@ function act(a){const c=active();if(!c)return;const p=prog(c);let msg='';try{swi
 case'close':overlay.hidden=true;return;case'calendar':msg='Календарь: +'+claimCalendar(c)+' серебра';break;case'prestige':msg='Престиж '+prestige(c);break;
 case'market-buy':msg=market(c,'buy');break;case'market-sell':msg=market(c,'sell');break;case'weapon':craft(c,'weapon');msg='Оружие создано';break;case'helmet':craft(c,'helmet');msg='Шлем создан';break;case'runeword':msg=runeword(c);break;case'mythic':mythic(c);msg='Богоподобный предмет создан';break;case'exchange':exchange(c);msg='Камни обменяны';break;
 case'equip':equip(c);msg='Лучшая экипировка надета';break;case'sort':sort(c);msg='Рюкзак отсортирован';break;case'salvage':msg='Разобрано: '+salvage(c);break;case'autosalvage':p.autoSalvage=!p.autoSalvage;msg='Авто-разбор '+(p.autoSalvage?'включён':'выключен');break;
-case'potions':{let n=0;for(let i=0;i<10;i++){try{engine.purchase(c.id,'silver','heal_40');n++}catch(_){break}}msg='Куплено зелий: '+n;break}
+case'potions':{let n=0;for(let i=0;i<10;i++){try{engine.purchase(c.id,'silver','heal_25');n++}catch(_){break}}msg='Куплено зелий: '+n;break}
 case'speed':p.speed3=!p.speed3;engine.saveSettings({farm_speed_multiplier:p.speed3?3:1});msg='Фарм ×'+(p.speed3?3:1);break;case'offline':{const n=offline(c);msg='Оффлайн-награда: +'+n+' серебра';break}
 case'push':if(!('Notification'in window))throw Error('Уведомления не поддерживаются');Notification.requestPermission().then(x=>toast('Уведомления: '+x));msg='Запрос разрешения отправлен';break;
 case'telegraphs':p.hardcoreTelegraphs=!p.hardcoreTelegraphs;engine.saveSettings({disable_telegraphs:p.hardcoreTelegraphs});msg='Телеграфы '+(p.hardcoreTelegraphs?'отключены':'включены');break;
