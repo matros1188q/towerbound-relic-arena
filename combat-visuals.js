@@ -25,8 +25,7 @@ style.textContent=[
 '@keyframes tb-boss-intro{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0;visibility:hidden}}',
 '@keyframes tb-weather-fall{to{transform:translate3d(-15vw,120vh,0) rotate(180deg)}}',
 '@keyframes tb-status-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-48px) scale(1.1)}}'
-].join('
-');document.head.appendChild(style);
+].join(String.fromCharCode(10));document.head.appendChild(style);
 let stageSeen=0,bossSeen='',lastHp='';
 function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){root.classList.remove('tb-low-hp');return;}
 const match=(root.querySelector('.tb-arena-top')?.textContent||'').match(/ЭТАП\s+(\d+)/i);const stage=Number(match?.[1]||0);
