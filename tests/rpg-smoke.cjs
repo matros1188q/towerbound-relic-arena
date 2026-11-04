@@ -21,7 +21,7 @@ const {chromium}=require('playwright');
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
  const errors=[];
- page.on('pageerror',error=>errors.push(error.message));
+ page.on('pageerror',error=>errors.push(error.message));page.on('requestfailed',request=>errors.push('REQUEST '+request.url()+' '+request.failure()?.errorText));
  try{
   await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady);
@@ -178,4 +178,4 @@ const {chromium}=require('playwright');
   assert.deepEqual(errors,[],'browser runtime must not throw uncaught errors');
   console.log('Browser smoke passed: seven classes, progression, inventory, shop, systems, combat, fixed 375×812 battle HUD, seven-target viewport stress, landscape layout, stable DOM and 20 rapid attack taps without scroll.');
  }finally{await browser.close();server.close();}
-})().catch(error=>{console.error(error);process.exit(1);});
+})().catch(error=>{console.error(error);console.error('BROWSER ERRORS',errors);process.exit(1);});
