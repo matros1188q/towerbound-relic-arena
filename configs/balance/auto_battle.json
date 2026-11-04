@@ -3,6 +3,9 @@
   "experience_multiplier": 0.5,
   "drop_multiplier": 0,
   "stop_on_boss": true,
-  "stop_on_elite": true,
-  "default_max_stages": 250
+  "stop_on_elite": false,
+  "default_max_stages": 250,
+  "skill_policy": "highest_available_damage_skill_then_auto_attack",
+  "use_combos": false,
+  "use_counters": false
 }
