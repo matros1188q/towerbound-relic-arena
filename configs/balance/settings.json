@@ -15,5 +15,8 @@
   "combat_log_max_events": 20,
   "combat_log_toggle": true,
   "pause_single_player": true,
-  "auto_pause_on_blur": true
+  "auto_pause_on_blur": true,
+  "autoSalvage": false,
+  "autoSalvageBelow": 40,
+  "clean_ui": false
 }

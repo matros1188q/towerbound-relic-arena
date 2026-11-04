@@ -14,7 +14,7 @@ const skills=Object.values(skillCatalog);
 const skillById=new Map(skills.map(skill=>[skill.id,skill]));
 const classIds=['assassin','bishop','dragonkin','destroyer','elemental','duelist','shaman'];
 assert.deepEqual(Object.keys(classes).sort(),classIds.slice().sort(),'exactly seven playable classes are configured');
-assert.equal(Object.keys(balance).length,34,'all 34 runtime balance files are loaded');
+assert.equal(Object.keys(balance).length,40,'all 40 runtime balance files are loaded');
 assert.equal(skillManifest.total_skills,420,'skill manifest declares 420 skills');
 assert.equal(skills.length,420,'420 skill records are present');
 assert.equal(new Set(skills.map(s=>s.id)).size,420,'skill IDs are unique');
@@ -76,7 +76,8 @@ for(const classId of classIds){
    assert.ok(['normal','elite','boss'].includes(mob.type),'stage '+stage+' mob type is valid');
   });
  }
- const stage1=engine.beginStage(c.id,1);
+ const live=engine.state.characters.find(x=>x.id===c.id);live.run.offeredModifierIds=['arcane_hunt','last_stand','elite_bounty'];engine.setRunModifier(c.id,'arcane_hunt');
+  const stage1=engine.beginStage(c.id,1);
  assert.equal(stage1.stage,1);
  assert.equal(engine.getChar(c.id).run.active,true);
  const snapshot=engine.saveSnapshot();

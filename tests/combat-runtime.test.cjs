@@ -66,7 +66,8 @@ for(const classId of classes){
  assert.equal(bossPlan.mobs.length,1,'boss stages are single-target');
  assert.equal(bossPlan.mobs[0].role,'boss');
  const duelist=engine.createCharacter('Resource QA','duelist');
- const started=engine.beginStage(duelist.id,1);
+ const duelistLive=engine.state.characters.find(x=>x.id===duelist.id);duelistLive.run.offeredModifierIds=['arcane_hunt','last_stand','elite_bounty'];engine.setRunModifier(duelist.id,'arcane_hunt');
+  const started=engine.beginStage(duelist.id,1);
  assert.equal(started.mobs.length,ordinary.mobs.length);
  assert.equal(engine.getChar(duelist.id).resource,Math.round(5*balance.resources.starting_fraction),'Duelist begins with its configured resource budget');
  assert.equal(balance.skills.panel.attack_slots,4);

@@ -1,0 +1,27 @@
+name: Preserve legacy-before-2000h-fixes tag
+on:
+  push:
+    branches: [feature/2000h-fixes]
+    paths:
+      - '.github/workflows/preserve-legacy-tag.yml'
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+permissions:
+  contents: write
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create immutable legacy baseline tag
+        env:
+          LEGACY_SHA: bf695a0ca8ac49c2e2154e139959be75b028f67d
+        run: |
+          if git ls-remote --exit-code --tags origin refs/tags/legacy-before-2000h-fixes >/dev/null 2>&1; then
+            echo "Legacy tag already exists; leaving it untouched."
+          else
+            git tag legacy-before-2000h-fixes "$LEGACY_SHA"
+            git push origin refs/tags/legacy-before-2000h-fixes
+          fi

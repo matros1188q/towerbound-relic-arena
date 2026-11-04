@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "chapters": [
+    {
+      "id": 1,
+      "name": "Порог семи печатей",
+      "stages": [
+        1,
+        50
+      ],
+      "background": "assets/chapters/chapter-01.svg",
+      "mobs": [
+        "shadow-goblin",
+        "grave-archer",
+        "ash-imp"
+      ],
+      "lore": "Семь печатей удерживают память о мире до башни. Первые стражи помнят имена создателей, но произносят их только перед смертью."
+    },
+    {
+      "id": 2,
+      "name": "Пепельные владения",
+      "stages": [
+        51,
+        100
+      ],
+      "background": "assets/chapters/chapter-02.svg",
+      "mobs": [
+        "ash-wolf",
+        "cursed-alchemist",
+        "plague-witch"
+      ],
+      "lore": "За первой печатью лежит земля вечного пепла. Под ним всё ещё бьётся сердце последнего дозорного."
+    },
+    {
+      "id": 3,
+      "name": "Затонувший собор",
+      "stages": [
+        101,
+        150
+      ],
+      "background": "assets/chapters/chapter-03.svg",
+      "mobs": [
+        "swamp-reaper",
+        "spider-matron",
+        "blind-monk"
+      ],
+      "lore": "Собор погружён в воду, хотя ни одна капля не падает сверху. Город поднялся со дна вместе с тенями жителей."
+    },
+    {
+      "id": 4,
+      "name": "Кузни расколотого неба",
+      "stages": [
+        151,
+        200
+      ],
+      "background": "assets/chapters/chapter-04.svg",
+      "mobs": [
+        "rune-golem",
+        "stone-minotaur",
+        "root-colossus"
+      ],
+      "lore": "Здесь куют оружие из осколков неба. Каждый удар молота меняет созвездия над башней."
+    },
+    {
+      "id": 5,
+      "name": "Сердце бездны",
+      "stages": [
+        201,
+        250
+      ],
+      "background": "assets/chapters/chapter-05.svg",
+      "mobs": [
+        "abyss-knight",
+        "soul-harvester",
+        "void-hunter"
+      ],
+      "lore": "Башня перестаёт притворяться крепостью: её стены — рёбра древнего существа, а вершина — рана между мирами."
+    }
+  ]
+}
