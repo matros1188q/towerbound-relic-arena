@@ -1,7 +1,7 @@
 name: RPG rework v2 checks
 on:
   push:
-    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, fix/audit-pass]
+    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, fix/audit-pass, feature/2000h-fixes]
     paths:
       - 'rpg-rework-v2.js'
       - 'rpg-rework-ui.js'
@@ -36,6 +36,7 @@ jobs:
       - run: node --check rpg-rework-ui.css.js
       - run: node --check rpg-mode.js
       - run: node --check rpg-expansion.js
+      - run: node tests/2000h-config.test.cjs
       - run: node tests/rpg-expansion-static.cjs
       - run: node tests/rpg-rework-v2.test.cjs
       - run: node tests/combat-runtime.test.cjs
@@ -43,3 +44,9 @@ jobs:
       - run: npm install --no-save playwright@1.54.2
       - run: npx playwright install --with-deps chromium
       - run: node tests/rpg-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 2000h-fix-screenshots
+          path: artifacts/2000h-*.png
+          if-no-files-found: warn

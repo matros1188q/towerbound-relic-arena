@@ -1,0 +1,194 @@
+{
+  "version": 1,
+  "design": "four_attack_roles",
+  "roles": [
+    {
+      "id": "primer",
+      "name": "Накопитель",
+      "purpose": "Слабый удар, накладывает 2–3 стака"
+    },
+    {
+      "id": "detonator",
+      "name": "Детонатор",
+      "purpose": "Сильный удар, расходует стаки; без стаков ослаблен"
+    },
+    {
+      "id": "aoe",
+      "name": "Размах",
+      "purpose": "Урон по группе, сниженная эффективность по одиночной цели"
+    },
+    {
+      "id": "utility",
+      "name": "Тактика",
+      "purpose": "Контроль, щит, рывок или усиление следующей комбинации"
+    }
+  ],
+  "classes": [
+    {
+      "classId": "assassin",
+      "slots": [
+        {
+          "id": "primer",
+          "stacks": "bleed"
+        },
+        {
+          "id": "detonator",
+          "requiresStacks": 3,
+          "baseDamageMultiplier": 0.65,
+          "perStackBonus": 0.85
+        },
+        {
+          "id": "aoe",
+          "damageMultiplier": 1.15,
+          "targeting": "all_enemies"
+        },
+        {
+          "id": "utility",
+          "effects": "expose"
+        }
+      ]
+    },
+    {
+      "classId": "bishop",
+      "slots": [
+        {
+          "id": "primer",
+          "stacks": "burn"
+        },
+        {
+          "id": "detonator",
+          "requiresStacks": 3,
+          "baseDamageMultiplier": 0.65,
+          "perStackBonus": 0.85
+        },
+        {
+          "id": "aoe",
+          "damageMultiplier": 1.15,
+          "targeting": "all_enemies"
+        },
+        {
+          "id": "utility",
+          "effects": "ward"
+        }
+      ]
+    },
+    {
+      "classId": "dragonkin",
+      "slots": [
+        {
+          "id": "primer",
+          "stacks": "frost"
+        },
+        {
+          "id": "detonator",
+          "requiresStacks": 3,
+          "baseDamageMultiplier": 0.65,
+          "perStackBonus": 0.85
+        },
+        {
+          "id": "aoe",
+          "damageMultiplier": 1.15,
+          "targeting": "all_enemies"
+        },
+        {
+          "id": "utility",
+          "effects": "dash"
+        }
+      ]
+    },
+    {
+      "classId": "destroyer",
+      "slots": [
+        {
+          "id": "primer",
+          "stacks": "shock"
+        },
+        {
+          "id": "detonator",
+          "requiresStacks": 3,
+          "baseDamageMultiplier": 0.65,
+          "perStackBonus": 0.85
+        },
+        {
+          "id": "aoe",
+          "damageMultiplier": 1.15,
+          "targeting": "all_enemies"
+        },
+        {
+          "id": "utility",
+          "effects": "armor_break"
+        }
+      ]
+    },
+    {
+      "classId": "elemental",
+      "slots": [
+        {
+          "id": "primer",
+          "stacks": "mark"
+        },
+        {
+          "id": "detonator",
+          "requiresStacks": 3,
+          "baseDamageMultiplier": 0.65,
+          "perStackBonus": 0.85
+        },
+        {
+          "id": "aoe",
+          "damageMultiplier": 1.15,
+          "targeting": "all_enemies"
+        },
+        {
+          "id": "utility",
+          "effects": "slow"
+        }
+      ]
+    },
+    {
+      "classId": "duelist",
+      "slots": [
+        {
+          "id": "primer"
+        },
+        {
+          "id": "detonator",
+          "requiresStacks": 3,
+          "baseDamageMultiplier": 0.65,
+          "perStackBonus": 0.85
+        },
+        {
+          "id": "aoe",
+          "damageMultiplier": 1.15,
+          "targeting": "all_enemies"
+        },
+        {
+          "id": "utility",
+          "effects": "parry_window"
+        }
+      ]
+    },
+    {
+      "classId": "shaman",
+      "slots": [
+        {
+          "id": "primer"
+        },
+        {
+          "id": "detonator",
+          "requiresStacks": 3,
+          "baseDamageMultiplier": 0.65,
+          "perStackBonus": 0.85
+        },
+        {
+          "id": "aoe",
+          "damageMultiplier": 1.15,
+          "targeting": "all_enemies"
+        },
+        {
+          "id": "utility",
+          "effects": "spirit_call"
+        }
+      ]
+    }
+  ]
+}

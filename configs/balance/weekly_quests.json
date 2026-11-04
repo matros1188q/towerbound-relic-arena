@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "period": "iso_week",
+  "quests_per_week": 7,
+  "reset": "monday_00_utc",
+  "quests": [
+    {
+      "id": "elite",
+      "name": "Охота на элиту",
+      "metric": "elite_kills",
+      "target": 20,
+      "reward": {
+        "silver": 2500,
+        "diamonds": 2
+      }
+    },
+    {
+      "id": "stages",
+      "name": "Путь наверх",
+      "metric": "stages_cleared",
+      "target": 35,
+      "reward": {
+        "silver": 2200
+      }
+    },
+    {
+      "id": "bosses",
+      "name": "Палач боссов",
+      "metric": "boss_kills",
+      "target": 5,
+      "reward": {
+        "silver": 3000,
+        "diamonds": 3
+      }
+    },
+    {
+      "id": "skills",
+      "name": "Мастер комбинаций",
+      "metric": "branch_skills_used",
+      "target": 50,
+      "reward": {
+        "silver": 1800
+      }
+    },
+    {
+      "id": "salvage",
+      "name": "Переплавка",
+      "metric": "items_salvaged",
+      "target": 25,
+      "reward": {
+        "silver": 1600
+      }
+    },
+    {
+      "id": "heroic",
+      "name": "Закалённый героем",
+      "metric": "heroic_stages",
+      "target": 15,
+      "reward": {
+        "silver": 3000,
+        "diamonds": 2
+      }
+    },
+    {
+      "id": "runs",
+      "name": "Неугасимый поход",
+      "metric": "runs_completed",
+      "target": 3,
+      "reward": {
+        "silver": 3500,
+        "diamonds": 3
+      }
+    }
+  ]
+}

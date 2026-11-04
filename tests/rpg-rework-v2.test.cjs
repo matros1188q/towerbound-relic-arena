@@ -8,7 +8,8 @@ const configNames=[
  'combat','xp_curve','map','elite_mechanics','death','healing','auto_battle','drop_tables',
  'equipment','economy','heroic','pvp','classes','skill_effects','mobs','bosses',
  'character_curves','item_level','bp','difficulty','materials','account','stash',
- 'tutorial','achievements','lore','settings','seasons','paragon','pvp_store'
+ 'tutorial','achievements','lore','settings','seasons','paragon','pvp_store',
+ 'run_modifiers','heroic_mobs','chapters','weekly_quests','cosmetics','skill_combos'
 ];
 const balance=Object.fromEntries(configNames.map(name=>[
  name,JSON.parse(fs.readFileSync(path.join(__dirname,'../configs/balance/'+name+'.json'),'utf8'))
@@ -25,7 +26,7 @@ const equipSix=(character,rarity='Эпическая')=>{
  }));
 };
 
-assert.equal(configNames.length,30,'all runtime balance configs are covered');
+assert.equal(configNames.length,36,'all runtime balance configs are covered');
 for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='object',name+' config parsed');
 
 {
@@ -360,4 +361,90 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(Object.keys(branches).length,21);
  assert.ok(Object.values(branches).every(count=>count===20));
 }
-console.log('RPG balance/content checks passed: 30 configs, combat cadence, curves, bosses, gauntlets, item level/BP, belt, difficulty, death rarity, crafting, drop sources, vampirism, PvP, seasons, account progression and support systems.');
+
+{
+ const e=makeEngine(()=>0.1),c=makeCharacter(e),live=e.state.characters[0];
+ live.run.offeredModifierIds=['iron_skin','elite_bounty','glass_cannon'];
+ const offered=e.runModifierOptions(c.id);
+ assert.equal(offered.length,3,'exactly three run modifiers are offered');
+ e.setRunModifier(c.id,'iron_skin');
+ e.beginStage(c.id,1);
+ assert.ok(live.run.stage.mobs.every(m=>m.runShieldFraction===0.25),'run-wide enemy shield modifier reaches every mob');
+ assert.equal(e.getEnemyStats(c.id,1,live.run.stage.mobs[0]).damage>0,true);
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ e.recordWeeklyProgress(c.id,'elite_kills',20);
+ const quest=e.weeklySnapshot(c.id).find(q=>q.id==='elite');
+ assert.equal(quest.complete,true);
+ const before=e.state.account.diamonds;
+ e.claimWeeklyQuest(c.id,'elite');
+ assert.equal(e.state.account.diamonds,before+2);
+ assert.throws(()=>e.claimWeeklyQuest(c.id,'elite'),/not ready/);
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ e.state.account.diamonds=50;e.beginStage(c.id,1);live.run.playerHp=0;
+ const revived=e.reviveFromDeath(c.id);
+ assert.equal(revived.price,5);
+ assert.equal(live.run.playerHp,Math.round(e.maxHp(live)*0.5));
+ assert.throws(()=>e.reviveFromDeath(c.id),/only after death|already used/);
+ const other=makeEngine(),d=makeCharacter(other),char=other.state.characters[0];
+ other.state.account.diamonds=50;char.progress.highestEver=249;char.progress.currentStage=250;other.beginStage(d.id,250);char.run.playerHp=0;
+ assert.equal(other.reviveFromDeath(d.id).price,50);
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ const type=balance.equipment.stone_types.find(x=>x.class_id===live.classId);
+ live.bag=Array.from({length:5},(_,i)=>({id:'fusion-'+i,type:'enhancement_stone',stoneType:JSON.parse(JSON.stringify(type)),level:4}));
+ const fused=e.mergeStones(c.id,type,4);
+ assert.equal(fused.level,5,'five level-IV stones synthesize one level-V stone');
+ assert.equal(live.bag.filter(x=>x.type==='enhancement_stone'&&x.level===4).length,0);
+}
+{
+ const e=makeEngine(),old=makeCharacter(e,'Veteran'),veteran=e.state.characters[0];
+ veteran.level=100;
+ const newcomer=e.createCharacter('Heir','bishop');
+ assert.equal(newcomer.legacyBonus,0.5);
+ assert.equal(newcomer.legacyBonusUntil,50);
+ assert.equal(newcomer.gear.filter(Boolean).length,6);
+ assert.ok(newcomer.gear.every(x=>x.rarity==='Эпическая'));
+ const heir=e.state.characters.find(x=>x.id===newcomer.id);
+ e.awardXp(heir,100);
+ assert.equal(heir.xp,150,'legacy experience bonus is applied before level 50');
+}
+{
+ const e=makeEngine(()=>0.01),c=makeCharacter(e),live=e.state.characters[0];
+ e.saveSettings({autoSalvage:true,autoSalvageBelow:120});
+ live.run.id='autos-test';
+ const drops=e.rollLoot(live,{type:'normal'},1,false,false);
+ assert.equal(drops.length,1);
+ assert.equal(drops[0].type,'auto_salvage');
+ assert.ok(live.bag.some(x=>x.type==='craft_material'&&x.quantity>0));
+ assert.equal(live.stats.items_salvaged,1);
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ e.state.account.diamonds=100;
+ const chest=e.buyCosmeticChest('weapon');
+ assert.ok(e.state.account.cosmetics.includes(chest.id));
+ assert.equal(balance.cosmetics.balanceImpact,false);
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ const bronze=e.pvpSnapshot(c.id);
+ assert.equal(bronze.normalized,true);
+ assert.equal(bronze.gearImpact,false);
+ assert.ok(bronze.attack>0&&bronze.maxHp>0);
+ live.gear=Array.from({length:6},(_,i)=>({id:'pvp-'+i,rarity:'Богоподобная',itemLevel:120,stats:{attack:999999,defense:999999,health:999999}}));
+ const after=e.pvpSnapshot(c.id);
+ assert.equal(after.normalized,true,'PvP snapshots expose rank-normalized stats');
+}
+{
+ const e=makeEngine(),c=makeCharacter(e);
+ assert.equal(e.chapterForStage(1).id,1);
+ assert.equal(e.chapterForStage(250).id,5);
+ assert.equal(e.weeklySnapshot(c.id).length,7);
+}
+
+console.log('RPG balance/content checks passed: 36 configs, combat cadence, curves, bosses, gauntlets, item level/BP, belt, difficulty, death rarity, crafting, drop sources, vampirism, PvP, seasons, account progression and support systems.');

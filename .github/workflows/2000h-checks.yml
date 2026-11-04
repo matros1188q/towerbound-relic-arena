@@ -1,0 +1,20 @@
+name: Towerbound 2000h feature checks
+on:
+  push:
+    branches: [feature/2000h-fixes]
+    paths: ['rpg-rework-v2.js','rpg-rework-ui.js','rpg-rework-ui.css.js','configs/balance/**','tests/2000h-*.test.cjs','tests/rpg-smoke.cjs','.github/workflows/2000h-checks.yml','.github/workflows/rpg-rework-v2.yml','index.html']
+  pull_request:
+    paths: ['rpg-rework-v2.js','rpg-rework-ui.js','rpg-rework-ui.css.js','configs/balance/**','tests/2000h-*.test.cjs','tests/rpg-smoke.cjs','.github/workflows/2000h-checks.yml','.github/workflows/rpg-rework-v2.yml','index.html']
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check rpg-rework-v2.js
+      - run: node --check rpg-rework-ui.js
+      - run: node --check rpg-rework-ui.css.js
+      - run: node tests/2000h-config.test.cjs
+      - run: node tests/2000h-integration.test.cjs

@@ -1,0 +1,16 @@
+.tb-clean-ui .damage-number,.tb-clean-ui .floating-damage,.tb-clean-ui .tb-damage-number,.tb-clean-ui .tb-secondary-icon{display:none!important}.tb-clean-ui .tb-hpbar,.tb-clean-ui .tb-telegraph{display:revert!important}#tb2000Panel h1,#tb2000Panel h2{color:#f0cf8b}#tb2000Panel p{padding:8px;border-bottom:1px solid #ffffff22}#tb2000Panel button{margin:4px;padding:9px}
+.tb-clean-ui .tb-floating-damage,.tb-clean-ui .tb-target-role,.tb-clean-ui .tb-target-elements,.tb-clean-ui .tb-enemy-role-icon,.tb-clean-ui .tb-enemy-vulnerability,.tb-clean-ui .tb-proc-chip,.tb-clean-ui .tb-proc-empty,.tb-clean-ui .tb-combo-status,.tb-clean-ui .tb-boss-phase{display:none!important}
+.tb-clean-ui .tb-healthbar,.tb-clean-ui .tb-telegraph,.tb-clean-ui .tb-telegraph-disabled{display:block!important;visibility:visible!important}
+.tb-chapter-card{margin:16px 0;padding:20px;border:1px solid #d8b87555;border-radius:16px;background-size:cover;background-position:center;min-height:130px;box-shadow:inset 0 0 40px #050814aa}
+.tb-chapter-card h2{margin:5px 0;color:#f4d79e;font-family:serif}.tb-chapter-card p{max-width:70ch;color:#e4dfd4;line-height:1.55}
+.tb-run-modifier-panel,.tb-weekly-panel,.tb-cosmetic-chests{margin:16px 0;padding:16px;border:1px solid #d5b67544;border-radius:15px;background:linear-gradient(145deg,#1b2336,#111827)}
+.tb-run-modifier-panel button{display:flex;flex-direction:column;gap:4px;width:100%;margin:7px 0;padding:12px;text-align:left;border:1px solid #ffffff22;border-radius:10px;background:#ffffff08;color:#f7f1e6}
+.tb-run-modifier-panel button.active{border-color:#e9c47c;background:#b68b4b22}.tb-run-modifier-panel button small{opacity:.75}
+.tb-weekly-panel .tb-daily-quest{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #ffffff16}
+.tb-weekly-panel .tb-daily-quest small{display:block;opacity:.72}.tb-cosmetic-chests article{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #ffffff18}.tb-cosmetic-chests small{display:block;opacity:.7}
+.tb-skill-role{display:block;font-size:8px;letter-spacing:.1em;color:#e9c47c}
+
+.tb-target-card.cosmetic-death{animation:tb-cosmetic-death .9s ease-out 1;box-shadow:0 0 22px #bd83ff77}
+@keyframes tb-cosmetic-death{0%{filter:brightness(2) saturate(1.8);transform:scale(1)}100%{filter:brightness(.4) saturate(.5);transform:scale(.96)}}
+.tb-profile-avatar.rune_frame,.tb-profile-avatar.obsidian_frame,.tb-profile-avatar.starlight_frame{outline:3px solid #e8c47d;outline-offset:4px;box-shadow:0 0 20px #e8c47d66}
+.tb-hero-art.ashen_blade::after,.tb-hero-art.frostbite::after,.tb-hero-art.starfall::after{content:"✦";position:absolute;right:4px;bottom:4px;color:#f4d18b;text-shadow:0 0 10px #f4d18b;font-size:20px}
