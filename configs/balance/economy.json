@@ -1,5 +1,5 @@
 {
-  "starting_silver": 300,
+  "starting_silver": 100,
   "starting_potions": 3,
   "starting_premium_hours": 24,
   "silver_drop": {
@@ -63,7 +63,7 @@
     "xp_10": 900,
     "xp_20": 1800,
     "heal_10": 60,
-    "heal_25": 40,
+    "heal_25": 20,
     "drop_20": 2400,
     "drop_50": 5200,
     "premium_7d": 20000,

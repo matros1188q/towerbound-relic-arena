@@ -323,7 +323,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 }
 {
  const e=makeEngine(),c=makeCharacter(e);
- assert.equal(balance.economy.silver_store.heal_25,40);
+ assert.equal(balance.economy.silver_store.heal_25,20);
  assert.deepEqual([balance.economy.silver_store.premium_7d,balance.economy.silver_store.premium_14d,balance.economy.silver_store.premium_30d],[20000,35000,60000]);
  assert.deepEqual(balance.mobs.silver_brackets.map(x=>x.amount),[4,6,9,12,16]);
  assert.equal(balance.xp_curve.post_75_xp_per_level,2500000);

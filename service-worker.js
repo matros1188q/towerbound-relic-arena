@@ -1,4 +1,4 @@
-const CACHE='towerbound-juice-pwa-v1';
+const CACHE='towerbound-juice-pwa-v2';
 const SHELL=['./','./index.html','./manifest.json','./juice-pwa.css','./juice-pwa.js','./rpg-mode.js','./rpg-expansion.js','./rpg-rework-v2.js','./rpg-rework-ui.css.js','./rpg-rework-ui.js','./assets/pwa/icon-192.png','./assets/pwa/icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE)
