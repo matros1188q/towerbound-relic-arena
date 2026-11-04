@@ -2,7 +2,7 @@
 const getRoot=()=>document.querySelector('#tbRpg .tb-v2');
 const style=document.createElement('style');style.id='tb-combat-visuals-style';
 style.textContent=[
-'#tbRpg .tb-v2 .tb-arena{position:relative;isolation:isolate;background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),url(./assets/arena-background.webp);background-size:cover;background-position:center;transition:background-position 1.2s ease}',
+'#tbRpg .tb-v2 .tb-arena{position:relative;isolation:isolate;background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),url(./assets/arena-background.webp);background-size:cover;background-position:center;transition:background-position 1.2s ease}',\n'#tbRpg .tb-v2 .tb-arena:before,#tbRpg .tb-v2 .tb-arena:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background-repeat:no-repeat;background-size:cover;transition:transform 1.2s ease}',\n'#tbRpg .tb-v2 .tb-arena:before{background-image:linear-gradient(180deg,transparent,rgba(5,8,12,.25)),radial-gradient(ellipse at 50% 20%,rgba(100,130,150,.15),transparent 65%);transform:translateX(var(--tb-back-parallax,0px))}',\n'#tbRpg .tb-v2 .tb-arena:after{background-image:linear-gradient(90deg,rgba(5,8,12,.3),transparent 25%,transparent 75%,rgba(5,8,12,.3));transform:translateX(var(--tb-front-parallax,0px))}',\n'#tbRpg .tb-v2 .tb-arena>*{position:relative;z-index:2}',
 '#tbRpg .tb-v2 .tb-enemy-focus.tb-hit-spark{animation:tb-hit-spark .2s ease-out}',
 '#tbRpg .tb-v2 .tb-target-card.tb-death-dissolve{animation:tb-mob-death .55s ease-in forwards}',
 '#tbRpg .tb-v2 .tb-panel-skill:not(:disabled){animation:tb-skill-ready 1.8s ease-in-out infinite alternate}',
@@ -26,7 +26,7 @@ let stageSeen=0,bossSeen='',lastHp='';
 function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){root.classList.remove('tb-low-hp');return;}
 const match=(root.querySelector('.tb-arena-top')?.textContent||'').match(/ЭТАП\s+(\d+)/i);const stage=Number(match?.[1]||0);
 if(stage){if(!arena.querySelector('.tb-weather')){const layer=document.createElement('div');layer.className='tb-weather';const chapter=Math.floor((stage-1)/50)%3,icons=chapter===0?['❄','✧']:chapter===1?['◆','✦']:['╱','💧'];for(let i=0;i<16;i++){const p=document.createElement('i');p.textContent=icons[i%icons.length];p.style.setProperty('--x',Math.random()*100+'%');p.style.setProperty('--s',8+Math.random()*12+'px');p.style.setProperty('--o',String(.12+Math.random()*.3));p.style.setProperty('--d',3+Math.random()*5+'s');p.style.animationDelay=-Math.random()*7+'s';layer.appendChild(p);}arena.appendChild(layer);}
-if(stage!==stageSeen){arena.style.backgroundPosition=(stage%2?'53%':'47%')+' center';stageSeen=stage;}}
+if(stage!==stageSeen){arena.style.backgroundPosition=(stage%2?'53%':'47%')+' center';arena.style.setProperty('--tb-back-parallax',(stage%2?'-8px':'8px'));arena.style.setProperty('--tb-front-parallax',(stage%2?'22px':'-22px'));stageSeen=stage;}}
 const hp=root.querySelector('.tb-battle-hero .tb-healthbar span');if(hp)root.classList.toggle('tb-low-hp',(parseFloat(hp.style.width)||100)<20);
 root.querySelectorAll('.tb-healthbar.enemy span,.tb-target-hp i').forEach(bar=>{const w=parseFloat(bar.style.width)||100;bar.style.background=w>60?'linear-gradient(90deg,#278e54,#64d88a)':w>25?'linear-gradient(90deg,#b58a24,#f1d45b)':'linear-gradient(90deg,#8e1726,#ff4b58)';});
 root.querySelectorAll('.tb-target-card.defeated:not(.tb-death-dissolve)').forEach(card=>card.classList.add('tb-death-dissolve'));
