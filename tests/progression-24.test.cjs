@@ -15,6 +15,6 @@ for(const [name,re] of [
  ['push permission',/Notification\.requestPermission/],['hardcore telegraphs',/disable_telegraphs/],
  ['language',/tb-progression-lang/],['energy saving',/tbp-low-effects/],
  ['elite notes',/enemy\.type==='elite'/],['chapter palette',/palettes=\[/],['secret room chance',/Math\.random\(\)<\.01/]
-])assert.match(name==='x3 farm'?ui:fx,re,name);
+])assert.match(name==='x3 farm'||name==='cooldown reduction'?ui:fx,re,name);
 assert.match(html,/progression-24\.js\?v=1/);
 const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');assert.match(core,/progression\.runewords.*word\.health/);assert.match(core,/permanentXpBonus/);console.log('Progression systems static checks passed.');
