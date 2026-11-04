@@ -38,7 +38,7 @@
  function mapScreen(){
   const c=live();if(!c)return characterList();
   const daily=engine.dailySnapshot(c.id);
-  const cp=c.progress.currentStage-1,healReady=balance.map.checkpoints.includes(cp),trapStage=selectedStage%13===0,antidotes=(c.bag||[]).filter(x=>x.type==="antidote").reduce((n,x)=>n+(x.quantity||1),0)&&c.run.healingPenaltyUntil<c.progress.currentStage&&c.run.checkpointHeals<balance.healing.max_checkpoint_heals_per_run;
+  const cp=c.progress.currentStage-1,healReady=balance.map.checkpoints.includes(cp)&&c.run.healingPenaltyUntil<c.progress.currentStage&&c.run.checkpointHeals<balance.healing.max_checkpoint_heals_per_run,trapStage=selectedStage%13===0,antidotes=(c.bag||[]).filter(x=>x.type==="antidote").reduce((n,x)=>n+(x.quantity||1),0);
   const penalty=(c.run.healingPenaltyFrom||0)>0&&c.progress.currentStage>=(c.run.healingPenaltyFrom||0)&&c.progress.currentStage<=c.run.healingPenaltyUntil;
   const remaining=penalty?c.run.healingPenaltyUntil-c.progress.currentStage+1:0;
   const maxAuto=c.progress.highestEver-balance.auto_battle.highest_ever_offset;
