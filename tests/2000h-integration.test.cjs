@@ -6,13 +6,21 @@ const {createEngine}=require('../rpg-rework-v2.js');
 const names=['combat','xp_curve','map','elite_mechanics','death','healing','auto_battle','drop_tables','equipment','economy','heroic','pvp','classes','skill_effects','mobs','bosses','character_curves','item_level','bp','difficulty','materials','account','stash','tutorial','achievements','lore','settings','seasons','paragon','pvp_store','resources','skills','combos','procs','run_modifiers','heroic_mobs','chapters','weekly_quests','cosmetics','skill_combos'];
 const balance=Object.fromEntries(names.map(n=>[n,JSON.parse(fs.readFileSync(path.join(__dirname,'../configs/balance',n+'.json'),'utf8'))]));
 const make=()=>createEngine(balance,{random:()=>0.1,now:()=>Date.UTC(2026,10,4,12)});
+const beginTestStage=(engine,characterId,stage)=>{
+ const live=engine.state.characters.find(x=>x.id===characterId);
+ if(!live.run.runModifierId){
+  live.run.offeredModifierIds=['arcane_hunt','last_stand','elite_bounty'];
+  engine.setRunModifier(characterId,'arcane_hunt');
+ }
+ return engine.beginStage(characterId,stage);
+};
 {
  const e=make(),c=e.createCharacter('Modifier QA','assassin');
  const options=e.runModifierOptions(c.id);
  assert.equal(options.length,3,'exactly three run modifiers are offered');
  assert.ok(options.some(x=>x.id==='iron_skin'));
  e.setRunModifier(c.id,'iron_skin');
- const plan=e.beginStage(c.id,1);
+ const plan=beginTestStage(e,c.id,1);
  assert.ok(plan.mobs.every(x=>x.runShieldFraction===0.25),'iron-skin shield applies to all mobs');
  e.state.account.diamonds=50;
  e.state.characters[0].run.playerHp=0;
@@ -94,7 +102,7 @@ const make=()=>createEngine(balance,{random:()=>0.1,now:()=>Date.UTC(2026,10,4,1
 {
  const e=make(),created=e.createCharacter('Weekly Run QA','assassin'),c=e.state.characters.find(x=>x.id===created.id);
  c.run.weeklyCompletionCounted=true;
- e.beginStage(c.id,1);
+ beginTestStage(e,c.id,1);
  assert.equal(c.run.weeklyCompletionCounted,false,'a new run can count toward weekly run quests again');
 }
 console.log('2000h integration: OK · modifiers · revive · weekly · auto-salvage · legacy · fusion · PvP · chapters · heroic mobs · cosmetics');
