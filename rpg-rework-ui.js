@@ -6,8 +6,9 @@
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
+ function rarityClass(value){return ({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[value]||"common");}
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
  function classData(c){return balance.classes.classes[c.classId];}
  function clsName(c){return classData(c).name;}
@@ -62,7 +63,8 @@
  }
  function branchSkills(c){return skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch).slice(0,balance.skills.skills_per_branch||10);}
  function ensureLoadout(c){
-  const unlocked=branchSkills(c).filter(skill=>c.level>=skill.unlock_level);
+  const base=(classData(c).base_skills||[]).filter(skill=>c.level>=skill.unlock_level),branch=branchSkills(c).filter(skill=>c.level>=skill.unlock_level);
+  const unlocked=[...base,...branch].filter((skill,index,all)=>all.findIndex(other=>other.id===skill.id)===index);
   const chosen=(Array.isArray(c.skillLoadout)?c.skillLoadout:[]).filter(id=>unlocked.some(skill=>skill.id===id)).slice(0,4);
   for(const skill of unlocked){if(chosen.length>=4)break;if(!chosen.includes(skill.id))chosen.push(skill.id);}
   c.skillLoadout=chosen;return Array.from({length:4},(_,index)=>unlocked.find(skill=>skill.id===chosen[index])||null);
@@ -71,6 +73,22 @@
  function counterAbility(c){return balance.skills.counter_abilities[c.classId];}
  function ultimateAbility(c){return balance.skills.ultimates[c.classId];}
  function settings(){return engine?.state.account?.settings||{};}
+ function playSfx(kind){
+  const prefs=settings();if(prefs.sound_enabled===false)return;
+  const volume=Math.max(0,Math.min(1,(prefs.volume_master??0.8)*(prefs.volume_effects??0.8)));
+  if(volume<=0)return;
+  try{
+   const AudioCtor=window.AudioContext||window.webkitAudioContext;if(!AudioCtor)return;
+   if(!audioContext)audioContext=new AudioCtor();
+   if(audioContext.state==="suspended")audioContext.resume();
+   const presets={click:{wave:"triangle",from:720,to:500,duration:0.045,level:0.12},hit:{wave:"sawtooth",from:155,to:58,duration:0.11,level:0.2},crit:{wave:"square",from:620,to:170,duration:0.19,level:0.24},hurt:{wave:"sawtooth",from:105,to:42,duration:0.17,level:0.22}};
+   const p=presets[kind]||presets.click,ctx=audioContext,now=ctx.currentTime;
+   const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=p.wave;osc.frequency.setValueAtTime(p.from,now);osc.frequency.exponentialRampToValueAtTime(Math.max(25,p.to),now+p.duration);
+   gain.gain.setValueAtTime(0.0001,now);gain.gain.exponentialRampToValueAtTime(Math.max(0.0002,volume*p.level),now+0.008);gain.gain.exponentialRampToValueAtTime(0.0001,now+p.duration);
+   osc.connect(gain);gain.connect(ctx.destination);osc.start(now);osc.stop(now+p.duration+0.02);
+   if(kind==="crit"){const chime=ctx.createOscillator(),cg=ctx.createGain();chime.type="sine";chime.frequency.setValueAtTime(980,now);chime.frequency.exponentialRampToValueAtTime(440,now+0.16);cg.gain.setValueAtTime(0.0001,now);cg.gain.exponentialRampToValueAtTime(volume*0.09,now+0.01);cg.gain.exponentialRampToValueAtTime(0.0001,now+0.16);chime.connect(cg);cg.connect(ctx.destination);chime.start(now);chime.stop(now+0.17);}
+  }catch(error){}
+ }
  function elementIcon(type){return({fire:"🔥",ice:"❄",dark:"☠",physical:"⚔"})[type]||"◇";}
  function elementLabel(type){return({fire:"Огонь",ice:"Лёд",dark:"Тьма",physical:"Физический"})[type]||type;}
  function setBattleTarget(index){
