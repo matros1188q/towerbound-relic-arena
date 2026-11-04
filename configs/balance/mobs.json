@@ -2,38 +2,38 @@
   "curves": [
     {
       "stage": 1,
-      "hp": 100,
-      "damage": 20
+      "hp": 33,
+      "damage": 7
     },
     {
       "stage": 10,
-      "hp": 180,
-      "damage": 60
+      "hp": 60,
+      "damage": 20
     },
     {
       "stage": 50,
-      "hp": 550,
-      "damage": 150
+      "hp": 183,
+      "damage": 50
     },
     {
       "stage": 100,
-      "hp": 1500,
-      "damage": 400
+      "hp": 500,
+      "damage": 133
     },
     {
       "stage": 150,
-      "hp": 5200,
-      "damage": 900
+      "hp": 1733,
+      "damage": 300
     },
     {
       "stage": 200,
-      "hp": 10000,
-      "damage": 1400
+      "hp": 3333,
+      "damage": 467
     },
     {
       "stage": 250,
-      "hp": 22000,
-      "damage": 2000
+      "hp": 7333,
+      "damage": 667
     }
   ],
   "elite": {
@@ -78,26 +78,36 @@
     "healer": {
       "icon": "✚",
       "name": "Лекарь",
-      "heal_fraction": 0.1,
-      "interval_ms": 5000,
-      "priority": 1
+      "heal_fraction": 0.2,
+      "priority": 1,
+      "every_n_turns": 2,
+      "speed": 1.05
     },
     "poison": {
       "icon": "☠",
       "name": "Ядовитый",
-      "damage_fraction_per_second": 0.03,
-      "duration_seconds": 5,
-      "interval_ms": 8000
+      "damage_fraction_per_turn": 0.05,
+      "stackable": true,
+      "speed": 1.1
     },
     "tank": {
       "icon": "🛡",
       "name": "Танк",
-      "damage_reduction": 0.3
+      "damage_reduction": 0.3,
+      "shield_fraction": 0.3,
+      "every_n_turns": 3,
+      "speed": 0.85
     },
     "normal": {
       "icon": "",
       "name": "Обычный",
-      "damage_reduction": 0
+      "damage_reduction": 0,
+      "speed": 1
+    },
+    "boss": {
+      "icon": "♛",
+      "name": "Босс",
+      "speed": 1.1
     }
   },
   "damage_types": [
