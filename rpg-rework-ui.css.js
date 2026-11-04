@@ -171,7 +171,7 @@
  "#tbRpg .tb-v2 .tb-gear-slot.rarity-rare,#tbRpg .tb-v2 .tb-bag-item.rarity-rare{background:linear-gradient(145deg,#2b5c8f,#173653)!important;border-color:#5c9bd1!important;color:#fff!important}",
  "#tbRpg .tb-v2 .tb-gear-slot.rarity-epic,#tbRpg .tb-v2 .tb-bag-item.rarity-epic{background:linear-gradient(145deg,#6a0dad,#3d0866)!important;border-color:#b66be8!important;color:#fff!important}",
  "#tbRpg .tb-v2 .tb-gear-slot.rarity-legendary,#tbRpg .tb-v2 .tb-bag-item.rarity-legendary{background:linear-gradient(145deg,#ff8c00,#914500)!important;border-color:#ffc16b!important;color:#fff!important}",
- "#tbRpg .tb-v2 .tb-gear-slot.rarity-godlike,#tbRpg .tb-v2 .tb-bag-item.rarity-godlike{background:linear-gradient(145deg,#dc143c,#650018)!important;border-color:#ff718e!important;color:#fff!important;box-shadow:0 0 18px #dc143c44}",
+ "#tbRpg .tb-v2 .tb-gear-slot.rarity-godlike,#tbRpg .tb-v2 .tb-bag-item.rarity-godlike{background:linear-gradient(145deg,#dc143c,#8b0000)!important;border-color:#ff718e!important;color:#fff!important;box-shadow:0 0 18px #dc143c44}",
  "#tbRpg .tb-v2 .tb-gear-slot[class*='rarity-'] b,#tbRpg .tb-v2 .tb-gear-slot[class*='rarity-'] span,#tbRpg .tb-v2 .tb-bag-item[class*='rarity-'] small,#tbRpg .tb-v2 .tb-bag-item[class*='rarity-'] span{color:#fff!important}",
  ].join("\n");
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
