@@ -57,7 +57,7 @@ const beginTestStage=(engine,characterId,stage)=>{
 }
 {
  const e=make(),old=e.createCharacter('Legacy Veteran','assassin');
- e.state.characters[0].level=100;
+ e.state.characters.find(x=>x.id===old.id).level=100;
  const fresh=e.createCharacter('Legacy Heir','bishop');
  const heir=e.state.characters.find(x=>x.id===fresh.id);
  assert.equal(heir.legacyBonus,0.5);
