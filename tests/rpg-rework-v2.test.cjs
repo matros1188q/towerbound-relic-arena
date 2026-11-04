@@ -125,7 +125,10 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(balance.combat.enemy_damage.elite_multiplier,1.5);
  assert.equal(balance.combat.enemy_damage.boss_multiplier,2.5);
 }
-{
+if(balance.combat.turn_based?.enabled){
+ assert.equal(balance.combat.turn_based.player_turn_actions.potions,1,'turn-based mode permits one potion per player turn');
+ assert.equal(balance.healing.potion_heal_fraction,0.4);
+}else{
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=16;equipSix(live);
  const stats=e.getCombatStats(live),boss=e.getEnemyStats(c.id,50,{type:'boss'});
