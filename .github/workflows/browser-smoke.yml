@@ -1,7 +1,7 @@
 name: Cross-browser smoke tests
 on:
   push:
-    branches: [main, feature/combat-and-presentation-pass, fix/audit-pass, feature/turn-based-combat, integration/turn-based-combat]
+    branches: [main, feature/combat-and-presentation-pass, fix/audit-pass, feature/turn-based-combat, integration/turn-based-combat, integration/turn-based-combat-v2]
     paths:
       - 'index.html'
       - 'rpg-mode.js'
@@ -13,6 +13,8 @@ on:
       - 'assets/**'
       - 'tests/**'
       - '.github/workflows/browser-smoke.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
