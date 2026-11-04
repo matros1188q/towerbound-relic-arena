@@ -91,4 +91,10 @@ const make=()=>createEngine(balance,{random:()=>0.1,now:()=>Date.UTC(2026,10,4,1
  const plan=e.stagePlan(c,1);
  assert.deepEqual(plan.mobs.slice(0,3).map(x=>x.heroicTrait),['medic','volatile','reflector']);
 }
+{
+ const e=make(),created=e.createCharacter('Weekly Run QA','assassin'),c=e.state.characters.find(x=>x.id===created.id);
+ c.run.weeklyCompletionCounted=true;
+ e.beginStage(c.id,1);
+ assert.equal(c.run.weeklyCompletionCounted,false,'a new run can count toward weekly run quests again');
+}
 console.log('2000h integration: OK · modifiers · revive · weekly · auto-salvage · legacy · fusion · PvP · chapters · heroic mobs · cosmetics');
