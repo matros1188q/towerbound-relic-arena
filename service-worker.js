@@ -1,1 +1,23 @@
-const CACHE='towerbound-juice-pwa-v1',SHELL=['./','./index.html','./manifest.json','./juice-pwa.css','./juice-pwa.js','./rpg-mode.js','./rpg-expansion.js','./rpg-rework-v2.js','./rpg-rework-ui.css.js','./rpg-rework-ui.js','./assets/pwa/icon-192.svg','./assets/pwa/icon-512.svg','./assets/pwa/icon-192.png','./assets/pwa/icon-512.png'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL.map(p=>new Request(p,{cache:'reload'}))).catch(()=>{})).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('towerbound-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==self.location.origin)return;e.respondWith(caches.match(r,{ignoreSearch:true}).then(cached=>cached||fetch(r).then(res=>{if(res.ok)caches.open(CACHE).then(c=>c.put(r,res.clone()));return res}).catch(()=>caches.match('./index.html')))))});
+const CACHE='towerbound-juice-pwa-v1';
+const SHELL=['./','./index.html','./manifest.json','./juice-pwa.css','./juice-pwa.js','./rpg-mode.js','./rpg-expansion.js','./rpg-rework-v2.js','./rpg-rework-ui.css.js','./rpg-rework-ui.js','./assets/pwa/icon-192.png','./assets/pwa/icon-512.png'];
+self.addEventListener('install',event=>{
+ event.waitUntil(caches.open(CACHE)
+  .then(cache=>cache.addAll(SHELL.map(path=>new Request(path,{cache:'reload'}))).catch(()=>{}))
+  .then(()=>self.skipWaiting()));
+});
+self.addEventListener('activate',event=>{
+ event.waitUntil(caches.keys()
+  .then(keys=>Promise.all(keys.filter(key=>key.startsWith('towerbound-')&&key!==CACHE).map(key=>caches.delete(key))))
+  .then(()=>self.clients.claim()));
+});
+self.addEventListener('fetch',event=>{
+ const request=event.request;
+ if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
+ event.respondWith(caches.match(request,{ignoreSearch:true}).then(cached=>{
+  if(cached)return cached;
+  return fetch(request).then(response=>{
+   if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy));}
+   return response;
+  }).catch(()=>caches.match('./index.html'));
+ }));
+});
