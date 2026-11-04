@@ -372,7 +372,8 @@ if(balance.combat.turn_based?.enabled){
  const seasonal=live.run.season?.modifier;
  const speedFactors=[seasonal,daily].filter(Boolean).filter((m,i,all)=>all.findIndex(x=>x.id===m.id)===i).map(m=>m.enemy_attack_speed_multiplier||1);
  const factor=speedFactors.reduce((a,b)=>a*b,1);
- assert.equal(enemy.attackIntervalMs,Math.round(2500/factor),'daily and seasonal attack-speed modifiers reach live combat');
+ const baseInterval=balance.combat.turn_based?.enabled?1000:2500;
+ assert.equal(enemy.attackIntervalMs,Math.round(baseInterval/factor),'daily and seasonal attack-speed modifiers reach live combat');
  live.run.dailyModifier={id:'boss_no_heal',boss_no_potion:true};
  live.run.stage.mobs[live.run.stage.enemyIndex]={type:'boss'};
  assert.throws(()=>e.useHealingPotion(c.id),/modifier disables potions/,'daily boss-no-potion rule is enforced');
