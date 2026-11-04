@@ -1,7 +1,7 @@
 name: RPG rework v2 checks
 on:
   push:
-    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, feature/gamefeel, fix/audit-pass]
+    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, feature/gamefeel, feature/combat-visuals-20, fix/audit-pass]
     paths:
       - 'rpg-rework-v2.js'
       - 'rpg-rework-ui.js'
@@ -40,6 +40,7 @@ jobs:
       - run: node tests/gamefeel.test.cjs
       - run: node tests/rpg-rework-v2.test.cjs
       - run: node tests/combat-runtime.test.cjs
+      - run: node tests/combat-visuals.test.cjs
       - run: node tests/full-game-audit.cjs
       - run: npm install --no-save playwright@1.54.2
       - run: npx playwright install --with-deps chromium
