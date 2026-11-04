@@ -4,6 +4,7 @@ const http=require('node:http');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
+const errors=[];
 (async()=>{
  const root=process.cwd();
  const server=http.createServer((req,res)=>{
@@ -20,8 +21,7 @@ const {chromium}=require('playwright');
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
- const errors=[];
- page.on('pageerror',error=>errors.push(error.message));page.on('requestfailed',request=>errors.push('REQUEST '+request.url()+' '+request.failure()?.errorText));
+ page.on('pageerror',error=>errors.push('PAGE '+error.message));page.on('console',msg=>{if(msg.type()==='error')errors.push('CONSOLE '+msg.text());});page.on('requestfailed',request=>errors.push('REQUEST '+request.url()+' '+request.failure()?.errorText));
  try{
   await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady);
