@@ -425,7 +425,7 @@ function resolveEnemyTelegraph(){
   let skill=null,effect=null,damage=stats.attack*combat.player_damage.attack_multiplier*stats.damageMultiplier,damageType="physical",resourceCost=0,guaranteedCrit=false;
   if(skillId){
    skill=skills.find(item=>item.id===skillId)||(classData(c).base_skills||[]).find(item=>item.id===skillId);if(!skill||!engine.skillAvailable(c,skill)){notify("Умение недоступно");return;}
-   effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike;damageType=skill.damage_type||"physical";
+   effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike;const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
    resourceCost=c.classId==="duelist"?resources.class_costs.duelist.attack_skill:resources.action_costs.attack_skill;
    if(battle.freeSkillCharges>0){resourceCost=0;battle.freeSkillCharges--;}
    if(c.resource<resourceCost){notify("Не хватает ресурса: "+classData(c).resource);return;}
