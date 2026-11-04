@@ -50,22 +50,29 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  live.progress.highestEver=20;live.progress.currentStage=21;
  assert.equal(e.speed2Allowed(c.id,20),true);
  assert.equal(e.speed2Allowed(c.id,21),false);
- assert.equal(e.combatIntervalMs(c.id),2500);
- e.setSpeed2(c.id,true,20);
- assert.equal(e.combatIntervalMs(c.id),1250);
- assert.equal(e.xpMultiplier(e.getChar(c.id),20,{speed2:true}),0.4);
- assert.throws(()=>e.xpMultiplier(e.getChar(c.id),21,{speed2:true}),/disabled/);
- assert.equal(balance.combat.combat_speed_base,0.5);
- assert.equal(balance.combat.speed_2x_multiplier,2);
- assert.equal(balance.combat.speed_2x_experience_multiplier,0.8);
- assert.equal(balance.combat.attack_interval,2.5);
+ if(balance.combat.turn_based?.enabled){
+  assert.equal(e.combatIntervalMs(c.id),1000,'turn-based action cadence is one second per turn');
+  assert.equal(balance.combat.attack_interval_units,'turns');
+  assert.equal(balance.combat.turn_based.enabled,true);
+ }else{
+  assert.equal(e.combatIntervalMs(c.id),2500);
+  e.setSpeed2(c.id,true,20);
+  assert.equal(e.combatIntervalMs(c.id),1250);
+  assert.equal(e.xpMultiplier(e.getChar(c.id),20,{speed2:true}),0.4);
+  assert.throws(()=>e.xpMultiplier(e.getChar(c.id),21,{speed2:true}),/disabled/);
+  assert.equal(balance.combat.combat_speed_base,0.5);
+  assert.equal(balance.combat.speed_2x_multiplier,2);
+  assert.equal(balance.combat.speed_2x_experience_multiplier,0.8);
+  assert.equal(balance.combat.attack_interval,2.5);
+ }
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
- assert.ok(Math.abs(e.maxHp(live)-Math.round(500/1.5))<=1);
+ const turnHpScale=balance.combat.turn_based?.player_hp_multiplier??1;
+ assert.ok(Math.abs(e.maxHp(live)-Math.round(500/1.5*turnHpScale))<=1);
  live.level=75;equipSix(live,'Эпическая');
  const stats=e.getCombatStats(live);
- assert.ok(Math.abs(stats.maxHp-50000)<200,'gear-inclusive HP curve restored by six ilvl120 items');
+ assert.ok(Math.abs(stats.maxHp-50000*turnHpScale)<200,'gear-inclusive HP curve respects the selected combat mode');
  assert.ok(Math.abs(stats.dps-4400)<20,'gear-inclusive DPS curve restored by six ilvl120 items');
  assert.equal(e.combatPower(live),25580);
  live.level=100;equipSix(live,'Легендарная');
@@ -91,24 +98,37 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const normal=e.getEnemyStats(c.id,50,{type:'normal'});
  const elite=e.getEnemyStats(c.id,50,{type:'elite'});
  const boss=e.getEnemyStats(c.id,50,{type:'boss'});
- assert.deepEqual([normal.hp,normal.damage],[550,150]);
- assert.deepEqual([elite.hp,elite.damage],[1650,225]);
- assert.deepEqual([boss.hp,boss.damage],[3300,375]);
- assert.equal(normal.attackInterval,2.5);
- assert.equal(boss.attackIntervalMs,2500);
- const newbieBoss=e.getEnemyStats(c.id,10,{type:'boss'});
- assert.equal(newbieBoss.damage,120,'map10 newbie boss is the explicit exception');
+ if(balance.combat.turn_based?.enabled){
+  assert.deepEqual([normal.hp,normal.damage],[183,50]);
+  assert.deepEqual([elite.hp,elite.damage],[549,75]);
+  assert.deepEqual([boss.hp,boss.damage],[1098,125]);
+  assert.equal(normal.attackInterval,1);
+  assert.equal(boss.attackIntervalMs,1000);
+  const newbieBoss=e.getEnemyStats(c.id,10,{type:'boss'});
+  assert.equal(newbieBoss.damage,40,'map10 newbie boss keeps the configured damage exception');
+ }else{
+  assert.deepEqual([normal.hp,normal.damage],[550,150]);
+  assert.deepEqual([elite.hp,elite.damage],[1650,225]);
+  assert.deepEqual([boss.hp,boss.damage],[3300,375]);
+  assert.equal(normal.attackInterval,2.5);
+  assert.equal(boss.attackIntervalMs,2500);
+  const newbieBoss=e.getEnemyStats(c.id,10,{type:'boss'});
+  assert.equal(newbieBoss.damage,120,'map10 newbie boss is the explicit exception');
+ }
  assert.equal(balance.mobs.elite.hp_multiplier,3);
  assert.equal(balance.mobs.elite.damage_multiplier,1.5);
  assert.equal(balance.bosses.hp_multiplier,6);
  assert.equal(balance.bosses.damage_multiplier,2.5);
- assert.equal(balance.bosses.attack_interval_seconds,2.5);
+ assert.equal(balance.bosses.attack_interval_seconds,balance.combat.turn_based?.enabled?1:2.5);
  assert.equal(balance.combat.enemy_hp.elite_multiplier,3);
  assert.equal(balance.combat.enemy_hp.boss_multiplier,6);
  assert.equal(balance.combat.enemy_damage.elite_multiplier,1.5);
  assert.equal(balance.combat.enemy_damage.boss_multiplier,2.5);
 }
-{
+if(balance.combat.turn_based?.enabled){
+ assert.equal(balance.combat.turn_based.player_turn_actions.potions,1,'turn-based mode permits one potion per player turn');
+ assert.equal(balance.healing.potion_heal_fraction,0.4);
+}else{
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=16;equipSix(live);
  const stats=e.getCombatStats(live),boss=e.getEnemyStats(c.id,50,{type:'boss'});
@@ -125,7 +145,12 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.ok(withPotion>0,'40% max-HP potion lets the same build survive map50 boss');
  assert.equal(balance.healing.potion_heal_fraction,0.4);
 }
-{
+if(balance.combat.turn_based?.enabled){
+ const e=makeEngine(()=>0.9),c=makeCharacter(e),live=e.state.characters[0];
+ live.level=24;equipSix(live);
+ const plan=e.stagePlan(live,75);assert.equal(plan.count,7);
+ assert.ok(plan.mobs.every(enemy=>enemy.role),'turn-based gauntlet mobs carry their role actions');
+}else{
  const e=makeEngine(()=>0.9),c=makeCharacter(e),live=e.state.characters[0];
  live.level=24;equipSix(live);
  const plan=e.stagePlan(live,75);assert.equal(plan.count,7);
@@ -151,10 +176,15 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(first.quantity,beforeFirst,'unassigned stack is never consumed');
  assert.equal(live.bag.find(item=>item.id==='second-stack').quantity,1);
  assert.equal(live.run.playerHp,Math.round(e.maxHp(live)*0.6));
- assert.throws(()=>e.usePotionBelt(c.id,0),/slot/);
+ if(balance.combat.turn_based?.enabled){
+  assert.equal(balance.healing.one_potion_per_enemy,false,'turn-based mode enforces potion use once per player turn in the UI');
+  assert.equal(balance.combat.turn_based.player_turn_actions.potions,1);
+ }else{
+  assert.throws(()=>e.usePotionBelt(c.id,0),/slot/);
+  assert.equal(balance.healing.one_potion_per_enemy,true);
+ }
  assert.equal(balance.healing.potion_belt_slots,5);
  assert.equal(balance.healing.potion_stack_limit,25);
- assert.equal(balance.healing.one_potion_per_enemy,true);
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
@@ -342,7 +372,8 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const seasonal=live.run.season?.modifier;
  const speedFactors=[seasonal,daily].filter(Boolean).filter((m,i,all)=>all.findIndex(x=>x.id===m.id)===i).map(m=>m.enemy_attack_speed_multiplier||1);
  const factor=speedFactors.reduce((a,b)=>a*b,1);
- assert.equal(enemy.attackIntervalMs,Math.round(2500/factor),'daily and seasonal attack-speed modifiers reach live combat');
+ const baseInterval=balance.combat.turn_based?.enabled?1000:2500;
+ assert.equal(enemy.attackIntervalMs,Math.round(baseInterval/factor),'daily and seasonal attack-speed modifiers reach live combat');
  live.run.dailyModifier={id:'boss_no_heal',boss_no_potion:true};
  live.run.stage.mobs[live.run.stage.enemyIndex]={type:'boss'};
  assert.throws(()=>e.useHealingPotion(c.id),/modifier disables potions/,'daily boss-no-potion rule is enforced');
