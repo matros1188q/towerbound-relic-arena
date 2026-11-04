@@ -434,7 +434,7 @@ function resolveEnemyTelegraph(){
    if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
    if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier),ticks:effect.ticks||3};
    if(effect.type==="shield"&&effect.shield_fraction)battle.nextDamageShield=Math.round(engine.maxHp(c)*effect.shield_fraction);
-   if(effect.type==="dot"&&effect.damage_multiplier)battle.dot={damage:Math.max(1,Math.round(stats.attack*effect.damage_multiplier)),ticks:effect.ticks||3};
+   if(effect.type==="dot"&&effect.damage_multiplier){battle.dot={damage:Math.max(1,Math.round(stats.attack*effect.damage_multiplier)),ticks:effect.ticks||3};window.TowerboundCombatVisuals?.status("☠ ОТРАВЛЕН");}
    if(effect.type==="buff"){battle.playerDamageBuff=effect.power_multiplier||0;battle.playerBuffUntil=Date.now()+(effect.duration||3)*1000;battle.buffsUsed=(battle.buffsUsed||0)+1;}
    if(effect.type==="debuff"){battle.enemyDamageReduction=effect.power_multiplier||0;battle.enemyDamageReductionUntil=Date.now()+(effect.duration||3)*1000;}
    if(effect.type==="control"){battle.enemyStunned=true;window.TowerboundCombatVisuals?.status("⛓ ОГЛУШЕН");}
