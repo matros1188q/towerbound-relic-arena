@@ -1,0 +1,25 @@
+name: Social endgame checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'social-endgame.js'
+      - 'tests/social-endgame.test.cjs'
+      - 'index.html'
+      - '.github/workflows/social-endgame.yml'
+  pull_request:
+    paths:
+      - 'social-endgame.js'
+      - 'tests/social-endgame.test.cjs'
+      - 'index.html'
+      - '.github/workflows/social-endgame.yml'
+jobs:
+  social-endgame:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check social-endgame.js
+      - run: node tests/social-endgame.test.cjs
