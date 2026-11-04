@@ -27,5 +27,6 @@
       "rarity": "Богоподобная",
       "weight": 2
     }
-  ]
+  ],
+  "guaranteed_boss_rare_epic_from_stage": 3
 }
