@@ -148,7 +148,8 @@
       "classId": "duelist",
       "slots": [
         {
-          "id": "primer"
+          "id": "primer",
+          "stacks": "tempo"
         },
         {
           "id": "detonator",
@@ -171,7 +172,8 @@
       "classId": "shaman",
       "slots": [
         {
-          "id": "primer"
+          "id": "primer",
+          "stacks": "spirit"
         },
         {
           "id": "detonator",
