@@ -393,6 +393,7 @@
   }
   function beginRun(character){
    if(character.run.active)return;
+   if(!character.run.runModifierId)throw new Error("Choose one of three run modifiers before starting");
    const season=ensureSeason(),difficulty=difficultyOf(character);
    character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,rescueUsed:false,weeklyCompletionCounted:false,weeklyCompletionCounted:false,
     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
