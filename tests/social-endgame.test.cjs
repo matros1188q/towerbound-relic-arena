@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
+const source=fs.readFileSync('social-endgame.js','utf8');
+const html=fs.readFileSync('index.html','utf8');
+for(const marker of ['createChallenge:challenge','attackGuildBoss:hit','sendGift:gift','leaderboard:top','function accept(ch)','function guild()','function gift(to)','function topReplay()','function buy(id)'])assert.ok(source.includes(marker),'missing social feature: '+marker);
+assert.match(source,/type==='healing_potion'/,'gift must consume a real healing potion');
+assert.match(source,/season\(\)/,'seasonal shop must rotate on a 30-day cadence');
+assert.match(source,/function top\(\)/,'offline top-100 must exist');
+assert.ok(html.includes('<script src="./social-endgame.js?v=1"></script>'),'social UI must be loaded by index.html');
+console.log('social endgame static checks: OK');
