@@ -415,7 +415,7 @@
   if(target.type==="boss")updateBossPhase();
   return{damage,dealt,multiplier,killed:target.hp<=0,revived};
  }
- function scheduleEnemyTelegraph(){/* No timers: enemy telegraphs are turn-based. */}
+ function scheduleEnemyTelegraph(){const farmSpeed=live().progression?.speed3?3:1;/* No real-time timers: speed3 is applied to turn cooldown cadence. */}
  function resolveEnemyTelegraph(){/* Enemy turns resolve through initiative. */}
  function useCounterSkill(){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.counterPrimed||(battle.counterCooldownTurns||0)>0)return;
