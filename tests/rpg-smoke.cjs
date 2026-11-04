@@ -116,7 +116,7 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('.tb-systems').innerText(),/Туториал · 1\/6/,'tutorial step persists');
   await page.locator('[data-action="pvp-match"]').click();
   await page.locator('[data-action="pvp-fight"]').click();
-  assert.match(await page.locator('.tb-systems').innerText(),/PvP-арена · [1-9]\\d* очков/,'account PvP points update after ghost duel');
+  assert.match(await page.locator('.tb-systems').innerText(),/PvP-арена · [1-9]\d* очков/,'account PvP points update after ghost duel');
   await page.evaluate(()=>{const engine=window.TowerboundRework,c=engine.state.characters[0];c.level=1;c.gear=[null,null,null,null,null,null];c.talents={};c.progress.highestEver=10;c.progress.currentStage=11;engine.setDifficulty(c.id,'easy');window.saveTowerboundRework();});
   await page.locator('.tb-systems .tb-system-top [data-action="map"]').click();
   await page.locator('[data-stage="10"]').click();
