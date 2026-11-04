@@ -539,7 +539,7 @@
    const firstClear=stage>character.progress.highestEver;
    const use2x=flags.speed2===undefined?!!character.run.speed2:!!flags.speed2;
    const multiplier=xpMultiplier(character,stage,{speed2:use2x});
-   const gained=awardXp(character,enemyXp(enemy,stage)*multiplier);
+   const gained=awardXp(character,enemyXp(enemy,stage)*multiplier*(flags.overkillBonus?1.1:1));
    const loot=rollLoot(character,enemy,stage,firstClear,false);
    const materials=[],dropBuff=activeBuff(character,"drop"),dropMultiplier=dropBuff?dropBuff.multiplier:1,eligibility=dropEligibility(enemy,stage,character.heroic);
    const addMaterial=item=>{character.bag.push(item);character.run.foundItemIds.push(item.id);materials.push(item);character.stats.items_found=(character.stats.items_found||0)+1;};

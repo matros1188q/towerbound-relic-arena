@@ -4,6 +4,7 @@ const http=require('node:http');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
+const errors=[];
 (async()=>{
  const root=process.cwd();
  const server=http.createServer((req,res)=>{
@@ -20,10 +21,9 @@ const {chromium}=require('playwright');
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
- const errors=[];
- page.on('pageerror',error=>errors.push(error.message));
+ page.on('pageerror',error=>errors.push('PAGE '+error.message));page.on('console',msg=>{if(msg.type()==='error')errors.push('CONSOLE '+msg.text());});page.on('requestfailed',request=>errors.push('REQUEST '+request.url()+' '+request.failure()?.errorText));
  try{
-  await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
+  await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady);
   await page.waitForSelector('#tbRpg .tb-v2');
   await page.evaluate(()=>{document.querySelector('#titleScreen')?.classList.add('is-hidden');document.querySelector('#accountDialog')?.classList.remove('open');document.body.removeAttribute('data-tb-screen');});
@@ -40,7 +40,7 @@ const {chromium}=require('playwright');
   assert.equal(first.characters[0].silver,100);
   assert.equal(first.characters[0].bag.find(x=>x.type==='healing_potion').quantity,3);
   assert.ok(first.account.premiumUntil>Date.now());
-  await page.reload({waitUntil:'networkidle'});
+  await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForSelector('#tbRpg .tb-v2');
   assert.match(await page.locator('#tbRpg').innerText(),/RPG QA/,'saved roster survives refresh');
   await page.evaluate(()=>{
@@ -53,7 +53,7 @@ const {chromium}=require('playwright');
    c.bag.push({id:'qa-craft',type:'craft_material',quantity:10});
    localStorage.setItem('tb-rpg-v2',JSON.stringify(engine.state));
   });
-  await page.reload({waitUntil:'networkidle'});
+  await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForSelector('#tbRpg .tb-v2');
   await page.locator('[data-action="play"]').click();
   assert.equal(await page.locator('.tb-map-node').count(),250,'all 250 map stages render');
@@ -178,4 +178,4 @@ const {chromium}=require('playwright');
   assert.deepEqual(errors,[],'browser runtime must not throw uncaught errors');
   console.log('Browser smoke passed: seven classes, progression, inventory, shop, systems, combat, fixed 375×812 battle HUD, seven-target viewport stress, landscape layout, stable DOM and 20 rapid attack taps without scroll.');
  }finally{await browser.close();server.close();}
-})().catch(error=>{console.error(error);process.exit(1);});
+})().catch(error=>{console.error(error);console.error('BROWSER ERRORS',errors);process.exit(1);});

@@ -6,7 +6,7 @@
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,routeChoice="standard";
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  function rarityClass(value){return ({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[value]||"common");}
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
@@ -38,7 +38,7 @@
  function mapScreen(){
   const c=live();if(!c)return characterList();
   const daily=engine.dailySnapshot(c.id);
-  const cp=c.progress.currentStage-1,healReady=balance.map.checkpoints.includes(cp)&&c.run.healingPenaltyUntil<c.progress.currentStage&&c.run.checkpointHeals<balance.healing.max_checkpoint_heals_per_run;
+  const cp=c.progress.currentStage-1,healReady=balance.map.checkpoints.includes(cp),trapStage=selectedStage%13===0,antidotes=(c.bag||[]).filter(x=>x.type==="antidote").reduce((n,x)=>n+(x.quantity||1),0)&&c.run.healingPenaltyUntil<c.progress.currentStage&&c.run.checkpointHeals<balance.healing.max_checkpoint_heals_per_run;
   const penalty=(c.run.healingPenaltyFrom||0)>0&&c.progress.currentStage>=(c.run.healingPenaltyFrom||0)&&c.progress.currentStage<=c.run.healingPenaltyUntil;
   const remaining=penalty?c.run.healingPenaltyUntil-c.progress.currentStage+1:0;
   const maxAuto=c.progress.highestEver-balance.auto_battle.highest_ever_offset;
@@ -51,13 +51,13 @@
    nodes+='<button type="button" class="tb-map-node '+(cleared?"cleared ":"")+(selected?"selected ":"")+(isBoss?"boss":"")+'" data-stage="'+stage+'" '+(!accessible?"disabled":"")+'><strong>'+(isBoss?"♛":cleared?"✓":stage)+'</strong><small>'+(isBoss?"БОСС":cleared?"ПРОЙДЕН":"ЭТАП")+'</small></button>';
   }
   return header("Карта 250 уровней",c.name+" · "+clsName(c)+" · Ур. "+c.level)+
-   '<section class="tb-map-screen"><div class="tb-map-top"><div class="tb-hero-chip"><img src="'+portrait(c.classId)+'" alt=""><div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · '+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div><div class="tb-currency"><span>◈ '+c.silver+' серебра</span><span>◆ '+engine.state.account.diamonds+' алмазов</span><span>Мощь '+engine.combatPower(c)+'</span><span>♥ Жизни: '+(c.run.lives||balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives)+'/'+balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives+'</span></div><div class="tb-map-actions"><button data-action="characters">Персонажи</button><button data-action="shop">МАГАЗИН</button><button data-action="profile">ПЕРСОНАЖ</button><button data-action="systems">АККАУНТ</button></div></div>'+
+   '<section class="tb-map-screen"><div class="tb-map-top"><div class="tb-hero-chip"><img src="'+portrait(c.classId)+'" alt=""><div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · '+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div><div class="tb-currency"><span>◈ '+c.silver+' серебра</span><span>◆ '+engine.state.account.diamonds+' алмазов</span><span>Мощь '+engine.combatPower(c)+'</span><span>♥ Жизни: '+(c.run.lives||balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives)+'/'+balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives+'</span></div><div class="tb-map-actions"><button data-action="characters">Персонажи</button><button data-action="shop">МАГАЗИН</button><button data-action="profile">ПЕРСОНАЖ</button><button data-action="systems">АККАУНТ</button><button data-action="speedrun">СПИДРАН · 10 ЭТАПОВ</button></div></div>'+
    '<div class="tb-progressline"><span>Наивысший этап: <b>'+c.progress.highestEver+'/250</b></span><span>Следующий: <b>'+Math.min(c.progress.currentStage,250)+'</b></span><span>Чекпоинты: <b>'+c.progress.checkpoints.join(" · ")+'</b></span></div>'+
    (penalty?'<div class="tb-penalty">−20% ОПЫТА АКТИВНО · ОСТАЛОСЬ '+remaining+' ЭТАЖЕЙ</div>':"")+
-   '<div class="tb-map-layout"><div class="tb-map-scroll"><div class="tb-map-grid">'+nodes+'</div></div><aside class="tb-stage-panel"><div class="tb-eyebrow">ВЫБРАННЫЙ ЭТАП</div><div class="tb-stage-number">'+selectedStage+'</div><h3>'+(selectedStage%balance.map.boss_every===0?"Боссовый бой":"Гаунтлет")+'</h3><p>'+(selectedStage%balance.map.boss_every===0?"Один босс, отдельное сражение":balance.map.gauntlet_ranges.find(r=>selectedStage>=r.min&&selectedStage<=r.max)?.allowed.join(" / ")+" противника подряд")+'</p><small>'+(selectedStage<=c.progress.highestEver?"Повторное прохождение · 50% XP": "Первое прохождение · 100% XP")+'</small><button class="tb-primary tb-wide" data-action="start" id="start">НАЧАТЬ ЭТАП</button>'+
+   '<div class="tb-map-layout"><div class="tb-map-scroll"><div class="tb-map-grid">'+nodes+'</div></div><aside class="tb-stage-panel"><div class="tb-eyebrow">ВЫБРАННЫЙ ЭТАП</div><div class="tb-stage-number">'+selectedStage+'</div><h3>'+(selectedStage%balance.map.boss_every===0?"Боссовый бой":"Гаунтлет")+'</h3><p>'+(selectedStage%balance.map.boss_every===0?"Один босс, отдельное сражение":balance.map.gauntlet_ranges.find(r=>selectedStage>=r.min&&selectedStage<=r.max)?.allowed.join(" / ")+" противника подряд")+'</p><div class="tb-route-choice"><button data-route="standard">Обычный путь</button><button data-route="elite">Элитка + сундук</button></div><small>'+(trapStage?"⚠ ЛОВУШКА · требуется противоядие":"Без ловушки")+(antidotes?" · Противоядий: "+antidotes:"")+(selectedStage<=c.progress.highestEver?" · Повторное прохождение · 50% XP": " · Первое прохождение · 100% XP")+'</small><button class="tb-primary tb-wide" data-action="start" id="start">НАЧАТЬ ЭТАП</button>'+
    '<div class="tb-stage-separator"></div><div class="tb-small-actions">'+button("auto","АВТО-БОЙ ДО "+Math.max(0,maxAuto),maxAuto>=c.progress.currentStage?"":"disabled")+
    button("heal-checkpoint","ХИЛ +50% HP · −20% XP",healReady?"":"disabled")+
-   button("restart","НАЧАТЬ ЗАНОВО","")+
+   button("restart","НАЧАТЬ ЗАНОВО","")+(trapStage?button("buy-antidote","КУПИТЬ ПРОТИВОЯДИЕ · 15 СЕРЕБРА",c.silver<15?"disabled":""):"")+
    '</div><small class="tb-note">Авто-бой доступен только до '+Math.max(0,maxAuto)+' этапа. На боссах и элитках он остановится.</small></aside></div>'+
    '<section class="tb-daily-panel"><div class="tb-daily-heading"><div><div class="tb-eyebrow">ЕЖЕДНЕВНЫЕ ИСПЫТАНИЯ · '+esc(daily.date)+'</div><h3>Задания дня</h3></div><span class="tb-daily-modifier">'+esc(daily.modifier?.name||"Без модификатора")+'</span></div><div class="tb-daily-quests">'+daily.quests.map(q=>'<div class="tb-daily-quest"><div><b>'+esc(q.name)+'</b><small>'+q.progress+'/'+q.target+' · награда '+q.reward_silver+' серебра</small></div><button data-daily-claim="'+q.id+'" '+(!q.complete||q.claimed?"disabled":"")+'>'+(q.claimed?"ПОЛУЧЕНО":"ЗАБРАТЬ")+'</button></div>').join("")+'</div><small class="tb-note">Задания сбрасываются в 00:00 UTC. Прогресс хранится в этом браузере.</small></section><div class="tb-bottom-strip"><span>Персонаж сохраняет уровень, таланты, экипировку и серебро</span><span>'+(c.heroic?"ГЕРОИЧЕСКИЙ РЕЖИМ":"Обычный режим")+'</span></div></section>';
  }
@@ -204,7 +204,7 @@
   if(index===undefined||index===null||!battle.enemies[index]?.alive)index=battle.enemies.find(enemy=>enemy.alive)?.index;
   if(index===undefined)return;
   engine.selectTarget(c.id,index);battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);
-  battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;
+  battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;if(c.heroic&&!battle.enemy.mutation&&battle.enemy.type!=="boss")battle.enemy.mutation=Math.random()<.5?"vampirism":"thorns";
   battle.telegraph=null;battle.counterAction=null;battle.counterUsed=false;battle.pendingKill=false;battle.enemyStunned=false;battle.dot=null;battle.hot=null;battle.parryChance=0;battle.nextDamageShield=0;battle.teleportUsed=false;
   battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;
   battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase():0;
@@ -240,20 +240,20 @@
  function beginStage(){
   const c=live();
   try{
-   const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
+   const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);if(routeChoice==="elite"&&!plan.boss&&c.run.stage?.mobs?.length){c.run.stage.mobs[0].type="elite";c.run.stage.mobs[0].mechanic="shield";}if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
-   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterReadyAt:0,ultimateReadyAt:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,poisonDots:[],telegraph:null,paused:false,proc:null,fx:null};
+   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,turns:0,bossTurns:0,overkillBonus:false,lastElement:null,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterReadyAt:0,ultimateReadyAt:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,poisonDots:[],telegraph:null,paused:false,proc:null,fx:null};
    if(preferredSpeed2&&engine.speed2Allowed(c.id,plan.stage))engine.setSpeed2(c.id,true,plan.stage);
    loadBattleEnemy();screen="battle";startBattleStatusLoop();save();render();
   }catch(error){notify(error.message);}
  }
  function finishCurrentEnemy(){
   clearTimeout(pendingTimer);pendingTimer=null;
-  const c=live(),defeated=battle.enemy,result=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:defeated.index});
+  const c=live(),defeated=battle.enemy,result=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:defeated.index,overkillBonus:!!battle.overkillBonus});battle.overkillBonus=false;
   defeated.hp=0;defeated.alive=false;defeated.dead=true;
   if(result.loot.length)notify("Добыча: "+result.loot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
-   stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этап пройден · HP восстановлено · опыт сохранён");
+   stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;const speedrun=c.run.speedrun;if(speedrun?.active){speedrun.remaining=Math.max(0,(speedrun.remaining||10)-1);if(speedrun.remaining>0&&c.progress.currentStage<=balance.map.total_stages){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Спидран · осталось "+speedrun.remaining);beginStage();return;}c.stats.speedrun_completions=(c.stats.speedrun_completions||0)+1;c.run.speedrun=null;notify("Спидран завершён!");}if(routeChoice==="elite"){c.silver+=30;routeChoice="standard";notify("Элитный сундук · +30 серебра");}battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этап пройден · HP восстановлено · опыт сохранён");
   }else{
    const carryShield=battle.nextDamageShield||0;
    loadBattleEnemy(result.nextTargetIndex);
@@ -320,7 +320,7 @@
   if(target.role==="tank"&&target.alive)multiplier*=1-balance.mobs.roles.tank.damage_reduction;
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
-  const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);
+  const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism")target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&battle.actionIsSkill&&rawDamage>2*hpBeforeHit)battle.overkillBonus=true;
   if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ff596b");playSfx(options.critical?"crit":"hit");}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss")updateBossPhase();
@@ -421,7 +421,7 @@ function resolveEnemyTelegraph(){
  function enemyCounter(){resolveEnemyTelegraph();}
  function playerAction(skillId,slotIndex){
   if(!battle||battle.busy||battle.paused)return;
-  const c=live(),enemy=battle.enemy,combat=balance.combat,resources=balance.resources,stats=engine.getCombatStats(c),playerHpBefore=c.run.playerHp;
+  const c=live(),enemy=battle.enemy,combat=balance.combat,resources=balance.resources,stats=engine.getCombatStats(c),playerHpBefore=c.run.playerHp;battle.turns=(battle.turns||0)+1;if(enemy.type==="boss"){battle.bossTurns=(battle.bossTurns||0)+1;if(battle.bossTurns>15){c.run.playerHp=0;notify("ЯРОСТЬ БОССА · Время вышло");endFromDamage();return;}}
   let skill=null,effect=null,damage=stats.attack*combat.player_damage.attack_multiplier*stats.damageMultiplier,damageType="physical",resourceCost=0,guaranteedCrit=false;
   if(skillId){
    skill=skills.find(item=>item.id===skillId)||(classData(c).base_skills||[]).find(item=>item.id===skillId);if(!skill||!engine.skillAvailable(c,skill)){notify("Умение недоступно");return;}
@@ -437,7 +437,7 @@ function resolveEnemyTelegraph(){
    if(effect.type==="dot"&&effect.damage_multiplier)battle.dot={damage:Math.max(1,Math.round(stats.attack*effect.damage_multiplier)),ticks:effect.ticks||3};
    if(effect.type==="buff"){battle.playerDamageBuff=effect.power_multiplier||0;battle.playerBuffUntil=Date.now()+(effect.duration||3)*1000;battle.buffsUsed=(battle.buffsUsed||0)+1;}
    if(effect.type==="debuff"){battle.enemyDamageReduction=effect.power_multiplier||0;battle.enemyDamageReductionUntil=Date.now()+(effect.duration||3)*1000;}
-   if(effect.type==="control")battle.enemyStunned=true;
+   if(effect.type==="control"){battle.enemyStunned=true;window.TowerboundCombatVisuals?.status("⛓ ОГЛУШЕН");}
    if(effect.type==="parry")battle.parryChance=effect.parry_chance||0;
    damage*=effect.damage_multiplier||combat.player_damage.skill_multiplier;
    battle.skillCooldowns=battle.skillCooldowns||{};battle.skillCooldowns[skill.id]=Date.now()+((effect.cooldown||4)*1000/(combat.combat_speed_base*(c.run.speed2?combat.speed_2x_multiplier:1)));
@@ -452,7 +452,7 @@ function resolveEnemyTelegraph(){
   if(!battle.distinctElements.includes(distinctType)){battle.distinctElements.push(distinctType);if(c.classId==="elemental"&&battle.distinctElements.length>=2){battle.elementalNextBonus=true;battle.proc={...balance.procs.elemental,expiresAt:Date.now()+6000};}}
   const critical=guaranteedCrit||Math.random()<stats.critChance;if(critical)damage*=stats.critMultiplier;
   const variance=1+(Math.random()*2-1)*combat.player_damage.attack_variance;damage=Math.max(1,Math.round(damage*variance));
-  const dealt=applyTargetDamage(enemy,damage,damageType,{critical});
+  battle.actionIsSkill=!!skillId;const hadBossCast=enemy.type==="boss"&&!!battle.telegraph;const dealt=applyTargetDamage(enemy,damage,damageType,{critical});if(skillId&&hadBossCast&&enemy.hp>0){const interrupt=Math.max(1,Math.round(enemy.maxHp*.10));enemy.hp=Math.max(0,enemy.hp-interrupt);battle.enemyHp=enemy.hp;battle.telegraph=null;clearTimeout(pendingTimer);pendingTimer=null;showFloatingText(enemy,"ПРЕРВАНО -"+interrupt,"#ffd34e");notify("Каст босса прерван · −10% HP");}if(skillId&&enemy.hp>0){const current=String(damageType).toLowerCase(),previous=battle.lastElement;if((previous==="fire"&&current==="water")||(previous==="water"&&current==="fire")){battle.enemyStunned=true;window.TowerboundCombatVisuals?.status("💨 ПАР · ОГЛУШЕНИЕ");showFloatingText(enemy,"ПАР · ОГЛУШЕНИЕ","#73cfff");}else if((previous==="lightning"&&current==="water")||(previous==="water"&&current==="lightning")){const shock=Math.min(enemy.hp,Math.round(dealt.dealt));enemy.hp-=shock;battle.enemyHp=enemy.hp;window.TowerboundCombatVisuals?.status("⚡ ЭЛЕКТРОШОК");showFloatingText(enemy,"ЭЛЕКТРОШОК -"+shock,"#ffe45c");}battle.lastElement=current;}if(enemy.hp>0&&dealt.dealt>0){const companion=Math.max(1,Math.round(stats.attack*.5));const pet=applyTargetDamage(enemy,companion,"physical");if(pet.dealt)showFloatingText(enemy,"СПУТНИК -"+pet.dealt,"#a8d8ff");}
   battle.attacksThisFight=(battle.attacksThisFight||0)+1;
   if(c.classId==="assassin"&&critical){battle.assassinNextHit=true;battle.proc={...balance.procs.assassin,expiresAt:Date.now()+8000};}
   if(c.classId==="duelist"&&battle.attacksThisFight>=balance.procs.duelist.attacks_required&&!battle.freeSkillCharges){battle.freeSkillCharges=1;battle.proc={...balance.procs.duelist,expiresAt:Date.now()+8000};}
@@ -548,7 +548,7 @@ function resolveEnemyTelegraph(){
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
   playSfx("click");
-  if(target.dataset.pick){selectedId=target.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;render();return;}
+  if(target.dataset.route){routeChoice=target.dataset.route;render();return;}if(target.dataset.pick){selectedId=target.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;render();return;}
   if(target.dataset.class){selectedClass=target.dataset.class;render();return;}
   if(target.dataset.stage){selectedStage=Number(target.dataset.stage);render();return;}
   if(target.dataset.tab){profileTab=target.dataset.tab;render();return;}
@@ -604,6 +604,8 @@ function resolveEnemyTelegraph(){
    case "delete-character":{const c=live();if(!window.confirm("Удалить персонажа без возможности восстановления?")||!window.confirm("Подтверди удаление: все вещи и прогресс будут утрачены."))return;const typed=window.prompt("Введи имя персонажа:");try{engine.deleteCharacter(c.id,typed,true);selectedId=engine.state.characters[0]?.id||null;screen="characters";battle=null;save();render();notify("Персонаж удалён");}catch(error){notify(error.message);}break;}
    case "shop":screen="shop";render();break;
    case "start":beginStage();break;
+    case "speedrun":{const c=live();c.run.speedrun={active:true,remaining:10,startedAt:Date.now()};selectedStage=c.progress.currentStage;routeChoice="standard";notify("Спидран запущен · 10 этапов");save();beginStage();break;}
+    case "buy-antidote":{const c=live();if(c.silver<15){notify("Недостаточно серебра");break;}c.silver-=15;c.bag.push({id:"antidote-"+Date.now(),type:"antidote",quantity:1});save();render();notify("Противоядие куплено");break;}
    case "attack":playerAction(null,-1);break;
    case "skill":{const skill=activeSkill(live());if(skill)playerAction(skill.id,0);else notify("Нет доступного атакующего умения");break;}
    case "potion":try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано. Слот этой цели потрачен.");}catch(error){notify(error.message);}break;
