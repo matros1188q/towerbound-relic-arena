@@ -120,6 +120,7 @@ const {chromium}=require('playwright');
   await page.evaluate(()=>{const engine=window.TowerboundRework,c=engine.state.characters[0];c.level=1;c.gear=[null,null,null,null,null,null];c.talents={};c.progress.highestEver=10;c.progress.currentStage=11;engine.setDifficulty(c.id,'easy');window.saveTowerboundRework();});
   await page.locator('.tb-systems .tb-system-top [data-action="map"]').click();
   await page.locator('[data-stage="10"]').click();
+  await page.locator('[data-run-modifier]').first().click();
   await page.setViewportSize({width:375,height:812});
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('.tb-arena',{timeout:5000});
