@@ -27,6 +27,7 @@ const beginTestStage=(engine,characterId,stage)=>{
  const revived=e.reviveFromDeath(c.id);
  assert.equal(revived.price,5,'revive price at stage 1 is clamped to 5');
  assert.equal(revived.hp,Math.round(e.maxHp(c)*0.5));
+ e.state.characters[0].run.playerHp=0;
  assert.throws(()=>e.reviveFromDeath(c.id),/already used/);
  assert.throws(()=>e.setRunModifier(c.id,'elite_bounty'),/before starting a run/);
 }
