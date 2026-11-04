@@ -340,7 +340,7 @@
   const windowMs=Math.max(phaseCfg?1000:telegraphs.min_window_ms,Math.min(telegraphs.max_window_ms,phaseCfg?.telegraph_window_ms||telegraphs.default_window_ms));
   const attackSpeed=phaseCfg?.attack_speed_multiplier||1;
   const slowMultiplier=target.slowedUntil>Date.now()?1/(1-(balance.skills.counter_abilities.elemental.speed_reduction||0.3)):1;
-  const attackInterval=Math.round((target.attackIntervalMs||battle.enemyStats.attackIntervalMs||balance.combat.attack_interval*1000)/(attackSpeed)*slowMultiplier);
+  const farmSpeed=live().progression?.speed3?3:1;const attackInterval=Math.round((target.attackIntervalMs||battle.enemyStats.attackIntervalMs||balance.combat.attack_interval*1000)/(attackSpeed*slowMultiplier*farmSpeed));
   const preDelay=Math.max(0,attackInterval-windowMs),visual=settings().disable_telegraphs?{icon:"",label:""}:types[type];
   battle.busy=true;battle.telegraph=null;battle.counterUsed=false;battle.counterAction=null;
   clearTimeout(pendingTimer);render();
