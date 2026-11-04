@@ -394,7 +394,7 @@
   function beginRun(character){
    if(character.run.active)return;
    const season=ensureSeason(),difficulty=difficultyOf(character);
-   character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,rescueUsed:false,weeklyCompletionCounted:false,
+   character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,rescueUsed:false,weeklyCompletionCounted:false,weeklyCompletionCounted:false,
     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
     difficulty:character.difficulty||balance.difficulty.default,season:clone(season),dailyModifier:dailyModifierForNow(),startedAt:now()};
   }
