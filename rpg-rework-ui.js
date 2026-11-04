@@ -178,8 +178,10 @@
  function loadBattleEnemy(index){
   const c=live(),stage=c.run.stage;
   if(!battle.enemies){
-   battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;return{...mob,index:i,id:"enemy-"+i,hp,maxHp:hp,alive:true,attackIntervalMs:stats.attackIntervalMs,shield:mob.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,nextHealAt:Date.now()+(balance.mobs.roles.healer.interval_ms||5000),nextPoisonAt:Date.now()+(balance.mobs.roles.poison.interval_ms||8000),slowedUntil:0};});
-   const healer=battle.enemies.find(enemy=>enemy.role==="healer"&&enemy.alive);index=healer?healer.index:(stage.targetIndex??0);
+   const defeated=new Set(Array.isArray(stage.killedIndices)?stage.killedIndices:[]);
+   battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp,alive=!defeated.has(i);return{...mob,index:i,id:"enemy-"+i,hp:alive?hp:0,maxHp:hp,alive,dead:!alive,attackIntervalMs:stats.attackIntervalMs,shield:mob.mechanic==="shield"&&alive?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,nextHealAt:Date.now()+(balance.mobs.roles.healer.interval_ms||5000),nextPoisonAt:Date.now()+(balance.mobs.roles.poison.interval_ms||8000),slowedUntil:0};});
+   const savedTarget=Number.isInteger(stage.targetIndex)&&battle.enemies[stage.targetIndex]?.alive?stage.targetIndex:null;
+   const healer=battle.enemies.find(enemy=>enemy.role==="healer"&&enemy.alive);index=savedTarget??(healer?healer.index:battle.enemies.find(enemy=>enemy.alive)?.index);
   }
   if(index===undefined||index===null||!battle.enemies[index]?.alive)index=battle.enemies.find(enemy=>enemy.alive)?.index;
   if(index===undefined)return;
