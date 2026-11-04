@@ -504,6 +504,11 @@
    };
    if(enemy.type==="boss"){
     if(firstClear&&drops.guaranteed_epic_first_clear_boss)items.push(createDrop(character,"Эпическая",{bossLoot:true,name:"Трофей первого покорения",itemLevel:stage}));
+    const guaranteedFrom=drops.guaranteed_boss_rare_epic_from_stage??3;
+    if(stage>=guaranteedFrom&&!items.some(item=>["Редкая","Эпическая"].includes(item.rarity))){
+     const guaranteedRarity=random()<0.5?"Редкая":"Эпическая";
+     items.push(createDrop(character,guaranteedRarity,{bossLoot:true,itemLevel:stage,name:guaranteedRarity+" трофей босса"}));
+    }
     if(character.heroic){
      const guaranteed=character.pity.godlikeMisses>=drops.boss_pity_misses;
      if(guaranteed||random()<Math.min(1,drops.heroic_godlike_chance*dropMultiplier)){items.push(uniqueBossDrop("Богоподобная"));character.pity.godlikeMisses=0;}
