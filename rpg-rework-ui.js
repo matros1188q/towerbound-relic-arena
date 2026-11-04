@@ -281,7 +281,7 @@
    if(!enemy.alive)continue;
    if(enemy.role==="healer"&&now>=enemy.nextHealAt){
     const ally=battle.enemies.filter(x=>x.alive&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
-    if(ally){ally.hp=Math.min(ally.maxHp,ally.hp+Math.round(ally.maxHp*balance.mobs.roles.healer.heal_fraction));if(battle.enemy===ally)battle.enemyHp=ally.hp;changed=true;}
+    if(ally){const before=ally.hp;ally.hp=Math.min(ally.maxHp,ally.hp+Math.round(ally.maxHp*balance.mobs.roles.healer.heal_fraction));const healed=ally.hp-before;if(healed>0)showFloatingText(ally,"+"+healed,"#58e38b");if(battle.enemy===ally)battle.enemyHp=ally.hp;changed=true;}
     enemy.nextHealAt=now+balance.mobs.roles.healer.interval_ms;
    }
    if(enemy.role==="poison"&&now>=enemy.nextPoisonAt){
@@ -289,11 +289,11 @@
    }
   }
   for(const dot of battle.poisonDots||[]){
-   if(dot.ticks>0&&now>=dot.nextAt){c.run.playerHp=Math.max(0,c.run.playerHp-dot.damage);dot.ticks--;dot.nextAt=now+1000;changed=true;if(c.run.playerHp<=0){endFromDamage();return;}}
+   if(dot.ticks>0&&now>=dot.nextAt){const before=c.run.playerHp;c.run.playerHp=Math.max(0,c.run.playerHp-dot.damage);const taken=before-c.run.playerHp;if(taken>0){showFloatingText("player","-"+taken,"#ff596b");playSfx("hurt");if(!settings().disable_screen_shake)battle.shakeUntil=Date.now()+240;}dot.ticks--;dot.nextAt=now+1000;changed=true;if(c.run.playerHp<=0){endFromDamage();return;}}
   }
   battle.poisonDots=(battle.poisonDots||[]).filter(dot=>dot.ticks>0);
   if(c.classId==="bishop"&&c.run.playerHp<=engine.maxHp(c)*balance.procs.bishop.threshold&&(battle.bishopProcReadyAt||0)<=now){
-   const proc=balance.procs.bishop;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*proc.value));battle.bishopProcReadyAt=now+proc.cooldown_seconds*1000;battle.proc={...proc,expiresAt:now+3000};changed=true;
+   const proc=balance.procs.bishop,before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*proc.value));if(c.run.playerHp>before)showFloatingText("player","+"+Math.round(c.run.playerHp-before),"#58e38b");battle.bishopProcReadyAt=now+proc.cooldown_seconds*1000;battle.proc={...proc,expiresAt:now+3000};changed=true;
   }
   if(battle.proc&&battle.proc.expiresAt&&battle.proc.expiresAt<=now){battle.proc=null;changed=true;}
   if(battle.fx&&battle.fx.until<=now){battle.fx=null;changed=true;}
