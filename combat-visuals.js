@@ -29,7 +29,7 @@ style.textContent=[
 '@keyframes tb-status-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-48px) scale(1.1)}}'
 ].join(String.fromCharCode(10));document.head.appendChild(style);
 let stageSeen=0,bossSeen='',lastHp='';
-function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){root.classList.remove('tb-low-hp');return;}
+function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){if(root.classList.contains('tb-low-hp'))root.classList.remove('tb-low-hp');return;}
 const match=(root.querySelector('.tb-arena-top')?.textContent||'').match(/ЭТАП\s+(\d+)/i);const stage=Number(match?.[1]||0);
 if(stage){if(!arena.querySelector('.tb-weather')){const layer=document.createElement('div');layer.className='tb-weather';const chapter=Math.floor((stage-1)/50)%3,icons=chapter===0?['❄','✧']:chapter===1?['◆','✦']:['╱','💧'];for(let i=0;i<16;i++){const p=document.createElement('i');p.textContent=icons[i%icons.length];p.style.setProperty('--x',Math.random()*100+'%');p.style.setProperty('--s',8+Math.random()*12+'px');p.style.setProperty('--o',String(.12+Math.random()*.3));p.style.setProperty('--d',3+Math.random()*5+'s');p.style.animationDelay=-Math.random()*7+'s';layer.appendChild(p);}arena.appendChild(layer);}
 if(stage!==stageSeen){arena.style.backgroundPosition=(stage%2?'53%':'47%')+' center';arena.style.setProperty('--tb-back-parallax',(stage%2?'-8px':'8px'));arena.style.setProperty('--tb-front-parallax',(stage%2?'22px':'-22px'));stageSeen=stage;}}
