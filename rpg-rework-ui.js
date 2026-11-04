@@ -440,7 +440,7 @@ function resolveEnemyTelegraph(){
    if(effect.type==="control"){battle.enemyStunned=true;window.TowerboundCombatVisuals?.status("⛓ ОГЛУШЕН");}
    if(effect.type==="parry")battle.parryChance=effect.parry_chance||0;
    damage*=effect.damage_multiplier||combat.player_damage.skill_multiplier;
-   battle.skillCooldowns=battle.skillCooldowns||{};battle.skillCooldowns[skill.id]=Date.now()+((effect.cooldown||4)*1000/(combat.combat_speed_base*(c.run.speed2?combat.speed_2x_multiplier:1)));
+   battle.skillCooldowns=battle.skillCooldowns||{};battle.skillCooldowns[skill.id]=Date.now()+(Math.max(0.5,(effect.cooldown||4)-(c.skillMastery?.[skill.id]>=100?(combat.attack_interval||1):0))*1000/(combat.combat_speed_base*(c.run.speed2?combat.speed_2x_multiplier:1)*(window.TowerboundProgressionSpeed||1)));
    const combo=processCombo(slotIndex);if(combo){damage*=combo.bonus.damage_mult||1;guaranteedCrit=!!combo.bonus.guaranteed_crit;}
    if(skill.branch_id)engine.recordDailyProgress(c.id,"branch_skills_used",1);
    engine.logCombatEvent(c.id,"Использовано умение: "+skill.name);
@@ -659,5 +659,6 @@ function resolveEnemyTelegraph(){
    render();
   }).catch(error=>console.error("Towerbound rework UI failed",error));
  }
+ window.TowerboundProgressionHost={get engine(){return engine;},get character(){return live();},get root(){return root;},get screen(){return screen;},save,render,notify,setScreen(name){screen=name;render();}};
  boot();
 })();

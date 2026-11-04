@@ -258,7 +258,8 @@
    const curve=balance.character_curves.level_to_stage_anchors;
    const base=curve?.length?interpolation(curve,character.level,"level","hp")/(balance.character_curves.base_divisor||1.5):
     stats.base_health+Math.max(0,character.level-1)*stats.health_per_level;
-   return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)));
+   const progression=character.progression||{},runeHealth=(progression.runewords||[]).reduce((value,word)=>value*(1+(word.health||0)),1);
+   return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+(progression.bonusHp||0))*runeHealth));
   }
   function getCombatStats(characterOrId){
    const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
@@ -457,6 +458,7 @@
    const buff=activeBuff(character,"xp");if(buff)multiplier*=buff.multiplier;
    multiplier*=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
    for(const modifier of runModifiers(character))if(modifier.reward_xp_multiplier)multiplier*=modifier.reward_xp_multiplier;
+   multiplier*=1+(character.progression?.eternalXp||0);
    return multiplier;
   }
   function awardXp(character,amount){

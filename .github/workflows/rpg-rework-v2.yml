@@ -8,6 +8,8 @@ on:
       - 'combat-visuals.js'
       - 'progression-24.js'
       - 'rpg-rework-ui.css.js'
+      - 'progression-ux-lore.js'
+      - 'tests/progression-ux-lore.test.cjs'
       - 'rpg-mode.js'
       - 'rpg-expansion.js'
       - 'index.html'
@@ -36,6 +38,8 @@ jobs:
       - run: node --check rpg-rework-v2.js
       - run: node --check progression-24.js
       - run: node --check rpg-rework-ui.js
+      - run: node --check progression-ux-lore.js
+      - run: node tests/progression-ux-lore.test.cjs
       - run: node --check rpg-rework-ui.css.js
       - run: node --check rpg-mode.js
       - run: node --check rpg-expansion.js
