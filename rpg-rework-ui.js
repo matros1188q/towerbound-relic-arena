@@ -137,28 +137,32 @@
   if(phase!==battle.bossPhase){battle.bossPhase=phase;battle.phaseFlashUntil=Date.now()+1000;battle.phaseNotice="ФАЗА "+phase;if(phase===2)addSummonedBossMobs();if(phase===4)battle.bossDeadlineTurns=2;}
   return phase;
  }
- function applyEnemyHit(enemy,raw){
-  const c=live();
-  if(battle.counterPrimed&&!battle.counterConsumed&&(battle.counterTargetIndex===undefined||battle.counterTargetIndex===enemy.index)){
+ function applyEnemyHit(attacker,raw){
+  const c=live(),phase=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp).phase:0;
+  if(battle.counterPrimed&&!battle.counterConsumed&&(battle.counterTargetIndex===undefined||battle.counterTargetIndex===attacker.index)){
    battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=null;
-   const reflected=applyTargetDamage(enemy,raw,"physical");notify("100% отражение · "+reflected.dealt+" урона");
-   if(reflected.killed){battle.telegraph=null;battle.enemy=enemy;battle.targetIndex=enemy.index;engine.selectTarget(c.id,enemy.index);finishCurrentEnemy();}
+   const reflected=applyTargetDamage(attacker,raw,"physical");notify("100% отражение · "+reflected.dealt+" урона");
+   if(reflected.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();}
    return;
   }
-  let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));if((battle.enemyDamageReductionTurns||0)>0)incoming=Math.round(incoming*(1-(battle.enemyDamageReduction||0)));if((battle.nextDamageShield||0)>0){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
+  let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));
+  if((battle.enemyDamageReductionTurns||0)>0)incoming=Math.round(incoming*(1-(battle.enemyDamageReduction||0)));
+  if((battle.nextDamageShield||0)>0){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
   c.run.playerHp=Math.max(0,c.run.playerHp-incoming);notify("Враг наносит "+incoming+" урона");
+  triggerVfx("enemy-hit","physical",phase===4||attacker.type==="boss");
   if(c.run.playerHp<=0)endFromDamage();
  }
  function enemyTurn(enemy){
   if(!battle||!enemy||!enemy.alive)return;
   const c=live();enemy.turnsTaken=(enemy.turnsTaken||0)+1;
+  if(enemy.type==="boss"){battle.bossTurns=(battle.bossTurns||0)+1;if(battle.bossTurns>15){c.run.playerHp=0;notify("ЯРОСТЬ БОССА · Время вышло");endFromDamage();return;}}
   const phase=enemy.type==="boss"?engine.bossPhaseInfo(enemy.hp,enemy.maxHp).phase:0;
   if(enemy.role==="healer"&&enemy.turnsTaken%2===0){
    const ally=battle.enemies.filter(x=>x.alive&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
    if(ally){const amount=Math.round(ally.maxHp*.2);ally.hp=Math.min(ally.maxHp,ally.hp+amount);if(ally.index===battle.targetIndex)battle.enemyHp=ally.hp;notify("Лекарь восстановил "+amount+" HP союзнику");}return;
   }
   if(enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=1;
-  if(enemy.role==="poison"){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("Яд: "+battle.poisonStacks+" стак.");}
+  if(enemy.role==="poison"){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}
   const stats=engine.getEnemyStats(c.id,battle.stage,enemy);
   if(phase===3){battle.telegraph=null;applyEnemyHit(enemy,stats.damage);return;}
   if(phase===4){
@@ -401,7 +405,7 @@
   layer.appendChild(number);setTimeout(()=>number.remove(),1000);
  }
  function applyTargetDamage(target,rawDamage,damageType,options){
-  options=options||{};const c=live();let multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
+  options=options||{};const c=live();let revived=false,multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
   if(target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);target.guardCharges--; }
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
@@ -451,7 +455,7 @@
   c.resource-=cost;battle.playerSkillUsed=true;battle.skillCooldowns=battle.skillCooldowns||{};
   battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns||2);
   let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1),guaranteedCrit=false;
-  const damageType=skill.damage_type||"physical";
+  const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();const damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier),ticks:effect.ticks||3};
   if(effect.type==="shield"&&effect.shield_fraction)battle.nextDamageShield=Math.round(engine.maxHp(c)*effect.shield_fraction);
@@ -468,10 +472,20 @@
   if(runModifier.player_damage_multiplier)damage*=runModifier.player_damage_multiplier;
   if(runModifier.low_hp_threshold&&c.run.playerHp/engine.maxHp(c)<=runModifier.low_hp_threshold)damage*=runModifier.low_hp_damage_multiplier||1;
   const critical=guaranteedCrit||Math.random()<stats.critChance;if(critical)damage*=stats.critMultiplier;
-  const target=battle.enemy;
+  const target=battle.enemy,hadBossCast=!!battle.telegraph;
   let result={killed:false,dealt:0};
+  battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
   if(effect.type==="aoe"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType);if(enemy===target)result=hit;}}
   else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType);
+  battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
+  if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));target.hp=Math.max(0,target.hp-interrupt);battle.enemyHp=target.hp;battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupt+" HP");}
+  if(skill&&target.hp>0){
+   const current=String(damageType).toLowerCase(),previous=battle.lastElement;
+   if((previous==="fire"&&current==="water")||(previous==="water"&&current==="fire")){battle.enemyStunned=true;showFloatingText(target,"ПАР · ОГЛУШЕНИЕ","#73cfff");notify("ПАР · ОГЛУШЕНИЕ");}
+   else if((previous==="lightning"&&current==="water")||(previous==="water"&&current==="lightning")){const shock=Math.min(target.hp,Math.round(result.dealt));target.hp-=shock;battle.enemyHp=target.hp;showFloatingText(target,"ЭЛЕКТРОШОК -"+shock,"#ffe45c");notify("ЭЛЕКТРОШОК");}
+   battle.lastElement=current;
+  }
+  if(target.hp>0&&result.dealt>0){const companion=Math.max(1,Math.round(stats.attack*.5));const pet=applyTargetDamage(target,companion,"physical");if(pet.dealt)showFloatingText(target,"СПУТНИК -"+pet.dealt,"#a8d8ff");}
   battle.attacksThisFight=(battle.attacksThisFight||0)+1;
   if(c.classId==="assassin"&&critical){battle.assassinNextHit=true;battle.proc={...balance.procs.assassin};}
   if(c.classId==="duelist"&&battle.attacksThisFight>=balance.procs.duelist.attacks_required&&!battle.freeSkillCharges){battle.freeSkillCharges=1;battle.proc={...balance.procs.duelist};}
