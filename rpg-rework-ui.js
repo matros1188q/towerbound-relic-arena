@@ -440,7 +440,7 @@ function resolveEnemyTelegraph(){
    if(effect.type==="control"){battle.enemyStunned=true;window.TowerboundCombatVisuals?.status("⛓ ОГЛУШЕН");}
    if(effect.type==="parry")battle.parryChance=effect.parry_chance||0;
    damage*=effect.damage_multiplier||combat.player_damage.skill_multiplier;
-   battle.skillCooldowns=battle.skillCooldowns||{};const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0;const farmSpeed=c.progression?.speed3?3:1;battle.skillCooldowns[skill.id]=Date.now()+(Math.max(1,(effect.cooldown||4)-mastered)*1000/(combat.combat_speed_base*(c.run.speed2?combat.speed_2x_multiplier:1)*farmSpeed));
+   battle.skillCooldowns=battle.skillCooldowns||{};const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0;const speedMultiplier=c.progression?.speed3?3:(c.run.speed2?combat.speed_2x_multiplier:1);battle.skillCooldowns[skill.id]=Date.now()+(Math.max(1,(effect.cooldown||4)-mastered)*1000/(combat.combat_speed_base*speedMultiplier));
    const combo=processCombo(slotIndex);if(combo){damage*=combo.bonus.damage_mult||1;guaranteedCrit=!!combo.bonus.guaranteed_crit;}
    if(skill.branch_id)engine.recordDailyProgress(c.id,"branch_skills_used",1);
    engine.logCombatEvent(c.id,"Использовано умение: "+skill.name);
