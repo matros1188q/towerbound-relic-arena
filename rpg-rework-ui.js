@@ -223,6 +223,7 @@
   const c=live();
   try{
    const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
+   selectedStage=plan.stage;
    battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterReadyAt:0,ultimateReadyAt:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,poisonDots:[],telegraph:null,paused:false,proc:null,fx:null};
    if(preferredSpeed2&&engine.speed2Allowed(c.id,plan.stage))engine.setSpeed2(c.id,true,plan.stage);
    loadBattleEnemy();screen="battle";startBattleStatusLoop();save();render();
