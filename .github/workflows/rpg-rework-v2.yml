@@ -5,6 +5,7 @@ on:
     paths:
       - 'rpg-rework-v2.js'
       - 'rpg-rework-ui.js'
+      - 'combat-visuals.js'
       - 'rpg-rework-ui.css.js'
       - 'rpg-mode.js'
       - 'rpg-expansion.js'
