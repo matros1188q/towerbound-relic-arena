@@ -15,15 +15,21 @@ const classes=['assassin','bishop','dragonkin','destroyer','elemental','duelist'
 assert.deepEqual(Object.keys(balance.procs).sort(),classes.slice().sort(),'all seven class procs are configured');
 assert.deepEqual(Object.keys(balance.skills.counter_abilities).sort(),classes.slice().sort(),'all seven class counters are configured');
 
-assert.equal(balance.combat.telegraphs.default_window_ms,1800,'default telegraph window is 1.8s');
-assert.equal(balance.combat.telegraphs.min_window_ms,1500,'telegraph minimum is 1.5s');
-assert.equal(balance.combat.telegraphs.max_window_ms,2000,'telegraph maximum is 2.0s');
 assert.equal(balance.bosses.phases.length,4,'four boss phases are configured');
-assert.equal(balance.bosses.phases[2].telegraph_window_ms,1000,'phase three telegraph is 1.0s');
-assert.equal(balance.bosses.phases[2].attack_speed_multiplier,1.2,'phase three attacks are 20% faster');
-assert.equal(balance.bosses.phases[3].telegraph_window_ms,1500,'phase four telegraph is 1.5s');
-assert.equal(balance.bosses.phases[3].damage_multiplier,5,'phase four hit is five times stronger');
-assert.equal(balance.bosses.phases[3].easy_miss_remaining_hp_fraction,0.1,'Easy phase-four hit leaves 10% max HP');
+if(balance.combat.turn_based?.enabled){
+ assert.equal(balance.combat.telegraphs.default_window_ms,0,'turn-based combat has no real-time telegraph timer');
+ assert.equal(balance.combat.turn_based.cooldown_unit,'turns','cooldowns are measured in turns');
+ assert.equal(balance.bosses.phases[3].damage_flat,9999,'phase four has a lethal boss strike');
+}else{
+ assert.equal(balance.combat.telegraphs.default_window_ms,1800,'default telegraph window is 1.8s');
+ assert.equal(balance.combat.telegraphs.min_window_ms,1500,'telegraph minimum is 1.5s');
+ assert.equal(balance.combat.telegraphs.max_window_ms,2000,'telegraph maximum is 2.0s');
+ assert.equal(balance.bosses.phases[2].telegraph_window_ms,1000,'phase three telegraph is 1.0s');
+ assert.equal(balance.bosses.phases[2].attack_speed_multiplier,1.2,'phase three attacks are 20% faster');
+ assert.equal(balance.bosses.phases[3].telegraph_window_ms,1500,'phase four telegraph is 1.5s');
+ assert.equal(balance.bosses.phases[3].damage_multiplier,5,'phase four hit is five times stronger');
+ assert.equal(balance.bosses.phases[3].easy_miss_remaining_hp_fraction,0.1,'Easy phase-four hit leaves 10% max HP');
+}
 assert.equal(balance.mobs.vulnerability_multiplier,1.5,'vulnerability is +50%');
 assert.equal(balance.mobs.resistance_multiplier,0.5,'resistance is -50%');
 for(const classId of classes){const ultimate=balance.skills.ultimates[classId];assert.ok(ultimate.cooldown_seconds>=60&&ultimate.cooldown_seconds<=90,classId+' ultimate cooldown is 60–90s');}
@@ -92,9 +98,15 @@ for(const classId of classes){
  const normal=engine.getEnemyStats(character.id,50,{type:'normal'});
  const elite=engine.getEnemyStats(character.id,50,{type:'elite'});
  const boss=engine.getEnemyStats(character.id,50,{type:'boss'});
- assert.deepEqual([normal.hp,normal.damage],[550,150]);
- assert.deepEqual([elite.hp,elite.damage],[1650,225]);
- assert.deepEqual([boss.hp,boss.damage],[3300,375]);
+ if(balance.combat.turn_based?.enabled){
+  assert.deepEqual([normal.hp,normal.damage],[183,50]);
+  assert.deepEqual([elite.hp,elite.damage],[549,75]);
+  assert.deepEqual([boss.hp,boss.damage],[1098,125]);
+ }else{
+  assert.deepEqual([normal.hp,normal.damage],[550,150]);
+  assert.deepEqual([elite.hp,elite.damage],[1650,225]);
+  assert.deepEqual([boss.hp,boss.damage],[3300,375]);
+ }
  const target={weakness:'fire',resistance:'ice'};
  assert.equal(engine.damageTypeMultiplier(target,'fire'),balance.mobs.vulnerability_multiplier);
  assert.equal(engine.damageTypeMultiplier(target,'ice'),balance.mobs.resistance_multiplier);
@@ -107,10 +119,18 @@ for(const classId of classes){
  assert.match(ui,/loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?if\(c\.classId==="destroyer"\)[\s\S]*?battle\.playerDamageBuff=balance\.procs\.destroyer\.value/,'Destroyer kill proc is applied after the target reset');
  for(const classId of classes)assert.ok(ui.includes('balance.procs.'+classId),'runtime proc trigger exists for '+classId);
  assert.match(ui,/function processCombo\([\s\S]*?combo\.bonus\.damage_mult/,'combo completion grants configured damage bonus');
- assert.match(ui,/triggerVfx\("enemy-hit","physical",phase===4\|\|attacker\.type==="boss"\)/,'every boss hit triggers the screen-shake path');
+ if(balance.combat.turn_based?.enabled){
+  assert.match(ui,/function buildInitiative[\s\S]*?sort\(\(a,b\)=>b\.speed-a\.speed/,'turn order sorts actors by speed');
+  assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
+  assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
+  assert.match(ui,/data-action="end-turn"/,'End Turn control is present');
+  assert.match(ui,/tb-target-warning/,'boss and enemy warnings remain visible');
+ }else{
+  assert.match(ui,/triggerVfx\("enemy-hit","physical",phase===4\|\|attacker\.type==="boss"\)/,'every boss hit triggers the screen-shake path');
+  assert.match(ui,/settings\(\)\.disable_telegraphs\?'<div class="tb-telegraph-disabled"/,'telegraph accessibility toggle hides the warning');
+  assert.match(ui,/data-setting="disable_screen_shake"[\s\S]*?data-setting="disable_skill_flashes"[\s\S]*?data-setting="disable_telegraphs"/,'all three accessibility settings are exposed');
+ }
  assert.match(ui,/root\.classList\.add\("tb-death-shaking"\)/,'death applies screen shake unless disabled');
- assert.match(ui,/settings\(\)\.disable_telegraphs\?'<div class="tb-telegraph-disabled"/,'telegraph accessibility toggle hides the warning');
- assert.match(ui,/data-setting="disable_screen_shake"[\s\S]*?data-setting="disable_skill_flashes"[\s\S]*?data-setting="disable_telegraphs"/,'all three accessibility settings are exposed');
  assert.match(ui,/function handleBattleKeys\([\s\S]*?event\.key==="Tab"[\s\S]*?\^\[1-6\]\$/,'keyboard supports target cycling and slots 1–6');
  assert.match(css,/tb-panel-slots\{display:flex;flex-direction:column/,'mobile six-slot panel is vertical');
  assert.match(css,/tb-death-shaking \.tb-death-overlay\{animation:tb-screen-shake/,'death overlay uses the screen-shake animation');
