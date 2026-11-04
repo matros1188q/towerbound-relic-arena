@@ -32,7 +32,7 @@ if(balance.combat.turn_based?.enabled){
 }
 assert.equal(balance.mobs.vulnerability_multiplier,1.5,'vulnerability is +50%');
 assert.equal(balance.mobs.resistance_multiplier,0.5,'resistance is -50%');
-for(const classId of classes){const ultimate=balance.skills.ultimates[classId];assert.ok(ultimate.cooldown_seconds>=60&&ultimate.cooldown_seconds<=90,classId+' ultimate cooldown is 60–90s');}
+for(const classId of classes){const ultimate=balance.skills.ultimates[classId];if(balance.combat.turn_based?.enabled)assert.ok(ultimate.cooldown_turns>=1&&ultimate.cooldown_turns<=10,classId+' ultimate cooldown is turn-based');else assert.ok(ultimate.cooldown_seconds>=60&&ultimate.cooldown_seconds<=90,classId+' ultimate cooldown is 60–90s');}
 for(const classId of classes){
  const counter=balance.skills.counter_abilities[classId];
  const reaction=engine.resolveReaction('strong_hit',counter.id,classId,100);
