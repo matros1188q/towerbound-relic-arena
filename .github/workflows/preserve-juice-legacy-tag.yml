@@ -1,0 +1,27 @@
+name: Preserve pre-Juice legacy tag
+on:
+  push:
+    branches: [feature/juice-and-pwa]
+permissions:
+  contents: write
+jobs:
+  tag-legacy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create immutable legacy tag
+        env:
+          BASELINE: 6e3306f3570ec152150058a7144a996acf5a887c
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG="legacy-before-juice-and-pwa"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            TARGET="$(git rev-list -n 1 "refs/tags/$TAG")"
+            test "$TARGET" = "$BASELINE"
+          else
+            git tag -a "$TAG" "$BASELINE" -m "Last main build before Juice, audio and PWA changes"
+            git push origin "refs/tags/$TAG"
+          fi
