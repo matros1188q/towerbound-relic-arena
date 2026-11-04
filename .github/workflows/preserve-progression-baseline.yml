@@ -1,4 +1,4 @@
-name: Preserve pre-progression baseline
+name: Preserve pre-progression baseline # PR-triggered exact tag repair
 on:
   push:
     branches: [main]
