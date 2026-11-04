@@ -456,6 +456,7 @@
    if(penaltyFrom>0&&stage>=penaltyFrom&&stage<=character.run.healingPenaltyUntil)multiplier*=balance.xp_curve.healing_penalty_multiplier;
    const buff=activeBuff(character,"xp");if(buff)multiplier*=buff.multiplier;
    multiplier*=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
+   multiplier*=1+(character.progression?.permanentXpBonus||0);
    for(const modifier of runModifiers(character))if(modifier.reward_xp_multiplier)multiplier*=modifier.reward_xp_multiplier;
    return multiplier;
   }
