@@ -305,13 +305,23 @@
   if(!settings().disable_skill_flashes)battle.fx={kind,color:colors[damageType]||"#e8d7a8",until:Date.now()+520};
   if(critical&&!settings().disable_screen_shake)battle.shakeUntil=Date.now()+300;
  }
+ function showFloatingText(target,text,color){
+  const layer=root.querySelector(".tb-fx-layer");if(!layer)return;
+  const number=document.createElement("span");number.className="tb-floating-damage";
+  number.classList.add(color==="#58e38b"?"is-heal":color==="#ffd34e"?"is-crit":"is-damage");
+  number.textContent=String(text);number.style.color=color;
+  const anchor=target==="player"?root.querySelector(".tb-battle-hero"):
+   target&&typeof target==="object"?(target.index===battle?.targetIndex?root.querySelector(".tb-enemy-focus"):root.querySelector('.tb-target-card[data-target="'+target.index+'"]')):root.querySelector(".tb-enemy-focus");
+  if(anchor){const box=anchor.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top+Math.min(20,box.height*.12))+"px";}
+  layer.appendChild(number);setTimeout(()=>number.remove(),1000);
+ }
  function applyTargetDamage(target,rawDamage,damageType,options){
   options=options||{};const c=live();let multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
   if(target.role==="tank"&&target.alive)multiplier*=1-balance.mobs.roles.tank.damage_reduction;
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);
-  if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span"),card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');number.className="tb-floating-damage";number.textContent="-"+dealt;if(card){const box=card.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top)+"px";}layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
+  if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ff596b");playSfx(options.critical?"crit":"hit");}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss")updateBossPhase();
   return{damage,dealt,multiplier,killed:target.hp<=0};
@@ -363,6 +373,7 @@ function resolveEnemyTelegraph(){
   if(battle.nextDamageShield){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
   if(attacker.mechanic==="reflect"&&!countered)incoming+=Math.round(raw*balance.elite_mechanics.reflect.damage_fraction);
   c.run.playerHp=Math.max(0,c.run.playerHp-incoming);
+  if(incoming>0){showFloatingText("player","-"+incoming,"#ff596b");playSfx("hurt");if(!settings().disable_screen_shake)battle.shakeUntil=Date.now()+280;}
   if(countered&&counterId==="parry")applyTargetDamage(attacker,combatStats.attack*balance.skills.counter_abilities.duelist.damage_multiplier,"physical");
   battle.telegraph=null;battle.counterAction=null;battle.busy=false;
   engine.logCombatEvent(c.id,(countered?"Контр-умение отражает ":"Вражеская атака наносит ")+incoming+" урона");
@@ -409,10 +420,10 @@ function resolveEnemyTelegraph(){
  function enemyCounter(){resolveEnemyTelegraph();}
  function playerAction(skillId,slotIndex){
   if(!battle||battle.busy||battle.paused)return;
-  const c=live(),enemy=battle.enemy,combat=balance.combat,resources=balance.resources,stats=engine.getCombatStats(c);
+  const c=live(),enemy=battle.enemy,combat=balance.combat,resources=balance.resources,stats=engine.getCombatStats(c),playerHpBefore=c.run.playerHp;
   let skill=null,effect=null,damage=stats.attack*combat.player_damage.attack_multiplier*stats.damageMultiplier,damageType="physical",resourceCost=0,guaranteedCrit=false;
   if(skillId){
-   skill=skills.find(item=>item.id===skillId);if(!skill||!engine.skillAvailable(c,skill)){notify("Умение недоступно");return;}
+   skill=skills.find(item=>item.id===skillId)||(classData(c).base_skills||[]).find(item=>item.id===skillId);if(!skill||!engine.skillAvailable(c,skill)){notify("Умение недоступно");return;}
    effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike;damageType=skill.damage_type||"physical";
    resourceCost=c.classId==="duelist"?resources.class_costs.duelist.attack_skill:resources.action_costs.attack_skill;
    if(battle.freeSkillCharges>0){resourceCost=0;battle.freeSkillCharges--;}
@@ -440,13 +451,14 @@ function resolveEnemyTelegraph(){
   if(!battle.distinctElements.includes(distinctType)){battle.distinctElements.push(distinctType);if(c.classId==="elemental"&&battle.distinctElements.length>=2){battle.elementalNextBonus=true;battle.proc={...balance.procs.elemental,expiresAt:Date.now()+6000};}}
   const critical=guaranteedCrit||Math.random()<stats.critChance;if(critical)damage*=stats.critMultiplier;
   const variance=1+(Math.random()*2-1)*combat.player_damage.attack_variance;damage=Math.max(1,Math.round(damage*variance));
-  const dealt=applyTargetDamage(enemy,damage,damageType);
+  const dealt=applyTargetDamage(enemy,damage,damageType,{critical});
   battle.attacksThisFight=(battle.attacksThisFight||0)+1;
   if(c.classId==="assassin"&&critical){battle.assassinNextHit=true;battle.proc={...balance.procs.assassin,expiresAt:Date.now()+8000};}
   if(c.classId==="duelist"&&battle.attacksThisFight>=balance.procs.duelist.attacks_required&&!battle.freeSkillCharges){battle.freeSkillCharges=1;battle.proc={...balance.procs.duelist,expiresAt:Date.now()+8000};}
   if(c.classId==="dragonkin"&&battle.attacksThisFight>=balance.procs.dragonkin.attacks_required&&!battle.dragonkinProc){battle.nextDamageShield=Math.round(engine.maxHp(c)*balance.procs.dragonkin.value);battle.dragonkinProc=true;battle.proc={...balance.procs.dragonkin,expiresAt:Date.now()+8000};}
   if(c.classId==="shaman"&&battle.buffsUsed>=balance.procs.shaman.buffs_required){battle.poisonDots=[];battle.buffsUsed=0;battle.proc={...balance.procs.shaman,expiresAt:Date.now()+5000};}
   if(enemy.mechanic==="reflect"&&dealt.dealt>0)c.run.playerHp=Math.max(0,c.run.playerHp-Math.round(dealt.dealt*balance.elite_mechanics.reflect.damage_fraction));
+  if(c.run.playerHp>playerHpBefore)showFloatingText("player","+"+Math.round(c.run.playerHp-playerHpBefore),"#58e38b");
   if(c.run.playerHp<=0){endFromDamage();return;}
   triggerVfx(skill?"skill":"attack",damageType,critical);
   if(enemy.hp<=0){finishCurrentEnemy();return;}
