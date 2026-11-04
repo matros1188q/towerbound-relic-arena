@@ -2,7 +2,11 @@
 const getRoot=()=>document.querySelector('#tbRpg .tb-v2');
 const style=document.createElement('style');style.id='tb-combat-visuals-style';
 style.textContent=[
-'#tbRpg .tb-v2 .tb-arena{position:relative;isolation:isolate;background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),url(./assets/arena-background.webp);background-size:cover;background-position:center;transition:background-position 1.2s ease}',\n'#tbRpg .tb-v2 .tb-arena:before,#tbRpg .tb-v2 .tb-arena:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background-repeat:no-repeat;background-size:cover;transition:transform 1.2s ease}',\n'#tbRpg .tb-v2 .tb-arena:before{background-image:linear-gradient(180deg,transparent,rgba(5,8,12,.25)),radial-gradient(ellipse at 50% 20%,rgba(100,130,150,.15),transparent 65%);transform:translateX(var(--tb-back-parallax,0px))}',\n'#tbRpg .tb-v2 .tb-arena:after{background-image:linear-gradient(90deg,rgba(5,8,12,.3),transparent 25%,transparent 75%,rgba(5,8,12,.3));transform:translateX(var(--tb-front-parallax,0px))}',\n'#tbRpg .tb-v2 .tb-arena>*{position:relative;z-index:2}',
+'#tbRpg .tb-v2 .tb-arena{position:relative;isolation:isolate;background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),url(./assets/arena-background.webp);background-size:cover;background-position:center;transition:background-position 1.2s ease}',
+'#tbRpg .tb-v2 .tb-arena:before,#tbRpg .tb-v2 .tb-arena:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background-repeat:no-repeat;background-size:cover;transition:transform 1.2s ease}',
+'#tbRpg .tb-v2 .tb-arena:before{background-image:linear-gradient(180deg,transparent,rgba(5,8,12,.25)),radial-gradient(ellipse at 50% 20%,rgba(100,130,150,.15),transparent 65%);transform:translateX(var(--tb-back-parallax,0px))}',
+'#tbRpg .tb-v2 .tb-arena:after{background-image:linear-gradient(90deg,rgba(5,8,12,.3),transparent 25%,transparent 75%,rgba(5,8,12,.3));transform:translateX(var(--tb-front-parallax,0px))}',
+'#tbRpg .tb-v2 .tb-arena>*{position:relative;z-index:2}',
 '#tbRpg .tb-v2 .tb-enemy-focus.tb-hit-spark{animation:tb-hit-spark .2s ease-out}',
 '#tbRpg .tb-v2 .tb-target-card.tb-death-dissolve{animation:tb-mob-death .55s ease-in forwards}',
 '#tbRpg .tb-v2 .tb-panel-skill:not(:disabled){animation:tb-skill-ready 1.8s ease-in-out infinite alternate}',
@@ -21,7 +25,8 @@ style.textContent=[
 '@keyframes tb-boss-intro{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0;visibility:hidden}}',
 '@keyframes tb-weather-fall{to{transform:translate3d(-15vw,120vh,0) rotate(180deg)}}',
 '@keyframes tb-status-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-48px) scale(1.1)}}'
-].join('\n');document.head.appendChild(style);
+].join('
+');document.head.appendChild(style);
 let stageSeen=0,bossSeen='',lastHp='';
 function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){root.classList.remove('tb-low-hp');return;}
 const match=(root.querySelector('.tb-arena-top')?.textContent||'').match(/ЭТАП\s+(\d+)/i);const stage=Number(match?.[1]||0);
