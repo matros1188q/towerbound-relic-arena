@@ -381,7 +381,13 @@
    const highest=character.progress.highestEver;
    if(stage>highest+1)throw new Error("Stage is locked until the previous stage is cleared");
    if(stage<1||stage>balance.map.total_stages)throw new Error("Invalid map stage");
-   if(character.run.stage)throw new Error("A stage is already active");
+   // A page refresh can leave the persisted run.stage in localStorage while
+   // the UI battle object is recreated. Re-entering that same stage is a
+   // resume operation, not a second stage start.
+   if(character.run.stage){
+    if(Number(character.run.stage.stage)===Number(stage))return clone(character.run.stage);
+    throw new Error("Another stage is already active. Resume or finish it first.");
+   }
    beginRun(character);
    const plan=stagePlan(character,stage),previousStage=character.run.stage;
    character.run.stage={...plan,enemyIndex:0,targetIndex:0,killedIndices:[],potionUsedTargets:[],potionSlotUsed:false,startedAt:now(),bossPhase:1};
