@@ -322,7 +322,7 @@
   const roleIcon={healer:"✚",poison:"☠",tank:"🛡",normal:"",boss:"♛"},skillRoleLabels=["НАКОПЛЕНИЕ","ДЕТОНАТОР","МАССОВАЯ АТАКА","ТАКТИКА"];
   const telegraph=battle.telegraph?'<div class="tb-telegraph tb-target-warning '+(battle.telegraph.lethal?"lethal":"strong_hit")+'"><b>'+(battle.telegraph.icon||"⚔")+'</b><span>'+esc(battle.telegraph.label)+'</span><small>СЛЕДУЮЩИЙ ХОД</small></div>':'<div class="tb-telegraph-idle">Враг пока не заряжает атаку</div>';
   const targets=battle.enemies.map(target=>'<button class="tb-target-card '+(target.index===battle.targetIndex?"selected ":"")+(!target.alive?"defeated":"")+'" data-target="'+target.index+'" '+(!target.alive?"disabled":"")+'><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+(target.hp/Math.max(1,target.maxHp)*100)+'%"></i></span><small>'+Math.ceil(target.hp)+' HP</small></button>').join("");
-  const skillsMarkup=slots.map((skill,index)=>{const cd=skill?(battle.skillCooldowns?.[skill.id]||0):99;return '<button class="tb-panel-skill" data-panel-skill="'+(skill?.id||"")+'" data-panel-slot="'+index+'" '+(!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0?"disabled":"")+'><kbd>'+(index+1)+'</kbd><b>'+esc(skill?.name||"Умение не открыто")+'</b><small>'+(skill?elementIcon(skill.damage_type)+" "+elementLabel(skill.damage_type)+(cd>0?" · "+cd+"х":""):"Откроется по уровню")+'</small></button>';}).join("");
+  const skillsMarkup=slots.map((skill,index)=>{const cd=skill?(battle.skillCooldowns?.[skill.id]||0):99,evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null;return '<button class="tb-panel-skill" data-panel-skill="'+(skill?.id||"")+'" data-panel-slot="'+index+'" '+(!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0?"disabled":"")+'><kbd>'+(index+1)+'</kbd><b>'+(evolved?evolved.icon+' ':'')+esc(evolved?.name||skill?.name||"Умение не открыто")+'</b><small>'+(evolved?esc(evolved.desc)+' · ':'')+(skill?elementIcon(skill.damage_type)+" "+elementLabel(skill.damage_type)+(cd>0?" · "+cd+"х":""):"Откроется по уровню")+'</small></button>';}).join("");
   const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
   const counterButton='<button class="tb-panel-skill counter" data-counter="1" '+(battle.actor?.type!=="player"||battle.busy||battle.playerSkillUsed||battle.counterPrimed||counterCd>0||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?"disabled":"")+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>Контр-умение · '+counterCd+'х</small></button>';
   const ultButton='<button class="tb-panel-skill ultimate" data-ultimate="1" '+(battle.actor?.type!=="player"||battle.playerSkillUsed||ultCd>0||c.resource<(ultimate.resource_cost||balance.resources.action_costs.ultimate)?"disabled":"")+'><kbd>6</kbd><b>'+esc(ultimate.name)+'</b><small>Ультимейт · '+ultCd+'х</small></button>';
@@ -416,10 +416,10 @@
   layer.appendChild(number);setTimeout(()=>number.remove(),1000);
  }
  function applyTargetDamage(target,rawDamage,damageType,options){
-  options=options||{};const c=live();let revived=false,multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
-  if(target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);target.guardCharges--; }
+  options=options||{};const c=live();let revived=false,multiplier=options.ignoreArmor?1:engine.damageTypeMultiplier(target,damageType||"physical");
+  if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);target.guardCharges--; }
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
-  if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
+  if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism")target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&battle.actionIsSkill&&battle.actionIsPrimaryHit&&rawDamage>2*hpBeforeHit)battle.overkillBonus=true;
   if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ff596b");playSfx(options.critical?"crit":"hit");}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
@@ -488,8 +488,9 @@
   const target=battle.enemy,hadBossCast=!!(battle.telegraph&&battle.enemy?.type==="boss");
   let result={killed:false,dealt:0};
   battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
-  if(effect.type==="aoe"||evolvedSkill?.id==="burst"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType);if(enemy===target)result=hit;}}
-  else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType);
+  const evolutionHitOptions=evolvedSkill?.id==="pierce"?{ignoreArmor:true}:undefined;
+  if(effect.type==="aoe"||evolvedSkill?.id==="burst"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType,evolutionHitOptions);if(enemy===target)result=hit;}}
+  else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType,evolutionHitOptions);
   battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
   if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));target.hp=Math.max(0,target.hp-interrupt);battle.enemyHp=target.hp;battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupt+" HP");}
   if(skill&&target.hp>0){
