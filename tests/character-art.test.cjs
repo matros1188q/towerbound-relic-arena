@@ -38,7 +38,7 @@ assert.ok(referenced.length >= 20, 'expected class, mob and boss artwork referen
 for (const file of referenced) assert.ok(inventory.has(file), 'referenced image absent from inbox: ' + file);
 
 assert.ok(html.includes('./art-inbox/01-characters/'), 'legacy scene art base path');
-assert.ok(html.includes('src="./art-inbox/01-characters/'+src'), 'legacy enemy renderer uses inbox');
+assert.ok(html.includes("src=\"./art-inbox/01-characters/'+src"), 'legacy enemy renderer uses inbox');
 const enemyArrayStart = html.indexOf('const TB_ENEMY_ART_FILES=');
 const enemyArrayEnd = html.indexOf('function updateEnemy()', enemyArrayStart);
 assert.ok(enemyArrayStart >= 0 && enemyArrayEnd > enemyArrayStart, 'legacy enemy/boss mapping arrays');
