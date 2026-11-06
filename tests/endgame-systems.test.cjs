@@ -34,7 +34,7 @@ function has(text, needle, label) {
 ].forEach(([needle,label]) => has(source,needle,label));
 [
   ['evolvedSkill?.id==="burst"', 'AoE skill evolution'],
-  ['ignoreArmor?1:engine.damageTypeMultiplier', 'armor bypass'],
+  ['!options.ignoreArmor&&target.role==="tank"', 'armor bypasses armor guard'],
   ['!options.ignoreArmor&&target.shield>0', 'armor bypasses shield'],
   ['evolved?evolved.icon', 'evolved skill icon']
 ].forEach(([needle,label]) => has(combat,needle,label));
