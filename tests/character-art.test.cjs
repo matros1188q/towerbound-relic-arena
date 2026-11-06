@@ -21,7 +21,9 @@ const requiredPortraits = [
   'c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg', // shaman
   'ba3335bd-e111-4f86-90e6-4f2085cae804.jpg', // healer
   '52cbe629-d020-4077-8a86-2469a3cda66d.jpg', // poison
-  'beb6557c-f2db-4426-b741-d0faa9c2d80f.jpg'  // tank
+  'beb6557c-f2db-4426-b741-d0faa9c2d80f.jpg', // tank
+  '70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg', // forest spirit variant
+  '1ce15225-7162-4858-8fa7-41363266e71e.jpg'  // void scythe boss
 ];
 for (const file of requiredPortraits) {
   assert.ok(inventory.has(file), 'missing art inbox file: ' + file);
@@ -34,7 +36,7 @@ assert.ok(ui.includes('enemyPortrait(enemy)'), 'focused enemy portrait');
 assert.ok(ui.includes('object-fit:contain!important'), 'RPG artwork object-fit containment');
 
 const referenced = imageFiles.filter(file => ui.includes(file) || html.includes(file));
-assert.ok(referenced.length >= 20, 'expected class, mob and boss artwork references');
+assert.equal(referenced.length, imageFiles.length, 'all inbox artwork must be used by at least one scene');
 for (const file of referenced) assert.ok(inventory.has(file), 'referenced image absent from inbox: ' + file);
 
 assert.ok(html.includes('./art-inbox/01-characters/'), 'legacy scene art base path');
@@ -45,6 +47,6 @@ assert.ok(enemyArrayStart >= 0 && enemyArrayEnd > enemyArrayStart, 'legacy enemy
 const legacyArrays = html.slice(enemyArrayStart, enemyArrayEnd);
 assert.equal(legacyArrays.split('.jpg').length - 1, 30, '20 mob and 10 boss portrait slots');
 assert.ok(!legacyArrays.includes('.png'), 'legacy enemy lists still reference old PNG placeholders');
-assert.ok(html.includes('rpg-rework-ui.js?v=14'), 'RPG UI cache version was not bumped');
+assert.ok(html.includes('rpg-rework-ui.js?v=15'), 'RPG UI cache version was not bumped');
 
 console.log('Character art integration checks: OK (' + imageFiles.length + ' inbox images, ' + referenced.length + ' referenced UUID images)');
