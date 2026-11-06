@@ -37,7 +37,7 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('#tbRpg').innerText(),/RPG QA/,'created character appears in roster');
   const first=await page.evaluate(()=>JSON.parse(localStorage.getItem('tb-rpg-v2')));
   assert.equal(first.characters.length,1);
-  assert.equal(first.characters[0].silver,300);
+  assert.equal(first.characters[0].silver,100,'starter silver matches account.json');
   assert.equal(first.characters[0].bag.find(x=>x.type==='healing_potion').quantity,3);
   assert.ok(first.account.premiumUntil>Date.now());
   await page.reload({waitUntil:'networkidle'});
