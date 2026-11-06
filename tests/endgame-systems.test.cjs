@@ -22,6 +22,8 @@ function has(text, needle, label) {
   ['const freeRewards={5:[\'silver\']', 'free reward track'],
   ['const premiumRewards={5:[\'chest\']', 'premium reward track'],
   ['function guildState()', 'daily guild boss'],
+  ['!Number.isFinite(Number(g.hp))', 'fresh-save guild HP initialization'],
+  ['g.hp=Math.max(0,Math.min(g.maxHp', 'guild HP bounds validation'],
   ['maxHp:1000000', 'one-million boss HP'],
   ['g.respawnAt=Date.now()+DAY', '24-hour respawn'],
   ['function helpGuild()', 'guild help action'],
