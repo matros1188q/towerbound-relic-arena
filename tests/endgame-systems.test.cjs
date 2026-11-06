@@ -7,7 +7,7 @@ const combat=fs.readFileSync('rpg-rework-ui.js','utf8');
 for(const marker of [
  'function startTower()','Math.pow(1.05','function finishEncounter(won)',
  'function guildState()','maxHp:1000000','g.respawnAt=Date.now()+DAY',
- 'function helpGuild()','function awardGuildChest()','function openGuildChest()','Пепельный охотник','data-eg="guild-chest"','function renderPass()','function buyPass()',
+ 'function helpGuild()','function awardGuildChest()','function openGuildChest()','Пепельный охотник','data-eg="guild-chest"','stopImmediatePropagation();open(\'guild\')','function renderPass()','function buyPass()',
  'const freeRewards=','const premiumRewards=','function evolveSkill(',
  'skillUses','function trackSkillUse','data-eg-record','tbTowerMapBtn','getSkillEvolution:id=>data.evolution[player()?.id]?.[id]||null','const freeRewards={5:[\'silver\']','const premiumRewards={5:[\'chest\']'
 ])assert.ok(source.includes(marker),'missing endgame feature: '+marker);
