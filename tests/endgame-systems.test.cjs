@@ -6,7 +6,7 @@ const html=fs.readFileSync('index.html','utf8');
 const combat=fs.readFileSync('rpg-rework-ui.js','utf8');
 for(const marker of [
  'function startTower()','Math.pow(1.05','function finishEncounter(won)',
- 'function guildState()','maxHp:1000000','respawnAt:Date.now()+DAY',
+ 'function guildState()','maxHp:1000000','g.respawnAt=Date.now()+DAY',
  'function helpGuild()','function renderPass()','function buyPass()',
  'const freeRewards=','const premiumRewards=','function evolveSkill(',
  'skillUses','function trackSkillUse','data-eg-record','tbTowerMapBtn','getSkillEvolution:id=>data.evolution[player()?.id]?.[id]||null','const freeRewards={5:[\'silver\']','const premiumRewards={5:[\'chest\']'
