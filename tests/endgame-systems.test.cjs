@@ -17,6 +17,8 @@ assert.match(combat,/effect\.type==="aoe"\|\|evolvedSkill\?\.id==="burst"/);
 assert.match(source,/if\(result\?\.stageComplete\)addBP\(10\)/);
 assert.match(source,/addBP\(15\)/);
 assert.match(source,/Math\.pow\(1\.05,Math\.max\(0,floor-1\)\)/);
+assert.match(source,/base=Math\.max\(90,s\.maxHp\*1\.35\)/);
+assert.doesNotMatch(source,/variance=/);
 assert.match(source,/g\.helpDay===dayKey\(\)/);
 assert.match(source,/g\.respawnAt&&Date\.now\(\)>=g\.respawnAt/);
 assert.ok(html.includes('<script src="./endgame-systems.js?v=3"></script>'),'endgame script must load');
