@@ -40,5 +40,5 @@ function has(text, needle, label) {
   ['!options.ignoreArmor&&target.shield>0', 'armor bypasses shield'],
   ['evolved?evolved.icon', 'evolved skill icon']
 ].forEach(([needle,label]) => has(combat,needle,label));
-has(html,'<script src="./endgame-systems.js?v=6"></script>','endgame script inclusion');
+has(html,'<script src="./endgame-systems.js?v=7"></script>','endgame script inclusion');
 console.log('Endgame systems static checks: OK');
