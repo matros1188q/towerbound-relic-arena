@@ -38,7 +38,8 @@
   "f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg",
   "678287f6-5d47-407d-a281-65b1e7eb2463.jpg",
   "fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd.jpg",
-  "f50e3768-351d-4b8a-9939-ca398bdd65d7.jpg"
+  "f50e3768-351d-4b8a-9939-ca398bdd65d7.jpg",
+  "70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg"
  ];
  const bossPortraits=[
   "289412ff-344a-402b-b141-3e739f1d1c1c.jpg",
@@ -50,7 +51,8 @@
   "64cdadd1-93eb-4490-9df8-e7acf5077cde.jpg",
   "be7caee1-03c5-49ca-989c-bbab2c3d2063.jpg",
   "00cba976-f8e1-4691-af34-7e38bc3e085e.jpg",
-  "ead1c2a5-2854-4a9c-83b7-d8964fd737cb.jpg"
+  "ead1c2a5-2854-4a9c-83b7-d8964fd737cb.jpg",
+  "1ce15225-7162-4858-8fa7-41363266e71e.jpg"
  ];
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
