@@ -14,6 +14,14 @@ for(const marker of [
 assert.match(source,/if\(c\.level<50\)throw Error\('Эволюция доступна с 50 уровня персонажа'\)/);
 assert.match(combat,/evolvedSkill\?\.id==="pierce"\)damage\*=1\.4/);
 assert.match(combat,/effect\.type==="aoe"\|\|evolvedSkill\?\.id==="burst"/);
+assert.match(source,/function claimTowerRewards\(t\)[\\s\\S]*engine\\.awardXp\(c,xp\)/);
+assert.match(source,/function awardGuildChest\(\)[\\s\\S]*guild-chest-/);
+assert.match(source,/function helpGuild\(\)[\\s\\S]*g\.hp<=0/);
+assert.match(combat,/ignoreArmor\?1:engine\.damageTypeMultiplier/);
+assert.match(combat,/!options\.ignoreArmor&&target\.shield>0/);
+assert.match(combat,/evolved\?evolved\.icon/);
+assert.match(source,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+assert.match(source,/max-width:330px/);
 assert.match(source,/if\(result\?\.stageComplete\)addBP\(10\)/);
 assert.match(source,/addBP\(15\)/);
 assert.match(source,/Math\.pow\(1\.05,Math\.max\(0,floor-1\)\)/);
