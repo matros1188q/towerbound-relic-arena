@@ -1,5 +1,5 @@
-const CACHE='towerbound-juice-pwa-v2';
-const SHELL=['./','./index.html','./manifest.json','./juice-pwa.css','./juice-pwa.js','./rpg-mode.js','./rpg-expansion.js','./rpg-rework-v2.js','./rpg-rework-ui.css.js','./rpg-rework-ui.js','./assets/pwa/icon-192.png','./assets/pwa/icon-512.png'];
+const CACHE='towerbound-endgame-v3';
+const SHELL=['./','./index.html','./manifest.json','./juice-pwa.css','./juice-pwa.js','./rpg-mode.js','./rpg-expansion.js','./rpg-rework-v2.js','./rpg-rework-ui.css.js','./rpg-rework-ui.js','./endgame-systems.js','./assets/pwa/icon-192.png','./assets/pwa/icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE)
   .then(cache=>cache.addAll(SHELL.map(path=>new Request(path,{cache:'reload'}))).catch(()=>{}))
