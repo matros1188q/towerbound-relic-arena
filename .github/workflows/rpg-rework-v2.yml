@@ -19,6 +19,7 @@ on:
     paths:
       - 'rpg-rework-v2.js'
       - 'rpg-rework-ui.js'
+      - 'endgame-systems.js'
       - 'rpg-rework-ui.css.js'
       - 'rpg-mode.js'
       - 'rpg-expansion.js'
