@@ -21,6 +21,6 @@ assert.match(source,/base=Math\.max\(90,s\.maxHp\*1\.35\)/);
 assert.doesNotMatch(source,/variance=/);
 assert.match(source,/g\.helpDay===dayKey\(\)/);
 assert.match(source,/g\.respawnAt&&Date\.now\(\)>=g\.respawnAt/);
-assert.ok(html.includes('<script src="./endgame-systems.js?v=3"></script>'),'endgame script must load');
+assert.ok(html.includes('<script src="./endgame-systems.js?v=4"></script>'),'endgame script must load');
 assert.match(source,/@media\(max-width:430px\)/,'mobile layout rules must exist');
 console.log('Endgame systems static checks: OK');
