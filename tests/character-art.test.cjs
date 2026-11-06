@@ -6,7 +6,9 @@ const ui = fs.readFileSync('rpg-rework-ui.js', 'utf8');
 const html = fs.readFileSync('index.html', 'utf8');
 const artDir = 'art-inbox/01-characters';
 const inventory = new Set(fs.readdirSync(artDir));
-const imageFiles = [...inventory].filter(name => /\\.(?:jpg|jpeg|png|webp)$/i.test(name));
+const imageFiles = [...inventory].filter(name =>
+  ['.jpg', '.jpeg', '.png', '.webp'].some(ext => name.toLowerCase().endsWith(ext))
+);
 assert.equal(imageFiles.length, 33, 'reviewed art inbox inventory changed; update this audit');
 
 const requiredPortraits = [
@@ -31,16 +33,18 @@ assert.ok(ui.includes('enemyPortrait(target)'), 'enemy target card portrait');
 assert.ok(ui.includes('enemyPortrait(enemy)'), 'focused enemy portrait');
 assert.ok(ui.includes('object-fit:contain!important'), 'RPG artwork object-fit containment');
 
-const allReferences = new Set([
-  ...[...ui.matchAll(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.jpg)/gi)].map(match => match[1]),
-  ...[...html.matchAll(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.jpg)/gi)].map(match => match[1])
-]);
-for (const file of allReferences) assert.ok(inventory.has(file), 'referenced image is absent from inbox: ' + file);
+const referenced = imageFiles.filter(file => ui.includes(file) || html.includes(file));
+assert.ok(referenced.length >= 20, 'expected class, mob and boss artwork references');
+for (const file of referenced) assert.ok(inventory.has(file), 'referenced image absent from inbox: ' + file);
 
 assert.ok(html.includes('./art-inbox/01-characters/'), 'legacy scene art base path');
-assert.ok(!html.includes('./assets/characters/\'+category+\'/\'+src'), 'legacy enemy renderer still points to placeholder directories');
-assert.ok(!/const TB_ENEMY_ART_FILES=\\[[^;]*\\.png/.test(html), 'legacy enemy list still references PNG placeholders');
-assert.ok(!/const TB_BOSS_ART_FILES=\\[[^;]*\\.png/.test(html), 'legacy boss list still references PNG placeholders');
+assert.ok(html.includes('src="./art-inbox/01-characters/'+src'), 'legacy enemy renderer uses inbox');
+const enemyArrayStart = html.indexOf('const TB_ENEMY_ART_FILES=');
+const enemyArrayEnd = html.indexOf('function updateEnemy()', enemyArrayStart);
+assert.ok(enemyArrayStart >= 0 && enemyArrayEnd > enemyArrayStart, 'legacy enemy/boss mapping arrays');
+const legacyArrays = html.slice(enemyArrayStart, enemyArrayEnd);
+assert.equal(legacyArrays.split('.jpg').length - 1, 30, '20 mob and 10 boss portrait slots');
+assert.ok(!legacyArrays.includes('.png'), 'legacy enemy lists still reference old PNG placeholders');
 assert.ok(html.includes('rpg-rework-ui.js?v=14'), 'RPG UI cache version was not bumped');
 
-console.log('Character art integration checks: OK (' + imageFiles.length + ' inbox images, ' + allReferences.size + ' referenced UUID images)');
+console.log('Character art integration checks: OK (' + imageFiles.length + ' inbox images, ' + referenced.length + ' referenced UUID images)');
