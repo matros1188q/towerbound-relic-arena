@@ -7,6 +7,7 @@ on:
       - 'rpg-rework-ui.js'
       - 'combat-visuals.js'
       - 'progression-24.js'
+      - 'endgame-systems.js'
       - 'rpg-rework-ui.css.js'
       - 'rpg-mode.js'
       - 'rpg-expansion.js'
@@ -35,6 +36,7 @@ jobs:
           node-version: 22
       - run: node --check rpg-rework-v2.js
       - run: node --check progression-24.js
+      - run: node --check endgame-systems.js
       - run: node --check rpg-rework-ui.js
       - run: node --check rpg-rework-ui.css.js
       - run: node --check rpg-mode.js
@@ -45,6 +47,7 @@ jobs:
       - run: node tests/combat-runtime.test.cjs
       - run: node tests/combat-visuals.test.cjs
       - run: node tests/progression-24.test.cjs
+      - run: node tests/endgame-systems.test.cjs
       - run: node tests/full-game-audit.cjs
       - run: npm install --no-save playwright@1.54.2
       - run: npx playwright install --with-deps chromium
