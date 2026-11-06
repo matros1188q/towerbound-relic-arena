@@ -3,7 +3,55 @@
  const root=document.getElementById("tbRpg");
  if(!root)return;
  const turnStyle=document.createElement("style");turnStyle.id="tb-turn-based-style";turnStyle.textContent=".tb-turn-initiative{padding:9px 12px;border:1px solid rgba(201,162,39,.45);border-radius:10px;background:rgba(12,17,24,.88);display:grid;gap:7px}.tb-turn-initiative>b{font:800 10px system-ui;letter-spacing:.12em;color:#e8cc82}.tb-initiative-list{display:flex;gap:6px;overflow:auto}.tb-initiative-list span{flex:none;padding:5px 8px;border:1px solid #5a5140;border-radius:7px;font:700 10px system-ui;color:#ddd}.tb-initiative-list span.player{border-color:#78a86d;color:#c9f1b7}.tb-initiative-list span.enemy{border-color:#9d5a52;color:#f2b5a9}.tb-initiative-list span.active{box-shadow:0 0 0 2px #f0d17a;background:rgba(240,209,122,.12)}.tb-end-turn{width:100%;height:48px;min-height:48px;max-height:60px;padding:0 12px;line-height:1;border:1px solid #f0d17a;border-radius:9px;background:linear-gradient(180deg,#a77b30,#684519);color:#fff3d1;font-weight:1000;letter-spacing:.12em}.tb-end-turn:disabled{opacity:.4}.tb-panel-actions{display:grid;gap:8px}.tb-panel-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.tb-telegraph.lethal{border:2px solid #ff394d;background:rgba(100,10,20,.8);color:#fff}.tb-arena-top{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}";document.head.appendChild(turnStyle);
- const classPortraits={assassin:"reaper",bishop:"warden",dragonkin:"warden",destroyer:"reaper",elemental:"arcanist",duelist:"ranger",shaman:"arcanist"};
+ const artInboxStyle=document.createElement("style");
+ artInboxStyle.id="tb-art-inbox-style-v1";
+ artInboxStyle.textContent=`
+  #tbRpg .tb-hero-art img,#tbRpg .tb-mini-avatar img,#tbRpg .tb-character-card img{display:block;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center center!important}
+  #tbRpg .tb-enemy-portrait{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(108px,19vw,166px);min-width:0;overflow:hidden;margin:2px auto 8px;border-radius:12px;background:radial-gradient(ellipse at 50% 46%,#343650 0%,#151a2b 72%);border:1px solid #b9a2e52b}
+  #tbRpg .tb-enemy-portrait img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 5px 10px #000b)}
+  #tbRpg .tb-target-art-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(48px,10vw,76px);min-width:0;overflow:hidden}
+  #tbRpg .tb-target-art{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center center!important;filter:drop-shadow(0 3px 6px #0009)}
+  #tbRpg .tb-target-card{min-width:0}
+ `;
+ document.head.appendChild(artInboxStyle);
+ const ART_INBOX_BASE="./art-inbox/01-characters/";
+ const classPortraits={
+  assassin:"92a10c4d-48e4-4a3c-92e5-bb7bae921f8d.jpg",
+  bishop:"16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.jpg",
+  dragonkin:"b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg",
+  destroyer:"7f5c7457-3498-464f-91df-d83335183855.jpg",
+  elemental:"00478c4a-e6ee-420d-a3f8-dd8c03c4698e.jpg",
+  duelist:"a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg",
+  shaman:"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg"
+ };
+ const rolePortraits={
+  healer:"ba3335bd-e111-4f86-90e6-4f2085cae804.jpg",
+  poison:"52cbe629-d020-4077-8a86-2469a3cda66d.jpg",
+  tank:"beb6557c-f2db-4426-b741-d0faa9c2d80f.jpg"
+ };
+ const normalMobPortraits=[
+  "50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg",
+  "1a06e424-a782-44b7-a0a0-a9f64325ffcb.jpg",
+  "81c5d782-ceb2-4e17-813a-b4c684f70f75.jpg",
+  "477537a8-9c39-497b-b809-8fb63968d5a9.jpg",
+  "aa933809-05b4-4b67-9f5f-442ffd207371.jpg",
+  "f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg",
+  "678287f6-5d47-407d-a281-65b1e7eb2463.jpg",
+  "fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd.jpg",
+  "f50e3768-351d-4b8a-9939-ca398bdd65d7.jpg"
+ ];
+ const bossPortraits=[
+  "289412ff-344a-402b-b141-3e739f1d1c1c.jpg",
+  "d9e748b9-ee01-4b29-b3f8-eb9c4ecdf503.jpg",
+  "b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg",
+  "f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc.jpg",
+  "acea49d3-fa54-45a9-957a-ac057304b6ab.jpg",
+  "d6021025-d9b9-44da-a245-2c50822ebedc.jpg",
+  "64cdadd1-93eb-4490-9df8-e7acf5077cde.jpg",
+  "be7caee1-03c5-49ca-989c-bbab2c3d2063.jpg",
+  "00cba976-f8e1-4691-af34-7e38bc3e085e.jpg",
+  "ead1c2a5-2854-4a9c-83b7-d8964fd737cb.jpg"
+ ];
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
@@ -13,7 +61,17 @@
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
  function classData(c){return balance.classes.classes[c.classId];}
  function clsName(c){return classData(c).name;}
- function portrait(id){return "./assets/characters/heroes/"+(classPortraits[id]||"warden")+".png";}
+ function portrait(id){return ART_INBOX_BASE+(classPortraits[id]||classPortraits.assassin);}
+ function enemyPortrait(target){
+  if(target?.type==="boss"||target?.role==="boss"){
+   const stage=Math.max(1,Number(battle?.stage)||1);
+   return ART_INBOX_BASE+bossPortraits[(Math.ceil(stage/10)-1)%bossPortraits.length];
+  }
+  const role=target?.role||"normal";
+  if(rolePortraits[role])return ART_INBOX_BASE+rolePortraits[role];
+  const stage=Math.max(1,Number(battle?.stage)||1),index=Math.max(0,Number(target?.index)||0);
+  return ART_INBOX_BASE+normalMobPortraits[(stage*3+index)%normalMobPortraits.length];
+ }
  function save(){try{localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));}catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
@@ -321,7 +379,7 @@
   const order=buildInitiative().map((actor,index)=>'<span class="'+(actor.type==="player"?"player":"enemy")+(actor.id===battle.actor?.id?" active":"")+'">'+(index+1)+' · '+esc(actor.name)+(actor.id===battle.actor?.id?" · СЕЙЧАС":"")+'</span>').join("");
   const roleIcon={healer:"✚",poison:"☠",tank:"🛡",normal:"",boss:"♛"},skillRoleLabels=["НАКОПЛЕНИЕ","ДЕТОНАТОР","МАССОВАЯ АТАКА","ТАКТИКА"];
   const telegraph=battle.telegraph?'<div class="tb-telegraph tb-target-warning '+(battle.telegraph.lethal?"lethal":"strong_hit")+'"><b>'+(battle.telegraph.icon||"⚔")+'</b><span>'+esc(battle.telegraph.label)+'</span><small>СЛЕДУЮЩИЙ ХОД</small></div>':'<div class="tb-telegraph-idle">Враг пока не заряжает атаку</div>';
-  const targets=battle.enemies.map(target=>'<button class="tb-target-card '+(target.index===battle.targetIndex?"selected ":"")+(!target.alive?"defeated":"")+'" data-target="'+target.index+'" '+(!target.alive?"disabled":"")+'><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+(target.hp/Math.max(1,target.maxHp)*100)+'%"></i></span><small>'+Math.ceil(target.hp)+' HP</small></button>').join("");
+  const targets=battle.enemies.map(target=>'<button class="tb-target-card '+(target.index===battle.targetIndex?"selected ":"")+(!target.alive?"defeated":"")+'" data-target="'+target.index+'" '+(!target.alive?"disabled":"")+'><span class=\"tb-target-art-wrap\"><img class=\"tb-target-art\" src=\"'+enemyPortrait(target)+'\" alt=\"\" loading=\"lazy\" decoding=\"async\"></span><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+(target.hp/Math.max(1,target.maxHp)*100)+'%"></i></span><small>'+Math.ceil(target.hp)+' HP</small></button>').join("");
   const skillsMarkup=slots.map((skill,index)=>{const cd=skill?(battle.skillCooldowns?.[skill.id]||0):99,evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null;return '<button class="tb-panel-skill" data-panel-skill="'+(skill?.id||"")+'" data-panel-slot="'+index+'" '+(!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0?"disabled":"")+'><kbd>'+(index+1)+'</kbd><b>'+(evolved?evolved.icon+' ':'')+esc(evolved?.name||skill?.name||"Умение не открыто")+'</b><small>'+(evolved?esc(evolved.desc)+' · ':'')+(skill?elementIcon(skill.damage_type)+" "+elementLabel(skill.damage_type)+(cd>0?" · "+cd+"х":""):"Откроется по уровню")+'</small></button>';}).join("");
   const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
   const counterButton='<button class="tb-panel-skill counter" data-counter="1" '+(battle.actor?.type!=="player"||battle.busy||battle.playerSkillUsed||battle.counterPrimed||counterCd>0||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?"disabled":"")+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>Контр-умение · '+counterCd+'х</small></button>';
@@ -331,7 +389,7 @@
    '<section class="tb-arena tb-fixed-battle"><div class="tb-arena-top"><span>РАУНД '+battle.round+' · '+(battle.actor?.type==="player"?"ХОД ИГРОКА":"ХОД ПРОТИВНИКА")+'</span><span>ЭТАП '+battle.stage+'</span><span>ЦЕЛЕЙ '+remaining+'</span></div>'+
    '<div class="tb-turn-initiative"><b>ИНИЦИАТИВА · СЛЕДУЮЩИЕ ХОДЫ</b><div class="tb-initiative-list">'+order+'</div></div>'+
    '<div class="tb-target-grid">'+targets+'</div>'+
-   '<div class="tb-combat-layout"><div class="tb-enemy-focus"><div class="tb-enemy-role-icon">'+(roleIcon[enemy.role]||"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":"Страж башни")+'</div>'+telegraph+'<div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.ceil(battle.enemyHp)+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div>'+
+   '<div class="tb-combat-layout"><div class="tb-enemy-focus"><div class=\"tb-enemy-portrait\"><img src=\"'+enemyPortrait(enemy)+'\" alt=\"\" loading=\"eager\" decoding=\"async\"></div><div class="tb-enemy-role-icon">'+(roleIcon[enemy.role]||"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":"Страж башни")+'</div>'+telegraph+'<div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.ceil(battle.enemyHp)+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div>'+
    '<div class="tb-battle-hero"><div class="tb-hero-art"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><small>'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</small><div class="tb-resourcebar"><span style="width:'+(c.resource/c.resourceMax*100)+'%"></span></div><small>'+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div>'+
    '<div class="tb-panel-actions"><div class="tb-panel-slots">'+skillsMarkup+counterButton+ultButton+'</div><button class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"?"disabled":"")+'>'+(battle.actor?.type==="player"?"КОНЕЦ ХОДА":"ХОД ПРОТИВНИКА")+'</button></div>'+
    '<div class="tb-potion-belt">'+potions+'</div><div class="tb-combat-note">'+(battle.playerSkillUsed?"Умение использовано · можно выпить зелье и завершить ход":"Выбери одно умение, выпей одно зелье или заверши ход для автоатаки")+'</div><div class="tb-fx-layer" aria-hidden="true"></div></section>';
