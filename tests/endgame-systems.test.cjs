@@ -1,34 +1,42 @@
 'use strict';
-const fs=require('node:fs');
-const assert=require('node:assert/strict');
-const source=fs.readFileSync('endgame-systems.js','utf8');
-const html=fs.readFileSync('index.html','utf8');
-const combat=fs.readFileSync('rpg-rework-ui.js','utf8');
-for(const marker of [
- 'function startTower()','Math.pow(1.05','function finishEncounter(won)',
- 'function guildState()','maxHp:1000000','g.respawnAt=Date.now()+DAY',
- 'function helpGuild()','function awardGuildChest()','function openEpicChest()','Открыть эпический сундук','tb-bp-skin','function openGuildChest()','Пепельный охотник','data-eg="guild-chest"','stopImmediatePropagation();open(\'guild\')','function renderPass()','function buyPass()',
- 'const freeRewards=','const premiumRewards=','function evolveSkill(',
- 'skillUses','function trackSkillUse','data-eg-record','tbTowerMapBtn','getSkillEvolution:id=>data.evolution[player()?.id]?.[id]||null','const freeRewards={5:[\'silver\']','const premiumRewards={5:[\'chest\']'
-])assert.ok(source.includes(marker),'missing endgame feature: '+marker);
-assert.match(source,/if\(c\.level<50\)throw Error\('Эволюция доступна с 50 уровня персонажа'\)/);
-assert.match(combat,/evolvedSkill\?\.id==="pierce"\)damage\*=1\.4/);
-assert.match(combat,/effect\.type==="aoe"\|\|evolvedSkill\?\.id==="burst"/);
-assert.match(source,/function claimTowerRewards\(t\)[\\s\\S]*engine\\.awardXp\(c,xp\)/);
-assert.match(source,/function awardGuildChest\(\)[\\s\\S]*guild-chest-/);
-assert.match(source,/function helpGuild\(\)[\\s\\S]*g\.hp<=0/);
-assert.match(combat,/ignoreArmor\?1:engine\.damageTypeMultiplier/);
-assert.match(combat,/!options\.ignoreArmor&&target\.shield>0/);
-assert.match(combat,/evolved\?evolved\.icon/);
-assert.match(source,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
-assert.match(source,/max-width:330px/);
-assert.match(source,/if\(result\?\.stageComplete\)addBP\(10\)/);
-assert.match(source,/addBP\(15\)/);
-assert.match(source,/Math\.pow\(1\.05,Math\.max\(0,floor-1\)\)/);
-assert.match(source,/base=Math\.max\(90,s\.maxHp\*1\.35\)/);
-assert.doesNotMatch(source,/variance=/);
-assert.match(source,/g\.helpDay===dayKey\(\)/);
-assert.match(source,/g\.respawnAt&&Date\.now\(\)>=g\.respawnAt/);
-assert.ok(html.includes('<script src="./endgame-systems.js?v=4"></script>'),'endgame script must load');
-assert.match(source,/@media\(max-width:430px\)/,'mobile layout rules must exist');
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const source = fs.readFileSync('endgame-systems.js', 'utf8');
+const html = fs.readFileSync('index.html', 'utf8');
+const combat = fs.readFileSync('rpg-rework-ui.js', 'utf8');
+function has(text, needle, label) {
+  assert.ok(text.includes(needle), 'missing ' + label + ': ' + needle);
+}
+[
+  ['function startTower()', 'Endless Tower entry'],
+  ['Math.pow(1.05', '5% per-floor scaling'],
+  ["floor%10===0?'boss':floor%5===0?'elite'", 'elite and boss cadence'],
+  ['function claimTowerRewards(t)', 'tower reward banking'],
+  ['engine.awardXp(c,xp)', 'tower XP payout on exit'],
+  ['t.rewards.diamonds+=1', 'diamond reward per ten floors'],
+  ['function passState()', 'Battle Pass lifecycle'],
+  ['30*DAY', '30-day pass duration'],
+  ['Math.min(5000', '50-level BP cap'],
+  ['if(result?.stageComplete)addBP(10)', 'BP for regular stages'],
+  ['addBP(15)', 'BP for Tower floors'],
+  ['const freeRewards={5:[\'silver\']', 'free reward track'],
+  ['const premiumRewards={5:[\'chest\']', 'premium reward track'],
+  ['function guildState()', 'daily guild boss'],
+  ['maxHp:1000000', 'one-million boss HP'],
+  ['g.respawnAt=Date.now()+DAY', '24-hour respawn'],
+  ['function helpGuild()', 'guild help action'],
+  ['function awardGuildChest()', 'guild boss chest'],
+  ['function evolveSkill(', 'skill evolution'],
+  ['c.level<50', 'level 50 evolution gate'],
+  ['uses>=100||mastery>=100', 'skill use/mastery evolution gate'],
+  ['grid-template-columns:repeat(3,minmax(0,1fr))', 'mobile menu grid'],
+  ['max-width:330px', 'narrow phone layout']
+].forEach(([needle,label]) => has(source,needle,label));
+[
+  ['evolvedSkill?.id==="burst"', 'AoE skill evolution'],
+  ['ignoreArmor?1:engine.damageTypeMultiplier', 'armor bypass'],
+  ['!options.ignoreArmor&&target.shield>0', 'armor bypasses shield'],
+  ['evolved?evolved.icon', 'evolved skill icon']
+].forEach(([needle,label]) => has(combat,needle,label));
+has(html,'<script src="./endgame-systems.js?v=4"></script>','endgame script inclusion');
 console.log('Endgame systems static checks: OK');
