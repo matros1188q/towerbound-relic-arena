@@ -1,0 +1,20 @@
+name: Endgame progression checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'endgame-systems.js'
+      - 'tests/endgame-systems.test.cjs'
+      - 'index.html'
+      - '.github/workflows/endgame-progression.yml'
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check endgame-systems.js
+      - run: node --check tests/endgame-systems.test.cjs
+      - run: node tests/endgame-systems.test.cjs
