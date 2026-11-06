@@ -467,7 +467,7 @@
   const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0,cooldownTurns=effect.cooldown_turns||effect.cooldown||4;
   battle.skillCooldowns[skill.id]=Math.max(1,(effect.cooldown||4)-mastered);
   if(effect.cooldown_turns)battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns-mastered);
-  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1),guaranteedCrit=false;
+  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="pierce")damage*=1.4;if(evolvedSkill?.id==="burst")damage*=1.35;
   const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();const damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier),ticks:effect.ticks||3};
@@ -488,7 +488,7 @@
   const target=battle.enemy,hadBossCast=!!(battle.telegraph&&battle.enemy?.type==="boss");
   let result={killed:false,dealt:0};
   battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
-  if(effect.type==="aoe"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType);if(enemy===target)result=hit;}}
+  if(effect.type==="aoe"||evolvedSkill?.id==="burst"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType);if(enemy===target)result=hit;}}
   else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType);
   battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
   if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));target.hp=Math.max(0,target.hp-interrupt);battle.enemyHp=target.hp;battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupt+" HP");}
