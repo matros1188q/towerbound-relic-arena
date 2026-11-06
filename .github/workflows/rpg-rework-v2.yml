@@ -47,6 +47,7 @@ jobs:
       - run: node tests/rpg-rework-v2.test.cjs
       - run: node tests/combat-runtime.test.cjs
       - run: node tests/combat-visuals.test.cjs
+      - run: node tests/character-art.test.cjs
       - run: node tests/progression-24.test.cjs
       - run: node tests/endgame-systems.test.cjs
       - run: node tests/full-game-audit.cjs
