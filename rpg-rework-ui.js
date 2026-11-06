@@ -349,15 +349,21 @@
  }
  function finishCurrentEnemy(){
   clearTimeout(pendingTimer);pendingTimer=null;
-  const c=live(),defeated=battle.enemy,result=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:defeated.index,overkillBonus:!!battle.overkillBonus});battle.overkillBonus=false;
-  defeated.hp=0;defeated.alive=false;defeated.dead=true;
-  if(result.loot.length)notify("Добыча: "+result.loot.map(x=>x.name||x.type).join(", "));
+  const c=live(),defeated=battle.enemy,dead=(battle.enemies||[]).filter(enemy=>!enemy.alive||enemy.hp<=0).sort((x,y)=>x.index-y.index);
+  let result=null;const allLoot=[];
+  for(const target of dead){
+   if(c.run.stage?.killedIndices?.includes(target.index))continue;
+   const current=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:target.index,overkillBonus:target.index===defeated.index&&!!battle.overkillBonus});
+   battle.overkillBonus=false;allLoot.push(...(current.loot||[]));result=current;
+   target.hp=0;target.alive=false;target.dead=true;
+  }
+  if(!result)return;
+  if(allLoot.length)notify("Добыча: "+allLoot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
    stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;const speedrun=c.run.speedrun;if(speedrun?.active){speedrun.remaining=Math.max(0,(speedrun.remaining||10)-1);if(speedrun.remaining>0&&c.progress.currentStage<=balance.map.total_stages){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Спидран · осталось "+speedrun.remaining);beginStage();return;}c.stats.speedrun_completions=(c.stats.speedrun_completions||0)+1;c.run.speedrun=null;notify("Спидран завершён!");}if(routeChoice==="elite"){c.silver+=30;routeChoice="standard";notify("Элитный сундук · +30 серебра");}battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этап пройден · HP восстановлено · опыт сохранён");
   }else{
    const carryShield=battle.nextDamageShield||0;
    loadBattleEnemy(result.nextTargetIndex);
-   // A proc earned on the killing hit must survive the target reset.
    battle.nextDamageShield=carryShield;
    if(c.classId==="destroyer"){
     const until=Date.now()+balance.procs.destroyer.duration_seconds*1000;
@@ -416,7 +422,7 @@
   layer.appendChild(number);setTimeout(()=>number.remove(),1000);
  }
  function applyTargetDamage(target,rawDamage,damageType,options){
-  options=options||{};const c=live();let revived=false,multiplier=options.ignoreArmor?1:engine.damageTypeMultiplier(target,damageType||"physical");
+  options=options||{};const c=live();let revived=false,multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
   if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);target.guardCharges--; }
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
