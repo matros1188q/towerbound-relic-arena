@@ -160,6 +160,17 @@ These three JPGs are present in the folder but are not part of the current hero/
 - Remaining art work: four dedicated class illustrations (Dragonkin, Elemental Lord, Duelist, Shaman), one dedicated Crimson Regent boss illustration, and classification of the three extra inbox images above.
 
 
+### Online implementation commit log
+
+- `bd7534f340ad05b6d3ae59c6db46db0246e1754f` — SQL tables, Supabase online module, Top-100 UI, real ghost lookup and test coverage.
+- `5ae1914a927ade8ce9b0b511d16a909dba11e70d` — public leaderboard reads without requiring login and stable publish debounce.
+- `13fabb60e90f470bf4166c36e0b207c09b54d3c6` — ghost battle estimate uses fetched opponent stats.
+- `379d33a3255e4f6c72a91e4a3ba5e5efcc146359` — README status, migration notes and CI checks.
+- `4eb58ca69d41841bf739f23121f07e3405855b07` — global rating tab in map navigation.
+- `e83c6786b81c6a6dd62bd40da2f5dea054f37f46` — README follow-up documenting navigation.
+- `fe9bb7d46fd50f5b80e5c3fb4fd2e5ce5db6659b` — smoke test updated to reject fake bot fallback.
+- `a8ed524d3c26db14e560231c7b8be1ec7e674d5d` — smoke assertion reads the transient sign-in toast.
+
 ## Global online leaderboard and asynchronous PvP
 
 ### Phase 1 online profile / matchmaking — implemented in frontend and SQL
