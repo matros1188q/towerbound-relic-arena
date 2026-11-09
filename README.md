@@ -38,7 +38,7 @@ Diamond package prices are displayed in the prototype; real-money payments are n
 
 **Still required in the Supabase dashboard before cloud saves can be considered live:**
 
-1. Run `supabase/migrations/202611090001_cloud_saves.sql` in the SQL Editor for this Supabase project.
+1. Confirmed complete on 2026-11-10: applied `supabase/migrations/202611090001_cloud_saves.sql` and `supabase/migrations/202611090002_online_leaderboard_ghosts.sql` to the connected Supabase project.
 2. Enable Email auth and configure the site URL / redirect URLs for the published GitHub Pages origin.
 3. If Google sign-in is wanted, configure Google OAuth credentials and the Supabase callback URL.
 4. Test sign-up, sign-in, sign-out, first-time local-to-cloud migration, restore on a second browser/device, and concurrent-save conflict handling.
@@ -201,11 +201,11 @@ Files:
 - Leaderboard and ghost stats are currently client-reported snapshots. RLS prevents one player from editing another player's row, but does not prove that a player's own reported battle power or progression is legitimate.
 - Current duel result and PvP-store points are still local client-side progression. They are explicitly not written to `pvp_ratings`.
 - Do not enable global PvP prizes or treat local PvP points as competitive rating yet. A trusted Supabase Edge Function/server resolver must load both saved builds, validate a match, calculate the result server-side, prevent replay/double claims, and only then update `pvp_ratings` and award points.
-- The SQL migration has been committed to GitHub but **has not been confirmed as executed in the Supabase dashboard**. Until it is applied, the new leaderboard and ghost queries will return a missing-table error.
+- SQL migrations `202611090001_cloud_saves.sql` and `202611090002_online_leaderboard_ghosts.sql` were applied to the connected Supabase project on 2026-11-10. Live cross-account gameplay and Auth-provider setup still require end-to-end player testing.
 
 ### SQL migration and setup
 
-Apply `supabase/migrations/202611090002_online_leaderboard_ghosts.sql` in Supabase SQL Editor after the cloud-save migration `202611090001_cloud_saves.sql`. It creates:
+Applied on 2026-11-10 after `202611090001_cloud_saves.sql`. The migration creates:
 - `public.leaderboard`
 - `public.pvp_ghosts`
 - `public.pvp_ratings`
@@ -223,7 +223,7 @@ The migration includes the RLS policies, grants, indexes and column constraints.
 - Added static regression tests and expanded the RPG GitHub Actions workflow to run them.
 - Follow-up UI fix: the main map navigation now has a dedicated РЕЙТИНГ entry; regression test asserts its presence.
 - Updated the browser smoke test: when signed out, PvP must request account sign-in and must not create a fake opponent; the global leaderboard screen must open. The sign-in prompt is asserted via the transient toast, outside the systems panel.
-- Not complete / not verified: Supabase migration execution, live cross-account data flow, iPhone end-to-end UI, trusted PvP result validation and global rating rewards.
+- Not complete / not verified: live cross-account data flow, iPhone end-to-end UI, trusted PvP result validation and global rating rewards. Migration execution and database schema/RLS were verified through the connected Supabase project.
 ## Tests
 
 GitHub Actions checks JavaScript syntax, seven-class expansion, all balance configs, engine rules and the Playwright Chromium browser smoke test. See `tests/`, `.github/workflows/rpg-rework-v2.yml` and `docs/BALANCE-CONTENT-AUDIT.md`.
@@ -234,3 +234,14 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - The pre-publication baseline is preserved by `backup/balance-pass-before-20261103` and the legacy rollback branches/tags.
 - The source feature branch is retained; it is now one merge commit behind `main`.
 - Older branches and PR #1 are retained as history; PR #2 is the publication merge.
+
+
+### 2026-11-10 — Supabase migrations applied and RLS hardened
+
+- Applied cloud-save migration `202611090001_cloud_saves` and online leaderboard / ghost / ratings migration `202611090002_online_leaderboard_ghosts` to Supabase project `ygeodzsnldpofylaziel`.
+- Verified that the project records both migrations and that `player_saves`, `leaderboard`, `pvp_ghosts` and `pvp_ratings` exist with RLS policies.
+- Verified account ownership checks on leaderboard and ghost writes; PvP ratings remain read-only to browser roles.
+- Supabase security advisor flagged an infrastructure event-trigger helper, `public.rls_auto_enable()`, as executable by browser roles. Revoked `PUBLIC`, `anon` and `authenticated` execute privileges. This helper remains available to its event-trigger mechanism.
+- Optimized owner-check RLS predicates by wrapping `auth.uid()` in scalar subqueries.
+- Added matching reproducible migration: `supabase/migrations/202611100001_online_rls_hardening.sql`.
+- Remaining: configure/verify Auth providers and Pages redirect URLs; perform real sign-up and two-account cross-device save/leaderboard/ghost tests; deploy a trusted server-side PvP result resolver before awarding global ratings.
