@@ -6,7 +6,7 @@
  const artInboxStyle=document.createElement("style");
  artInboxStyle.id="tb-art-inbox-style-v1";
  artInboxStyle.textContent=`
-  #tbRpg .tb-hero-art img,#tbRpg .tb-mini-avatar img,#tbRpg .tb-character-card img{display:block;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center center!important}
+  #tbRpg .tb-hero-art img,#tbRpg .tb-mini-avatar img,#tbRpg .tb-character-card img,#tbRpg .tb-profile-avatar img,#tbRpg .tb-hero-chip img,#tbRpg .tb-char-art img,#tbRpg .tb-class-picker img{display:block;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center center!important}
   #tbRpg .tb-enemy-portrait{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(108px,19vw,166px);min-width:0;overflow:hidden;margin:2px auto 8px;border-radius:12px;background:radial-gradient(ellipse at 50% 46%,#343650 0%,#151a2b 72%);border:1px solid #b9a2e52b}
   #tbRpg .tb-enemy-portrait img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 5px 10px #000b)}
   #tbRpg .tb-target-art-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(48px,10vw,76px);min-width:0;overflow:hidden}
@@ -14,45 +14,54 @@
   #tbRpg .tb-target-card{min-width:0}
  `;
  document.head.appendChild(artInboxStyle);
- const ART_INBOX_BASE="./art-inbox/01-characters/";
+ const CHARACTER_ART_ROOT="./assets/characters/";
  const classPortraits={
-  assassin:"92a10c4d-48e4-4a3c-92e5-bb7bae921f8d.jpg",
-  bishop:"16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.jpg",
-  dragonkin:"b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg",
-  destroyer:"7f5c7457-3498-464f-91df-d83335183855.jpg",
-  elemental:"00478c4a-e6ee-420d-a3f8-dd8c03c4698e.jpg",
-  duelist:"a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg",
-  shaman:"c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg"
+  assassin:"heroes/reaper.png",
+  bishop:"heroes/arcanist.png",
+  dragonkin:"enemies/crimson-executioner.png",
+  destroyer:"heroes/warden.png",
+  elemental:"bosses/ice-abbot.png",
+  duelist:"enemies/phantom-duelist.png",
+  shaman:"bosses/ash-patriarch.png"
+ };
+ const mobPortraits={
+  "shadow-goblin":"enemies/shadow-goblin.png",
+  "cursed-knight":"enemies/cursed-knight.png",
+  "ash-wolf":"enemies/ash-wolf.png",
+  "rune-golem":"enemies/rune-golem.png",
+  "grave-archer":"enemies/grave-archer.png",
+  "plague-witch":"enemies/plague-witch.png",
+  "ash-imp":"enemies/ash-imp.png",
+  "swamp-reaper":"enemies/swamp-reaper.png",
+  "bone-warden":"enemies/bone-warden.png",
+  "crimson-executioner":"enemies/crimson-executioner.png",
+  "void-hunter":"enemies/void-hunter.png",
+  "spider-matron":"enemies/spider-matron.png",
+  "blind-monk":"enemies/blind-monk.png",
+  "stone-minotaur":"enemies/stone-minotaur.png",
+  "phantom-duelist":"enemies/phantom-duelist.png",
+  "soul-harvester":"enemies/soul-harvester.png",
+  "forest-horror":"enemies/forest-horror.png",
+  "abyss-knight":"enemies/abyss-knight.png",
+  "cursed-alchemist":"enemies/cursed-alchemist.png",
+  "root-colossus":"enemies/root-colossus.png"
  };
  const rolePortraits={
-  healer:"ba3335bd-e111-4f86-90e6-4f2085cae804.jpg",
-  poison:"52cbe629-d020-4077-8a86-2469a3cda66d.jpg",
-  tank:"beb6557c-f2db-4426-b741-d0faa9c2d80f.jpg"
+  healer:"enemies/blind-monk.png",
+  poison:"enemies/plague-witch.png",
+  tank:"enemies/rune-golem.png",
+  normal:"enemies/shadow-goblin.png"
  };
- const normalMobPortraits=[
-  "50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg",
-  "1a06e424-a782-44b7-a0a0-a9f64325ffcb.jpg",
-  "81c5d782-ceb2-4e17-813a-b4c684f70f75.jpg",
-  "477537a8-9c39-497b-b809-8fb63968d5a9.jpg",
-  "aa933809-05b4-4b67-9f5f-442ffd207371.jpg",
-  "f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg",
-  "678287f6-5d47-407d-a281-65b1e7eb2463.jpg",
-  "fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd.jpg",
-  "f50e3768-351d-4b8a-9939-ca398bdd65d7.jpg",
-  "70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg"
- ];
  const bossPortraits=[
-  "289412ff-344a-402b-b141-3e739f1d1c1c.jpg",
-  "d9e748b9-ee01-4b29-b3f8-eb9c4ecdf503.jpg",
-  "b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg",
-  "f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc.jpg",
-  "acea49d3-fa54-45a9-957a-ac057304b6ab.jpg",
-  "d6021025-d9b9-44da-a245-2c50822ebedc.jpg",
-  "64cdadd1-93eb-4490-9df8-e7acf5077cde.jpg",
-  "be7caee1-03c5-49ca-989c-bbab2c3d2063.jpg",
-  "00cba976-f8e1-4691-af34-7e38bc3e085e.jpg",
-  "ead1c2a5-2854-4a9c-83b7-d8964fd737cb.jpg",
-  "1ce15225-7162-4858-8fa7-41363266e71e.jpg"
+  "bosses/bone-colossus.png",
+  "bosses/abyss-queen.png",
+  "bosses/ash-patriarch.png",
+  "bosses/ice-abbot.png",
+  "bosses/mirror-executioner.png",
+  "bosses/soul-devourer.png",
+  "bosses/root-titan.png",
+  "bosses/void-hunter-boss.png",
+  "bosses/heart-of-tower.png"
  ];
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
@@ -63,16 +72,16 @@
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
  function classData(c){return balance.classes.classes[c.classId];}
  function clsName(c){return classData(c).name;}
- function portrait(id){return ART_INBOX_BASE+(classPortraits[id]||classPortraits.assassin);}
+ function portrait(id){return CHARACTER_ART_ROOT+(classPortraits[id]||classPortraits.assassin);}
  function enemyPortrait(target){
   if(target?.type==="boss"||target?.role==="boss"){
    const stage=Math.max(1,Number(battle?.stage)||1);
-   return ART_INBOX_BASE+bossPortraits[(Math.ceil(stage/10)-1)%bossPortraits.length];
+   return CHARACTER_ART_ROOT+bossPortraits[(Math.ceil(stage/10)-1)%bossPortraits.length];
   }
+  const mobId=String(target?.mobId||"").toLowerCase();
+  if(mobPortraits[mobId])return CHARACTER_ART_ROOT+mobPortraits[mobId];
   const role=target?.role||"normal";
-  if(rolePortraits[role])return ART_INBOX_BASE+rolePortraits[role];
-  const stage=Math.max(1,Number(battle?.stage)||1),index=Math.max(0,Number(target?.index)||0);
-  return ART_INBOX_BASE+normalMobPortraits[(stage*3+index)%normalMobPortraits.length];
+  return CHARACTER_ART_ROOT+(rolePortraits[role]||rolePortraits.normal);
  }
  function save(){try{localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));}catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
