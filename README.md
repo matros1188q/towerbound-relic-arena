@@ -209,6 +209,7 @@ The migration includes the RLS policies, grants, indexes and column constraints.
 - Updated the local ghost battle estimate to use the opponent's saved combat stats rather than synthetic tier stats.
 - Added static regression tests and expanded the RPG GitHub Actions workflow to run them.
 - Follow-up UI fix: the main map navigation now has a dedicated РЕЙТИНГ entry; regression test asserts its presence.
+- Updated the browser smoke test: when signed out, PvP must request account sign-in and must not create a fake opponent; the global leaderboard screen must open.
 - Not complete / not verified: Supabase migration execution, live cross-account data flow, iPhone end-to-end UI, trusted PvP result validation and global rating rewards.
 ## Tests
 
