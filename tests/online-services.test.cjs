@@ -5,6 +5,7 @@ const sql=fs.readFileSync('supabase/migrations/202611090002_online_leaderboard_g
 const online=fs.readFileSync('towerbound-online.js','utf8');
 const ui=fs.readFileSync('rpg-rework-ui.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
+const cloud=fs.readFileSync('towerbound-cloud.js','utf8');
 for(const table of ['leaderboard','pvp_ghosts','pvp_ratings'])assert.ok(sql.includes('create table if not exists public.'+table),'missing '+table);
 assert.ok(sql.includes('auth.uid() = user_id'),'RLS owner checks missing');
 assert.ok(sql.includes('grant select on public.leaderboard to anon, authenticated'),'public leaderboard read grant missing');
@@ -21,4 +22,9 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
+assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
+assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
+assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is awaitable and reports failure');
+assert.ok(cloud.includes('loadGame,saveGame,queueSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
+assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="cloud-account"'),'settings screen exposes cloud account and manual sync controls');
 console.log('Online services static checks: OK');

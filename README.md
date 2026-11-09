@@ -327,3 +327,11 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Every newly created character now receives 100 silver and three basic healing potions. The one-time account starter flag still gates only the 24-hour premium welcome bonus, so the bonus cannot be farmed by creating characters.
 - Added a character-owned daily chest cooldown timestamp and engine methods to inspect/claim it. The reward is one of: 50–100 silver, one healing potion, or 10 crafting materials; a second claim is rejected until 24 hours have elapsed.
 - The timestamp and reward history live inside the character save object, so the existing local cache and Supabase cloud snapshot persist them together.
+
+
+### 2026-11-10 — Explicit cloud save/load and settings sync
+
+- Formalized `loadGame()` and `saveGame()` around the existing Supabase `player_saves` row and version-checked `save_player_game(p_save_data, p_expected_revision)` RPC. The game continues to load from localStorage immediately, while a signed-in session restores/compares the remote snapshot and saves changes to Supabase; localStorage remains the offline cache.
+- Exposed `queueSave`, `loadGame`, `saveGame`, `syncNow` and `open` through `TowerboundCloud`. UI saves now explicitly queue cloud persistence after updating the local cache; the storage listener remains as a compatibility safety net.
+- Added account and forced-sync controls to Settings. Manual sync waits for an in-flight save and reports unauthenticated, conflict and network errors instead of claiming success.
+- The existing Supabase `player_saves` table, owner RLS and optimistic revision RPC are reused; no service-role key is exposed and no schema relaxation was made.
