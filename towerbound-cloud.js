@@ -98,7 +98,7 @@ async function chooseSource(remote){
  say('Выбери источник прогресса.');window.__TB_CLOUD_PENDING_REMOTE=remote;window.__TB_CLOUD_PENDING_LOCAL=local;
 }
 async function onSession(next){
- const sessionKey=next?.user?.id||'signed-out';if(sessionKey===handledSessionKey)return;handledSessionKey=sessionKey;
+ const sessionKey=next?.user?.id||'signed-out';if(sessionKey===handledSessionKey)return;handledSessionKey=sessionKey;conflict=false;
  session=next;
  if(!session){setStatus('АККАУНТ · ЛОКАЛЬНО','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';$('#tbCloudIntro').textContent='Привяжи прогресс к аккаунту, чтобы продолжать игру на другом устройстве.';return;}
  $('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent=session.user.email||session.user.id;
