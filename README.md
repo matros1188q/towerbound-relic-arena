@@ -72,6 +72,93 @@ Keep this section current. Every development session that changes the project mu
 - Added documentation for email/password and optional Google OAuth, local-save migration, revision checks, and the limits of client-side trust.
 - The initial implementation is present in repository history; use the commit history for its individual commit SHAs.
 
+
+## Character artwork integration
+
+### Status — connected in `main`
+
+Runtime portrait URLs now use stable, semantic files under `assets/characters/` instead of loading the UUID-named staging JPEGs directly from `art-inbox/01-characters/`.
+
+- The seven-class RPG character picker, profile avatar, map header and battle hero portrait all use the class portrait map in `rpg-rework-ui.js`.
+- Enemy target cards and the focused battle enemy resolve the exact `mobId` first, then use a role fallback (healer / poison / tank / normal).
+- Boss battles use the named boss art set; the older arena scene also uses named enemy and boss paths.
+- Image containers enforce `object-fit: contain` so character proportions are preserved.
+- The art test checks all 33 staging JPEGs, verifies that none exceeds 1 MB, validates manifest source files and named asset files, and checks class/mob/boss routing.
+- Source images: 33 JPG files; largest is `16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.jpg` at 173,539 bytes (about 170 KB). No image in this folder exceeds 1 MB.
+
+### Class / hero mapping
+
+| Class | Runtime art | Source file in `art-inbox/01-characters/` |
+|---|---|---|
+| Убийца | `heroes/reaper.png` | `acea49d3-fa54-45a9-957a-ac057304b6ab.jpg` |
+| Епископ | `heroes/arcanist.png` | `16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f.jpg` |
+| Драконит | `enemies/crimson-executioner.png` (best-fit placeholder art, not a dragon) | `b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg` |
+| Разрушитель | `heroes/warden.png` | `7f5c7457-3498-464f-91df-d83335183855.jpg` |
+| Владыка стихий | `bosses/ice-abbot.png` (best-fit mage art) | `f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc.jpg` |
+| Дуэлянт | `enemies/phantom-duelist.png` | `a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg` |
+| Шаман | `bosses/ash-patriarch.png` (best-fit staff caster art) | `c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg` |
+
+There are only four dedicated hero assets in the current hero manifest: Warden, Arcanist, Ranger and Reaper. The seven-class RPG therefore still needs dedicated class artwork for **Dragonkin, Elemental Lord, Duelist and Shaman**. Current portraits for those classes are deliberate best-fit existing art, not newly created class-specific images. Ranger art is retained for the older four-hero selector.
+
+### Mob / enemy mapping
+
+| Mob | Runtime art | Source file |
+|---|---|---|
+| Теневой гоблин | `enemies/shadow-goblin.png` | `aa933809-05b4-4b67-9f5f-442ffd207371.jpg` |
+| Проклятый рыцарь | `enemies/cursed-knight.png` | `5c8f39fb-19c6-44e4-946c-4ee584214238.jpg` |
+| Пепельный волк | `enemies/ash-wolf.png` | `81c5d782-ceb2-4e17-813a-b4c684f70f75.jpg` |
+| Рунный голем | `enemies/rune-golem.png` | `289412ff-344a-402b-b141-3e739f1d1c1c.jpg` |
+| Могильный лучник | `enemies/grave-archer.png` | `1a06e424-a782-44b7-a0a0-a9f64325ffcb.jpg` |
+| Чумная ведьма | `enemies/plague-witch.png` | `52cbe629-d020-4077-8a86-2469a3cda66d.jpg` |
+| Пепельный бес | `enemies/ash-imp.png` | `50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg` |
+| Болотный жнец | `enemies/swamp-reaper.png` | `ba3335bd-e111-4f86-90e6-4f2085cae804.jpg` |
+| Костяной страж | `enemies/bone-warden.png` | `00cba976-f8e1-4691-af34-7e38bc3e085e.jpg` |
+| Багровый палач | `enemies/crimson-executioner.png` | `b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg` |
+| Пустотный охотник | `enemies/void-hunter.png` | `92a10c4d-48e4-4a3c-92e5-bb7bae921f8d.jpg` |
+| Паучья матрона | `enemies/spider-matron.png` | `f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg` |
+| Слепой монах | `enemies/blind-monk.png` | `c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg` |
+| Каменный минотавр | `enemies/stone-minotaur.png` | `678287f6-5d47-407d-a281-65b1e7eb2463.jpg` |
+| Призрачный дуэлянт | `enemies/phantom-duelist.png` | `a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg` |
+| Собиратель душ | `enemies/soul-harvester.png` | `00478c4a-e6ee-420d-a3f8-dd8c03c4698e.jpg` |
+| Лесной ужас | `enemies/forest-horror.png` | `477537a8-9c39-497b-b809-8fb63968d5a9.jpg` |
+| Рыцарь бездны | `enemies/abyss-knight.png` | `bd0e9796-5649-4bad-a565-4067b2c602d3.jpg` |
+| Проклятый алхимик | `enemies/cursed-alchemist.png` | `d6021025-d9b9-44da-a245-2c50822ebedc.jpg` |
+| Корневой исполин | `enemies/root-colossus.png` | `64cdadd1-93eb-4490-9df8-e7acf5077cde.jpg` |
+
+Role fallback portraits are: healer → Blind Monk, poison → Plague Witch, tank → Rune Golem, normal → Shadow Goblin. A concrete `mobId` mapping takes precedence over role fallback.
+
+### Boss mapping
+
+| Boss | Runtime art | Source file |
+|---|---|---|
+| Костяной колосс | `bosses/bone-colossus.png` | `fb8c7bd7-f7bc-40c5-928c-ac7e9b95ebbd.jpg` |
+| Королева Бездны | `bosses/abyss-queen.png` | `d9e748b9-ee01-4b29-b3f8-eb9c4ecdf503.jpg` |
+| Пепельный патриарх | `bosses/ash-patriarch.png` | `c05adc5c-64e2-476a-8a4d-e92eb774c5d8.jpg` |
+| Ледяной аббат | `bosses/ice-abbot.png` | `f1f5e3d0-6b1d-4576-b9b7-52f885bf08fc.jpg` |
+| Зеркальный палач | `bosses/mirror-executioner.png` | `f50e3768-351d-4b8a-9939-ca398bdd65d7.jpg` |
+| Пожиратель душ | `bosses/soul-devourer.png` | `d6021025-d9b9-44da-a245-2c50822ebedc.jpg` |
+| Корневой титан | `bosses/root-titan.png` | `beb6557c-f2db-4426-b741-d0faa9c2d80f.jpg` |
+| Пустотный охотник-босс | `bosses/void-hunter-boss.png` | `f3f1e987-472d-41ab-aa6c-f6e11d8068ba.jpg` |
+| Сердце Башни | `bosses/heart-of-tower.png` | `ead1c2a5-2854-4a9c-83b7-d8964fd737cb.jpg` |
+
+The legacy ten-boss arena has no dedicated art for **Багровый регент**; it currently uses `enemies/crimson-executioner.png` as the closest available approximation. A unique Crimson Regent boss illustration is still needed.
+
+### Unclassified art inbox files
+
+These three JPGs are present in the folder but are not part of the current hero/enemy/boss manifests. They are intentionally not assigned to a character until their visual identity is confirmed:
+
+- `1ce15225-7162-4858-8fa7-41363266e71e.jpg`
+- `70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg`
+- `be7caee1-03c5-49ca-989c-bbab2c3d2063.jpg`
+
+### 2026-11-09 — Character art integration commits
+
+- `cc063614c1906b4ed5aa381e3e61ba2e53f7c6d4`: replaced role/stage-random art selection in the active RPG with semantic class, mobId and boss mappings; added containment rules for profile and battle portraits.
+- `e1dffd4dd72be0ee56edae8bc29af4ca1d22a2b1`: updated the legacy hero picker, mob roster and boss roster to use named `assets/characters/` paths; expanded `tests/character-art.test.cjs` to validate the inventory, manifests, image size limits, mappings and aspect-fit rules.
+- The active RPG battle focus panel and target cards now show the mapped mob/boss art; the older arena's boss scene uses the mapped boss roster.
+- Not yet visually verified on a live iPhone session: final crop/position per art and the exact appearance of every encounter. GitHub Actions browser/syntax checks are running for the latest commit.
+- Remaining art work: four dedicated class illustrations (Dragonkin, Elemental Lord, Duelist, Shaman), one dedicated Crimson Regent boss illustration, and classification of the three extra inbox images above.
+
 ## Tests
 
 GitHub Actions checks JavaScript syntax, seven-class expansion, all balance configs, engine rules and the Playwright Chromium browser smoke test. See `tests/`, `.github/workflows/rpg-rework-v2.yml` and `docs/BALANCE-CONTENT-AUDIT.md`.
