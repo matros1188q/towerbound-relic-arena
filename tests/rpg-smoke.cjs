@@ -58,6 +58,16 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('#tbRpg').innerText(),/RPG QA/,'created character appears in roster');
   const first=await page.evaluate(()=>JSON.parse(localStorage.getItem('tb-rpg-v2')));
   assert.equal(first.characters.length,1);
+  const baseSkillAvailability=await page.evaluate(()=>{
+   const engine=window.TowerboundRework;
+   return Object.entries(engine.balance.classes.classes).map(([classId,definition])=>{
+    const skill=(definition.base_skills||[]).find(item=>Number(item.unlock_level||1)<=2);
+    return{classId,skillId:skill?.id||null,available:!!skill&&engine.skillAvailable({classId,level:2,branch:null},skill)};
+   });
+  });
+  assert.equal(baseSkillAvailability.length,7,"all seven classes expose base combat skills");
+  assert.ok(baseSkillAvailability.every(item=>item.available&&item.skillId),"level-2 base skills are available for every class");
+  console.log("SKILL AVAILABILITY BY CLASS:",JSON.stringify(baseSkillAvailability));
   assert.equal(first.characters[0].silver,100,'starter silver matches account.json');
   assert.equal(first.characters[0].bag.find(x=>x.type==='healing_potion').quantity,3);
   assert.ok(first.account.premiumUntil>Date.now());

@@ -283,3 +283,11 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Engine skill availability now treats a missing unlock level as level 1, while still enforcing class branch ownership.
 - Added regression checks for all seven class base skill sets, all 420 specialization entries, catalog class coverage, and an actual Assassin base-skill click in browser smoke.
 - Remaining verification: CI must pass; live class-by-class physical iPhone testing is not simulated by the automated browser test.
+
+
+### 2026-11-10 — Skill cache refresh and seven-class availability verification
+
+- Bumped the rpg-rework-ui.js query version in index.html from v=15 to v=16 so mobile browsers do not keep a previously cached battle UI after the base-skill resolver fix.
+- Expanded the browser smoke test to exercise the engine's level-2 base-skill availability rule for all seven classes and print the result as SKILL AVAILABILITY BY CLASS.
+- The root cause and fix are recorded above. The current automated smoke already confirms an Assassin base-skill click; the new check covers Bishop, Dragonkin, Destroyer, Elemental, Duelist and Shaman availability as well.
+- Live iPhone testing and a real player's DevTools console remain outside the hosted CI environment; CI captures the browser's emitted SKILL DEBUG object.
