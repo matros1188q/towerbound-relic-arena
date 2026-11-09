@@ -52,10 +52,10 @@ begin
   -- Serialize writes for this user, including the first insert, then compare revisions.
   perform pg_advisory_xact_lock(hashtextextended(v_user_id::text, 0));
 
-  select revision
+  select ps.revision
     into v_revision
-    from public.player_saves
-    where user_id = v_user_id
+    from public.player_saves as ps
+    where ps.user_id = v_user_id
     for update;
 
   if not found then
