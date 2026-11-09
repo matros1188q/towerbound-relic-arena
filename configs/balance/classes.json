@@ -304,7 +304,10 @@
           "unlock_level": 1,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 1.5,
+          "resource_cost": 18,
+          "description": "Урон: 150% от силы атаки · Стоимость: 18 энергии."
         },
         {
           "id": "assassin.base.2",

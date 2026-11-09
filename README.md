@@ -258,3 +258,16 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Extended browser smoke coverage for tutorial display/dismissal, enemy damage, player-turn restoration and button reactivation.
 - Commits: `62378401ba060565c6e71657081851afbd0161d0` (gameplay/UI/test implementation) and `d154794fb3c12cea287a5aa0a8cdbef920677b4e` (smoke-test assertion correction).
 - Verified: `node --check rpg-rework-ui.js`, RPG smoke test and endgame progression checks pass on the current `main` commit. Cross-browser screenshot workflow and Pages deployment are still running at the time of this entry. Physical iPhone visual testing remains outstanding.
+
+
+### 2026-11-10 — Combat screen visual containment and skill detail repair
+
+- Preserved the turn queue safeguards from the previous combat fix: player turn recovery clears `battle.busy`, enemy actions run sequentially with cancellable timers and stale-queue tokens, and the end-turn button is disabled with `ХОД ПРОТИВНИКА...` while enemies act.
+- Fixed initiative rendering: Matroscheg now has a small portrait with a gold ring; enemy turns use distinct red-framed markers.
+- Fixed the telegraph's incorrect `tb-target-warning` class. It is no longer absolutely positioned as a floating badge and now stays inside the enemy card.
+- Reworked the battle grid so the hero status, initiative, mob targets, focused enemy, skills, end-turn button and potion belt each occupy their own explicit grid row. Portrait and target art wrappers clip their contents and use `object-fit: contain`.
+- Boss / elite art is constrained to a 150px maximum height; mobile uses a shorter portrait frame. Mob target cards use a four-column / two-row layout on narrow screens, with art, labels and HP indicators constrained to each card.
+- Fixed the player HP bar cascade: the hero health fill is green again and its displayed width is clamped to 0–100%.
+- Added explicit `damage_multiplier: 1.5`, `resource_cost: 18` and a Russian description for Assassin's `Коварный выпад`; skill detail UI now derives safe descriptions from the effect configuration instead of rendering missing values.
+- Expanded `tests/rpg-smoke.cjs` to check the 150% skill description, image containment, telegraph positioning, green hero HP fill, player initiative portrait, and disabled enemy-turn button.
+- Commit: pending CI verification. Visual browser tests cover the 375×812 portrait viewport; a physical iPhone session is still required for final device-specific confirmation.

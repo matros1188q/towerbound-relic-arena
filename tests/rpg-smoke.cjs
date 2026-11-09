@@ -6,6 +6,13 @@ const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
 (async()=>{
  const root=process.cwd();
+ const classConfig=JSON.parse(fs.readFileSync(path.join(root,"configs/balance/classes.json"),"utf8"));
+ const cunning=classConfig.classes.assassin.base_skills.find(skill=>skill.name==="Коварный выпад");
+ assert.equal(cunning.damage_multiplier,1.5,"Коварный выпад defines 150% damage");
+ assert.equal(cunning.resource_cost,18,"Коварный выпад defines its resource cost");
+ assert.match(cunning.description,/Урон: 150%/,"Коварный выпад has an explicit non-undefined description");
+ const battleUiSource=fs.readFileSync(path.join(root,"rpg-rework-ui.js"),"utf8");
+ assert.match(battleUiSource,/s\.description\|\|/,"skill descriptions use safe fallbacks when config fields are absent");
  const server=http.createServer((req,res)=>{
   const pathname=decodeURIComponent((req.url||'/').split('?')[0]);
   const relative=pathname==='/'?'index.html':pathname.replace(/^\/+/,'');
@@ -122,6 +129,21 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('[data-counter]').count(),1,'class counter occupies slot five');
   assert.equal(await page.locator('[data-ultimate]').count(),1,'class ultimate occupies slot six');
   assert.equal(await page.locator('.tb-panel-skill').count(),6,'all six combat buttons are rendered');
+  assert.equal(await page.locator('.tb-initiative-avatar').count(),1,'player initiative uses the Matroscheg portrait');
+  const visualAudit=await page.evaluate(()=>{
+   const wrap=document.querySelector('.tb-target-card .tb-target-art-wrap'),targetImg=wrap?.querySelector('img'),targetBox=wrap?.getBoundingClientRect(),targetImage=targetImg?.getBoundingClientRect();
+   const portrait=document.querySelector('.tb-enemy-portrait'),bossImg=portrait?.querySelector('img'),portraitBox=portrait?.getBoundingClientRect(),bossImage=bossImg?.getBoundingClientRect();
+   const focus=document.querySelector('.tb-enemy-focus'),telegraph=focus?.querySelector('.tb-telegraph'),telegraphBox=telegraph?.getBoundingClientRect(),focusBox=focus?.getBoundingClientRect();
+   const hp=document.querySelector('.tb-battle-hero .tb-healthbar.hero span');
+   return {targetContained:!!targetBox&&!!targetImage&&targetImage.left>=targetBox.left-1&&targetImage.right<=targetBox.right+1&&targetImage.top>=targetBox.top-1&&targetImage.bottom<=targetBox.bottom+1,portraitHeight:portraitBox?.height||0,bossImageContained:!!portraitBox&&!!bossImage&&bossImage.left>=portraitBox.left-1&&bossImage.right<=portraitBox.right+1&&bossImage.top>=portraitBox.top-1&&bossImage.bottom<=portraitBox.bottom+1,telegraphPosition:telegraph?getComputedStyle(telegraph).position:"missing",telegraphContained:!!focusBox&&!!telegraphBox&&telegraphBox.left>=focusBox.left-1&&telegraphBox.right<=focusBox.right+1&&telegraphBox.top>=focusBox.top-1&&telegraphBox.bottom<=focusBox.bottom+1,heroHpWidth:hp?.getBoundingClientRect().width||0,heroHpColor:hp?getComputedStyle(hp).backgroundImage:""};
+  });
+  assert.ok(visualAudit.portraitHeight<=150,'boss and elite portrait is capped at 150px');
+  assert.ok(visualAudit.targetContained,'mob artwork stays inside its target card image frame');
+  assert.ok(visualAudit.bossImageContained,'boss artwork stays inside its portrait frame');
+  assert.equal(visualAudit.telegraphPosition,'relative','enemy telegraph stays inside its card instead of floating over the screen');
+  assert.ok(visualAudit.telegraphContained,'enemy telegraph stays within the enemy card');
+  assert.ok(visualAudit.heroHpWidth>0,'player HP bar has a visible filled width');
+  assert.match(visualAudit.heroHpColor,/58, 114, 72|141, 175, 104/,'player HP bar uses the green hero-health gradient');
   const mobilePanel=await page.locator('.tb-panel-actions').evaluate(el=>({
    display:getComputedStyle(el).display,
    slotsDisplay:getComputedStyle(el.querySelector('.tb-panel-slots')).display,
@@ -173,6 +195,7 @@ const {chromium}=require('playwright');
   await page.waitForFunction(before=>window.TowerboundRework.state.characters[0].resource<before,resourceBeforeCounter);
   const hpBeforeEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   await page.locator('[data-action="end-turn"]').click();
+  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button?.disabled&&button.innerText.includes("ХОД ПРОТИВНИКА");});
   await page.waitForFunction(()=>document.querySelector('.tb-arena-top')?.innerText.includes('РАУНД 2')||document.querySelector('[data-action="confirm-death"]'));
   const hpAfterEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   assert.ok(hpAfterEnemyPhase<hpBeforeEnemyPhase,'at least one enemy attacks before the player receives the next turn');
