@@ -170,6 +170,7 @@ These three JPGs are present in the folder but are not part of the current hero/
 - `e83c6786b81c6a6dd62bd40da2f5dea054f37f46` — README follow-up documenting navigation.
 - `fe9bb7d46fd50f5b80e5c3fb4fd2e5ce5db6659b` — smoke test updated to reject fake bot fallback.
 - `a8ed524d3c26db14e560231c7b8be1ec7e674d5d` — smoke assertion reads the transient sign-in toast.
+- Follow-up smoke fix: return from the leaderboard screen to the systems screen before continuing the existing progression test; this preserves the test's original navigation assumptions.
 
 ## Global online leaderboard and asynchronous PvP
 
