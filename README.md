@@ -159,6 +159,55 @@ These three JPGs are present in the folder but are not part of the current hero/
 - Not yet visually verified on a live iPhone session: final crop/position per art and the exact appearance of every encounter. GitHub Actions browser/syntax checks are running for the latest commit.
 - Remaining art work: four dedicated class illustrations (Dragonkin, Elemental Lord, Duelist, Shaman), one dedicated Crimson Regent boss illustration, and classification of the three extra inbox images above.
 
+
+## Global online leaderboard and asynchronous PvP
+
+### Phase 1 online profile / matchmaking — implemented in frontend and SQL
+
+Files:
+- `supabase/migrations/202611090002_online_leaderboard_ghosts.sql`
+- `towerbound-online.js`
+- `towerbound-cloud.js` (exposes the already initialized browser Supabase client/session to the online module)
+- `rpg-rework-ui.js` (global Top-100 screen, account panel, real-player matchmaking)
+- `rpg-rework-v2.js` (ghost combat estimate uses the fetched opponent's actual HP / attack / defense and skill-loadout score)
+- `tests/online-services.test.cjs`
+
+**What the code now does:**
+- Global leaderboard reads `leaderboard` with Supabase `select()`, sorts by battle power and max stage, and caps results at 100.
+- Signed-in players publish their own active character profile using `upsert()`: nickname, class, battle power and highest stage.
+- The same publish operation stores a seven-day ghost snapshot: level, battle power, max HP, attack, defense, branch, skills, talents and gear.
+- PvP matchmaking queries active `pvp_ghosts` rows belonging to other users and filters exact battle power range ±15%. It no longer falls back to the local fake bot.
+- The duel uses the real opponent's saved build and combat stats for the current automatic ghost-battle estimate. It is not yet a fully interactive remote turn-by-turn battle session.
+
+**RLS / access model:**
+- `leaderboard`: public read; authenticated insert/update only when `auth.uid() = user_id`.
+- `pvp_ghosts`: authenticated players can read active snapshots; insert/update is restricted to their own `user_id`.
+- `pvp_ratings`: authenticated read only; browser roles have no insert/update/delete grants or policies. This is deliberate: client-reported wins must not mint globally trusted PvP rating.
+
+**Important trust boundary / unfinished server work:**
+- Leaderboard and ghost stats are currently client-reported snapshots. RLS prevents one player from editing another player's row, but does not prove that a player's own reported battle power or progression is legitimate.
+- Current duel result and PvP-store points are still local client-side progression. They are explicitly not written to `pvp_ratings`.
+- Do not enable global PvP prizes or treat local PvP points as competitive rating yet. A trusted Supabase Edge Function/server resolver must load both saved builds, validate a match, calculate the result server-side, prevent replay/double claims, and only then update `pvp_ratings` and award points.
+- The SQL migration has been committed to GitHub but **has not been confirmed as executed in the Supabase dashboard**. Until it is applied, the new leaderboard and ghost queries will return a missing-table error.
+
+### SQL migration and setup
+
+Apply `supabase/migrations/202611090002_online_leaderboard_ghosts.sql` in Supabase SQL Editor after the cloud-save migration `202611090001_cloud_saves.sql`. It creates:
+- `public.leaderboard`
+- `public.pvp_ghosts`
+- `public.pvp_ratings`
+
+The migration includes the RLS policies, grants, indexes and column constraints. No Supabase service-role key is required or included in the browser.
+
+### 2026-11-09 — Online leaderboard and real ghost matchmaking
+
+- Added the SQL migration for the global Top-100, active PvP ghost builds and server-owned rating ledger.
+- Exposed the existing Supabase client/session to the new browser online module without exposing any service-role credential.
+- Added Top-100 screen and account-menu entry; profiles publish with upsert after local save changes.
+- Added real-player matchmaking with ±15% battle-power filtering, no bot fallback, seven-day ghost expiry, and build data in the opponent card.
+- Updated the local ghost battle estimate to use the opponent's saved combat stats rather than synthetic tier stats.
+- Added static regression tests and expanded the RPG GitHub Actions workflow to run them.
+- Not complete / not verified: Supabase migration execution, live cross-account data flow, iPhone end-to-end UI, trusted PvP result validation and global rating rewards.
 ## Tests
 
 GitHub Actions checks JavaScript syntax, seven-class expansion, all balance configs, engine rules and the Playwright Chromium browser smoke test. See `tests/`, `.github/workflows/rpg-rework-v2.yml` and `docs/BALANCE-CONTENT-AUDIT.md`.

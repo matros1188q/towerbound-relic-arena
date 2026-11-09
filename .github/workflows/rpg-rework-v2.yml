@@ -4,6 +4,9 @@ on:
     branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, feature/gamefeel, feature/combat-visuals-20, feature/progression-24, fix/audit-pass, main]
     paths:
       - 'rpg-rework-v2.js'
+      - 'towerbound-cloud.js'
+      - 'towerbound-online.js'
+      - 'supabase/migrations/**'
       - 'rpg-rework-ui.js'
       - 'combat-visuals.js'
       - 'progression-24.js'
@@ -36,6 +39,9 @@ jobs:
         with:
           node-version: 22
       - run: node --check rpg-rework-v2.js
+      - run: node --check towerbound-cloud.js
+      - run: node --check towerbound-online.js
+      - run: node tests/online-services.test.cjs
       - run: node --check progression-24.js
       - run: node --check endgame-systems.js
       - run: node --check rpg-rework-ui.js
