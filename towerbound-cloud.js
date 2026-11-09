@@ -61,6 +61,7 @@ function localSnapshot(){
  return{schemaVersion:1,game:'towerbound-relic-arena',savedAt:new Date().toISOString(),keys};
 }
 function hasLocal(snapshot){return !!(snapshot&&snapshot.keys&&Object.keys(snapshot.keys).length);}
+function sameSave(a,b){if(!a?.keys||!b?.keys)return false;const ak=Object.keys(a.keys).sort(),bk=Object.keys(b.keys).sort();return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&a.keys[k]===b.keys[k]);}
 function restoreLocal(snapshot){
  if(!snapshot||!snapshot.keys||typeof snapshot.keys!=='object')throw new Error('Облачное сохранение повреждено');
  restoring=true;
@@ -88,9 +89,10 @@ async function chooseSource(remote){
  const knownRevision=Number(localStorage.getItem('tb-cloud-revision')||0);
  revision=remote?Number(remote.revision):0;
  if(!remote){say('В облаке пока нет сохранения. Переносим текущий прогресс этого устройства…');await writeRemote(local,0);$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Прогресс привязан к аккаунту. Локальная копия сохранена.');return;}
- if(!localExists|| (sameUser&&knownRevision===revision)){
-  if(!localExists){say('Загружаем облачный прогресс…');restoreLocal(remote.save_data);}
-  $('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · '+session.user.email,'online');say('Аккаунт подключён. Облачная версия актуальна.');return;
+ if(!localExists){say('Загружаем облачный прогресс…');restoreLocal(remote.save_data);}
+ if(sameSave(local,remote.save_data)||(sameUser&&knownRevision===revision&&sameSave(local,remote.save_data))){
+  try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
+  $('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · '+(session.user.email||'ПОДКЛЮЧЕНО'),'online');say('Аккаунт подключён. Облачная версия актуальна.');return;
  }
  conflict=true;$('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=false;$('#tbCloudSignedIn').hidden=true;
  $('#tbCloudIntro').textContent='Найдены две версии прогресса. Автоматически ничего не перезаписываем.';
