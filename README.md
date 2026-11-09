@@ -271,3 +271,15 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Added explicit `damage_multiplier: 1.5`, `resource_cost: 18` and a Russian description for Assassin's `Коварный выпад`; skill detail UI now derives safe descriptions from the effect configuration instead of rendering missing values.
 - Expanded `tests/rpg-smoke.cjs` to check the 150% skill description, image containment, telegraph positioning, green hero HP fill, player initiative portrait, and disabled enemy-turn button.
 - Commit: pending CI verification. Visual browser tests cover the 375×812 portrait viewport; a physical iPhone session is still required for final device-specific confirmation.
+
+
+### 2026-11-10 — Critical skill availability and stat mapping fix
+
+- Root cause: the battle UI rendered attack slots from both `classes.json` base skills and `catalog.json` specialization skills, but `playerAction()` looked up the clicked ID only in the specialization catalog. Base skill IDs such as `assassin.base.1` therefore resolved to `undefined` and were rejected as unavailable.
+- Added a class-aware resolver that checks the selected character's own `base_skills` first, then the 420-entry specialization catalog, and rejects a skill from another class/branch.
+- Kept catalog loading awaited before the first render; added HTTP status and payload-shape validation plus a `SKILL CATALOG READY` console summary.
+- Added the requested `console.log('SKILL DEBUG:', skillObject)` inside the combat skill-slot render loop. It exposes the actual skill id, class, branch, unlock level, effect template and other source fields in browser DevTools.
+- Fixed stat mapping: per-skill `resource_cost` and `damage_multiplier` now take precedence over effect-template defaults and are used by the actual combat calculation. UI displays safe damage/healing/shield/buff percentages, resource cost, cooldown and uses `—` rather than `undefined`.
+- Engine skill availability now treats a missing unlock level as level 1, while still enforcing class branch ownership.
+- Added regression checks for all seven class base skill sets, all 420 specialization entries, catalog class coverage, and an actual Assassin base-skill click in browser smoke.
+- Remaining verification: CI must pass; live class-by-class physical iPhone testing is not simulated by the automated browser test.

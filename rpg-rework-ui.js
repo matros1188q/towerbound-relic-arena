@@ -134,6 +134,29 @@
     '<section class="tb-weekly-panel"><div class="tb-daily-heading"><div><div class="tb-eyebrow">ВИКЛИ · '+esc(weekly[0]?.week||"ТЕКУЩАЯ НЕДЕЛЯ")+'</div><h3>Семь заданий на неделю</h3></div></div><div class="tb-daily-quests">'+weekly.map(q=>'<div class="tb-daily-quest"><div><b>'+esc(q.name)+'</b><small>'+q.progress+'/'+q.target+' · награда '+(q.reward.silver||0)+' серебра'+(q.reward.diamonds?' + '+q.reward.diamonds+' ◆':'')+'</small></div><button data-weekly-claim="'+q.id+'" '+(!q.complete||q.claimed?"disabled":"")+'>'+(q.claimed?"ПОЛУЧЕНО":q.complete?"ЗАБРАТЬ":"В ПРОЦЕССЕ")+'</button></div>').join("")+'</div><small class="tb-note">Прогресс общий для аккаунта. Сброс каждый понедельник в 00:00 UTC.</small></section><div class="tb-bottom-strip"><span>Персонаж сохраняет уровень, таланты, экипировку и серебро</span><span>'+(c.heroic?"ГЕРОИЧЕСКИЙ РЕЖИМ":"Обычный режим")+'</span></div></section>';
  }
  function branchSkills(c){return skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch).slice(0,balance.skills.skills_per_branch||10);}
+ function resolveSkill(c,skillId){
+  const base=(classData(c).base_skills||[]).find(skill=>skill.id===skillId);
+  const catalog=skills.find(skill=>skill.id===skillId&&skill.class_id===c.classId);
+  const source=base||catalog;
+  if(!source)return null;
+  const skill={...source,unlock_level:Number.isFinite(Number(source.unlock_level))?Number(source.unlock_level):1};
+  if(skill.class_id&&skill.class_id!==c.classId)return null;
+  if(skill.branch_id&&skill.branch_id!==c.branch)return null;
+  return skill;
+ }
+ function skillSummary(skill){
+  const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike||{};
+  const cost=skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0;
+  const cooldown=skill.cooldown_turns??effect.cooldown_turns??effect.cooldown??0;
+  const multiplier=skill.damage_multiplier??effect.damage_multiplier;
+  const type=effect.type||"strike";
+  let power="Эффект";
+  if(["strike","aoe","dot","execute","control"].includes(type)&&multiplier!=null)power="Урон "+Math.round(Number(multiplier)*100)+"%";
+  else if(type==="heal"||type==="hot")power="Лечение "+Math.round(Number(effect.heal_multiplier||0)*100)+"%";
+  else if(type==="shield")power="Щит "+Math.round(Number(effect.shield_fraction||0)*100)+"%";
+  else if(type==="buff"||type==="debuff")power="Эффект "+Math.round(Number(effect.power_multiplier||0)*100)+"%";
+  return power+" · "+cost+" ресурса · Откат "+(cooldown||"—")+" х.";
+ }
  function ensureLoadout(c){
   const base=(classData(c).base_skills||[]).filter(skill=>c.level>=skill.unlock_level),branch=branchSkills(c).filter(skill=>c.level>=skill.unlock_level);
   const unlocked=[...base,...branch].filter((skill,index,all)=>all.findIndex(other=>other.id===skill.id)===index);
@@ -410,7 +433,14 @@
   const roleIcon={healer:"✚",poison:"☠",tank:"🛡",normal:"",boss:"♛"},skillRoleLabels=["НАКОПЛЕНИЕ","ДЕТОНАТОР","МАССОВАЯ АТАКА","ТАКТИКА"];
   const telegraph=battle.telegraph?'<div class="tb-telegraph '+(battle.telegraph.lethal?"lethal":"strong_hit")+'"><b>'+(battle.telegraph.icon||"⚔")+'</b><span>'+esc(battle.telegraph.label)+'</span><small>СЛЕДУЮЩИЙ ХОД</small></div>':'<div class="tb-telegraph-idle">Враг пока не заряжает атаку</div>';
   const targets=battle.enemies.map(target=>'<button class="tb-target-card '+(target.index===battle.targetIndex?"selected ":"")+(!target.alive?"defeated":"")+'" data-target="'+target.index+'" '+(!target.alive?"disabled":"")+'><span class=\"tb-target-art-wrap\"><img class=\"tb-target-art\" src=\"'+enemyPortrait(target)+'\" alt=\"\" loading=\"lazy\" decoding=\"async\"></span><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+(target.hp/Math.max(1,target.maxHp)*100)+'%"></i></span><small>'+Math.ceil(target.hp)+' HP</small></button>').join("");
-  const skillsMarkup=slots.map((skill,index)=>{const cd=skill?(battle.skillCooldowns?.[skill.id]||0):99,evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null;return '<button class="tb-panel-skill" data-panel-skill="'+(skill?.id||"")+'" data-panel-slot="'+index+'" '+(!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0?"disabled":"")+'><kbd>'+(index+1)+'</kbd><b>'+(evolved?evolved.icon+' ':'')+esc(evolved?.name||skill?.name||"Умение не открыто")+'</b><small>'+(evolved?esc(evolved.desc)+' · ':'')+(skill?elementIcon(skill.damage_type)+" "+elementLabel(skill.damage_type)+(cd>0?" · "+cd+"х":""):"Откроется по уровню")+'</small></button>';}).join("");
+  const skillsMarkup=slots.map((skill,index)=>{
+   const skillObject=skill;
+   if(skillObject)console.log('SKILL DEBUG:',skillObject);
+   const cd=skillObject?(battle.skillCooldowns?.[skillObject.id]||0):99;
+   const evolved=skillObject?window.TowerboundEndgame?.getSkillEvolution(skillObject.id):null;
+   const summary=skillObject?skillSummary(skillObject):"";
+   return '<button class="tb-panel-skill" data-panel-skill="'+(skillObject?.id||"")+'" data-panel-slot="'+index+'" '+(!skillObject||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0?"disabled":"")+'><kbd>'+(index+1)+'</kbd><b>'+(evolved?evolved.icon+' ':'')+esc(evolved?.name||skillObject?.name||"Умение не открыто")+'</b><small>'+(evolved?esc(evolved.desc)+' · ':'')+(skillObject?esc(summary)+(cd>0?" · "+cd+"х":""):"Откроется по уровню")+'</small></button>';
+  }).join("");
   const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
   const counterButton='<button class="tb-panel-skill counter" data-counter="1" '+(battle.actor?.type!=="player"||battle.busy||battle.playerSkillUsed||battle.counterPrimed||counterCd>0||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?"disabled":"")+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>Контр-умение · '+counterCd+'х</small></button>';
   const ultButton='<button class="tb-panel-skill ultimate" data-ultimate="1" '+(battle.actor?.type!=="player"||battle.playerSkillUsed||ultCd>0||c.resource<(ultimate.resource_cost||balance.resources.action_costs.ultimate)?"disabled":"")+'><kbd>6</kbd><b>'+esc(ultimate.name)+'</b><small>Ультимейт · '+ultCd+'х</small></button>';
@@ -552,16 +582,16 @@
  function enemyCounter(){resolveEnemyTelegraph();}
  function playerAction(skillId,slotIndex){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed)return;
-  const c=live(),stats=engine.getCombatStats(c),skill=skills.find(item=>item.id===skillId);
+  const c=live(),stats=engine.getCombatStats(c),skill=resolveSkill(c,skillId);
   if(!skill||!engine.skillAvailable(c,skill)){notify("Умение недоступно");return;}
   const cd=battle.skillCooldowns?.[skill.id]||0;if(cd>0){notify("Откат: "+cd+" хода");return;}
-  const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike;let cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill||1):(effect.resource_cost??balance.resources.action_costs.attack_skill);if(battle.freeSkillCharges>0){cost=0;battle.freeSkillCharges--;}
+  const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike;let cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill||1):(skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);if(battle.freeSkillCharges>0){cost=0;battle.freeSkillCharges--;}
   if(c.resource<cost){notify("Не хватает ресурса: "+classData(c).resource);return;}
   c.resource-=cost;battle.playerSkillUsed=true;battle.skillCooldowns=battle.skillCooldowns||{};
   const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0,cooldownTurns=effect.cooldown_turns||effect.cooldown||4;
   battle.skillCooldowns[skill.id]=Math.max(1,(effect.cooldown||4)-mastered);
   if(effect.cooldown_turns)battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns-mastered);
-  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="pierce")damage*=1.4;if(evolvedSkill?.id==="burst")damage*=1.35;
+  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1)*(skill.damage_multiplier??effect.damage_multiplier??1),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="pierce")damage*=1.4;if(evolvedSkill?.id==="burst")damage*=1.35;
   const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();const damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier),ticks:effect.ticks||3};
@@ -814,7 +844,7 @@
   window.TowerboundReworkReady.then(async value=>{
    if(!value)return;
    engine=value;balance=engine.balance;
-   try{const response=await fetch("./configs/skills/catalog.json");if(response.ok)skills=await response.json();}catch(error){console.warn("Skill catalog unavailable",error);}
+   try{const response=await fetch("./configs/skills/catalog.json");if(!response.ok)throw new Error("HTTP "+response.status+" loading ./configs/skills/catalog.json");const catalog=await response.json();if(!Array.isArray(catalog))throw new Error("Skill catalog must be an array");skills=catalog;console.info("SKILL CATALOG READY:",{count:skills.length,classes:[...new Set(skills.map(skill=>skill.class_id))]});}catch(error){skills=[];console.error("Skill catalog unavailable",error);}
    if(engine.state.characters.length){selectedId=engine.state.activeCharacterId||engine.state.characters[0].id;screen="characters";}
    document.body.classList.toggle("tb-clean-ui",!!engine.state.account.settings?.clean_ui);
    render();

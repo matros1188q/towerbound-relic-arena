@@ -11,7 +11,20 @@ const {chromium}=require('playwright');
  assert.equal(cunning.damage_multiplier,1.5,"Коварный выпад defines 150% damage");
  assert.equal(cunning.resource_cost,18,"Коварный выпад defines its resource cost");
  assert.match(cunning.description,/Урон: 150%/,"Коварный выпад has an explicit non-undefined description");
+ const catalog=JSON.parse(fs.readFileSync(path.join(root,"configs/skills/catalog.json"),"utf8"));
+ assert.equal(catalog.length,420,"specialization catalog contains 420 skills");
+ assert.deepEqual([...new Set(catalog.map(skill=>skill.class_id))].sort(),["assassin","bishop","destroyer","dragonkin","duelist","elemental","shaman"].sort(),"catalog contains all seven classes");
+ for(const [classId,definition] of Object.entries(classConfig.classes)){
+  assert.ok(definition.base_skills.length>=4,classId+" has four base skills");
+  assert.ok(definition.base_skills.every(skill=>Number.isFinite(skill.unlock_level)&&skill.unlock_level>=1),classId+" base skills have unlock levels");
+  assert.equal(catalog.filter(skill=>skill.class_id===classId).length,60,classId+" has 60 branch skills");
+ }
  const battleUiSource=fs.readFileSync(path.join(root,"rpg-rework-ui.js"),"utf8");
+ assert.match(battleUiSource,/function resolveSkill\(c,skillId\)/,"battle actions resolve class base skills and catalog skills");
+ assert.match(battleUiSource,/console\.log\('SKILL DEBUG:',skillObject\)/,"skill renderer logs the requested debug object");
+ assert.match(battleUiSource,/skill\.resource_cost\?\?effect\.resource_cost/,"skill cost prefers its configured value");
+ assert.match(battleUiSource,/skill\.damage_multiplier\?\?effect\.damage_multiplier/,"skill damage prefers its configured value");
+
  assert.match(battleUiSource,/s\.description\|\|/,"skill descriptions use safe fallbacks when config fields are absent");
  const server=http.createServer((req,res)=>{
   const pathname=decodeURIComponent((req.url||'/').split('?')[0]);
@@ -27,8 +40,9 @@ const {chromium}=require('playwright');
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
- const errors=[];
+ const errors=[],skillDebugLogs=[];
  page.on('pageerror',error=>errors.push(error.message));
+ page.on('console',message=>{if(message.text().startsWith('SKILL DEBUG:')){const args=message.args();if(args[1])args[1].jsonValue().then(value=>skillDebugLogs.push(value)).catch(()=>{});}});
  try{
   await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady);
@@ -201,6 +215,13 @@ const {chromium}=require('playwright');
   assert.ok(hpAfterEnemyPhase<hpBeforeEnemyPhase,'at least one enemy attacks before the player receives the next turn');
   assert.match(await page.locator('.tb-turn-guidance').innerText(),/Твой ход/,'control returns to the player after enemy phase');
   assert.equal(await page.locator('[data-action="end-turn"]').isEnabled(),true,'end-turn button reactivates for the player');
+  const skillHpBefore=await page.locator('.tb-target-card.selected .tb-target-hp i').getAttribute('style');
+  assert.equal(await page.locator('[data-panel-skill]').first().isEnabled(),true,'base Assassin skill is enabled at level 1');
+  await page.locator('[data-panel-skill]').first().click();
+  await page.waitForFunction(previous=>document.querySelector('.tb-target-card.selected .tb-target-hp i')?.getAttribute('style')!==previous,skillHpBefore);
+  await page.waitForTimeout(100);
+  assert.ok(skillDebugLogs.length>0,'browser console emitted SKILL DEBUG objects');
+  assert.ok(skillDebugLogs[0].id.startsWith("assassin.base."),'first combat skill resolves from Assassin base skills');
   const noJump=await page.evaluate(()=>({before:window.__tbScrollBeforeTurn,after:window.scrollY}));
   assert.equal(noJump.after,noJump.before,'End Turn does not move the page');
   await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=1;window.saveTowerboundRework();});
