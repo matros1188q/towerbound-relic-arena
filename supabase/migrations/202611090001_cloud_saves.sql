@@ -50,7 +50,8 @@ begin
   end if;
 
   insert into public.player_saves as current_save (user_id, save_data, revision, updated_at)
-  values (v_user_id, p_save_data, 1, now())
+  select v_user_id, p_save_data, 1, now()
+  where p_expected_revision = 0
   on conflict (user_id) do update
     set save_data = excluded.save_data,
         revision = current_save.revision + 1,
