@@ -24,7 +24,8 @@ The table is protected by RLS. Authenticated users can read only their own row. 
 In Authentication / Providers:
 - Enable Email.
 - For Google, enable the Google provider and enter the OAuth Client ID and Client Secret from Google Cloud Console.
-- Add the exact GitHub Pages origin and callback URL shown by Supabase to the allowed redirect URLs. For this game the site origin is `https://matros1188q.github.io`; the redirect target is the published game URL.
+- In Supabase Auth / URL Configuration, set the Site URL to `https://matros1188q.github.io/towerbound-relic-arena/` and add that exact game URL to the allowed redirect URLs.
+- In Google Cloud Console, set the Authorized redirect URI to the Supabase callback URL displayed in the Google provider settings (format: `https://<your-project-ref>.supabase.co/auth/v1/callback`). Do not use the GitHub Pages URL as Google's callback URI.
 
 Email confirmation may be enabled. In that case a new user must confirm the email before a session is created.
 
