@@ -49,16 +49,35 @@ begin
     raise exception 'INVALID_SAVE_REVISION' using errcode = '22023';
   end if;
 
-  insert into public.player_saves as current_save (user_id, save_data, revision, updated_at)
-  select v_user_id, p_save_data, 1, now()
-  where p_expected_revision = 0
-  on conflict (user_id) do update
-    set save_data = excluded.save_data,
-        revision = current_save.revision + 1,
-        updated_at = now()
-    where current_save.revision = p_expected_revision
-  returning current_save.revision, current_save.updated_at
-    into v_revision, v_updated_at;
+  -- Serialize writes for this user, including the first insert, then compare revisions.
+  perform pg_advisory_xact_lock(hashtextextended(v_user_id::text, 0));
+
+  select revision
+    into v_revision
+    from public.player_saves
+    where user_id = v_user_id
+    for update;
+
+  if not found then
+    if p_expected_revision <> 0 then
+      raise exception 'SAVE_CONFLICT' using errcode = '40001';
+    end if;
+    insert into public.player_saves (user_id, save_data, revision, updated_at)
+      values (v_user_id, p_save_data, 1, now())
+      returning player_saves.revision, player_saves.updated_at
+        into v_revision, v_updated_at;
+  else
+    if v_revision <> p_expected_revision then
+      raise exception 'SAVE_CONFLICT' using errcode = '40001';
+    end if;
+    update public.player_saves
+      set save_data = p_save_data,
+          revision = player_saves.revision + 1,
+          updated_at = now()
+      where user_id = v_user_id
+      returning player_saves.revision, player_saves.updated_at
+        into v_revision, v_updated_at;
+  end if;
 
   if v_revision is null then
     raise exception 'SAVE_CONFLICT' using errcode = '40001';
