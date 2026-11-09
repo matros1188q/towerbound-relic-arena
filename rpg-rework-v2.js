@@ -1039,11 +1039,19 @@
    daily.pending=null;return result;
   }
   function simulatePvpDuel(characterId){
-   const character=getChar(characterId),daily=ensurePvpDaily(),pending=daily.pending;if(!pending?.opponent)throw new Error("No opponent snapshot is available");
-   const tier=(balance.bp.tiers||[]).find(x=>x.id===pending.tier)||balance.bp.tiers[0],stats=pvpRankStats(tier?.id);
+   const character=getChar(characterId),daily=ensurePvpDaily(),pending=daily.pending;
+   if(!pending?.opponent)throw new Error("No opponent snapshot is available");
+   const tier=(balance.bp.tiers||[]).find(x=>x.id===pending.tier)||balance.bp.tiers[0];
    const comboScore=(classId,loadout)=>{const selected=loadout||[];return selected.length*5+(balance.combos.combos||[]).filter(combo=>combo.class===classId&&combo.chain.every(slot=>!!selected[Number(String(slot).replace("slot",""))-1])).reduce((sum,combo)=>sum+combo.chain.length*8,0);};
-   const own=comboScore(character.classId,character.skillLoadout),enemy=comboScore(pending.opponent.classId,pending.opponent.skillLoadout),won=own>enemy||(own===enemy&&random()>=.5);
-   const result=resolvePvpDuel(characterId,won);return{...result,rounds:Math.ceil(stats.maxHp/stats.attack),opponent:pending.opponent.name||"Соперник",normalized:true,tier:tier?.name||"Ранг",stats:{attack:stats.attack,maxHp:stats.maxHp,defense:stats.defense},skillScore:own};
+   const own=comboScore(character.classId,character.skillLoadout),enemy=comboScore(pending.opponent.classId,pending.opponent.skillLoadout);
+   const ownStats=getCombatStats(character),enemyStats=pending.opponent.stats||pvpRankStats(tier?.id);
+   const mitigation=defense=>1-Math.min(.75,Math.max(0,Number(defense)||0)/(Math.max(0,Number(defense)||0)+1000));
+   const ownDamage=Math.max(1,ownStats.attack*(1+own/100)),enemyDamage=Math.max(1,(Number(enemyStats.attack)||1)*(1+enemy/100));
+   const roundsToDefeatEnemy=Math.max(1,Math.ceil((Number(enemyStats.maxHp)||1)/(ownDamage*mitigation(enemyStats.defense))));
+   const roundsToDefeatPlayer=Math.max(1,Math.ceil(ownStats.maxHp/(enemyDamage*mitigation(ownStats.defense))));
+   const won=roundsToDefeatEnemy<roundsToDefeatPlayer||(roundsToDefeatEnemy===roundsToDefeatPlayer&&random()>=.5);
+   const result=resolvePvpDuel(characterId,won);
+   return{...result,rounds:Math.max(roundsToDefeatEnemy,roundsToDefeatPlayer),opponent:pending.opponent.name||"Соперник",normalized:!!enemyStats.normalized,tier:tier?.name||"Ранг",stats:{attack:enemyStats.attack,maxHp:enemyStats.maxHp,defense:enemyStats.defense},skillScore:own,opponentSkillScore:enemy};
   }
   function purchasePvpItem(characterId,itemId){
    const character=getChar(characterId),item=(balance.pvp_store.items||[]).find(entry=>entry.id===itemId);
