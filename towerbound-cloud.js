@@ -130,11 +130,16 @@ $('#tbCloudUseLocal').addEventListener('click',async()=>{try{say('Загружа
 $('#tbCloudSyncNow').addEventListener('click',()=>{conflict=false;queueSave();say('Синхронизация запущена…');});
 $('#tbCloudSignOut').addEventListener('click',async()=>{try{await client.auth.signOut();conflict=false;say('Вы вышли. Локальный прогресс остаётся на устройстве.');}catch(e){say(e.message);}});
 function init(){
- if(!cfg.url||!cfg.publishableKey||!window.supabase?.createClient){
+ if(!cfg.url||!cfg.publishableKey){
   setStatus('АККАУНТ · НУЖНА НАСТРОЙКА','local');
   button.title='Нужно создать Supabase-проект и заполнить supabase-config.js';
   $('#tbCloudIntro').textContent='Облачный модуль установлен, но ещё не подключён к Supabase. Локальное сохранение продолжает работать.';
   say('Для включения облака нужен URL проекта и publishable key Supabase.');return;
+ }
+ if(!window.supabase?.createClient){
+  setStatus('ОБЛАКО · SDK НЕДОСТУПЕН','error');
+  $('#tbCloudIntro').textContent='Не удалось загрузить клиент Supabase с CDN. Локальное сохранение продолжает работать.';
+  say('Проверь подключение к интернету и доступность cdn.jsdelivr.net.');return;
  }
  client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  client.auth.onAuthStateChange((_event,next)=>{setTimeout(()=>onSession(next),0);});
