@@ -2,7 +2,7 @@
  "use strict";
  const root=document.getElementById("tbRpg");
  if(!root)return;
- const turnStyle=document.createElement("style");turnStyle.id="tb-turn-based-style";turnStyle.textContent=".tb-turn-initiative{padding:9px 12px;border:1px solid rgba(201,162,39,.45);border-radius:10px;background:rgba(12,17,24,.88);display:grid;gap:7px}.tb-turn-initiative>b{font:800 10px system-ui;letter-spacing:.12em;color:#e8cc82}.tb-initiative-list{display:flex;gap:6px;overflow:auto}.tb-initiative-list span{flex:none;padding:5px 8px;border:1px solid #5a5140;border-radius:7px;font:700 10px system-ui;color:#ddd}.tb-initiative-list span.player{border-color:#78a86d;color:#c9f1b7}.tb-initiative-list span.enemy{border-color:#9d5a52;color:#f2b5a9}.tb-initiative-list span.active{box-shadow:0 0 0 2px #f0d17a;background:rgba(240,209,122,.12)}.tb-end-turn{width:100%;height:48px;min-height:48px;max-height:60px;padding:0 12px;line-height:1;border:1px solid #f0d17a;border-radius:9px;background:linear-gradient(180deg,#a77b30,#684519);color:#fff3d1;font-weight:1000;letter-spacing:.12em}.tb-end-turn:disabled{opacity:.4}.tb-panel-actions{display:grid;gap:8px}.tb-panel-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.tb-telegraph.lethal{border:2px solid #ff394d;background:rgba(100,10,20,.8);color:#fff}.tb-arena-top{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}";document.head.appendChild(turnStyle);
+ const turnStyle=document.createElement("style");turnStyle.id="tb-turn-based-style";turnStyle.textContent=".tb-turn-initiative{padding:9px 12px;border:1px solid rgba(201,162,39,.45);border-radius:10px;background:rgba(12,17,24,.88);display:grid;gap:7px}.tb-turn-initiative>b{font:800 10px system-ui;letter-spacing:.12em;color:#e8cc82}.tb-initiative-list{display:flex;gap:6px;overflow:auto}.tb-initiative-list span{flex:none;padding:5px 8px;border:1px solid #5a5140;border-radius:7px;font:700 10px system-ui;color:#ddd}.tb-initiative-list span.player{border-color:#78a86d;color:#c9f1b7}.tb-initiative-list span.enemy{border-color:#9d5a52;color:#f2b5a9}.tb-initiative-list span.active{box-shadow:0 0 0 2px #f0d17a;background:rgba(240,209,122,.12)}.tb-end-turn{width:100%;height:58px;min-height:54px;max-height:64px;padding:0 12px;line-height:1;border:2px solid #ffd66b;border-radius:12px;background:linear-gradient(180deg,#f6ad35,#b85a12);box-shadow:0 5px 18px #d9792444;color:#201205;font-size:14px;font-weight:1000;letter-spacing:.08em}.tb-end-turn:disabled{opacity:.52;filter:grayscale(1);box-shadow:none}.tb-end-turn.is-player-turn{animation:tb-end-pulse 2s ease-in-out infinite}.tb-panel-actions{display:grid;gap:8px}.tb-panel-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.tb-telegraph.lethal{border:2px solid #ff394d;background:rgba(100,10,20,.8);color:#fff}.tb-arena-top{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap} .tb-turn-guidance{font:700 12px/1.35 system-ui;color:#f5e7c2;text-align:center;padding:2px 6px}.tb-turn-tutorial{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:#05070bdc;backdrop-filter:blur(8px)}.tb-turn-tutorial-card{width:min(100%,440px);padding:24px;border:1px solid #d2aa58;border-radius:18px;background:linear-gradient(155deg,#22283a,#101522);box-shadow:0 24px 80px #000b;color:#f5ecd8}.tb-turn-tutorial-card h2{margin:8px 0 16px;font:900 23px system-ui}.tb-turn-tutorial-card ol{padding-left:22px;display:grid;gap:13px;font:600 14px/1.5 system-ui}.tb-turn-tutorial-card li::marker{color:#f3bd53}.tb-turn-tutorial-card .tb-wide{margin-top:14px}@keyframes tb-end-pulse{0%,100%{box-shadow:0 5px 18px #d9792444}50%{box-shadow:0 5px 24px #ffb53c99}}";document.head.appendChild(turnStyle);
  const artInboxStyle=document.createElement("style");
  artInboxStyle.id="tb-art-inbox-style-v1";
  artInboxStyle.textContent=`
@@ -240,13 +240,17 @@
   battle.telegraph=null;
   applyEnemyHit(enemy,stats.damage);
  }
+ function clearPendingTurnTimer(){if(pendingTimer!==null){clearTimeout(pendingTimer);pendingTimer=null;}}
+ function scheduleEnemyTurnQueue(queue,index,token,delay){clearPendingTurnTimer();pendingTimer=setTimeout(()=>{pendingTimer=null;runEnemyTurnQueue(queue,index,token);},delay);}
  function advanceToPlayerTurn(){
   if(!battle)return;
-  battle.busy=false;battle.telegraph=null;showPlayerTurn();save();render();
+  clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
+  battle.busy=false;battle.actor={type:"player",id:"player",name:live().name};battle.telegraph=null;
+  showPlayerTurn();save();render();
  }
- function runEnemyTurnQueue(queue,index){
-  if(!battle||screen!=="battle")return;
-  if(battle.paused){pendingTimer=setTimeout(()=>runEnemyTurnQueue(queue,index),250);return;}
+ function runEnemyTurnQueue(queue,index,token){
+  if(!battle||screen!=="battle"||token!==battle.enemyQueueToken)return;
+  if(battle.paused){scheduleEnemyTurnQueue(queue,index,token,250);return;}
   if(index>=queue.length){
    battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;
    if((battle.poisonStacks||0)>0){
@@ -262,15 +266,16 @@
   if(enemy?.alive)enemyTurn(enemy);
   if(!battle)return;
   save();render();
-  pendingTimer=setTimeout(()=>runEnemyTurnQueue(queue,index+1),500);
+  scheduleEnemyTurnQueue(queue,index+1,token,500);
  }
  function endPlayerTurn(){
-  if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
+  if(!battle||battle.actor?.type!=="player"||battle.paused)return;
+  clearPendingTurnTimer();battle.busy=false;
   const c=live(),stats=engine.getCombatStats(c);
   if(!battle.playerSkillUsed){
    const damage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5))),hit=applyTargetDamage(battle.enemy,damage,"physical");
    c.resource=Math.min(c.resourceMax,c.resource+Math.max(1,Math.round(c.resourceMax*(balance.combat.turn_based?.resource_regeneration_fraction||.2))));
-   triggerVfx("attack","physical",false);if(hit.killed){finishCurrentEnemy();if(!battle)return;}
+   triggerVfx("attack","physical",false);showFloatingText("player","Автоатака!","#ffd34e");if(hit.killed){finishCurrentEnemy();if(!battle)return;}
   }
   if(battle.dot?.ticks>0){
    const target=battle.enemies.find(x=>x.index===battle.targetIndex&&x.alive);
@@ -278,9 +283,11 @@
   }
   if(battle.hot?.ticks>0){c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;}
   const queue=(battle.enemies||[]).filter(enemy=>enemy.alive);
+  if(!queue.length){advanceToPlayerTurn();return;}
+  battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;const queueToken=battle.enemyQueueToken;
   battle.busy=true;battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
-  battle.telegraph=null;save();render();
-  pendingTimer=setTimeout(()=>runEnemyTurnQueue(queue,0),500);
+  battle.telegraph=null;notify("Противники атакуют...");save();render();
+  scheduleEnemyTurnQueue(queue,0,queueToken,350);
  }
  function endTurnButton(){endPlayerTurn();}
 
@@ -414,8 +421,8 @@
    '<div class="tb-target-grid">'+targets+'</div>'+
    '<div class="tb-combat-layout"><div class="tb-enemy-focus"><div class=\"tb-enemy-portrait\"><img src=\"'+enemyPortrait(enemy)+'\" alt=\"\" loading=\"eager\" decoding=\"async\"></div><div class="tb-enemy-role-icon">'+(roleIcon[enemy.role]||"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":"Страж башни")+'</div>'+telegraph+'<div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.ceil(battle.enemyHp)+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div>'+
    '<div class="tb-battle-hero"><div class="tb-hero-art"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><small>'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</small><div class="tb-resourcebar"><span style="width:'+(c.resource/c.resourceMax*100)+'%"></span></div><small>'+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div>'+
-   '<div class="tb-panel-actions"><div class="tb-panel-slots">'+skillsMarkup+counterButton+ultButton+'</div><button class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"?"disabled":"")+'>'+(battle.actor?.type==="player"?"КОНЕЦ ХОДА":"ХОД ПРОТИВНИКА")+'</button></div>'+
-   '<div class="tb-potion-belt">'+potions+'</div><div class="tb-combat-note">'+(battle.playerSkillUsed?"Умение использовано · можно выпить зелье и завершить ход":"Выбери одно умение, выпей одно зелье или заверши ход для автоатаки")+'</div><div class="tb-fx-layer" aria-hidden="true"></div></section>';
+   '<div class="tb-panel-actions"><div class="tb-panel-slots">'+skillsMarkup+counterButton+ultButton+'</div><div class="tb-turn-guidance" aria-live="polite">'+(battle.actor?.type==="player"?"Твой ход. Выбери умение или нажми «Конец хода».":"Противники атакуют...")+'</div><button class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"?"disabled aria-disabled=\"true\"":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА...")+'</button></div>'+
+   '<div class="tb-potion-belt">'+potions+'</div><div class="tb-combat-note">'+(battle.playerSkillUsed?"Умение использовано · можно выпить зелье и завершить ход":"Нажми 1–6 для умения или заверши ход для автоатаки")+'</div><div class="tb-fx-layer" aria-hidden="true"></div>'+(battle.showTutorial?'<div class="tb-turn-tutorial" role="dialog" aria-modal="true" aria-labelledby="tb-turn-tutorial-title"><div class="tb-turn-tutorial-card"><div class="tb-eyebrow">ПЕРВЫЙ БОЙ</div><h2 id="tb-turn-tutorial-title">Как проходит бой</h2><ol><li>Это пошаговый бой. Сейчас твой ход.</li><li>Нажми на умение (1–6) или на кнопку «Конец хода», чтобы ударить и передать ход.</li><li>Следи за телеграфами над мобами — они предупреждают о сильных атаках. Используй контр-умение, чтобы блокировать.</li></ol><button type="button" class="tb-primary tb-wide" data-action="dismiss-turn-tutorial">ПОНЯТНО</button></div></div>':"")+'</section>';
  }
  function beginStage(){
   const c=live();
@@ -424,7 +431,7 @@
    if(routeChoice==="elite"&&!plan.boss&&c.run.stage?.mobs?.length){c.run.stage.mobs[0].type="elite";c.run.stage.mobs[0].mechanic="shield";}
    if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
-   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null};
+   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
    loadBattleEnemy();syncInitiative();showPlayerTurn();screen="battle";save();render();
   }catch(error){notify(error.message);}
  }
@@ -611,7 +618,7 @@
  function showScreen(name){screen=name;render();}
  function battleRenderKey(){
   if(!battle)return "";
-  return [battle.stage,battle.round,battle.actor?.type||"",battle.playerSkillUsed?1:0,battle.potionUsedThisTurn?1:0,battle.counterPrimed?1:0,Math.round(live().run.playerHp),Math.round(live().resource),battle.targetIndex,battle.bossPhase||0,battle.telegraph?.targetIndex??"",battle.telegraph?.label||"",(battle.enemies||[]).map(x=>x.index+":"+x.role+":"+(x.alive?1:0)+":"+Math.round(x.hp)).join(",")].join("|");
+  return [battle.stage,battle.round,battle.actor?.type||"",battle.playerSkillUsed?1:0,battle.potionUsedThisTurn?1:0,battle.counterPrimed?1:0,battle.showTutorial?1:0,Math.round(live().run.playerHp),Math.round(live().resource),battle.targetIndex,battle.bossPhase||0,battle.telegraph?.targetIndex??"",battle.telegraph?.label||"",(battle.enemies||[]).map(x=>x.index+":"+x.role+":"+(x.alive?1:0)+":"+Math.round(x.hp)).join(",")].join("|");
  }
  function updateBattleDOM(){
   if(!battle)return;
@@ -640,6 +647,8 @@
   const ultButton=root.querySelector("[data-ultimate]");if(ultButton)ultButton.disabled=battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed||(battle.ultimateCooldownTurns||0)>0||c.resource<(ult.resource_cost||balance.resources.action_costs.ultimate);
   const potionEnabled=balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt&&!c.run.stage.potionUsedTargets?.includes(battle.targetIndex);
   root.querySelectorAll("[data-belt-use]").forEach(button=>{const slot=engine.potionBeltSnapshot(c.id).find(x=>x.slot===Number(button.dataset.beltUse));button.disabled=!slot||!slot.itemId||slot.available<=0||!potionEnabled||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.potionUsedThisTurn||battle.busy||battle.paused;});
+  const endTurn=root.querySelector("[data-action=\"end-turn\"]");if(endTurn){const playerTurn=battle.actor?.type==="player";endTurn.disabled=!playerTurn||battle.paused;endTurn.textContent=playerTurn?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА...";endTurn.classList.toggle("is-player-turn",playerTurn);}
+  const guidance=root.querySelector(".tb-turn-guidance");if(guidance)guidance.textContent=battle.actor?.type==="player"?"Твой ход. Выбери умение или нажми «Конец хода».":"Противники атакуют...";
   const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
   const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
   const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph)telegraph.textContent=Math.max(0,(battle.telegraph.until-Date.now())/1000).toFixed(1)+" сек";
@@ -723,12 +732,13 @@
   if(target.dataset.enchant){try{const c=live(),choices=engine.rollEnchantScroll(c.id,target.dataset.enchant),choice=Number(window.prompt("Выбери зачарование (1–4):\n"+choices.map((x,i)=>(i+1)+". "+x).join("\n")))-1;if(Number.isInteger(choice)&&choice>=0&&choice<4){engine.applyEnchant(c.id,target.dataset.enchant,choice,choices);save();render();notify("Зачарование применено");}else notify("Зачарование отменено");}catch(error){notify(error.message);}return;}
   if(target.dataset.buy){try{engine.purchase(live().id,shopTab,target.dataset.buy);save();render();notify("Покупка совершена");}catch(error){notify(error.message);}return;}
   switch(target.dataset.action){
+   case "dismiss-turn-tutorial":if(battle){battle.showTutorial=false;localStorage.setItem("tb-turn-tutorial-seen-v1","1");render();}break;
    case "new":if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей: "+balance.account.max_characters);return;}dialogOpen=true;selectedClass="assassin";render();break;
    case "close":dialogOpen=false;render();break;
    case "confirm-create":createCharacter();break;
    case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
    case "characters":screen="characters";render();break;
-   case "map":stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;screen="map";battle=null;render();save();break;
+   case "map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;screen="map";battle=null;render();save();break;
    case "profile":profileTab="stats";screen="profile";render();break;
    case "profile-gear":profileTab="gear";screen="profile";render();break;
    case "systems":screen="systems";render();break;

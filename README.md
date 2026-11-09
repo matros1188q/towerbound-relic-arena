@@ -245,3 +245,15 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Optimized owner-check RLS predicates by wrapping `auth.uid()` in scalar subqueries.
 - Added matching reproducible migration: `supabase/migrations/202611100001_online_rls_hardening.sql`.
 - Remaining: configure/verify Auth providers and Pages redirect URLs; perform real sign-up and two-account cross-device save/leaderboard/ghost tests; deploy a trusted server-side PvP result resolver before awarding global ratings.
+
+
+### 2026-11-10 — Turn-based combat handoff and first-fight tutorial
+
+- Fixed player-turn recovery: the player actor is authoritative; a stale `battle.busy` flag is cleared before a valid handoff. Pending queue timers are cancelled before a new enemy queue starts.
+- Added an enemy-queue token so callbacks from an old queue cannot continue after the turn advances. Enemy queue completion restores the player actor and clears the busy state.
+- Enemy phase displays `Противники атакуют...`; an empty enemy queue immediately returns control.
+- Made the end-turn button persistently visible, larger and high-contrast gold/orange; it disables and reads `ХОД ПРОТИВНИКА...` while enemies act. Added live guidance and retained the initiative strip.
+- Added `Автоатака!` floating feedback when ending a turn without using a skill.
+- Added a first-fight tutorial modal with the three requested explanations and a `ПОНЯТНО` button; dismissal is remembered locally.
+- Extended browser smoke coverage for tutorial display/dismissal, enemy damage, player-turn restoration and button reactivation.
+- Commit: pending CI verification. Physical iPhone visual testing remains outstanding.
