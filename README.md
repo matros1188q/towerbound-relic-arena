@@ -291,3 +291,10 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Expanded the browser smoke test to exercise the engine's level-2 base-skill availability rule for all seven classes and print the result as SKILL AVAILABILITY BY CLASS.
 - The root cause and fix are recorded above. The current automated smoke already confirms an Assassin base-skill click; the new check covers Bishop, Dragonkin, Destroyer, Elemental, Duelist and Shaman availability as well.
 - Live iPhone testing and a real player's DevTools console remain outside the hosted CI environment; CI captures the browser's emitted SKILL DEBUG object.
+
+
+### 2026-11-10 — Cache-bust engine and skill data
+
+- Bumped the RPG engine script URL to v10 and added v10 cache-busting to all balance JSON fetches so mobile browsers receive the current skill availability logic and class skill definitions.
+- Added v2 cache-busting to the 420-skill catalog request. The request remains relative to index.html and is awaited before the first UI render.
+- Extended smoke coverage to verify all 448 skills (28 class base skills + 420 specialization skills) resolve to known effect templates and have safe cost/effect fallbacks.

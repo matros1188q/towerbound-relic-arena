@@ -1216,7 +1216,7 @@ if(typeof window!=="undefined"){
  window.TowerboundReworkReady=(async()=>{
   const names=["combat","xp_curve","map","elite_mechanics","death","healing","auto_battle","drop_tables","equipment","economy","heroic","pvp","classes","skill_effects","mobs","bosses","character_curves","item_level","bp","difficulty","materials","account","stash","tutorial","achievements","lore","settings","seasons","paragon","pvp_store","resources","skills","combos","procs","run_modifiers","heroic_mobs","chapters","weekly_quests","cosmetics","skill_combos"];
   const loaded=await Promise.all(names.map(async name=>{
-   const response=await fetch("./configs/balance/"+name+".json");
+   const response=await fetch("./configs/balance/"+name+".json?v=10");
    if(!response.ok)throw new Error("Unable to load balance config: "+name);
    return[name,await response.json()];
   }));

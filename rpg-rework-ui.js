@@ -844,7 +844,7 @@
   window.TowerboundReworkReady.then(async value=>{
    if(!value)return;
    engine=value;balance=engine.balance;
-   try{const response=await fetch("./configs/skills/catalog.json");if(!response.ok)throw new Error("HTTP "+response.status+" loading ./configs/skills/catalog.json");const catalog=await response.json();if(!Array.isArray(catalog))throw new Error("Skill catalog must be an array");skills=catalog;console.info("SKILL CATALOG READY:",{count:skills.length,classes:[...new Set(skills.map(skill=>skill.class_id))]});}catch(error){skills=[];console.error("Skill catalog unavailable",error);}
+   try{const response=await fetch("./configs/skills/catalog.json?v=2");if(!response.ok)throw new Error("HTTP "+response.status+" loading ./configs/skills/catalog.json");const catalog=await response.json();if(!Array.isArray(catalog))throw new Error("Skill catalog must be an array");skills=catalog;console.info("SKILL CATALOG READY:",{count:skills.length,classes:[...new Set(skills.map(skill=>skill.class_id))]});}catch(error){skills=[];console.error("Skill catalog unavailable",error);}
    if(engine.state.characters.length){selectedId=engine.state.activeCharacterId||engine.state.characters[0].id;screen="characters";}
    document.body.classList.toggle("tb-clean-ui",!!engine.state.account.settings?.clean_ui);
    render();

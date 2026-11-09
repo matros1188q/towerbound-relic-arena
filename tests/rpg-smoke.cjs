@@ -12,6 +12,11 @@ const {chromium}=require('playwright');
  assert.equal(cunning.resource_cost,18,"Коварный выпад defines its resource cost");
  assert.match(cunning.description,/Урон: 150%/,"Коварный выпад has an explicit non-undefined description");
  const catalog=JSON.parse(fs.readFileSync(path.join(root,"configs/skills/catalog.json"),"utf8"));
+ const skillEffects=JSON.parse(fs.readFileSync(path.join(root,"configs/balance/skill_effects.json"),"utf8"));
+ const allConfiguredSkills=[...Object.entries(classConfig.classes).flatMap(([classId,definition])=>(definition.base_skills||[]).map(skill=>({...skill,class_id:classId}))),...catalog];
+ assert.ok(allConfiguredSkills.every(skill=>!!skillEffects[skill.effect_template]),"every base and specialization skill maps to a known effect template");
+ assert.ok(allConfiguredSkills.every(skill=>Number.isFinite(Number(skill.resource_cost??skillEffects[skill.effect_template].resource_cost??0))),"every skill has a finite resource-cost fallback");
+ assert.ok(allConfiguredSkills.every(skill=>!!(skill.damage_multiplier??skillEffects[skill.effect_template].damage_multiplier??skillEffects[skill.effect_template].heal_multiplier??skillEffects[skill.effect_template].power_multiplier??skillEffects[skill.effect_template].shield_fraction??1)),"every skill has a safe effect-stat fallback");
  assert.equal(catalog.length,420,"specialization catalog contains 420 skills");
  assert.deepEqual([...new Set(catalog.map(skill=>skill.class_id))].sort(),["assassin","bishop","destroyer","dragonkin","duelist","elemental","shaman"].sort(),"catalog contains all seven classes");
  for(const [classId,definition] of Object.entries(classConfig.classes)){
