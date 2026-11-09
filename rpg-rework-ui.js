@@ -7,9 +7,9 @@
  artInboxStyle.id="tb-art-inbox-style-v1";
  artInboxStyle.textContent=`
   #tbRpg .tb-hero-art img,#tbRpg .tb-mini-avatar img,#tbRpg .tb-character-card img,#tbRpg .tb-profile-avatar img,#tbRpg .tb-hero-chip img,#tbRpg .tb-char-art img,#tbRpg .tb-class-picker img{display:block;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center center!important}
-  #tbRpg .tb-enemy-portrait{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(108px,19vw,166px);min-width:0;overflow:hidden;margin:2px auto 8px;border-radius:12px;background:radial-gradient(ellipse at 50% 46%,#343650 0%,#151a2b 72%);border:1px solid #b9a2e52b}
+  #tbRpg .tb-enemy-portrait{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(108px,19vw,150px);max-height:150px;min-width:0;overflow:hidden;margin:2px auto 8px;border-radius:12px;background:radial-gradient(ellipse at 50% 46%,#343650 0%,#151a2b 72%);border:1px solid #b9a2e52b}
   #tbRpg .tb-enemy-portrait img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 5px 10px #000b)}
-  #tbRpg .tb-target-art-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(48px,10vw,76px);min-width:0;overflow:hidden}
+  #tbRpg .tb-target-art-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:clamp(48px,10vw,76px);max-height:150px;min-width:0;overflow:hidden}
   #tbRpg .tb-target-art{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center center!important;filter:drop-shadow(0 3px 6px #0009)}
   #tbRpg .tb-target-card{min-width:0}
  `;
@@ -108,6 +108,7 @@
  function mapScreen(){
   const c=live();if(!c)return characterList();
   const daily=engine.dailySnapshot(c.id),chapter=engine.chapterForStage(selectedStage||c.progress.currentStage),modifierChoices=engine.runModifierOptions(c.id),weekly=engine.weeklySnapshot(c.id);
+  const chest=engine.dailyChestSnapshot(c.id),chestMinutes=Math.ceil(chest.remainingMs/60000),chestLabel=chest.available?"🎁 СУНДУК · ГОТОВ":"🎁 СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м";
   const cp=c.progress.currentStage-1,healReady=balance.map.checkpoints.includes(cp)&&c.run.healingPenaltyUntil<c.progress.currentStage&&c.run.checkpointHeals<balance.healing.max_checkpoint_heals_per_run,trapStage=selectedStage%13===0,antidotes=(c.bag||[]).filter(x=>x.type==="antidote").reduce((n,x)=>n+(x.quantity||1),0);
   const penalty=(c.run.healingPenaltyFrom||0)>0&&c.progress.currentStage>=(c.run.healingPenaltyFrom||0)&&c.progress.currentStage<=c.run.healingPenaltyUntil;
   const remaining=penalty?c.run.healingPenaltyUntil-c.progress.currentStage+1:0;
@@ -121,7 +122,7 @@
    nodes+='<button type="button" class="tb-map-node '+(cleared?"cleared ":"")+(selected?"selected ":"")+(isBoss?"boss":"")+'" data-stage="'+stage+'" '+(!accessible?"disabled":"")+'><strong>'+(isBoss?"♛":cleared?"✓":stage)+'</strong><small>'+(isBoss?"БОСС":cleared?"ПРОЙДЕН":"ЭТАП")+'</small></button>';
   }
   return header("Карта 250 уровней",c.name+" · "+clsName(c)+" · Ур. "+c.level)+
-   '<section class="tb-map-screen"><div class="tb-map-top"><div class="tb-hero-chip"><img src="'+portrait(c.classId)+'" alt=""><div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · '+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div><div class="tb-currency"><span>◈ '+c.silver+' серебра</span><span>◆ '+engine.state.account.diamonds+' алмазов</span><span>Мощь '+engine.combatPower(c)+'</span><span>♥ Жизни: '+(c.run.lives||balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives)+'/'+balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives+'</span></div><div class="tb-map-actions"><button data-action="characters">Персонажи</button><button data-action="shop">МАГАЗИН</button><button data-action="profile">ПЕРСОНАЖ</button><button data-action="systems">АККАУНТ</button><button data-action="leaderboard">РЕЙТИНГ</button><button data-action="speedrun">СПИДРАН · 10 ЭТАПОВ</button></div></div>'+
+   '<section class="tb-map-screen"><div class="tb-map-top"><div class="tb-hero-chip"><img src="'+portrait(c.classId)+'" alt=""><div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · '+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div><div class="tb-currency"><span>◈ '+c.silver+' серебра</span><span>◆ '+engine.state.account.diamonds+' алмазов</span><span>Мощь '+engine.combatPower(c)+'</span><span>♥ Жизни: '+(c.run.lives||balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives)+'/'+balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives+'</span></div><div class="tb-map-actions"><button data-action="characters">Персонажи</button><button data-action="shop">МАГАЗИН</button>'+button("daily-chest",chestLabel,chest.available?"":"disabled")+'<button data-action="profile">ПЕРСОНАЖ</button><button data-action="systems">АККАУНТ</button><button data-action="leaderboard">РЕЙТИНГ</button><button data-action="speedrun">СПИДРАН · 10 ЭТАПОВ</button></div></div>'+
    '<div class="tb-progressline"><span>Наивысший этап: <b>'+c.progress.highestEver+'/250</b></span><span>Следующий: <b>'+Math.min(c.progress.currentStage,250)+'</b></span><span>Чекпоинты: <b>'+c.progress.checkpoints.join(" · ")+'</b></span></div>'+
    (penalty?'<div class="tb-penalty">−20% ОПЫТА АКТИВНО · ОСТАЛОСЬ '+remaining+' ЭТАЖЕЙ</div>':"")+
    '<div class="tb-map-layout"><div class="tb-map-scroll"><div class="tb-map-grid">'+nodes+'</div></div><aside class="tb-stage-panel"><div class="tb-eyebrow">ВЫБРАННЫЙ ЭТАП</div><div class="tb-stage-number">'+selectedStage+'</div><h3>'+(selectedStage%balance.map.boss_every===0?"Боссовый бой":"Гаунтлет")+'</h3><p>'+(selectedStage%balance.map.boss_every===0?"Один босс, отдельное сражение":balance.map.gauntlet_ranges.find(r=>selectedStage>=r.min&&selectedStage<=r.max)?.allowed.join(" / ")+" противника подряд")+'</p><div class="tb-route-choice"><button data-route="standard">Обычный путь</button><button data-route="elite">Элитка + сундук</button></div><small>'+(trapStage?"⚠ ЛОВУШКА · требуется противоядие":"Без ловушки")+(antidotes?" · Противоядий: "+antidotes:"")+(selectedStage<=c.progress.highestEver?" · Повторное прохождение · 50% XP": " · Первое прохождение · 100% XP")+'</small><button class="tb-primary tb-wide" data-action="start" id="start">НАЧАТЬ ЭТАП</button>'+
@@ -139,14 +140,18 @@
   const catalog=skills.find(skill=>skill.id===skillId&&skill.class_id===c.classId);
   const source=base||catalog;
   if(!source)return null;
-  const skill={...source,unlock_level:Number.isFinite(Number(source.unlock_level))?Number(source.unlock_level):1};
+  const effect=balance.skill_effects[source.effect_template]||balance.skill_effects.strike||{};
+  const unlockLevel=Number.isFinite(Number(source.unlock_level))?Number(source.unlock_level):1;
+  const damage=Number(source.damage??source.damage_multiplier??effect.damage_multiplier??effect.heal_multiplier??effect.power_multiplier??0)||0;
+  const cost=Number(source.cost??source.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0)||0;
+  const skill={...source,unlock_level:unlockLevel,damage,cost,damage_multiplier:Number(source.damage_multiplier??source.damage??effect.damage_multiplier??0)||0,resource_cost:cost};
   if(skill.class_id&&skill.class_id!==c.classId)return null;
   if(skill.branch_id&&skill.branch_id!==c.branch)return null;
   return skill;
  }
  function skillSummary(skill,c){
   const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike||{};
-  const cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
+  const cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill.cost??skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
   const cooldown=skill.cooldown_turns??effect.cooldown_turns??effect.cooldown??0;
   const multiplier=skill.damage_multiplier??effect.damage_multiplier;
   const type=effect.type||"strike";
@@ -158,7 +163,7 @@
   return power+" · "+cost+" ресурса · Откат "+(cooldown||"—")+" х.";
  }
  function ensureLoadout(c){
-  const base=(classData(c).base_skills||[]).filter(skill=>c.level>=skill.unlock_level),branch=branchSkills(c).filter(skill=>c.level>=skill.unlock_level);
+  const base=(classData(c).base_skills||[]).filter(skill=>c.level>=(Number.isFinite(Number(skill.unlock_level))?Number(skill.unlock_level):1)),branch=branchSkills(c).filter(skill=>c.level>=(Number.isFinite(Number(skill.unlock_level))?Number(skill.unlock_level):1));
   const unlocked=[...base,...branch].filter((skill,index,all)=>all.findIndex(other=>other.id===skill.id)===index);
   const chosen=(Array.isArray(c.skillLoadout)?c.skillLoadout:[]).filter(id=>unlocked.some(skill=>skill.id===id)).slice(0,4);
   for(const skill of unlocked){if(chosen.length>=4)break;if(!chosen.includes(skill.id))chosen.push(skill.id);}
@@ -546,7 +551,7 @@
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism")target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&battle.actionIsSkill&&battle.actionIsPrimaryHit&&rawDamage>2*hpBeforeHit)battle.overkillBonus=true;
-  if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ff596b");playSfx(options.critical?"crit":"hit");}
+  if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ffffff");playSfx(options.critical?"crit":"hit");}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss")updateBossPhase();
   return{damage,dealt,multiplier,killed:target.hp<=0,revived};
@@ -592,7 +597,7 @@
   const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0,cooldownTurns=effect.cooldown_turns||effect.cooldown||4;
   battle.skillCooldowns[skill.id]=Math.max(1,(effect.cooldown||4)-mastered);
   if(effect.cooldown_turns)battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns-mastered);
-  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1)*(skill.damage_multiplier??effect.damage_multiplier??1),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="pierce")damage*=1.4;if(evolvedSkill?.id==="burst")damage*=1.35;
+  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1)*(skill.damage_multiplier??skill.damage??effect.damage_multiplier??1),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="pierce")damage*=1.4;if(evolvedSkill?.id==="burst")damage*=1.35;
   const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();const damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier),ticks:effect.ticks||3};
@@ -774,7 +779,8 @@
    case "profile-gear":profileTab="gear";screen="profile";render();break;
    case "toggle-mute":engine.saveSettings({sound_enabled:settings().sound_enabled===false});save();render();notify(settings().sound_enabled===false?"Звук выключен":"Звук включён");break;
    case "cloud-account":if(window.TowerboundCloud?.open)window.TowerboundCloud.open();else notify("Облачный модуль ещё загружается");break;
-   case "cloud-sync":(async()=>{try{await window.TowerboundCloud?.syncNow?.();notify("Облачное сохранение синхронизировано");}catch(error){notify(error.message||"Не удалось синхронизировать");}})();break;
+   case "cloud-sync":(async()=>{try{const cloud=window.TowerboundCloud;if(!cloud?.syncNow)throw new Error("Облачный модуль недоступен");await cloud.syncNow();notify("Облачное сохранение синхронизировано");}catch(error){notify(error.message||"Не удалось синхронизировать");}})();break;
+   case "daily-chest":try{const reward=engine.claimDailyChest(live().id);save();render();notify(reward.type==="silver"?"Сундук: +"+reward.amount+" серебра":reward.type==="potion"?"Сундук: +1 зелье исцеления":"Сундук: +10 материалов");}catch(error){notify(error.message);}break;
    case "systems":screen="systems";render();break;
    case "leaderboard":screen="leaderboard";onlineLeaderboardError="";render();refreshOnlineLeaderboard();break;
    case "leaderboard-refresh":refreshOnlineLeaderboard();break;

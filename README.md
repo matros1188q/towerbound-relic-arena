@@ -335,3 +335,26 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Exposed `queueSave`, `loadGame`, `saveGame`, `syncNow` and `open` through `TowerboundCloud`. UI saves now explicitly queue cloud persistence after updating the local cache; the storage listener remains as a compatibility safety net.
 - Added account and forced-sync controls to Settings. Manual sync waits for an in-flight save and reports unauthenticated, conflict and network errors instead of claiming success.
 - The existing Supabase `player_saves` table, owner RLS and optimistic revision RPC are reused; no service-role key is exposed and no schema relaxation was made.
+
+
+### 2026-11-10 — Daily chest map integration and release cache refresh
+
+- Added a gold-accented daily chest button to the 250-stage map. It displays READY or a live hours/minutes cooldown, disables itself after a claim, and reports the exact reward.
+- Reward timestamp is stored in the character's save state and therefore follows the player between devices through the existing cloud snapshot. Engine tests cover all three reward outcomes and the 24-hour lockout; browser smoke checks the map button and persisted timestamp.
+- Bumped engine/UI/CSS/cloud script cache keys so GitHub Pages clients load the complete update instead of stale mobile assets.
+
+
+## 2026-11-10 — skill and turn-handoff hardening
+- Normalize every resolved base/catalog skill into numeric `damage`, `cost`, and `unlock_level`; missing unlock levels default to 1 and missing numeric effects/costs fall back to 0 or the configured effect template.
+- Keep the original specialization catalog (420 skills) and class base-skill source; no catalog flattening or combat-rule rewrite is needed.
+- Skill damage now consumes the normalized value when the explicit multiplier is absent. Ordinary mob damage numbers are white; critical numbers remain gold and healing numbers green.
+- Added smoke assertions for numeric skill normalization, default unlock level, the 500ms enemy queue, and clearing `battle.busy` before player control returns.
+
+- Browser smoke now treats `net::ERR_ABORTED` image requests during normal SPA screen transitions as expected cancellations, while continuing to fail on 404/network errors. Manual cloud sync also reports failure if any write in a multi-save flush fails.
+
+
+### 2026-11-10 — cloud sync reliability and sound/art verification
+- Fixed the Sync Now button inside the Supabase account dialog: it now awaits the same version-checked remote write as Settings and reports completion only after Supabase confirms it. It no longer clears an unresolved revision conflict or silently schedules a background write.
+- Added automatic retry of queued local-cache changes when the browser comes back online; the cloud session and conflict guard remain authoritative.
+- Explicitly capped both desktop and mobile mob/boss artwork frames at 150px with hidden overflow and contained images.
+- Browser smoke now exercises master volume and Mute on/off; static checks cover all four synthesized sound presets and cloud sync conflict/error behavior.

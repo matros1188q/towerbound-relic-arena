@@ -22,9 +22,15 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
+assert.ok(html.includes('./towerbound-cloud.js?v=2'),'cloud module cache is refreshed');
+assert.ok(html.includes('./rpg-rework-v2.js?v=11'),'engine cache is refreshed for chest data');
+assert.ok(html.includes('./rpg-rework-ui.js?v=18'),'map and settings UI cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
 assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is awaitable and reports failure');
+assert.ok(cloud.includes("$('#tbCloudSyncNow').addEventListener('click',async()=>{try{await syncNow();"),'cloud overlay waits for confirmed remote save');
+assert.ok(!cloud.includes("$('#tbCloudSyncNow').addEventListener('click',()=>{conflict=false;queueSave();"),'manual sync must not clear an unresolved conflict or claim background success');
+assert.ok(cloud.includes("window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});"),'offline saves are retried after connectivity returns');
 assert.ok(cloud.includes('loadGame,saveGame,queueSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
 assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="cloud-account"'),'settings screen exposes cloud account and manual sync controls');
 console.log('Online services static checks: OK');

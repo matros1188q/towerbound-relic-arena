@@ -26,7 +26,7 @@ async function journey(type,name,viewport,url){
  const context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',isMobile:viewport.width<500,hasTouch:viewport.width<500});
  const page=await context.newPage(),errors=[],failed=[];
  page.on('pageerror',error=>errors.push(error.message));
- page.on('requestfailed',request=>{const url=request.url();if(!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+request.failure()?.errorText);});
+ page.on('requestfailed',request=>{const url=request.url(),reason=request.failure()?.errorText;if(reason!=='net::ERR_ABORTED'&&!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+reason);});
  await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
  await page.route('https://fonts.googleapis.com/**',route=>route.abort());
  await page.route('https://fonts.gstatic.com/**',route=>route.abort());

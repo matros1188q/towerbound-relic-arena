@@ -139,15 +139,15 @@ for(const classId of classes){
   assert.match(ui,/settings\(\)\.disable_telegraphs\?'<div class="tb-telegraph-disabled"/,'telegraph accessibility toggle hides the warning');
   assert.match(ui,/data-setting="disable_screen_shake"[\s\S]*?data-setting="disable_skill_flashes"[\s\S]*?data-setting="disable_telegraphs"/,'all three accessibility settings are exposed');
  }
+ assert.match(ui,/function playSfx\(kind\)[\s\S]*?AudioContext[\s\S]*?presets=\{click:[\s\S]*?hit:[\s\S]*?crit:[\s\S]*?hurt:/,"Web Audio feedback covers click, hit, critical and player damage");
+ assert.match(ui,/data-action="toggle-mute"/,"settings expose an explicit mute button");
+ assert.match(ui,/showFloatingText\("player","-"\+incoming,"#ff596b"\);playSfx\("hurt"\)/,"enemy attacks display player damage and play a hurt sound");
+ assert.match(css,/tb-floating-damage\.is-damage\{color:#fff!important/,"ordinary floating damage is white");
  assert.match(ui,/root\.classList\.add\("tb-death-shaking"\)/,'death applies screen shake unless disabled');
  assert.match(ui,/function handleBattleKeys\([\s\S]*?event\.key==="Tab"[\s\S]*?\^\[1-6\]\$/,'keyboard supports target cycling and slots 1–6');
  assert.match(css,/tb-panel-slots\{display:flex;flex-direction:column/,'mobile six-slot panel is vertical');
  assert.match(css,/tb-death-shaking \.tb-death-overlay\{animation:tb-screen-shake/,'death overlay uses the screen-shake animation');
 }
- assert.match(ui,/function playSfx\(kind\)[\s\S]*?AudioContext[\s\S]*?presets=\{click:[\s\S]*?hit:[\s\S]*?crit:[\s\S]*?hurt:/,"Web Audio feedback covers click, hit, critical and player damage");
- assert.match(ui,/data-action="toggle-mute"/,"settings expose an explicit mute button");
- assert.match(ui,/showFloatingText\("player","-"\+incoming,"#ff596b"\);playSfx\("hurt"\)/,"enemy attacks display player damage and play a hurt sound");
- assert.match(css,/tb-floating-damage\.is-damage\{color:#fff!important/,"ordinary floating damage is white");
 
 {
  let testNow=Date.UTC(2026,10,10,12),randomValue=0.01;
@@ -156,8 +156,8 @@ for(const classId of classes){
  const second=testEngine.createCharacter("Starter Two","bishop");
  assert.equal(first.silver,100,"every new character starts with 100 silver");
  assert.equal(second.silver,100,"subsequent characters also start with 100 silver");
- assert.equal(first.bag.find(item=>item.type==="healing_potion")?.quantity,3,"first character receives three healing potions");
- assert.equal(second.bag.find(item=>item.type==="healing_potion")?.quantity,3,"subsequent characters receive three healing potions");
+ assert.equal(testEngine.getChar(first.id).bag.find(item=>item.type==="healing_potion")?.quantity,3,"first character receives three healing potions");
+ assert.equal(testEngine.getChar(second.id).bag.find(item=>item.type==="healing_potion")?.quantity,3,"subsequent characters receive three healing potions");
  const silverChest=testEngine.claimDailyChest(first.id);
  assert.equal(silverChest.type,"silver","deterministic daily chest can award silver");
  assert.ok(silverChest.amount>=50&&silverChest.amount<=100,"silver chest reward is bounded from 50 to 100");
@@ -166,10 +166,10 @@ for(const classId of classes){
  testNow+=24*60*60*1000;randomValue=.5;
  const potionChest=testEngine.claimDailyChest(first.id);
  assert.equal(potionChest.type,"potion","daily chest can award one healing potion");
- assert.equal(first.bag.find(item=>item.type==="healing_potion")?.quantity,4,"potion reward increments the healing potion stack");
+ assert.equal(testEngine.getChar(first.id).bag.find(item=>item.type==="healing_potion")?.quantity,4,"potion reward increments the healing potion stack");
  testNow+=24*60*60*1000;randomValue=.99;
  const materialChest=testEngine.claimDailyChest(first.id);
  assert.equal(materialChest.type,"materials","daily chest can award crafting materials");
- assert.equal(first.bag.find(item=>item.type==="craft_material")?.quantity,10,"material reward grants ten crafting materials");
+ assert.equal(testEngine.getChar(first.id).bag.find(item=>item.type==="craft_material")?.quantity,10,"material reward grants ten crafting materials");
 }
 console.log('Combat runtime regression passed: 7 counters, telegraphs, boss phases, enemy stats, elemental matchups, 7 procs, combos and cross-target proc persistence.');

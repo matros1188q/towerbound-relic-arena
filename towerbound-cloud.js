@@ -119,6 +119,7 @@ async function saveLoop(){
   do{dirty=false;await saveGame(localSnapshot(),revision);setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');saved=true;}
   while(dirty&&session&&!conflict);
  }catch(e){
+  saved=false;
   console.error('[Towerbound cloud] save failed',e);
   if(String(e.message||e).includes('SAVE_CONFLICT')||String(e.code||'')==='40001'){
    conflict=true;setStatus('ОБЛАКО · КОНФЛИКТ','error');say('Сохранение изменилось на другом устройстве. Обнови облачную версию или выбери источник вручную; автоматическая перезапись остановлена.');
@@ -136,6 +137,7 @@ async function syncNow(){
  return{revision,status:{...status}};
 }
 function queueSave(){if(!session||conflict||restoring)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,1300);}
+window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});
 const originalSet=Storage.prototype.setItem;
 Storage.prototype.setItem=function(key,value){const result=originalSet.call(this,key,value);if(this===localStorage&&isSaveKey(key))queueSave();return result;};
 $('#tbCloudSignIn').addEventListener('click',async()=>{try{say('Входим…');const {error}=await client.auth.signInWithPassword({email:$('#tbCloudEmail').value.trim(),password:$('#tbCloudPassword').value});if(error)throw error;}catch(e){say(e.message||'Не удалось войти');}});
@@ -143,7 +145,7 @@ $('#tbCloudSignUp').addEventListener('click',async()=>{try{say('Создаём �
 $('#tbCloudGoogle').addEventListener('click',async()=>{try{say('Открываем Google…');const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});if(error)throw error;}catch(e){say(e.message||'Вход через Google не настроен');}});
 $('#tbCloudUseRemote').addEventListener('click',()=>{try{restoreLocal(window.__TB_CLOUD_PENDING_REMOTE.save_data);}catch(e){say(e.message);}});
 $('#tbCloudUseLocal').addEventListener('click',async()=>{try{say('Загружаем локальную версию…');await writeRemote(window.__TB_CLOUD_PENDING_LOCAL,revision);conflict=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Текущий прогресс этого устройства теперь в облаке.');}catch(e){say(e.message||'Не удалось сохранить');}});
-$('#tbCloudSyncNow').addEventListener('click',()=>{conflict=false;queueSave();say('Синхронизация запущена…');});
+$('#tbCloudSyncNow').addEventListener('click',async()=>{try{await syncNow();say('Синхронизация завершена · версия '+revision+'.');}catch(error){say(error.message||'Не удалось синхронизировать');}});
 $('#tbCloudSignOut').addEventListener('click',async()=>{try{await client.auth.signOut();conflict=false;say('Вы вышли. Локальный прогресс остаётся на устройстве.');}catch(e){say(e.message);}});
 function init(){
  if(!cfg.url||!cfg.publishableKey){
