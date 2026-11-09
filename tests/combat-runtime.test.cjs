@@ -144,4 +144,8 @@ for(const classId of classes){
  assert.match(css,/tb-panel-slots\{display:flex;flex-direction:column/,'mobile six-slot panel is vertical');
  assert.match(css,/tb-death-shaking \.tb-death-overlay\{animation:tb-screen-shake/,'death overlay uses the screen-shake animation');
 }
+ assert.match(ui,/function playSfx\(kind\)[\s\S]*?AudioContext[\s\S]*?presets=\{click:[\s\S]*?hit:[\s\S]*?crit:[\s\S]*?hurt:/,"Web Audio feedback covers click, hit, critical and player damage");
+ assert.match(ui,/data-action="toggle-mute"/,"settings expose an explicit mute button");
+ assert.match(ui,/showFloatingText\("player","-"\+incoming,"#ff596b"\);playSfx\("hurt"\)/,"enemy attacks display player damage and play a hurt sound");
+ assert.match(css,/tb-floating-damage\.is-damage\{color:#fff!important/,"ordinary floating damage is white");
 console.log('Combat runtime regression passed: 7 counters, telegraphs, boss phases, enemy stats, elemental matchups, 7 procs, combos and cross-target proc persistence.');

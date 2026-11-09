@@ -313,3 +313,10 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Preserved the class-aware base-skill resolver and awaited aggregated `configs/skills/catalog.json` load; bumped its cache key to v3 and the UI script to v17 so deployed browsers fetch the current catalog.
 - Enemy phase now waits 500 ms before the first enemy action and keeps the 500 ms stagger between subsequent enemies. `endPlayerTurn()` continues to clear the stale timer and busy flag before queueing opponents; `advanceToPlayerTurn()` invalidates the queue and restores player input.
 - Added regression assertions for all 420 catalog entries, seven-class coverage, unlock-level defaults, effect IDs, and both 500 ms enemy-turn delays. This block does not change combat damage, initiative, skill costs, or round resolution.
+
+
+### 2026-11-10 — Combat audio and hit feedback
+
+- Verified the existing Web Audio synthesizer presets for click, hit, critical and incoming damage; added an explicit MUTE / ВКЛ control beside the persisted volume sliders.
+- Enemy hits now show floating damage above the hero, play the hurt cue and shake the arena on hits of at least 10% max HP (the existing boss/phase-four shake path remains intact).
+- Normal damage numbers are now white; critical numbers remain gold and healing remains green. Existing float-up and shake animations are reused, with no combat math or turn-state changes.
