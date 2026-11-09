@@ -27,7 +27,7 @@ async function publishCurrent(){
   },updated_at:new Date().toISOString(),
   expires_at:new Date(Date.now()+7*86400000).toISOString()
  };
- const fingerprint=JSON.stringify(snapshot);if(fingerprint===lastPublished)return{unchanged:true};
+ const fingerprint=JSON.stringify({...snapshot,updated_at:undefined,expires_at:undefined});if(fingerprint===lastPublished)return{unchanged:true};
  publishing=true;
  try{
   const [lb,ghost]=await Promise.all([
@@ -43,8 +43,8 @@ async function publishCurrent(){
 }
 function queuePublish(){clearTimeout(publishTimer);publishTimer=setTimeout(()=>publishCurrent().catch(e=>console.warn('[Towerbound online] publish failed',e)),5000);}
 async function getLeaderboard(){
- const ctx=context();if(!ctx)throw new Error('Для глобального рейтинга войди в аккаунт Towerbound');
- const {data,error}=await ctx.client.from('leaderboard').select('user_id,nickname,class,battle_power,max_stage,updated_at').order('battle_power',{ascending:false}).order('max_stage',{ascending:false}).limit(100);
+ const client=api()?.client;if(!client)throw new Error('Supabase не настроен');
+ const {data,error}=await client.from('leaderboard').select('user_id,nickname,class,battle_power,max_stage,updated_at').order('battle_power',{ascending:false}).order('max_stage',{ascending:false}).limit(100);
  if(error)throw error;return data||[];
 }
 async function findGhost(myCharacter,engine){
