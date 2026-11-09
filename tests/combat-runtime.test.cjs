@@ -124,7 +124,9 @@ for(const classId of classes){
   assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
   assert.match(ui,/data-action="end-turn"/,'End Turn control is present');
-  assert.match(ui,/tb-target-warning/,'boss and enemy warnings remain visible');
+  assert.match(ui,/tb-telegraph/,"enemy telegraph content remains visible");
+  assert.doesNotMatch(ui,/tb-telegraph tb-target-warning/,"enemy telegraph is not positioned as a floating target badge");
+  assert.match(css,/tb-enemy-focus \.tb-telegraph[^}]*position:relative!important/,"enemy telegraph is contained inside its card");
  }else{
   assert.match(ui,/triggerVfx\("enemy-hit","physical",phase===4\|\|attacker\.type==="boss"\)/,'every boss hit triggers the screen-shake path');
   assert.match(ui,/settings\(\)\.disable_telegraphs\?'<div class="tb-telegraph-disabled"/,'telegraph accessibility toggle hides the warning');
