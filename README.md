@@ -358,3 +358,9 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Added automatic retry of queued local-cache changes when the browser comes back online; the cloud session and conflict guard remain authoritative.
 - Explicitly capped both desktop and mobile mob/boss artwork frames at 150px with hidden overflow and contained images.
 - Browser smoke now exercises master volume and Mute on/off; static checks cover all four synthesized sound presets and cloud sync conflict/error behavior.
+
+
+### 2026-11-10 — neutral skill multiplier and final UI cache refresh
+- Skills without a damage multiplier now receive a neutral 1.0 multiplier instead of a zero multiplier, preventing a missing optional config field from suppressing attack damage.
+- Mute control text reflects the current enabled/disabled state.
+- Bumped the UI and cloud cache keys and extended smoke assertions for the fallback and visible Mute state.

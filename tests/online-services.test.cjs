@@ -22,9 +22,9 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=2'),'cloud module cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=3'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=11'),'engine cache is refreshed for chest data');
-assert.ok(html.includes('./rpg-rework-ui.js?v=18'),'map and settings UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=19'),'map and settings UI cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
 assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is awaitable and reports failure');
