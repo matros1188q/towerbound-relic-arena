@@ -144,9 +144,9 @@
   if(skill.branch_id&&skill.branch_id!==c.branch)return null;
   return skill;
  }
- function skillSummary(skill){
+ function skillSummary(skill,c){
   const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike||{};
-  const cost=skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0;
+  const cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
   const cooldown=skill.cooldown_turns??effect.cooldown_turns??effect.cooldown??0;
   const multiplier=skill.damage_multiplier??effect.damage_multiplier;
   const type=effect.type||"strike";
@@ -438,7 +438,7 @@
    if(skillObject)console.log('SKILL DEBUG:',skillObject);
    const cd=skillObject?(battle.skillCooldowns?.[skillObject.id]||0):99;
    const evolved=skillObject?window.TowerboundEndgame?.getSkillEvolution(skillObject.id):null;
-   const summary=skillObject?skillSummary(skillObject):"";
+   const summary=skillObject?skillSummary(skillObject,c):"";
    return '<button class="tb-panel-skill" data-panel-skill="'+(skillObject?.id||"")+'" data-panel-slot="'+index+'" '+(!skillObject||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0?"disabled":"")+'><kbd>'+(index+1)+'</kbd><b>'+(evolved?evolved.icon+' ':'')+esc(evolved?.name||skillObject?.name||"Умение не открыто")+'</b><small>'+(evolved?esc(evolved.desc)+' · ':'')+(skillObject?esc(summary)+(cd>0?" · "+cd+"х":""):"Откроется по уровню")+'</small></button>';
   }).join("");
   const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
