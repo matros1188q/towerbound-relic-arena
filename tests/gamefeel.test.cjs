@@ -34,7 +34,8 @@ const css=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8')
 assert.match(ui,/function showFloatingText\(/);
 assert.match(ui,/AudioContext\|\|window\.webkitAudioContext/);
 assert.match(ui,/data-setting="sound_enabled"/);
-assert.match(ui,/tb-target-warning/);
+assert.match(css,/tb-target-warning/,"target warning badge styling remains available");
+assert.doesNotMatch(ui,/tb-telegraph tb-target-warning/,"enemy telegraph must not inherit the absolutely positioned target badge class");
 assert.match(ui,/base_skills/);
 assert.match(css,/tb-player-turn-glow/);
 assert.match(css,/tb-warning-pulse/);
