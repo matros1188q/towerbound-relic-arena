@@ -7,7 +7,7 @@ const cfg=window.TOWERBOUND_SUPABASE_CONFIG||{};
 const SAVE_KEYS=new Set(['tb-rpg-v2','tb-rpg-v1','towerbound-save-v1','towerbound-profiles-v1','towerbound-active-profile-v1']);
 const isSaveKey=k=>SAVE_KEYS.has(String(k))||String(k).startsWith('towerbound-profile-save-');
 const $=s=>document.querySelector(s);
-let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false;
+let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='';
 const status={text:'Локальное сохранение',kind:'local'};
 const style=document.createElement('style');style.id='tb-cloud-styles';style.textContent=`
 #tbCloudButton{position:fixed;z-index:9998;right:12px;top:calc(env(safe-area-inset-top) + 10px);max-width:46vw;padding:8px 11px;border:1px solid #b99760;border-radius:8px;background:#211a20ed;color:#f2d9a3;font:700 10px/1.2 system-ui;letter-spacing:.04em;box-shadow:0 4px 18px #0008;backdrop-filter:blur(12px)}
@@ -63,6 +63,9 @@ function localSnapshot(){
 function hasLocal(snapshot){return !!(snapshot&&snapshot.keys&&Object.keys(snapshot.keys).length);}
 function restoreLocal(snapshot){
  if(!snapshot||!snapshot.keys||typeof snapshot.keys!=='object')throw new Error('Облачное сохранение повреждено');
+ restoring=true;
+ const remoteKeys=new Set(Object.keys(snapshot.keys).filter(isSaveKey));
+ for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(isSaveKey(k)&&!remoteKeys.has(k))localStorage.removeItem(k);}
  for(const [k,v] of Object.entries(snapshot.keys)){if(isSaveKey(k)&&typeof v==='string')localStorage.setItem(k,v);}
  try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
  location.reload();
@@ -95,6 +98,7 @@ async function chooseSource(remote){
  say('Выбери источник прогресса.');window.__TB_CLOUD_PENDING_REMOTE=remote;window.__TB_CLOUD_PENDING_LOCAL=local;
 }
 async function onSession(next){
+ const sessionKey=next?.user?.id||'signed-out';if(sessionKey===handledSessionKey)return;handledSessionKey=sessionKey;
  session=next;
  if(!session){setStatus('АККАУНТ · ЛОКАЛЬНО','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';$('#tbCloudIntro').textContent='Привяжи прогресс к аккаунту, чтобы продолжать игру на другом устройстве.';return;}
  $('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent=session.user.email||session.user.id;
@@ -115,7 +119,7 @@ async function saveLoop(){
   }else{setStatus('ОБЛАКО · ОЖИДАЕТ СЕТИ','error');say('Не удалось синхронизировать. Локальный прогресс сохранён, повторим при следующем изменении.');}
  }finally{syncing=false;}
 }
-function queueSave(){if(!session||conflict)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,1300);}
+function queueSave(){if(!session||conflict||restoring)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,1300);}
 const originalSet=Storage.prototype.setItem;
 Storage.prototype.setItem=function(key,value){const result=originalSet.call(this,key,value);if(this===localStorage&&isSaveKey(key))queueSave();return result;};
 $('#tbCloudSignIn').addEventListener('click',async()=>{try{say('Входим…');const {error}=await client.auth.signInWithPassword({email:$('#tbCloudEmail').value.trim(),password:$('#tbCloudPassword').value});if(error)throw error;}catch(e){say(e.message||'Не удалось войти');}});
