@@ -306,3 +306,10 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - `SKILL DEBUG CAPTURE` confirmed Assassin's `Коварный выпад` resolves to `assassin.base.1`, unlock level 1, strike effect, 150% damage multiplier and 18 resource cost.
 - RPG smoke, full game audit, online-service tests, combat runtime/visual tests, character-art tests, progression tests and RPG rework checks passed on commit `ef1b35db7d7687dc2dbdd2d4b12b43fd2c7d5dc8`.
 - GitHub Pages deployment for that commit succeeded. Cross-browser screenshot suite was still running at report time.
+
+
+### 2026-11-10 — Combat handoff and skill catalogue regression gate
+
+- Preserved the class-aware base-skill resolver and awaited aggregated `configs/skills/catalog.json` load; bumped its cache key to v3 and the UI script to v17 so deployed browsers fetch the current catalog.
+- Enemy phase now waits 500 ms before the first enemy action and keeps the 500 ms stagger between subsequent enemies. `endPlayerTurn()` continues to clear the stale timer and busy flag before queueing opponents; `advanceToPlayerTurn()` invalidates the queue and restores player input.
+- Added regression assertions for all 420 catalog entries, seven-class coverage, unlock-level defaults, effect IDs, and both 500 ms enemy-turn delays. This block does not change combat damage, initiative, skill costs, or round resolution.

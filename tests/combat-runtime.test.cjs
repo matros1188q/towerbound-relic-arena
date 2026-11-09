@@ -12,6 +12,11 @@ let clock=Date.UTC(2026,10,3,12);
 const engine=createEngine(balance,{now:()=>++clock,random:()=>0.25});
 
 const classes=['assassin','bishop','dragonkin','destroyer','elemental','duelist','shaman'];
+const skillCatalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../configs/skills/catalog.json'),'utf8'));
+assert.equal(skillCatalog.length,420,'the aggregated skill catalog contains all 420 specialization skills');
+assert.deepEqual([...new Set(skillCatalog.map(skill=>skill.class_id))].sort(),classes.slice().sort(),'the catalog contains skills for all seven classes');
+assert.ok(skillCatalog.every(skill=>Number.isFinite(Number(skill.unlock_level??1))),'every catalog skill has a safe unlock-level default');
+assert.ok(skillCatalog.every(skill=>typeof skill.id==='string'&&skill.id&&typeof skill.effect_template==='string'),'every catalog skill has an id and effect template');
 assert.deepEqual(Object.keys(balance.procs).sort(),classes.slice().sort(),'all seven class procs are configured');
 assert.deepEqual(Object.keys(balance.skills.counter_abilities).sort(),classes.slice().sort(),'all seven class counters are configured');
 
@@ -122,6 +127,8 @@ for(const classId of classes){
  if(balance.combat.turn_based?.enabled){
   assert.match(ui,/function buildInitiative[\s\S]*?sort\(\(a,b\)=>b\.speed-a\.speed/,'turn order sorts actors by speed');
   assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
+  assert.match(ui,/battle\.busy=false;[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'enemy phase begins with a clean busy flag and 500ms stagger');
+  assert.match(ui,/scheduleEnemyTurnQueue\(queue,index\+1,token,500\)/,'each living enemy acts with a 500ms delay between attacks');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
   assert.match(ui,/data-action="end-turn"/,'End Turn control is present');
   assert.match(ui,/tb-telegraph/,"enemy telegraph content remains visible");
