@@ -204,9 +204,11 @@ The migration includes the RLS policies, grants, indexes and column constraints.
 - Added the SQL migration for the global Top-100, active PvP ghost builds and server-owned rating ledger.
 - Exposed the existing Supabase client/session to the new browser online module without exposing any service-role credential.
 - Added Top-100 screen and account-menu entry; profiles publish with upsert after local save changes.
+- Added a dedicated **РЕЙТИНГ** tab to the main map navigation (not only inside the account systems panel).
 - Added real-player matchmaking with ±15% battle-power filtering, no bot fallback, seven-day ghost expiry, and build data in the opponent card.
 - Updated the local ghost battle estimate to use the opponent's saved combat stats rather than synthetic tier stats.
 - Added static regression tests and expanded the RPG GitHub Actions workflow to run them.
+- Follow-up UI fix: the main map navigation now has a dedicated РЕЙТИНГ entry; regression test asserts its presence.
 - Not complete / not verified: Supabase migration execution, live cross-account data flow, iPhone end-to-end UI, trusted PvP result validation and global rating rewards.
 ## Tests
 
