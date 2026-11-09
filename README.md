@@ -256,4 +256,5 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Added `Автоатака!` floating feedback when ending a turn without using a skill.
 - Added a first-fight tutorial modal with the three requested explanations and a `ПОНЯТНО` button; dismissal is remembered locally.
 - Extended browser smoke coverage for tutorial display/dismissal, enemy damage, player-turn restoration and button reactivation.
-- Commit: pending CI verification. Physical iPhone visual testing remains outstanding.
+- Commits: `62378401ba060565c6e71657081851afbd0161d0` (gameplay/UI/test implementation) and `d154794fb3c12cea287a5aa0a8cdbef920677b4e` (smoke-test assertion correction).
+- Verified: `node --check rpg-rework-ui.js`, RPG smoke test and endgame progression checks pass on the current `main` commit. Cross-browser screenshot workflow and Pages deployment are still running at the time of this entry. Physical iPhone visual testing remains outstanding.
