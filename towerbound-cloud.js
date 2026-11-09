@@ -1,0 +1,142 @@
+/* Towerbound Cloud Accounts — phase 1.
+ * Uses only the Supabase publishable/anon key in the browser. RLS + RPC enforce ownership/versioning.
+ */
+(()=>{'use strict';
+if(window.__TOWERBOUND_CLOUD_V1__)return;window.__TOWERBOUND_CLOUD_V1__=true;
+const cfg=window.TOWERBOUND_SUPABASE_CONFIG||{};
+const SAVE_KEYS=new Set(['tb-rpg-v2','tb-rpg-v1','towerbound-save-v1','towerbound-profiles-v1','towerbound-active-profile-v1']);
+const isSaveKey=k=>SAVE_KEYS.has(String(k))||String(k).startsWith('towerbound-profile-save-');
+const $=s=>document.querySelector(s);
+let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false;
+const status={text:'Локальное сохранение',kind:'local'};
+const style=document.createElement('style');style.id='tb-cloud-styles';style.textContent=`
+#tbCloudButton{position:fixed;z-index:9998;right:12px;top:calc(env(safe-area-inset-top) + 10px);max-width:46vw;padding:8px 11px;border:1px solid #b99760;border-radius:8px;background:#211a20ed;color:#f2d9a3;font:700 10px/1.2 system-ui;letter-spacing:.04em;box-shadow:0 4px 18px #0008;backdrop-filter:blur(12px)}
+#tbCloudButton[data-state="online"]{border-color:#73c9a1;color:#a9f0ca}
+#tbCloudButton[data-state="error"]{border-color:#e58a83;color:#ffc0b8}
+#tbCloudOverlay{position:fixed;inset:0;z-index:10000;display:none;place-items:center;padding:18px;background:#05040be8;backdrop-filter:blur(10px)}
+#tbCloudOverlay.open{display:grid}
+#tbCloudDialog{width:min(440px,100%);max-height:88dvh;overflow:auto;padding:22px;border:1px solid #b99760;border-radius:14px;background:linear-gradient(145deg,#30272a,#15121a);box-shadow:0 25px 90px #000c;color:#f1e4ca;font:14px/1.5 system-ui}
+#tbCloudDialog h2{margin:0 0 8px;color:#f4d79c;font:700 19px Georgia,serif}
+#tbCloudDialog p{color:#c8bda9;margin:8px 0 14px}
+#tbCloudDialog label{display:block;margin:10px 0 4px;color:#e3cfaa;font-size:12px}
+#tbCloudDialog input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #806d54;border-radius:8px;background:#17141c;color:#fff;font:14px system-ui}
+#tbCloudDialog button{width:100%;margin-top:9px;padding:12px;border:1px solid #b99760;border-radius:8px;background:linear-gradient(#5a4430,#302326);color:#ffe5b3;font-weight:800}
+#tbCloudDialog button.secondary{background:#211d27;border-color:#6d6254;color:#d6c7ae}
+#tbCloudDialog button.danger{border-color:#9d5555;background:#422327}
+#tbCloudDialog .tb-cloud-row{display:flex;gap:8px}
+#tbCloudDialog .tb-cloud-row button{flex:1}
+#tbCloudMessage{min-height:22px;color:#e9c985;font-size:12px;margin-top:10px}
+#tbCloudAccount{color:#a8d9bd;font-size:12px;overflow-wrap:anywhere}
+@media(max-width:600px){#tbCloudButton{top:calc(env(safe-area-inset-top) + 7px);right:8px;font-size:9px;padding:7px 8px}}
+`;document.head.appendChild(style);
+const button=document.createElement('button');button.id='tbCloudButton';button.type='button';button.textContent='АККАУНТ · ЛОКАЛЬНО';button.dataset.state='local';document.body.appendChild(button);
+const overlay=document.createElement('div');overlay.id='tbCloudOverlay';overlay.innerHTML=`<section id="tbCloudDialog" role="dialog" aria-modal="true" aria-labelledby="tbCloudTitle">
+<h2 id="tbCloudTitle">Облачный аккаунт Towerbound</h2><p id="tbCloudIntro">Привяжи прогресс к аккаунту, чтобы продолжать игру на другом устройстве.</p>
+<div id="tbCloudAccount"></div>
+<div id="tbCloudAuth">
+<label for="tbCloudEmail">Email</label><input id="tbCloudEmail" type="email" autocomplete="email" placeholder="you@example.com">
+<label for="tbCloudPassword">Пароль</label><input id="tbCloudPassword" type="password" autocomplete="current-password" placeholder="Минимум 6 символов">
+<div class="tb-cloud-row"><button id="tbCloudSignIn" type="button">Войти</button><button id="tbCloudSignUp" type="button">Регистрация</button></div>
+<button id="tbCloudGoogle" type="button" class="secondary">Продолжить с Google</button>
+</div>
+<div id="tbCloudChoices" hidden>
+<p>В аккаунте уже есть сохранение. Выбери, какую версию оставить. Другая версия будет заменена.</p>
+<button id="tbCloudUseRemote" type="button">Загрузить облачное сохранение</button>
+<button id="tbCloudUseLocal" type="button" class="secondary">Загрузить сохранение с этого устройства в облако</button>
+</div>
+<div id="tbCloudSignedIn" hidden>
+<button id="tbCloudSyncNow" type="button">Синхронизировать сейчас</button>
+<button id="tbCloudSignOut" type="button" class="secondary">Выйти из аккаунта</button>
+</div>
+<div id="tbCloudMessage" role="status" aria-live="polite"></div>
+<button id="tbCloudClose" type="button" class="secondary">Закрыть</button>
+</section>`;document.body.appendChild(overlay);
+const say=m=>{$('#tbCloudMessage').textContent=m||'';};
+const setStatus=(textValue,kind)=>{status.text=textValue;status.kind=kind;button.textContent=textValue;button.dataset.state=kind;};
+const open=()=>overlay.classList.add('open'),close=()=>overlay.classList.remove('open');
+button.addEventListener('click',open);$('#tbCloudClose').addEventListener('click',close);
+overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+function localSnapshot(){
+ const keys={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(isSaveKey(k)){const v=localStorage.getItem(k);if(v!==null)keys[k]=v;}}}catch(e){console.warn('[Towerbound cloud] local snapshot failed',e);}
+ return{schemaVersion:1,game:'towerbound-relic-arena',savedAt:new Date().toISOString(),keys};
+}
+function hasLocal(snapshot){return !!(snapshot&&snapshot.keys&&Object.keys(snapshot.keys).length);}
+function restoreLocal(snapshot){
+ if(!snapshot||!snapshot.keys||typeof snapshot.keys!=='object')throw new Error('Облачное сохранение повреждено');
+ for(const [k,v] of Object.entries(snapshot.keys)){if(isSaveKey(k)&&typeof v==='string')localStorage.setItem(k,v);}
+ try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
+ location.reload();
+}
+async function readRemote(){
+ const {data,error}=await client.from('player_saves').select('save_data,revision,updated_at').eq('user_id',session.user.id).maybeSingle();
+ if(error)throw error;return data;
+}
+async function writeRemote(snapshot,expected){
+ const {data,error}=await client.rpc('save_player_game',{p_save_data:snapshot,p_expected_revision:expected});
+ if(error)throw error;
+ const row=Array.isArray(data)?data[0]:data;
+ if(!row||!Number.isFinite(Number(row.revision)))throw new Error('Сервер не вернул новую версию сохранения');
+ revision=Number(row.revision);
+ try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
+ return row;
+}
+async function chooseSource(remote){
+ const local=localSnapshot(),localExists=hasLocal(local),sameUser=localStorage.getItem('tb-cloud-user-id')===session.user.id;
+ const knownRevision=Number(localStorage.getItem('tb-cloud-revision')||0);
+ revision=remote?Number(remote.revision):0;
+ if(!remote){say('В облаке пока нет сохранения. Переносим текущий прогресс этого устройства…');await writeRemote(local,0);$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Прогресс привязан к аккаунту. Локальная копия сохранена.');return;}
+ if(!localExists|| (sameUser&&knownRevision===revision)){
+  if(!localExists){say('Загружаем облачный прогресс…');restoreLocal(remote.save_data);}
+  $('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · '+session.user.email,'online');say('Аккаунт подключён. Облачная версия актуальна.');return;
+ }
+ conflict=true;$('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=false;$('#tbCloudSignedIn').hidden=true;
+ $('#tbCloudIntro').textContent='Найдены две версии прогресса. Автоматически ничего не перезаписываем.';
+ $('#tbCloudAccount').textContent=session.user.email+' · облачная версия №'+revision;
+ say('Выбери источник прогресса.');window.__TB_CLOUD_PENDING_REMOTE=remote;window.__TB_CLOUD_PENDING_LOCAL=local;
+}
+async function onSession(next){
+ session=next;
+ if(!session){setStatus('АККАУНТ · ЛОКАЛЬНО','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';$('#tbCloudIntro').textContent='Привяжи прогресс к аккаунту, чтобы продолжать игру на другом устройстве.';return;}
+ $('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent=session.user.email||session.user.id;
+ setStatus('ОБЛАКО · ПОДКЛЮЧЕНИЕ…','online');say('Проверяем облачное сохранение…');
+ try{const remote=await readRemote();await chooseSource(remote);}
+ catch(e){console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');say('Не удалось загрузить сохранение: '+(e.message||'ошибка сети')+'. Локальные данные не изменены.');}
+}
+async function saveLoop(){
+ if(!session||!client||conflict||syncing)return;
+ syncing=true;
+ try{
+  do{dirty=false;const result=await writeRemote(localSnapshot(),revision);setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');}
+  while(dirty&&session&&!conflict);
+ }catch(e){
+  console.error('[Towerbound cloud] save failed',e);
+  if(String(e.message||e).includes('SAVE_CONFLICT')||String(e.code||'')==='40001'){
+   conflict=true;setStatus('ОБЛАКО · КОНФЛИКТ','error');say('Сохранение изменилось на другом устройстве. Обнови облачную версию или выбери источник вручную; автоматическая перезапись остановлена.');
+  }else{setStatus('ОБЛАКО · ОЖИДАЕТ СЕТИ','error');say('Не удалось синхронизировать. Локальный прогресс сохранён, повторим при следующем изменении.');}
+ }finally{syncing=false;}
+}
+function queueSave(){if(!session||conflict)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,1300);}
+const originalSet=Storage.prototype.setItem;
+Storage.prototype.setItem=function(key,value){const result=originalSet.call(this,key,value);if(this===localStorage&&isSaveKey(key))queueSave();return result;};
+$('#tbCloudSignIn').addEventListener('click',async()=>{try{say('Входим…');const {error}=await client.auth.signInWithPassword({email:$('#tbCloudEmail').value.trim(),password:$('#tbCloudPassword').value});if(error)throw error;}catch(e){say(e.message||'Не удалось войти');}});
+$('#tbCloudSignUp').addEventListener('click',async()=>{try{say('Создаём аккаунт…');const {data,error}=await client.auth.signUp({email:$('#tbCloudEmail').value.trim(),password:$('#tbCloudPassword').value});if(error)throw error;if(!data.session)say('Проверь почту и подтверди регистрацию, затем войди в аккаунт.');}catch(e){say(e.message||'Не удалось зарегистрироваться');}});
+$('#tbCloudGoogle').addEventListener('click',async()=>{try{say('Открываем Google…');const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});if(error)throw error;}catch(e){say(e.message||'Вход через Google не настроен');}});
+$('#tbCloudUseRemote').addEventListener('click',()=>{try{restoreLocal(window.__TB_CLOUD_PENDING_REMOTE.save_data);}catch(e){say(e.message);}});
+$('#tbCloudUseLocal').addEventListener('click',async()=>{try{say('Загружаем локальную версию…');await writeRemote(window.__TB_CLOUD_PENDING_LOCAL,revision);conflict=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Текущий прогресс этого устройства теперь в облаке.');}catch(e){say(e.message||'Не удалось сохранить');}});
+$('#tbCloudSyncNow').addEventListener('click',()=>{conflict=false;queueSave();say('Синхронизация запущена…');});
+$('#tbCloudSignOut').addEventListener('click',async()=>{try{await client.auth.signOut();conflict=false;say('Вы вышли. Локальный прогресс остаётся на устройстве.');}catch(e){say(e.message);}});
+function init(){
+ if(!cfg.url||!cfg.publishableKey||!window.supabase?.createClient){
+  setStatus('АККАУНТ · НУЖНА НАСТРОЙКА','local');
+  button.title='Нужно создать Supabase-проект и заполнить supabase-config.js';
+  $('#tbCloudIntro').textContent='Облачный модуль установлен, но ещё не подключён к Supabase. Локальное сохранение продолжает работать.';
+  say('Для включения облака нужен URL проекта и publishable key Supabase.');return;
+ }
+ client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ client.auth.onAuthStateChange((_event,next)=>{setTimeout(()=>onSession(next),0);});
+ client.auth.getSession().then(({data,error})=>{if(error)throw error;return onSession(data.session);}).catch(e=>{console.error(e);setStatus('ОБЛАКО · ОШИБКА','error');say(e.message);});
+}
+$('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
+init();
+window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},syncNow:()=>{if(session){conflict=false;queueSave();}},status:()=>({...status})};
+})();
