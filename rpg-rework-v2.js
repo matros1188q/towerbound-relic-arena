@@ -139,6 +139,7 @@
    if(!character)throw new Error("Character not found");
    character.buffs=character.buffs||{};
    character.potionCapacityBonus=character.potionCapacityBonus||0;
+   character.dailyChest=character.dailyChest||{lastOpenedAt:0};
    return character;
   };
   const id=()=>"tb-"+now().toString(36)+"-"+Math.floor(random()*1000000000).toString(36);
@@ -161,6 +162,34 @@
    const character=getChar(characterId),daily=ensureDaily(character);
    const quests=balance.heroic.daily_quests.map(quest=>({...clone(quest),progress:daily.progress[quest.metric]||0,complete:(daily.progress[quest.metric]||0)>=quest.target,claimed:daily.claimed.includes(quest.id)}));
    return{date:daily.date,modifier:dailyModifierForNow(),quests,boss:clone(daily.boss)};
+  }
+  function dailyChestSnapshot(characterId){
+   const character=getChar(characterId),lastOpenedAt=Math.max(0,Number(character.dailyChest?.lastOpenedAt)||0);
+   const readyAt=lastOpenedAt+24*60*60*1000,remainingMs=Math.max(0,readyAt-now());
+   return{lastOpenedAt,readyAt,remainingMs,available:remainingMs===0};
+  }
+  function claimDailyChest(characterId){
+   const character=getChar(characterId),snapshot=dailyChestSnapshot(characterId);
+   if(!snapshot.available)throw new Error("Ежедневный сундук уже открыт. Подожди 24 часа.");
+   const rewardPool=[
+    {type:"silver",amount:50+Math.floor(random()*51)},
+    {type:"potion",amount:1},
+    {type:"materials",amount:10}
+   ];
+   const reward=clone(rewardPool[Math.min(rewardPool.length-1,Math.floor(random()*rewardPool.length))]);
+   if(reward.type==="silver")character.silver=(character.silver||0)+reward.amount;
+   if(reward.type==="potion"){
+    const stack=character.bag.find(item=>item.type==="healing_potion");
+    if(stack)stack.quantity=(stack.quantity||1)+1;
+    else character.bag.push({id:id(),type:"healing_potion",quantity:1});
+   }
+   if(reward.type==="materials"){
+    const stack=character.bag.find(item=>item.type==="craft_material");
+    if(stack)stack.quantity=(stack.quantity||0)+reward.amount;
+    else character.bag.push({id:id(),type:"craft_material",quantity:reward.amount});
+   }
+   character.dailyChest={lastOpenedAt:now(),lastReward:clone(reward)};
+   return{...clone(reward),...dailyChestSnapshot(characterId)};
   }
   function claimDailyQuest(characterId,questId){
    const character=getChar(characterId),daily=ensureDaily(character),quest=balance.heroic.daily_quests.find(item=>item.id===questId);
@@ -343,10 +372,10 @@
    const starter=!state.account.starterPackClaimed,mode=balance.difficulty.modes[balance.difficulty.default],legacyEligible=state.characters.some(x=>x.level>=100);
    const character={
     id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},unlockedSkills:(classData.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=1).map(skill=>skill.id),activeSkillId:(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1)?.id||null,skillLoadout:(()=>{const first=(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1);return first?[first.id]:[];})(),resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,legacyBonus:legacyEligible?0.5:0,legacyBonusUntil:legacyEligible?50:0,legacyGranted:legacyEligible,
-    silver:starter?balance.account.starter_pack.silver:balance.economy.starting_silver,
+    silver:balance.account.starter_pack.silver??balance.economy.starting_silver,
     bag:[{id:id(),type:"healing_potion",quantity:balance.economy.starting_potions??balance.account.starter_pack.healing_potions??3}],
     gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
-    potionBelt:Array(balance.healing.potion_belt_slots).fill(null),achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
+    potionBelt:Array(balance.healing.potion_belt_slots).fill(null),dailyChest:{lastOpenedAt:0},achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
     run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
     paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
@@ -1205,7 +1234,7 @@
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
-   recordDailyProgress,dailySnapshot,claimDailyQuest,startDailyBoss,completeDailyBoss,pvpSnapshot,
+   recordDailyProgress,dailySnapshot,claimDailyQuest,dailyChestSnapshot,claimDailyChest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
    tutorialStep,claimTutorialReward,claimAchievement,readLore,logCombatEvent,saveSettings,assignParagon,resetParagon,
    setRunModifier,runModifierOptions,reviveFromDeath,weeklySnapshot,recordWeeklyProgress:(characterId,metric,amount)=>recordWeeklyProgress(getChar(characterId),metric,amount),claimWeeklyQuest,buyCosmeticChest,equipCosmetic,chapterForStage};

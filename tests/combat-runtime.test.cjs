@@ -148,4 +148,28 @@ for(const classId of classes){
  assert.match(ui,/data-action="toggle-mute"/,"settings expose an explicit mute button");
  assert.match(ui,/showFloatingText\("player","-"\+incoming,"#ff596b"\);playSfx\("hurt"\)/,"enemy attacks display player damage and play a hurt sound");
  assert.match(css,/tb-floating-damage\.is-damage\{color:#fff!important/,"ordinary floating damage is white");
+
+{
+ let testNow=Date.UTC(2026,10,10,12),randomValue=0.01;
+ const testEngine=createEngine(balance,{now:()=>testNow,random:()=>randomValue});
+ const first=testEngine.createCharacter("Starter One","assassin");
+ const second=testEngine.createCharacter("Starter Two","bishop");
+ assert.equal(first.silver,100,"every new character starts with 100 silver");
+ assert.equal(second.silver,100,"subsequent characters also start with 100 silver");
+ assert.equal(first.bag.find(item=>item.type==="healing_potion")?.quantity,3,"first character receives three healing potions");
+ assert.equal(second.bag.find(item=>item.type==="healing_potion")?.quantity,3,"subsequent characters receive three healing potions");
+ const silverChest=testEngine.claimDailyChest(first.id);
+ assert.equal(silverChest.type,"silver","deterministic daily chest can award silver");
+ assert.ok(silverChest.amount>=50&&silverChest.amount<=100,"silver chest reward is bounded from 50 to 100");
+ assert.equal(testEngine.dailyChestSnapshot(first.id).available,false,"daily chest enters a 24-hour cooldown");
+ assert.throws(()=>testEngine.claimDailyChest(first.id),/24 часа/,"daily chest cannot be claimed twice during cooldown");
+ testNow+=24*60*60*1000;randomValue=.5;
+ const potionChest=testEngine.claimDailyChest(first.id);
+ assert.equal(potionChest.type,"potion","daily chest can award one healing potion");
+ assert.equal(first.bag.find(item=>item.type==="healing_potion")?.quantity,4,"potion reward increments the healing potion stack");
+ testNow+=24*60*60*1000;randomValue=.99;
+ const materialChest=testEngine.claimDailyChest(first.id);
+ assert.equal(materialChest.type,"materials","daily chest can award crafting materials");
+ assert.equal(first.bag.find(item=>item.type==="craft_material")?.quantity,10,"material reward grants ten crafting materials");
+}
 console.log('Combat runtime regression passed: 7 counters, telegraphs, boss phases, enemy stats, elemental matchups, 7 procs, combos and cross-target proc persistence.');

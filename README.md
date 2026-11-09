@@ -320,3 +320,10 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Verified the existing Web Audio synthesizer presets for click, hit, critical and incoming damage; added an explicit MUTE / ВКЛ control beside the persisted volume sliders.
 - Enemy hits now show floating damage above the hero, play the hurt cue and shake the arena on hits of at least 10% max HP (the existing boss/phase-four shake path remains intact).
 - Normal damage numbers are now white; critical numbers remain gold and healing remains green. Existing float-up and shake animations are reused, with no combat math or turn-state changes.
+
+
+### 2026-11-10 — Per-character starter kit and 24-hour daily chest
+
+- Every newly created character now receives 100 silver and three basic healing potions. The one-time account starter flag still gates only the 24-hour premium welcome bonus, so the bonus cannot be farmed by creating characters.
+- Added a character-owned daily chest cooldown timestamp and engine methods to inspect/claim it. The reward is one of: 50–100 silver, one healing potion, or 10 crafting materials; a second claim is rejected until 24 hours have elapsed.
+- The timestamp and reward history live inside the character save object, so the existing local cache and Supabase cloud snapshot persist them together.
