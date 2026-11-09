@@ -222,6 +222,7 @@ const {chromium}=require('playwright');
   await page.waitForTimeout(100);
   assert.ok(skillDebugLogs.length>0,'browser console emitted SKILL DEBUG objects');
   assert.ok(skillDebugLogs[0].id.startsWith("assassin.base."),'first combat skill resolves from Assassin base skills');
+  console.log("SKILL DEBUG CAPTURE:",JSON.stringify(skillDebugLogs[0]));
   const noJump=await page.evaluate(()=>({before:window.__tbScrollBeforeTurn,after:window.scrollY}));
   assert.equal(noJump.after,noJump.before,'End Turn does not move the page');
   await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=1;window.saveTowerboundRework();});
