@@ -66,7 +66,7 @@
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,routeChoice="standard";
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  function rarityClass(value){return ({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[value]||"common");}
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
@@ -83,7 +83,7 @@
   const role=target?.role||"normal";
   return CHARACTER_ART_ROOT+(rolePortraits[role]||rolePortraits.normal);
  }
- function save(){try{localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));}catch(e){notify("Не удалось сохранить: "+e.message);}}
+ function save(){try{localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));window.TowerboundOnline?.queuePublish();}catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
  function header(title,sub){return '<header class="tb-header"><div class="tb-brand"><span class="tb-mark">T</span><div><strong>TOWERBOUND</strong><small>'+esc(title||"ХРОНИКИ БАШНИ")+'</small></div></div><div class="tb-header-side">'+(live()?'<button class="tb-mini-avatar" id="profileOpen" data-action="profile">'+ '<img src="'+portrait(live().classId)+'" alt="'+esc(clsName(live()))+'"></button>':'')+'<span class="tb-subline">'+esc(sub||"")+'</span></div></header>';}
@@ -359,11 +359,23 @@
    '<section class="tb-system-card"><h2>Достижения · '+claimed.length+'/'+balance.achievements.achievements.length+'</h2>'+achievementCards+'</section>'+
    '<section class="tb-system-card"><h2>Лор башни</h2>'+loreCards+'</section>'+
    '<section class="tb-system-card"><h2>Общий стеш · '+(engine.state.stash||[]).length+'/'+balance.stash.slots+'</h2><p>Только '+esc(balance.stash.min_rarity)+' и выше. Предмет привязывается при первом использовании. Передача — один раз в день.</p>'+(stash||'<small>Общий стеш пуст.</small>')+'<h3>Экипировка для передачи</h3>'+(depositable||'<small>Нет предметов эпик+ для передачи.</small>')+'</section>'+
-   '<section class="tb-system-card"><h2>PvP-арена · '+(account.pvpPoints||0)+' очков</h2><p>Бесплатно '+balance.pvp.daily_duels.free+' дуэлей в день, с премиумом '+balance.pvp.daily_duels.premium+'. Матчмейкинг по BP-тиру; снимок соперника хранится 7 дней.</p><div class="tb-system-actions">'+button("pvp-match","НАЙТИ СОПЕРНИКА")+(pending?button("pvp-fight","СРАЗИТЬСЯ · "+esc(pending.opponent?.name||"СОПЕРНИК")):"")+'</div><div class="tb-system-products">'+store+'</div><h3>Недельный рейтинг (локальная копия)</h3>'+(weekly.length?weekly.map((x,i)=>'<div class="tb-system-row"><span>#'+(i+1)+' '+esc(x.name)+'</span><b>'+x.combatPower+' BP</b></div>').join(""):'<small>Пока нет результатов этого браузера.</small>')+'</section>'+
+   '<section class="tb-system-card"><h2>PvP-арена · '+(account.pvpPoints||0)+' очков</h2><p>Поиск реального игрока по боевой мощи ±15%. Снимок его класса, умений, талантов и экипировки загружается из Supabase. Боты отключены.</p><div class="tb-system-actions">'+button("pvp-match","НАЙТИ РЕАЛЬНОГО СОПЕРНИКА")+(pending?button("pvp-fight","СРАЗИТЬСЯ · "+esc(pending.opponent?.name||"СОПЕРНИК")):"")+'</div>'+(pending?.opponent?.online?'<div class="tb-system-row"><div><b>'+esc(pending.opponent.name)+' · '+esc(balance.classes.classes[pending.opponent.classId]?.name||pending.opponent.classId)+'</b><small>Уровень '+pending.opponent.level+' · '+pending.opponent.bp+' BP · этап '+pending.opponent.maxStage+' · HP '+pending.opponent.stats.maxHp+' · атака '+pending.opponent.stats.attack+' · защита '+pending.opponent.stats.defense+'</small></div><span>ОНЛАЙН-ПРИЗРАК</span></div>':'')+'<div class="tb-system-products">'+store+'</div><p class="tb-online-warning">Важно: текущая симуляция боя и локальные PvP-очки пока не являются серверно подтверждённым результатом. Глобальный PvP-рейтинг не начисляет очки из браузера.</p><button data-action="leaderboard">ОТКРЫТЬ ГЛОБАЛЬНЫЙ ТОП-100</button></section>'+
    '<section class="tb-system-card"><h2>Парагон · '+(paragon.level||0)+'/100</h2><p>XP: '+(paragon.xp||0)+' / '+balance.paragon.xp_per_point+'. Доступен после уровня100.</p>'+paragonRows+button("paragon-reset","СБРОСИТЬ ПАРАГОН · "+balance.paragon.reset_cost_silver+" СЕРЕБРА",Object.values(paragon.stats||{}).reduce((a,b)=>a+b,0)?"":"disabled")+'</section>'+
    '<section class="tb-system-card"><h2>Управление персонажем</h2><p>Удаление или полный сброс требуют двух подтверждений и точного ввода ника.</p><div class="tb-system-actions">'+button("reset-character","ПОЛНЫЙ СБРОС ПЕРСОНАЖА")+button("delete-character","УДАЛИТЬ ПЕРСОНАЖА")+'</div></section>'+
    '<section class="tb-system-card"><h2>Комбат-лог · последние '+(c.combatLog||[]).length+'/'+balance.settings.combat_log_max_events+'</h2>'+((c.combatLog||[]).slice(-balance.settings.combat_log_max_events).reverse().map(x=>'<div class="tb-system-row"><small>'+esc(new Date(x.at).toLocaleTimeString())+'</small><span>'+esc(x.event)+'</span></div>').join("")||'<small>Событий пока нет.</small>')+'</section>'+
    '</section>';
+ }
+ function leaderboardScreen(){
+  const c=live();
+  const rows=onlineLeaderboardRows.map((row,index)=>'<article class="tb-system-row"><div><b>#'+(index+1)+' '+esc(row.nickname)+'</b><small>'+esc(balance.classes.classes[row.class]?.name||row.class)+' · этап '+row.max_stage+'</small></div><strong>'+Number(row.battle_power).toLocaleString('ru-RU')+' BP</strong></article>').join('');
+  return header("Глобальный рейтинг","Топ-100 игроков")+'<section class="tb-systems"><div class="tb-system-top"><div><h1>Рейтинг игроков</h1><p>'+(c?esc(c.name)+' · '+engine.combatPower(c)+' BP':'Список лучших героев башни')+'</p></div><button data-action="systems">НАЗАД</button></div><section class="tb-system-card"><div class="tb-system-actions"><button data-action="leaderboard-refresh" '+(onlineBusy?'disabled':'')+'>'+(onlineBusy?'ЗАГРУЗКА…':'ОБНОВИТЬ ТОП-100')+'</button></div>'+(onlineLeaderboardError?'<p class="tb-online-error">'+esc(onlineLeaderboardError)+'</p>':'')+(rows||'<p>Пока нет опубликованных игроков. Войди в аккаунт и опубликуй своего героя.</p>')+'<small>Глобальный рейтинг Supabase · сортировка по боевой мощи и максимальному этапу.</small></section></section>';
+ }
+ async function refreshOnlineLeaderboard(){
+  if(!window.TowerboundOnline)throw new Error("Онлайн-модуль ещё загружается");
+  onlineBusy=true;onlineLeaderboardError="";render();
+  try{onlineLeaderboardRows=await window.TowerboundOnline.getLeaderboard();}
+  catch(e){onlineLeaderboardError=e.message||"Не удалось загрузить рейтинг";}
+  finally{onlineBusy=false;render();}
  }
  function deathScreen(){
   const c=live(),preview=engine.deathPreview(c.id),difficulty=balance.difficulty.modes[c.difficulty||balance.difficulty.default],total=difficulty.lives,remaining=c.run.lives||total,stage=c.run.stage?.stage||c.progress.currentStage,revivePrice=Math.max(5,Math.min(50,Math.round(5+(stage-50)*.225))),canRevive=!!c.run.stage&&!c.run.rescueUsed;
@@ -652,6 +664,7 @@
   else if(screen==="profile")root.innerHTML='<div class="tb-v2">'+profileScreen()+'</div>';
   else if(screen==="shop")root.innerHTML='<div class="tb-v2">'+shopScreen()+'</div>';
   else if(screen==="systems")root.innerHTML='<div class="tb-v2">'+systemsScreen()+'</div>';
+  else if(screen==="leaderboard")root.innerHTML='<div class="tb-v2">'+leaderboardScreen()+'</div>';
   else if(screen==="death")root.innerHTML='<div class="tb-v2">'+deathScreen()+'</div>';
   else root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
   let toast=root.querySelector(".tb-toast");
@@ -719,11 +732,21 @@
    case "profile":profileTab="stats";screen="profile";render();break;
    case "profile-gear":profileTab="gear";screen="profile";render();break;
    case "systems":screen="systems";render();break;
+   case "leaderboard":screen="leaderboard";onlineLeaderboardError="";render();refreshOnlineLeaderboard();break;
+   case "leaderboard-refresh":refreshOnlineLeaderboard();break;
    case "tutorial-next":try{engine.tutorialStep(live().id);save();render();}catch(error){notify(error.message);}break;
    case "tutorial-skip":try{engine.tutorialStep(live().id,"skip");save();render();notify("Туториал пропущен");}catch(error){notify(error.message);}break;
    case "tutorial-claim":try{engine.claimTutorialReward(live().id);save();render();notify("Награда туториала получена");}catch(error){notify(error.message);}break;
-   case "pvp-match":try{const match=engine.matchmakePvp(live().id);save();render();notify("Соперник найден: "+match.opponent.name+(match.bot?" · бот":""));}catch(error){notify(error.message);}break;
-   case "pvp-fight":try{const result=engine.simulatePvpDuel(live().id);save();render();notify((result.won?"ПОБЕДА":"ПОРАЖЕНИЕ")+" · +"+result.pointsAwarded+" PvP-очков");}catch(error){notify(error.message);}break;
+   case "pvp-match":(async()=>{try{
+    if(!window.TowerboundOnline?.signedIn)throw new Error("Войди в аккаунт Supabase, чтобы искать реальных соперников");
+    const c=live(),daily=engine.ensurePvpDaily(),premium=engine.state.account.premiumUntil>Date.now(),limit=premium?balance.pvp.daily_duels.premium:balance.pvp.daily_duels.free;
+    if(daily.duels>=limit)throw new Error("На сегодня дуэли закончились");
+    const opponent=await window.TowerboundOnline.findGhost(c,engine);
+    const tier=(balance.bp.tiers||[]).find(t=>opponent.bp>=t.min&&(t.max===null||opponent.bp<=t.max))||(balance.bp.tiers||[])[0];
+    daily.duels++;daily.pending={opponentId:opponent.id,opponent,tier:tier?.id||"rookie",startedAt:Date.now(),online:true};
+    save();render();notify("Реальный соперник найден: "+opponent.name);
+   }catch(error){notify(error.message||"Не удалось найти соперника");}})();break;
+   case "pvp-fight":try{const result=engine.simulatePvpDuel(live().id);save();render();notify((result.won?"ПОБЕДА":"ПОРАЖЕНИЕ")+" · +"+result.pointsAwarded+" локальных PvP-очков. Серверный рейтинг пока не начисляется.");}catch(error){notify(error.message);}break;
    case "daily-boss":try{const boss=engine.startDailyBoss(live().id,"silver"),stats=engine.getCombatStats(live()),enemyRounds=Math.ceil(stats.maxHp/Math.max(1,boss.attack*engine.mitigationMultiplier(stats.defense,live().level))),playerRounds=Math.ceil(boss.health/Math.max(1,stats.attack)),won=playerRounds<=enemyRounds,result=engine.completeDailyBoss(live().id,won);save();render();notify(result.won?"Дневной босс побеждён · награда получена":"Дневной босс оказался сильнее");}catch(error){notify(error.message);}break;
    case "paragon-reset":try{engine.resetParagon(live().id);save();render();notify("Парагон сброшен");}catch(error){notify(error.message);}break;
    case "reset-character":{const c=live();if(!window.confirm("Полностью сбросить персонажа?")||!window.confirm("Подтверди сброс: это удалит весь прогресс и экипировку."))return;const typed=window.prompt("Введи имя персонажа:");try{const replacement=engine.resetCharacter(c.id,typed,true);selectedId=replacement.id;selectedStage=1;screen="characters";battle=null;save();render();notify("Персонаж сброшен до 1 уровня");}catch(error){notify(error.message);}break;}

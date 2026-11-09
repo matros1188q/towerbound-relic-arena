@@ -149,5 +149,5 @@ function init(){
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
-window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},syncNow:()=>{if(session){conflict=false;queueSave();}},status:()=>({...status})};
+window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},syncNow:()=>{if(session){conflict=false;queueSave();}},status:()=>({...status})};
 })();
