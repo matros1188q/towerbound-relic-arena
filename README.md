@@ -24,6 +24,14 @@ Character data, account progression, PvP ghosts/points and the shared stash are 
 
 Diamond package prices are displayed in the prototype; real-money payments are not connected and browser code does not grant purchased currency.
 
+## Cloud accounts (phase 1)
+
+The Supabase account and cloud-save client is wired into the page, with email/password and optional Google sign-in. Cloud sync is intentionally inactive until a dedicated Supabase project is configured. Follow [TOWERBOUND_CLOUD_SETUP.md](./TOWERBOUND_CLOUD_SETUP.md), fill `supabase-config.js` with the project's URL and publishable key, and run `supabase/migrations/202611090001_cloud_saves.sql` in the Supabase SQL Editor.
+
+LocalStorage remains as a compatibility/offline cache; the cloud snapshot syncs the active RPG engine and legacy profile save keys. First-time migration keeps local data and asks before resolving conflicting local/cloud copies. The versioned RPC prevents stale devices from silently overwriting newer saves.
+
+This phase provides account ownership and cross-device persistence, not server-authoritative anti-cheat. Currency grants, item rewards, progression validation, trading and PvP outcomes must move to server-validated operations before public competitive play.
+
 ## Tests
 
 GitHub Actions checks JavaScript syntax, seven-class expansion, all balance configs, engine rules and the Playwright Chromium browser smoke test. See `tests/`, `.github/workflows/rpg-rework-v2.yml` and `docs/BALANCE-CONTENT-AUDIT.md`.
