@@ -113,7 +113,7 @@ const {chromium}=require('playwright');
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('.tb-arena',{timeout:5000});
   assert.equal(await page.locator('.tb-turn-tutorial').count(),1,'first battle shows turn-based tutorial');
-  assert.match(await page.locator('.tb-turn-tutorial').innerText(),/Это пошаговый бой[\\s\\S]*Нажми на умение[\\s\\S]*телеграфами/,'tutorial covers turns, actions and telegraphs');
+  assert.match(await page.locator('.tb-turn-tutorial').innerText(),/Это пошаговый бой[\s\S]*Нажми на умение[\s\S]*телеграфами/,'tutorial covers turns, actions and telegraphs');
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   assert.equal(await page.locator('.tb-turn-tutorial').count(),0,'Понятно closes the tutorial');
   assert.match(await page.locator('.tb-turn-guidance').innerText(),/Твой ход/,'player turn guidance is visible');
