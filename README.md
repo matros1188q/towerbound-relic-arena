@@ -270,7 +270,7 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Fixed the player HP bar cascade: the hero health fill is green again and its displayed width is clamped to 0–100%.
 - Added explicit `damage_multiplier: 1.5`, `resource_cost: 18` and a Russian description for Assassin's `Коварный выпад`; skill detail UI now derives safe descriptions from the effect configuration instead of rendering missing values.
 - Expanded `tests/rpg-smoke.cjs` to check the 150% skill description, image containment, telegraph positioning, green hero HP fill, player initiative portrait, and disabled enemy-turn button.
-- Commit: pending CI verification. Visual browser tests cover the 375×812 portrait viewport; a physical iPhone session is still required for final device-specific confirmation.
+- Commit: `5df7994ec4975886e435e65bcf76a911722df7de` (followed by CSS/test corrections). RPG smoke and RPG rework checks pass on the current `main`; cross-browser verification is still running. Visual browser tests cover the 375×812 portrait viewport; a physical iPhone session is still required for final device-specific confirmation.
 
 
 ### 2026-11-10 — Critical skill availability and stat mapping fix
@@ -282,7 +282,7 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Fixed stat mapping: per-skill `resource_cost` and `damage_multiplier` now take precedence over effect-template defaults and are used by the actual combat calculation. UI displays safe damage/healing/shield/buff percentages, resource cost, cooldown and uses `—` rather than `undefined`.
 - Engine skill availability now treats a missing unlock level as level 1, while still enforcing class branch ownership.
 - Added regression checks for all seven class base skill sets, all 420 specialization entries, catalog class coverage, and an actual Assassin base-skill click in browser smoke.
-- Remaining verification: CI must pass; live class-by-class physical iPhone testing is not simulated by the automated browser test.
+- Verification: RPG smoke and RPG rework v2 checks passed on `ef1b35db7d7687dc2dbdd2d4b12b43fd2c7d5dc8`; GitHub Pages deployment succeeded. Cross-browser run was still in progress when this entry was written. Physical iPhone class-by-class testing remains unverified.
 
 
 ### 2026-11-10 — Skill cache refresh and seven-class availability verification
@@ -298,3 +298,11 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Bumped the RPG engine script URL to v10 and added v10 cache-busting to all balance JSON fetches so mobile browsers receive the current skill availability logic and class skill definitions.
 - Added v2 cache-busting to the 420-skill catalog request. The request remains relative to index.html and is awaited before the first UI render.
 - Extended smoke coverage to verify all 448 skills (28 class base skills + 420 specialization skills) resolve to known effect templates and have safe cost/effect fallbacks.
+
+
+### 2026-11-10 — Final skill-fix verification
+
+- `SKILL AVAILABILITY BY CLASS` browser test returned `available: true` for level-2 base skills in all seven classes.
+- `SKILL DEBUG CAPTURE` confirmed Assassin's `Коварный выпад` resolves to `assassin.base.1`, unlock level 1, strike effect, 150% damage multiplier and 18 resource cost.
+- RPG smoke, full game audit, online-service tests, combat runtime/visual tests, character-art tests, progression tests and RPG rework checks passed on commit `ef1b35db7d7687dc2dbdd2d4b12b43fd2c7d5dc8`.
+- GitHub Pages deployment for that commit succeeded. Cross-browser screenshot suite was still running at report time.
