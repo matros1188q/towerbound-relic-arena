@@ -72,7 +72,8 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.ok(Math.abs(e.maxHp(live)-Math.round(balance.character_curves.level_to_stage_anchors[0].hp/balance.character_curves.base_divisor*turnHpScale))<=1);
  live.level=75;equipSix(live,'Эпическая');
  const stats=e.getCombatStats(live);
- assert.ok(Math.abs(stats.maxHp-Math.round(balance.character_curves.level_to_stage_anchors.find(anchor=>anchor.level===75).hp/balance.character_curves.base_divisor*(1+balance.item_level.full_set_level_120_bonus)*turnHpScale))<200,'gear-inclusive HP curve respects the selected combat mode');
+ const expectedLevel75Hp=Math.round(balance.character_curves.level_to_stage_anchors.find(anchor=>anchor.level===75).hp/balance.character_curves.base_divisor*(1+balance.item_level.full_set_level_120_bonus)*turnHpScale);
+ assert.ok(Math.abs(stats.maxHp-expectedLevel75Hp)<200,`gear-inclusive HP curve respects the selected combat mode (actual ${stats.maxHp}, expected about ${expectedLevel75Hp})`);
  assert.ok(Math.abs(stats.dps-4400)<20,'gear-inclusive DPS curve restored by six ilvl120 items');
  assert.equal(e.combatPower(live),25580);
  live.level=100;equipSix(live,'Легендарная');
