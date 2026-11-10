@@ -91,7 +91,7 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('#tbRpg').innerText(),/RPG QA/,'saved roster survives refresh');
   await page.evaluate(()=>{
    const engine=window.TowerboundRework,c=engine.state.characters[0];
-   c.xp=200000;c.level=10;c.talentPoints=9;c.branch='bleed';c.silver=50000;
+   c.xp=200000;c.level=10;c.talentPoints=9;c.branch=null;c.silver=50000;
    c.progress.highestEver=1;c.progress.currentStage=2;
    c.bag.push({id:'qa-weapon',name:'QA Blade',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10},refine:0,sockets:[],socketsAvailable:0});
    c.bag.push({id:'qa-refine',type:'refine_stone'});
@@ -128,9 +128,18 @@ const {chromium}=require('playwright');
   const chestAfter=await page.evaluate(()=>window.TowerboundRework.state.characters[0].dailyChest?.lastOpenedAt||0);
   assert.ok(chestAfter>chestBefore,'daily chest stores its last-opened timestamp in the character save');
   assert.equal(await page.locator('[data-action="daily-chest"]').isDisabled(),true,'daily chest button enters cooldown after claim');
+  assert.equal(await page.locator('#tbExtraBar').count(),0,'duplicate top navigation is removed');
+  await page.locator('[data-action="bottom-map"]').click();
+  const loreLayout=await page.locator('.tb-chapter-card').evaluate(el=>({width:el.getBoundingClientRect().width,titleWidth:el.querySelector('h2')?.getBoundingClientRect().width,textWidth:el.querySelector('p')?.getBoundingClientRect().width,titleDisplay:getComputedStyle(el.querySelector('h2')).display}));
+  assert.ok(loreLayout.width>280&&loreLayout.titleWidth>250&&loreLayout.textWidth>250,'chapter lore title and paragraph retain readable full width');
+  assert.equal(loreLayout.titleDisplay,'block','chapter lore title is a block, not a compressed flex item');
   await page.locator('[data-action="bottom-profile"]').click();
   await page.locator('[data-branch="bleed"]').click();
-  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].branch),'bleed','specialization selection persists');
+  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].branch),null,'clicking a specialization only previews it and does not apply it');
+  assert.equal(await page.locator('[data-action="confirm-branch"]').innerText(),'ПОДТВЕРДИТЬ ВЫБОР','pending specialization exposes an explicit confirmation button');
+  await page.locator('[data-action="confirm-branch"]').click();
+  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].branch),'bleed','specialization applies only after confirmation');
+  assert.equal(await page.locator('[data-action="confirm-branch"]').count(),0,'confirmation button disappears after branch is selected');
   await page.evaluate(()=>{
    const c=window.TowerboundRework.state.characters[0];
    if(!c.bag.some(item=>item.id==='qa-weapon'))c.bag.push({id:'qa-weapon',name:'QA Blade',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10},refine:0,sockets:[],socketsAvailable:0});
