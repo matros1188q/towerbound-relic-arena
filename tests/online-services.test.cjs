@@ -37,9 +37,9 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=14'),'cloud module cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=15'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=29'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=31'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=17'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
@@ -49,7 +49,11 @@ assert.ok(!cloud.includes("$('#tbCloudSyncNow').addEventListener('click',()=>{co
 assert.ok(cloud.includes("window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});"),'offline saves are retried after connectivity returns');
 assert.ok(cloud.includes('loadGame,saveGame,queueSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
 assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="cloud-account"'),'settings screen exposes cloud account and manual sync controls');
-assert.ok(cloud.includes("return login+'@towerbound.game'"),'game login maps to the synthetic Supabase email');
+assert.ok(cloud.includes("const AUTH_EMAIL_DOMAIN='towerbound.com'")&&cloud.includes("const authEmail=login=>String(login||'').trim().toLowerCase()+'@'+AUTH_EMAIL_DOMAIN"),'new game logins map to a valid .com synthetic Supabase email');
+assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("legacy=await client.auth.signInWithPassword({email:clean+'@towerbound.game'"),'sign-in uses the new email and preserves legacy .game accounts as fallback');
+assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("client.auth.signUp({email:authEmail(clean)"),'registration and login share the new synthetic email domain');
+assert.ok(cloud.includes('Неверный логин или пароль')&&cloud.includes('Ошибка регистрации. Попробуйте другой логин')&&cloud.includes('Этот логин уже занят')&&cloud.includes('Пароль должен быть не менее 6 символов'),'Supabase auth errors are translated to Russian');
+assert.ok(cloud.includes('#tbCloudMessage[data-kind="error"]')&&cloud.includes('id="tbCloudHint"')&&cloud.includes('Зарегистрироваться'),'login errors are red and registration guidance is visible');
 assert.ok(!cloud.includes("overlay.classList.add('open','login-required')")&&cloud.includes('const showLoginGate=(force=false)'), 'startup keeps the login flow in the character screen instead of covering it with a modal');
 assert.ok(cloud.includes("const rememberKey='tb-remember-me'"),'remember-me preference is persisted');
 assert.ok(cloud.includes('id="tbCloudRememberMe"')&&!cloud.includes('id="rememberMe"'),'cloud modal uses a distinct remember checkbox ID from the main login form');
@@ -63,7 +67,7 @@ assert.ok(ui.includes('evasion')&&ui.includes('toFixed(1)'),'equipment compariso
 assert.ok(css.includes('overflow-x:auto')&&css.includes('word-break:normal')&&css.includes('-webkit-overflow-scrolling:touch'),'mobile profile wrapping and swipe tabs are configured');
 assert.ok(online.includes('function publishCurrent()'),'online publishing remains available');
 
-assert.ok(cloud.includes("return login+'@towerbound.game'")&&cloud.includes("signInWithPassword")&&cloud.includes("signUp"),'username/password Supabase authentication is wired');
+assert.ok(cloud.includes('authEmail(clean)')&&cloud.includes('signInWithPassword')&&cloud.includes('signUp'),'username/password Supabase authentication is wired');
 assert.ok(cloud.includes("const rememberKey='tb-remember-me'")&&cloud.includes("if(active&&!remembered())"),'remember-me session gate is enforced at startup');
 assert.ok(engine.includes('function insertGem')&&engine.includes('openSockets<=installedSource.length'),'gem insertion checks available sockets');
 assert.ok(engine.includes('const stone=character.bag.find(entry=>entry&&entry.id===stoneId&&entry.type==="enhancement_stone")'),'gem insertion requires a stone in inventory');
@@ -142,9 +146,9 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(progression.includes("if(bar&&c&&!bar.querySelector('[data-tbp-open]'))")&&progression.includes("b.className='tb-progression-button'"),'progression control is only added when a character exists');
 assert.ok(css.includes('white-space:nowrap')&&css.includes('tb-progression-button::before')&&css.includes('@media(max-width:400px)'),'iPhone header and progression control stay on one line and collapse to an icon');
-assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=14')&&html.includes('rpg-rework-ui.css.js?v=17'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=15')&&html.includes('rpg-rework-ui.css.js?v=17'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
-assert.ok(cloud.includes('signInWithPassword({email:clean+\'@towerbound.game\''),'sign-in uses the virtual login email');
+assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
 assert.ok(css.includes('tb-login-gate')&&css.includes('white-space:nowrap')&&css.includes('@media(max-width:400px)'),'centered login and narrow mobile header styles are present');
 
