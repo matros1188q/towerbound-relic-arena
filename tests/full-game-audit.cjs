@@ -182,3 +182,5 @@ assert.ok(nativeCss.includes('[role=dialog]:not(.tb-turn-tutorial)'),'dialog hei
 assert.ok(nativeCss.includes('display:flex!important;align-items:center;justify-content:center')&&nativeCss.includes('grid-template-rows:auto auto minmax(0,1fr) auto'),'tutorial uses a bounded layout with a permanently visible action row');
 
 assert.ok(uiSource.includes(`+'</section>'+(battle.showTutorial?'<div class="tb-turn-tutorial"`),'battle tutorial overlay is a sibling of the overflow-clipped arena, not its child');
+
+assert.ok(uiSource.includes('if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}'),'global navigation never overlays active combat controls');

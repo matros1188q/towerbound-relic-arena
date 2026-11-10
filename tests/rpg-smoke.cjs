@@ -194,6 +194,7 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('.tb-turn-tutorial').innerText(),/Это пошаговый бой[\s\S]*Нажми на умение[\s\S]*телеграфами/,'tutorial covers turns, actions and telegraphs');
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   assert.equal(await page.locator('.tb-turn-tutorial').count(),0,'Понятно closes the tutorial');
+  assert.equal(await page.locator('.tb-bottom-nav').count(),0,'global navigation yields the full viewport to active combat controls');
   assert.match(await page.locator('.tb-turn-guidance').innerText(),/Твой ход/,'player turn guidance is visible');
   assert.match(await page.locator('[data-action="end-turn"]').innerText(),/ЗАВЕРШИТЬ ХОД/,'explicit end-turn action is visible');
   assert.equal(await page.locator('[data-panel-skill]').count(),4,'four configured attack skills are visible');
