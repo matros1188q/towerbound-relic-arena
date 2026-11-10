@@ -573,3 +573,28 @@ All commits below are on `main` and form the account / gem / localization / mobi
 
 **Release branch:** `main`  
 **Release commit before this documentation-only update:** `32ca5efc204775eff3e2445c1ad7c3da9d3d48da`
+
+
+## 2026-11-10 — iOS PWA automatic update release
+
+- Updated `service-worker.js` to cache the app shell as `towerbound-v22`, call `self.skipWaiting()` during install and `self.clients.claim()` during activation.
+- Changed document requests (`/`, navigations and `index.html`) to **Network First**, with the cached HTML used only when the network is unavailable. Other same-origin assets remain cache-first for fast launches.
+- Registered the worker from `juice-pwa.js` with `updateViaCache: 'none'`. The browser's service-worker update algorithm fetches the worker script separately; it is not intercepted by the worker's own fetch handler.
+- Added an immediate update check after registration, an hourly `registration.update()` check, and another check when the PWA returns to the foreground.
+- When a replacement worker reaches `installed` while an existing controller is active, the app displays a compact **Обновить сейчас** toast. The button reloads the page with `window.location.reload()`.
+- Added regression assertions for the worker lifecycle, Network First HTML handling, cache-bypass registration, hourly checks and reload toast. CI now syntax-checks both PWA scripts.
+
+### Files changed
+- `service-worker.js`
+- `juice-pwa.js`
+- `tests/online-services.test.cjs`
+- `.github/workflows/towerbound-checks.yml`
+- `README.md`
+
+### Commits on main
+- `a62d36dccdfa3fab1672a8494b056628176c226a` — Network First HTML and SW lifecycle/cache version.
+- `ca192a2b0844855b87a0c1c30959cb06229707d7` — iOS update checks and reload toast.
+- `b70639b52797db4f88fe0e9610e43e7ce0e2461d` — PWA update regression assertions.
+- `f5b04f80d8fc6f2fb1633df427209b0f4a9a6d34` — PWA syntax checks in CI.
+
+**Verification boundary:** GitHub Actions and Pages deployment are triggered by these `main` commits. A real installed iPhone PWA session is not available from this repository workflow; the first launch after deployment should fetch the new worker, and the in-app toast is the manual fallback if a page reload is needed.
