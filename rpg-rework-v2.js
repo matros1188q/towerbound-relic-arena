@@ -595,7 +595,7 @@
      head:{defense:Math.max(1,Math.round(scale*.8)),health:Math.max(3,Math.round(scale*2.5))},
      accessory:{attack:Math.max(1,Math.round(scale*.8)),health:Math.max(2,Math.round(scale*1.5)),crit:Math.min(.08,.005*rarityScale),spellPower:Math.max(0,Math.round(scale*.45))}
     };
-    const slotNames={weapon:["Клинок тьмы","Меч расколотой клятвы","Боевой клинок"],chest:["Кираса бастиона","Нагрудник древнего стража","Доспех сумрачной стали"],head:["Шлем затмения","Корона пепельного стража","Маска бездны"],accessory:["Амулет забытого короля","Кольцо сумрачной печати","Подвеска древней силы"]};
+    const slotNames={weapon:["Клинок тьмы","Меч расколотой клятвы","Боевой клинок"],chest:["Доспех бастиона","Нагрудник древнего стража","Доспех сумрачной стали"],head:["Шлем затмения","Шлем пепельного стража","Шлем бездны"],accessory:["Амулет забытого короля","Перстень сумрачной печати","Талисман древней силы"]};
     const rarityNames={"Обычная":"Обычный","Редкая":"Редкий","Эпическая":"Эпический","Легендарная":"Легендарный","Богоподобная":"Богоподобный"};
     const stats={...(options.stats||statProfiles[slot]||statProfiles.accessory)};
     const names=slotNames[slot]||slotNames.accessory;
