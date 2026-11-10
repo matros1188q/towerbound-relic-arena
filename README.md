@@ -651,3 +651,13 @@ All commits below are on `main` and form the account / gem / localization / mobi
 **Code commit on `main`:** `9b5f8e70dcab814b7633d08048d3e033bb5de240`.
 
 **Verification boundary:** source-level regression assertions were added. The actual Playwright iPhone viewport run, physical iPhone Safari/PWA interaction, live Supabase registration/login, and real skill selection inside a running battle must be confirmed by the triggered CI/browser jobs and/or a device session; they are not claimed as physically tested here.
+
+
+## 2026-11-10 — Supabase username login validation and Russian errors
+
+- New registrations and primary sign-ins now map normalized usernames to the syntactically standard synthetic address `login@towerbound.com`; the old `@towerbound.game` address is tried only as a sign-in compatibility fallback for accounts created before this fix.
+- Registration always uses the new `.com` address. Supabase Email **Confirm Email must remain disabled** for synthetic usernames because these addresses are not player mailboxes.
+- Mapped Supabase authentication errors to Russian: invalid credentials, invalid email, duplicate account and password-too-short cases. The cloud login dialog marks errors red.
+- Added the registration hint below the form and localized/red error styling in the profile account form.
+- Added regression assertions for the new address mapping, legacy sign-in fallback, Russian error messages and registration hint. Updated the cloud/UI asset cache keys to v15/v31.
+- Live Supabase registration/login with `Test123` and `123456` was not executed: this repository session does not have a test Supabase user/session or permission to create an account in the project's Auth service. The automated source regression checks must be confirmed in GitHub Actions.
