@@ -314,8 +314,14 @@ const {chromium}=require('playwright');
   for(const size of [{width:390,height:844},{width:430,height:932}]){
    await page.setViewportSize(size);
    for(const tab of ['tower','pass','guild','evolution']){
-    await page.evaluate(tab=>window.TowerboundEndgame.open(tab),tab);
-    await page.waitForSelector('#tbEndgame .eg-window',{timeout:3000});
+    const openDebug=await page.evaluate(tab=>{
+     window.TowerboundEndgame.open(tab);
+     const root=document.querySelector('#tbEndgame'),win=root?.querySelector('.eg-window');
+     const box=el=>{if(!el)return null;const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{display:s.display,visibility:s.visibility,opacity:s.opacity,width:r.width,height:r.height,left:r.left,top:r.top};};
+     return{characters:window.TowerboundRework?.state?.characters?.length,activeCharacterId:window.TowerboundRework?.state?.activeCharacterId,root:box(root),window:box(win),body:box(document.body),htmlWidth:document.documentElement.scrollWidth,stylePresent:!!document.querySelector('style')&&[...document.querySelectorAll('style')].some(x=>x.textContent.includes('.eg-window'))};
+    },tab);
+    console.log('ENDGAME MOBILE OPEN:',tab,JSON.stringify(openDebug));
+    await page.waitForSelector('#tbEndgame .eg-window',{state:'attached',timeout:3000});
     if(tab==='pass')assert.equal(await page.locator('#tbEndgame .eg-pass-row').count(),50,'Battle Pass renders all 50 reward levels');
     if(tab==='tower')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/текущий этаж: 1/i,'Tower screen starts at floor one');
     if(tab==='guild')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/5[\\s\\u00a0]?000[\\s\\u00a0]?000/,'Guild screen renders the 5-million HP world boss');
