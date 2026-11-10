@@ -469,3 +469,16 @@ Additional implementation / verification commits after the initial feature block
 - Added guarded recovery around both enemy-turn processing and the player's end-turn action. Any exception clears the pending timer, invalidates the old queue token, resets `battle.busy`, restores `battle.isPlayerTurn`, and returns the UI to an enabled player turn.
 - Normalized enemy attack interval and speed modifier inputs to finite positive numbers with a 1-second fallback.
 - Added browser regression checks for absence of `NaN сек`, finite enemy attack interval, and numeric timer recovery.
+
+## 2026-11-10 — account, gems, localization and iPhone layout hardening
+
+- Kept the Supabase username/password gate and synthetic login@towerbound.game address flow. The tb-remember-me flag controls whether a persisted Supabase session is accepted at the next launch; without the flag, the stored session is signed out and the login gate remains in front of character selection.
+- Preserved the existing LocalStorage save keys and the versioned cloud-save conflict flow.
+- Kept the Russian labels for healing_potion and craft_material, removed repeated item-type/rarity labels from inventory and equipment names, and expanded percentage formatting for crit/evasion key variants.
+- Added a public insertGem engine method (with socketStone retained as a compatibility alias). It validates the equipment, inventory stone, free socket count, class/specialization and weapon/armor slot, writes installedGems, mirrors legacy sockets, and consumes the inventory stone only after validation.
+- Inventory stone cards now show the configured catalog description; installed stones can still be extracted back into the bag.
+- Added explicit iPhone profile-name wrapping, horizontal swipe tabs, flexible inventory cards and compact bag-tool buttons.
+- Refreshed browser cache keys: cloud v8, engine v16, profile UI v26, mobile stylesheet v14.
+- Added regression assertions in tests/online-services.test.cjs and a GitHub Actions workflow .github/workflows/towerbound-checks.yml for JavaScript syntax and static regression checks.
+
+**Verification boundary:** GitHub Actions is configured to run the checks on this push. A physical iPhone Safari session and visual touch-swipe verification are not performed from this repository-editing session; Playwright/device results must be taken from the Actions/browser test run, not inferred from CSS assertions. Supabase registration requires Confirm Email disabled for synthetic @towerbound.game logins, as documented in TOWERBOUND_CLOUD_SETUP.md.
