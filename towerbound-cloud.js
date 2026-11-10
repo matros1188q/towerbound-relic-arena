@@ -27,7 +27,7 @@ const style=document.createElement('style');style.id='tb-cloud-styles';style.tex
 #tbCloudDialog .tb-cloud-row button{flex:1}
 #tbCloudMessage{min-height:22px;color:#e9c985;font-size:12px;margin-top:10px}
 #tbCloudAccount{color:#a8d9bd;font-size:12px;overflow-wrap:anywhere}
-#tbCloudClose{display:none}#tbCloudDialog .tb-remember-label{display:flex;align-items:center;gap:9px;font-size:12px}#tbCloudDialog .tb-remember-label input{width:18px;height:18px;accent-color:#d7b875}#tbCloudOverlay.login-required{z-index:2147483000}#tbCloudOverlay.login-required #tbCloudDialog{max-height:calc(100dvh - 28px)}
+#tbCloudOverlay.login-required #tbCloudClose{display:none}#tbCloudDialog .tb-remember-label{display:flex;align-items:center;gap:9px;font-size:12px}#tbCloudDialog .tb-remember-label input{width:18px;height:18px;accent-color:#d7b875}#tbCloudOverlay.login-required{z-index:2147483000}#tbCloudOverlay.login-required #tbCloudDialog{max-height:calc(100dvh - 28px)}
 @media(max-width:600px){#tbCloudButton{top:calc(env(safe-area-inset-top) + 7px);right:8px;font-size:9px;padding:7px 8px}}
 `;document.head.appendChild(style);
 const button=document.createElement('button');button.id='tbCloudButton';button.type='button';button.textContent='АККАУНТ · ЛОКАЛЬНО';button.dataset.state='local';document.body.appendChild(button);
