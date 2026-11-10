@@ -25,7 +25,7 @@ assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded'
 assert.ok(html.includes('./towerbound-cloud.js?v=3'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=12'),'engine cache is refreshed for chest data');
 assert.ok(html.includes('./rpg-rework-ui.js?v=21'),'map and settings UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=10'),'mobile battle stylesheet cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=11'),'mobile battle stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
 assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is awaitable and reports failure');
