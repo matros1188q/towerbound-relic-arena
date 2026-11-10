@@ -366,3 +366,11 @@ html,body,#tbRpg,.tb-v2 {
  #tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt{grid-row:7!important;min-height:36px!important}
  #tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt button:disabled{pointer-events:none}
 }
+
+/* iPhone battle controls: reserve an independent row for potions and keep End Turn above it. */
+@media (max-width:768px) and (orientation:portrait){
+ #tbRpg .tb-v2:has(.tb-arena) .tb-panel-actions{position:relative!important;z-index:20!important;display:flex!important;flex-direction:column!important;min-height:0!important;padding-bottom:8px!important;}
+ #tbRpg .tb-v2:has(.tb-arena) .tb-end-turn{position:relative!important;z-index:30!important;display:block!important;flex:0 0 auto!important;width:100%!important;min-height:48px!important;margin:8px 0!important;visibility:visible!important;opacity:1!important;}
+ #tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt{position:relative!important;z-index:1!important;grid-row:7!important;margin:4px 0 0!important;min-height:36px!important;}
+ #tbRpg .tb-v2:has(.tb-arena) .tb-combat-note{grid-row:8!important;}
+}
