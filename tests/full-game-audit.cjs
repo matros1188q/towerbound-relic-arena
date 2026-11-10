@@ -168,7 +168,7 @@ assert.ok(nativeCss.includes('.tb-stage-toolbar .tb-stage-start')&&nativeCss.inc
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
 assert.ok(uiSource.includes('gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"]'),'equipment slots use localized names instead of generic slot numbers');
 assert.ok(uiSource.includes('"is-empty"'),'empty equipment slots have a compact empty state');
-assert.ok(nativeCss.includes('.tb-turn-tutorial-card{box-sizing:border-box;display:flex;flex-direction:column')&&nativeCss.includes('max-height:80dvh'),'battle tutorial uses a bounded scrollable card');
+assert.ok(nativeCss.includes('.tb-turn-tutorial-card{box-sizing:border-box;display:grid!important;grid-template-rows:auto auto minmax(0,1fr) auto')&&nativeCss.includes('max-height:80dvh!important'),'battle tutorial uses a bounded scrollable card with a fixed action row');
 assert.ok(nativeCss.includes('padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))'),'modal panels reserve space for the iPhone home indicator');
 assert.ok(nativeCss.includes('.tb-v2 .tb-gear-slot.rarity-epic')&&nativeCss.includes('linear-gradient(145deg,#6a0dad,#351052)'),'epic gear uses purple styling');
 assert.ok(nativeCss.includes('.tb-v2 .tb-gear-slot.rarity-legendary')&&nativeCss.includes('linear-gradient(145deg,#ff8c00,#713900)'),'legendary gear uses orange styling');
