@@ -1090,4 +1090,5 @@ function createDialog(){
   }).catch(error=>console.error("Towerbound rework UI failed",error));
  }
  boot();
+ window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="map";render();save();}};
 })();
