@@ -21,5 +21,43 @@ function hpFx(){const enemy=$('#enemyHpText')||$('#enemyHp'),player=$('#hp'),rea
 function pulse(){['#activeSkillBtn','#activeWardBtn','#activeDodgeBtn'].forEach(q=>{const b=$(q);if(b)b.classList.toggle('tb-ready-pulse',!b.disabled&&b.getAttribute('aria-disabled')!=='true')})}
 function init(){ $('#tbSettingsOpen')?.addEventListener('click',()=>{openSettings();audio()?.resume();sfx('click')});chest();document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='mapHealBtn')sfx('potion');else if(b.matches('[data-buy],[data-fallback-buy],[data-stash-equip]'))sfx('loot');else if(b.id==='refineBtn'||b.matches('[data-refine]'))sfx('metal');else if(!b.closest('#tbSettingsDialog')&&b.id!=='tbDailyChest')sfx('click')},true);document.addEventListener('pointerdown',()=>{const a=audio();if(a?.state==='suspended')a.resume()},{once:true});const mo=new MutationObserver(()=>{chest();hpFx();pulse();updateMusic()});mo.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['disabled','class']});setInterval(autosave,1200);setInterval(paintChest,30000);setInterval(pulse,500);setInterval(updateMusic,1400);addEventListener('pagehide',save);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});autosave();updateMusic();if(game()&&(game().mapStep>1||game().gold!==12||game().slots?.some(Boolean))){const n=document.createElement('div');n.className='tb-resume-note';n.innerHTML='<span>Сохранение найдено · прогресс восстановлен</span><button>Продолжить</button>';n.querySelector('button').onclick=()=>n.remove();document.body.append(n);setTimeout(()=>n.remove(),7000)}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-if('serviceWorker'in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(e=>console.warn('PWA SW',e)));
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
+ const UPDATE_CHECK_MS=60*60*1000;
+ let updateToast=null,registrationRef=null;
+ function offerReload(){
+  if(updateToast||!document.body)return;
+  const styleId='tb-pwa-update-style';
+  if(!document.getElementById(styleId)){
+   const style=document.createElement('style');style.id=styleId;
+   style.textContent='#tbPwaUpdateToast{position:fixed;z-index:2147483647;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #e8c779;border-radius:14px;background:#171b2d;color:#fff1ce;box-shadow:0 12px 36px #0009;font:600 13px/1.35 system-ui,-apple-system,sans-serif}#tbPwaUpdateToast button{flex:0 0 auto;min-height:40px;padding:8px 12px;border:1px solid #ffe29a;border-radius:10px;background:linear-gradient(135deg,#d8ad62,#9e6d37);color:#21182a;font-weight:900}';
+   document.head.append(style);
+  }
+  const toast=document.createElement('div');toast.id='tbPwaUpdateToast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');
+  const message=document.createElement('span');message.textContent='Доступна новая версия игры.';
+  const button=document.createElement('button');button.type='button';button.textContent='Обновить сейчас';
+  button.addEventListener('click',()=>window.location.reload());
+  toast.append(message,button);document.body.append(toast);updateToast=toast;
+ }
+ async function checkForUpdate(){
+  if(!registrationRef||document.visibilityState==='hidden')return;
+  try{await registrationRef.update()}catch(error){console.warn('Towerbound PWA update check:',error)}
+ }
+ async function registerPwaWorker(){
+  try{
+   registrationRef=await navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'});
+   registrationRef.addEventListener('updatefound',()=>{
+    const installing=registrationRef.installing;if(!installing)return;
+    installing.addEventListener('statechange',()=>{
+     if(installing.state==='installed'&&navigator.serviceWorker.controller)offerReload();
+    });
+   });
+   if(registrationRef.waiting&&navigator.serviceWorker.controller)offerReload();
+   checkForUpdate();
+   setInterval(checkForUpdate,UPDATE_CHECK_MS);
+   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkForUpdate()});
+  }catch(error){console.warn('PWA SW registration/update:',error)}
+ }
+ if(document.readyState==='complete')registerPwaWorker();
+ else addEventListener('load',registerPwaWorker,{once:true});
+}
 })();
