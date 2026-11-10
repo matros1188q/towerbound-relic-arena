@@ -209,12 +209,12 @@ html,body{width:100%;height:100%;overflow:hidden!important;overscroll-behavior:n
 
 /* UI/UX phase 3: safe, scrollable dialogs and compact named equipment slots. */
 .tb-modal{box-sizing:border-box;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px))!important;-webkit-overflow-scrolling:touch}
-.tb-modal>.tb-dialog,.tb-dialog,[role=dialog],.tb-popup-panel,.tb-overlay-panel{box-sizing:border-box;max-height:80dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;min-width:0}
-.tb-turn-tutorial{box-sizing:border-box;overflow-y:auto;align-items:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))!important;overscroll-behavior:contain}
-.tb-turn-tutorial-card{box-sizing:border-box;display:flex;flex-direction:column;width:min(100%,440px);max-height:80dvh;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px))!important;-webkit-overflow-scrolling:touch}
-.tb-turn-tutorial-card h2,.tb-turn-tutorial-card p{flex:0 0 auto;overflow-wrap:anywhere}
-.tb-turn-tutorial-card ol{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-right:5px;padding-bottom:8px}
-.tb-turn-tutorial-card .tb-wide{position:sticky;bottom:0;z-index:2;flex:0 0 auto;width:100%;min-height:48px;margin-top:10px;background:linear-gradient(135deg,#d8ad62,#9e6d37);box-shadow:0 -8px 18px #10152288;pointer-events:auto;touch-action:manipulation}
+.tb-modal>.tb-dialog,.tb-dialog,[role=dialog]:not(.tb-turn-tutorial),.tb-popup-panel,.tb-overlay-panel{box-sizing:border-box;max-height:80dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;min-width:0}
+.tb-turn-tutorial{box-sizing:border-box;display:flex!important;align-items:center;justify-content:center;overflow-y:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))!important;overscroll-behavior:contain}
+.tb-turn-tutorial-card{box-sizing:border-box;display:grid!important;grid-template-rows:auto auto minmax(0,1fr) auto;width:min(100%,440px);height:min(80dvh,calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));max-height:80dvh!important;min-height:0;flex:0 1 auto;margin:auto;overflow:hidden!important;overscroll-behavior:contain;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px))!important;-webkit-overflow-scrolling:touch}
+.tb-turn-tutorial-card h2,.tb-turn-tutorial-card p{min-width:0;overflow-wrap:anywhere}
+.tb-turn-tutorial-card ol{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-right:5px;padding-bottom:8px}
+.tb-turn-tutorial-card .tb-wide{position:relative;bottom:auto;z-index:2;width:100%;min-height:48px;margin-top:10px;background:linear-gradient(135deg,#d8ad62,#9e6d37);box-shadow:0 -8px 18px #10152288;pointer-events:auto;touch-action:manipulation}
 .tb-v2 .tb-gear-slot.is-empty{min-height:58px!important;height:auto!important;max-height:78px;padding:8px 11px!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px!important;background:rgba(23,29,39,.62)!important;border:1px dashed rgba(190,155,91,.36)!important}
 .tb-v2 .tb-gear-slot.is-empty>small{font-size:10px;letter-spacing:.04em;color:#d7c59b}
 .tb-v2 .tb-gear-slot.is-empty .tb-empty-slot{padding:0;font-size:10px;color:#8992a7}

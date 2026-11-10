@@ -177,3 +177,6 @@ assert.ok(!uiSource.includes('data-action="map"')&&!uiSource.includes('data-acti
 assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-nav-tab="map"')&&uiSource.includes('data-nav-tab="shop"')&&uiSource.includes('data-nav-tab="leaderboard"'),'all four global tabs use an isolated navigation attribute');
 
 assert.ok(uiSource.includes('function systemsScreen(){')&&uiSource.includes('chest=engine.dailyChestSnapshot(c.id)'),'account hub computes its own daily chest availability');
+
+assert.ok(nativeCss.includes('[role=dialog]:not(.tb-turn-tutorial)'),'dialog height constraints do not shrink the full-screen tutorial overlay');
+assert.ok(nativeCss.includes('display:flex!important;align-items:center;justify-content:center')&&nativeCss.includes('grid-template-rows:auto auto minmax(0,1fr) auto'),'tutorial uses a bounded layout with a permanently visible action row');
