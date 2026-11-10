@@ -607,7 +607,7 @@ All commits below are on `main` and form the account / gem / localization / mobi
 - Added iPhone safe-area top padding and scroll padding for the RPG root/header.
 - Reworked the active skill loadout to persist up to six skill IDs in `c.activeSkills` (with backward compatibility for `skillLoadout`). Selecting a seventh skill opens a replacement dialog listing the six current slots. The battle panel and number-key shortcuts now address six active skill slots.
 - Sanitized raw specialization/class tags in skill descriptions.
-- Added an inline account panel to the «Аккаунт» profile tab. It exposes login/password, remember-me, sign-in/register, and signed-in sync/sign-out states through the existing Supabase client. Guests can continue in local mode; the cloud login overlay no longer blocks local play when signed out.
+- Added an inline account panel to the «Аккаунт» profile tab. It exposes login/password, remember-me, sign-in/register, and signed-in sync/sign-out states through the existing Supabase client. The existing required Supabase sign-in gate is preserved; its sign-in form and the account-tab form use the same Supabase auth API.
 - Bumped UI/CSS/cloud script cache versions and added static regression assertions.
 
 ### Files changed
