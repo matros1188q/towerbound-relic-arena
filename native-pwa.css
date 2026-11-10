@@ -206,3 +206,22 @@ html,body{width:100%;height:100%;overflow:hidden!important;overscroll-behavior:n
 .tb-v2 .tb-map-grid{min-width:0;max-width:100%}
 .tb-v2 .tb-branch-description{margin:9px 0 6px;padding:10px 12px;border-left:3px solid #c9a15e;border-radius:0 9px 9px 0;background:rgba(12,17,27,.56);color:#d8d2c3;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
 @media(max-width:430px){.tb-v2 .tb-stage-toolbar{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important;padding:8px!important}.tb-v2 .tb-stage-toolbar .tb-route-choice{grid-column:1/-1;grid-row:2}.tb-v2 .tb-stage-toolbar .tb-stage-start{grid-column:2;grid-row:1}.tb-v2 .tb-stage-toolbar .tb-stage-more{grid-row:3}.tb-v2 .tb-stage-toolbar .tb-stage-identity small{font-size:8px}}
+
+/* UI/UX phase 3: safe, scrollable dialogs and compact named equipment slots. */
+.tb-modal{box-sizing:border-box;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px))!important;-webkit-overflow-scrolling:touch}
+.tb-modal>.tb-dialog,.tb-dialog,[role=dialog],.tb-popup-panel,.tb-overlay-panel{box-sizing:border-box;max-height:80dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;min-width:0}
+.tb-turn-tutorial{box-sizing:border-box;overflow-y:auto;align-items:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))!important;overscroll-behavior:contain}
+.tb-turn-tutorial-card{box-sizing:border-box;display:flex;flex-direction:column;width:min(100%,440px);max-height:80dvh;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px))!important;-webkit-overflow-scrolling:touch}
+.tb-turn-tutorial-card h2,.tb-turn-tutorial-card p{flex:0 0 auto;overflow-wrap:anywhere}
+.tb-turn-tutorial-card ol{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-right:5px;padding-bottom:8px}
+.tb-turn-tutorial-card .tb-wide{position:sticky;bottom:0;z-index:2;flex:0 0 auto;width:100%;min-height:48px;margin-top:10px;background:linear-gradient(135deg,#d8ad62,#9e6d37);box-shadow:0 -8px 18px #10152288;pointer-events:auto;touch-action:manipulation}
+.tb-v2 .tb-gear-slot.is-empty{min-height:58px!important;height:auto!important;max-height:78px;padding:8px 11px!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px!important;background:rgba(23,29,39,.62)!important;border:1px dashed rgba(190,155,91,.36)!important}
+.tb-v2 .tb-gear-slot.is-empty>small{font-size:10px;letter-spacing:.04em;color:#d7c59b}
+.tb-v2 .tb-gear-slot.is-empty .tb-empty-slot{padding:0;font-size:10px;color:#8992a7}
+.tb-v2 .tb-gear-slot.rarity-epic,.tb-v2 .tb-bag-item.rarity-epic{background:linear-gradient(145deg,#6a0dad,#351052)!important;border-color:#b37add!important;color:#fff!important}
+.tb-v2 .tb-gear-slot.rarity-legendary,.tb-v2 .tb-bag-item.rarity-legendary{background:linear-gradient(145deg,#ff8c00,#713900)!important;border-color:#ffc16c!important;color:#fff!important}
+.tb-v2 .tb-gear-slot.rarity-epic>small,.tb-v2 .tb-gear-slot.rarity-legendary>small{color:#fff0d5}
+.tb-v2 .tb-gear-slot,.tb-v2 .tb-bag-item{min-width:0;overflow-wrap:anywhere}
+.tb-v2 .tb-gear-slot b,.tb-v2 .tb-gear-slot span,.tb-v2 .tb-gear-slot small{min-width:0;overflow-wrap:anywhere}
+#tbRpg,.tb-v2{max-width:100vw;overflow-x:hidden}
+@media(max-width:430px){.tb-v2 .tb-gear-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}.tb-v2 .tb-gear-slot.is-empty{min-height:54px!important;max-height:68px;padding:7px!important}.tb-turn-tutorial-card{padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px))!important}.tb-turn-tutorial-card h2{font-size:20px!important}.tb-turn-tutorial-card ol{gap:9px;font-size:13px}}
