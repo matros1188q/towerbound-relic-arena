@@ -22,7 +22,7 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=4'),'cloud module cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=5'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=13'),'engine cache is refreshed for gem socket support');
 assert.ok(html.includes('./rpg-rework-ui.js?v=22'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=12'),'mobile profile stylesheet cache is refreshed');
