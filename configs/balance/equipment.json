@@ -126,7 +126,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +0,2% к критическому шансу"
     },
     {
       "id": "assassin.bleed.armor",
@@ -141,7 +142,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "assassin.poison.weapon",
@@ -156,7 +158,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +0,2% к критическому шансу"
     },
     {
       "id": "assassin.poison.armor",
@@ -171,7 +174,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "assassin.execution.weapon",
@@ -186,7 +190,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +0,2% к критическому шансу"
     },
     {
       "id": "assassin.execution.armor",
@@ -201,7 +206,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "bishop.exorcism.weapon",
@@ -216,7 +222,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии"
     },
     {
       "id": "bishop.exorcism.armor",
@@ -231,7 +238,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии"
     },
     {
       "id": "bishop.healing.weapon",
@@ -246,7 +254,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии"
     },
     {
       "id": "bishop.healing.armor",
@@ -261,7 +270,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии"
     },
     {
       "id": "bishop.buffs.weapon",
@@ -276,7 +286,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии"
     },
     {
       "id": "bishop.buffs.armor",
@@ -291,7 +302,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии"
     },
     {
       "id": "dragonkin.fire_dragon.weapon",
@@ -306,7 +318,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0.015,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1,5% к урону огнём"
     },
     {
       "id": "dragonkin.fire_dragon.armor",
@@ -321,7 +334,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0.015,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1,5% к урону огнём"
     },
     {
       "id": "dragonkin.ice_dragon.weapon",
@@ -336,7 +350,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0.015,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1,5% к урону льдом"
     },
     {
       "id": "dragonkin.ice_dragon.armor",
@@ -351,7 +366,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0.015,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1,5% к урону льдом"
     },
     {
       "id": "dragonkin.black_dragon.weapon",
@@ -366,7 +382,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0.015
+      "dark_damage_per_level": 0.015,
+      "description": "+1.6 к атаке, +0.15 к защите, +1,5% к урону тьмой"
     },
     {
       "id": "dragonkin.black_dragon.armor",
@@ -381,7 +398,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0.015
+      "dark_damage_per_level": 0.015,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1,5% к урону тьмой"
     },
     {
       "id": "destroyer.fists.weapon",
@@ -396,7 +414,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите"
     },
     {
       "id": "destroyer.fists.armor",
@@ -411,7 +430,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "destroyer.greatsword.weapon",
@@ -426,7 +446,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите"
     },
     {
       "id": "destroyer.greatsword.armor",
@@ -441,7 +462,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "destroyer.wand_shield.weapon",
@@ -456,7 +478,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите"
     },
     {
       "id": "destroyer.wand_shield.armor",
@@ -471,7 +494,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "elemental.darkness.weapon",
@@ -486,7 +510,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0.015
+      "dark_damage_per_level": 0.015,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии, +1,5% к урону тьмой"
     },
     {
       "id": "elemental.darkness.armor",
@@ -501,7 +526,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0.015
+      "dark_damage_per_level": 0.015,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии, +1,5% к урону тьмой"
     },
     {
       "id": "elemental.water.weapon",
@@ -516,7 +542,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0.015,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии, +1,5% к урону льдом"
     },
     {
       "id": "elemental.water.armor",
@@ -531,7 +558,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0.015,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии, +1,5% к урону льдом"
     },
     {
       "id": "elemental.earth.weapon",
@@ -546,7 +574,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии"
     },
     {
       "id": "elemental.earth.armor",
@@ -561,7 +590,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии"
     },
     {
       "id": "duelist.dual_swords.weapon",
@@ -576,7 +606,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите"
     },
     {
       "id": "duelist.dual_swords.armor",
@@ -591,7 +622,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "duelist.sword_shield.weapon",
@@ -606,7 +638,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите"
     },
     {
       "id": "duelist.sword_shield.armor",
@@ -621,7 +654,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "duelist.rapier.weapon",
@@ -636,7 +670,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите"
     },
     {
       "id": "duelist.rapier.armor",
@@ -651,7 +686,8 @@
       "spell_power_per_level": 0,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью"
     },
     {
       "id": "shaman.spirits.weapon",
@@ -666,7 +702,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии"
     },
     {
       "id": "shaman.spirits.armor",
@@ -681,7 +718,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии"
     },
     {
       "id": "shaman.dark_gods.weapon",
@@ -696,7 +734,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0.015
+      "dark_damage_per_level": 0.015,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии, +1,5% к урону тьмой"
     },
     {
       "id": "shaman.dark_gods.armor",
@@ -711,7 +750,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0.015
+      "dark_damage_per_level": 0.015,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии, +1,5% к урону тьмой"
     },
     {
       "id": "shaman.nature.weapon",
@@ -726,7 +766,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0.015,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+1.6 к атаке, +0.15 к защите, +1.5 к силе магии, +1,5% к урону огнём"
     },
     {
       "id": "shaman.nature.armor",
@@ -741,7 +782,8 @@
       "spell_power_per_level": 1.5,
       "fire_damage_per_level": 0.015,
       "ice_damage_per_level": 0,
-      "dark_damage_per_level": 0
+      "dark_damage_per_level": 0,
+      "description": "+0.25 к атаке, +1.1 к защите, +3 к здоровью, +1.5 к силе магии, +1,5% к урону огнём"
     }
   ],
   "stone_source_types": [
