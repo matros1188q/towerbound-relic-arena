@@ -400,3 +400,39 @@ Verification boundary:
 - The browser smoke workflow is configured to exercise mobile layouts, including 390×844 and 430×932 viewports, alongside cross-browser checks. These are automated browser viewport tests, not a physical-device certification.
 - Do not claim that every screen has been visually validated on a real iPhone until a hands-on device pass is completed. Record the final GitHub Actions result for the exact release commit separately; a running workflow is not a passing test.
 - The four UI commits above are the current documented UI-pass head: `6c8340cb5ecfb85f2195cee8da7331876ac046be`.
+
+### 2026-11-10 — Basic attack, real equipment drops and boss damage cap
+
+Implemented directly on `main`:
+
+- Added a separate **АТАКА** control above the six existing skill/counter/ultimate slots. It uses no resource, deals weapon-based damage and restores up to **15 resource on a successful hit**. The control is available once per player turn and remains separate from the skill loadout.
+- Basic attack scaling: Assassin / Duelist / Destroyer = 100%; Bishop / Elemental Lord = 50%; Dragonkin / Shaman = 75% by default. Dragonkin's Fire Dragon and Shaman's Nature branches use 100%; Black Dragon and Dark Gods use 50%.
+- Increased Duelist's resource pool to 100 so the same +15 regeneration rule is meaningful for that class; its configured skill costs remain class-specific.
+- Replaced generic trophy-style equipment drops with typed equipment items. Gear now rolls a real slot (weapon, chest, head or accessory), rarity, item level, generated name and non-zero stats. Weapon rolls attack/crit; chest rolls defense/HP; helmet rolls defense/HP; accessories roll mixed offensive stats.
+- Normal equipment can drop throughout the tower; the normal equipment chance is 40%, elite equipment chance is 35%, and first-clear boss rewards guarantee an epic weapon. Boss rare/epic and pity-based legendary/godlike rewards now use the same equipment generator. Crafting materials, stones and scrolls remain separate non-equipment inventory items.
+- Added per-slot equipment scoring and **ЭКИПИРОВАТЬ ЛУЧШЕЕ**. It compares the sum of weighted stats across equipped and bag items, equips the best item in each slot, and returns replaced gear to the bag.
+- Added **РАЗОБРАТЬ ВЕСЬ СЕРЫЙ МУСОР**. It salvages only common/gray equipment from the bag, converts it to crafting materials, and preserves rare-or-better items and boss loot.
+- Bag cards now show item stats and compare each stat with the equipped item for that slot: green for an improvement, red for a downgrade. Materials do not receive an Equip button.
+- Profile sub-tabs now use horizontal touch scrolling on narrow screens.
+- Ultimate attacks are resolved as three hits. Against bosses, the three hits share a **35% maximum-HP cap per player action**, preventing a single skill/ultimate action from deleting a full-health boss. Ordinary enemies retain their normal damage rules.
+- The new UI is arranged as one full-width thumb-reachable basic attack above the original six-slot skill grid, preserving the two-row layout of the existing six skills/counter/ultimate controls.
+
+**Regression coverage:** `tests/loot-combat-update.test.cjs` checks real equipment drops, stat generation, all seven class multipliers and hybrid branches, +15 resource restoration, boss damage caps, best-in-slot equipment and gray salvage. `tests/rpg-smoke.cjs` also exercises the basic attack in a browser battle. The RPG workflow now runs the new loot/combat regression file.
+
+**Implementation commit log (all on `main`):**
+- `df28aa03cf1c95029a379fecb6b52eeb09667d98` — free basic attack and boss damage guard.
+- `d36bc54b514a815949859908e874ec7869e71e5a` — stat-bearing equipment generator and equipment automation.
+- `5a7824d17506b1497a30cc00359c684492424912` — inventory stat comparison and quick equipment actions.
+- `af9505c72faaadc551a057fa801f264b16ebb242` — swipeable tabs and gear comparison colors.
+- `973f317ef526eba08d4ca4e43a1fde44c955a249` — increased equipment drop frequency.
+- `f404cb776a1af60b8a3eaa61ae8d1a2c221d0441` — Duelist resource pool update for +15 regeneration.
+- `154dd53efec55021b1bc6d6dfc4b3254c398a56c` — loot/combat regression test added.
+- `04af32155276bacbd12da441b57e20b801317dc9` — CI includes the new regression test.
+- `1b98a8a36a321bd63b1911d7f2d0e28d91954bde` — attack button moved above the six-slot grid.
+- `30ff84f32e521c208838ac578e7fe7141ed75580` — Duelist resource budget test updated.
+- `5bb79ea0b3972e7d7b4ef1bc93d57186d25d21ca` — browser test verifies basic attack damage and resource gain.
+- `bb5a6e86e1724e229f586c2766b059801c4a3a99` — mobile smoke expects the basic attack.
+- `10727e0d276c86a7fca006c3ce6d9d47b683f130` — tutorial assertion updated for the new attack action.
+- `32ae78223ee6a39e2d6965c0e6794985e366d792` — final tutorial-regex correction in the smoke test.
+
+The final GitHub Actions result for the exact `main` release commit must be checked in the Actions links after the workflows finish. Passing automated viewport tests is not a substitute for a hands-on physical iPhone test.
