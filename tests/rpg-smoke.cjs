@@ -108,6 +108,7 @@ const {chromium}=require('playwright');
    await page.setViewportSize(viewport);
    const layout=await page.evaluate(()=>({width:innerWidth,docWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,stageTop:document.querySelector('.tb-stage-toolbar')?.getBoundingClientRect().top,mapTop:document.querySelector('.tb-map-layout')?.getBoundingClientRect().top,navBottom:document.querySelector('.tb-bottom-nav')?.getBoundingClientRect().bottom,viewportHeight:innerHeight}));
    assert.ok(layout.docWidth<=layout.width&&layout.bodyWidth<=layout.width,'no horizontal page overflow at '+viewport.width+'x'+viewport.height);
+   console.log('MAP VIEWPORT LAYOUT:',JSON.stringify(layout));
    assert.ok(layout.stageTop<layout.mapTop,'selected stage toolbar stays above the map grid at '+viewport.width+'px');
    assert.ok(layout.navBottom<=layout.viewportHeight+1,'bottom navigation stays inside the viewport at '+viewport.width+'px');
   }
