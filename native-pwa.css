@@ -357,3 +357,12 @@ html,body,#tbRpg,.tb-v2 {
 #tbRpg .tb-bag-tools button{flex:1 1 145px;min-height:42px;font-size:11px;font-weight:900}
 #tbRpg .tb-item-stats{display:flex;flex-wrap:wrap;gap:5px 10px;margin:5px 0;font-size:11px}
 #tbRpg .tb-item-stats .is-better{color:#65e99a!important}#tbRpg .tb-item-stats .is-worse{color:#ff7b83!important}#tbRpg .tb-item-stats .is-equal{color:#aab1c6!important}
+
+/* Keep the expanded attack+skill panel inside its grid row; never cover the End Turn target with the potion belt. */
+@media (max-width:768px) and (orientation:portrait){
+ #tbRpg .tb-v2:has(.tb-arena) .tb-arena{grid-template-rows:auto auto auto minmax(130px,1fr) minmax(118px,auto) minmax(220px,28dvh) minmax(36px,5dvh)!important}
+ #tbRpg .tb-v2:has(.tb-arena) .tb-panel-actions{grid-row:6!important;min-height:220px!important;overflow:visible!important}
+ #tbRpg .tb-v2:has(.tb-arena) .tb-panel-slots{grid-template-rows:repeat(2,minmax(44px,1fr))!important}
+ #tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt{grid-row:7!important;min-height:36px!important}
+ #tbRpg .tb-v2:has(.tb-arena) .tb-potion-belt button:disabled{pointer-events:none}
+}
