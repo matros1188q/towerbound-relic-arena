@@ -40,7 +40,7 @@ const {chromium}=require('playwright');
  assert.match(battleUiSource,/function safeTimeoutMs\(value,fallback=1000\)/,"all enemy turn delays pass through a numeric finite-value guard");
  assert.match(battleUiSource,/battle\.timerRemainingMs=0/,"battle countdown state is initialized and cleared as a number");
  assert.match(battleUiSource,/function recoverPlayerTurn\(error\)[\s\S]*?battle\.busy=false;battle\.isPlayerTurn=true/,"enemy-turn errors always restore player input");
- assert.match(battleUiSource,/function endPlayerTurn\(\)[\s\S]*?catch\(error\)\{recoverPlayerTurn\(error\)\}/,"player end-turn errors also recover instead of locking the UI");
+ assert.match(battleUiSource,/function endPlayerTurn\(\)[\s\S]*?catch\(error\)\{recoverPlayerTurn\(error\);\}/,"player end-turn errors also recover instead of locking the UI");
  assert.match(battleUiSource,/Number\.isFinite\(remaining\)/,"pause/resume validates the optional telegraph countdown before scheduling");
  assert.match(battleUiSource,/scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,"enemy turns retain the 500ms sequential handoff");
  assert.match(battleUiSource,/function advanceToPlayerTurn\(\)[\s\S]*?battle\.busy=false/,"player turn handoff always clears battle.busy");
