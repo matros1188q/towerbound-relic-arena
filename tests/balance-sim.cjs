@@ -15,7 +15,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
  const sc=Number(skill?.resource_cost??skill?.effect.resource_cost??cls.resource_cost_per_skill??18),sm=Number(skill?.damage_multiplier??skill?.effect.damage_multiplier??1.5),sd=({short:2,medium:4,long:6})[skill?.cooldown_tier]||2;
  const ult=balance.skills.ultimates?.[c.classId],counter=balance.skills.counter_abilities?.[c.classId],costs=balance.resources.class_costs?.[c.classId]||{};
  const uc=Number(costs.ultimate??ult?.resource_cost??balance.resources.action_costs.ultimate),cc=Number(costs.counter??counter?.resource_cost??balance.resources.action_costs.counter);
- const rngFn=opt.random||Math.random;let hp=Math.min(maxHp,opt.playerHp??maxHp),res=Math.min(c.resourceMax,opt.resource??Math.round(c.resourceMax*balance.resources.starting_fraction)),ehp=es.hp,turn=0,used=false,skillReady=1,ultReady=1,counterReady=1,enrage=0;
+ const rngFn=opt.random||Math.random;let hp=Math.min(maxHp,opt.playerHp??maxHp),res=Math.min(c.resourceMax,opt.resource??Math.round(c.resourceMax*balance.resources.starting_fraction)),ehp=es.hp,turn=0,used=false,skillReady=1,ultReady=1,counterReady=1;
  const basic=engine.basicAttackStats(id),v=balance.combat.player_damage.attack_variance||0;
  while(hp>0&&ehp>0&&turn<200){
   turn++;
@@ -35,7 +35,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
   hp=Math.min(maxHp,hp+Math.floor(dealt*vamp));if(ehp<=0)break;
   let incoming=Math.max(0,Math.round(es.damage*engine.mitigationMultiplier(stats.defense,stage)*(1-(stats.damageReduction||0))));
   if(counter&&res>=cc&&turn>=counterReady){incoming=engine.resolveReaction('strong_hit',counter.id,c.classId,incoming).damage;res-=cc;counterReady=turn+(counter.cooldown_turns||2);}
-  hp-=incoming;if(enemy.type==='boss'&&ehp<=es.hp*.1&&++enrage>=2)hp=0;
+  hp-=incoming;
  }
  return{win:ehp<=0&&hp>0,turns:turn,hp:Math.max(0,hp),maxHp,hpPct:Math.max(0,hp)/maxHp*100,usedPotion:used,resource:res};
 }
