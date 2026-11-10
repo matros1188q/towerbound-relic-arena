@@ -37,7 +37,7 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=15'),'cloud module cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=16'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
 assert.ok(html.includes('./rpg-rework-ui.js?v=31'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=17'),'mobile profile stylesheet cache is refreshed');
@@ -146,7 +146,7 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(progression.includes("if(bar&&c&&!bar.querySelector('[data-tbp-open]'))")&&progression.includes("b.className='tb-progression-button'"),'progression control is only added when a character exists');
 assert.ok(css.includes('white-space:nowrap')&&css.includes('tb-progression-button::before')&&css.includes('@media(max-width:400px)'),'iPhone header and progression control stay on one line and collapse to an icon');
-assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=15')&&html.includes('rpg-rework-ui.css.js?v=17'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=17'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
