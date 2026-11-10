@@ -291,6 +291,7 @@ const {chromium}=require('playwright');
   assert.ok(hpAfterEnemyPhase<hpBeforeEnemyPhase,'at least one enemy attacks before the player receives the next turn');
   assert.match(await page.locator('.tb-turn-guidance').innerText(),/Твой ход/,'control returns to the player after enemy phase');
   assert.equal(await page.locator('[data-action="end-turn"]').isEnabled(),true,'end-turn button reactivates for the player');
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.resource=c.resourceMax;window.saveTowerboundRework();});
   const skillHpBefore=await page.locator('.tb-target-card.selected .tb-target-hp i').getAttribute('style');
   assert.equal(await page.locator('[data-panel-skill]').first().isEnabled(),true,'base Assassin skill is enabled at level 1');
   await page.locator('[data-panel-skill]').first().click();
