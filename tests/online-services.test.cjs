@@ -25,10 +25,10 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=7'),'cloud module cache is refreshed');
-assert.ok(html.includes('./rpg-rework-v2.js?v=15'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=25'),'profile and inventory UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=13'),'mobile profile stylesheet cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=8'),'cloud module cache is refreshed');
+assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
+assert.ok(html.includes('./rpg-rework-ui.js?v=26'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=14'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
 assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is awaitable and reports failure');
@@ -49,4 +49,18 @@ assert.ok(gems.stone_types.length>0&&gems.stone_types.every(stone=>typeof stone.
 assert.ok(ui.includes('evasion')&&ui.includes('toFixed(1)'),'equipment comparison formats crit and evasion as percentages');
 assert.ok(css.includes('overflow-x:auto')&&css.includes('word-break:normal')&&css.includes('-webkit-overflow-scrolling:touch'),'mobile profile wrapping and swipe tabs are configured');
 assert.ok(online.includes('function publishCurrent()'),'online publishing remains available');
+
+assert.ok(cloud.includes("return login+'@towerbound.game'")&&cloud.includes("signInWithPassword")&&cloud.includes("signUp"),'username/password Supabase authentication is wired');
+assert.ok(cloud.includes("const rememberKey='tb-remember-me'")&&cloud.includes("if(active&&!remembered())"),'remember-me session gate is enforced at startup');
+assert.ok(engine.includes('function insertGem')&&engine.includes('openSockets<=installedSource.length'),'gem insertion checks available sockets');
+assert.ok(engine.includes('const stone=character.bag.find(entry=>entry&&entry.id===stoneId&&entry.type==="enhancement_stone")'),'gem insertion requires a stone in inventory');
+assert.ok(engine.includes('item.installedGems.push(gem)')&&engine.includes('character.bag=character.bag.filter(entry=>entry.id!==stoneId)'),'gem insertion installs the gem and consumes its inventory item');
+assert.ok(engine.includes('function socketStone(characterId,itemId,stoneId){return insertGem(characterId,itemId,stoneId);}'),'legacy socket API remains compatible');
+assert.ok(ui.includes('engine.insertGem(c.id,item.id,stone.id)'),'equipment UI calls the hardened gem insertion API');
+assert.ok(ui.includes('t.description.trim()')&&ui.includes('tb-stone-description'),'stone descriptions are displayed from the catalog in the inventory');
+assert.ok(ui.includes('function installedGemsOf')&&ui.includes('data-extract-gem'),'installed gems render and can be extracted');
+assert.ok(ui.includes('rarityPrefixes')&&ui.includes('itemDisplayName(item)'),'equipment rarity prefixes are not repeated in item names');
+assert.ok(ui.includes('critical_chance')&&ui.includes('evasion_chance'),'percentage formatting covers normalized crit and evasion keys');
+assert.ok(css.includes('flex:1 1 0')&&css.includes('hyphens:none')&&css.includes('touch-action:pan-x'),'iPhone item cards, profile names and swipe tabs have explicit mobile rules');
+
 console.log('Online services static checks: OK');
