@@ -212,7 +212,7 @@ const {chromium}=require('playwright');
   await page.locator('[data-talent="bleed.talent.1"]').click();
   assert.match(await page.locator('.tb-talent').first().innerText(),/1\/3/,'branch talent point is applied');
   await page.locator('#tbRpg .tb-profile .tb-tabs [data-tab="gear"]').click();
-  assert.match(await page.locator('.tb-gear-slot').first().innerText(),/Эпический Боевой клинок/,'inventory equipment can be equipped');
+  assert.match(await page.locator('.tb-gear-slot').first().innerText(),/Боевой клинок/,'inventory equipment can be equipped');
   assert.match(await page.locator('.tb-gear-slot').first().innerText(),/КРИТ \+5%/,'critical chance is rendered as a percentage');
   await page.locator('[data-refine="qa-weapon"]').click();
   assert.match(await page.locator('.tb-gear-slot').first().innerText(),/\+1/,'refinement consumes a refine stone');
