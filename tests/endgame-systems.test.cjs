@@ -33,6 +33,7 @@ function has(text, needle, label) {
   ['function helpGuild()', 'guild help action'],
   ['function awardGuildChest()', 'guild boss chest'],
   ['function evolveSkill(', 'skill evolution'],
+  ['baseSkills=[...baseSkills,...catalog]', 'base class skills are included in the evolution catalog'],
   ['c.level<50', 'level 50 evolution gate'],
   ['c.ext.evolvedSkills', 'evolution saved to character ext'],
   ['data-eg="back-map"', 'back to map control'],
