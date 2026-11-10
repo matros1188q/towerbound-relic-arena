@@ -99,6 +99,15 @@ for(const [manifestPath,expected] of [
   assert.ok(relative&&fs.existsSync(path.join(root,relative)),manifestPath+' references an existing asset: '+relative);
  }
 }
+const dedicatedClassPortraits=['dragonkin','elemental','duelist','shaman'];
+for(const id of dedicatedClassPortraits){
+ const image=path.join(root,'assets/characters/heroes',id+'.jpg');
+ assert.ok(fs.existsSync(image),id+' has a dedicated portrait asset');
+ assert.ok(fs.statSync(image).size>1024,id+' portrait is not an empty placeholder');
+}
+const crimsonRegent=path.join(root,'assets/characters/bosses/crimson-regent.jpg');
+assert.ok(fs.existsSync(crimsonRegent),'Crimson Regent has a dedicated boss portrait');
+assert.ok(fs.statSync(crimsonRegent).size>1024,'Crimson Regent portrait is not an empty placeholder');
 const relicDir=path.join(root,'assets/relics');
 const relics=fs.readdirSync(relicDir).filter(name=>name.endsWith('.png')&&!name.startsWith('_'));
 assert.ok(relics.length>=30,'relic image collection contains at least thirty unique PNG assets');
@@ -108,4 +117,4 @@ assert.ok(achievements.length>=30,'achievement catalogue is populated');
 assert.equal(read('configs/balance/tutorial.json').steps_data.length,6,'six tutorial steps exist');
 assert.equal(read('configs/balance/death.json').lives_per_run,1,'base death config is consistent; difficulty overrides are tested separately');
 assert.deepEqual(read('configs/balance/equipment.json').set_bonus_thresholds,[2,3,5]);
-console.log('FULL GAME AUDIT PASS: 40 balance configs; 7 classes; 21 specializations; 210 talents/ranks; 420 skill records + 420 individual files; 1,750 stage plans; 175 boss plans; save/restore for every class; 54 character/UI art assets checked; relic assets; achievements, tutorial, death and equipment config.');
+console.log('FULL GAME AUDIT PASS: 40 balance configs; 7 classes; 21 specializations; 210 talents/ranks; 420 skill records + 420 individual files; 1,750 stage plans; 175 boss plans; save/restore for every class; 59 character/UI art assets checked; relic assets; achievements, tutorial, death and equipment config.');
