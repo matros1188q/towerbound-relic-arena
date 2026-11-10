@@ -25,7 +25,7 @@ assert.deepEqual([elite.hp,elite.damage],[550,350]);
 assert.deepEqual([boss.hp,boss.damage],[1075,325]);
 assert.equal(balance.mobs.roles.healer.heal_fraction,.2);
 assert.equal(balance.mobs.roles.healer.every_n_turns,2);
-assert.equal(balance.mobs.roles.poison.damage_fraction_per_turn,.05);
+assert.equal(balance.mobs.roles.poison.damage_fraction_per_turn,.01);
 assert.equal(balance.mobs.roles.tank.shield_fraction,.3);
 assert.equal(balance.mobs.roles.tank.every_n_turns,3);
 assert.equal(balance.bosses.phases.length,4);
