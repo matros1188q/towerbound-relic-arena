@@ -196,7 +196,7 @@ const {chromium}=require('playwright');
   await page.waitForSelector('[data-action="equip-best"]');
   assert.ok(await page.locator('.tb-bag-item').filter({hasText:'Зелье исцеления'}).count()>0,'healing potions display their Russian name');
   assert.ok(await page.locator('.tb-bag-item').filter({hasText:'Материал для крафта'}).count()>0,'craft materials display their Russian name');
-  const bladeText=await page.locator('.tb-bag-item').filter({hasText:'Эпический Боевой клинок'}).innerText();
+  const bladeText=await page.locator('.tb-bag-item').filter({hasText:'Боевой клинок'}).innerText();
   assert.doesNotMatch(bladeText,/Эпическая/,'equipment rarity is not repeated beneath its full item name');
   const matsBefore=await page.evaluate(()=>window.TowerboundRework.state.characters[0].bag.find(x=>x.type==="craft_material")?.quantity||0);
   await page.locator('[data-action="salvage-gray"]').click();
