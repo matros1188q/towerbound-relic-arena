@@ -171,3 +171,17 @@ html,body{width:100%;height:100%;overflow:hidden!important;overscroll-behavior:n
 .tb-bottom-nav button.active{color:#ffe29a;border-color:#d9bd7b44;background:linear-gradient(145deg,#3c3244,#1d2034);box-shadow:inset 0 1px #fff2,0 0 15px #d9bd7b18}
 .tb-bottom-nav button:active{transform:scale(.97)}
 @media(min-width:800px){.tb-bottom-nav{left:50%;right:auto;width:min(100%,760px);transform:translateX(-50%);border:1px solid rgba(220,190,125,.28);border-bottom:0;border-radius:16px 16px 0 0}}
+
+/* UI/UX phase 1: the bottom tab bar is the only global navigation surface. */
+.tb-bottom-nav{z-index:12000!important;pointer-events:auto!important;isolation:isolate}
+.tb-bottom-nav button{position:relative;z-index:1;pointer-events:auto!important;cursor:pointer;-webkit-user-select:none;user-select:none}
+.tb-bottom-nav button:focus-visible{outline:2px solid #f2d38b;outline-offset:2px}
+.tb-v2 .tb-map-actions{display:none!important}
+.tb-v2 .tb-profile-account>.tb-header,.tb-v2 .tb-profile-account .tb-system-top>button{display:none!important}
+.tb-v2 .tb-profile-account .tb-systems{padding-top:0}
+.tb-v2 .tb-profile-account .tb-system-card{scroll-margin-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+.tb-v2 .tb-profile-account .tb-system-card>button[data-action=leaderboard]{display:none!important}
+.tb-v2 .tb-tabs{display:flex;gap:6px;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tb-v2 .tb-tabs::-webkit-scrollbar{display:none}
+.tb-v2 .tb-tabs button{flex:0 0 auto;min-height:40px;white-space:nowrap}
+.tb-v2 .tb-profile-content{min-width:0;overflow-wrap:anywhere}

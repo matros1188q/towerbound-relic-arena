@@ -148,3 +148,11 @@ assert.equal(read('configs/balance/tutorial.json').steps_data.length,6,'six tuto
 assert.equal(read('configs/balance/death.json').lives_per_run,1,'base death config is consistent; difficulty overrides are tested separately');
 assert.deepEqual(read('configs/balance/equipment.json').set_bonus_thresholds,[2,3,5]);
 console.log('FULL GAME AUDIT PASS: 40 balance configs; 7 classes; 21 specializations; 210 talents/ranks; 420 skill records + 420 individual files; 1,750 stage plans; 175 boss plans; save/restore for every class; 59 character/UI art assets checked; relic assets; achievements, tutorial, death and equipment config.');
+
+// UI/UX navigation release checks.
+assert.ok(uiSource.includes('["account","Аккаунт"]')&&uiSource.includes('["speedrun","Спидран"]'),'profile contains account and speedrun sub-tabs');
+assert.ok(uiSource.includes('profileTab==="account"')&&uiSource.includes('profileTab==="speedrun"'),'account and speedrun profile panels render');
+assert.ok(uiSource.includes('Ежедневный сундук'),'daily chest is available from the character/account area');
+assert.ok(!uiSource.includes('<div class="tb-map-actions">'),'map no longer renders duplicate global navigation buttons');
+assert.ok(!uiSource.includes('ОТКРЫТЬ ГЛОБАЛЬНЫЙ ТОП-100'),'global leaderboard navigation is not duplicated inside account');
+assert.ok(css.includes('.tb-bottom-nav{z-index:12000!important;pointer-events:auto!important'),'bottom tab bar has an explicit interactive stacking layer');
