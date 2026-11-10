@@ -460,3 +460,12 @@ Additional implementation / verification commits after the initial feature block
 - `2c1cca81e3f25bd85cb79dafab4be44a8dc3ff69`, `9eab3965b9ecd9b58bfea9a7b237cf5a267162db`, and `ee8b8bbe7c1877d172f05b0c01421735e220722b` — mobile battle control sizing and stylesheet correction.
 - `f2791fd5aa3f09f9d8103b335e3c065cb1cf3f40` — cache-bust the engine, combat UI and mobile stylesheet.
 - `3df3da84a2627c7777bcc0ae8175401a40a2090d`, `a09768097b9f6c7e48d27ec2c6dd15da8fd083d5`, `e994ad59f7e5f8f05afe44e37c1fbae39db381bc`, and `3b9e3201ec523f74b1b7cc85595a1d5f49e010a3` — browser coverage for Equip Best, bulk gray salvage, basic attack turn flow and refreshed asset cache keys.
+
+
+## 2026-11-10 — Battle timer NaN recovery
+
+- Root cause: the pause/resume path assumed `battle.telegraph.until` always existed. Player-turn telegraphs are created without an `until` timestamp, so subtracting `Date.now()` from `undefined` produced `NaN`, which was passed into `setTimeout`. Browsers coerce a NaN timeout to an immediate callback; countdown consumers could also render an invalid seconds value. A non-finite enemy speed modifier could independently propagate into `attackIntervalMs`.
+- Added finite, bounded millisecond normalization for enemy-turn timers and numeric timer state at battle start. Pause/resume now treats a missing or invalid telegraph deadline as a zero-length optional countdown instead of calculating with `undefined`.
+- Added guarded recovery around both enemy-turn processing and the player's end-turn action. Any exception clears the pending timer, invalidates the old queue token, resets `battle.busy`, restores `battle.isPlayerTurn`, and returns the UI to an enabled player turn.
+- Normalized enemy attack interval and speed modifier inputs to finite positive numbers with a 1-second fallback.
+- Added browser regression checks for absence of `NaN сек`, finite enemy attack interval, and numeric timer recovery.
