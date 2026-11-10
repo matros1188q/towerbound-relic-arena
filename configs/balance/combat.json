@@ -14,7 +14,7 @@
     "normal_base": 2,
     "normal_per_stage": 1,
     "elite_multiplier": 7,
-    "boss_multiplier": 8
+    "boss_multiplier": 6.5
   },
   "player_damage": {
     "attack_multiplier": 0.5,

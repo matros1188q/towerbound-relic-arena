@@ -101,11 +101,11 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  if(balance.combat.turn_based?.enabled){
   assert.deepEqual([normal.hp,normal.damage],[250,50]);
   assert.deepEqual([elite.hp,elite.damage],[550,350]);
-  assert.deepEqual([boss.hp,boss.damage],[1075,300]);
+  assert.deepEqual([boss.hp,boss.damage],[1075,325]);
   assert.equal(normal.attackInterval,1);
   assert.equal(boss.attackIntervalMs,1000);
   const newbieBoss=e.getEnemyStats(c.id,10,{type:'boss'});
-  assert.equal(newbieBoss.damage,192,'map10 newbie boss keeps the configured damage exception');
+  assert.equal(newbieBoss.damage,130,'map10 newbie boss keeps the configured damage exception');
  }else{
   assert.deepEqual([normal.hp,normal.damage],[550,150]);
   assert.deepEqual([elite.hp,elite.damage],[1650,225]);
@@ -118,16 +118,16 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(balance.mobs.elite.hp_multiplier,2.2);
  assert.equal(balance.mobs.elite.damage_multiplier,7);
  assert.equal(balance.bosses.hp_multiplier,4.3);
- assert.equal(balance.bosses.damage_multiplier,8);
+ assert.equal(balance.bosses.damage_multiplier,6.5);
  assert.equal(balance.bosses.attack_interval_seconds,balance.combat.turn_based?.enabled?1:2.5);
  assert.equal(balance.combat.enemy_hp.elite_multiplier,2.2);
  assert.equal(balance.combat.enemy_hp.boss_multiplier,4.3);
  assert.equal(balance.combat.enemy_damage.elite_multiplier,7);
- assert.equal(balance.combat.enemy_damage.boss_multiplier,8);
+ assert.equal(balance.combat.enemy_damage.boss_multiplier,6.5);
 }
 if(balance.combat.turn_based?.enabled){
  assert.equal(balance.combat.turn_based.player_turn_actions.potions,1,'turn-based mode permits one potion per player turn');
- assert.equal(balance.healing.potion_heal_fraction,0.4);
+ assert.equal(balance.healing.potion_heal_fraction,0.25);
 }else{
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=16;equipSix(live);
