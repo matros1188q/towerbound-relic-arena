@@ -7,11 +7,12 @@ const ui=fs.readFileSync('rpg-rework-ui.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
 const cloud=fs.readFileSync('towerbound-cloud.js','utf8');
 const css=fs.readFileSync('rpg-rework-ui.css.js','utf8');
+const progression=fs.readFileSync('progression-24.js','utf8');
 const engine=fs.readFileSync('rpg-rework-v2.js','utf8');
 const serviceWorker=fs.readFileSync('service-worker.js','utf8');
 const pwa=fs.readFileSync('juice-pwa.js','utf8');
 const gems=JSON.parse(fs.readFileSync('configs/balance/equipment.json','utf8'));
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v24'"),'PWA cache version must advance on release');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v25'"),'PWA cache version must advance on release');
 assert.ok(serviceWorker.includes('self.skipWaiting()'),'new service worker must skip the waiting phase');
 assert.ok(serviceWorker.includes('self.clients.claim()'),'new service worker must claim open pages');
 assert.ok(serviceWorker.includes("request.mode === 'navigate'")&&serviceWorker.includes("url.pathname.endsWith('/index.html')"),'HTML documents must use the network-first branch');
@@ -136,6 +137,11 @@ assert.ok(characterGate.includes('СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖ
 assert.ok(ui.includes('Сначала войди в игровой аккаунт'),'new-character action is guarded by Supabase session');
 assert.ok(ui.includes('towerbound-auth-change')&&ui.includes('cloud.signIn(login,password,remember)'),'successful auth refreshes the character screen');
 assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new Event('towerbound-auth-change')"),'Supabase sign-in awaits cloud restore and emits auth state changes');
+
+assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
+assert.ok(progression.includes("if(bar&&c&&!bar.querySelector('[data-tbp-open]'))")&&progression.includes("b.className='tb-progression-button'"),'progression control is only added when a character exists');
+assert.ok(css.includes('white-space:nowrap')&&css.includes('tb-progression-button::before')&&css.includes('@media(max-width:400px)'),'iPhone header and progression control stay on one line and collapse to an icon');
+assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=13')&&html.includes('rpg-rework-ui.css.js?v=17'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:clean+\'@towerbound.game\''),'sign-in uses the virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
