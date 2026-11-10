@@ -120,6 +120,23 @@ for(const label of ['Карта','Персонаж','Магазин','Рейти
 const cloudSource=fs.readFileSync(path.join(root,'towerbound-cloud.js'),'utf8');
 assert.ok(cloudSource.includes('emailRedirectTo:window.location.origin+window.location.pathname'),'email confirmation redirect follows the current deployment URL');
 assert.ok(cloudSource.includes('redirectTo:window.location.origin+window.location.pathname'),'OAuth redirect follows the current deployment URL');
+// Native PWA phase-3 release checks: background music, independent SFX switch and combat recovery controls.
+const pageSource=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const nativeCss=fs.readFileSync(path.join(root,'native-pwa.css'),'utf8');
+const serviceWorker=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
+const engineSource=fs.readFileSync(path.join(root,'rpg-rework-v2.js'),'utf8');
+assert.match(pageSource,/<meta name="viewport" content="width=device-width, initial-scale=1\\.0, viewport-fit=cover, user-scalable=no">/,'iOS viewport is configured for edge-to-edge layout');
+assert.match(pageSource,/<meta name="apple-mobile-web-app-capable" content="yes">/,'iOS standalone mode is enabled');
+assert.match(pageSource,/<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">/,'iOS status bar style is configured');
+assert.ok(nativeCss.includes('height:100dvh')&&nativeCss.includes('overflow:hidden')&&nativeCss.includes('overscroll-behavior:none'),'native app shell locks document scrolling at dynamic viewport height');
+assert.ok(nativeCss.includes('padding-top:env(safe-area-inset-top')&&nativeCss.includes('padding-bottom:env(safe-area-inset-bottom'),'native app shell respects iOS safe areas');
+assert.ok(nativeCss.includes('.tb-bottom-nav{position:fixed')&&nativeCss.includes('bottom:0')&&nativeCss.includes('display:flex'),'bottom tab bar is fixed above the home-indicator safe area');
+assert.ok(serviceWorker.includes("const CACHE='towerbound-v20'"),'PWA shell cache was invalidated for the native release');
+assert.ok(uiSource.includes('function syncMusic()')&&uiSource.includes('function unlockAudioAndMusic()'),'Web Audio ambient music and iOS gesture unlock are implemented');
+assert.ok(uiSource.includes('prefs.music_enabled!==false')&&uiSource.includes('screen==="battle"?[73.42,110]:[55,82.41]'),'music switches between map ambience and battle ambience');
+assert.ok(uiSource.includes('data-setting="music_enabled"')&&uiSource.includes('data-setting="sound_enabled"'),'music and sound effects have independent settings');
+assert.ok(uiSource.includes('case "reset-current-battle"')&&uiSource.includes('function ensureBottomNav()'),'recovery action and tab navigation are wired into the app');
+assert.ok(engineSource.includes('function sanitizeActiveStage')&&engineSource.includes('selectTarget'),'saved dead-target states are sanitized before resuming combat');
 const relicDir=path.join(root,'assets/relics');
 const relics=fs.readdirSync(relicDir).filter(name=>name.endsWith('.png')&&!name.startsWith('_'));
 assert.ok(relics.length>=30,'relic image collection contains at least thirty unique PNG assets');
