@@ -6,6 +6,7 @@ const online=fs.readFileSync('towerbound-online.js','utf8');
 const ui=fs.readFileSync('rpg-rework-ui.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
 const cloud=fs.readFileSync('towerbound-cloud.js','utf8');
+const css=fs.readFileSync('rpg-rework-ui.css.js','utf8');
 for(const table of ['leaderboard','pvp_ghosts','pvp_ratings'])assert.ok(sql.includes('create table if not exists public.'+table),'missing '+table);
 assert.ok(sql.includes('auth.uid() = user_id'),'RLS owner checks missing');
 assert.ok(sql.includes('grant select on public.leaderboard to anon, authenticated'),'public leaderboard read grant missing');
@@ -23,8 +24,8 @@ assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired')
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=5'),'cloud module cache is refreshed');
-assert.ok(html.includes('./rpg-rework-v2.js?v=13'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=22'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-v2.js?v=14'),'engine cache is refreshed for gem socket support');
+assert.ok(html.includes('./rpg-rework-ui.js?v=23'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=12'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
