@@ -83,7 +83,13 @@
   const role=target?.role||"normal";
   return CHARACTER_ART_ROOT+(rolePortraits[role]||rolePortraits.normal);
  }
- function save(){try{localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));window.TowerboundCloud?.queueSave?.();window.TowerboundOnline?.queuePublish();}catch(e){notify("Не удалось сохранить: "+e.message);}}
+ function save(){try{
+  const c=live();
+  if(c?.run?.stage&&battle){
+   c.run.stage.uiBattleSnapshot={enemies:JSON.parse(JSON.stringify(battle.enemies||[])),targetIndex:battle.targetIndex,round:battle.round||1,comboStacks:battle.comboStacks||0,skillCooldowns:JSON.parse(JSON.stringify(battle.skillCooldowns||{})),comboProgress:JSON.parse(JSON.stringify(battle.comboProgress||{}))};
+  }
+  localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));window.TowerboundCloud?.queueSave?.();window.TowerboundOnline?.queuePublish();
+ }catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
  function header(title,sub){return '<header class="tb-header"><div class="tb-brand"><span class="tb-mark">T</span><div><strong>TOWERBOUND</strong><small>'+esc(title||"ХРОНИКИ БАШНИ")+'</small></div></div><div class="tb-header-side">'+(live()?'<button class="tb-mini-avatar" id="profileOpen" data-action="profile">'+ '<img src="'+portrait(live().classId)+'" alt="'+esc(clsName(live()))+'"></button>':'')+'<span class="tb-subline">'+esc(sub||"")+'</span></div></header>';}
@@ -380,7 +386,7 @@
   }).join("");
   const paragon=c.paragon||{level:0,xp:0,stats:{}};
   const paragonRows=balance.paragon.stats.map(stat=>'<div class="tb-system-row"><div><b>'+esc(stat)+'</b><small>Ранг '+(paragon.stats?.[stat]||0)+'</small></div><button data-paragon-stat="'+stat+'" '+(c.level<balance.paragon.unlock_level||Object.values(paragon.stats||{}).reduce((a,b)=>a+b,0)>=paragon.level?'disabled':'')+'>+1</button></div>').join("");
-  const settings='<div class="tb-system-settings"><label>Звук: Вкл/Выкл <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><button type="button" class="tb-secondary" data-action="toggle-mute">'+(prefs.sound_enabled!==false?'ЗВУК ВКЛ · MUTE':'ЗВУК ВЫКЛ · ВКЛ')+'</button><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Авто-разбор обычных и редких предметов ниже ilvl N <input type="checkbox" data-setting="autoSalvage" '+(prefs.autoSalvage?'checked':'')+'></label><label>Порог ilvl для авто-разбора <input type="number" min="1" max="120" data-setting="autoSalvageBelow" value="'+(prefs.autoSalvageBelow||40)+'"></label><label>Чистый экран · скрыть цифры урона и второстепенные иконки <input type="checkbox" data-setting="clean_ui" '+(prefs.clean_ui?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Easy</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Normal</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Hardcore</option></select></label></div><div class="tb-system-actions"><button type="button" data-action="cloud-account">ОБЛАЧНЫЙ АККАУНТ</button><button type="button" data-action="cloud-sync">СИНХРОНИЗИРОВАТЬ</button></div>';
+  const settings='<div class="tb-system-settings"><label>Звук: Вкл/Выкл <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><button type="button" class="tb-secondary" data-action="toggle-mute">'+(prefs.sound_enabled!==false?'ЗВУК ВКЛ · MUTE':'ЗВУК ВЫКЛ · ВКЛ')+'</button><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Авто-разбор обычных и редких предметов ниже ilvl N <input type="checkbox" data-setting="autoSalvage" '+(prefs.autoSalvage?'checked':'')+'></label><label>Порог ilvl для авто-разбора <input type="number" min="1" max="120" data-setting="autoSalvageBelow" value="'+(prefs.autoSalvageBelow||40)+'"></label><label>Чистый экран · скрыть цифры урона и второстепенные иконки <input type="checkbox" data-setting="clean_ui" '+(prefs.clean_ui?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Easy</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Normal</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Hardcore</option></select></label></div>'+(c.run.stage?'<div class="tb-system-actions"><button type="button" data-action="discard-battle">СБРОСИТЬ ТЕКУЩИЙ БОЙ · К КАРТЕ</button></div>':'')+'<div class="tb-system-actions"><button type="button" data-action="cloud-account">ОБЛАЧНЫЙ АККАУНТ</button><button type="button" data-action="cloud-sync">СИНХРОНИЗИРОВАТЬ</button></div>';
   const pending=account.pvpDaily?.pending;
   const weekly=engine.weeklyLeaderboard();
   const activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier;
@@ -419,18 +425,28 @@
  }
  function currentEnemyConfig(enemy,stage){return engine.getEnemyStats(live().id,stage,enemy).hp;}
  function loadBattleEnemy(index){
-  const c=live(),stage=c.run.stage;
+  const c=live(),stage=c.run.stage,snapshot=stage.uiBattleSnapshot;
   if(!battle.enemies){
-   battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;return{...mob,index:i,id:"enemy-"+i,hp,maxHp:hp,alive:true,attackIntervalMs:stats.attackIntervalMs,shield:mob.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,nextHealAt:0,nextPoisonAt:0,slowedUntil:0,pendingAttack:false,turnsTaken:0,speed:mob.speed||1};});
-   const healer=battle.enemies.find(enemy=>enemy.role==="healer"&&enemy.alive);index=healer?healer.index:(stage.targetIndex??0);
+   const savedEnemies=Array.isArray(snapshot?.enemies)?snapshot.enemies:[];
+   const killed=new Set(stage.killedIndices||[]);
+   battle.enemies=stage.mobs.map((mob,i)=>{
+    const stats=engine.getEnemyStats(c.id,battle.stage,mob),saved=savedEnemies.find(enemy=>enemy&&enemy.index===i);
+    const maxHp=Math.max(1,Number(saved?.maxHp)||stats.hp),hp=Math.max(0,Math.min(maxHp,Number.isFinite(Number(saved?.hp))?Number(saved.hp):maxHp));
+    const baseShield=mob.mechanic==="shield"?Math.round(maxHp*balance.elite_mechanics.shield.absorb_fraction):0;
+    return{...mob,...(saved||{}),index:i,id:"enemy-"+i,maxHp,hp,alive:!killed.has(i)&&saved?.alive!==false&&hp>0,dead:killed.has(i)||saved?.dead===true||hp<=0,attackIntervalMs:saved?.attackIntervalMs||stats.attackIntervalMs,shield:saved?.shield??baseShield,nextHealAt:saved?.nextHealAt||0,nextPoisonAt:saved?.nextPoisonAt||0,slowedUntil:saved?.slowedUntil||0,pendingAttack:!!saved?.pendingAttack,turnsTaken:saved?.turnsTaken||0,speed:saved?.speed||mob.speed||1};
+   });
+   const healer=battle.enemies.find(enemy=>enemy.role==="healer"&&enemy.alive);index=healer?healer.index:(snapshot?.targetIndex??stage.targetIndex??stage.enemyIndex??0);
   }
   if(index===undefined||index===null||!battle.enemies[index]?.alive)index=battle.enemies.find(enemy=>enemy.alive)?.index;
-  if(index===undefined)return;
-  engine.selectTarget(c.id,index);battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);
+  if(index===undefined)return false;
+  const selected=engine.selectTarget(c.id,index);
+  if(!selected){index=battle.enemies.find(enemy=>enemy.alive)?.index;if(index===undefined)return false;engine.selectTarget(c.id,index);}
+  battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);
   battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;if(c.heroic&&!battle.enemy.mutation&&battle.enemy.type!=="boss")battle.enemy.mutation=Math.random()<.5?"vampirism":"thorns";
   battle.counterAction=null;battle.pendingKill=false;battle.enemyStunned=false;battle.dot=null;battle.hot=null;battle.parryChance=0;battle.nextDamageShield=0;battle.teleportUsed=false;
   battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;
   battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase():0;
+  return true;
  }
  function battleScreen(){
   const c=live(),enemy=battle.enemy,hp=engine.maxHp(c),heroPct=Math.max(0,Math.min(100,c.run.playerHp/hp*100)),enemyPct=Math.max(0,Math.min(100,battle.enemyHp/Math.max(1,battle.enemyMax)*100));
@@ -468,7 +484,7 @@
    if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
    battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
-   loadBattleEnemy();syncInitiative();showPlayerTurn();screen="battle";save();render();
+   const savedSnapshot=plan.uiBattleSnapshot;if(savedSnapshot){battle.round=Math.max(1,Number(savedSnapshot.round)||1);battle.skillCooldowns={...(savedSnapshot.skillCooldowns||{})};battle.comboStacks=savedSnapshot.comboStacks||0;battle.comboProgress={...(savedSnapshot.comboProgress||{})};}if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}syncInitiative();showPlayerTurn();screen="battle";save();render();
   }catch(error){notify(error.message);}
  }
  function finishCurrentEnemy(){
@@ -775,6 +791,7 @@
    case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
    case "characters":screen="characters";render();break;
    case "map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;screen="map";battle=null;render();save();break;
+   case "discard-battle":{const c=live(),stage=c.run.stage?.stage||c.progress.currentStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;c.run.stage=null;battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
    case "profile":profileTab="stats";screen="profile";render();break;
    case "profile-gear":profileTab="gear";screen="profile";render();break;
    case "toggle-mute":engine.saveSettings({sound_enabled:settings().sound_enabled===false});save();render();notify(settings().sound_enabled===false?"Звук выключен":"Звук включён");break;
@@ -855,7 +872,16 @@
    if(!value)return;
    engine=value;balance=engine.balance;
    try{const response=await fetch("./configs/skills/catalog.json?v=3");if(!response.ok)throw new Error("HTTP "+response.status+" loading ./configs/skills/catalog.json");const catalog=await response.json();if(!Array.isArray(catalog))throw new Error("Skill catalog must be an array");skills=catalog;console.info("SKILL CATALOG READY:",{count:skills.length,classes:[...new Set(skills.map(skill=>skill.class_id))]});}catch(error){skills=[];console.error("Skill catalog unavailable",error);}
-   if(engine.state.characters.length){selectedId=engine.state.activeCharacterId||engine.state.characters[0].id;screen="characters";}
+   if(engine.state.characters.length){
+    selectedId=engine.state.activeCharacterId||engine.state.characters[0].id;
+    const active=engine.state.characters.find(character=>character.id===selectedId);
+    if(active?.run?.stage){
+     const repaired=engine.sanitizeActiveStage(active.id);
+     if(repaired.processed?.length||repaired.completed){save();console.info("[Towerbound] repaired saved combat state",repaired);}
+     if(repaired.completed)notify("Сохранённый бой завершён · награды начислены, возвращаемся на карту");
+    }
+    screen="characters";
+   }
    document.body.classList.toggle("tb-clean-ui",!!engine.state.account.settings?.clean_ui);
    render();
   }).catch(error=>console.error("Towerbound rework UI failed",error));
