@@ -307,7 +307,7 @@ const {chromium}=require('playwright');
    const c=window.TowerboundRework.state.characters[0];
    c.level=50;
    c.progress.highestEver=10;
-   if(!c.skillLoadout?.length)c.skillLoadout=['assassin.base.1'];
+   c.skillLoadout=['assassin.base.1'];
    window.saveTowerboundRework();
   });
   assert.equal(await page.evaluate(()=>typeof window.TowerboundEndgame?.open),'function','endgame screens expose their navigation API');
@@ -326,7 +326,7 @@ const {chromium}=require('playwright');
     if(tab==='tower')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/текущий этаж: 1/i,'Tower screen starts at floor one');
     if(tab==='guild')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/5[\s\u00a0\u202f]?000[\s\u00a0\u202f]?000/,'Guild screen renders the 5-million HP world boss');
     if(tab==='evolution'){
-     await page.waitForFunction(()=>document.querySelectorAll('#tbEndgame [data-eg="evolve"]').length>=2,{timeout:5000});
+     await page.waitForFunction(()=>document.querySelectorAll('#tbEndgame [data-eg="evolve"]').length>=2,null,{timeout:5000});
      assert.ok(await page.locator('#tbEndgame [data-eg="evolve"]').count()>=2,'level 50 evolution screen offers both skill upgrades');
      const option=await page.locator('#tbEndgame [data-eg="evolve"]').first().evaluate(el=>({skill:el.dataset.skill,choice:el.dataset.choice}));
      await page.locator('#tbEndgame [data-eg="evolve"]').first().click();
