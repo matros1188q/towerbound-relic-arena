@@ -139,7 +139,7 @@
       "icon": "🔥",
       "resource_cost": 42,
       "effect": "aoe_burst",
-      "damage_multiplier": 3.2,
+      "damage_multiplier": 3.6,
       "damage_type": "fire",
       "cooldown_turns": 3
     },
@@ -159,7 +159,7 @@
       "icon": "❄",
       "resource_cost": 42,
       "effect": "aoe_burst",
-      "damage_multiplier": 3.2,
+      "damage_multiplier": 4,
       "damage_type": "ice",
       "cooldown_turns": 3
     },
@@ -180,7 +180,7 @@
       "resource_cost": 42,
       "effect": "heal_aoe",
       "heal_fraction": 0.25,
-      "damage_multiplier": 2.8,
+      "damage_multiplier": 3.8,
       "damage_type": "dark",
       "cooldown_turns": 3
     }

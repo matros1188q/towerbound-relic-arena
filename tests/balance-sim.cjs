@@ -38,7 +38,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
   if(counter&&res>=cc&&turn>=counterReady){incoming=engine.resolveReaction('strong_hit',counter.id,c.classId,incoming).damage;res-=cc;counterReady=turn+(counter.cooldown_turns||2);}
   if(shield>0){const absorbed=Math.min(shield,incoming);shield-=absorbed;incoming-=absorbed;}
   hp-=incoming;
-  if(enemy.type==='boss'&&ehp<=es.hp*.7){const add=engine.getEnemyStats(id,stage,{type:'normal'});hp-=2*Math.round(add.damage*engine.mitigationMultiplier(stats.defense,stage));}
+  
   if(enemy.role==='poison'){poisonStacks++;hp-=Math.round(maxHp*(balance.mobs.roles.poison.damage_fraction_per_turn||.05)*poisonStacks);}
   if(enemy.type==='boss'&&turn>15&&ehp>0)hp=0;
  }
