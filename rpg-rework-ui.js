@@ -67,7 +67,7 @@
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"],["account","Аккаунт"],["speedrun","Спидран"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  function rarityClass(value){return ({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[value]||"common");}
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
@@ -312,7 +312,7 @@
   applyEnemyHit(enemy,stats.damage);
  }
  function clearPendingTurnTimer(){if(pendingTimer!==null){clearTimeout(pendingTimer);pendingTimer=null;}}
- function scheduleEnemyTurnQueue(queue,index,token,delay){clearPendingTurnTimer();pendingTimer=setTimeout(()=>{pendingTimer=null;runEnemyTurnQueue(queue,index,token);},delay);}
+ function scheduleEnemyTurnQueue(queue,index,token,delay){clearPendingTurnTimer();const safeDelay=Number(delay)||1000;pendingTimer=setTimeout(()=>{pendingTimer=null;runEnemyTurnQueue(queue,index,token);},safeDelay);}
  function advanceToPlayerTurn(){
   if(!battle)return;
   clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
@@ -321,23 +321,34 @@
  }
  function runEnemyTurnQueue(queue,index,token){
   if(!battle||screen!=="battle"||token!==battle.enemyQueueToken)return;
-  if(battle.paused){scheduleEnemyTurnQueue(queue,index,token,250);return;}
-  if(index>=queue.length){
-   battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;
-   if((battle.poisonStacks||0)>0){
-    const c=live(),tick=Math.round(engine.maxHp(c)*.05*battle.poisonStacks);
-    c.run.playerHp=Math.max(0,c.run.playerHp-tick);
-    if(c.run.playerHp<=0){endFromDamage();return;}
+  try{
+   if(battle.paused){scheduleEnemyTurnQueue(queue,index,token,250);return;}
+   if(index>=queue.length){
+    battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;
+    if((battle.poisonStacks||0)>0){
+     const c=live(),tick=Math.round(engine.maxHp(c)*.05*battle.poisonStacks);
+     c.run.playerHp=Math.max(0,c.run.playerHp-tick);
+     if(c.run.playerHp<=0){endFromDamage();return;}
+    }
+    if((battle.playerDamageBuffTurns||0)>0)battle.playerDamageBuffTurns--;
+    if((battle.enemyDamageReductionTurns||0)>0)battle.enemyDamageReductionTurns--;
+    advanceToPlayerTurn();return;
    }
-   if((battle.playerDamageBuffTurns||0)>0)battle.playerDamageBuffTurns--;
-   if((battle.enemyDamageReductionTurns||0)>0)battle.enemyDamageReductionTurns--;
-   advanceToPlayerTurn();return;
+   const enemy=queue[index];
+   if(enemy?.alive)enemyTurn(enemy);
+   if(!battle)return;
+   save();render();
+   scheduleEnemyTurnQueue(queue,index+1,token,500);
+  }catch(error){
+   console.error("Towerbound enemy turn failed; restoring player control",error);
+   if(!battle)return;
+   clearPendingTurnTimer();
+   battle.busy=false;battle.isPlayerTurn=true;
+   battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};
+   battle.telegraph=null;
+   notify("Ошибка хода противника · управление возвращено игроку");
+   try{save();render();}catch(renderError){console.error("Battle recovery render failed",renderError);}
   }
-  const enemy=queue[index];
-  if(enemy?.alive)enemyTurn(enemy);
-  if(!battle)return;
-  save();render();
-  scheduleEnemyTurnQueue(queue,index+1,token,500);
  }
  function endPlayerTurn(){
   if(!battle||battle.actor?.type!=="player"||battle.paused)return;
@@ -369,7 +380,7 @@
   let body="";
   if(profileTab==="stats"){
    const gearStats=(c.gear||[]).reduce((a,i)=>{if(i&&i.stats)Object.keys(i.stats).forEach(k=>a[k]=(a[k]||0)+i.stats[k]);return a;},{});
-   body='<div class="tb-stat-grid"><div><small>УРОВЕНЬ</small><b>'+c.level / 1+'</b></div><div><small>БОЕВАЯ МОЩЬ</small><b>'+engine.combatPower(c)+'</b></div><div><small>ЗДОРОВЬЕ</small><b>'+engine.maxHp(c)+'</b></div><div><small>АТАКА</small><b>'+combatStats.attack+'</b></div><div><small>ЗАЩИТА</small><b>'+combatStats.defense+'</b></div><div><small>КРИТ</small><b>'+Math.round(combatStats.critChance*100)+'%</b></div><div><small>РЕСУРС</small><b>'+esc(def.resource)+' '+c.resource+'/'+c.resourceMax+'</b></div><div><small>ОПЫТ</small><b>'+c.xp+'</b></div><div><small>СЕРЕБРО</small><b>'+c.silver+'</b></div></div><div class="tb-class-summary"><b>Сильные стороны</b><span>'+esc((def.strengths||[]).join(" · "))+'</span><b>Слабые стороны</b><span>'+esc((def.weaknesses||[]).join(" · "))+'</span></div><div class="tb-branch-panel"><h3>Специализация</h3>'+(c.branch?'<b>'+esc(branch?.name||c.branch)+'</b><p>'+esc(branch?.theme||"")+'</p>':'<p>Выбери ветку на 10 уровне персонажа.</p>')+'<div class="tb-branch-options">'+(def.branches||[]).map(b=>'<button data-branch="'+b.id+'" data-branch-preview="'+esc(specializationDescription(c.classId,b.id))+'" title="'+esc(specializationDescription(c.classId,b.id))+'" '+(c.level<10?"disabled":"")+' class="'+(c.branch===b.id?"active":"")+'">'+esc(b.name)+(c.branch===b.id?" ✓":"") +'</button>').join("")+'</div><p class="tb-branch-description" id="tbBranchDescription" aria-live="polite">'+(branch?esc(specializationDescription(c.classId,branch.id)):"Нажми или наведи на ветку, чтобы прочитать её механику.")+'</p><small>Первая специализация на 10 уровне бесплатна. Смена ветки стоит '+balance.classes.respec_cost+' серебра.</small></div>';
+   body='<div class="tb-stat-grid"><div><small>УРОВЕНЬ</small><b>'+c.level / 1+'</b></div><div><small>БОЕВАЯ МОЩЬ</small><b>'+engine.combatPower(c)+'</b></div><div><small>ЗДОРОВЬЕ</small><b>'+engine.maxHp(c)+'</b></div><div><small>АТАКА</small><b>'+combatStats.attack+'</b></div><div><small>ЗАЩИТА</small><b>'+combatStats.defense+'</b></div><div><small>КРИТ</small><b>'+Math.round(combatStats.critChance*100)+'%</b></div><div><small>РЕСУРС</small><b>'+esc(def.resource)+' '+c.resource+'/'+c.resourceMax+'</b></div><div><small>ОПЫТ</small><b>'+c.xp+'</b></div><div><small>СЕРЕБРО</small><b>'+c.silver+'</b></div></div><div class="tb-class-summary"><b>Сильные стороны</b><span>'+esc((def.strengths||[]).join(" · "))+'</span><b>Слабые стороны</b><span>'+esc((def.weaknesses||[]).join(" · "))+'</span></div><div class="tb-branch-panel"><h3>Специализация</h3>'+(c.branch?'<b>'+esc(branch?.name||c.branch)+'</b><p>'+esc(branch?.theme||"")+'</p>':'<p>Выбери ветку на 10 уровне персонажа.</p>')+'<div class="tb-branch-options">'+(def.branches||[]).map(b=>'<button data-branch="'+b.id+'" data-branch-preview="'+esc(specializationDescription(c.classId,b.id))+'" title="'+esc(specializationDescription(c.classId,b.id))+'" '+(c.level<10?"disabled":"")+' class="'+((pendingBranchId===b.id||(!pendingBranchId&&c.branch===b.id))?"active":"")+'">'+esc(b.name)+(c.branch===b.id?" ✓":pendingBranchId===b.id?" · ВЫБРАНО ДЛЯ ПОДТВЕРЖДЕНИЯ":"")+'</button>').join("")+'</div><p class="tb-branch-description" id="tbBranchDescription" aria-live="polite">'+(pendingBranchId?esc(specializationDescription(c.classId,pendingBranchId)):branch?esc(specializationDescription(c.classId,branch.id)):"Нажми на ветку, чтобы предварительно выбрать её и прочитать механику.")+'</p>'+(pendingBranchId&&pendingBranchId!==c.branch?'<div class="tb-branch-confirm"><button class="tb-primary" data-action="confirm-branch">ПОДТВЕРДИТЬ ВЫБОР</button><button data-action="cancel-branch">ОТМЕНА</button></div>':'')+'<small>Первая специализация на 10 уровне бесплатна. Смена ветки стоит '+balance.classes.respec_cost+' серебра.</small></div>';
   }else if(profileTab==="talents"){
    body='<div class="tb-talent-head"><div><h3>Древо талантов</h3><p>Свободные очки: <b>'+free+'</b></p></div><button data-action="reset-talents" '+(spent===0?"disabled":"")+'>'+ 'СБРОС · '+balance.classes.talent_reset_cost+' серебра</button></div>';
    if(c.level<10)body+='<div class="tb-lock">Ветка талантов откроется на 10 уровне.</div>';
@@ -763,7 +774,7 @@
   const guidance=root.querySelector(".tb-turn-guidance");if(guidance)guidance.textContent=battle.actor?.type==="player"?"Твой ход. Нажми «АТАКА» без затрат ресурса или выбери умение.":"Противники атакуют...";
   const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
   const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
-  const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph)telegraph.textContent=Math.max(0,(battle.telegraph.until-Date.now())/1000).toFixed(1)+" сек";
+  const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph){const until=Number(battle.telegraph.until);telegraph.textContent=Number.isFinite(until)&&until>0?Math.max(0,(until-Date.now())/1000).toFixed(1)+" сек":"ПОСЛЕ ТВОЕГО ХОДА";}
   root.querySelector(".tb-panel-actions")?.classList.toggle("tb-player-turn",!battle.busy&&!battle.paused);
   arena.classList.toggle("tb-shaking",!!(battle.shakeUntil>Date.now()));
   arena.classList.toggle("tb-phase-flash",!!(battle.phaseFlashUntil>Date.now()));
@@ -820,7 +831,7 @@
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
   playSfx("click");
-  if(target.dataset.route){routeChoice=target.dataset.route;render();return;}if(target.dataset.pick){selectedId=target.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;render();return;}
+  if(target.dataset.route){routeChoice=target.dataset.route;render();return;}if(target.dataset.pick){selectedId=target.dataset.pick;pendingBranchId=null;engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;render();return;}
   if(target.dataset.class){selectedClass=target.dataset.class;render();return;}
   if(target.dataset.stage){selectedStage=Number(target.dataset.stage);render();return;}
    if(target.dataset.runModifier){try{const selected=engine.setRunModifier(live().id,target.dataset.runModifier);save();render();notify("Модификатор забега: "+selected.name);}catch(error){notify(error.message);}return;}
@@ -829,7 +840,9 @@
    if(target.dataset.equipCosmetic){try{const item=engine.equipCosmetic(target.dataset.equipCosmetic);save();render();notify("Косметика надета: "+item.name);}catch(error){notify(error.message);}return;}
   if(target.dataset.tab){profileTab=target.dataset.tab;render();return;}
   if(target.dataset.shopTab){shopTab=target.dataset.shopTab;render();return;}
-  if(target.dataset.branch){try{engine.chooseBranch(live().id,target.dataset.branch);save();render();notify("Специализация выбрана");}catch(error){notify(error.message);}return;}
+  if(target.dataset.branch){pendingBranchId=target.dataset.branch;render();return;}
+  if(target.dataset.action==="confirm-branch"){if(!pendingBranchId)return;try{engine.chooseBranch(live().id,pendingBranchId);const chosen=pendingBranchId;pendingBranchId=null;save();render();notify("Специализация выбрана: "+((classData(live()).branches||[]).find(item=>item.id===chosen)?.name||chosen));}catch(error){notify(error.message);}return;}
+  if(target.dataset.action==="cancel-branch"){pendingBranchId=null;render();return;}
   if(target.dataset.talent){try{engine.useTalentPoint(live().id,target.dataset.talent,3);save();render();}catch(error){notify(error.message);}return;}
   if(target.dataset.target!==undefined){setBattleTarget(Number(target.dataset.target));return;}
   if(target.dataset.basicAttack!==undefined){basicAttack();return;}
