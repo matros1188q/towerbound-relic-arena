@@ -52,11 +52,11 @@ const overlay=document.createElement('div');overlay.id='tbCloudOverlay';overlay.
 </div>
 <div id="tbCloudMessage" role="status" aria-live="polite"></div>
 <button id="tbCloudClose" type="button" class="secondary">Закрыть</button>
-</section>`;document.body.appendChild(overlay);
+</section>`;document.body.appendChild(overlay);overlay.classList.add('open','login-required');
 const say=m=>{$('#tbCloudMessage').textContent=m||'';};
 const setStatus=(textValue,kind)=>{status.text=textValue;status.kind=kind;button.textContent=textValue;button.dataset.state=kind;};
 const open=()=>overlay.classList.add('open'),close=()=>{if(!overlay.classList.contains('login-required'))overlay.classList.remove('open');};
-const rememberKey='tb-remember-me',remembered=()=>localStorage.getItem(rememberKey)==='true';
+const rememberKey='tb-remember-me',remembered=()=>{try{return localStorage.getItem(rememberKey)==='true';}catch(e){return false;}};
 const setRemember=value=>{try{if(value)localStorage.setItem(rememberKey,'true');else localStorage.removeItem(rememberKey);}catch(e){}};
 const showLoginGate=()=>{overlay.classList.add('login-required','open');$('#tbCloudTitle').textContent='Вход в игру';$('#tbCloudIntro').textContent='Войди в игровой аккаунт, чтобы открыть выбор персонажа.';$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudClose').hidden=true;$('#tbRememberMe').checked=remembered();};
 const hideLoginGate=()=>{overlay.classList.remove('login-required','open');$('#tbCloudClose').hidden=false;};
