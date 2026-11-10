@@ -27,7 +27,7 @@ In Authentication / Providers:
 - In Supabase Auth / URL Configuration, set the Site URL to `https://matros1188q.github.io/towerbound-relic-arena/` and add that exact game URL to the allowed redirect URLs.
 - In Google Cloud Console, set the Authorized redirect URI to the Supabase callback URL displayed in the Google provider settings (format: `https://<your-project-ref>.supabase.co/auth/v1/callback`). Do not use the GitHub Pages URL as Google's callback URI.
 
-**For Towerbound username logins, disable Confirm Email in Authentication → Providers → Email.** The game maps each login to a synthetic address (`login@towerbound.game`), so players cannot receive confirmation messages at that address. With Confirm Email enabled, Supabase returns a user without an active session and the player cannot finish registration. This mode also means email-based password recovery is unavailable; add a verified recovery method before treating accounts as production-ready.
+**For Towerbound username logins, disable Confirm Email in Authentication → Providers → Email.** The game maps each login to a synthetic address (`login@towerbound.com`), so players cannot receive confirmation messages at that address. With Confirm Email enabled, Supabase returns a user without an active session and the player cannot finish registration. The `.com` address is synthetic and is not a mailbox; email-based password recovery is unavailable. Add a verified recovery method before treating accounts as production-ready.
 
 ## 4. First login and migration
 
