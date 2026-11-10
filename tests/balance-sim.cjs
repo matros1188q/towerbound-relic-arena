@@ -15,43 +15,48 @@ function simulateFight(engine,c,stage,enemy,opt={}){
  const sc=Number(skill?.resource_cost??skill?.effect.resource_cost??cls.resource_cost_per_skill??18),sm=Number(skill?.damage_multiplier??skill?.effect.damage_multiplier??1.5),sd=({short:2,medium:4,long:6})[skill?.cooldown_tier]||2;
  const ult=balance.skills.ultimates?.[c.classId],counter=balance.skills.counter_abilities?.[c.classId],costs=balance.resources.class_costs?.[c.classId]||{};
  const uc=Number(costs.ultimate??ult?.resource_cost??balance.resources.action_costs.ultimate),cc=Number(costs.counter??counter?.resource_cost??balance.resources.action_costs.counter);
- const rngFn=opt.random||Math.random;let hp=Math.min(maxHp,opt.playerHp??maxHp),res=Math.min(c.resourceMax,opt.resource??Math.round(c.resourceMax*balance.resources.starting_fraction)),ehp=es.hp,turn=0,used=false,skillReady=1,ultReady=1,counterReady=1;
+ const rngFn=opt.random||Math.random;let hp=Math.min(maxHp,opt.playerHp??maxHp),shield=0,potionHpPct=null,poisonStacks=0,res=Math.min(c.resourceMax,opt.resource??Math.round(c.resourceMax*balance.resources.starting_fraction)),ehp=es.hp,turn=0,used=false,skillReady=1,ultReady=1,counterReady=1;
  const basic=engine.basicAttackStats(id),v=balance.combat.player_damage.attack_variance||0;
  while(hp>0&&ehp>0&&turn<200){
   turn++;
-  if(!used&&enemy.type!=='normal'&&hp<=maxHp*(opt.potionThreshold??.6)){
+  if(!used&&(enemy.type!=='normal'||opt.allowNormalPotion)&&hp<=maxHp*(opt.potionThreshold??.6)){
+   potionHpPct=hp/maxHp*100;
    let healed=opt.onPotion?opt.onPotion(hp,res):{hp:Math.min(maxHp,hp+Math.round(maxHp*balance.healing.potion_heal_fraction)),resource:Math.min(c.resourceMax,res+(balance.resources.regeneration.potion||25))};
    if(healed){hp=healed.hp;res=healed.resource;used=true;}
   }
   let raw;
-  if(enemy.type==='boss'&&ult?.damage_multiplier&&res>=uc&&turn>=ultReady){raw=stats.attack*ult.damage_multiplier*stats.damageMultiplier;res-=uc;ultReady=turn+(ult.cooldown_turns||3);if(ult.heal_fraction)hp=Math.min(maxHp,hp+Math.round(maxHp*ult.heal_fraction));}
+  if(enemy.type==='boss'&&ult?.damage_multiplier&&res>=uc&&turn>=ultReady){raw=stats.attack*ult.damage_multiplier*stats.damageMultiplier;res-=uc;ultReady=turn+(ult.cooldown_turns||3);if(ult.heal_fraction)hp=Math.min(maxHp,hp+Math.round(maxHp*ult.heal_fraction));if(ult.shield_fraction)shield=Math.round(maxHp*ult.shield_fraction);}
   else if(skill&&res>=sc&&turn>=skillReady){raw=stats.attack*sm*stats.damageMultiplier;res-=sc;skillReady=turn+sd;}
   else{raw=basic.damage*stats.damageMultiplier;res=Math.min(c.resourceMax,res+basic.resourceGain);}
   raw*=1+(rngFn()*2-1)*v;if(rngFn()<(stats.critChance||0))raw*=stats.critMultiplier||1.5;
   raw*=engine.damageTypeMultiplier({...enemy,maxHp:es.hp},damageType);
-  let dealt=Math.max(1,Math.round(raw));if(enemy.type==='boss')dealt=engine.capBossDamage({...enemy,maxHp:es.hp},dealt,0);
+  let dealt=Math.max(1,Math.round(raw));if(enemy.role==='tank'&&turn%3===0)dealt=Math.round(dealt*(1-(balance.mobs.roles.tank.shield_fraction||.3)));if(enemy.type==='boss')dealt=engine.capBossDamage({...enemy,maxHp:es.hp},dealt,0);
   ehp=Math.max(0,ehp-dealt);
   let vamp=balance.combat.vampirism?.default_fraction??.01;if(['assassin','destroyer','duelist'].includes(c.classId))vamp=balance.combat.vampirism.damage_dealer_fraction??.0175;if(c.classId==='bishop')vamp=0;
   hp=Math.min(maxHp,hp+Math.floor(dealt*vamp));if(ehp<=0)break;
   let incoming=Math.max(0,Math.round(es.damage*engine.mitigationMultiplier(stats.defense,stage)*(1-(stats.damageReduction||0))));
   if(counter&&res>=cc&&turn>=counterReady){incoming=engine.resolveReaction('strong_hit',counter.id,c.classId,incoming).damage;res-=cc;counterReady=turn+(counter.cooldown_turns||2);}
-  hp-=incoming;if(enemy.type==='boss'&&turn>15&&ehp>0)hp=0;
+  if(shield>0){const absorbed=Math.min(shield,incoming);shield-=absorbed;incoming-=absorbed;}
+  hp-=incoming;
+  if(enemy.type==='boss'&&ehp<=es.hp*.7){const add=engine.getEnemyStats(id,stage,{type:'normal'});hp-=2*Math.round(add.damage*engine.mitigationMultiplier(stats.defense,stage));}
+  if(enemy.role==='poison'){poisonStacks++;hp-=Math.round(maxHp*(balance.mobs.roles.poison.damage_fraction_per_turn||.05)*poisonStacks);}
+  if(enemy.type==='boss'&&turn>15&&ehp>0)hp=0;
  }
- return{win:ehp<=0&&hp>0,turns:turn,hp:Math.max(0,hp),maxHp,hpPct:Math.max(0,hp)/maxHp*100,usedPotion:used,resource:res};
+ return{win:ehp<=0&&hp>0,turns:turn,hp:Math.max(0,hp),maxHp,hpPct:Math.max(0,hp)/maxHp*100,potionHpPct,usedPotion:used,resource:res};
 }
 function run(){
  const rows=[];
  for(const classId of classes)for(const stage of stages)for(const type of types){
   const {engine,c}=setup(classId,stage,stage*1009+classes.indexOf(classId)*97+types.indexOf(type));
-  let wins=0,turns=0,hp=0,potions=0,maxHit=0;
+  let wins=0,turns=0,hp=0,potions=0,potionHp=0,potionHpCount=0,maxHit=0;
   for(let i=0;i<trials;i++){c.resource=Math.round(c.resourceMax*balance.resources.starting_fraction);const ds=balance.mobs.damage_types||['fire','ice','dark','physical'];const enemy={type,weakness:ds[(stage+i)%ds.length],resistance:ds[(stage+i+2)%ds.length],role:type==='boss'?'boss':'normal'};
-   const r=simulateFight(engine,c,stage,enemy,{random:rng(i+stage*10000+classes.indexOf(classId)*1000000)});if(r.win)wins++;turns+=r.turns;hp+=r.hpPct;if(r.usedPotion)potions++;
+   const r=simulateFight(engine,c,stage,enemy,{random:rng(i+stage*10000+classes.indexOf(classId)*1000000)});if(r.win)wins++;turns+=r.turns;hp+=r.hpPct;if(r.usedPotion)potions++;if(r.potionHpPct!==null){potionHp+=r.potionHpPct;potionHpCount++;}
    const es=engine.getEnemyStats(c.id,stage,{type});maxHit=Math.max(maxHit,es.damage*engine.mitigationMultiplier(engine.getCombatStats(c).defense,stage)/engine.getCombatStats(c).maxHp*100);
   }
-  rows.push({classId,name:balance.classes.classes[classId].name,stage,type,winRate:wins/10,avgTurns:turns/trials,avgHpPct:hp/trials,potionRate:potions/10,maxHitPct:maxHit});
+  rows.push({classId,name:balance.classes.classes[classId].name,stage,type,winRate:wins/10,avgTurns:turns/trials,avgHpPct:hp/trials,potionRate:potions/10,avgHpBeforePotion:potionHpCount?potionHp/potionHpCount:null,maxHitPct:maxHit});
  }
  console.log('Класс\\tЭтап\\tВраг\\t% Побед\\tСредние ходы\\tОстаток HP %\\tБои с зельем %\\tМакс. удар % HP');
- for(const r of rows)console.log([r.name,r.stage,r.type,r.winRate.toFixed(1),r.avgTurns.toFixed(2),r.avgHpPct.toFixed(1),r.potionRate.toFixed(1),r.maxHitPct.toFixed(1)].join('\\t'));
+ for(const r of rows)console.log([r.name,r.stage,r.type,r.winRate.toFixed(1),r.avgTurns.toFixed(2),r.avgHpPct.toFixed(1),r.potionRate.toFixed(1),r.avgHpBeforePotion===null?'-':r.avgHpBeforePotion.toFixed(1),r.maxHitPct.toFixed(1)].join('\\t'));
  for(const stage of stages){const a=rows.filter(r=>r.stage===stage&&r.type==='boss').map(r=>r.winRate);console.log('Разница винрейта боссов, этап '+stage+': '+(Math.max(...a)-Math.min(...a)).toFixed(1)+' п.п.');}
  return rows;
 }
