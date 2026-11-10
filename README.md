@@ -659,5 +659,5 @@ All commits below are on `main` and form the account / gem / localization / mobi
 - Registration always uses the new `.com` address. Supabase Email **Confirm Email must remain disabled** for synthetic usernames because these addresses are not player mailboxes.
 - Mapped Supabase authentication errors to Russian: invalid credentials, invalid email, duplicate account and password-too-short cases. The cloud login dialog marks errors red.
 - Added the registration hint below the form and localized/red error styling in the profile account form.
-- Added regression assertions for the new address mapping, legacy sign-in fallback, Russian error messages and registration hint. Updated the cloud/UI asset cache keys to v15/v31.
+- Added regression assertions for the new address mapping, legacy sign-in fallback, Russian error messages and registration hint. Updated the cloud/UI asset cache keys to v16/v31.
 - Live Supabase registration/login with `Test123` and `123456` was not executed: this repository session does not have a test Supabase user/session or permission to create an account in the project's Auth service. The automated source regression checks must be confirmed in GitHub Actions.
