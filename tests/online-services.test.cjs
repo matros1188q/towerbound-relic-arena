@@ -49,7 +49,7 @@ assert.ok(cloud.includes("window.addEventListener('online',()=>{if(session&&!con
 assert.ok(cloud.includes('loadGame,saveGame,queueSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
 assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="cloud-account"'),'settings screen exposes cloud account and manual sync controls');
 assert.ok(cloud.includes("return login+'@towerbound.game'"),'game login maps to the synthetic Supabase email');
-assert.ok(cloud.includes("overlay.classList.add('open','login-required')"),'startup must block character selection until Supabase session is checked');
+assert.ok(!cloud.includes("overlay.classList.add('open','login-required')")&&cloud.includes('const showLoginGate=(force=false)'), 'startup keeps the login flow in the character screen instead of covering it with a modal');
 assert.ok(cloud.includes("const rememberKey='tb-remember-me'"),'remember-me preference is persisted');
 assert.ok(cloud.includes("if(active&&!remembered())"),'unremembered sessions are cleared at startup');
 assert.ok(ui.includes('Зелье исцеления')&&ui.includes('Материал для крафта')&&ui.includes('itemDisplayName'),'inventory item IDs are localized even when an item has its raw ID as name');
