@@ -60,8 +60,9 @@ const {chromium}=require('playwright');
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
- const errors=[],skillDebugLogs=[];
+ const errors=[],consoleErrors=[],skillDebugLogs=[];
  page.on('pageerror',error=>errors.push(error.message));
+  page.on('console',message=>{if(message.type()==='error'&&!message.text().includes('Failed to load resource'))consoleErrors.push(message.text());});
  page.on('console',message=>{if(message.text().startsWith('SKILL DEBUG:')){const args=message.args();if(args[1])args[1].jsonValue().then(value=>skillDebugLogs.push(value)).catch(()=>{});}});
  await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',route=>route.abort());
  await page.addInitScript(()=>{
@@ -117,6 +118,9 @@ const {chromium}=require('playwright');
   await page.locator('[data-action="confirm-create"]').click();
   await page.waitForFunction(()=>window.TowerboundRework?.state.characters.length===1);
   assert.match(await page.locator('#tbRpg').innerText(),/RPG QA/,'created character appears in roster');
+  assert.deepEqual(errors,[],'login and character creation have no uncaught browser errors');
+  assert.deepEqual(consoleErrors,[],'login and character creation have no console errors');
+  console.log('AUTH GATE PASS: centered login, Supabase sign-in mock, remember-me, session restore, create-character gate, and mobile wordmark');
   const first=await page.evaluate(()=>JSON.parse(localStorage.getItem('tb-rpg-v2')));
   const baseSkillAvailability=await page.evaluate(()=>{
    const engine=window.TowerboundRework;
