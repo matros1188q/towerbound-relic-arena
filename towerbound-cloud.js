@@ -55,11 +55,11 @@ const overlay=document.createElement('div');overlay.id='tbCloudOverlay';overlay.
 </section>`;document.body.appendChild(overlay);overlay.classList.add('open','login-required');
 const say=m=>{$('#tbCloudMessage').textContent=m||'';};
 const setStatus=(textValue,kind)=>{status.text=textValue;status.kind=kind;button.textContent=textValue;button.dataset.state=kind;};
-const open=()=>overlay.classList.add('open'),close=()=>{if(!overlay.classList.contains('login-required'))overlay.classList.remove('open');};
+const open=()=>{overlay.classList.add('open');overlay.style.display='grid';},close=()=>{if(!overlay.classList.contains('login-required')){overlay.classList.remove('open');overlay.style.display='none';}};
 const rememberKey='tb-remember-me',remembered=()=>{try{return localStorage.getItem(rememberKey)==='true';}catch(e){return false;}};
 const setRemember=value=>{try{if(value)localStorage.setItem(rememberKey,'true');else localStorage.removeItem(rememberKey);}catch(e){}};
-const showLoginGate=()=>{overlay.classList.add('login-required','open');$('#tbCloudTitle').textContent='Вход в игру';$('#tbCloudIntro').textContent='Войди в игровой аккаунт, чтобы открыть выбор персонажа.';$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudClose').hidden=true;$('#tbRememberMe').checked=remembered();};
-const hideLoginGate=()=>{overlay.classList.remove('login-required','open');$('#tbCloudClose').hidden=false;};
+const showLoginGate=()=>{overlay.classList.add('login-required','open');overlay.style.display='grid';overlay.style.visibility='visible';$('#tbCloudTitle').textContent='Вход в игру';$('#tbCloudIntro').textContent='Войди в игровой аккаунт, чтобы открыть выбор персонажа.';$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudClose').hidden=true;$('#tbRememberMe').checked=remembered();};
+const hideLoginGate=()=>{overlay.classList.remove('login-required','open');overlay.style.display='none';$('#tbCloudClose').hidden=false;};
 button.addEventListener('click',open);$('#tbCloudClose').addEventListener('click',close);
 overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
 function localSnapshot(){
