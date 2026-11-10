@@ -93,6 +93,7 @@ async function journey(type,name,viewport,url){
    killed:window.TowerboundRework.state.characters[0].run.stage?.killedIndices||[],
    current:window.TowerboundRework.state.characters[0].run.stage?.targetIndex
   }));
+  console.log("RECOVERY DEBUG "+name,JSON.stringify(recovered),JSON.stringify(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.stage?.uiBattleSnapshot)));
   assert.ok(recovered.target&&recovered.target!=='0',name+' reload skips the defeated target and resumes on a living mob');
   assert.ok(recovered.killed.includes(0),name+' reload records the previously defeated mob exactly once');
   assert.equal(Number(recovered.target),recovered.current,name+' UI and persisted target remain synchronized after reload');
