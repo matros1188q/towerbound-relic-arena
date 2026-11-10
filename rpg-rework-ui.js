@@ -663,7 +663,7 @@
   if(ultimate.effect==="heal_shield"||ultimate.effect==="heal_aoe")c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*ultimate.heal_fraction));
   if(ultimate.effect==="heal_shield")battle.nextDamageShield=Math.round(engine.maxHp(c)*ultimate.shield_fraction);
   if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0;hit++)applyTargetDamage(target,damage,ultimate.damage_type);}}
-  else if(ultimate.effect==="single_burst"){for(let hit=0;hit<3&&battle.enemy.hp>0;hit++)applyTargetDamage(battle.enemy,damage,ultimate.damage_type);}
+  else if(ultimate.effect==="single_burst"){const hitDamage=battle.enemy.type==="boss"?Math.min(damage,battle.enemy.maxHp*.35/3):damage;for(let hit=0;hit<3&&battle.enemy.hp>0;hit++)applyTargetDamage(battle.enemy,hitDamage,ultimate.damage_type);}
   triggerVfx("ultimate",ultimate.damage_type,false);if(battle.enemy.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function enemyCounter(){resolveEnemyTelegraph();}
