@@ -1,0 +1,29 @@
+name: Towerbound regression checks
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: towerbound-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  static-and-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check rpg-rework-v2.js
+          node --check rpg-rework-ui.js
+          node --check rpg-rework-ui.css.js
+          node --check towerbound-cloud.js
+          node --check towerbound-online.js
+      - name: Run Towerbound regression assertions
+        run: node tests/online-services.test.cjs
