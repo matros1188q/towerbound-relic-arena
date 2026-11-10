@@ -8,7 +8,7 @@ const balance=Object.fromEntries(fs.readdirSync(dir).filter(x=>x.endsWith('.json
 const engine=createEngine(balance,{now:()=>Date.UTC(2026,10,4),random:()=>.25});
 const hero=engine.createCharacter('Turn QA','assassin');
 assert.equal(balance.combat.turn_based.enabled,true);
-assert.equal(engine.maxHp(hero),Math.round(500/1.5*.5),'player max HP is halved');
+assert.equal(engine.maxHp(hero),Math.round(balance.character_curves.level_to_stage_anchors[0].hp/balance.character_curves.base_divisor*.5),'player max HP is halved');
 assert.equal(balance.combat.turn_based.auto_attack_dps_multiplier,.5);
 assert.equal(balance.combat.turn_based.skill_dps_multiplier,2.5);
 assert.equal(balance.combat.turn_based.ultimate_dps_multiplier,6);
