@@ -108,6 +108,18 @@ for(const id of dedicatedClassPortraits){
 const crimsonRegent=path.join(root,'assets/characters/bosses/crimson-regent.jpg');
 assert.ok(fs.existsSync(crimsonRegent),'Crimson Regent has a dedicated boss portrait');
 assert.ok(fs.statSync(crimsonRegent).size>1024,'Crimson Regent portrait is not an empty placeholder');
+// Native PWA phase-2 release checks: dedicated class/boss art, fixed tab navigation and origin-safe Supabase auth.
+const uiSource=fs.readFileSync(path.join(root,'rpg-rework-ui.js'),'utf8');
+for(const [classId,fileName] of Object.entries({dragonkin:'dragonkin.jpg',elemental:'elemental.jpg',duelist:'duelist.jpg',shaman:'shaman.jpg'})){
+ assert.ok(uiSource.includes(classId+':"heroes/'+fileName+'"'),classId+' uses its own dedicated class portrait');
+}
+assert.ok(uiSource.includes('"bosses/crimson-regent.jpg"'),'Crimson Regent uses a dedicated boss portrait');
+assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
+for(const action of ['bottom-map','bottom-profile','bottom-shop','bottom-rating'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
+for(const label of ['Карта','Персонаж','Магазин','Рейтинг'])assert.ok(uiSource.includes(label),'bottom navigation label exists: '+label);
+const cloudSource=fs.readFileSync(path.join(root,'towerbound-cloud.js'),'utf8');
+assert.ok(cloudSource.includes('emailRedirectTo:window.location.origin+window.location.pathname'),'email confirmation redirect follows the current deployment URL');
+assert.ok(cloudSource.includes('redirectTo:window.location.origin+window.location.pathname'),'OAuth redirect follows the current deployment URL');
 const relicDir=path.join(root,'assets/relics');
 const relics=fs.readdirSync(relicDir).filter(name=>name.endsWith('.png')&&!name.startsWith('_'));
 assert.ok(relics.length>=30,'relic image collection contains at least thirty unique PNG assets');
