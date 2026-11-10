@@ -348,3 +348,12 @@ html,body,#tbRpg,.tb-v2 {
     padding-inline:2px!important;
   }
 }
+
+/* Gear comparison + horizontal swipe tabs for narrow iPhone screens. */
+#tbRpg .tb-profile .tb-tabs{display:flex!important;flex-wrap:nowrap!important;gap:7px!important;max-width:100%;overflow-x:auto!important;overflow-y:hidden!important;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-snap-type:x proximity;padding:2px 1px 8px!important}
+#tbRpg .tb-profile .tb-tabs::-webkit-scrollbar{display:none}
+#tbRpg .tb-profile .tb-tabs>button{flex:0 0 auto!important;min-width:max-content;scroll-snap-align:start;white-space:nowrap}
+#tbRpg .tb-bag-tools{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+#tbRpg .tb-bag-tools button{flex:1 1 145px;min-height:42px;font-size:11px;font-weight:900}
+#tbRpg .tb-item-stats{display:flex;flex-wrap:wrap;gap:5px 10px;margin:5px 0;font-size:11px}
+#tbRpg .tb-item-stats .is-better{color:#65e99a!important}#tbRpg .tb-item-stats .is-worse{color:#ff7b83!important}#tbRpg .tb-item-stats .is-equal{color:#aab1c6!important}
