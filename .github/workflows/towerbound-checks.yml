@@ -20,6 +20,8 @@ jobs:
           node-version: 20
       - name: Check JavaScript syntax
         run: |
+          node --check service-worker.js
+          node --check juice-pwa.js
           node --check rpg-rework-v2.js
           node --check rpg-rework-ui.js
           node --check rpg-rework-ui.css.js
