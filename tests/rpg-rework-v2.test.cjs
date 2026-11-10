@@ -127,7 +127,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 }
 if(balance.combat.turn_based?.enabled){
  assert.equal(balance.combat.turn_based.player_turn_actions.potions,1,'turn-based mode permits one potion per player turn');
- assert.equal(balance.healing.potion_heal_fraction,0.25);
+ assert.equal(balance.healing.potion_heal_fraction,0.355);
 }else{
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=16;equipSix(live);
@@ -175,7 +175,7 @@ if(balance.combat.turn_based?.enabled){
  e.usePotionBelt(c.id,0);
  assert.equal(first.quantity,beforeFirst,'unassigned stack is never consumed');
  assert.equal(live.bag.find(item=>item.id==='second-stack').quantity,1);
- assert.equal(live.run.playerHp,Math.round(e.maxHp(live)*0.4));
+ assert.equal(live.run.playerHp,Math.round(e.maxHp(live)*0.55));
  if(balance.combat.turn_based?.enabled){
   assert.equal(balance.healing.one_potion_per_enemy,false,'turn-based mode enforces potion use once per player turn in the UI');
   assert.equal(balance.combat.turn_based.player_turn_actions.potions,1);

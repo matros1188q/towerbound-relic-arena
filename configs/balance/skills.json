@@ -129,8 +129,8 @@
       "icon": "✧",
       "resource_cost": 30,
       "effect": "heal_shield",
-      "heal_fraction": 0.45,
-      "shield_fraction": 0.25,
+      "heal_fraction": 0.35,
+      "shield_fraction": 0.2,
       "damage_type": "fire",
       "cooldown_turns": 3
     },
