@@ -157,7 +157,7 @@ const {chromium}=require('playwright');
   await page.waitForFunction(()=>window.TowerboundRework.state.characters[0].bag.some(item=>item.type==='craft_material'&&item.quantity>=20));
   await page.locator('[data-craft-stone="1"]').first().click();
   assert.ok(await page.evaluate(()=>window.TowerboundRework.state.characters[0].bag.some(item=>item.type==='enhancement_stone'&&item.stoneType.branch_id==='bleed')),'20 materials craft a specialization stone');
-  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].stats.items_salvaged),1,'salvaging equipment increments achievement progress');
+  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].stats.items_salvaged),2,'bulk and individual salvaging both increment achievement progress');
   assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].stats.materials_crafted),1,'crafted stone increments achievement progress');
   await page.locator('[data-action="bottom-map"]').click();
   await page.locator('[data-action="bottom-shop"]').click();
