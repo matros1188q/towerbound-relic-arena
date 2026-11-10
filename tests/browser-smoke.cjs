@@ -82,6 +82,9 @@ async function journey(type,name,viewport,url){
    snapshot.enemies[0].hp=0;snapshot.enemies[0].alive=false;snapshot.enemies[0].dead=true;
    snapshot.targetIndex=0;stage.targetIndex=0;stage.enemyIndex=0;
    localStorage.setItem('tb-rpg-v2',JSON.stringify(engine.state));
+   // Prevent the old pagehide autosave from overwriting the deliberately corrupted recovery fixture.
+   const nativeSetItem=Storage.prototype.setItem;
+   Storage.prototype.setItem=function(key,value){if(key==="tb-rpg-v2")return;return nativeSetItem.call(this,key,value);};
   });
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
@@ -93,7 +96,7 @@ async function journey(type,name,viewport,url){
    killed:window.TowerboundRework.state.characters[0].run.stage?.killedIndices||[],
    current:window.TowerboundRework.state.characters[0].run.stage?.targetIndex
   }));
-  console.log("RECOVERY DEBUG "+name,JSON.stringify(recovered),JSON.stringify(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.stage?.uiBattleSnapshot)));
+
   assert.ok(recovered.target&&recovered.target!=='0',name+' reload skips the defeated target and resumes on a living mob');
   assert.ok(recovered.killed.includes(0),name+' reload records the previously defeated mob exactly once');
   assert.equal(Number(recovered.target),recovered.current,name+' UI and persisted target remain synchronized after reload');
