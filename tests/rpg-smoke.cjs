@@ -63,8 +63,38 @@ const {chromium}=require('playwright');
  const errors=[],skillDebugLogs=[];
  page.on('pageerror',error=>errors.push(error.message));
  page.on('console',message=>{if(message.text().startsWith('SKILL DEBUG:')){const args=message.args();if(args[1])args[1].jsonValue().then(value=>skillDebugLogs.push(value)).catch(()=>{});}});
+ await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',route=>route.abort());
+ await page.addInitScript(()=>{
+  window.supabase={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
+   return{auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
+    signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
+    signUp:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
+    signOut:async()=>{localStorage.removeItem('__tb_qa_auth_session');if(listener)listener('SIGNED_OUT',null);return{error:null};}},
+    from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:null,error:null})})})}),
+    rpc:async()=>({data:{revision:1},error:null})};
+  }};
+ });
  try{
   await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
+  await page.waitForSelector('#tbCloudOverlay.login-required');
+  assert.equal(await page.locator('#tbCloudTitle').innerText(),'Вход в игру','unauthenticated launch is blocked by game login');
+  await page.locator('#tbCloudEmail').fill('Matroscheg');
+  await page.locator('#tbCloudPassword').fill('qa-password');
+  await page.locator('#tbCloudSignIn').click();
+  await page.waitForFunction(()=>!document.querySelector('#tbCloudOverlay')?.classList.contains('open'));
+  assert.equal(await page.evaluate(()=>window.__tbLastAuth.email),'matroscheg@towerbound.game','game login maps to lowercase synthetic email');
+  await page.reload({waitUntil:'networkidle'});
+  await page.waitForSelector('#tbCloudOverlay.login-required');
+  assert.equal(await page.locator('#tbCloudTitle').innerText(),'Вход в игру','login is required again when remember-me is unchecked');
+  await page.locator('#tbCloudEmail').fill('Matroscheg');
+  await page.locator('#tbCloudPassword').fill('qa-password');
+  await page.locator('#tbRememberMe').check();
+  await page.locator('#tbCloudSignIn').click();
+  await page.waitForFunction(()=>!document.querySelector('#tbCloudOverlay')?.classList.contains('open'));
+  assert.equal(await page.evaluate(()=>localStorage.getItem('tb-remember-me')),'true','remember-me preference is persisted');
+  await page.reload({waitUntil:'networkidle'});
+  await page.waitForFunction(()=>!!window.TowerboundCloud?.signedIn);
+  assert.equal(await page.locator('#tbCloudOverlay').evaluate(el=>el.classList.contains('open')),false,'remembered active session skips login on restart');
   await page.waitForFunction(()=>!!window.TowerboundReworkReady);
   await page.waitForSelector('#tbRpg .tb-v2');
   await page.evaluate(()=>{document.querySelector('#titleScreen')?.classList.add('is-hidden');document.querySelector('#accountDialog')?.classList.remove('open');document.body.removeAttribute('data-tb-screen');});
