@@ -191,7 +191,7 @@ const {chromium}=require('playwright');
   const tutorialWide=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),b=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{bottom:r.bottom,buttonBottom:b.bottom,viewport:innerHeight};});
   assert.ok(tutorialWide.bottom<=tutorialWide.viewport+1&&tutorialWide.buttonBottom<=tutorialWide.viewport+1,'tutorial CTA stays visible at 430x932');
   await page.setViewportSize({width:390,height:844});
-  assert.match(await page.locator('.tb-turn-tutorial').innerText(),/Это пошаговый бой[\s\S]*Нажми на умение[\s\S]*телеграфами/,'tutorial covers turns, actions and telegraphs');
+  assert.match(await page.locator('.tb-turn-tutorial').innerText(),/Это пошаговый бой[\s\S]*АТАКА[\\s\\S]*умение[\s\S]*телеграфами/,'tutorial covers turns, actions and telegraphs');
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   assert.equal(await page.locator('.tb-turn-tutorial').count(),0,'Понятно closes the tutorial');
   assert.equal(await page.locator('.tb-bottom-nav').count(),0,'global navigation yields the full viewport to active combat controls');
