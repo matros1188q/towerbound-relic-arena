@@ -59,6 +59,17 @@ These phases are plans, not claims that the functionality is already implemented
 
 Keep this section current. Every development session that changes the project must add a dated entry describing what changed, the files/areas affected, the commit SHA, and what remains unverified or unfinished. Do not record planned work as completed.
 
+### 2026-11-10 — Character selection account entry and empty-state cleanup
+
+- Added a visible **АККАУНТ** button beside the TOWERBOUND header on the character-selection screen. It opens the existing Supabase account dialog; after authentication it displays the login name / online status and opens sync/sign-out controls.
+- Standardized the dialog controls to `loginInput`, `passInput`, and `rememberMe`; sign-in and registration continue to use the virtual email `login.toLowerCase() + '@towerbound.game'`.
+- When the cloud account has no save and the local profile has no characters, the game keeps the character-selection screen open and reports: **«Успешный вход. Создайте персонажа»**.
+- Removed the top duplicate create-character button and the bottom duplicate create / choose-character buttons. The empty state now has one primary **СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА** action inside «Башня ждёт своего героя».
+- Updated PWA cache to `towerbound-v23`; bumped the UI and cloud script query versions.
+- Files: `rpg-rework-ui.js`, `towerbound-cloud.js`, `index.html`, `service-worker.js`, `tests/online-services.test.cjs`, `tests/full-game-audit.cjs`.
+- Commits: `d47db626`, `6e033aca`, `e6be177c`, `6911c3a1`, `868207d1`, `162612f5` (plus this documentation commit).
+- Verification: static regression assertions were added; browser/device interaction and a live Supabase sign-in still require a real configured account and browser session. Do not treat a static test as proof of successful live authentication.
+
 ### 2026-11-09 — Supabase project credentials connected
 
 - Updated `supabase-config.js` on `main` with the user's Supabase project URL and public publishable key.
