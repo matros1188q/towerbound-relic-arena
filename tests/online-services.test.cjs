@@ -11,7 +11,7 @@ const engine=fs.readFileSync('rpg-rework-v2.js','utf8');
 const serviceWorker=fs.readFileSync('service-worker.js','utf8');
 const pwa=fs.readFileSync('juice-pwa.js','utf8');
 const gems=JSON.parse(fs.readFileSync('configs/balance/equipment.json','utf8'));
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v22'"),'PWA cache version must advance on release');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v23'"),'PWA cache version must advance on release');
 assert.ok(serviceWorker.includes('self.skipWaiting()'),'new service worker must skip the waiting phase');
 assert.ok(serviceWorker.includes('self.clients.claim()'),'new service worker must claim open pages');
 assert.ok(serviceWorker.includes("request.mode === 'navigate'")&&serviceWorker.includes("url.pathname.endsWith('/index.html')"),'HTML documents must use the network-first branch');
@@ -36,9 +36,9 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=9'),'cloud module cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=10'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=27'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=28'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=15'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
@@ -127,3 +127,10 @@ assert.ok(ui.includes('id="tbAccountLogin"')&&ui.includes('id="tbAccountPassword
 assert.ok(ui.includes('data-action="account-login"')&&ui.includes('data-action="account-register"')&&ui.includes('data-action="account-logout"')&&ui.includes('data-action="account-sync"'),'account actions missing');
 assert.ok(cloud.includes('async function signIn(login,password')&&cloud.includes('async function signUp(login,password')&&cloud.includes('async function signOut()'),'Supabase auth API missing');
 assert.ok(cloud.includes('signIn,signUp,signOut'),'Supabase auth API not exported');
+assert.ok(ui.includes('data-action="cloud-account"')&&ui.includes('class="tb-account-button"'),'character selection has a visible account entry');
+assert.ok(ui.includes('СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА'),'empty character state has its single primary create action');
+assert.ok(!ui.includes('＋ СОЗДАТЬ ПЕРСОНАЖА')&&!ui.includes('ВЫБЕРИ ПЕРСОНАЖА'),'duplicate create and empty play actions are removed');
+assert.ok(cloud.includes('id="loginInput"')&&cloud.includes('id="passInput"')&&cloud.includes('id="rememberMe"'),'cloud login dialog exposes the requested login, password and remember controls');
+assert.ok(cloud.includes('signInWithPassword({email:loginEmail(),password:loginPassword()})')&&cloud.includes("email:loginEmail(),password:loginPassword()"),'sign-in and sign-up use the virtual login email');
+assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
+
