@@ -7,7 +7,7 @@ const cfg=window.TOWERBOUND_SUPABASE_CONFIG||{};
 const SAVE_KEYS=new Set(['tb-rpg-v2','tb-rpg-v1','towerbound-save-v1','towerbound-profiles-v1','towerbound-active-profile-v1']);
 const isSaveKey=k=>SAVE_KEYS.has(String(k))||String(k).startsWith('towerbound-profile-save-');
 const $=s=>document.querySelector(s);
-let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='';
+let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false;
 const status={text:'Локальное сохранение',kind:'local'};
 const style=document.createElement('style');style.id='tb-cloud-styles';style.textContent=`
 #tbCloudButton{position:fixed;z-index:9998;right:12px;top:calc(env(safe-area-inset-top) + 10px);max-width:46vw;padding:8px 11px;border:1px solid #b99760;border-radius:8px;background:#211a20ed;color:#f2d9a3;font:700 10px/1.2 system-ui;letter-spacing:.04em;box-shadow:0 4px 18px #0008;backdrop-filter:blur(12px)}
@@ -27,17 +27,19 @@ const style=document.createElement('style');style.id='tb-cloud-styles';style.tex
 #tbCloudDialog .tb-cloud-row button{flex:1}
 #tbCloudMessage{min-height:22px;color:#e9c985;font-size:12px;margin-top:10px}
 #tbCloudAccount{color:#a8d9bd;font-size:12px;overflow-wrap:anywhere}
+#tbCloudClose{display:none}#tbCloudDialog .tb-remember-label{display:flex;align-items:center;gap:9px;font-size:12px}#tbCloudDialog .tb-remember-label input{width:18px;height:18px;accent-color:#d7b875}#tbCloudOverlay.login-required{z-index:2147483000}#tbCloudOverlay.login-required #tbCloudDialog{max-height:calc(100dvh - 28px)}
 @media(max-width:600px){#tbCloudButton{top:calc(env(safe-area-inset-top) + 7px);right:8px;font-size:9px;padding:7px 8px}}
 `;document.head.appendChild(style);
 const button=document.createElement('button');button.id='tbCloudButton';button.type='button';button.textContent='АККАУНТ · ЛОКАЛЬНО';button.dataset.state='local';document.body.appendChild(button);
 const overlay=document.createElement('div');overlay.id='tbCloudOverlay';overlay.innerHTML=`<section id="tbCloudDialog" role="dialog" aria-modal="true" aria-labelledby="tbCloudTitle">
-<h2 id="tbCloudTitle">Облачный аккаунт Towerbound</h2><p id="tbCloudIntro">Привяжи прогресс к аккаунту, чтобы продолжать игру на другом устройстве.</p>
+<h2 id="tbCloudTitle">Вход в игру</h2><p id="tbCloudIntro">Войди или создай игровой аккаунт Towerbound.</p>
 <div id="tbCloudAccount"></div>
 <div id="tbCloudAuth">
-<label for="tbCloudEmail">Email</label><input id="tbCloudEmail" type="email" autocomplete="email" placeholder="you@example.com">
+<label for="tbCloudEmail">Логин</label><input id="tbCloudEmail" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Твой игровой логин">
 <label for="tbCloudPassword">Пароль</label><input id="tbCloudPassword" type="password" autocomplete="current-password" placeholder="Минимум 6 символов">
-<div class="tb-cloud-row"><button id="tbCloudSignIn" type="button">Войти</button><button id="tbCloudSignUp" type="button">Регистрация</button></div>
-<button id="tbCloudGoogle" type="button" class="secondary">Продолжить с Google</button>
+<label class="tb-remember-label"><input id="tbRememberMe" type="checkbox"> Запомнить меня</label>
+<div class="tb-cloud-row"><button id="tbCloudSignIn" type="button">ВОЙТИ</button><button id="tbCloudSignUp" type="button">ЗАРЕГИСТРИРОВАТЬСЯ</button></div>
+<button id="tbCloudGoogle" type="button" class="secondary" hidden>Продолжить с Google</button>
 </div>
 <div id="tbCloudChoices" hidden>
 <p>В аккаунте уже есть сохранение. Выбери, какую версию оставить. Другая версия будет заменена.</p>
@@ -53,7 +55,11 @@ const overlay=document.createElement('div');overlay.id='tbCloudOverlay';overlay.
 </section>`;document.body.appendChild(overlay);
 const say=m=>{$('#tbCloudMessage').textContent=m||'';};
 const setStatus=(textValue,kind)=>{status.text=textValue;status.kind=kind;button.textContent=textValue;button.dataset.state=kind;};
-const open=()=>overlay.classList.add('open'),close=()=>overlay.classList.remove('open');
+const open=()=>overlay.classList.add('open'),close=()=>{if(!overlay.classList.contains('login-required'))overlay.classList.remove('open');};
+const rememberKey='tb-remember-me',remembered=()=>localStorage.getItem(rememberKey)==='true';
+const setRemember=value=>{try{if(value)localStorage.setItem(rememberKey,'true');else localStorage.removeItem(rememberKey);}catch(e){}};
+const showLoginGate=()=>{overlay.classList.add('login-required','open');$('#tbCloudTitle').textContent='Вход в игру';$('#tbCloudIntro').textContent='Войди в игровой аккаунт, чтобы открыть выбор персонажа.';$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudClose').hidden=true;$('#tbRememberMe').checked=remembered();};
+const hideLoginGate=()=>{overlay.classList.remove('login-required','open');$('#tbCloudClose').hidden=false;};
 button.addEventListener('click',open);$('#tbCloudClose').addEventListener('click',close);
 overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
 function localSnapshot(){
@@ -103,9 +109,9 @@ async function chooseSource(remote){
  say('Выбери источник прогресса.');window.__TB_CLOUD_PENDING_REMOTE=remote;window.__TB_CLOUD_PENDING_LOCAL=local;
 }
 async function onSession(next){
- const sessionKey=next?.user?.id||'signed-out';if(sessionKey===handledSessionKey)return;handledSessionKey=sessionKey;conflict=false;
- session=next;
- if(!session){setStatus('АККАУНТ · ЛОКАЛЬНО','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';$('#tbCloudIntro').textContent='Привяжи прогресс к аккаунту, чтобы продолжать игру на другом устройстве.';return;}
+ const sessionKey=next?.user?.id||'signed-out';if(sessionKey===handledSessionKey)return;handledSessionKey=sessionKey;conflict=false;session=next;
+ if(!session){setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';showLoginGate();return;}
+ hideLoginGate();$('#tbCloudTitle').textContent='Облачный аккаунт Towerbound';$('#tbCloudIntro').textContent='Игровой аккаунт подключён. Прогресс синхронизируется с облаком.';
  $('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent=session.user.email||session.user.id;
  setStatus('ОБЛАКО · ПОДКЛЮЧЕНИЕ…','online');say('Проверяем облачное сохранение…');
  try{const remote=await loadGame();await chooseSource(remote);}
@@ -140,13 +146,15 @@ function queueSave(){if(!session||conflict||restoring)return;dirty=true;clearTim
 window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});
 const originalSet=Storage.prototype.setItem;
 Storage.prototype.setItem=function(key,value){const result=originalSet.call(this,key,value);if(this===localStorage&&isSaveKey(key))queueSave();return result;};
-$('#tbCloudSignIn').addEventListener('click',async()=>{try{say('Входим…');const {error}=await client.auth.signInWithPassword({email:$('#tbCloudEmail').value.trim(),password:$('#tbCloudPassword').value});if(error)throw error;}catch(e){say(e.message||'Не удалось войти');}});
-$('#tbCloudSignUp').addEventListener('click',async()=>{try{say('Создаём аккаунт…');const {data,error}=await client.auth.signUp({email:$('#tbCloudEmail').value.trim(),password:$('#tbCloudPassword').value,options:{emailRedirectTo:window.location.origin+window.location.pathname}});if(error)throw error;if(!data.session)say('Проверь почту и подтверди регистрацию, затем войди в аккаунт.');}catch(e){say(e.message||'Не удалось зарегистрироваться');}});
+const loginEmail=()=>{const login=String($('#tbCloudEmail').value||'').trim().toLowerCase();if(!/^[a-z0-9][a-z0-9._-]{2,31}$/.test(login))throw new Error('Логин: 3–32 символа, латиница, цифры, точка, дефис или подчёркивание');return login+'@towerbound.game';};
+const loginPassword=()=>{const password=$('#tbCloudPassword').value||'';if(password.length<6)throw new Error('Пароль должен содержать минимум 6 символов');return password;};
+$('#tbCloudSignIn').addEventListener('click',async()=>{try{if(!client)throw new Error('Supabase ещё подключается');say('Входим в игру…');setRemember($('#tbRememberMe').checked);const {error}=await client.auth.signInWithPassword({email:loginEmail(),password:loginPassword()});if(error)throw error;}catch(e){say(e.message||'Не удалось войти');}});
+$('#tbCloudSignUp').addEventListener('click',async()=>{try{if(!client)throw new Error('Supabase ещё подключается');say('Создаём игровой аккаунт…');setRemember($('#tbRememberMe').checked);const {data,error}=await client.auth.signUp({email:loginEmail(),password:loginPassword(),options:{emailRedirectTo:window.location.origin+window.location.pathname}});if(error)throw error;if(!data.session)say('Регистрация создана. Если подтверждение email включено в Supabase, проверь почту. Затем войди с тем же логином и паролем.');}catch(e){say(e.message||'Не удалось зарегистрироваться');}});
 $('#tbCloudGoogle').addEventListener('click',async()=>{try{say('Открываем Google…');const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});if(error)throw error;}catch(e){say(e.message||'Вход через Google не настроен');}});
 $('#tbCloudUseRemote').addEventListener('click',()=>{try{restoreLocal(window.__TB_CLOUD_PENDING_REMOTE.save_data);}catch(e){say(e.message);}});
 $('#tbCloudUseLocal').addEventListener('click',async()=>{try{say('Загружаем локальную версию…');await writeRemote(window.__TB_CLOUD_PENDING_LOCAL,revision);conflict=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Текущий прогресс этого устройства теперь в облаке.');}catch(e){say(e.message||'Не удалось сохранить');}});
 $('#tbCloudSyncNow').addEventListener('click',async()=>{try{await syncNow();say('Синхронизация завершена · версия '+revision+'.');}catch(error){say(error.message||'Не удалось синхронизировать');}});
-$('#tbCloudSignOut').addEventListener('click',async()=>{try{await client.auth.signOut();conflict=false;say('Вы вышли. Локальный прогресс остаётся на устройстве.');}catch(e){say(e.message);}});
+$('#tbCloudSignOut').addEventListener('click',async()=>{try{setRemember(false);await client.auth.signOut();conflict=false;showLoginGate();say('Вы вышли. Для продолжения войди снова.');}catch(e){say(e.message);}});
 function init(){
  if(!cfg.url||!cfg.publishableKey){
   setStatus('АККАУНТ · НУЖНА НАСТРОЙКА','local');
@@ -160,10 +168,10 @@ function init(){
   say('Проверь подключение к интернету и доступность cdn.jsdelivr.net.');return;
  }
  client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
- client.auth.onAuthStateChange((_event,next)=>{setTimeout(()=>onSession(next),0);});
- client.auth.getSession().then(({data,error})=>{if(error)throw error;return onSession(data.session);}).catch(e=>{console.error(e);setStatus('ОБЛАКО · ОШИБКА','error');say(e.message);});
+ client.auth.onAuthStateChange((_event,next)=>{if(authInitialized)setTimeout(()=>onSession(next),0);});
+ client.auth.getSession().then(async({data,error})=>{if(error)throw error;let active=data.session;if(active&&!remembered()){await client.auth.signOut();active=null;}authInitialized=true;handledSessionKey='';if(active)await onSession(active);else{session=null;showLoginGate();setStatus('АККАУНТ · НУЖЕН ВХОД','local');}}).catch(e=>{console.error(e);authInitialized=true;showLoginGate();setStatus('ОБЛАКО · ОШИБКА','error');say(e.message||'Не удалось проверить сессию');});
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
-window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,saveGame,queueSave,syncNow,status:()=>({...status})};
+window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,saveGame,queueSave,syncNow,status:()=>({...status}),requireLogin:showLoginGate};
 })();
