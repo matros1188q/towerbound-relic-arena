@@ -85,5 +85,12 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.match(ui,/is-better/,'gear comparison renders better stats in green');
  assert.match(ui,/is-worse/,'gear comparison renders worse stats in red');
  assert.match(css,/overflow-x:auto!important/,'profile tabs support horizontal swipe scrolling');
+ assert.match(ui,/const safeDelay=Number\(delay\)\|\|1000/,'enemy turn timer normalizes delays to a finite numeric fallback');
+ assert.match(ui,/Number\.isFinite\(until\).*ПОСЛЕ ТВОЕГО ХОДА/,'turn-based telegraph never renders NaN seconds without a numeric deadline');
+ assert.match(ui,/battle\.isPlayerTurn=true;[\s\S]*?battle\.actor=\{type:"player"/,'enemy turn exceptions restore player control');
+ assert.match(ui,/ПОДТВЕРДИТЬ ВЫБОР/,'specialization selection requires explicit confirmation');
+ assert.match(ui,/data-action="confirm-branch"/,'specialization confirmation has a dedicated action');
+ assert.doesNotMatch(fs.readFileSync(path.join(__dirname,'../rpg-mode.js'),'utf8'),/id="tbExtraBar"/,'legacy duplicate top navigation is removed');
+ assert.match(fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8'),/tb-chapter-card\{display:block!important;width:100%;min-width:0/,'chapter lore card uses a stable full-width layout');
 }
 console.log('Loot/combat update: all assertions passed.');
