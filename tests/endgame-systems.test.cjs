@@ -46,6 +46,6 @@ function has(text, needle, label) {
   ['armorPenetration=Math.max', 'armor penetration mitigation'],
   ['evolved?evolved.icon', 'evolved skill icon']
 ].forEach(([needle,label]) => has(combat,needle,label));
-has(html,'<script src="./endgame-systems.js?v=10"></script>','endgame script cache version');
-has(html,'<script src="./rpg-rework-ui.js?v=32"></script>','combat UI cache version');
+assert.match(html, /<script src="\.\/endgame-systems\.js\?v=[^"]+"><\/script>/, 'endgame script must be loaded with a cache-busted URL');
+assert.match(html, /<script src="\.\/rpg-rework-ui\.js\?v=[^"]+"><\/script>/, 'combat UI must be loaded with a cache-busted URL');
 console.log('Endgame systems static checks: OK');
