@@ -128,20 +128,20 @@
  }catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
- function header(title,sub){return '<header class="tb-header"><div class="tb-brand"><span class="tb-mark">T</span><div><strong>TOWERBOUND</strong><small>'+esc(title||"ХРОНИКИ БАШНИ")+'</small></div></div><div class="tb-header-side">'+(live()?'<span class="tb-mini-avatar" aria-hidden="true"><img src="'+portrait(live().classId)+'" alt=""></span>':'')+'<span class="tb-subline">'+esc(sub||"")+'</span></div></header>';}
+ function header(title,sub){const cloud=window.TowerboundCloud,accountLabel=cloud?.signedIn?(String(cloud.session?.user?.email||"").split("@")[0]||"В СЕТИ"):"АККАУНТ";return '<header class="tb-header"><div class="tb-brand"><span class="tb-mark">T</span><div><strong>TOWERBOUND</strong><small>'+esc(title||"ХРОНИКИ БАШНИ")+'</small></div></div><div class="tb-header-side"><button type="button" class="tb-account-button" data-action="cloud-account" aria-label="Открыть аккаунт" style="min-height:38px;padding:8px 12px;border:1px solid #c9a45c;border-radius:9px;background:linear-gradient(145deg,#403326,#201b25);color:#f4d89d;font:800 11px system-ui;letter-spacing:.08em;white-space:nowrap">'+esc(accountLabel.toUpperCase())+'</button>'+(live()?'<span class="tb-mini-avatar" aria-hidden="true"><img src="'+portrait(live().classId)+'" alt=""></span>':'')+'<span class="tb-subline">'+esc(sub||"")+'</span></div></header>';}
  function characterList(){
   const chars=engine.state.characters;
   const selected=chars.find(c=>c.id===selectedId)||chars[0];
   if(selected&&!selectedId)selectedId=selected.id;
   return header("Выбор персонажа","Аккаунт · "+(engine.state.account.diamonds||0)+" алмазов")+
-   '<section class="tb-characters"><div class="tb-section-title"><div><h1>Персонажи</h1><p>Выбери героя, чтобы продолжить путь</p></div><button data-action="new" class="tb-primary">＋ СОЗДАТЬ ПЕРСОНАЖА</button></div>'+
+   '<section class="tb-characters"><div class="tb-section-title"><div><h1>Персонажи</h1><p>Выбери героя, чтобы продолжить путь</p></div></div>'+
    (chars.length?'<div class="tb-character-grid">'+chars.map(c=>{
     const d=balance.classes.classes[c.classId],chosen=c.id===selectedId;
     return '<button type="button" class="tb-character-card '+(chosen?"selected":"")+'" data-pick="'+esc(c.id)+'"><div class="tb-char-art"><img src="'+portrait(c.classId)+'" alt="'+esc(d.name)+'"></div><div class="tb-char-info"><strong>'+esc(c.name)+'</strong><span>'+esc(d.name)+' · Уровень '+c.level+'</span><small>Мощь '+engine.combatPower(c)+' · Пройдено '+c.progress.highestEver+'/250</small><small>Серебро '+c.silver+' · '+(c.branch?esc(d.branches.find(b=>b.id===c.branch)?.name||c.branch):"Без специализации")+'</small></div><span class="tb-selected-mark">'+(chosen?"✓":"")+'</span></button>';
-   }).join("")+'</div>':'<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>')+
-   '<div class="tb-character-actions"><button data-action="new">Создать персонажа</button><button data-action="play" class="tb-primary" '+(!selected?"disabled":"")+'>'+(selected?"ИГРАТЬ ЗА "+esc(selected.name.toUpperCase()):"ВЫБЕРИ ПЕРСОНАЖА")+'</button></div></section>'+createDialog();
+   }).join("")+'</div><div class="tb-character-actions"><button data-action="play" class="tb-primary">ИГРАТЬ ЗА '+esc(selected.name.toUpperCase())+'</button></div>':'<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>')+
+   '</section>'+createDialog();
  }
- function createDialog(){
+function createDialog(){
   if(!dialogOpen)return "";
   const classes=Object.entries(balance.classes.classes);
   const current=balance.classes.classes[selectedClass];
