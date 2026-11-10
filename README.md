@@ -66,8 +66,8 @@ Keep this section current. Every development session that changes the project mu
 - Fixed the auth timing race: `signIn` and `signUp` now await cloud-session processing and cloud-save restore before returning; auth state changes trigger a character-screen render. Empty cloud saves leave the player on the create-character state.
 - Removed the automatically opened login overlay from startup, so it no longer covers the main screen or intercepts taps. The legacy floating account button is hidden.
 - Added mobile header no-wrap rules for the TOWERBOUND wordmark and header controls, with smaller typography and spacing at widths up to 400px.
-- Updated PWA cache to `towerbound-v24`; script cache keys: UI `v29`, cloud `v12`, styles `v17`.
-- Files: `rpg-rework-ui.js`, `rpg-rework-ui.css.js`, `towerbound-cloud.js`, `index.html`, `service-worker.js`, `tests/online-services.test.cjs`, `tests/full-game-audit.cjs`.
+- Updated PWA cache to `towerbound-v25`; script cache keys: UI `v29`, cloud `v13`, styles `v17`.
+- Files: `rpg-rework-ui.js`, `rpg-rework-ui.css.js`, `towerbound-cloud.js`, `progression-24.js`, `index.html`, `service-worker.js`, `tests/online-services.test.cjs`, `tests/full-game-audit.cjs`.
 - Verification: JavaScript syntax, regression tests and browser smoke tests are tracked in GitHub Actions. A live Supabase login requires a real account and configured Supabase Auth; an actual iPhone screen was not physically exercised in this environment.
 
 ### 2026-11-10 — Character selection account entry and empty-state cleanup
