@@ -7,6 +7,11 @@ const {chromium}=require('playwright');
 (async()=>{
  const root=process.cwd();
  const classConfig=JSON.parse(fs.readFileSync(path.join(root,"configs/balance/classes.json"),"utf8"));
+ const skillConfig=JSON.parse(fs.readFileSync(path.join(root,"configs/balance/skills.json"),"utf8"));
+ assert.equal(skillConfig.panel.slot_count,6,"battle skill panel exposes all six slots");
+ assert.equal(skillConfig.panel.attack_slots+2,skillConfig.panel.slot_count,"four attack skills plus counter and ultimate fill the six-slot panel");
+ const mobileCss=fs.readFileSync(path.join(root,"native-pwa.css"),"utf8");
+ assert.match(mobileCss,/\.tb-end-turn\{[^}]*z-index:30!important/s,"mobile End Turn button is layered above the potion belt");
  const cunning=classConfig.classes.assassin.base_skills.find(skill=>skill.name==="Коварный выпад");
  assert.equal(cunning.damage_multiplier,2,"Коварный выпад defines 150% damage");
  assert.equal(cunning.resource_cost,18,"Коварный выпад defines its resource cost");
