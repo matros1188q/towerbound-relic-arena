@@ -113,3 +113,17 @@ function gemEngine(overrides={}){
 }
 
 console.log('Online services static and gem runtime checks: OK');
+
+// iPhone UI regression coverage: scroll restoration, translations, skill bar and account auth.
+assert.ok(ui.includes('function renderWithScrollSave()'),'render must preserve scroll position');
+assert.ok(ui.includes('renderView();')&&ui.includes('requestAnimationFrame(restore)'),'scroll restored after DOM replacement');
+for(const [id,label] of Object.entries({attack:'Атака',health:'Здоровье',critical:'Крит',defense:'Защита',attack_speed:'Скорость'}))assert.ok(ui.includes(id+":'"+label+"'"),'talent label missing: '+id);
+assert.ok(ui.includes('c.activeSkills=chosen')&&ui.includes('slice(0,6)'),'active skills capped at six');
+assert.ok(ui.includes('data-replace-skill')&&ui.includes('Все 6 слотов заняты'),'skill replacement dialog missing');
+assert.ok(ui.includes('humanSkillDescription')&&ui.includes('особенность класса'),'technical skill tags translated');
+assert.ok(css.includes('word-break:keep-all')&&css.includes('overflow-wrap:normal')&&css.includes('hyphens:none'),'quest cards preserve word wrapping');
+assert.ok(css.includes('safe-area-inset-top')&&css.includes('padding-top:max(20px'),'notch safe area CSS missing');
+assert.ok(ui.includes('id="tbAccountLogin"')&&ui.includes('id="tbAccountPassword"')&&ui.includes('Запомнить меня'),'account login form missing');
+assert.ok(ui.includes('data-action="account-login"')&&ui.includes('data-action="account-register"')&&ui.includes('data-action="account-logout"')&&ui.includes('data-action="account-sync"'),'account actions missing');
+assert.ok(cloud.includes('async function signIn(login,password')&&cloud.includes('async function signUp(login,password')&&cloud.includes('async function signOut()'),'Supabase auth API missing');
+assert.ok(cloud.includes('signIn,signUp,signOut'),'Supabase auth API not exported');

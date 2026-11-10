@@ -203,9 +203,9 @@
  function ensureLoadout(c){
   const base=(classData(c).base_skills||[]).filter(skill=>c.level>=(Number.isFinite(Number(skill.unlock_level))?Number(skill.unlock_level):1)),branch=branchSkills(c).filter(skill=>c.level>=(Number.isFinite(Number(skill.unlock_level))?Number(skill.unlock_level):1));
   const unlocked=[...base,...branch].filter((skill,index,all)=>all.findIndex(other=>other.id===skill.id)===index);
-  const chosen=(Array.isArray(c.skillLoadout)?c.skillLoadout:[]).filter(id=>unlocked.some(skill=>skill.id===id)).slice(0,4);
-  for(const skill of unlocked){if(chosen.length>=4)break;if(!chosen.includes(skill.id))chosen.push(skill.id);}
-  c.skillLoadout=chosen;return Array.from({length:4},(_,index)=>unlocked.find(skill=>skill.id===chosen[index])||null);
+  const chosen=(Array.isArray(c.activeSkills)?c.activeSkills:Array.isArray(c.skillLoadout)?c.skillLoadout:[]).filter(id=>unlocked.some(skill=>skill.id===id)).filter((id,index,all)=>all.indexOf(id)===index).slice(0,6);
+  for(const skill of unlocked){if(chosen.length>=6)break;if(!chosen.includes(skill.id))chosen.push(skill.id);}
+  c.activeSkills=chosen;c.skillLoadout=chosen;return Array.from({length:6},(_,index)=>unlocked.find(skill=>skill.id===chosen[index])||null);
  }
  function activeSkill(c){return ensureLoadout(c).find(Boolean)||null;}
  function counterAbility(c){return balance.skills.counter_abilities[c.classId];}
@@ -414,6 +414,10 @@
  }
  function endTurnButton(){endPlayerTurn();}
 
+ function humanSkillDescription(value){return String(value||'').replace(/class_identity/gi,'особенность класса').replace(/fire_dragon/gi,'Огненный дракон').replace(/ice_dragon/gi,'Ледяной дракон').replace(/black_dragon/gi,'Чёрный дракон').replace(/Огненный дракон specialization skill/gi,'Умение специализации Огненный дракон').replace(/Ледяной дракон specialization skill/gi,'Умение специализации Ледяной дракон').replace(/Чёрный дракон specialization skill/gi,'Умение специализации Чёрный дракон').replace(/([a-z_]+) specialization skill/gi,(_,key)=>'умение специализации '+key.replace(/_/g,' ')).replace(/\s+/g,' ').trim();}
+ const talentEffectLabels={attack:'Атака',health:'Здоровье',critical:'Крит',defense:'Защита',attack_speed:'Скорость',crit:'Крит'};
+ function talentEffectLabel(value){const key=String(value||'');return talentEffectLabels[key]||key.replace(/_/g,' ');}
+ function accountAuthPanel(){const cloud=window.TowerboundCloud,signed=!!cloud?.signedIn,session=cloud?.session,status=cloud?.status?.()||{text:'Подключение к Supabase…'};if(signed)return '<section class="tb-account-auth"><h3>Облачный аккаунт</h3><p class="tb-account-status is-online">✓ Синхронизировано</p><small>'+esc(session?.user?.email||'Аккаунт подключён')+' · '+esc(status.text||'')+'</small><div class="tb-account-actions"><button data-action="account-sync">СИНХРОНИЗИРОВАТЬ СЕЙЧАС</button><button data-action="account-logout">ВЫЙТИ</button></div></section>';return '<section class="tb-account-auth"><h3>Вход в игровой аккаунт</h3><p>Войди или создай аккаунт, чтобы синхронизировать прогресс.</p><label>Логин<input id="tbAccountLogin" type="text" autocomplete="username" autocapitalize="none" placeholder="Логин"></label><label>Пароль<input id="tbAccountPassword" type="password" autocomplete="current-password" placeholder="Пароль"></label><label class="tb-account-remember"><input id="tbAccountRemember" type="checkbox" checked> Запомнить меня</label><div class="tb-account-actions"><button data-action="account-login">ВОЙТИ</button><button data-action="account-register">ЗАРЕГИСТРИРОВАТЬСЯ</button></div><small class="tb-account-message" aria-live="polite">'+esc(status.text||'Локальное сохранение')+'</small></section>';}
  function profileScreen(){
   const c=live();if(!c)return characterList();
   const def=classData(c),branch=(def.branches||[]).find(b=>b.id===c.branch),stats=balance.classes.base_stats,combatStats=engine.getCombatStats(c),gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"];
@@ -426,14 +430,14 @@
    body='<div class="tb-talent-head"><div><h3>Древо талантов</h3><p>Свободные очки: <b>'+free+'</b></p></div><button data-action="reset-talents" '+(spent===0?"disabled":"")+'>'+ 'СБРОС · '+balance.classes.talent_reset_cost+' серебра</button></div>';
    if(c.level<10)body+='<div class="tb-lock">Ветка талантов откроется на 10 уровне.</div>';
    else if(!branch)body+='<div class="tb-lock">Сначала выбери специализацию во вкладке «Характеристики».</div>';
-   else body+='<div class="tb-talent-grid">'+branch.talents.map(t=>'<div class="tb-talent"><span class="tb-talent-icon">✦</span><div><b>'+esc(t.name)+'</b><small>'+esc(t.effect_template)+' · '+(c.talents[t.id]||0)+'/3</small></div><button data-talent="'+t.id+'" '+(free<=0||(c.talents[t.id]||0)>=3?"disabled":"")+' >＋</button></div>').join("")+'</div>';
+   else body+='<div class="tb-talent-grid">'+branch.talents.map(t=>'<div class="tb-talent"><span class="tb-talent-icon">✦</span><div><b>'+esc(t.name)+'</b><small>'+esc(talentEffectLabel(t.effect_template))+' · '+(c.talents[t.id]||0)+'/3</small></div><button data-talent="'+t.id+'" '+(free<=0||(c.talents[t.id]||0)>=3?"disabled":"")+' >＋</button></div>').join("")+'</div>';
   }else if(profileTab==="skills"){
    const base=(def.base_skills||[]).map(x=>({...x,branch:"Базовые"})).concat((def.passives||[]).map(x=>({...x,type:"passive",branch:"Пассивное"})));
    const branchSkills=c.branch?skills.filter(x=>x.class_id===c.classId&&x.branch_id===c.branch).map(x=>({...x,type:"active",branch:branch?.name||c.branch})):[];
    const available=base.concat(branchSkills),active=activeSkill(c);
-   body='<h3>Умения персонажа</h3><p>Активное умение на арене: <b>'+esc(active?.name||"не выбрано")+'</b></p><div class="tb-skill-list">'+available.map(s=>{const effect=balance.skill_effects[s.effect_template]||{};const detail=s.description||(s.effect_template==="strike"?"Урон: "+Math.round((s.damage_multiplier??effect.damage_multiplier??1)*100)+"% · Стоимость: "+(s.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill)+" ресурса":s.effect_template==="buff"?"Усиление: "+Math.round((effect.power_multiplier||0)*100)+"%":s.effect_template==="heal"?"Лечение: "+Math.round((effect.heal_multiplier||0)*100)+"%":"Эффект: "+(s.effect_template||"особый"));return '<div class="tb-skill-row"><span class="tb-skill-glyph">✧</span><div><b>'+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+' · '+esc(detail)+'</small></div><strong class="'+(c.level>=s.unlock_level?"unlocked":"locked")+'">'+(c.level>=s.unlock_level?"ОТКРЫТО":"УР. "+s.unlock_level)+'</strong>'+(s.type==="passive"||c.level<s.unlock_level?"":'<button data-select-skill="'+s.id+'" '+(active?.id===s.id?"disabled":"")+'>'+(active?.id===s.id?"ВЫБРАНО":"ВЫБРАТЬ")+'</button>')+'</div>';}).join("")+'</div>';
+   body='<h3>Умения персонажа</h3><p>Активное умение на арене: <b>'+esc(active?.name||"не выбрано")+'</b></p><div class="tb-skill-list">'+available.map(s=>{const effect=balance.skill_effects[s.effect_template]||{};const detail=s.description||(s.effect_template==="strike"?"Урон: "+Math.round((s.damage_multiplier??effect.damage_multiplier??1)*100)+"% · Стоимость: "+(s.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill)+" ресурса":s.effect_template==="buff"?"Усиление: "+Math.round((effect.power_multiplier||0)*100)+"%":s.effect_template==="heal"?"Лечение: "+Math.round((effect.heal_multiplier||0)*100)+"%":"Эффект: "+(s.effect_template||"особый"));return '<div class="tb-skill-row"><span class="tb-skill-glyph">✧</span><div><b>'+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+' · '+esc(humanSkillDescription(detail))+'</small></div><strong class="'+(c.level>=s.unlock_level?"unlocked":"locked")+'">'+(c.level>=s.unlock_level?"ОТКРЫТО":"УР. "+s.unlock_level)+'</strong>'+(s.type==="passive"||c.level<s.unlock_level?"":'<button data-select-skill="'+s.id+'" '+(active?.id===s.id?"disabled":"")+'>'+(active?.id===s.id?"ВЫБРАНО":"ВЫБРАТЬ")+'</button>')+'</div>';}).join("")+'</div>';
   }else if(profileTab==="account"){
-   body='<div class="tb-profile-account">'+systemsScreen()+'</div>';
+   body=accountAuthPanel()+'<div class="tb-profile-account">'+systemsScreen()+'</div>';
   }else if(profileTab==="speedrun"){
    const speedRuns=Number(c.stats?.speed_runs||0),bestStage=Number(c.progress?.highestEver||0);
    body='<section class="tb-speedrun-panel"><div class="tb-eyebrow">ИСПЫТАНИЕ СКОРОСТИ</div><h3>Спидран Башни</h3><p>Отслеживание быстрых забегов и прогресса. Ускоренные бои ×2 учитываются отдельно.</p><div class="tb-stat-grid"><div><small>УСКОРЕННЫЕ БОИ ×2</small><b>'+speedRuns+'</b></div><div><small>РЕКОРД ЭТАПА</small><b>'+bestStage+' / 250</b></div></div><p class="tb-note">Результаты обновляются по событиям игры; отдельный таймер не запускается в фоне.</p></section>';
@@ -839,7 +843,7 @@
   const active=screen==="battle"?"map":screen;
   nav.querySelectorAll("[data-nav-tab]").forEach(b=>{const on=b.dataset.navTab===active;b.classList.toggle("active",on);b.setAttribute("aria-current",on?"page":"false");});
  }
- function render(){
+ function renderView(){
   if(!engine)return;
   syncMusic();
   const isBattle=screen==="battle"&&!!battle;
@@ -864,13 +868,22 @@
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
   ensureBottomNav();
  }
+ function renderWithScrollSave(){
+  const container=document.getElementById('tbRpg')||document.querySelector('.profile');
+  const scrollHost=container?.querySelector('.tb-v2')||container;
+  const scrollPos=scrollHost?scrollHost.scrollTop:(window.scrollY||0);
+  renderView();
+  const restore=()=>{const next=document.getElementById('tbRpg')||document.querySelector('.profile');const host=next?.querySelector('.tb-v2')||next;if(host)host.scrollTop=scrollPos;else window.scrollTo(0,scrollPos);};
+  restore();if(typeof requestAnimationFrame==='function')requestAnimationFrame(restore);
+ }
+ function render(){return renderWithScrollSave();}
  function createCharacter(){
   const name=root.querySelector("#name")?.value||"";
   try{const created=engine.createCharacter(name,selectedClass);selectedId=created.id;engine.state.activeCharacterId=created.id;dialogOpen=false;screen="characters";selectedStage=1;save();render();notify("Персонаж создан · стартовый набор: 100 серебра, 3 зелья и 24 часа премиума");}
   catch(error){notify(error.message);}
  }
  function handleClick(event){
-  const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-target],[data-route],[data-panel-skill],[data-counter],[data-ultimate],[data-basic-attack]");
+  const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-target],[data-route],[data-panel-skill],[data-replace-skill],[data-close-skill-replace],[data-counter],[data-ultimate],[data-basic-attack]");
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
   playSfx("click");
@@ -892,11 +905,13 @@
   if(target.dataset.panelSkill){playerAction(target.dataset.panelSkill,Number(target.dataset.panelSlot));return;}
   if(target.dataset.counter!==undefined){useCounterSkill();return;}
   if(target.dataset.ultimate!==undefined){useUltimate();return;}
+  if(target.dataset.closeSkillReplace!==undefined){target.closest('.tb-skill-replace-overlay')?.remove();return;}
+  if(target.dataset.replaceSkill!==undefined){const modal=target.closest('.tb-skill-replace-overlay'),skillId=modal?.dataset.pendingSkill,index=Number(target.dataset.replaceSkill),c=live();if(!c||!skillId||!Number.isInteger(index)||index<0||index>=6)return;const chosen=Array.isArray(c.activeSkills)?c.activeSkills:[];chosen[index]=skillId;c.activeSkills=chosen;c.skillLoadout=chosen;modal.remove();save();render();notify('Панель умений обновлена');return;}
   if(target.dataset.selectSkill){
    const c=live(),def=classData(c),base=(def.base_skills||[]).find(skill=>skill.id===target.dataset.selectSkill);
    const selected=base||skills.find(skill=>skill.id===target.dataset.selectSkill);
    if(!selected||selected.unlock_level>c.level||(selected.branch_id&&selected.branch_id!==c.branch)){notify("Умение недоступно для текущего уровня или ветки");return;}
-   c.activeSkillId=selected.id;save();render();notify("Активное умение выбрано: "+selected.name);return;
+   const chosen=Array.isArray(c.activeSkills)?c.activeSkills:ensureLoadout(c).filter(Boolean).map(skill=>skill.id);if(chosen.includes(selected.id)){notify('Это умение уже выбрано');return;}if(chosen.length<6){chosen.push(selected.id);c.activeSkills=chosen;c.skillLoadout=chosen;save();render();notify('Умение добавлено на панель: '+selected.name);return;}const overlay=document.createElement('div');overlay.className='tb-skill-replace-overlay';overlay.dataset.pendingSkill=selected.id;overlay.innerHTML='<section role="dialog" aria-modal="true" class="tb-skill-replace-dialog"><h3>Все 6 слотов заняты</h3><p>Выбери умение, которое заменить на «'+esc(selected.name)+'».</p>'+chosen.map((id,index)=>{const current=resolveSkill(c,id);return '<button type="button" data-replace-skill="'+index+'">'+(index+1)+'. '+esc(current?.name||id)+'</button>';}).join('')+'<button type="button" data-close-skill-replace="1">ОТМЕНА</button></section>';root.querySelector('.tb-v2')?.appendChild(overlay);return;
   }
   if(target.dataset.beltAssign){const slot=Number(window.prompt("Назначить в слот пояса (1–5):"))-1;try{engine.assignPotionBelt(live().id,slot,target.dataset.beltAssign);save();render();notify("Зелье назначено в слот "+(slot+1));}catch(error){notify(error.message);}return;}
   if(target.dataset.beltUse!==undefined){try{if(battle.potionUsedThisTurn||battle.actor?.type!=="player")throw new Error("Зелье уже использовано в этом ходу");engine.usePotionBelt(live().id,Number(target.dataset.beltUse));battle.potionUsedThisTurn=true;save();render();notify("Зелье использовано · +40% максимального HP");}catch(error){notify(error.message);}return;}
@@ -948,6 +963,9 @@
    case "profile":profileTab="stats";screen="profile";render();break;
    case "profile-gear":profileTab="gear";screen="profile";render();break;
    case "toggle-mute":engine.saveSettings({sound_enabled:settings().sound_enabled===false});save();render();notify(settings().sound_enabled===false?"Звук выключен":"Звук включён");break;
+   case "account-login":case "account-register":(async()=>{const cloud=window.TowerboundCloud,login=root.querySelector('#tbAccountLogin')?.value||'',password=root.querySelector('#tbAccountPassword')?.value||'',remember=!!root.querySelector('#tbAccountRemember')?.checked;try{if(!cloud)throw new Error('Облачный модуль ещё загружается');if(target.dataset.action==='account-login')await cloud.signIn(login,password,remember);else await cloud.signUp(login,password,remember);render();notify('Аккаунт подключён');}catch(error){const message=root.querySelector('.tb-account-message');if(message)message.textContent=error.message||'Ошибка авторизации';else notify(error.message);}})();break;
+   case "account-logout":(async()=>{try{await window.TowerboundCloud.signOut();render();notify('Вы вышли из аккаунта');}catch(error){notify(error.message);}})();break;
+   case "account-sync":(async()=>{try{await window.TowerboundCloud.syncNow();render();notify('Синхронизировано');}catch(error){notify(error.message);}})();break;
    case "cloud-account":if(window.TowerboundCloud?.open)window.TowerboundCloud.open();else notify("Облачный модуль ещё загружается");break;
    case "cloud-sync":(async()=>{try{const cloud=window.TowerboundCloud;if(!cloud?.syncNow)throw new Error("Облачный модуль недоступен");await cloud.syncNow();notify("Облачное сохранение синхронизировано");}catch(error){notify(error.message||"Не удалось синхронизировать");}})();break;
    case "daily-chest":try{const reward=engine.claimDailyChest(live().id);save();render();notify(reward.type==="silver"?"Сундук: +"+reward.amount+" серебра":reward.type==="potion"?"Сундук: +1 зелье исцеления":"Сундук: +10 материалов");}catch(error){notify(error.message);}break;
