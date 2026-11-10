@@ -1082,7 +1082,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.3
         },
         {
           "id": "dragonkin.base.2",
@@ -1091,7 +1091,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.3
         },
         {
           "id": "dragonkin.base.3",
@@ -1100,7 +1100,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.3
         },
         {
           "id": "dragonkin.base.4",
@@ -1858,7 +1858,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.4
+          "damage_multiplier": 2.6
         },
         {
           "id": "elemental.base.2",
@@ -1867,7 +1867,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.4
+          "damage_multiplier": 2.6
         },
         {
           "id": "elemental.base.3",
@@ -1876,7 +1876,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.4
+          "damage_multiplier": 2.6
         },
         {
           "id": "elemental.base.4",
@@ -2642,7 +2642,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.1
+          "damage_multiplier": 2.5
         },
         {
           "id": "shaman.base.3",
@@ -2651,7 +2651,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.1
+          "damage_multiplier": 2.5
         },
         {
           "id": "shaman.base.4",

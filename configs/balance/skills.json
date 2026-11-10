@@ -70,7 +70,7 @@
       "id": "scale",
       "name": "Чешуя",
       "icon": "◆",
-      "resource_cost": 18,
+      "resource_cost": 12,
       "effect": "damage_reduction",
       "damage_reduction": 0.5,
       "cooldown_turns": 2
@@ -87,7 +87,7 @@
       "id": "slow",
       "name": "Замедление",
       "icon": "❄",
-      "resource_cost": 18,
+      "resource_cost": 12,
       "effect": "slow",
       "speed_reduction": 0.3,
       "cooldown_turns": 2
@@ -105,7 +105,7 @@
       "id": "cleanse",
       "name": "Очищение",
       "icon": "✚",
-      "resource_cost": 18,
+      "resource_cost": 12,
       "effect": "cleanse",
       "remove_stacks": 1,
       "cooldown_turns": 2
@@ -139,7 +139,7 @@
       "icon": "🔥",
       "resource_cost": 42,
       "effect": "aoe_burst",
-      "damage_multiplier": 2.8,
+      "damage_multiplier": 3.2,
       "damage_type": "fire",
       "cooldown_turns": 3
     },
@@ -159,7 +159,7 @@
       "icon": "❄",
       "resource_cost": 42,
       "effect": "aoe_burst",
-      "damage_multiplier": 2.8,
+      "damage_multiplier": 3.2,
       "damage_type": "ice",
       "cooldown_turns": 3
     },
@@ -180,7 +180,7 @@
       "resource_cost": 42,
       "effect": "heal_aoe",
       "heal_fraction": 0.25,
-      "damage_multiplier": 2,
+      "damage_multiplier": 2.8,
       "damage_type": "dark",
       "cooldown_turns": 3
     }
