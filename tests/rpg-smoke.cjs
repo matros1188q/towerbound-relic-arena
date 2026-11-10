@@ -93,7 +93,7 @@ const {chromium}=require('playwright');
   await page.locator('.tb-character-login #rememberMe').uncheck();
   await page.locator('[data-action="empty-login"]').click();
   await page.waitForFunction(()=>window.TowerboundCloud?.signedIn);
-  assert.equal(await page.evaluate(()=>window.__tbLastAuth.email),'matroscheg@towerbound.game','game login maps to lowercase synthetic email');
+  assert.equal(await page.evaluate(()=>window.__tbLastAuth.email),'matroscheg@towerbound.com','game login maps to lowercase synthetic email');
   await page.reload({waitUntil:'networkidle'});
   await page.waitForSelector('#tbRpg .tb-login-gate');
   assert.equal(await page.locator('.tb-login-gate h2').innerText(),'Вход в игру','login is required again when remember-me is unchecked');
