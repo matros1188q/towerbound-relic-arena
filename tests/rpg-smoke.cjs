@@ -31,6 +31,7 @@ const {chromium}=require('playwright');
  assert.match(battleUiSource,/hurt:\{wave:/,"Web Audio player damage effect is configured");
  assert.match(battleUiSource,/max-height:150px/,"all mob and boss art frames have a 150px cap");
  assert.match(battleUiSource,/function resolveSkill\(c,skillId\)/,"battle actions resolve class base skills and catalog skills");
+ assert.match(battleUiSource,/\[data-stone\],\[data-extract-gem\],\[data-inspect-stone\]/,"gem insert, extract and inspect controls are included in delegated click handling");
  assert.match(battleUiSource,/console\.log\('SKILL DEBUG:',skillObject\)/,"skill renderer logs the requested debug object");
  assert.match(battleUiSource,/skill\.resource_cost\?\?effect\.resource_cost/,"skill cost prefers its configured value");
  assert.match(battleUiSource,/skill\.damage_multiplier\?\?skill\.damage\?\?effect\.damage_multiplier/,"skill damage prefers normalized damage and has a safe fallback");
