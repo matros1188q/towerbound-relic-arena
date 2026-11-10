@@ -203,6 +203,7 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('.tb-panel-skill').count(),6,'six skill/counter/ultimate buttons are rendered');
   assert.equal(await page.locator('[data-basic-attack]').count(),1,'free basic attack is available beside the skill grid');
   const attackLayout=await page.evaluate(()=>{const box=el=>{const r=el.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};};return{attack:box(document.querySelector('[data-basic-attack]')),skills:box(document.querySelector('.tb-panel-slots')),end:box(document.querySelector('[data-action="end-turn"]')),potion:box(document.querySelector('.tb-potion-belt button'))};});
+  console.log('BATTLE CONTROL BOXES:',JSON.stringify(attackLayout));
   assert.ok(attackLayout.attack.bottom<=attackLayout.skills.top+2,'basic attack sits immediately above the skill grid');
   assert.ok(attackLayout.end.bottom<=attackLayout.potion.top+2||attackLayout.end.top>=attackLayout.potion.bottom-2,'potion belt never covers the End Turn button');
   assert.equal(await page.locator('.tb-initiative-avatar').count(),1,'player initiative uses the Matroscheg portrait');
