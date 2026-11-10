@@ -35,8 +35,8 @@ if(balance.combat.turn_based?.enabled){
  assert.equal(balance.bosses.phases[3].damage_multiplier,5,'phase four hit is five times stronger');
  assert.equal(balance.bosses.phases[3].easy_miss_remaining_hp_fraction,0.1,'Easy phase-four hit leaves 10% max HP');
 }
-assert.equal(balance.mobs.vulnerability_multiplier,1.5,'vulnerability is +50%');
-assert.equal(balance.mobs.resistance_multiplier,0.5,'resistance is -50%');
+assert.equal(balance.mobs.vulnerability_multiplier,1.1,'vulnerability is +10%');
+assert.equal(balance.mobs.resistance_multiplier,0.5,'resistance is -10%');
 for(const classId of classes){const ultimate=balance.skills.ultimates[classId];if(balance.combat.turn_based?.enabled)assert.ok(ultimate.cooldown_turns>=1&&ultimate.cooldown_turns<=10,classId+' ultimate cooldown is turn-based');else assert.ok(ultimate.cooldown_seconds>=60&&ultimate.cooldown_seconds<=90,classId+' ultimate cooldown is 60–90s');}
 for(const classId of classes){
  const counter=balance.skills.counter_abilities[classId];

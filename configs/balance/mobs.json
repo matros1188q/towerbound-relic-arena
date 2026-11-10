@@ -37,7 +37,7 @@
     }
   ],
   "elite": {
-    "hp_multiplier": 1.8,
+    "hp_multiplier": 2.2,
     "damage_multiplier": 7
   },
   "interpolation": "linear",

@@ -7,14 +7,14 @@
   "enemy_hp": {
     "normal_base": 7,
     "normal_per_stage": 1,
-    "elite_multiplier": 1.8,
+    "elite_multiplier": 2.2,
     "boss_multiplier": 4.3
   },
   "enemy_damage": {
     "normal_base": 2,
     "normal_per_stage": 1,
     "elite_multiplier": 7,
-    "boss_multiplier": 5.8
+    "boss_multiplier": 6
   },
   "player_damage": {
     "attack_multiplier": 0.5,

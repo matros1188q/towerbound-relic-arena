@@ -24,7 +24,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
    if(healed){hp=healed.hp;res=healed.resource;used=true;}
   }
   let raw;
-  if(ult?.damage_multiplier&&res>=uc&&turn>=ultReady){raw=stats.attack*ult.damage_multiplier*stats.damageMultiplier;res-=uc;ultReady=turn+(ult.cooldown_turns||3);if(ult.heal_fraction)hp=Math.min(maxHp,hp+Math.round(maxHp*ult.heal_fraction));}
+  if(enemy.type==='boss'&&ult?.damage_multiplier&&res>=uc&&turn>=ultReady){raw=stats.attack*ult.damage_multiplier*stats.damageMultiplier;res-=uc;ultReady=turn+(ult.cooldown_turns||3);if(ult.heal_fraction)hp=Math.min(maxHp,hp+Math.round(maxHp*ult.heal_fraction));}
   else if(skill&&res>=sc&&turn>=skillReady){raw=stats.attack*sm*stats.damageMultiplier;res-=sc;skillReady=turn+sd;}
   else{raw=basic.damage*stats.damageMultiplier;res=Math.min(c.resourceMax,res+basic.resourceGain);}
   raw*=1+(rngFn()*2-1)*v;if(rngFn()<(stats.critChance||0))raw*=stats.critMultiplier||1.5;

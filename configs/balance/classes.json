@@ -305,9 +305,9 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2,
+          "damage_multiplier": 1.8,
           "resource_cost": 18,
-          "description": "Урон: 200% от силы атаки · Стоимость: 18 энергии."
+          "description": "Урон: 180% от силы атаки · Стоимость: 18 энергии."
         },
         {
           "id": "assassin.base.2",
@@ -316,7 +316,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "assassin.base.3",
@@ -325,7 +325,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "assassin.base.4",
@@ -695,7 +695,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.6
+          "damage_multiplier": 2.3
         },
         {
           "id": "bishop.base.2",
@@ -712,7 +712,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.6
+          "damage_multiplier": 2.3
         },
         {
           "id": "bishop.base.4",
@@ -1082,7 +1082,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.3
+          "damage_multiplier": 2.6
         },
         {
           "id": "dragonkin.base.2",
@@ -1091,7 +1091,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.3
+          "damage_multiplier": 2.6
         },
         {
           "id": "dragonkin.base.3",
@@ -1100,7 +1100,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.3
+          "damage_multiplier": 2.6
         },
         {
           "id": "dragonkin.base.4",
@@ -1470,7 +1470,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "destroyer.base.2",
@@ -1479,7 +1479,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "destroyer.base.3",
@@ -1488,7 +1488,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "destroyer.base.4",
@@ -1858,7 +1858,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.6
+          "damage_multiplier": 3
         },
         {
           "id": "elemental.base.2",
@@ -1867,7 +1867,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.6
+          "damage_multiplier": 3
         },
         {
           "id": "elemental.base.3",
@@ -1876,7 +1876,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.6
+          "damage_multiplier": 3
         },
         {
           "id": "elemental.base.4",
@@ -2246,7 +2246,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "duelist.base.2",
@@ -2255,7 +2255,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "duelist.base.3",
@@ -2264,7 +2264,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 1.8
         },
         {
           "id": "duelist.base.4",
@@ -2642,7 +2642,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.5
+          "damage_multiplier": 2.9
         },
         {
           "id": "shaman.base.3",
@@ -2651,7 +2651,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.5
+          "damage_multiplier": 2.9
         },
         {
           "id": "shaman.base.4",
