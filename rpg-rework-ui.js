@@ -681,7 +681,9 @@ function createDialog(){
    if(battle)finishCurrentEnemy();return{damage:0,dealt:0,multiplier:1,killed:false,revived:false,recovered:true};
   }
   let revived=false,multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
-  if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);target.guardCharges--; }
+  const armorPenetration=Math.max(0,Math.min(1,Number(options.armorPenetration)||0));
+  if(armorPenetration>0&&multiplier<1)multiplier=1-(1-multiplier)*(1-armorPenetration);
+  if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3)*(1-armorPenetration);target.guardCharges--; }
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
    if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};const used=battle.actionDamageLedger[target.index]||0;damage=engine.capBossDamage(target,damage,used);}
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
@@ -740,7 +742,7 @@ function createDialog(){
   const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0,cooldownTurns=effect.cooldown_turns||effect.cooldown||4;
   battle.skillCooldowns[skill.id]=Math.max(1,(effect.cooldown||4)-mastered);
   if(effect.cooldown_turns)battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns-mastered);
-  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1)*(skill.damage_multiplier??skill.damage??effect.damage_multiplier??1),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="pierce")damage*=1.4;if(evolvedSkill?.id==="burst")damage*=1.35;
+  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1)*(skill.damage_multiplier??skill.damage??effect.damage_multiplier??1),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="burst")damage*=1.2;
   const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();const damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier));
   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier),ticks:effect.ticks||3};
@@ -761,7 +763,7 @@ function createDialog(){
   const target=battle.enemy,hadBossCast=!!(battle.telegraph&&battle.enemy?.type==="boss");
   let result={killed:false,dealt:0};
   battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
-  const evolutionHitOptions=evolvedSkill?.id==="pierce"?{ignoreArmor:true}:undefined;
+  const evolutionHitOptions=evolvedSkill?.id==="pierce"?{armorPenetration:.5}:undefined;
   if(effect.type==="aoe"||evolvedSkill?.id==="burst"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType,evolutionHitOptions);if(enemy===target)result=hit;}}
   else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType,evolutionHitOptions);
   battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
