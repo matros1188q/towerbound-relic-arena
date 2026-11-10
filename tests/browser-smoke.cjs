@@ -52,6 +52,24 @@ async function journey(type,name,viewport,url){
   await page.waitForFunction(()=>document.querySelectorAll('.tb-map-node').length===250,{timeout:15000});
   const mapNodeCount=await page.locator('.tb-map-node').count();
   assert.equal(mapNodeCount,250,name+' renders all 250 stages before combat');
+  const mapLayout=await page.evaluate(()=>{
+   const toolbar=document.querySelector('.tb-stage-toolbar'),grid=document.querySelector('.tb-map-layout'),nav=document.querySelector('.tb-bottom-nav');
+   return {toolbarBeforeGrid:!!toolbar&&!!grid&&!!(toolbar.compareDocumentPosition(grid)&Node.DOCUMENT_POSITION_FOLLOWING),
+    navButtons:nav?.querySelectorAll('button').length||0,navZ:Number(getComputedStyle(nav||document.body).zIndex),
+    navPointer:getComputedStyle(nav||document.body).pointerEvents,width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+  });
+  assert.equal(mapLayout.toolbarBeforeGrid,true,name+' places the compact selected-stage panel before the map grid');
+  assert.equal(mapLayout.navButtons,4,name+' exposes exactly four primary bottom navigation tabs');
+  assert.equal(mapLayout.navPointer,'auto',name+' keeps bottom navigation clickable');
+  await page.locator('[data-action="bottom-profile"]').click();
+  assert.equal(await page.locator('.tb-tabs button').count(),7,name+' groups character features into one compact subnavigation');
+  await page.locator('[data-tab="gear"]').click();
+  assert.ok(await page.locator('.tb-gear-slot.is-empty').count()>=1,name+' renders named empty equipment slots');
+  const emptySlot=await page.locator('.tb-gear-slot.is-empty').first().evaluate(el=>({label:el.querySelector('small')?.textContent,height:el.getBoundingClientRect().height}));
+  assert.ok(emptySlot.label&&!/слот\\s*\\d/i.test(emptySlot.label),name+' names the equipment slot by item type');
+  assert.ok(emptySlot.height<=80,name+' keeps empty equipment slots compact');
+  await page.locator('[data-action="bottom-map"]').click();
+  await page.waitForSelector('.tb-stage-toolbar');
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
@@ -110,9 +128,9 @@ async function journey(type,name,viewport,url){
  try{
   for(const [name,type] of [['Chromium',chromium],['Firefox',firefox],['WebKit',webkit]]){
    await journey(type,name,{width:1280,height:900},url);
-   await journey(type,name,{width:390,height:844},url);
+   await journey(type,name,{width:390,height:844},url);\n   await journey(type,name,{width:430,height:932},url);
   }
-  process.stdout.write('All six RPG browser journeys passed. WebKit mobile viewport emulation is not a physical iPhone Safari certification.\n');
+  process.stdout.write('All nine RPG browser journeys passed. WebKit mobile viewport emulation is not a physical iPhone Safari certification.\n');
  }catch(error){process.stderr.write((error&&error.stack)||String(error));process.exitCode=1;}
  finally{server.close();}
 })();
