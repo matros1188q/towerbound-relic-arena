@@ -1034,6 +1034,7 @@ function createDialog(){
  root.addEventListener("focusin",event=>{const option=event.target.closest("[data-branch-preview]");const panel=root.querySelector("#tbBranchDescription");if(option&&panel)panel.textContent=option.dataset.branchPreview;});
  root.addEventListener("pointerout",event=>{const option=event.target.closest("[data-branch-preview]");if(!option||option.contains(event.relatedTarget))return;const panel=root.querySelector("#tbBranchDescription"),c=live();if(panel&&c){const chosen=(classData(c).branches||[]).find(item=>item.id===c.branch);panel.textContent=chosen?specializationDescription(c.classId,chosen.id):"Нажми или наведи на ветку, чтобы прочитать её механику.";}});
  document.addEventListener("click",handleClick);
+  window.addEventListener("towerbound-auth-change",()=>{if(screen==="characters")render();});
  document.addEventListener("pointerdown",unlockAudioAndMusic,{capture:true,passive:true});
  function handleBattleKeys(event){
   if(screen!=="battle"||!battle||battle.paused||event.repeat||event.ctrlKey||event.metaKey||event.altKey)return;
