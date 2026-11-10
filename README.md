@@ -364,3 +364,39 @@ GitHub Actions checks JavaScript syntax, seven-class expansion, all balance conf
 - Skills without a damage multiplier now receive a neutral 1.0 multiplier instead of a zero multiplier, preventing a missing optional config field from suppressing attack damage.
 - Mute control text reflects the current enabled/disabled state.
 - Bumped the UI and cloud cache keys and extended smoke assertions for the fallback and visible Mute state.
+
+### 2026-11-10 — iPhone-first character hub, navigation and safe-area pass
+
+The following four UI commits are now part of `main`:
+
+- `96ac5fea9b93872efcb7600263a9b1cf0a03fa6c` — clarified the character hub and added a specialization preview/description area. The selected branch description is exposed through an accessible live region so the player can understand a specialization before choosing it.
+- `5da2a73cec0866841239add2de93ea2bbab5b6f5` — hardened iPhone safe-area handling and compact mobile layout, including the battle tutorial's action area near the home indicator.
+- `05575d4514e54126f658398b854814e53d7d3bbc` — consolidated mobile navigation and compact map layout. The stage action/summary toolbar is positioned before the map; the map uses a constrained five-column stage grid on mobile.
+- `6c8340cb5ecfb85f2195cee8da7331876ac046be` — preserved the existing account-tab contract while completing the character-hub navigation changes.
+
+Related supporting commits in the same UI pass:
+
+- `386aceebedad2997ef08f2c7420301c76f58f1ae` removed the remaining header and screen-navigation shortcuts so the bottom navigation is the global navigation surface.
+- `bc675c241ef4aae24b5f4ae18f40f2b90e69a54b` fixed a bottom-navigation tab action collision.
+- `699d8dec8aa0b7cde038b757af8ccd7a4ea3449c` fixed daily-chest availability inside the character/account hub; browser smoke coverage was moved to that hub.
+- `da97415ce9c885cd34046a57655ce86c0f96d9ae` keeps the tutorial action visible above the iPhone home indicator.
+- `b936db58943413f75476741e626290ac6ecf2dc9` moves the battle tutorial outside the clipped arena container so it is not cut off by arena overflow.
+- `d898ad47281bca1809e8e924b325ad2317949519` refreshes the PWA cache version for the mobile UI release.
+- Follow-up commits corrected the tutorial layout audit, portal assertion, combat/navigation overlap, and browser recovery fixture so pagehide autosave does not destroy the intentionally corrupted recovery test state.
+
+Implementation areas:
+- `rpg-rework-ui.js`: character/profile hub, specialization preview and account-tab behavior.
+- `native-pwa.css`: iPhone safe areas, compact empty gear slots, stage toolbar/map ordering, mobile navigation, tutorial positioning and touch targets.
+- `tests/browser-smoke.cjs`: regression coverage for mobile navigation, tutorial structure/visibility, account-hub daily chest and persisted recovery state.
+
+Current UI details documented by the implementation:
+- Empty equipment slots use their equipment type (weapon, chest, helmet, legs, gloves, accessory) and a compact empty-state label rather than generic numbered slots.
+- Specialization descriptions wrap within the mobile layout and are announced through an accessible live region.
+- The stage toolbar sits above the map; the stage grid is constrained to five columns to avoid mobile horizontal overflow.
+- The bottom navigation remains above page content and uses touch-friendly controls; old header shortcuts are removed.
+- Tutorial content is portalled outside the clipped battle arena and its action remains reachable above the iPhone home indicator.
+
+Verification boundary:
+- The browser smoke workflow is configured to exercise mobile layouts, including 390×844 and 430×932 viewports, alongside cross-browser checks. These are automated browser viewport tests, not a physical-device certification.
+- Do not claim that every screen has been visually validated on a real iPhone until a hands-on device pass is completed. Record the final GitHub Actions result for the exact release commit separately; a running workflow is not a passing test.
+- The four UI commits above are the current documented UI-pass head: `6c8340cb5ecfb85f2195cee8da7331876ac046be`.
