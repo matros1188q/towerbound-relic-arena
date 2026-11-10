@@ -260,6 +260,7 @@
  }
  function syncInitiative(){battle.turnOrder=buildInitiative();battle.turnIndex=0;battle.actor=battle.turnOrder[0]||{type:"player",id:"player",name:live().name};}
  function showPlayerTurn(){
+  battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
   battle.actor={type:"player",id:"player",name:live().name};battle.busy=false;battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
   for(const id of Object.keys(battle.skillCooldowns||{}))battle.skillCooldowns[id]=Math.max(0,battle.skillCooldowns[id]-1);
   battle.counterCooldownTurns=Math.max(0,(battle.counterCooldownTurns||0)-1);battle.ultimateCooldownTurns=Math.max(0,(battle.ultimateCooldownTurns||0)-1);
@@ -312,7 +313,30 @@
   applyEnemyHit(enemy,stats.damage);
  }
  function clearPendingTurnTimer(){if(pendingTimer!==null){clearTimeout(pendingTimer);pendingTimer=null;}}
- function scheduleEnemyTurnQueue(queue,index,token,delay){clearPendingTurnTimer();const safeDelay=Number(delay)||1000;pendingTimer=setTimeout(()=>{pendingTimer=null;runEnemyTurnQueue(queue,index,token);},safeDelay);}
+ function safeTimeoutMs(value,fallback=1000){
+  const parsed=Number(value);
+  return Number.isFinite(parsed)?Math.max(0,Math.min(60000,Math.round(parsed))):fallback;
+ }
+ function scheduleEnemyTurnQueue(queue,index,token,delay){
+  clearPendingTurnTimer();
+  const safeDelay=Math.max(16,safeTimeoutMs(delay,1000));
+  if(battle){battle.timerRemainingMs=safeDelay;battle.timerStartedAt=Date.now();}
+  pendingTimer=setTimeout(()=>{
+   pendingTimer=null;
+   if(battle){battle.timerRemainingMs=0;battle.timerStartedAt=0;}
+   runEnemyTurnQueue(queue,index,token);
+  },safeDelay);
+ }
+ function recoverPlayerTurn(error){
+  console.error("Towerbound battle recovered after turn error",error);
+  if(!battle)return;
+  clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
+  battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
+  battle.busy=false;battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
+  battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};battle.telegraph=null;
+  notify("Ошибка хода противника · управление возвращено игроку");
+  try{save();render();}catch(renderError){console.error("Battle recovery render failed",renderError);}
+ }
  function advanceToPlayerTurn(){
   if(!battle)return;
   clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
@@ -321,6 +345,7 @@
  }
  function runEnemyTurnQueue(queue,index,token){
   if(!battle||screen!=="battle"||token!==battle.enemyQueueToken)return;
+  battle.isPlayerTurn=false;
   try{
    if(battle.paused){scheduleEnemyTurnQueue(queue,index,token,250);return;}
    if(index>=queue.length){
@@ -339,20 +364,12 @@
    if(!battle)return;
    save();render();
    scheduleEnemyTurnQueue(queue,index+1,token,500);
-  }catch(error){
-   console.error("Towerbound enemy turn failed; restoring player control",error);
-   if(!battle)return;
-   clearPendingTurnTimer();
-   battle.busy=false;battle.isPlayerTurn=true;
-   battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};
-   battle.telegraph=null;
-   notify("Ошибка хода противника · управление возвращено игроку");
-   try{save();render();}catch(renderError){console.error("Battle recovery render failed",renderError);}
-  }
+  }catch(error){recoverPlayerTurn(error);}
  }
  function endPlayerTurn(){
   if(!battle||battle.actor?.type!=="player"||battle.paused)return;
-  clearPendingTurnTimer();battle.busy=false;
+  try{
+  battle.isPlayerTurn=false;clearPendingTurnTimer();battle.busy=false;
   const c=live(),stats=engine.getCombatStats(c);
   if(!battle.playerSkillUsed){
    const damage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5))),hit=applyTargetDamage(battle.enemy,damage,"physical");
@@ -370,6 +387,7 @@
   battle.busy=true;battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
   battle.telegraph=null;notify("Противники атакуют...");save();render();
   scheduleEnemyTurnQueue(queue,0,queueToken,500);
+  }catch(error){recoverPlayerTurn(error);}
  }
  function endTurnButton(){endPlayerTurn();}
 
@@ -544,7 +562,7 @@
    if(routeChoice==="elite"&&!plan.boss&&c.run.stage?.mobs?.length){c.run.stage.mobs[0].type="elite";c.run.stage.mobs[0].mechanic="shield";}
    if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
-   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
+   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
    const savedSnapshot=plan.uiBattleSnapshot;if(savedSnapshot){battle.round=Math.max(1,Number(savedSnapshot.round)||1);battle.skillCooldowns={...(savedSnapshot.skillCooldowns||{})};battle.comboStacks=savedSnapshot.comboStacks||0;battle.comboProgress={...(savedSnapshot.comboProgress||{})};}if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}syncInitiative();showPlayerTurn();screen="battle";save();render();
   }catch(error){notify(error.message);}
  }
@@ -774,7 +792,7 @@
   const guidance=root.querySelector(".tb-turn-guidance");if(guidance)guidance.textContent=battle.actor?.type==="player"?"Твой ход. Нажми «АТАКА» без затрат ресурса или выбери умение.":"Противники атакуют...";
   const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
   const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
-  const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph){const until=Number(battle.telegraph.until);telegraph.textContent=Number.isFinite(until)&&until>0?Math.max(0,(until-Date.now())/1000).toFixed(1)+" сек":"ПОСЛЕ ТВОЕГО ХОДА";}
+  const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph){const until=Number(battle.telegraph.until);telegraph.textContent=Number.isFinite(until)&&until>0?(Math.max(0,(until-Date.now())/1000)).toFixed(1)+" сек":"ПОСЛЕ ТВОЕГО ХОДА";}
   root.querySelector(".tb-panel-actions")?.classList.toggle("tb-player-turn",!battle.busy&&!battle.paused);
   arena.classList.toggle("tb-shaking",!!(battle.shakeUntil>Date.now()));
   arena.classList.toggle("tb-phase-flash",!!(battle.phaseFlashUntil>Date.now()));
@@ -922,7 +940,24 @@
    case "skill":{const skill=activeSkill(live());if(skill)playerAction(skill.id,0);else notify("Нет доступного атакующего умения");break;}
    case "potion":try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано. Слот этой цели потрачен.");}catch(error){notify(error.message);}break;
    case "speed":try{engine.setSpeed2(live().id,!live().run.speed2,battle.stage);preferredSpeed2=live().run.speed2;localStorage.setItem("tb-rpg-speed-v2",preferredSpeed2?"2":"1");save();render();}catch(error){notify(error.message);}break;
-   case "pause":if(battle){if(!battle.paused){battle.paused=true;if(pendingTimer){clearTimeout(pendingTimer);pendingTimer=null;battle.remainingResponseMs=Math.max(0,(battle.telegraph?.until||Date.now())-Date.now());}}else{battle.paused=false;if(battle.telegraph){const delay=battle.remainingResponseMs===undefined?Math.max(0,battle.telegraph.until-Date.now()):battle.remainingResponseMs;battle.telegraph.until=Date.now()+delay;battle.remainingResponseMs=undefined;clearTimeout(pendingTimer);pendingTimer=setTimeout(()=>{pendingTimer=null;resolveEnemyTelegraph();},delay);}else scheduleEnemyTelegraph();}save();render();}break;
+   case "pause":if(battle){
+    if(!battle.paused){
+     battle.paused=true;
+     if(pendingTimer){clearTimeout(pendingTimer);pendingTimer=null;}
+     const until=Number(battle.telegraph?.until),remaining=Number(battle.remainingResponseMs);
+     battle.remainingResponseMs=Number.isFinite(remaining)&&remaining>0?remaining:(Number.isFinite(until)&&until>0?Math.max(0,until-Date.now()):0);
+    }else{
+     battle.paused=false;
+     if(battle.telegraph){
+      const remaining=Number(battle.remainingResponseMs),until=Number(battle.telegraph.until);
+      const delay=Number.isFinite(remaining)&&remaining>0?remaining:(Number.isFinite(until)&&until>0?Math.max(0,until-Date.now()):0);
+      const safeDelay=safeTimeoutMs(delay,0);
+      battle.telegraph.until=Date.now()+safeDelay;battle.remainingResponseMs=0;
+      clearTimeout(pendingTimer);pendingTimer=setTimeout(()=>{pendingTimer=null;resolveEnemyTelegraph();},safeDelay);
+     }else scheduleEnemyTelegraph();
+    }
+    save();render();
+   }break;
    case "heal-checkpoint":try{const result=engine.checkpointHeal(live().id);save();render();notify("HP восстановлено · −20% XP до этапа "+result.penaltyUntil);}catch(error){notify(error.message);}break;
    case "auto":try{if(!live().run.runModifierId)throw new Error("Сначала выбери модификатор забега");const result=engine.autoBattle(live().id);selectedStage=live().progress.currentStage;save();render();notify("Авто-бой: "+result.cleared+" этапов · "+result.xp+" опыта · "+result.stopped);}catch(error){notify(error.message);}break;
    case "restart":try{engine.voluntaryRestart(live().id);selectedStage=1;screen="characters";battle=null;save();render();notify("Забег завершён добровольно · весь опыт сохранён");}catch(error){notify(error.message);}break;
