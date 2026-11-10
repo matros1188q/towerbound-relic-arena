@@ -407,7 +407,7 @@ Implemented directly on `main`:
 
 - Added a separate **АТАКА** control above the six existing skill/counter/ultimate slots. It uses no resource, deals weapon-based damage and restores up to **15 resource on a successful hit**. The control is available once per player turn and remains separate from the skill loadout.
 - Basic attack scaling: Assassin / Duelist / Destroyer = 100%; Bishop / Elemental Lord = 50%; Dragonkin / Shaman = 75% by default. Dragonkin's Fire Dragon and Shaman's Nature branches use 100%; Black Dragon and Dark Gods use 50%.
-- Increased Duelist's resource pool to 100 so the same +15 regeneration rule is meaningful for that class; its configured skill costs remain class-specific.
+- Increased Duelist's resource pool to 100 so the same +15 regeneration rule is meaningful for that class; its base skill costs 22 resource, while counter and ultimate use their configured 18 / 42 costs.
 - Replaced generic trophy-style equipment drops with typed equipment items. Gear now rolls a real slot (weapon, chest, head or accessory), rarity, item level, generated name and non-zero stats. Weapon rolls attack/crit; chest rolls defense/HP; helmet rolls defense/HP; accessories roll mixed offensive stats.
 - Normal equipment can drop throughout the tower; the normal equipment chance is 40%, elite equipment chance is 35%, and first-clear boss rewards guarantee an epic weapon. Boss rare/epic and pity-based legendary/godlike rewards now use the same equipment generator. Crafting materials, stones and scrolls remain separate non-equipment inventory items.
 - Added per-slot equipment scoring and **ЭКИПИРОВАТЬ ЛУЧШЕЕ**. It compares the sum of weighted stats across equipped and bag items, equips the best item in each slot, and returns replaced gear to the bag.
@@ -436,3 +436,27 @@ Implemented directly on `main`:
 - `32ae78223ee6a39e2d6965c0e6794985e366d792` — final tutorial-regex correction in the smoke test.
 
 The final GitHub Actions result for the exact `main` release commit must be checked in the Actions links after the workflows finish. Passing automated viewport tests is not a substitute for a hands-on physical iPhone test.
+
+### 2026-11-10 — Follow-up fixes and release verification
+
+- Refined generated equipment names so rarity adjectives agree with the masculine item names (for example, `Эпический Клинок тьмы`, `Эпический Доспех бастиона`, `Эпический Шлем затмения`).
+- The Duelist now has a 100-point resource pool, a 22-point base-skill cost and the standard 18 / 42 counter / ultimate costs, so a +15 basic-attack return is useful without making skills free.
+- Expanded browser regression to click the new basic attack in a live battle and verify both the selected target's HP decreases and resource increases to 15. It also clicks **ЭКИПИРОВАТЬ ЛУЧШЕЕ** and **РАЗОБРАТЬ ВЕСЬ СЕРЫЙ МУСОР**, verifies the selected best weapon/chest, confirms common items convert to materials, and confirms a rare-or-better item remains available for individual salvage.
+- Fixed the mobile battle panel's vertical budget after adding the extra attack control. At 390×844 the automated browser geometry check measured the attack control at y=522–566, skill grid at y=576–681, End Turn at y=725–777, and potion belt at y=791–829; the End Turn hit target no longer overlaps the potion belt.
+- Refreshed the engine, combat UI and stylesheet cache keys in `index.html` to v12 / v20 / v9 respectively.
+
+**Verified on `main` commit `3b9e3201ec523f74b1b7cc85595a1d5f49e010a3`:**
+- RPG regression suite, including the new `tests/loot-combat-update.test.cjs`: passed.
+- Playwright RPG smoke, including the basic attack, loot inventory controls and 390×844 / 430×932 mobile map checks: passed (run [42834373275](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/42834373275)).
+- GitHub Pages deployment: passed (run [42834505077](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/42834505077)).
+- Cross-browser Chromium / Firefox / WebKit smoke: still running at the time this note was written (run [42834505065](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/42834505065)).
+- A physical iPhone session has not been performed; the viewport checks are Playwright browser emulation.
+
+Additional implementation / verification commits after the initial feature block:
+- `d4e4c3b83bdfdad3c4d0c84bf8430bc8f2b4804b` — distribute ultimate damage across three hits while preserving the 35% boss action cap.
+- `d9b3a8860d19435f7442297b410dd69abea7ff42` — prevent equipment changes from restoring a dead character to positive HP.
+- `f404cb776a1af60b8a3eaa61ae8d1a2c221d0441` and `821f34c5d7ff3da10ac0ffac1036694a5500930f` — Duelist resource capacity and skill cost balance.
+- `69ee28695694033fc1736037a9ad6c3c71258ee0` — consistent Russian equipment naming.
+- `2c1cca81e3f25bd85cb79dafab4be44a8dc3ff69`, `9eab3965b9ecd9b58bfea9a7b237cf5a267162db`, and `ee8b8bbe7c1877d172f05b0c01421735e220722b` — mobile battle control sizing and stylesheet correction.
+- `f2791fd5aa3f09f9d8103b335e3c065cb1cf3f40` — cache-bust the engine, combat UI and mobile stylesheet.
+- `3df3da84a2627c7777bcc0ae8175401a40a2090d`, `a09768097b9f6c7e48d27ec2c6dd15da8fd083d5`, `e994ad59f7e5f8f05afe44e37c1fbae39db381bc`, and `3b9e3201ec523f74b1b7cc85595a1d5f49e010a3` — browser coverage for Equip Best, bulk gray salvage, basic attack turn flow and refreshed asset cache keys.
