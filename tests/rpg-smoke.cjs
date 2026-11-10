@@ -313,7 +313,7 @@ const {chromium}=require('playwright');
   assert.doesNotMatch(await page.locator('#tbRpg').innerText(),/NaN\s*сек/i,'battle HUD never renders a NaN seconds countdown');
   const intervalAudit=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0],enemy={type:'normal',role:'normal'};return window.TowerboundRework.getEnemyStats(c.id,c.progress.currentStage,enemy).attackIntervalMs;});
   assert.ok(Number.isFinite(intervalAudit)&&intervalAudit>0,'enemy attack interval remains a finite positive number');
-  assert.equal(await page.locator('[data-panel-skill]').count(),4,'four configured attack skills are visible');
+  assert.equal(await page.locator('[data-panel-skill]').count(),6,'six configured skill slots are visible');
   assert.equal(await page.locator('[data-counter]').count(),1,'class counter occupies slot five');
   assert.equal(await page.locator('[data-ultimate]').count(),1,'class ultimate occupies slot six');
   assert.equal(await page.locator('.tb-panel-skill').count(),6,'six skill/counter/ultimate buttons are rendered');
