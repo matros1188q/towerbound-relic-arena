@@ -253,7 +253,7 @@
     result.itemLevelBonus+=Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level;
     for(const key of ["attack","defense","health","crit","critDamage","spellPower","fireDamage","iceDamage","darkDamage","fireResist","iceResist","darkResist","physicalResist"])result[key]+=(item.stats?.[key]||0);
     result.attack+=refine.attack*(item.refine||0);result.defense+=refine.defense*(item.refine||0);result.health+=refine.health*(item.refine||0);
-    for(const socket of item.sockets||[]){
+    for(const socket of item.installedGems||item.sockets||[]){
      const stone=socket.stoneType||socket.stone_type||{},level=socket.level||1;
      result.attack+=(stone.attack_per_level||0)*level;result.defense+=(stone.defense_per_level||0)*level;
      result.health+=(stone.health_per_level||0)*level;result.crit+=(stone.crit_per_level||0)*level;
@@ -940,13 +940,27 @@
    const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId);
    const stone=character.bag.find(entry=>entry.id===stoneId&&entry.type==="enhancement_stone");
    if(!item||!stone)throw new Error("Equipment or stone not found");
-   item.sockets=item.sockets||[];
-   if(item.sockets.length>=(item.socketsAvailable||0))throw new Error("Use a chisel to add an equipment socket first");
+   item.sockets=Array.isArray(item.sockets)?item.sockets:[];
+   item.installedGems=Array.isArray(item.installedGems)?item.installedGems:item.sockets.map(entry=>clone(entry));
+   const installed=item.installedGems.length?item.installedGems:item.sockets;
+   if(Math.max(0,Number(item.socketsAvailable)||0)-installed.length<=0)throw new Error("Нет свободного гнезда. Сначала просверли гнездо долотом.");
+   if(!stone.stoneType||typeof stone.stoneType!=="object")throw new Error("У камня повреждены данные");
    const stoneClass=stone.stoneType.class_id||stone.stoneType.classId,stoneBranch=stone.stoneType.branch_id||stone.stoneType.branchId;
-   if(stoneClass!==character.classId||stoneBranch!==character.branch)throw new Error("Stone does not match the active specialization");
-   item.sockets.push({stoneType:stone.stoneType,level:stone.level});
-   character.bag=character.bag.filter(entry=>entry.id!==stoneId);
-   return clone(item);
+   if(stoneClass!==character.classId||stoneBranch!==character.branch)throw new Error("Камень не подходит к текущей специализации");
+   const gem={stoneType:clone(stone.stoneType),level:Math.max(1,Number(stone.level)||1),stoneId:stone.id};
+   item.installedGems.push(gem);item.sockets=item.installedGems.map(entry=>clone(entry));
+   character.bag=character.bag.filter(entry=>entry.id!==stoneId);return clone(item);
+  }
+  function extractGem(characterId,itemId,gemIndex){
+   const character=getChar(characterId),item=character.gear.find(entry=>entry&&entry.id===itemId)||character.bag.find(entry=>entry&&entry.id===itemId);
+   if(!item)throw new Error("Equipment not found");
+   item.installedGems=Array.isArray(item.installedGems)?item.installedGems:(Array.isArray(item.sockets)?item.sockets.map(entry=>clone(entry)):[]);
+   if(!Number.isInteger(gemIndex)||gemIndex<0||gemIndex>=item.installedGems.length)throw new Error("Камень в этом гнезде не найден");
+   const [gem]=item.installedGems.splice(gemIndex,1),stoneType=gem.stoneType||gem.stone_type;
+   if(!stoneType)throw new Error("Невозможно извлечь камень: данные повреждены");
+   item.sockets=item.installedGems.map(entry=>clone(entry));
+   const returned={id:id(),type:"enhancement_stone",stoneType:clone(stoneType),level:Math.max(1,Number(gem.level)||1)};
+   character.bag.push(returned);return clone(returned);
   }
   function refine(characterId,itemId,settings){
    settings=settings||{};
@@ -1325,7 +1339,7 @@
   return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,bossPhaseInfo,resolveReaction,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,sanitizeActiveStage,getEnemyStats,mitigationMultiplier,resistanceMultiplier,capBossDamage,basicAttackStats,restoreResource,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
-   rollLoot,mergeStones,craftStone,equipItem,equipBest,salvageGrayItems,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
+   rollLoot,mergeStones,craftStone,equipItem,equipBest,salvageGrayItems,salvageItem,addSocket,socketStone,extractGem,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,dailyChestSnapshot,claimDailyChest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
