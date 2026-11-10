@@ -198,7 +198,12 @@
  function elementIcon(type){return({fire:"🔥",ice:"❄",dark:"☠",physical:"⚔"})[type]||"◇";}
  function elementLabel(type){return({fire:"Огонь",ice:"Лёд",dark:"Тьма",physical:"Физический"})[type]||type;}
  function setBattleTarget(index){
-  if(!battle||!battle.enemies[index]||!battle.enemies[index].alive)return;
+  if(!battle||!battle.enemies[index])return;
+  if(!battle.enemies[index].alive||battle.enemies[index].hp<=0){
+   const next=battle.enemies.find(enemy=>enemy.alive&&enemy.hp>0);
+   if(next){setBattleTarget(next.index);return;}
+   finishCurrentEnemy();return;
+  }
   if(battle.telegraph&&battle.busy){notify("Дождись завершения хода противника");return;}
   try{engine.selectTarget(live().id,index);}catch(error){notify(error.message);return;}
   battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(live().id,battle.stage,battle.enemy);
@@ -403,6 +408,7 @@
    '<section class="tb-system-card"><h2>Общий стеш · '+(engine.state.stash||[]).length+'/'+balance.stash.slots+'</h2><p>Только '+esc(balance.stash.min_rarity)+' и выше. Предмет привязывается при первом использовании. Передача — один раз в день.</p>'+(stash||'<small>Общий стеш пуст.</small>')+'<h3>Экипировка для передачи</h3>'+(depositable||'<small>Нет предметов эпик+ для передачи.</small>')+'</section>'+
    '<section class="tb-system-card"><h2>PvP-арена · '+(account.pvpPoints||0)+' очков</h2><p>Поиск реального игрока по боевой мощи ±15%. Снимок его класса, умений, талантов и экипировки загружается из Supabase. Боты отключены.</p><div class="tb-system-actions">'+button("pvp-match","НАЙТИ РЕАЛЬНОГО СОПЕРНИКА")+(pending?button("pvp-fight","СРАЗИТЬСЯ · "+esc(pending.opponent?.name||"СОПЕРНИК")):"")+'</div>'+(pending?.opponent?.online?'<div class="tb-system-row"><div><b>'+esc(pending.opponent.name)+' · '+esc(balance.classes.classes[pending.opponent.classId]?.name||pending.opponent.classId)+'</b><small>Уровень '+pending.opponent.level+' · '+pending.opponent.bp+' BP · этап '+pending.opponent.maxStage+' · HP '+pending.opponent.stats.maxHp+' · атака '+pending.opponent.stats.attack+' · защита '+pending.opponent.stats.defense+'</small></div><span>ОНЛАЙН-ПРИЗРАК</span></div>':'')+'<div class="tb-system-products">'+store+'</div><p class="tb-online-warning">Важно: текущая симуляция боя и локальные PvP-очки пока не являются серверно подтверждённым результатом. Глобальный PvP-рейтинг не начисляет очки из браузера.</p><button data-action="leaderboard">ОТКРЫТЬ ГЛОБАЛЬНЫЙ ТОП-100</button></section>'+
    '<section class="tb-system-card"><h2>Парагон · '+(paragon.level||0)+'/100</h2><p>XP: '+(paragon.xp||0)+' / '+balance.paragon.xp_per_point+'. Доступен после уровня100.</p>'+paragonRows+button("paragon-reset","СБРОСИТЬ ПАРАГОН · "+balance.paragon.reset_cost_silver+" СЕРЕБРА",Object.values(paragon.stats||{}).reduce((a,b)=>a+b,0)?"":"disabled")+'</section>'+
+   '<section class="tb-system-card"><h2>Восстановление боя</h2><p>Если бой завис, можно выйти на карту и начать этот же этап заново. Прогресс персонажа не сбрасывается.</p><div class="tb-system-actions">'+button("reset-current-battle","ВЫЙТИ НА КАРТУ И СБРОСИТЬ БОЙ")+'</div></section>'+
    '<section class="tb-system-card"><h2>Управление персонажем</h2><p>Удаление или полный сброс требуют двух подтверждений и точного ввода ника.</p><div class="tb-system-actions">'+button("reset-character","ПОЛНЫЙ СБРОС ПЕРСОНАЖА")+button("delete-character","УДАЛИТЬ ПЕРСОНАЖА")+'</div></section>'+
    '<section class="tb-system-card"><h2>Комбат-лог · последние '+(c.combatLog||[]).length+'/'+balance.settings.combat_log_max_events+'</h2>'+((c.combatLog||[]).slice(-balance.settings.combat_log_max_events).reverse().map(x=>'<div class="tb-system-row"><small>'+esc(new Date(x.at).toLocaleTimeString())+'</small><span>'+esc(x.event)+'</span></div>').join("")||'<small>Событий пока нет.</small>')+'</section>'+
    '</section>';
@@ -562,7 +568,13 @@
   layer.appendChild(number);setTimeout(()=>number.remove(),1000);
  }
  function applyTargetDamage(target,rawDamage,damageType,options){
-  options=options||{};const c=live();let revived=false,multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
+  options=options||{};const c=live();
+  if(!target||target.hp<=0||!target.alive){
+   const next=(battle?.enemies||[]).find(enemy=>enemy.alive&&enemy.hp>0);
+   if(next&&battle){if(next.index!==battle.targetIndex)setBattleTarget(next.index);return{damage:0,dealt:0,multiplier:1,killed:false,revived:false,recovered:true};}
+   if(battle)finishCurrentEnemy();return{damage:0,dealt:0,multiplier:1,killed:false,revived:false,recovered:true};
+  }
+  let revived=false,multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
   if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);target.guardCharges--; }
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
@@ -791,6 +803,7 @@
    case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
    case "characters":screen="characters";render();break;
    case "map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;screen="map";battle=null;render();save();break;
+   case "reset-current-battle":{const c=live();stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(c?.run?.stage){c.run.stage=null;c.run.active=true;}battle=null;selectedStage=c?.progress?.currentStage||selectedStage;screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" сохранён");break;}
    case "discard-battle":{const c=live(),stage=c.run.stage?.stage||c.progress.currentStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;c.run.stage=null;battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
    case "profile":profileTab="stats";screen="profile";render();break;
    case "profile-gear":profileTab="gear";screen="profile";render();break;
