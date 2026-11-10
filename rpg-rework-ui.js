@@ -766,11 +766,11 @@
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
   if(!nav){
    nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");
-   nav.innerHTML='<button type="button" data-action="bottom-map" data-tab="map"><span>⌂</span><small>Карта</small></button><button type="button" data-action="bottom-profile" data-tab="profile"><span>♙</span><small>Персонаж</small></button><button type="button" data-action="bottom-shop" data-tab="shop"><span>◇</span><small>Магазин</small></button><button type="button" data-action="bottom-rating" data-tab="leaderboard"><span>♜</span><small>Рейтинг</small></button>';
+   nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⌂</span><small>Карта</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>Персонаж</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>Магазин</small></button><button type="button" data-action="bottom-rating" data-nav-tab="leaderboard"><span>♜</span><small>Рейтинг</small></button>';
    host.appendChild(nav);
   }
   const active=screen==="battle"?"map":screen;
-  nav.querySelectorAll("[data-tab]").forEach(b=>{const on=b.dataset.tab===active;b.classList.toggle("active",on);b.setAttribute("aria-current",on?"page":"false");});
+  nav.querySelectorAll("[data-nav-tab]").forEach(b=>{const on=b.dataset.navTab===active;b.classList.toggle("active",on);b.setAttribute("aria-current",on?"page":"false");});
  }
  function render(){
   if(!engine)return;
