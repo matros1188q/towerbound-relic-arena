@@ -56,11 +56,11 @@ const overlay=document.createElement('div');overlay.id='tbCloudOverlay';overlay.
 </section>`;document.body.appendChild(overlay);
 const say=m=>{$('#tbCloudMessage').textContent=m||'';};
 const setStatus=(textValue,kind)=>{status.text=textValue;status.kind=kind;button.textContent=textValue;button.dataset.state=kind;document.querySelectorAll('.tb-account-button').forEach(node=>{const login=session?.user?.email?String(session.user.email).split('@')[0]:'',label=login||((kind==='online')?'В СЕТИ':'АККАУНТ');node.textContent=label.toUpperCase();});};
-const open=()=>{overlay.classList.add('open');overlay.style.display='grid';},close=()=>{if(!overlay.classList.contains('login-required')){overlay.classList.remove('open');overlay.style.display='none';}};
+const open=()=>{overlay.classList.add('open');overlay.style.display='grid';overlay.style.visibility='visible';},close=()=>{if(!overlay.classList.contains('login-required')){overlay.classList.remove('open');overlay.style.display='none';overlay.style.visibility='hidden';}};
 const rememberKey='tb-remember-me',remembered=()=>{try{return localStorage.getItem(rememberKey)==='true';}catch(e){return false;}};
 const setRemember=value=>{try{if(value)localStorage.setItem(rememberKey,'true');else localStorage.removeItem(rememberKey);}catch(e){}};
 const showLoginGate=(force=false)=>{overlay.classList.remove('login-required');$('#tbCloudTitle').textContent='Вход в игру';$('#tbCloudIntro').textContent='Войди в игровой аккаунт, чтобы открыть выбор персонажа.';$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudClose').hidden=!force;$('#rememberMe').checked=remembered();if(force){overlay.classList.add('open');overlay.style.display='grid';overlay.style.visibility='visible';}else{overlay.classList.remove('open');overlay.style.display='none';overlay.style.visibility='hidden';}};
-const hideLoginGate=()=>{overlay.classList.remove('login-required','open');overlay.style.display='none';$('#tbCloudClose').hidden=false;};
+const hideLoginGate=()=>{overlay.classList.remove('login-required','open');overlay.style.display='none';overlay.style.visibility='hidden';$('#tbCloudClose').hidden=false;};
 button.addEventListener('click',open);$('#tbCloudClose').addEventListener('click',close);
 overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
 async function signIn(login,password,remember=true){if(!client)throw new Error('Supabase ещё подключается');const clean=String(login||'').trim().toLowerCase();if(!/^[a-z0-9][a-z0-9._-]{2,31}$/.test(clean))throw new Error('Логин: 3–32 символа, латиница, цифры, точка, дефис или подчёркивание');if(String(password||'').length<6)throw new Error('Пароль должен содержать минимум 6 символов');setRemember(remember);const {data,error}=await client.auth.signInWithPassword({email:clean+'@towerbound.game',password:String(password)});if(error)throw error;if(!data.session)throw new Error('Supabase не вернул активную сессию');await onSession(data.session);return true;}
@@ -108,7 +108,7 @@ async function chooseSource(remote){
   try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
   $('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · '+(session.user.email||'ПОДКЛЮЧЕНО'),'online');say('Аккаунт подключён. Облачная версия актуальна.');return;
  }
- conflict=true;$('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=false;$('#tbCloudSignedIn').hidden=true;
+ conflict=true;overlay.classList.add('open');overlay.style.display='grid';overlay.style.visibility='visible';$('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=false;$('#tbCloudSignedIn').hidden=true;
  $('#tbCloudIntro').textContent='Найдены две версии прогресса. Автоматически ничего не перезаписываем.';
  $('#tbCloudAccount').textContent=session.user.email+' · облачная версия №'+revision;
  say('Выбери источник прогресса.');window.__TB_CLOUD_PENDING_REMOTE=remote;window.__TB_CLOUD_PENDING_LOCAL=local;
