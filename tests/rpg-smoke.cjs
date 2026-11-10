@@ -288,6 +288,7 @@ const {chromium}=require('playwright');
   assert.ok(skillDebugLogs.length>0,'browser console emitted SKILL DEBUG objects');
   assert.ok(skillDebugLogs[0].id.startsWith("assassin.base."),'first combat skill resolves from Assassin base skills');
   console.log("SKILL DEBUG CAPTURE:",JSON.stringify(skillDebugLogs[0]));
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=window.TowerboundRework.maxHp(c);window.saveTowerboundRework();});
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>Number(document.querySelector('.tb-arena-top')?.innerText.match(/РАУНД\\s+(\\d+)/)?.[1]||0)>=3&&document.querySelector('[data-action="end-turn"]')?.isEnabled(),{timeout:10000});
   await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.resource=0;window.saveTowerboundRework();});
