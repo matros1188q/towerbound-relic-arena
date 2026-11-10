@@ -109,18 +109,6 @@
       "transparency": true,
       "source_filename": "ead1c2a5-2854-4a9c-83b7-d8964fd737cb",
       "short_description": "Living flesh-and-arcane heart fused to tower masonry"
-    },
-    {
-      "filename": "b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg",
-      "relative_path": "art-inbox/01-characters/b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg",
-      "category": "bosses",
-      "exact_asset_id": "boss.crimson-regent",
-      "image_format": "jpg",
-      "width": 768,
-      "height": 1024,
-      "transparency": false,
-      "source_filename": "b0b7437e-c2ee-4a59-b644-ffce88f1d442",
-      "short_description": "Crimson armored demon regent with a blood-red greatblade"
     }
   ]
 }

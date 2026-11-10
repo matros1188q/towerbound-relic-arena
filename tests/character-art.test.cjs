@@ -45,11 +45,11 @@ for (const manifest of [heroManifest, enemyManifest, bossManifest]) {
 const requiredClassMappings = [
   'assassin:"heroes/reaper.png"',
   'bishop:"heroes/arcanist.png"',
-  'dragonkin:"enemies/crimson-executioner.png"',
+  'dragonkin:"heroes/dragonkin.jpg"',
   'destroyer:"heroes/warden.png"',
-  'elemental:"bosses/ice-abbot.png"',
-  'duelist:"enemies/phantom-duelist.png"',
-  'shaman:"bosses/ash-patriarch.png"'
+  'elemental:"heroes/elemental.jpg"',
+  'duelist:"heroes/duelist.jpg"',
+  'shaman:"heroes/shaman.jpg"'
 ];
 for (const mapping of requiredClassMappings) assert.ok(ui.includes(mapping), 'missing class mapping: ' + mapping);
 

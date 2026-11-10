@@ -18,11 +18,11 @@
  const classPortraits={
   assassin:"heroes/reaper.png",
   bishop:"heroes/arcanist.png",
-  dragonkin:"art-inbox/01-characters/1ce15225-7162-4858-8fa7-41363266e71e.jpg",
+  dragonkin:"heroes/dragonkin.jpg",
   destroyer:"heroes/warden.png",
-  elemental:"art-inbox/01-characters/50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg",
-  duelist:"art-inbox/01-characters/a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg",
-  shaman:"art-inbox/01-characters/70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg"
+  elemental:"heroes/elemental.jpg",
+  duelist:"heroes/duelist.jpg",
+  shaman:"heroes/shaman.jpg"
  };
  const mobPortraits={
   "shadow-goblin":"enemies/shadow-goblin.png",
@@ -66,7 +66,7 @@
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  function rarityClass(value){return ({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[value]||"common");}
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
@@ -75,7 +75,7 @@
  function portrait(id){const src=classPortraits[id]||classPortraits.assassin;return src.startsWith("art-inbox/")?"./"+src:CHARACTER_ART_ROOT+src;}
  function enemyPortrait(target){
   if(target?.type==="boss"||target?.role==="boss"){
-   if(/багров|crimson regent/i.test(String(target?.name||target?.id||"")))return "./art-inbox/01-characters/b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg";
+   if(/багров|crimson regent/i.test(String(target?.name||target?.id||target?.mobId||"")))return CHARACTER_ART_ROOT+"bosses/crimson-regent.jpg";
    const stage=Math.max(1,Number(battle?.stage)||1);
    return CHARACTER_ART_ROOT+bossPortraits[(Math.ceil(stage/10)-1)%bossPortraits.length];
   }
@@ -195,6 +195,28 @@
    osc.connect(gain);gain.connect(ctx.destination);osc.start(now);osc.stop(now+p.duration+0.02);
    if(kind==="crit"){const chime=ctx.createOscillator(),cg=ctx.createGain();chime.type="sine";chime.frequency.setValueAtTime(980,now);chime.frequency.exponentialRampToValueAtTime(440,now+0.16);cg.gain.setValueAtTime(0.0001,now);cg.gain.exponentialRampToValueAtTime(volume*0.09,now+0.01);cg.gain.exponentialRampToValueAtTime(0.0001,now+0.16);chime.connect(cg);cg.connect(ctx.destination);chime.start(now);chime.stop(now+0.17);}
   }catch(error){}
+ }
+ function syncMusic(){
+  if(!audioContext)return;
+  const prefs=settings(),enabled=prefs.music_enabled!==false;
+  const volume=Math.max(0,Math.min(1,(prefs.volume_master??.8)*(prefs.volume_music??.7)));
+  const now=audioContext.currentTime;
+  if(!musicNodes){
+   const master=audioContext.createGain();master.gain.value=.0001;master.connect(audioContext.destination);
+   const low=audioContext.createOscillator(),high=audioContext.createOscillator();
+   low.type="sine";high.type="triangle";low.frequency.value=55;high.frequency.value=82.41;
+   const lowGain=audioContext.createGain(),highGain=audioContext.createGain();lowGain.gain.value=.7;highGain.gain.value=.18;
+   low.connect(lowGain);high.connect(highGain);lowGain.connect(master);highGain.connect(master);
+   low.start();high.start();musicNodes={master,low,high};
+  }
+  const freqs=screen==="battle"?[73.42,110]:[55,82.41];
+  musicNodes.low.frequency.setTargetAtTime(freqs[0],now,1.2);
+  musicNodes.high.frequency.setTargetAtTime(freqs[1],now,1.2);
+  musicNodes.master.gain.cancelScheduledValues(now);
+  musicNodes.master.gain.setTargetAtTime(enabled?volume*.045:0.0001,now,.8);
+ }
+ function unlockAudioAndMusic(){
+  try{const AudioCtor=window.AudioContext||window.webkitAudioContext;if(!AudioCtor)return;if(!audioContext)audioContext=new AudioCtor();if(audioContext.state==="suspended")audioContext.resume();syncMusic();}catch(error){}
  }
  function elementIcon(type){return({fire:"🔥",ice:"❄",dark:"☠",physical:"⚔"})[type]||"◇";}
  function elementLabel(type){return({fire:"Огонь",ice:"Лёд",dark:"Тьма",physical:"Физический"})[type]||type;}
@@ -368,7 +390,7 @@
  }
   function systemsScreen(){
   const c=live();if(!c)return characterList();
-  const account=engine.state.account,prefs={sound_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,language:"ru",disable_refinement_glow:false,disable_particles:false,invert_camera:false,combat_log_toggle:true,...(account.settings||{})};
+  const account=engine.state.account,prefs={sound_enabled:true,music_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,language:"ru",disable_refinement_glow:false,disable_particles:false,invert_camera:false,combat_log_toggle:true,...(account.settings||{})};
   const daily=engine.dailySnapshot(c.id),tutorial=c.tutorial||{completed:false,step:0,rewardClaimed:false};
   const rank={Обычная:0,Редкая:1,Эпическая:2,Легендарная:3,Богоподобная:4};
   const claimed=c.achievements||[];
@@ -392,7 +414,7 @@
   }).join("");
   const paragon=c.paragon||{level:0,xp:0,stats:{}};
   const paragonRows=balance.paragon.stats.map(stat=>'<div class="tb-system-row"><div><b>'+esc(stat)+'</b><small>Ранг '+(paragon.stats?.[stat]||0)+'</small></div><button data-paragon-stat="'+stat+'" '+(c.level<balance.paragon.unlock_level||Object.values(paragon.stats||{}).reduce((a,b)=>a+b,0)>=paragon.level?'disabled':'')+'>+1</button></div>').join("");
-  const settings='<div class="tb-system-settings"><label>Звук: Вкл/Выкл <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><button type="button" class="tb-secondary" data-action="toggle-mute">'+(prefs.sound_enabled!==false?'ЗВУК ВКЛ · MUTE':'ЗВУК ВЫКЛ · ВКЛ')+'</button><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Авто-разбор обычных и редких предметов ниже ilvl N <input type="checkbox" data-setting="autoSalvage" '+(prefs.autoSalvage?'checked':'')+'></label><label>Порог ilvl для авто-разбора <input type="number" min="1" max="120" data-setting="autoSalvageBelow" value="'+(prefs.autoSalvageBelow||40)+'"></label><label>Чистый экран · скрыть цифры урона и второстепенные иконки <input type="checkbox" data-setting="clean_ui" '+(prefs.clean_ui?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Easy</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Normal</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Hardcore</option></select></label></div><div class="tb-system-actions"><button type="button" data-action="cloud-account">ОБЛАЧНЫЙ АККАУНТ</button><button type="button" data-action="cloud-sync">СИНХРОНИЗИРОВАТЬ</button></div>';
+  const settings='<div class="tb-system-settings"><label>Звуковые эффекты: Вкл/Выкл <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><label>Фоновая музыка: Вкл/Выкл <input type="checkbox" data-setting="music_enabled" '+(prefs.music_enabled!==false?'checked':'')+'></label><button type="button" class="tb-secondary" data-action="toggle-mute">'+(prefs.sound_enabled!==false?'ЗВУК ВКЛ · MUTE':'ЗВУК ВЫКЛ · ВКЛ')+'</button><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Авто-разбор обычных и редких предметов ниже ilvl N <input type="checkbox" data-setting="autoSalvage" '+(prefs.autoSalvage?'checked':'')+'></label><label>Порог ilvl для авто-разбора <input type="number" min="1" max="120" data-setting="autoSalvageBelow" value="'+(prefs.autoSalvageBelow||40)+'"></label><label>Чистый экран · скрыть цифры урона и второстепенные иконки <input type="checkbox" data-setting="clean_ui" '+(prefs.clean_ui?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Easy</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Normal</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Hardcore</option></select></label></div><div class="tb-system-actions"><button type="button" data-action="cloud-account">ОБЛАЧНЫЙ АККАУНТ</button><button type="button" data-action="cloud-sync">СИНХРОНИЗИРОВАТЬ</button></div>';
   const pending=account.pvpDaily?.pending;
   const weekly=engine.weeklyLeaderboard();
   const activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier;
@@ -737,6 +759,7 @@
  }
  function render(){
   if(!engine)return;
+  syncMusic();
   const isBattle=screen==="battle"&&!!battle;
   document.body.classList.toggle("tb-battle-lock",isBattle);
   document.documentElement.classList.toggle("tb-battle-lock",isBattle);
@@ -866,6 +889,7 @@
  }
  root.addEventListener("pointerup",function(event){if(event.target.closest(".tb-v2"))event.stopImmediatePropagation();},true);
  document.addEventListener("click",handleClick);
+ document.addEventListener("pointerdown",unlockAudioAndMusic,{capture:true,passive:true});
  function handleBattleKeys(event){
   if(screen!=="battle"||!battle||battle.paused||event.repeat||event.ctrlKey||event.metaKey||event.altKey)return;
   const tag=event.target?.tagName?.toLowerCase();if(["input","textarea","select"].includes(tag)||event.target?.isContentEditable)return;
@@ -890,6 +914,7 @@
    if(key==="difficulty"){engine.setDifficulty(live().id,value);notify("Сложность изменена");}
    else engine.saveSettings({[key]:value});
    if(key==="clean_ui")document.body.classList.toggle("tb-clean-ui",!!value);
+   if(key==="music_enabled"||key==="volume_music"||key==="volume_master")syncMusic();
    save();render();
   }catch(error){notify(error.message);render();}
  });
