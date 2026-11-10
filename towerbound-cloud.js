@@ -26,7 +26,7 @@ const style=document.createElement('style');style.id='tb-cloud-styles';style.tex
 #tbCloudDialog button.danger{border-color:#9d5555;background:#422327}
 #tbCloudDialog .tb-cloud-row{display:flex;gap:8px}
 #tbCloudDialog .tb-cloud-row button{flex:1}
-#tbCloudMessage{min-height:22px;color:#e9c985;font-size:12px;margin-top:10px}#tbCloudMessage[data-kind="error"],.tb-account-message.is-error,.tb-login-message.is-error{color:#ff858d!important}#tbCloudHint{display:block;margin-top:7px;color:#92909b;font-size:10px;line-height:1.4}
+#tbCloudMessage{min-height:22px;color:#e9c985;font-size:12px;margin-top:10px}#tbCloudMessage[data-kind="error"],.tb-account-message.is-error,.tb-login-message.is-error{color:#ff858d!important}.tb-account-hint{display:block;margin-top:6px;color:#92909b;font-size:10px;line-height:1.4}#tbCloudHint{display:block;margin-top:7px;color:#92909b;font-size:10px;line-height:1.4}
 #tbCloudAccount{color:#a8d9bd;font-size:12px;overflow-wrap:anywhere}
 #tbCloudOverlay.login-required #tbCloudClose{display:none}#tbCloudDialog .tb-remember-label{display:flex;align-items:center;gap:9px;font-size:12px}#tbCloudDialog .tb-remember-label input{width:18px;height:18px;accent-color:#d7b875}#tbCloudOverlay.login-required{z-index:2147483000}#tbCloudOverlay.login-required #tbCloudDialog{max-height:calc(100dvh - 28px)}
 @media(max-width:600px){#tbCloudButton{top:calc(env(safe-area-inset-top) + 7px);right:8px;font-size:9px;padding:7px 8px}}
