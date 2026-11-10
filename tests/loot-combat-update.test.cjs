@@ -5,6 +5,7 @@ const path=require('node:path');
 const {createEngine}=require('../rpg-rework-v2.js');
 const dir=path.join(__dirname,'../configs/balance');
 const balance=Object.fromEntries(fs.readdirSync(dir).filter(name=>name.endsWith('.json')).map(name=>[name.slice(0,-5),JSON.parse(fs.readFileSync(path.join(dir,name),'utf8'))]));
+balance.account.max_characters=20; // This isolated test creates one fixture for each playable class.
 let time=Date.UTC(2026,10,10);
 const now=()=>++time;
 const make=(random=()=>0)=>createEngine(balance,{now,random});
