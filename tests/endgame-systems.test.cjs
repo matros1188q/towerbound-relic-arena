@@ -9,36 +9,43 @@ function has(text, needle, label) {
 }
 [
   ['function startTower()', 'Endless Tower entry'],
-  ['Math.pow(1.05', '5% per-floor scaling'],
-  ["floor%10===0?'boss':floor%5===0?'elite'", 'elite and boss cadence'],
-  ['function claimTowerRewards(t)', 'tower reward banking'],
-  ['engine.awardXp(c,xp)', 'tower XP payout on exit'],
-  ['t.rewards.diamonds+=1', 'diamond reward per ten floors'],
+  ["highestEver||0)<10", 'Tower unlock after stage 10'],
+  ['engine.stagePlan(s.character,10)', 'stage 10 base enemy stats'],
+  ['engine.getEnemyStats(s.character.id,10', 'stage 10 enemy stat lookup'],
+  ['Math.pow(1.05,Math.max(1,floor))', '5% scaling per Tower floor'],
+  ["roll<.7?'normal':roll<.9?'elite':'boss'", 'random enemy type'],
+  ['function claimTowerRewards(t)', 'Tower reward banking'],
+  ['t.rewards.silver+=Math.round(100+b.floor*25)', 'Tower silver rewards'],
+  ['t.rewards.diamonds+=1', 'one diamond every ten floors'],
+  ['engine.awardXp(c,xp)', 'Tower XP payout on exit'],
   ['function passState()', 'Battle Pass lifecycle'],
   ['30*DAY', '30-day pass duration'],
   ['Math.min(5000', '50-level BP cap'],
+  ['Array.from({length:50}', '50 Battle Pass levels'],
   ['if(result?.stageComplete)addBP(10)', 'BP for regular stages'],
   ['addBP(15)', 'BP for Tower floors'],
-  ['const freeRewards={5:[\'silver\']', 'free reward track'],
-  ['const premiumRewards={5:[\'chest\']', 'premium reward track'],
-  ['function guildState()', 'daily guild boss'],
-  ['!Number.isFinite(Number(g.hp))', 'fresh-save guild HP initialization'],
-  ['g.hp=Math.max(0,Math.min(g.maxHp', 'guild HP bounds validation'],
-  ['maxHp:1000000', 'one-million boss HP'],
+  ["const freeRewards={5:['silver']", 'free reward track'],
+  ["const premiumRewards={5:['chest']", 'premium reward track'],
+  ['function guildState()', 'guild boss persistence'],
+  ['hp:5000000,maxHp:5000000', '5-million guild boss HP'],
   ['g.respawnAt=Date.now()+DAY', '24-hour respawn'],
+  ['100000+Math.random()*400000', 'daily help damage range'],
   ['function helpGuild()', 'guild help action'],
   ['function awardGuildChest()', 'guild boss chest'],
   ['function evolveSkill(', 'skill evolution'],
   ['c.level<50', 'level 50 evolution gate'],
-  ['uses>=100||mastery>=100', 'skill use/mastery evolution gate'],
+  ['c.ext.evolvedSkills', 'evolution saved to character ext'],
+  ['data-eg="back-map"', 'back to map control'],
   ['grid-template-columns:repeat(3,minmax(0,1fr))', 'mobile menu grid'],
   ['max-width:330px', 'narrow phone layout']
 ].forEach(([needle,label]) => has(source,needle,label));
 [
   ['evolvedSkill?.id==="burst"', 'AoE skill evolution'],
-  ['!options.ignoreArmor&&target.role==="tank"', 'armor bypasses armor guard'],
-  ['!options.ignoreArmor&&target.shield>0', 'armor bypasses shield'],
+  ['damage*=1.2', '20% AoE damage bonus'],
+  ['armorPenetration:.5', '50% armor penetration'],
+  ['armorPenetration=Math.max', 'armor penetration mitigation'],
   ['evolved?evolved.icon', 'evolved skill icon']
 ].forEach(([needle,label]) => has(combat,needle,label));
-has(html,'<script src="./endgame-systems.js?v=7"></script>','endgame script inclusion');
+has(html,'<script src="./endgame-systems.js?v=8"></script>','endgame script cache version');
+has(html,'<script src="./rpg-rework-ui.js?v=32"></script>','combat UI cache version');
 console.log('Endgame systems static checks: OK');
