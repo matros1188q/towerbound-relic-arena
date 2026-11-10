@@ -126,7 +126,7 @@ const pageSource=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const nativeCss=fs.readFileSync(path.join(root,'native-pwa.css'),'utf8');
 const serviceWorker=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
 const engineSource=fs.readFileSync(path.join(root,'rpg-rework-v2.js'),'utf8');
-assert.match(pageSource,/<meta name="viewport" content="width=device-width, initial-scale=1\\.0, viewport-fit=cover, user-scalable=no">/,'iOS viewport is configured for edge-to-edge layout');
+assert.ok(pageSource.includes('<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">'),'iOS viewport is configured for edge-to-edge layout');
 assert.match(pageSource,/<meta name="apple-mobile-web-app-capable" content="yes">/,'iOS standalone mode is enabled');
 assert.match(pageSource,/<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">/,'iOS status bar style is configured');
 assert.ok(nativeCss.includes('height:100dvh')&&nativeCss.includes('overflow:hidden')&&nativeCss.includes('overscroll-behavior:none'),'native app shell locks document scrolling at dynamic viewport height');
