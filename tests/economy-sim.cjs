@@ -21,7 +21,7 @@ function runClass(classId,seed){
  const seconds=turns*(balance.combat.attack_interval||1)+cleared*3,runs=seconds?Math.floor(25*3600/seconds):0;
  return{classId,cleared,death,deathDetails,level:c.level,xp:c.xp,silverEarned,potionsUsed:used,potionsBought:bought,silverSpent,netSilver:net,minutes:seconds/60,estimatedRuns5d:runs,silver5d:Math.max(0,runs*net),premium:Math.max(0,runs*net)>=premium};
 }
-function main(){const rows=classes.map((c,i)=>runClass(c,9001+i*997));console.table(rows);const avg=k=>rows.reduce((s,r)=>s+r[k],0)/rows.length;
+function main(){const rows=classes.map((c,i)=>runClass(c,9001+i*997));console.table(rows.map(r=>({...r,deathDetails:r.deathDetails?`${r.deathDetails.type}/${r.deathDetails.role}/${r.deathDetails.turns}t/${r.deathDetails.hpPct.toFixed(0)}%`:'-'})));const avg=k=>rows.reduce((s,r)=>s+r[k],0)/rows.length;
  console.log(JSON.stringify({avgLevel:avg('level'),avgXp:avg('xp'),avgSilver:avg('silverEarned'),avgPotionCost:avg('silverSpent'),premiumPrice:premium,avgFiveDaySilver:avg('silver5d'),allClear250:rows.every(r=>r.cleared===250),allLevel60:rows.every(r=>r.level>=60),allCanBuyPremium:rows.every(r=>r.premium)},null,2));}
 if(require.main===module)main();
 module.exports={runClass};
