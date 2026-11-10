@@ -514,9 +514,16 @@
     if(modifier.enemy_damage_multiplier)damage=Math.round(damage*modifier.enemy_damage_multiplier);
     if(modifier.id==="cursed_levels"&&stage%10===5){hp=Math.round(hp*modifier.cursed_stage_multiplier);damage=Math.round(damage*modifier.cursed_stage_multiplier);}
    }
-   const speedMultiplier=modifiers.reduce((multiplier,modifier)=>multiplier*(modifier.enemy_attack_speed_multiplier||1),1);
-   const attackInterval=balance.combat.attack_interval/speedMultiplier;
-   return{hp,damage,attackInterval,attackIntervalMs:Math.round(attackInterval*1000),weakness:enemy?.weakness||null,resistance:enemy?.resistance||null,role:enemy?.role||"normal"};
+   const speedMultiplier=modifiers.reduce((multiplier,modifier)=>{
+    const configured=Number(modifier.enemy_attack_speed_multiplier);
+    return multiplier*(Number.isFinite(configured)&&configured>0?configured:1);
+   },1);
+   const configuredInterval=Number(balance.combat.attack_interval);
+   const baseInterval=Number.isFinite(configuredInterval)&&configuredInterval>0?configuredInterval:1;
+   const safeSpeedMultiplier=Number.isFinite(speedMultiplier)&&speedMultiplier>0?speedMultiplier:1;
+   const attackInterval=baseInterval/safeSpeedMultiplier;
+   const attackIntervalMs=Math.round(attackInterval*1000);
+   return{hp,damage,attackInterval,attackIntervalMs:Number.isFinite(attackIntervalMs)&&attackIntervalMs>0?attackIntervalMs:1000,weakness:enemy?.weakness||null,resistance:enemy?.resistance||null,role:enemy?.role||"normal"};
   }
   function capBossDamage(target,rawDamage,alreadyDealt){
    const raw=Math.max(0,Number(rawDamage)||0);if(target?.type!=="boss")return raw;
