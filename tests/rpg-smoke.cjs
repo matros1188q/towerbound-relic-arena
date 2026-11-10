@@ -316,7 +316,7 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('[data-panel-skill]').count(),6,'six configured skill slots are visible');
   assert.equal(await page.locator('[data-counter]').count(),1,'class counter occupies slot five');
   assert.equal(await page.locator('[data-ultimate]').count(),1,'class ultimate occupies slot six');
-  assert.equal(await page.locator('.tb-panel-skill').count(),6,'six skill/counter/ultimate buttons are rendered');
+  assert.equal(await page.locator('.tb-panel-skill').count(),8,'six active skill slots plus counter and ultimate are rendered');
   assert.equal(await page.locator('[data-basic-attack]').count(),1,'free basic attack is available beside the skill grid');
   const attackLayout=await page.evaluate(()=>{const box=el=>{const r=el.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};};return{attack:box(document.querySelector('[data-basic-attack]')),skills:box(document.querySelector('.tb-panel-slots')),end:box(document.querySelector('[data-action="end-turn"]')),potion:box(document.querySelector('.tb-potion-belt button'))};});
   // The action panel must fit its own grid row; the potion belt must never cover the End Turn hit target.
