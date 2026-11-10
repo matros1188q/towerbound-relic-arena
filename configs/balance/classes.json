@@ -1,11 +1,11 @@
 {
   "base_stats": {
     "base_health": 100,
-    "health_per_level": 4,
+    "health_per_level": 4.6,
     "base_attack": 12,
     "attack_per_level": 1.5,
     "base_defense": 5,
-    "defense_per_level": 0.6
+    "defense_per_level": 0.69
   },
   "respec_cost": 5000,
   "talent_reset_cost": 2500,
