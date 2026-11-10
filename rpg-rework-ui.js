@@ -3,6 +3,7 @@
  const root=document.getElementById("tbRpg");
  if(!root)return;
  const turnStyle=document.createElement("style");turnStyle.id="tb-turn-based-style";turnStyle.textContent=".tb-turn-initiative{padding:9px 12px;border:1px solid rgba(201,162,39,.45);border-radius:10px;background:rgba(12,17,24,.88);display:grid;gap:7px}.tb-turn-initiative>b{font:800 10px system-ui;letter-spacing:.12em;color:#e8cc82}.tb-initiative-list{display:flex;gap:6px;overflow:auto}.tb-initiative-list>span{flex:none;display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #5a5140;border-radius:7px;font:700 10px system-ui;color:#ddd;white-space:nowrap}.tb-initiative-list>span.player{border:2px solid #f0c65e;color:#ffe6a1;background:rgba(111,78,24,.2)}.tb-initiative-list>span.enemy{border-color:#9d5a52;color:#f2b5a9}.tb-initiative-list>span.active{box-shadow:0 0 0 2px #f0d17a;background:rgba(240,209,122,.12)}.tb-initiative-avatar{display:block;width:23px;height:23px;flex:0 0 23px;object-fit:contain;border:2px solid #ffd66b;border-radius:50%;background:#17130d}.tb-initiative-mob{display:grid;place-items:center;width:20px;height:20px;flex:0 0 20px;border:1px solid #a65d54;border-radius:50%;background:#351c1d;color:#f5b7a9;font-style:normal}.tb-initiative-label{padding:0!important;border:0!important;background:none!important}.tb-end-turn{width:100%;height:58px;min-height:54px;max-height:64px;padding:0 12px;line-height:1;border:2px solid #ffd66b;border-radius:12px;background:linear-gradient(180deg,#f6ad35,#b85a12);box-shadow:0 5px 18px #d9792444;color:#201205;font-size:14px;font-weight:1000;letter-spacing:.08em}.tb-end-turn:disabled{opacity:.52;filter:grayscale(1);box-shadow:none}.tb-end-turn.is-player-turn{animation:tb-end-pulse 2s ease-in-out infinite}.tb-panel-actions{display:grid;gap:8px}.tb-panel-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.tb-telegraph.lethal{border:2px solid #ff394d;background:rgba(100,10,20,.8);color:#fff}.tb-arena-top{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap} .tb-turn-guidance{font:700 12px/1.35 system-ui;color:#f5e7c2;text-align:center;padding:2px 6px}.tb-turn-tutorial{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:#05070bdc;backdrop-filter:blur(8px)}.tb-turn-tutorial-card{width:min(100%,440px);padding:24px;border:1px solid #d2aa58;border-radius:18px;background:linear-gradient(155deg,#22283a,#101522);box-shadow:0 24px 80px #000b;color:#f5ecd8}.tb-turn-tutorial-card h2{margin:8px 0 16px;font:900 23px system-ui}.tb-turn-tutorial-card ol{padding-left:22px;display:grid;gap:13px;font:600 14px/1.5 system-ui}.tb-turn-tutorial-card li::marker{color:#f3bd53}.tb-turn-tutorial-card .tb-wide{margin-top:14px}@keyframes tb-end-pulse{0%,100%{box-shadow:0 5px 18px #d9792444}50%{box-shadow:0 5px 24px #ffb53c99}}";document.head.appendChild(turnStyle);
+ const lootCombatStyle=document.createElement("style");lootCombatStyle.id="tb-loot-combat-style";lootCombatStyle.textContent=".tb-basic-attack{min-height:64px;border:2px solid #ffe08a!important;background:linear-gradient(155deg,#f4c45f,#a96b21)!important;color:#251706!important;box-shadow:0 4px 16px #e3a33b55!important}.tb-basic-attack b{font-size:13px;letter-spacing:.08em}.tb-basic-attack small{color:#402b11!important}";document.head.appendChild(lootCombatStyle);
  const artInboxStyle=document.createElement("style");
  artInboxStyle.id="tb-art-inbox-style-v1";
  artInboxStyle.textContent=`
@@ -508,6 +509,7 @@
   const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
   const counterButton='<button class="tb-panel-skill counter" data-counter="1" '+(battle.actor?.type!=="player"||battle.busy||battle.playerSkillUsed||battle.counterPrimed||counterCd>0||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?"disabled":"")+'><kbd>5</kbd><b>'+esc(counter.name)+'</b><small>Контр-умение · '+counterCd+'х</small></button>';
   const ultButton='<button class="tb-panel-skill ultimate" data-ultimate="1" '+(battle.actor?.type!=="player"||battle.playerSkillUsed||ultCd>0||c.resource<(ultimate.resource_cost||balance.resources.action_costs.ultimate)?"disabled":"")+'><kbd>6</kbd><b>'+esc(ultimate.name)+'</b><small>Ультимейт · '+ultCd+'х</small></button>';
+  const attackButton='<button class="tb-panel-skill tb-basic-attack" data-basic-attack="1" '+(battle.actor?.type!=="player"||battle.playerSkillUsed||battle.busy||battle.paused?"disabled":"")+'><kbd>⚔</kbd><b>АТАКА</b><small>Без затрат · +15 ресурса</small></button>';
   const potions=engine.potionBeltSnapshot(c.id).map(slot=>'<button data-belt-use="'+slot.slot+'" '+(!slot.itemId||slot.available<=0||battle.potionUsedThisTurn||battle.actor?.type!=="player"||!balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt?"disabled":"")+' title="Зелий: '+slot.available+'">ЗЕЛЬЕ '+(slot.slot+1)+'</button>').join("");
   return header("Арена · этап "+battle.stage,c.name+" · врагов "+remaining)+
    '<section class="tb-arena tb-fixed-battle"><div class="tb-arena-top"><span>РАУНД '+battle.round+' · '+(battle.actor?.type==="player"?"ХОД ИГРОКА":"ХОД ПРОТИВНИКА")+'</span><span>ЭТАП '+battle.stage+'</span><span>ЦЕЛЕЙ '+remaining+'</span></div>'+
@@ -515,8 +517,8 @@
    '<div class="tb-target-grid">'+targets+'</div>'+
    '<div class="tb-combat-layout"><div class="tb-enemy-focus"><div class=\"tb-enemy-portrait\"><img src=\"'+enemyPortrait(enemy)+'\" alt=\"\" loading=\"eager\" decoding=\"async\"></div><div class="tb-enemy-role-icon">'+(roleIcon[enemy.role]||"◆")+'</div><div class="tb-enemy-title">'+(enemy.type==="boss"?"Хранитель этажа":"Страж башни")+'</div>'+telegraph+'<div class="tb-healthbar enemy"><span style="width:'+enemyPct+'%"></span></div><small>'+Math.ceil(battle.enemyHp)+' / '+battle.enemyMax+' HP'+(battle.shield>0?" · Щит "+battle.shield:"")+'</small></div>'+
    '<div class="tb-battle-hero"><div class="tb-hero-art"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><small>'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</small><div class="tb-resourcebar"><span style="width:'+(c.resource/c.resourceMax*100)+'%"></span></div><small>'+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div></div>'+
-   '<div class="tb-panel-actions"><div class="tb-panel-slots">'+skillsMarkup+counterButton+ultButton+'</div><div class="tb-turn-guidance" aria-live="polite">'+(battle.actor?.type==="player"?"Твой ход. Выбери умение или нажми «Конец хода».":"Противники атакуют...")+'</div><button class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"?"disabled aria-disabled=\"true\"":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА...")+'</button></div>'+
-   '<div class="tb-potion-belt">'+potions+'</div><div class="tb-combat-note">'+(battle.playerSkillUsed?"Умение использовано · можно выпить зелье и завершить ход":"Нажми 1–6 для умения или заверши ход для автоатаки")+'</div><div class="tb-fx-layer" aria-hidden="true"></div>'+'</section>'+(battle.showTutorial?'<div class="tb-turn-tutorial" role="dialog" aria-modal="true" aria-labelledby="tb-turn-tutorial-title"><div class="tb-turn-tutorial-card"><div class="tb-eyebrow">ПЕРВЫЙ БОЙ</div><h2 id="tb-turn-tutorial-title">Как проходит бой</h2><ol><li>Это пошаговый бой. Сейчас твой ход.</li><li>Нажми на умение (1–6) или на кнопку «Конец хода», чтобы ударить и передать ход.</li><li>Следи за телеграфами над мобами — они предупреждают о сильных атаках. Используй контр-умение, чтобы блокировать.</li></ol><button type="button" class="tb-primary tb-wide" data-action="dismiss-turn-tutorial">ПОНЯТНО</button></div></div>':"");
+   '<div class="tb-panel-actions"><div class="tb-panel-slots">'+attackButton+skillsMarkup+counterButton+ultButton+'</div><div class="tb-turn-guidance" aria-live="polite">'+(battle.actor?.type==="player"?"Твой ход. Нажми «АТАКА» без затрат ресурса или выбери умение.":"Противники атакуют...")+'</div><button class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"?"disabled aria-disabled=\"true\"":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА...")+'</button></div>'+
+   '<div class="tb-potion-belt">'+potions+'</div><div class="tb-combat-note">'+(battle.playerSkillUsed?"Умение использовано · можно выпить зелье и завершить ход":"АТАКА восстанавливает +15 ресурса · умения расходуют ресурс")+'</div><div class="tb-fx-layer" aria-hidden="true"></div>'+'</section>'+(battle.showTutorial?'<div class="tb-turn-tutorial" role="dialog" aria-modal="true" aria-labelledby="tb-turn-tutorial-title"><div class="tb-turn-tutorial-card"><div class="tb-eyebrow">ПЕРВЫЙ БОЙ</div><h2 id="tb-turn-tutorial-title">Как проходит бой</h2><ol><li>Это пошаговый бой. Сейчас твой ход.</li><li>Нажми на умение (1–6) или на кнопку «Конец хода», чтобы ударить и передать ход.</li><li>Следи за телеграфами над мобами — они предупреждают о сильных атаках. Используй контр-умение, чтобы блокировать.</li></ol><button type="button" class="tb-primary tb-wide" data-action="dismiss-turn-tutorial">ПОНЯТНО</button></div></div>':"");
  }
  function beginStage(){
   const c=live();
@@ -613,15 +615,24 @@
   let revived=false,multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
   if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);target.guardCharges--; }
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
+   if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};const used=battle.actionDamageLedger[target.index]||0;damage=engine.capBossDamage(target,damage,used);}
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism")target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&battle.actionIsSkill&&battle.actionIsPrimaryHit&&rawDamage>2*hpBeforeHit)battle.overkillBonus=true;
   if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ffffff");playSfx(options.critical?"crit":"hit");}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
-  if(target.type==="boss")updateBossPhase();
+  if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};battle.actionDamageLedger[target.index]=(battle.actionDamageLedger[target.index]||0)+dealt;updateBossPhase();}
   return{damage,dealt,multiplier,killed:target.hp<=0,revived};
  }
  function scheduleEnemyTelegraph(){const farmSpeed=live().progression?.speed3?3:1;/* No real-time timers: speed3 is applied to turn cooldown cadence. */}
  function resolveEnemyTelegraph(){/* Enemy turns resolve through initiative. */}
+ function basicAttack(){
+  if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.busy||battle.paused)return;
+  const c=live(),profile=engine.basicAttackStats(c.id),target=battle.enemy;if(!target||!target.alive||target.hp<=0){notify("Нет активной цели");return;}
+  battle.playerSkillUsed=true;battle.actionDamageLedger={};battle.actionIsSkill=false;battle.actionIsPrimaryHit=true;
+  const result=applyTargetDamage(target,profile.damage*(engine.getCombatStats(c).damageMultiplier||1),"physical");battle.actionIsPrimaryHit=false;
+  if(result.dealt>0){const restored=engine.restoreResource(c.id,profile.resourceGain);if(restored.gained>0)showFloatingText("player","+"+restored.gained,"#58e38b");battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Базовая атака");}
+  triggerVfx("attack","physical",false);if(c.run.playerHp<=0){endFromDamage();return;}if(target.hp<=0){finishCurrentEnemy();return;}save();render();
+ }
  function useCounterSkill(){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.counterPrimed||(battle.counterCooldownTurns||0)>0)return;
   const c=live(),counter=counterAbility(c),cost=counter.resource_cost??balance.resources.action_costs.counter;
@@ -642,11 +653,11 @@
   const c=live(),ultimate=ultimateAbility(c),cost=ultimate.resource_cost??balance.resources.action_costs.ultimate;
   if(c.resource<cost){notify("Не хватает ресурса для ультимейта");return;}
   c.resource-=cost;battle.playerSkillUsed=true;battle.ultimateCooldownTurns=Math.max(1,ultimate.cooldown_turns||3);
-  const stats=engine.getCombatStats(c),damage=stats.dps*(balance.combat.turn_based?.ultimate_dps_multiplier||6);
+  const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1);battle.actionDamageLedger={};
   if(ultimate.effect==="heal_shield"||ultimate.effect==="heal_aoe")c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*ultimate.heal_fraction));
   if(ultimate.effect==="heal_shield")battle.nextDamageShield=Math.round(engine.maxHp(c)*ultimate.shield_fraction);
-  if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive))applyTargetDamage(target,damage,ultimate.damage_type);}
-  else if(ultimate.effect==="single_burst")applyTargetDamage(battle.enemy,damage,ultimate.damage_type);
+  if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0;hit++)applyTargetDamage(target,damage,ultimate.damage_type);}}
+  else if(ultimate.effect==="single_burst"){for(let hit=0;hit<3&&battle.enemy.hp>0;hit++)applyTargetDamage(battle.enemy,damage,ultimate.damage_type);}
   triggerVfx("ultimate",ultimate.damage_type,false);if(battle.enemy.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function enemyCounter(){resolveEnemyTelegraph();}
@@ -657,7 +668,7 @@
   const cd=battle.skillCooldowns?.[skill.id]||0;if(cd>0){notify("Откат: "+cd+" хода");return;}
   const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike;let cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill||1):(skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);if(battle.freeSkillCharges>0){cost=0;battle.freeSkillCharges--;}
   if(c.resource<cost){notify("Не хватает ресурса: "+classData(c).resource);return;}
-  c.resource-=cost;battle.playerSkillUsed=true;battle.skillCooldowns=battle.skillCooldowns||{};
+  c.resource-=cost;battle.playerSkillUsed=true;battle.actionDamageLedger={};battle.skillCooldowns=battle.skillCooldowns||{};
   const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0,cooldownTurns=effect.cooldown_turns||effect.cooldown||4;
   battle.skillCooldowns[skill.id]=Math.max(1,(effect.cooldown||4)-mastered);
   if(effect.cooldown_turns)battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns-mastered);
@@ -686,11 +697,11 @@
   if(effect.type==="aoe"||evolvedSkill?.id==="burst"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType,evolutionHitOptions);if(enemy===target)result=hit;}}
   else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType,evolutionHitOptions);
   battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
-  if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));target.hp=Math.max(0,target.hp-interrupt);battle.enemyHp=target.hp;battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupt+" HP");}
+  if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));const interrupted=applyTargetDamage(target,interrupt,"physical");battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupted.dealt+" HP");}
   if(skill&&target.hp>0){
    const current=String(damageType).toLowerCase(),previous=battle.lastElement;
    if((previous==="fire"&&current==="water")||(previous==="water"&&current==="fire")){battle.enemyStunned=true;showFloatingText(target,"ПАР · ОГЛУШЕНИЕ","#73cfff");notify("ПАР · ОГЛУШЕНИЕ");}
-   else if((previous==="lightning"&&current==="water")||(previous==="water"&&current==="lightning")){const shock=Math.min(target.hp,Math.round(result.dealt));target.hp-=shock;battle.enemyHp=target.hp;showFloatingText(target,"ЭЛЕКТРОШОК -"+shock,"#ffe45c");notify("ЭЛЕКТРОШОК");}
+   else if((previous==="lightning"&&current==="water")||(previous==="water"&&current==="lightning")){const shock=applyTargetDamage(target,Math.round(result.dealt),"lightning");showFloatingText(target,"ЭЛЕКТРОШОК -"+shock.dealt,"#ffe45c");notify("ЭЛЕКТРОШОК");}
    battle.lastElement=current;
   }
   if(target.hp>0&&result.dealt>0){const companion=Math.max(1,Math.round(stats.attack*.5));const pet=applyTargetDamage(target,companion,"physical");if(pet.dealt)showFloatingText(target,"СПУТНИК -"+pet.dealt,"#a8d8ff");}
@@ -707,13 +718,7 @@
   if(target.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function equipItem(itemId){
-  const c=live(),item=c.bag.find(x=>x.id===itemId);
-  if(!item||!item.stats){notify("Этот предмет нельзя надеть");return;}
-  engine.bindItemOnUse(c.id,itemId);
-  let slot=Number.isInteger(item.slot)?item.slot:(item.slot==="weapon"?0:item.slot==="chest"?1:item.slot==="head"?2:item.slot==="legs"?3:item.slot==="hands"?4:5);
-  slot=Math.max(0,Math.min(c.gear.length-1,slot));
-  const old=c.gear[slot];c.gear[slot]=item;c.bag=c.bag.filter(x=>x.id!==itemId);if(old)c.bag.push(old);
-  c.run.playerHp=Math.min(c.run.playerHp,engine.maxHp(c));save();render();
+  try{engine.equipItem(live().id,itemId);save();render();notify("Предмет надет");}catch(error){notify(error.message);}
  }
  function showScreen(name){screen=name;render();}
  function battleRenderKey(){
@@ -740,6 +745,7 @@
    card.disabled=!target.alive;card.classList.toggle("defeated",!target.alive);card.classList.toggle("selected",target.index===battle.targetIndex);
   });
   const hit=root.querySelector("#hit");if(hit)hit.disabled=!!(battle.busy||battle.paused);
+  const basic=root.querySelector("[data-basic-attack]");if(basic)basic.disabled=battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed;
   const slots=ensureLoadout(c);
   root.querySelectorAll("[data-panel-skill]").forEach(button=>{const skill=slots[Number(button.dataset.panelSlot)],cd=skill?(battle.skillCooldowns?.[skill.id]||0):Infinity;button.disabled=!skill||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed||cd>0;});
   const counter=counterAbility(c),ult=ultimateAbility(c);
@@ -804,7 +810,7 @@
   catch(error){notify(error.message);}
  }
  function handleClick(event){
-  const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-target],[data-route],[data-panel-skill],[data-counter],[data-ultimate]");
+  const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-target],[data-route],[data-panel-skill],[data-counter],[data-ultimate],[data-basic-attack]");
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
   playSfx("click");
@@ -820,6 +826,7 @@
   if(target.dataset.branch){try{engine.chooseBranch(live().id,target.dataset.branch);save();render();notify("Специализация выбрана");}catch(error){notify(error.message);}return;}
   if(target.dataset.talent){try{engine.useTalentPoint(live().id,target.dataset.talent,3);save();render();}catch(error){notify(error.message);}return;}
   if(target.dataset.target!==undefined){setBattleTarget(Number(target.dataset.target));return;}
+  if(target.dataset.basicAttack!==undefined){basicAttack();return;}
   if(target.dataset.panelSkill){playerAction(target.dataset.panelSkill,Number(target.dataset.panelSlot));return;}
   if(target.dataset.counter!==undefined){useCounterSkill();return;}
   if(target.dataset.ultimate!==undefined){useUltimate();return;}
@@ -889,7 +896,7 @@
    case "delete-character":{const c=live();if(!window.confirm("Удалить персонажа без возможности восстановления?")||!window.confirm("Подтверди удаление: все вещи и прогресс будут утрачены."))return;const typed=window.prompt("Введи имя персонажа:");try{engine.deleteCharacter(c.id,typed,true);selectedId=engine.state.characters[0]?.id||null;screen="characters";battle=null;save();render();notify("Персонаж удалён");}catch(error){notify(error.message);}break;}
    case "shop":screen="shop";render();break;
    case "start":beginStage();break;
-   case "attack":notify("Автоатака выполняется при завершении хода без умения");break;
+   case "attack":basicAttack();break;
    case "end-turn":endTurnButton();break;
    case "skill":{const skill=activeSkill(live());if(skill)playerAction(skill.id,0);else notify("Нет доступного атакующего умения");break;}
    case "potion":try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано. Слот этой цели потрачен.");}catch(error){notify(error.message);}break;
