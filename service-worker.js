@@ -1,4 +1,4 @@
-const CACHE='towerbound-v20';
+const CACHE='towerbound-v21';
 const SHELL=['./','./index.html','./manifest.json','./juice-pwa.css','./native-pwa.css','./juice-pwa.js','./rpg-mode.js','./rpg-expansion.js','./rpg-rework-v2.js','./rpg-rework-ui.css.js','./rpg-rework-ui.js','./endgame-systems.js','./assets/pwa/icon-192.png','./assets/pwa/icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE)
