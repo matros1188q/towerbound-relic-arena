@@ -86,15 +86,15 @@
     "poison": {
       "icon": "☠",
       "name": "Ядовитый",
-      "damage_fraction_per_turn": 0.05,
+      "damage_fraction_per_turn": 0.02,
       "stackable": true,
       "speed": 1.1
     },
     "tank": {
       "icon": "🛡",
       "name": "Танк",
-      "damage_reduction": 0.3,
-      "shield_fraction": 0.3,
+      "damage_reduction": 0.15,
+      "shield_fraction": 0.15,
       "every_n_turns": 3,
       "speed": 0.85
     },

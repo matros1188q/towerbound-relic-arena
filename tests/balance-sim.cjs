@@ -63,10 +63,10 @@ function run(){
   const {engine,c}=setup(classId,stage,stage*1009+classes.indexOf(classId)*97+types.indexOf(type));
   let wins=0,turns=0,hp=0,potions=0,potionHp=0,potionHpCount=0,maxHit=0;
   for(let i=0;i<trials;i++){c.resource=Math.round(c.resourceMax*balance.resources.starting_fraction);const ds=balance.mobs.damage_types||['fire','ice','dark','physical'];const enemy={type,weakness:ds[(stage+i)%ds.length],resistance:ds[(stage+i+2)%ds.length],role:type==='boss'?'boss':'normal'};
-   const r=simulateFight(engine,c,stage,enemy,{random:rng(i+stage*10000+classes.indexOf(classId)*1000000)});if(r.win)wins++;turns+=r.turns;hp+=r.hpPct;if(r.usedPotion)potions++;if(r.potionHpPct!==null){potionHp+=r.potionHpPct;potionHpCount++;}
+   const r=simulateFight(engine,c,stage,enemy,{random:rng(i+stage*10000+classes.indexOf(classId)*1000000)});if(r.win){wins++;hp+=r.hpPct;}turns+=r.turns;if(r.usedPotion)potions++;if(r.potionHpPct!==null){potionHp+=r.potionHpPct;potionHpCount++;}
    const es=engine.getEnemyStats(c.id,stage,{type});maxHit=Math.max(maxHit,es.damage*engine.mitigationMultiplier(engine.getCombatStats(c).defense,stage)/engine.getCombatStats(c).maxHp*100);
   }
-  rows.push({classId,name:balance.classes.classes[classId].name,stage,type,winRate:wins/10,avgTurns:turns/trials,avgHpPct:hp/trials,potionRate:potions/10,avgHpBeforePotion:potionHpCount?potionHp/potionHpCount:null,maxHitPct:maxHit});
+  rows.push({classId,name:balance.classes.classes[classId].name,stage,type,winRate:wins/10,avgTurns:turns/trials,avgHpPct:wins?hp/wins:0,potionRate:potions/10,avgHpBeforePotion:potionHpCount?potionHp/potionHpCount:null,maxHitPct:maxHit});
  }
  console.log('Класс\\tЭтап\\tВраг\\t% Побед\\tСредние ходы\\tОстаток HP %\\tБои с зельем %\\tМакс. удар % HP');
  for(const r of rows)console.log([r.name,r.stage,r.type,r.winRate.toFixed(1),r.avgTurns.toFixed(2),r.avgHpPct.toFixed(1),r.potionRate.toFixed(1),r.avgHpBeforePotion===null?'-':r.avgHpBeforePotion.toFixed(1),r.maxHitPct.toFixed(1)].join('\\t'));

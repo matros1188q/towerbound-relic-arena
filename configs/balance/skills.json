@@ -91,7 +91,7 @@
       "effect": "slow",
       "speed_reduction": 0.3,
       "cooldown_turns": 2,
-      "damage_reduction": 0.75
+      "damage_reduction": 0.8
     },
     "duelist": {
       "id": "parry",
@@ -129,8 +129,8 @@
       "icon": "✧",
       "resource_cost": 30,
       "effect": "heal_shield",
-      "heal_fraction": 0.35,
-      "shield_fraction": 0.2,
+      "heal_fraction": 0.45,
+      "shield_fraction": 0.25,
       "damage_type": "fire",
       "cooldown_turns": 3
     },

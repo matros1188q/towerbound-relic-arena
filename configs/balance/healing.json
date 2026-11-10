@@ -1,5 +1,5 @@
 {
-  "potion_heal_fraction": 0.25,
+  "potion_heal_fraction": 0.2,
   "potion_stack_limit": 25,
   "starting_potions": 3,
   "checkpoint_heal_fraction": 0.5,
