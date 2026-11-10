@@ -80,7 +80,7 @@ for(const classId of classes){
  const duelistLive=engine.state.characters.find(x=>x.id===duelist.id);duelistLive.run.offeredModifierIds=['arcane_hunt','last_stand','elite_bounty'];engine.setRunModifier(duelist.id,'arcane_hunt');
   const started=engine.beginStage(duelist.id,1);
  assert.equal(started.mobs.length,ordinary.mobs.length);
- assert.equal(engine.getChar(duelist.id).resource,Math.round(5*balance.resources.starting_fraction),'Duelist begins with its configured resource budget');
+ assert.equal(engine.getChar(duelist.id).resource,Math.round(balance.resources.max_resource_by_class.duelist*balance.resources.starting_fraction),'Duelist begins with its configured resource budget');
  assert.equal(balance.skills.panel.attack_slots,4);
  assert.equal(balance.skills.panel.counter_slot,5);
  assert.equal(balance.skills.panel.ultimate_slot,6);
