@@ -68,6 +68,7 @@ assert.ok(css.includes('overflow-x:auto')&&css.includes('word-break:normal')&&cs
 assert.ok(online.includes('function publishCurrent()'),'online publishing remains available');
 
 assert.ok(cloud.includes('authEmail(clean)')&&cloud.includes('signInWithPassword')&&cloud.includes('signUp'),'username/password Supabase authentication is wired');
+assert.ok(cloud.includes("$('#tbCloudSignIn').addEventListener('click',async()=>{try{say('Входим в игру…');await signIn(")&&cloud.includes("$('#tbCloudSignUp').addEventListener('click',async()=>{try{say('Создаём игровой аккаунт…');await signUp("),'cloud login dialog and profile account form share the same auth functions');
 assert.ok(cloud.includes("const rememberKey='tb-remember-me'")&&cloud.includes("if(active&&!remembered())"),'remember-me session gate is enforced at startup');
 assert.ok(engine.includes('function insertGem')&&engine.includes('openSockets<=installedSource.length'),'gem insertion checks available sockets');
 assert.ok(engine.includes('const stone=character.bag.find(entry=>entry&&entry.id===stoneId&&entry.type==="enhancement_stone")'),'gem insertion requires a stone in inventory');
