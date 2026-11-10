@@ -403,3 +403,42 @@ if(balance.combat.turn_based?.enabled){
  assert.ok(result.loot.some(item=>['Редкая','Эпическая'].includes(item.rarity)),'every boss from stage 3 guarantees rare or epic loot, including repeat clears');
 }
 console.log('RPG balance/content checks passed: 30 configs, combat cadence, curves, bosses, gauntlets, item level/BP, belt, difficulty, death rarity, crafting, drop sources, vampirism, PvP, seasons, account progression and support systems.');
+
+
+// Persisted combat recovery: a dead selected target is finalized exactly once,
+// the next living mob becomes active, and an all-dead snapshot completes the stage.
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ const plan=e.beginStage(c.id,1),snapshotEnemies=plan.mobs.map((mob,index)=>{
+  const stats=e.getEnemyStats(c.id,plan.stage,mob);
+  return{...mob,index,id:'enemy-'+index,hp:stats.hp,maxHp:stats.hp,alive:true};
+ });
+ snapshotEnemies[0].hp=0;snapshotEnemies[0].alive=false;snapshotEnemies[0].dead=true;
+ live.run.stage.uiBattleSnapshot={enemies:snapshotEnemies,targetIndex:0};
+ const beforeKills=live.stats.kills;
+ const repaired=e.sanitizeActiveStage(c.id);
+ assert.equal(repaired.active,true,'a stage with remaining mobs stays active after sanitization');
+ assert.equal(repaired.targetIndex,1,'the next living mob is selected after reload');
+ assert.ok(live.run.stage.killedIndices.includes(0),'the defeated mob is recorded in stage progress');
+ assert.equal(live.stats.kills,beforeKills+1,'the defeated mob reward is applied once');
+ const selected=e.selectTarget(c.id,0);
+ assert.ok(selected,'selecting a stale dead target safely redirects to a living mob');
+ assert.equal(live.run.stage.targetIndex,1,'stale target selection cannot move the target back to a dead mob');
+ assert.equal(e.currentEnemy(live).id,live.run.stage.mobs[1].id,'currentEnemy resolves to the living target');
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ const plan=e.beginStage(c.id,1),snapshotEnemies=plan.mobs.map((mob,index)=>{
+  const stats=e.getEnemyStats(c.id,plan.stage,mob);
+  return{...mob,index,id:'enemy-'+index,hp:0,maxHp:stats.hp,alive:false,dead:true};
+ });
+ live.run.stage.uiBattleSnapshot={enemies:snapshotEnemies,targetIndex:0};
+ const beforeKills=live.stats.kills,beforeSilver=live.silver;
+ const repaired=e.sanitizeActiveStage(c.id);
+ assert.equal(repaired.active,false,'an all-dead persisted gauntlet is no longer treated as an active battle');
+ assert.equal(repaired.completed,true,'all defeated mobs force stage completion');
+ assert.equal(live.run.stage,null,'completed stage is cleared from the run');
+ assert.equal(live.progress.currentStage,2,'stage progression advances after recovery victory');
+ assert.equal(live.stats.kills,beforeKills+plan.mobs.length,'all unrecorded kills and rewards are processed');
+ assert.ok(live.silver>beforeSilver,'recovery victory grants silver rewards');
+}
