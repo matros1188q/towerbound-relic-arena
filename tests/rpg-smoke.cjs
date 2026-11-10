@@ -283,7 +283,7 @@ const {chromium}=require('playwright');
   await page.locator('[data-action="tutorial-next"]').click();
   assert.match(await page.locator('.tb-systems').innerText(),/Туториал · 1\/6/,'tutorial step persists');
   await page.locator('[data-action="pvp-match"]').click();
-  assert.equal(await page.locator('[data-action="pvp-fight"]').count(),0,'online matchmaking must not silently fall back to a fake bot when no account is signed in');
+  assert.equal(await page.locator('[data-action="pvp-fight"]').count(),0,'online matchmaking must not silently fall back to a fake bot when no real opponent is returned');
   assert.equal(await page.locator('[data-action="pvp-fight"]').count(),0,'PvP does not fabricate a fight when no real opponent is returned');
   await page.locator('[data-action="bottom-rating"]').click();
   await page.waitForSelector('.tb-systems');
