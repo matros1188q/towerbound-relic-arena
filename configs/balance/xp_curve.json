@@ -1,6 +1,6 @@
 {
   "max_level": 100,
-  "base_multiplier": 1.25,
+  "base_multiplier": 2.15,
   "base_required": 180,
   "per_level": 40,
   "exponent": 1.3,
