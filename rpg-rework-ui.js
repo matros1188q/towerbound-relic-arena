@@ -403,7 +403,7 @@
   function systemsScreen(){
   const c=live();if(!c)return characterList();
   const account=engine.state.account,prefs={sound_enabled:true,music_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,language:"ru",disable_refinement_glow:false,disable_particles:false,invert_camera:false,combat_log_toggle:true,...(account.settings||{})};
-  const daily=engine.dailySnapshot(c.id),tutorial=c.tutorial||{completed:false,step:0,rewardClaimed:false};
+  const daily=engine.dailySnapshot(c.id),tutorial=c.tutorial||{completed:false,step:0,rewardClaimed:false},chest=engine.dailyChestSnapshot(c.id),chestMinutes=Math.ceil(chest.remainingMs/60000),chestLabel=chest.available?"🎁 СУНДУК · ГОТОВ":"🎁 СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м";
   const rank={Обычная:0,Редкая:1,Эпическая:2,Легендарная:3,Богоподобная:4};
   const claimed=c.achievements||[];
   const derived={highest_stage:c.progress.highestEver||0,lore_read:(c.loreRead||[]).length,paragon_level:c.paragon?.level||0,account_level:engine.accountLevel(),season_clear:c.stats.season_clear||0};

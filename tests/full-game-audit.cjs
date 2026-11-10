@@ -175,3 +175,5 @@ assert.ok(nativeCss.includes('.tb-v2 .tb-gear-slot.rarity-legendary')&&nativeCss
 
 assert.ok(!uiSource.includes('data-action="map"')&&!uiSource.includes('data-action="systems"')&&!uiSource.includes('data-action="profile"'),'global navigation shortcuts are not duplicated outside the bottom tab bar');
 assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-nav-tab="map"')&&uiSource.includes('data-nav-tab="shop"')&&uiSource.includes('data-nav-tab="leaderboard"'),'all four global tabs use an isolated navigation attribute');
+
+assert.ok(uiSource.includes('function systemsScreen(){')&&uiSource.includes('chest=engine.dailyChestSnapshot(c.id)'),'account hub computes its own daily chest availability');
