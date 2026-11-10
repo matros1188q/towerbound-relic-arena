@@ -39,5 +39,7 @@ assert.ok(cloud.includes("const rememberKey='tb-remember-me'"),'remember-me pref
 assert.ok(cloud.includes("if(active&&!remembered())"),'unremembered sessions are cleared at startup');
 assert.ok(ui.includes('Зелье исцеления')&&ui.includes('Материал для крафта'),'inventory item IDs are localized');
 assert.ok(ui.includes('ОПИСАНИЕ КАМНЯ')&&ui.includes('ИЗВЛЕЧЬ КАМЕНЬ'),'gem descriptions and extraction are available');
+assert.ok(ui.includes('evasion')&&ui.includes('toFixed(1)'),'equipment comparison formats crit and evasion as percentages');
+assert.ok(css.includes('overflow-x:auto')&&css.includes('word-break:normal')&&css.includes('-webkit-overflow-scrolling:touch'),'mobile profile wrapping and swipe tabs are configured');
 assert.ok(online.includes('function publishCurrent()'),'online publishing remains available');
 console.log('Online services static checks: OK');
