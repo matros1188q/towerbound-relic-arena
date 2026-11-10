@@ -12,7 +12,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
  const id=c.id,stats=engine.getCombatStats(c),es=engine.getEnemyStats(id,stage,enemy),maxHp=stats.maxHp,cls=balance.classes.classes[c.classId],effects=balance.skill_effects;
  const branch=c.branch,damageType=balance.skills.damage_type_by_branch?.[c.classId]?.[branch]||'physical';
  const skill=(cls.base_skills||[]).filter(s=>s.type==='active'&&s.unlock_level<=c.level&&['strike','execute','dot','control'].includes(s.effect_template)).map(s=>({...s,effect:effects[s.effect_template]||{}})).sort((a,b)=>Number(b.damage_multiplier??b.effect.damage_multiplier??1.5)-Number(a.damage_multiplier??a.effect.damage_multiplier??1.5))[0];
- const sc=Number(skill?.resource_cost??skill?.effect.resource_cost??cls.resource_cost_per_skill??18),sm=Number(skill?.damage_multiplier??skill?.effect.damage_multiplier??1.5),sd=({short:2,medium:4,long:6})[skill?.cooldown_tier]||2;
+ const sc=Number(skill?.resource_cost??skill?.effect.resource_cost??cls.resource_cost_per_skill??18),sm=Number(skill?.damage_multiplier??skill?.effect.damage_multiplier??1.5),runMod=(balance.run_modifiers?.modifiers||[]).find(m=>m.id===c.run?.runModifierId),sd=Math.max(1,Math.floor((({short:2,medium:4,long:6})[skill?.cooldown_tier]||2)*(runMod?.skill_cooldown_multiplier||1)));
  const ult=balance.skills.ultimates?.[c.classId],counter=balance.skills.counter_abilities?.[c.classId],costs=balance.resources.class_costs?.[c.classId]||{};
  const uc=Number(costs.ultimate??ult?.resource_cost??balance.resources.action_costs.ultimate),cc=Number(costs.counter??counter?.resource_cost??balance.resources.action_costs.counter);
  const rngFn=opt.random||Math.random;let hp=Math.min(maxHp,opt.playerHp??maxHp),shield=0,potionHpPct=null,poisonStacks=0,res=Math.min(c.resourceMax,opt.resource??Math.round(c.resourceMax*balance.resources.starting_fraction)),ehp=es.hp,turn=0,used=false,skillReady=1,ultReady=1,counterReady=1;
@@ -33,7 +33,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
     if(ult.shield_fraction)shield+=Math.round(maxHp*ult.shield_fraction);
   }else if(ult?.effect==='heal_shield'&&res>=uc+reserve&&turn>=ultReady&&hp<=maxHp*.7){
     res-=uc;ultReady=turn+(ult.cooldown_turns||3);hp=Math.min(maxHp,hp+Math.round(maxHp*(ult.heal_fraction||0)));shield+=Math.round(maxHp*(ult.shield_fraction||0));hits=0;
-  }else if(skill&&res>=sc+reserve&&turn>=skillReady){raw=stats.attack*sm*stats.damageMultiplier;res-=sc;skillReady=turn+sd;}
+  }else if(skill&&(enemy.type!=='normal'||turn>1)&&res>=sc+reserve&&turn>=skillReady){raw=stats.attack*sm*stats.damageMultiplier;res-=sc;skillReady=turn+sd;}
   else{raw=basic.damage*stats.damageMultiplier;res=Math.min(c.resourceMax,res+basic.resourceGain);}
   let actionDamage=0,dealtTotal=0;
   const target={...enemy,maxHp:es.hp};

@@ -2,7 +2,7 @@
 const {balance,rng,equip,setup,simulateFight}=require('./balance-sim.cjs');
 const classes=['assassin','bishop','dragonkin','destroyer','elemental','duelist','shaman'],premium=balance.economy.silver_store.premium_7d,potionPrice=balance.economy.silver_store.heal_25;
 function runClass(classId,seed){
- const {engine,c}=setup(classId,1,seed);c.level=1;c.branch=null;const offered=engine.runModifierOptions(c.id)||[];const score=m=>(m.player_damage_multiplier||1)-1-((m.enemy_damage_multiplier||1)-1)*.6+(1-(m.skill_cooldown_multiplier||1))*.4+(m.xp_multiplier||1)-1+(m.silver_multiplier||1)-1-(m.enemy_shield_fraction||0);const chosen=offered.slice().sort((a,b)=>score(b)-score(a))[0];if(chosen)engine.setRunModifier(c.id,chosen.id);let turns=0,used=0,bought=0,death=null,deathDetails=null,cleared=0;
+ const {engine,c}=setup(classId,1,seed);c.level=1;c.branch=null;const offered=engine.runModifierOptions(c.id)||[];const chosen=offered.find(m=>m.id==='arcane_hunt')||offered.find(m=>m.id==='last_stand')||offered.find(m=>m.id==='glass_cannon')||offered[0];if(chosen)engine.setRunModifier(c.id,chosen.id);let turns=0,used=0,bought=0,death=null,deathDetails=null,cleared=0;
  for(let stage=1;stage<=250;stage++){
   equip(c,stage);engine.beginStage(c.id,stage);const st=c.run.stage;c.run.dailyModifier=null;if(c.run.season)c.run.season.modifier=null;
   for(let i=0;i<st.mobs.length;i++){
