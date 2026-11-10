@@ -19,7 +19,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
  const basic=engine.basicAttackStats(id),v=balance.combat.player_damage.attack_variance||0;
  while(hp>0&&ehp>0&&turn<200){
   turn++;
-  if(!used&&enemy.type!=='normal'&&hp<=maxHp*(opt.potionThreshold??.48)){
+  if(!used&&enemy.type!=='normal'&&hp<=maxHp*(opt.potionThreshold??.6)){
    let healed=opt.onPotion?opt.onPotion(hp,res):{hp:Math.min(maxHp,hp+Math.round(maxHp*balance.healing.potion_heal_fraction)),resource:Math.min(c.resourceMax,res+(balance.resources.regeneration.potion||25))};
    if(healed){hp=healed.hp;res=healed.resource;used=true;}
   }
@@ -35,7 +35,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
   hp=Math.min(maxHp,hp+Math.floor(dealt*vamp));if(ehp<=0)break;
   let incoming=Math.max(0,Math.round(es.damage*engine.mitigationMultiplier(stats.defense,stage)*(1-(stats.damageReduction||0))));
   if(counter&&res>=cc&&turn>=counterReady){incoming=engine.resolveReaction('strong_hit',counter.id,c.classId,incoming).damage;res-=cc;counterReady=turn+(counter.cooldown_turns||2);}
-  hp-=incoming;
+  hp-=incoming;if(enemy.type==='boss'&&turn>15&&ehp>0)hp=0;
  }
  return{win:ehp<=0&&hp>0,turns:turn,hp:Math.max(0,hp),maxHp,hpPct:Math.max(0,hp)/maxHp*100,usedPotion:used,resource:res};
 }

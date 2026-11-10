@@ -96,7 +96,7 @@
       "id": "parry",
       "name": "Парирование",
       "icon": "⚔",
-      "resource_cost": 1,
+      "resource_cost": 18,
       "effect": "riposte",
       "damage_multiplier": 1,
       "cooldown_turns": 2
@@ -167,7 +167,7 @@
       "id": "perfect_form",
       "name": "Совершенная форма",
       "icon": "⚔",
-      "resource_cost": 2,
+      "resource_cost": 42,
       "effect": "single_burst",
       "damage_multiplier": 3.5,
       "damage_type": "physical",

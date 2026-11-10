@@ -305,9 +305,9 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 1.5,
+          "damage_multiplier": 2,
           "resource_cost": 18,
-          "description": "Урон: 150% от силы атаки · Стоимость: 18 энергии."
+          "description": "Урон: 200% от силы атаки · Стоимость: 18 энергии."
         },
         {
           "id": "assassin.base.2",
@@ -315,7 +315,8 @@
           "unlock_level": 3,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "assassin.base.3",
@@ -323,7 +324,8 @@
           "unlock_level": 5,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "assassin.base.4",
@@ -394,7 +396,7 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 12,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 0,
       "resource_cost_per_skill": 18
     },
@@ -692,7 +694,8 @@
           "unlock_level": 1,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2.6
         },
         {
           "id": "bishop.base.2",
@@ -708,7 +711,8 @@
           "unlock_level": 5,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2.6
         },
         {
           "id": "bishop.base.4",
@@ -779,7 +783,7 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 14,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 0,
       "resource_cost_per_skill": 20
     },
@@ -1077,7 +1081,8 @@
           "unlock_level": 1,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "dragonkin.base.2",
@@ -1085,7 +1090,8 @@
           "unlock_level": 3,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "dragonkin.base.3",
@@ -1093,7 +1099,8 @@
           "unlock_level": 5,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "dragonkin.base.4",
@@ -1164,7 +1171,7 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 10,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 0,
       "resource_cost_per_skill": 18
     },
@@ -1462,7 +1469,8 @@
           "unlock_level": 1,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "destroyer.base.2",
@@ -1470,7 +1478,8 @@
           "unlock_level": 3,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "destroyer.base.3",
@@ -1478,7 +1487,8 @@
           "unlock_level": 5,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "destroyer.base.4",
@@ -1549,7 +1559,7 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 12,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 7,
       "resource_cost_per_skill": 18
     },
@@ -1847,7 +1857,8 @@
           "unlock_level": 1,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2.4
         },
         {
           "id": "elemental.base.2",
@@ -1855,7 +1866,8 @@
           "unlock_level": 3,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2.4
         },
         {
           "id": "elemental.base.3",
@@ -1863,7 +1875,8 @@
           "unlock_level": 5,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2.4
         },
         {
           "id": "elemental.base.4",
@@ -1934,7 +1947,7 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 14,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 0,
       "resource_cost_per_skill": 20
     },
@@ -2232,7 +2245,8 @@
           "unlock_level": 1,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "duelist.base.2",
@@ -2240,7 +2254,8 @@
           "unlock_level": 3,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "duelist.base.3",
@@ -2248,7 +2263,8 @@
           "unlock_level": 5,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2
         },
         {
           "id": "duelist.base.4",
@@ -2319,9 +2335,9 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 1,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 1,
-      "resource_cost_per_skill": 1
+      "resource_cost_per_skill": 18
     },
     "shaman": {
       "name": "Шаман",
@@ -2625,7 +2641,8 @@
           "unlock_level": 3,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2.1
         },
         {
           "id": "shaman.base.3",
@@ -2633,7 +2650,8 @@
           "unlock_level": 5,
           "type": "active",
           "effect_template": "strike",
-          "cooldown_tier": "short"
+          "cooldown_tier": "short",
+          "damage_multiplier": 2.1
         },
         {
           "id": "shaman.base.4",
@@ -2704,7 +2722,7 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 10,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 0,
       "resource_cost_per_skill": 18
     }

@@ -17,8 +17,8 @@
   "class_costs": {
     "duelist": {
       "attack_skill": 22,
-      "counter": 1,
-      "ultimate": 2
+      "counter": 18,
+      "ultimate": 42
     }
   },
   "regeneration": {

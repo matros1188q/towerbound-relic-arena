@@ -99,13 +99,13 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const elite=e.getEnemyStats(c.id,50,{type:'elite'});
  const boss=e.getEnemyStats(c.id,50,{type:'boss'});
  if(balance.combat.turn_based?.enabled){
-  assert.deepEqual([normal.hp,normal.damage],[183,50]);
-  assert.deepEqual([elite.hp,elite.damage],[549,75]);
-  assert.deepEqual([boss.hp,boss.damage],[1098,125]);
+  assert.deepEqual([normal.hp,normal.damage],[250,50]);
+  assert.deepEqual([elite.hp,elite.damage],[450,125]);
+  assert.deepEqual([boss.hp,boss.damage],[1000,400]);
   assert.equal(normal.attackInterval,1);
   assert.equal(boss.attackIntervalMs,1000);
   const newbieBoss=e.getEnemyStats(c.id,10,{type:'boss'});
-  assert.equal(newbieBoss.damage,40,'map10 newbie boss keeps the configured damage exception');
+  assert.equal(newbieBoss.damage,128,'map10 newbie boss keeps the configured damage exception');
  }else{
   assert.deepEqual([normal.hp,normal.damage],[550,150]);
   assert.deepEqual([elite.hp,elite.damage],[1650,225]);
@@ -115,15 +115,15 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
   const newbieBoss=e.getEnemyStats(c.id,10,{type:'boss'});
   assert.equal(newbieBoss.damage,120,'map10 newbie boss is the explicit exception');
  }
- assert.equal(balance.mobs.elite.hp_multiplier,3);
- assert.equal(balance.mobs.elite.damage_multiplier,1.5);
- assert.equal(balance.bosses.hp_multiplier,6);
- assert.equal(balance.bosses.damage_multiplier,2.5);
+ assert.equal(balance.mobs.elite.hp_multiplier,1.8);
+ assert.equal(balance.mobs.elite.damage_multiplier,2.5);
+ assert.equal(balance.bosses.hp_multiplier,4);
+ assert.equal(balance.bosses.damage_multiplier,8);
  assert.equal(balance.bosses.attack_interval_seconds,balance.combat.turn_based?.enabled?1:2.5);
- assert.equal(balance.combat.enemy_hp.elite_multiplier,3);
- assert.equal(balance.combat.enemy_hp.boss_multiplier,6);
- assert.equal(balance.combat.enemy_damage.elite_multiplier,1.5);
- assert.equal(balance.combat.enemy_damage.boss_multiplier,2.5);
+ assert.equal(balance.combat.enemy_hp.elite_multiplier,1.8);
+ assert.equal(balance.combat.enemy_hp.boss_multiplier,4);
+ assert.equal(balance.combat.enemy_damage.elite_multiplier,2.5);
+ assert.equal(balance.combat.enemy_damage.boss_multiplier,8);
 }
 if(balance.combat.turn_based?.enabled){
  assert.equal(balance.combat.turn_based.player_turn_actions.potions,1,'turn-based mode permits one potion per player turn');

@@ -12,33 +12,33 @@
     },
     {
       "stage": 50,
-      "hp": 183,
+      "hp": 250,
       "damage": 50
     },
     {
       "stage": 100,
-      "hp": 500,
+      "hp": 750,
       "damage": 133
     },
     {
       "stage": 150,
-      "hp": 1733,
+      "hp": 3000,
       "damage": 300
     },
     {
       "stage": 200,
-      "hp": 3333,
+      "hp": 6000,
       "damage": 467
     },
     {
       "stage": 250,
-      "hp": 7333,
+      "hp": 14000,
       "damage": 667
     }
   ],
   "elite": {
-    "hp_multiplier": 3,
-    "damage_multiplier": 1.5
+    "hp_multiplier": 1.8,
+    "damage_multiplier": 2.5
   },
   "interpolation": "linear",
   "silver_brackets": [
@@ -116,8 +116,8 @@
     "dark",
     "physical"
   ],
-  "vulnerability_multiplier": 1.5,
-  "resistance_multiplier": 0.5,
+  "vulnerability_multiplier": 1.25,
+  "resistance_multiplier": 0.75,
   "assignment": {
     "weakness_index_formula": "(stage+index)%4",
     "resistance_index_offset": 2

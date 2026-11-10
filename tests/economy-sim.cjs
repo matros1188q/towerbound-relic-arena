@@ -7,7 +7,7 @@ function runClass(classId,seed){
   equip(c,stage);engine.beginStage(c.id,stage);const st=c.run.stage;c.run.dailyModifier=null;if(c.run.season)c.run.season.modifier=null;
   for(let i=0;i<st.mobs.length;i++){
    const enemy=st.mobs[i];st.targetIndex=i;
-   const r=simulateFight(engine,c,stage,enemy,{playerHp:c.run.playerHp,resource:c.resource,random:rng(seed+stage*701+i*13),potionThreshold:.48,onPotion:(currentHp,currentResource)=>{character.run.playerHp=currentHp;character.resource=currentResource;
+   const r=simulateFight(engine,c,stage,enemy,{playerHp:c.run.playerHp,resource:c.resource,random:rng(seed+stage*701+i*13),potionThreshold:.6,onPotion:(currentHp,currentResource)=>{c.run.playerHp=currentHp;c.resource=currentResource;
     let stack=c.bag.find(x=>x.type==='healing_potion'&&x.quantity>0);
     if(!stack&&c.silver>=potionPrice){engine.purchase(c.id,'silver','heal_25');bought++;stack=c.bag.find(x=>x.type==='healing_potion'&&x.quantity>0);}
     if(!stack)return null;const hp=engine.useHealingPotion(c.id,stack.id);used++;return{hp,resource:c.resource};
