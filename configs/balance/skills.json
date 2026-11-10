@@ -56,7 +56,7 @@
       "icon": "◒",
       "resource_cost": 18,
       "effect": "evade",
-      "cooldown_turns": 2
+      "cooldown_turns": 4
     },
     "bishop": {
       "id": "barrier",
@@ -64,7 +64,7 @@
       "icon": "✧",
       "resource_cost": 18,
       "effect": "absorb_all",
-      "cooldown_turns": 2
+      "cooldown_turns": 4
     },
     "dragonkin": {
       "id": "scale",
@@ -81,7 +81,7 @@
       "icon": "◉",
       "resource_cost": 18,
       "effect": "stun",
-      "cooldown_turns": 2
+      "cooldown_turns": 4
     },
     "elemental": {
       "id": "slow",
@@ -99,7 +99,7 @@
       "resource_cost": 18,
       "effect": "riposte",
       "damage_multiplier": 1,
-      "cooldown_turns": 2
+      "cooldown_turns": 4
     },
     "shaman": {
       "id": "cleanse",

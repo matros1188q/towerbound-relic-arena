@@ -38,7 +38,7 @@
   ],
   "elite": {
     "hp_multiplier": 1.8,
-    "damage_multiplier": 5.5
+    "damage_multiplier": 7
   },
   "interpolation": "linear",
   "silver_brackets": [
@@ -116,8 +116,8 @@
     "dark",
     "physical"
   ],
-  "vulnerability_multiplier": 1.25,
-  "resistance_multiplier": 0.75,
+  "vulnerability_multiplier": 1.1,
+  "resistance_multiplier": 0.9,
   "assignment": {
     "weakness_index_formula": "(stage+index)%4",
     "resistance_index_offset": 2

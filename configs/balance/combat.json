@@ -13,8 +13,8 @@
   "enemy_damage": {
     "normal_base": 2,
     "normal_per_stage": 1,
-    "elite_multiplier": 5.5,
-    "boss_multiplier": 7
+    "elite_multiplier": 7,
+    "boss_multiplier": 5.8
   },
   "player_damage": {
     "attack_multiplier": 0.5,
