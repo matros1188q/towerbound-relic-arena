@@ -303,6 +303,39 @@ const {chromium}=require('playwright');
   await page.locator('.tb-profile .tb-tabs [data-tab="account"]').click();
   await page.evaluate(()=>{const engine=window.TowerboundRework,c=engine.state.characters[0];c.level=1;c.gear=[null,null,null,null,null,null];c.talents={};c.progress.highestEver=10;c.progress.currentStage=11;engine.setDifficulty(c.id,'easy');window.saveTowerboundRework();});
   await page.locator('[data-action="bottom-map"]').click();
+  await page.evaluate(()=>{
+   const c=window.TowerboundRework.state.characters[0];
+   c.level=50;
+   c.progress.highestEver=10;
+   if(!c.skillLoadout?.length)c.skillLoadout=['assassin.base.1'];
+   window.saveTowerboundRework();
+  });
+  assert.equal(await page.evaluate(()=>typeof window.TowerboundEndgame?.open),'function','endgame screens expose their navigation API');
+  for(const size of [{width:390,height:844},{width:430,height:932}]){
+   await page.setViewportSize(size);
+   for(const tab of ['tower','pass','guild','evolution']){
+    await page.evaluate(tab=>window.TowerboundEndgame.open(tab),tab);
+    await page.waitForSelector('#tbEndgame .eg-window',{timeout:3000});
+    if(tab==='pass')assert.equal(await page.locator('#tbEndgame .eg-pass-row').count(),50,'Battle Pass renders all 50 reward levels');
+    if(tab==='tower')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/текущий этаж: 1/i,'Tower screen starts at floor one');
+    if(tab==='guild')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/5[\\s\\u00a0]?000[\\s\\u00a0]?000/,'Guild screen renders the 5-million HP world boss');
+    if(tab==='evolution'){
+     await page.waitForFunction(()=>document.querySelectorAll('#tbEndgame [data-eg="evolve"]').length>=2,{timeout:5000});
+     assert.ok(await page.locator('#tbEndgame [data-eg="evolve"]').count()>=2,'level 50 evolution screen offers both skill upgrades');
+    }
+    const bounds=await page.locator('#tbEndgame .eg-window').evaluate(el=>{
+     const r=el.getBoundingClientRect(),back=el.querySelector('[data-eg="back-map"]').getBoundingClientRect();
+     return{left:r.left,right:r.right,top:r.top,bottom:r.bottom,backLeft:back.left,backRight:back.right,backTop:back.top,backBottom:back.bottom,docWidth:document.documentElement.scrollWidth,viewportWidth:innerWidth,viewportHeight:innerHeight};
+    });
+    assert.ok(bounds.left>=0&&bounds.right<=size.width+1&&bounds.top>=0&&bounds.bottom<=size.height+1,'endgame '+tab+' window stays inside '+size.width+'x'+size.height);
+    assert.ok(bounds.backLeft>=0&&bounds.backRight<=size.width+1&&bounds.backTop>=0&&bounds.backBottom<=size.height+1,'endgame '+tab+' back-to-map button stays visible on mobile');
+    assert.ok(bounds.docWidth<=bounds.viewportWidth,'endgame '+tab+' does not introduce horizontal page overflow');
+    await page.locator('#tbEndgame [data-eg="back-map"]').click();
+    await page.waitForSelector('#tbEndgame',{state:'detached',timeout:3000});
+   }
+  }
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.level=1;window.saveTowerboundRework();});
+  await page.setViewportSize({width:390,height:844});
   await page.locator('[data-stage="9"]').click();
   await page.setViewportSize({width:390,height:844});
   await page.locator('[data-action="start"]').click();
