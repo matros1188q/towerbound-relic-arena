@@ -17,5 +17,5 @@ for(const [name,re] of [
  ['elite notes',/enemy\.type==='elite'/],['chapter palette',/palettes=\[/],['secret room chance',/Math\.random\(\)<\.01/]
 ])assert.match(name==='x3 farm'||name==='cooldown reduction'?ui:fx,re,name);
 assert.match(fx,/engine\.purchase\(c\.id,'silver','heal_25'\)/);assert.doesNotMatch(fx,/heal_40/);
-assert.match(html,/progression-24\\.js\\?v=3/);assert.match(fx,/localStorage\.setItem\('tb-rpg-v2'/);assert.match(fx,/slot:slot==='weapon'\?0:2/);assert.match(fx,/engine\.purchase\(c\.id,'silver','heal_25'\)/);assert.match(ui,/c\.progression\.skillMastery\[skill\.id\]=mastery/);
+assert.match(html,/progression-24\.js\?v=3/);assert.match(fx,/localStorage\.setItem\('tb-rpg-v2'/);assert.match(fx,/slot:slot==='weapon'\?0:2/);assert.match(fx,/engine\.purchase\(c\.id,'silver','heal_25'\)/);assert.match(ui,/c\.progression\.skillMastery\[skill\.id\]=mastery/);
 const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');assert.match(core,/progression\.runewords.*word\.health/);assert.match(core,/permanentXpBonus/);console.log('Progression systems static checks passed.');
