@@ -482,3 +482,94 @@ Additional implementation / verification commits after the initial feature block
 - Added regression assertions in tests/online-services.test.cjs and a GitHub Actions workflow .github/workflows/towerbound-checks.yml for JavaScript syntax and static regression checks.
 
 **Verification boundary:** GitHub Actions is configured to run the checks on this push. A physical iPhone Safari session and visual touch-swipe verification are not performed from this repository-editing session; Playwright/device results must be taken from the Actions/browser test run, not inferred from CSS assertions. Supabase registration requires Confirm Email disabled for synthetic @towerbound.game logins, as documented in TOWERBOUND_CLOUD_SETUP.md.
+
+## 2026-11-10 — Final account, inventory, gem and iPhone release record
+
+This section records the complete follow-up implementation that closes the account/login, item localization, gem socket and narrow-screen UI tasks. All implementation commits below were made directly on `main`.
+
+### Account and session gate
+
+- The game now blocks character selection behind the **Вход в игру** dialog until a Supabase session is verified.
+- Login names are normalized to lowercase and mapped to the synthetic Supabase email format `login@towerbound.game`; login and registration use Supabase password authentication.
+- **Запомнить меня** is stored as `tb-remember-me`. A persisted Supabase session is accepted on the next launch only when this flag is enabled. Without it, the previous session is not silently reused and the player must enter the password again.
+- Existing local save keys and the versioned cloud-save conflict/migration flow are preserved.
+- Supabase setup requirement: Email provider must have **Confirm Email disabled** for this synthetic address scheme. Email-based password recovery is not available for these unowned addresses; configure a verified recovery channel before production use. See [TOWERBOUND_CLOUD_SETUP.md](TOWERBOUND_CLOUD_SETUP.md).
+
+### Russian inventory labels and stat presentation
+
+- Added/retained Russian display names for raw inventory IDs, including `healing_potion` → **Зелье исцеления** and `craft_material` → **Материал для крафта**.
+- Item display falls back to the localized item-type dictionary when an item has only a raw ID, rather than exposing the internal identifier.
+- Critical chance, evasion and their supported key aliases are formatted as percentages instead of fractional decimals (for example, `0.05` → `5%`).
+- Removed repeated rarity adjectives from item titles and removed the redundant second item-type line from bag cards.
+- Gem catalog descriptions are localized and scale with gem level; the inventory stone card exposes its effect description directly.
+
+### Gem catalog, socket insertion and extraction
+
+- The gem catalog includes named stones and explicit effect descriptions, including fire-damage and defensive/stat bonuses.
+- Clicking/inspecting a stone in the bag shows its description.
+- The engine exposes `insertGem(characterId, itemId, stoneId)`; the older `socketStone` entry point remains as a compatibility alias.
+- Insertion validates that the equipment exists, a free socket remains (`sockets > installed gems`), the selected enhancement stone is actually in the bag, and its class, specialization and weapon/armor slot are compatible.
+- On successful insertion, the stone's ID/data and stats are stored in `installedGems` (with the legacy socket representation kept in sync) and the consumed stone is removed from the bag. Failed validation does not consume it.
+- **ИЗВЛЕЧЬ КАМЕНЬ** returns an installed stone to the bag and frees the socket so it can be reused.
+
+### iPhone layout corrections
+
+- Profile names no longer break at arbitrary character boundaries: normal word wrapping, safe overflow wrapping and disabled hyphenation are applied, with a responsive heading size.
+- Profile sub-tabs use horizontal touch scrolling, preserve single-line tab labels and hide the scrollbar.
+- Inventory cards and their text can shrink without collapsing into a one-character column; item labels wrap at word boundaries.
+- **ЭКИПИРОВАТЬ ЛУЧШЕЕ** and **РАЗОБРАТЬ ВЕСЬ МУСОР** use compact, constrained button widths rather than occupying the full viewport.
+- Updated asset cache keys in `index.html`: cloud/auth bundle **v8**, RPG engine **v16**, profile/inventory UI **v26**, mobile stylesheet **v14**.
+
+### Files changed for this release
+
+- `towerbound-cloud.js` — Supabase login/session persistence and remember-me gate.
+- `rpg-rework-v2.js` — validated gem insertion/extraction engine API.
+- `rpg-rework-ui.js` — localized inventory names, stat formatting, gem descriptions/actions and duplicate-label cleanup.
+- `rpg-rework-ui.css.js` — responsive profile title, swipeable tabs, flexible bag cards and compact inventory actions.
+- `index.html` — cache-busting versions for the updated bundles.
+- `tests/online-services.test.cjs` — account gate, localized UI, bundle-version and gem insertion/extraction regression assertions.
+- `.github/workflows/towerbound-checks.yml` — Node 20 syntax and regression workflow.
+- `TOWERBOUND_CLOUD_SETUP.md` — synthetic email / Supabase Confirm Email setup warning.
+- `README.md` — this release record.
+
+### Implementation commit log
+
+All commits below are on `main` and form the account / gem / localization / mobile follow-up series:
+
+- `f6e4074120a8be7020d2466e0fc379b0434816b2` — block game startup until the account session is verified.
+- `7621c8a7bd9d15f9b355922780123012da9cc5d0` — format item stats and display inventory stone descriptions.
+- `603b64a9d4455fb76f49ceaac62cadd23059ab1f` — add localized gem catalog descriptions.
+- `022e63c19fbed2f35f2e3e8fadf7634c6ca5d7e2` — refresh account, gem and mobile UI asset versions.
+- `7710ca4d643ed2b4d0ecf23a98f5dfcd309b945a` — render elemental item damage as flat stats.
+- `c70e27a7ecaebd71c444a5191f97ac01ba8e2435` — ensure the login overlay remains visible on mobile browsers.
+- `953bcade1552a485f56c108b8662ac6296b0e501` — refresh login overlay cache.
+- `ec26caacb66e4a6f2543d5d9b3990e951403b237` — assert the visible login overlay asset version.
+- `56a800739f398b57b47c6ab01a65921b42aa4534` — scale stone descriptions with gem level.
+- `7f7980625c6bdac57b7d4855f56c5d86e68a8cb7` — cover account gate and gem installation in regression tests.
+- `323064094f2f94a7154dff6158ad224318ce908d` — rerun login and gem browser journeys.
+- `d5df65e61466932a667eb1d47a82b38028f27601` — localize raw item names and remove duplicate rarity labels.
+- `c0e56270c4d3f9824c6a00785da03ff8c6368b05` — document synthetic-email confirmation requirements.
+- `9481c0b23de380478b08339c81dda86906e5ff05` — cover localized item-name fallback.
+- `fb43ff771e350e1eeb0b9b43e1e3ac570fe1c392` — refresh login and localized inventory bundles.
+- `2cdb6b7bcb4d3a77f123fb45b659ec38e59730ac` — assert current login/inventory bundle versions.
+- `c19c22227b5ee2ae11bad72c36890135dc04f8d7` — clarify the Supabase Confirm Email setting.
+- `681111579310f2fa9a54f512bfd8ebcdd80d18b6` — harden gem insertion and socket validation.
+- `148fdd3c32b5d656177ce1a9781c11b89e4689e5` — improve inventory localization and gem UI.
+- `794357924279f29b7a4df7c7b4125343436f2e3b` — harden iPhone profile and inventory layout.
+- `d6b4c4bce89204576cb54545cd2f2668ba2b09ba` — refresh account, inventory and mobile UI cache keys.
+- `ebc85946646ccbfaf1af733a00537e62f24e6589` — add account, gem and iPhone regression assertions.
+- `4dd5d17c9a2fff0e42aba0d75b5eaa57439a1abc` — add the Towerbound regression/syntax GitHub Actions workflow.
+- `cc8a2d2980af1eca4138d3ffbfeec89b2bff9f99` — document the implementation and verification boundary.
+- `32ca5efc204775eff3e2445c1ad7c3da9d3d48da` — exercise gem insertion/extraction round trips and invalid insertion cases.
+
+### Verification status for release commit `32ca5efc204775eff3e2445c1ad7c3da9d3d48da`
+
+- **Passed:** JavaScript syntax checks for the engine, UI, stylesheet, cloud and online service scripts.
+- **Passed:** `tests/online-services.test.cjs`, including gem insertion, stone consumption, extraction, missing socket, missing stone, wrong specialization and wrong equipment slot cases. GitHub Actions run [42867010168](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/42867010168).
+- **Passed:** GitHub Pages deployment for this exact commit. Run [42867010411](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/42867010411).
+- **Passed locally in the repository-editing session:** the regression test file executed with mocked file reads and the engine's gem insert/extract round trip.
+- **Pending at the time of this README update:** RPG rework workflow [42867010312](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/42867010312) and cross-browser smoke [42867010418](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/42867010418).
+- **Not claimed as verified:** a hands-on physical iPhone Safari session, real Supabase registration/login against the production project, and visual touch-swipe behavior on a physical device. Automated viewport/browser checks do not replace those checks.
+
+**Release branch:** `main`  
+**Release commit before this documentation-only update:** `32ca5efc204775eff3e2445c1ad7c3da9d3d48da`
