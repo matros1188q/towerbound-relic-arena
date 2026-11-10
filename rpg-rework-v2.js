@@ -253,7 +253,7 @@
     result.itemLevelBonus+=Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level;
     for(const key of ["attack","defense","health","crit","critDamage","spellPower","fireDamage","iceDamage","darkDamage","fireResist","iceResist","darkResist","physicalResist"])result[key]+=(item.stats?.[key]||0);
     result.attack+=refine.attack*(item.refine||0);result.defense+=refine.defense*(item.refine||0);result.health+=refine.health*(item.refine||0);
-    for(const socket of item.installedGems||item.sockets||[]){
+    for(const socket of ((Array.isArray(item.installedGems)&&item.installedGems.length)?item.installedGems:(item.sockets||[]))){
      const stone=socket.stoneType||socket.stone_type||{},level=socket.level||1;
      result.attack+=(stone.attack_per_level||0)*level;result.defense+=(stone.defense_per_level||0)*level;
      result.health+=(stone.health_per_level||0)*level;result.crit+=(stone.crit_per_level||0)*level;
@@ -941,7 +941,7 @@
    const stone=character.bag.find(entry=>entry.id===stoneId&&entry.type==="enhancement_stone");
    if(!item||!stone)throw new Error("Equipment or stone not found");
    item.sockets=Array.isArray(item.sockets)?item.sockets:[];
-   item.installedGems=Array.isArray(item.installedGems)?item.installedGems:item.sockets.map(entry=>clone(entry));
+   item.installedGems=Array.isArray(item.installedGems)&&item.installedGems.length?item.installedGems:(item.sockets||[]).map(entry=>clone(entry));
    const installed=item.installedGems.length?item.installedGems:item.sockets;
    if(Math.max(0,Number(item.socketsAvailable)||0)-installed.length<=0)throw new Error("Нет свободного гнезда. Сначала просверли гнездо долотом.");
    if(!stone.stoneType||typeof stone.stoneType!=="object")throw new Error("У камня повреждены данные");
