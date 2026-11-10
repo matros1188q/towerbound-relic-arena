@@ -63,4 +63,42 @@ assert.ok(ui.includes('rarityPrefixes')&&ui.includes('itemDisplayName(item)'),'e
 assert.ok(ui.includes('critical_chance')&&ui.includes('evasion_chance'),'percentage formatting covers normalized crit and evasion keys');
 assert.ok(css.includes('flex:1 1 0')&&css.includes('hyphens:none')&&css.includes('touch-action:pan-x'),'iPhone item cards, profile names and swipe tabs have explicit mobile rules');
 
-console.log('Online services static checks: OK');
+
+const core=require('../rpg-rework-v2.js');
+const classConfig=JSON.parse(fs.readFileSync('configs/balance/classes.json','utf8'));
+function gemEngine(overrides={}){
+ const hero={id:'gem-test-hero',classId:'dragonkin',branch:'fire_dragon',
+  gear:[{id:'gem-test-sword',slot:'weapon',socketsAvailable:1,sockets:[],installedGems:[]}],
+  bag:[{id:'gem-test-ruby',type:'enhancement_stone',level:1,stoneType:{id:'dragonkin.fire_dragon.weapon',class_id:'dragonkin',branch_id:'fire_dragon',slot:'weapon',name:'Рубин',fire_damage_per_level:.05,description:'+5% к урону огнём'}}],
+  ...(overrides.hero||{})};
+ return{hero,engine:core.createEngine({combat:{},xp_curve:{},map:{},classes:classConfig,mobs:{}},{state:{account:{},characters:[hero],activeCharacterId:hero.id}})};
+}
+{
+ const {hero,engine}=gemEngine();
+ engine.insertGem(hero.id,'gem-test-sword','gem-test-ruby');
+ assert.equal(hero.gear[0].installedGems.length,1,'insertGem stores the installed gem');
+ assert.equal(hero.gear[0].installedGems[0].stoneType.fire_damage_per_level,.05,'installed gem retains its stats');
+ assert.equal(hero.bag.some(item=>item.id==='gem-test-ruby'),false,'insertGem consumes the bag stone');
+ const returned=engine.extractGem(hero.id,'gem-test-sword',0);
+ assert.equal(returned.type,'enhancement_stone','extractGem returns a usable stone');
+ assert.equal(hero.gear[0].installedGems.length,0,'extractGem frees the socket');
+ assert.equal(hero.bag.some(item=>item.id===returned.id),true,'extracted stone returns to inventory');
+}
+{
+ const {hero,engine}=gemEngine({hero:{gear:[{id:'gem-test-sword',slot:'weapon',socketsAvailable:0,sockets:[],installedGems:[]}]}});
+ assert.throws(()=>engine.insertGem(hero.id,'gem-test-sword','gem-test-ruby'),/Нет свободного гнезда/,'insertGem rejects a full item');
+}
+{
+ const {hero,engine}=gemEngine({hero:{bag:[]}});
+ assert.throws(()=>engine.insertGem(hero.id,'gem-test-sword','missing-stone'),/Камень отсутствует/,'insertGem requires a bag stone');
+}
+{
+ const {hero,engine}=gemEngine({hero:{bag:[{id:'wrong-branch',type:'enhancement_stone',stoneType:{class_id:'dragonkin',branch_id:'ice_dragon',slot:'weapon'}}]}});
+ assert.throws(()=>engine.insertGem(hero.id,'gem-test-sword','wrong-branch'),/не подходит к текущей специализации/,'insertGem rejects another specialization');
+}
+{
+ const {hero,engine}=gemEngine({hero:{bag:[{id:'armor-stone',type:'enhancement_stone',stoneType:{class_id:'dragonkin',branch_id:'fire_dragon',slot:'armor'}}]}});
+ assert.throws(()=>engine.insertGem(hero.id,'gem-test-sword','armor-stone'),/предназначен только для брони/,'insertGem rejects armor stones in weapons');
+}
+
+console.log('Online services static and gem runtime checks: OK');
