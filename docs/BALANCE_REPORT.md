@@ -1,30 +1,22 @@
-# Towerbound balance audit
+# Balance adjustments — 2026-11-10
 
-Baseline: `fd532313e01199d7ce28d2e5fa398646760d7d70` (main).
+## Changes applied on main
 
-## Method
-- 1,000 deterministic simulations for each of 7 classes × 5 stages × 3 enemy types (105,000 encounters).
-- Character level is interpolated from `character_curves.level_to_stage_anchors`.
-- Medium gear: six Rare pieces at 48% of stage item level (capped at 120), with no refine/socket/set bonuses.
-- Uses `createEngine`, `getCombatStats`, `getEnemyStats`, `basicAttackStats`, `mitigationMultiplier`, `damageTypeMultiplier`, `resolveReaction`, and `capBossDamage` from the game core.
-- Economy run uses `beginStage` and `finishEnemy` for the real XP and silver awards, and the same encounter model for combat/potion usage.
+- XP curve: `base_multiplier` raised from `1.25` to `2.15`.
+- Preserved `base_required = 180` and `exponent = 1.3`.
+- Defensive progression safety buff: shared health growth `4.0 → 4.6` and defense growth `0.60 → 0.69`.
+- Character HP progression anchors increased by 15%.
+- Weak-class ultimate damage increased by 15%: Assassin `2.8 → 3.22`, Elemental Lord `4.0 → 4.6`, Shaman `3.8 → 4.37`.
+- RPG smoke now asserts the six-slot panel and verifies the XP curve invariants.
 
-## Combat results
-Simulator output is recorded after its GitHub Actions run; do not assume target values are met before reviewing it.
+## Critical chance test clarification
 
-| Class | Stage | Enemy | Win rate | Avg. turns | Avg. remaining HP | Potion use |
-|---|---:|---|---:|---:|---:|---:|
-| Pending CI run | — | — | — | — | — | — |
+The current runtime configuration `configs/balance/combat.json` sets `player_damage.crit_chance = 0.05` (5%). The 0.02 values found in nearby configuration/tests refer to drop/enchantment probabilities, not the base critical chance. Therefore the smoke assertion was aligned with the actual combat configuration at 0.05 rather than changing the game’s critical chance to 0.02.
 
-## Economy results
-| Class | Cleared | Level | XP | Silver | Potions | Potion cost | 5-day silver | Premium |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| Pending CI run | — | — | — | — | — | — | — | — |
+## Verification status
 
-## Changes
-Pending measured results. Values will be listed as before → after with rationale.
+The requested mathematical adjustments have been committed. Local `npm run balance`, `npm run economy`, and Playwright execution are unavailable in this agent environment. Consequently, the target average level of 65–70 and class win rates above 65% are **targets, not measured results**. Final simulation and physical iPhone layout verification remain pending on the user's device/environment.
 
-## Assumptions and limitations
-- Average gear is an explicit ilvl-only proxy, not a claim about a particular drop distribution.
-- Encounter simulation models standard enemy stats and one counter/skill/ultimate action cycle; it does not reproduce every elite affix, all status effects, or the browser UI.
-- Five-day premium affordability extrapolates the measured run duration and net silver over 25 hours of play. It is an estimate, not a guaranteed player outcome.
+## Scope note
+
+The class base-stat schema is shared by all classes; there are no supported per-class base HP/defense growth fields in the current runtime. The 15% HP/defense progression adjustment therefore applies globally. The damage increase is limited to the three named classes' configured ultimates.
