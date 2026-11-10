@@ -115,6 +115,7 @@ for(const [classId,fileName] of Object.entries({dragonkin:'dragonkin.jpg',elemen
 }
 assert.ok(uiSource.includes('"bosses/crimson-regent.jpg"'),'Crimson Regent uses a dedicated boss portrait');
 assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
+assert.ok(uiSource.includes('host.querySelector(".tb-turn-tutorial")'),'bottom navigation yields to the first-run battle tutorial');
 for(const action of ['bottom-map','bottom-profile','bottom-shop','bottom-rating'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
 for(const label of ['Карта','Персонаж','Магазин','Рейтинг'])assert.ok(uiSource.includes(label),'bottom navigation label exists: '+label);
 const cloudSource=fs.readFileSync(path.join(root,'towerbound-cloud.js'),'utf8');

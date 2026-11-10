@@ -748,6 +748,8 @@
  function ensureBottomNav(){
   const host=root.querySelector(".tb-v2");if(!host)return;
   let nav=host.querySelector(".tb-bottom-nav");
+  // A first-run battle tutorial must remain fully interactive above the tab bar.
+  if(host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
   if(!nav){
    nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");
