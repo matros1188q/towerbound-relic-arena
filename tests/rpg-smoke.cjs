@@ -120,7 +120,7 @@ const {chromium}=require('playwright');
   const tabRail=await page.locator('.tb-profile .tb-tabs').evaluate(el=>({overflow:getComputedStyle(el).overflowX,wrap:getComputedStyle(el).flexWrap,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth}));
   assert.equal(tabRail.overflow,'auto','profile tabs allow horizontal touch scrolling');
   assert.equal(tabRail.wrap,'nowrap','profile tabs stay in one horizontal row');
-  assert.ok(tabRail.scrollWidth>=tabRail.clientWidth,'profile tab rail retains its full scrollable content width');
+  assert.ok(tabRail.scrollWidth>tabRail.clientWidth,'profile tabs overflow into a horizontal swipe rail on iPhone width');
   await page.locator('.tb-profile .tb-tabs [data-tab="account"]').click();
   const chestBefore=await page.evaluate(()=>window.TowerboundRework.state.characters[0].dailyChest?.lastOpenedAt||0);
   assert.equal(await page.locator('[data-action="daily-chest"]').isEnabled(),true,'daily chest is available on a fresh character');
