@@ -59,6 +59,17 @@ These phases are plans, not claims that the functionality is already implemented
 
 Keep this section current. Every development session that changes the project must add a dated entry describing what changed, the files/areas affected, the commit SHA, and what remains unverified or unfinished. Do not record planned work as completed.
 
+### 2026-11-10 — Centered login gate and iPhone header repair
+
+- Replaced the nonfunctional top account control with an embedded login / registration form in the empty character-selection state. Unauthenticated players see **«Вход в игру»** with login, password, remember-me, **ВОЙТИ**, and **Зарегистрироваться**.
+- The character-creation action is shown only after a Supabase session is confirmed. The new-character action also checks the session in its click handler.
+- Fixed the auth timing race: `signIn` and `signUp` now await cloud-session processing and cloud-save restore before returning; auth state changes trigger a character-screen render. Empty cloud saves leave the player on the create-character state.
+- Removed the automatically opened login overlay from startup, so it no longer covers the main screen or intercepts taps. The legacy floating account button is hidden.
+- Added mobile header no-wrap rules for the TOWERBOUND wordmark and header controls, with smaller typography and spacing at widths up to 400px.
+- Updated PWA cache to `towerbound-v24`; script cache keys: UI `v29`, cloud `v11`, styles `v16`.
+- Files: `rpg-rework-ui.js`, `rpg-rework-ui.css.js`, `towerbound-cloud.js`, `index.html`, `service-worker.js`, `tests/online-services.test.cjs`, `tests/full-game-audit.cjs`.
+- Verification: JavaScript syntax, regression tests and browser smoke tests are tracked in GitHub Actions. A live Supabase login requires a real account and configured Supabase Auth; an actual iPhone screen was not physically exercised in this environment.
+
 ### 2026-11-10 — Character selection account entry and empty-state cleanup
 
 - Added a visible **АККАУНТ** button beside the TOWERBOUND header on the character-selection screen. It opens the existing Supabase account dialog; after authentication it displays the login name / online status and opens sync/sign-out controls.
