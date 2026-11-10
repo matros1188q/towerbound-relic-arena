@@ -69,7 +69,7 @@ const {chromium}=require('playwright');
  await page.addInitScript(()=>{
   window.supabase={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
    return{auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
-    signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
+    signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};if(email==='test123@towerbound.com'&&password!=='123456')return{data:{session:null},error:{message:'Invalid login credentials'}};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
     signUp:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
     signOut:async()=>{localStorage.removeItem('__tb_qa_auth_session');if(listener)listener('SIGNED_OUT',null);return{error:null};}},
     from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:null,error:null})})})}),
@@ -88,6 +88,25 @@ const {chromium}=require('playwright');
   const brandLayout=await page.locator('.tb-brand strong').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight),whiteSpace:getComputedStyle(el).whiteSpace}));
   assert.equal(brandLayout.whiteSpace,'nowrap','TOWERBOUND logo does not wrap on iPhone width');
   assert.ok(brandLayout.height<=brandLayout.lineHeight+1,'TOWERBOUND logo stays on one line');
+  await page.locator('#login').fill('Test123');
+  await page.locator('#pass').fill('123456');
+  await page.locator('[data-action="empty-register"]').click();
+  await page.waitForFunction(()=>window.TowerboundCloud?.signedIn);
+  assert.equal(await page.evaluate(()=>window.__tbLastAuth.email),'test123@towerbound.com','registration creates the lowercase .com synthetic email');
+  await page.evaluate(()=>window.TowerboundCloud.signOut());
+  await page.waitForFunction(()=>!window.TowerboundCloud?.signedIn);
+  await page.locator('#login').fill('Test123');
+  await page.locator('#pass').fill('wrongpass');
+  await page.locator('[data-action="empty-login"]').click();
+  await page.waitForFunction(()=>document.querySelector('.tb-login-message')?.textContent==='Неверный логин или пароль');
+  assert.ok(await page.locator('.tb-login-message.is-error').count(),'invalid login error is styled red');
+  await page.locator('#login').fill('Test123');
+  await page.locator('#pass').fill('123456');
+  await page.locator('[data-action="empty-login"]').click();
+  await page.waitForFunction(()=>window.TowerboundCloud?.signedIn);
+  assert.equal(await page.evaluate(()=>window.__tbLastAuth.email),'test123@towerbound.com','new-domain sign-in succeeds after registration');
+  await page.evaluate(()=>window.TowerboundCloud.signOut());
+  await page.waitForFunction(()=>!window.TowerboundCloud?.signedIn);
   await page.locator('#login').fill('Matroscheg');
   await page.locator('#pass').fill('qa-password');
   await page.locator('.tb-character-login #rememberMe').uncheck();
