@@ -163,7 +163,7 @@ for(const phrase of ['самолечение','проклятия и нанос�
 assert.ok(uiSource.includes('tb-branch-description'),'selected specialization description is visible below branch choices');
 assert.ok(uiSource.includes('tb-stage-toolbar')&&uiSource.includes('tb-stage-more'),'selected stage is rendered as a compact toolbar with collapsed advanced actions');
 assert.ok(uiSource.indexOf('tb-stage-toolbar')<uiSource.indexOf('tb-map-layout'),'selected stage toolbar appears before the map grid');
-assert.ok(nativeCss.includes('.tb-stage-toolbar .tb-stage-start')&&css.includes('.tb-map-layout{display:block!important'),'compact stage layout is responsive and single-column');
+assert.ok(nativeCss.includes('.tb-stage-toolbar .tb-stage-start')&&nativeCss.includes('.tb-map-layout{display:block!important'),'compact stage layout is responsive and single-column');
 
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
 assert.ok(uiSource.includes('gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"]'),'equipment slots use localized names instead of generic slot numbers');
