@@ -324,7 +324,7 @@ const {chromium}=require('playwright');
     await page.waitForSelector('#tbEndgame .eg-window',{state:'attached',timeout:3000});
     if(tab==='pass')assert.equal(await page.locator('#tbEndgame .eg-pass-row').count(),50,'Battle Pass renders all 50 reward levels');
     if(tab==='tower')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/текущий этаж: 1/i,'Tower screen starts at floor one');
-    if(tab==='guild')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/5[\\s\\u00a0]?000[\\s\\u00a0]?000/,'Guild screen renders the 5-million HP world boss');
+    if(tab==='guild')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/5[\s\u00a0\u202f]?000[\s\u00a0\u202f]?000/,'Guild screen renders the 5-million HP world boss');
     if(tab==='evolution'){
      await page.waitForFunction(()=>document.querySelectorAll('#tbEndgame [data-eg="evolve"]').length>=2,{timeout:5000});
      assert.ok(await page.locator('#tbEndgame [data-eg="evolve"]').count()>=2,'level 50 evolution screen offers both skill upgrades');
