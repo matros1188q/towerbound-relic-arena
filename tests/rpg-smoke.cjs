@@ -112,6 +112,8 @@ const {chromium}=require('playwright');
    assert.ok(layout.navBottom<=layout.viewportHeight+1,'bottom navigation stays inside the viewport at '+viewport.width+'px');
   }
   await page.setViewportSize({width:390,height:844});
+  await page.locator('[data-action="bottom-profile"]').click();
+  await page.locator('.tb-profile .tb-tabs [data-tab="account"]').click();
   const chestBefore=await page.evaluate(()=>window.TowerboundRework.state.characters[0].dailyChest?.lastOpenedAt||0);
   assert.equal(await page.locator('[data-action="daily-chest"]').isEnabled(),true,'daily chest is available on a fresh character');
   await page.locator('[data-action="daily-chest"]').click();
