@@ -1,0 +1,10 @@
+{
+  "name": "towerbound-relic-arena",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "balance": "node tests/balance-sim.cjs",
+    "economy": "node tests/economy-sim.cjs",
+    "balance:all": "npm run balance && npm run economy"
+  }
+}
