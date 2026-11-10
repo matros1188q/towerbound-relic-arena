@@ -598,3 +598,26 @@ All commits below are on `main` and form the account / gem / localization / mobi
 - `f5b04f80d8fc6f2fb1633df427209b0f4a9a6d34` — PWA syntax checks in CI.
 
 **Verification boundary:** GitHub Actions and Pages deployment are triggered by these `main` commits. A real installed iPhone PWA session is not available from this repository workflow; the first launch after deployment should fetch the new worker, and the in-app toast is the manual fallback if a page reload is needed.
+
+
+## 2026-11-10 — iPhone RPG UI and account access fixes
+
+- Added `renderWithScrollSave()`: all existing `render()` calls now pass through a wrapper that captures the active `.tb-v2` scroll position and restores it immediately and on the next animation frame after DOM replacement.
+- Localized the talent effect keys `attack`, `health`, `critical`, `defense`, and `attack_speed` to Russian labels. Quest/talent cards now keep Russian words intact and use fixed-width action buttons.
+- Added iPhone safe-area top padding and scroll padding for the RPG root/header.
+- Reworked the active skill loadout to persist up to six skill IDs in `c.activeSkills` (with backward compatibility for `skillLoadout`). Selecting a seventh skill opens a replacement dialog listing the six current slots. The battle panel and number-key shortcuts now address six active skill slots.
+- Sanitized raw specialization/class tags in skill descriptions.
+- Added an inline account panel to the «Аккаунт» profile tab. It exposes login/password, remember-me, sign-in/register, and signed-in sync/sign-out states through the existing Supabase client. Guests can continue in local mode; the cloud login overlay no longer blocks local play when signed out.
+- Bumped UI/CSS/cloud script cache versions and added static regression assertions.
+
+### Files changed
+- `rpg-rework-ui.js`
+- `rpg-rework-ui.css.js`
+- `towerbound-cloud.js`
+- `index.html`
+- `tests/online-services.test.cjs`
+- `README.md`
+
+**Code commit on `main`:** `9b5f8e70dcab814b7633d08048d3e033bb5de240`.
+
+**Verification boundary:** source-level regression assertions were added. The actual Playwright iPhone viewport run, physical iPhone Safari/PWA interaction, live Supabase registration/login, and real skill selection inside a running battle must be confirmed by the triggered CI/browser jobs and/or a device session; they are not claimed as physically tested here.
