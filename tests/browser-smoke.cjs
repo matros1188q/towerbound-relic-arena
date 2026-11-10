@@ -79,7 +79,7 @@ async function journey(type,name,viewport,url){
    assert.ok(tutorial.bottom<=tutorial.viewport+1&&tutorial.buttonBottom<=tutorial.viewport+1,name+' tutorial and CTA fit inside the viewport');
    await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   }
-  assert.equal(await page.locator('.tb-basic-attack,[data-action="attack"]').count(),0,name+' removes the real-time Attack button');
+  assert.equal(await page.locator('.tb-basic-attack').count(),1,name+' renders the free basic attack control');
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>Number(document.querySelector('.tb-arena-top')?.innerText.match(/РАУНД\s+(\d+)/)?.[1]||0)>=2,{timeout:10000});
   fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
