@@ -128,7 +128,8 @@ async function journey(type,name,viewport,url){
  try{
   for(const [name,type] of [['Chromium',chromium],['Firefox',firefox],['WebKit',webkit]]){
    await journey(type,name,{width:1280,height:900},url);
-   await journey(type,name,{width:390,height:844},url);\n   await journey(type,name,{width:430,height:932},url);
+   await journey(type,name,{width:390,height:844},url);
+   await journey(type,name,{width:430,height:932},url);
   }
   process.stdout.write('All nine RPG browser journeys passed. WebKit mobile viewport emulation is not a physical iPhone Safari certification.\n');
  }catch(error){process.stderr.write((error&&error.stack)||String(error));process.exitCode=1;}
