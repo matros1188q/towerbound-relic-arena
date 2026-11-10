@@ -1281,7 +1281,7 @@
    if(!item||!item.stats||!item.rarity)throw new Error("Этот предмет нельзя надеть");
    const slot=equipmentSlotIndex(item);if(slot<0)throw new Error("Неизвестный слот экипировки");
    bindItemOnUse(characterId,itemId);const old=character.gear[slot];character.gear[slot]=item;character.bag=character.bag.filter(entry=>entry.id!==itemId);if(old)character.bag.push(old);
-   character.run.playerHp=Math.min(character.run.playerHp||maxHp(character),maxHp(character));return clone(item);
+   if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return clone(item);
   }
   function equipBest(characterId){
    const character=getChar(characterId),isGear=item=>!!(item&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0);
@@ -1289,7 +1289,7 @@
    for(let slot=0;slot<6;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
    const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:6},(_,slot)=>chosen.get(slot)||null);
    character.bag=(character.bag||[]).filter(item=>!isGear(item)).concat(candidates.filter(item=>!selected.has(item.id)));
-   character.run.playerHp=Math.min(character.run.playerHp||maxHp(character),maxHp(character));return{equipped:chosen.size,gear:clone(character.gear),bag:character.bag.length};
+   if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return{equipped:chosen.size,gear:clone(character.gear),bag:character.bag.length};
   }
   function salvageGrayItems(characterId){
    const character=getChar(characterId),gray=(character.bag||[]).filter(item=>item.stats&&item.rarity==="Обычная"&&!item.bossLoot),quantity=gray.reduce((sum,item)=>sum+(balance.materials.salvage[item.rarity]||0),0);
