@@ -518,6 +518,20 @@
    const attackInterval=balance.combat.attack_interval/speedMultiplier;
    return{hp,damage,attackInterval,attackIntervalMs:Math.round(attackInterval*1000),weakness:enemy?.weakness||null,resistance:enemy?.resistance||null,role:enemy?.role||"normal"};
   }
+  function capBossDamage(target,rawDamage,alreadyDealt){
+   const raw=Math.max(0,Number(rawDamage)||0);if(target?.type!=="boss")return raw;
+   const cap=Math.max(1,Number(target.maxHp)||0)*0.35,used=Math.max(0,Number(alreadyDealt)||0);
+   return Math.max(0,Math.min(raw,cap-used));
+  }
+  function basicAttackStats(characterId){
+   const character=getChar(characterId),stats=getCombatStats(character);let multiplier=.75;
+   if(["assassin","duelist","destroyer"].includes(character.classId))multiplier=1;
+   else if(["bishop","elemental"].includes(character.classId))multiplier=.5;
+   else if(character.classId==="dragonkin")multiplier=character.branch==="fire_dragon"?1:character.branch==="black_dragon"?.5:.75;
+   else if(character.classId==="shaman")multiplier=character.branch==="nature"?1:character.branch==="dark_gods"?.5:.75;
+   return{multiplier,damage:Math.max(1,Math.round(stats.attack*multiplier)),resourceGain:15};
+  }
+  function restoreResource(characterId,amount){const character=getChar(characterId),before=character.resource;character.resource=Math.min(character.resourceMax,character.resource+Math.max(0,Number(amount)||0));return{before,resource:character.resource,gained:character.resource-before};}
   function mitigationMultiplier(defense,attackerLevel){
    const armor=Math.max(0,Number(defense)||0),level=Math.max(1,Number(attackerLevel)||1);
    return 1-Math.min(0.75,armor/(armor+100+10*level));
@@ -570,19 +584,30 @@
    return table.normal_base+stage*table.normal_per_stage;
   }
   function createDrop(character,rarity,options){
-   options=options||{};
-   const itemLevel=itemLevelForStage(options.itemLevel||character.progress.currentStage||1);
-   const raw=options.stats||{attack:Math.max(1,Math.round(character.level*1.5)),defense:Math.max(1,Math.round(character.level*.8)),health:Math.max(1,character.level*4)};
-   const stats={...raw};
-   const item={id:id(),name:options.name||rarity+" трофей",rarity,slot:options.slot||"accessory",setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
-    itemLevel,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
-   const prefs=state.account.settings||{},threshold=Number(prefs.autoSalvageBelow||0),auto=!!prefs.autoSalvage&&["Обычная","Редкая"].includes(rarity)&&itemLevel<threshold&&!item.bossLoot;
-   if(auto){const quantity=balance.materials.salvage[rarity]||0,stack=character.bag.find(x=>x.type==="craft_material");if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;item.autoSalvaged=true;item.type="auto_salvage";item.quantity=quantity;item.name="Авто-разбор · "+rarity;recordWeeklyProgress(character,"items_salvaged",1);}else character.bag.push(item);
-   character.run.foundItemIds.push(item.id);
-   character.stats.items_found=(character.stats.items_found||0)+1;
-   if(item.uniqueId)character.stats.unique_items=(character.stats.unique_items||0)+1;
-   return item;
-  }
+    options=options||{};
+    const itemLevel=itemLevelForStage(options.itemLevel||character.progress.currentStage||1);
+    const slots=["weapon","chest","head","accessory"],slot=options.slot||slots[Math.floor(random()*slots.length)];
+    const rarityScale={"Обычная":1,"Редкая":1.35,"Эпическая":1.8,"Легендарная":2.4,"Богоподобная":3.2}[rarity]||1;
+    const scale=(2+itemLevel*.65)*rarityScale;
+    const statProfiles={
+     weapon:{attack:Math.max(1,Math.round(scale*1.8)),crit:rarityScale>=1.8?.01:0},
+     chest:{defense:Math.max(1,Math.round(scale*1.1)),health:Math.max(5,Math.round(scale*6))},
+     head:{defense:Math.max(1,Math.round(scale*.8)),health:Math.max(3,Math.round(scale*2.5))},
+     accessory:{attack:Math.max(1,Math.round(scale*.8)),health:Math.max(2,Math.round(scale*1.5)),crit:Math.min(.08,.005*rarityScale),spellPower:Math.max(0,Math.round(scale*.45))}
+    };
+    const slotNames={weapon:["Клинок тьмы","Меч расколотой клятвы","Боевой клинок"],chest:["Кираса бастиона","Нагрудник древнего стража","Доспех сумрачной стали"],head:["Шлем затмения","Корона пепельного стража","Маска бездны"],accessory:["Амулет забытого короля","Кольцо сумрачной печати","Подвеска древней силы"]};
+    const rarityNames={"Обычная":"Обычный","Редкая":"Редкий","Эпическая":"Эпический","Легендарная":"Легендарный","Богоподобная":"Богоподобный"};
+    const stats={...(options.stats||statProfiles[slot]||statProfiles.accessory)};
+    const names=slotNames[slot]||slotNames.accessory;
+    const item={id:id(),type:"equipment",name:options.name||rarityNames[rarity]+" "+names[Math.floor(random()*names.length)]+" · ур. "+itemLevel,rarity,slot,setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
+     itemLevel,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
+    const prefs=state.account.settings||{},threshold=Number(prefs.autoSalvageBelow||0),auto=!!prefs.autoSalvage&&["Обычная","Редкая"].includes(rarity)&&itemLevel<threshold&&!item.bossLoot;
+    if(auto){const quantity=balance.materials.salvage[rarity]||0,stack=character.bag.find(x=>x.type==="craft_material");if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;item.autoSalvaged=true;item.type="auto_salvage";item.quantity=quantity;item.name="Авто-разбор · "+rarity;recordWeeklyProgress(character,"items_salvaged",1);}else character.bag.push(item);
+    character.run.foundItemIds.push(item.id);
+    character.stats.items_found=(character.stats.items_found||0)+1;
+    if(item.uniqueId)character.stats.unique_items=(character.stats.unique_items||0)+1;
+    return item;
+   }
   function rollLoot(character,enemy,stage,firstClear,automatic){
    if(automatic)return[];
    const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
@@ -595,11 +620,11 @@
     return createDrop(character,rarity,{bossLoot:true,uniqueId:item.id,name:item.name,slot:item.slot,stats:item.stats,itemLevel:stage});
    };
    if(enemy.type==="boss"){
-    if(firstClear&&drops.guaranteed_epic_first_clear_boss)items.push(createDrop(character,"Эпическая",{bossLoot:true,name:"Трофей первого покорения",itemLevel:stage}));
+    if(firstClear&&drops.guaranteed_epic_first_clear_boss)items.push(createDrop(character,"Эпическая",{bossLoot:true,itemLevel:stage,slot:"weapon"}));
     const guaranteedFrom=drops.guaranteed_boss_rare_epic_from_stage??3;
     if(stage>=guaranteedFrom&&!items.some(item=>["Редкая","Эпическая"].includes(item.rarity))){
      const guaranteedRarity=random()<0.5?"Редкая":"Эпическая";
-     items.push(createDrop(character,guaranteedRarity,{bossLoot:true,itemLevel:stage,name:guaranteedRarity+" трофей босса"}));
+     items.push(createDrop(character,guaranteedRarity,{bossLoot:true,itemLevel:stage}));
     }
     if(character.heroic){
      const guaranteed=character.pity.godlikeMisses>=drops.boss_pity_misses;
@@ -613,10 +638,10 @@
    }else if(enemy.type==="elite"){
     if(random()<Math.min(1,drops.elite_epic_chance*dropMultiplier)){
      const branches=classTable[character.classId].branches||[],branch=branches.find(entry=>entry.id===character.branch)||branches[0];
-     const slot=["weapon","chest","head","legs","hands","accessory"][Math.floor(random()*6)];
-     items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,name:(branch?.set?.name||"Эпическая вещь")+" · "+slot,itemLevel:stage}));
+     const slot=["weapon","chest","head","accessory"][Math.floor(random()*4)];
+     items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,itemLevel:stage}));
     }
-   }else if(stage<=30&&random()<Math.min(1,drops.normal_item_chance*dropMultiplier)){
+   }else if(random()<Math.min(1,drops.normal_item_chance*dropMultiplier)){
     items.push(createDrop(character,random()<drops.normal_rare_weight?"Редкая":"Обычная",{itemLevel:stage}));
    }
    return items;
@@ -1244,6 +1269,35 @@
    if(character.silver<cost)throw new Error("Not enough silver to reset paragon");
    character.silver-=cost;character.paragon.stats={};return clone(character.paragon);
   }
+  function equipmentSlotIndex(item){
+   if(Number.isInteger(item?.slot))return Math.max(0,Math.min(5,item.slot));
+   return ({weapon:0,chest:1,head:2,legs:3,hands:4,accessory:5})[item?.slot]??-1;
+  }
+  function equipmentScore(item){
+   const s=item?.stats||{};return (s.attack||0)+(s.defense||0)*1.5+(s.health||0)*.08+(s.crit||0)*100+(s.critDamage||0)*30+(s.spellPower||0)*1.1+(s.fireDamage||0)+(s.iceDamage||0)+(s.darkDamage||0)+((s.fireResist||0)+(s.iceResist||0)+(s.darkResist||0)+(s.physicalResist||0))*.5;
+  }
+  function equipItem(characterId,itemId){
+   const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
+   if(!item||!item.stats||!item.rarity)throw new Error("Этот предмет нельзя надеть");
+   const slot=equipmentSlotIndex(item);if(slot<0)throw new Error("Неизвестный слот экипировки");
+   bindItemOnUse(characterId,itemId);const old=character.gear[slot];character.gear[slot]=item;character.bag=character.bag.filter(entry=>entry.id!==itemId);if(old)character.bag.push(old);
+   character.run.playerHp=Math.min(character.run.playerHp||maxHp(character),maxHp(character));return clone(item);
+  }
+  function equipBest(characterId){
+   const character=getChar(characterId),isGear=item=>!!(item&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0);
+   const candidates=[...(character.gear||[]).filter(Boolean),...(character.bag||[]).filter(isGear)],chosen=new Map();
+   for(let slot=0;slot<6;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
+   const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:6},(_,slot)=>chosen.get(slot)||null);
+   character.bag=(character.bag||[]).filter(item=>!isGear(item)).concat(candidates.filter(item=>!selected.has(item.id)));
+   character.run.playerHp=Math.min(character.run.playerHp||maxHp(character),maxHp(character));return{equipped:chosen.size,gear:clone(character.gear),bag:character.bag.length};
+  }
+  function salvageGrayItems(characterId){
+   const character=getChar(characterId),gray=(character.bag||[]).filter(item=>item.stats&&item.rarity==="Обычная"&&!item.bossLoot),quantity=gray.reduce((sum,item)=>sum+(balance.materials.salvage[item.rarity]||0),0);
+   if(!gray.length)return{count:0,materials:0};
+   const ids=new Set(gray.map(item=>item.id));character.bag=character.bag.filter(item=>!ids.has(item.id));
+   const stack=character.bag.find(item=>item.type==="craft_material");if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});
+   character.stats.items_salvaged=(character.stats.items_salvaged||0)+gray.length;recordWeeklyProgress(character,"items_salvaged",gray.length);return{count:gray.length,materials:quantity};
+  }
   function salvageItem(characterId,itemId){
    const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
    if(!item||!item.rarity)throw new Error("Only equipment can be salvaged");
@@ -1262,9 +1316,9 @@
   }
   function saveSnapshot(){return clone(state);}
   return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,bossPhaseInfo,resolveReaction,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
-   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,sanitizeActiveStage,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
+   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,sanitizeActiveStage,getEnemyStats,mitigationMultiplier,resistanceMultiplier,capBossDamage,basicAttackStats,restoreResource,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
-   rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
+   rollLoot,mergeStones,craftStone,equipItem,equipBest,salvageGrayItems,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,dailyChestSnapshot,claimDailyChest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
