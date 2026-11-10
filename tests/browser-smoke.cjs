@@ -30,6 +30,16 @@ async function journey(type,name,viewport,url){
  await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
  await page.route('https://fonts.googleapis.com/**',route=>route.abort());
  await page.route('https://fonts.gstatic.com/**',route=>route.abort());
+  await page.addInitScript(()=>{
+   window.supabase={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
+    return{auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
+     signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
+     signUp:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
+     signOut:async()=>{localStorage.removeItem('__tb_qa_auth_session');if(listener)listener('SIGNED_OUT',null);return{error:null};}},
+     from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:null,error:null})})})}),
+     rpc:async()=>({data:{revision:1},error:null})};
+   }};
+  });
  try{
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework,{timeout:20000});
@@ -37,7 +47,14 @@ async function journey(type,name,viewport,url){
   await page.evaluate(()=>{localStorage.clear();document.querySelector('#titleScreen')?.classList.add('is-hidden');document.querySelector('#accountDialog')?.classList.remove('open');});
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
-  await page.waitForSelector('#tbRpg .tb-v2');
+  await page.waitForSelector('#tbRpg .tb-login-gate');
+  assert.equal(await page.locator('.tb-login-gate h2').innerText(),'Вход в игру',name+' starts with centered login gate');
+  await page.locator('#login').fill('BrowserQA');
+  await page.locator('#pass').fill('qa-password');
+  await page.locator('[data-action="empty-login"]').click();
+  await page.waitForFunction(()=>window.TowerboundCloud?.signedIn);
+  await page.waitForSelector('[data-action="new"]');
+  assert.equal(await page.locator('.tb-header .tb-account-button').count(),0,name+' has no redundant account button');
   await page.locator('[data-action="new"]').first().click();
   assert.equal(await page.locator('[data-class]').count(),7,name+' displays seven playable classes');
   await page.locator('[data-class="assassin"]').click();
