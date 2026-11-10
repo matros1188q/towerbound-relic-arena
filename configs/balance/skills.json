@@ -90,7 +90,8 @@
       "resource_cost": 12,
       "effect": "slow",
       "speed_reduction": 0.3,
-      "cooldown_turns": 2
+      "cooldown_turns": 2,
+      "damage_reduction": 0.75
     },
     "duelist": {
       "id": "parry",
@@ -126,7 +127,7 @@
       "id": "divine_sanctuary",
       "name": "Святилище",
       "icon": "✧",
-      "resource_cost": 42,
+      "resource_cost": 30,
       "effect": "heal_shield",
       "heal_fraction": 0.35,
       "shield_fraction": 0.2,
