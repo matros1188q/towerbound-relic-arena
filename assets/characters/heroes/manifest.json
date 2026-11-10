@@ -49,6 +49,54 @@
       "transparency": true,
       "source_filename": "acea49d3-fa54-45a9-957a-ac057304b6ab",
       "short_description": "Dark armored reaper-like warrior; source carries a sword rather than a scythe"
+    },
+    {
+      "filename": "1ce15225-7162-4858-8fa7-41363266e71e.jpg",
+      "relative_path": "art-inbox/01-characters/1ce15225-7162-4858-8fa7-41363266e71e.jpg",
+      "category": "heroes",
+      "exact_asset_id": "hero.dragonkin",
+      "image_format": "jpg",
+      "width": 1024,
+      "height": 1024,
+      "transparency": false,
+      "source_filename": "1ce15225-7162-4858-8fa7-41363266e71e",
+      "short_description": "Void-forged dragonkin warrior with a crescent glaive"
+    },
+    {
+      "filename": "50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg",
+      "relative_path": "art-inbox/01-characters/50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg",
+      "category": "heroes",
+      "exact_asset_id": "hero.elemental",
+      "image_format": "jpg",
+      "width": 1024,
+      "height": 1024,
+      "transparency": false,
+      "source_filename": "50bbefaa-97e5-4c6d-8a73-daa03e553525",
+      "short_description": "Fiery elemental warrior"
+    },
+    {
+      "filename": "a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg",
+      "relative_path": "art-inbox/01-characters/a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg",
+      "category": "heroes",
+      "exact_asset_id": "hero.duelist",
+      "image_format": "jpg",
+      "width": 1024,
+      "height": 1024,
+      "transparency": false,
+      "source_filename": "a41493b8-0505-40f2-8351-fb8f1b484c8c",
+      "short_description": "Spectral rapier duelist"
+    },
+    {
+      "filename": "70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg",
+      "relative_path": "art-inbox/01-characters/70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg",
+      "category": "heroes",
+      "exact_asset_id": "hero.shaman",
+      "image_format": "jpg",
+      "width": 1024,
+      "height": 1024,
+      "transparency": false,
+      "source_filename": "70524780-ece1-4aa2-ad6b-1e1035c9a136",
+      "short_description": "Ancient treant spirit"
     }
   ]
 }

@@ -18,11 +18,11 @@
  const classPortraits={
   assassin:"heroes/reaper.png",
   bishop:"heroes/arcanist.png",
-  dragonkin:"enemies/crimson-executioner.png",
+  dragonkin:"art-inbox/01-characters/1ce15225-7162-4858-8fa7-41363266e71e.jpg",
   destroyer:"heroes/warden.png",
-  elemental:"bosses/ice-abbot.png",
-  duelist:"enemies/phantom-duelist.png",
-  shaman:"bosses/ash-patriarch.png"
+  elemental:"art-inbox/01-characters/50bbefaa-97e5-4c6d-8a73-daa03e553525.jpg",
+  duelist:"art-inbox/01-characters/a41493b8-0505-40f2-8351-fb8f1b484c8c.jpg",
+  shaman:"art-inbox/01-characters/70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg"
  };
  const mobPortraits={
   "shadow-goblin":"enemies/shadow-goblin.png",
@@ -72,9 +72,10 @@
  function live(){return engine&&engine.state.characters.find(c=>c.id===selectedId);}
  function classData(c){return balance.classes.classes[c.classId];}
  function clsName(c){return classData(c).name;}
- function portrait(id){return CHARACTER_ART_ROOT+(classPortraits[id]||classPortraits.assassin);}
+ function portrait(id){const src=classPortraits[id]||classPortraits.assassin;return src.startsWith("art-inbox/")?"./"+src:CHARACTER_ART_ROOT+src;}
  function enemyPortrait(target){
   if(target?.type==="boss"||target?.role==="boss"){
+   if(/багров|crimson regent/i.test(String(target?.name||target?.id||"")))return "./art-inbox/01-characters/b0b7437e-c2ee-4a59-b644-ffce88f1d442.jpg";
    const stage=Math.max(1,Number(battle?.stage)||1);
    return CHARACTER_ART_ROOT+bossPortraits[(Math.ceil(stage/10)-1)%bossPortraits.length];
   }
@@ -722,6 +723,18 @@
   ["attack","skill","ultimate","telegraph"].forEach(kind=>arena.classList.toggle("tb-fx-"+kind,!!(battle.fx&&battle.fx.kind===kind&&battle.fx.until>Date.now())));
   const fx=root.querySelector(".tb-fx-layer");if(fx)fx.style.setProperty("--tb-fx-color",battle.fx?.color||"#f3c968");
  }
+ function ensureBottomNav(){
+  const host=root.querySelector(".tb-v2");if(!host)return;
+  let nav=host.querySelector(".tb-bottom-nav");
+  if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
+  if(!nav){
+   nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");
+   nav.innerHTML='<button type="button" data-action="bottom-map" data-tab="map"><span>⌂</span><small>Карта</small></button><button type="button" data-action="bottom-profile" data-tab="profile"><span>♙</span><small>Персонаж</small></button><button type="button" data-action="bottom-shop" data-tab="shop"><span>◇</span><small>Магазин</small></button><button type="button" data-action="bottom-rating" data-tab="leaderboard"><span>♜</span><small>Рейтинг</small></button>';
+   host.appendChild(nav);
+  }
+  const active=screen==="battle"?"map":screen;
+  nav.querySelectorAll("[data-tab]").forEach(b=>{const on=b.dataset.tab===active;b.classList.toggle("active",on);b.setAttribute("aria-current",on?"page":"false");});
+ }
  function render(){
   if(!engine)return;
   const isBattle=screen==="battle"&&!!battle;
@@ -729,7 +742,7 @@
   document.documentElement.classList.toggle("tb-battle-lock",isBattle);
   if(isBattle){
    const existing=root.querySelector(".tb-arena"),key=battleRenderKey();
-   if(existing&&existing.dataset.renderKey===key){updateBattleDOM();return;}
+   if(existing&&existing.dataset.renderKey===key){updateBattleDOM();ensureBottomNav();return;}
    root.innerHTML='<div class="tb-v2">'+battleScreen()+'</div>';
    const arena=root.querySelector(".tb-arena");if(arena)arena.dataset.renderKey=key;
   }else if(screen==="characters")root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
@@ -744,6 +757,7 @@
   if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2").appendChild(toast);}
   if(toastMessage){toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
+  ensureBottomNav();
  }
  function createCharacter(){
   const name=root.querySelector("#name")?.value||"";
@@ -803,6 +817,10 @@
    case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
    case "characters":screen="characters";render();break;
    case "map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;screen="map";battle=null;render();save();break;
+   case "bottom-map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="map";render();save();break;
+   case "bottom-profile":profileTab="stats";screen="profile";render();break;
+   case "bottom-shop":screen="shop";render();break;
+   case "bottom-rating":screen="leaderboard";onlineLeaderboardError="";render();refreshOnlineLeaderboard();break;
    case "reset-current-battle":{const c=live(),stage=c?.run?.stage?.stage||c?.progress?.currentStage||selectedStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(c?.run){c.run.stage=null;c.run.active=true;}battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
    case "profile":profileTab="stats";screen="profile";render();break;
    case "profile-gear":profileTab="gear";screen="profile";render();break;
