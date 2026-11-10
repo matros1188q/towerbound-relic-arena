@@ -55,6 +55,9 @@ async function journey(type,name,viewport,url){
   await page.waitForFunction(()=>window.TowerboundCloud?.signedIn);
   await page.waitForSelector('[data-action="new"]');
   assert.equal(await page.locator('.tb-header .tb-account-button').count(),0,name+' has no redundant account button');
+  const brandLayout=await page.locator('.tb-brand strong').evaluate(el=>({height:el.getBoundingClientRect().height,lineHeight:parseFloat(getComputedStyle(el).lineHeight),whiteSpace:getComputedStyle(el).whiteSpace}));
+  assert.equal(brandLayout.whiteSpace,'nowrap',name+' TOWERBOUND logo uses nowrap');
+  assert.ok(brandLayout.height<=brandLayout.lineHeight+1,name+' TOWERBOUND logo stays on one line');
   await page.locator('[data-action="new"]').first().click();
   assert.equal(await page.locator('[data-class]').count(),7,name+' displays seven playable classes');
   await page.locator('[data-class="assassin"]').click();
