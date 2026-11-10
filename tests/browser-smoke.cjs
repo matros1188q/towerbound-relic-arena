@@ -69,6 +69,27 @@ async function journey(type,name,viewport,url){
   }));
   assert.equal(diagnostics.ready,true,name+' runtime initializes');
   assert.ok(diagnostics.scrollWidth<=diagnostics.width+1,name+' has no horizontal page overflow at '+viewport.width+'px');
+  // Reproduce a persisted dead-target state, then reload and resume the same stage.
+  await page.evaluate(()=>{
+   const engine=window.TowerboundRework,character=engine.state.characters[0],stage=character.run.stage,snapshot=stage.uiBattleSnapshot;
+   if(!snapshot||!Array.isArray(snapshot.enemies)||snapshot.enemies.length<2)throw new Error('Combat snapshot was not persisted before reload');
+   snapshot.enemies[0].hp=0;snapshot.enemies[0].alive=false;snapshot.enemies[0].dead=true;
+   snapshot.targetIndex=0;stage.targetIndex=0;stage.enemyIndex=0;
+   localStorage.setItem('tb-rpg-v2',JSON.stringify(engine.state));
+  });
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
+  await page.locator('[data-action="play"]').click();
+  await page.locator('[data-action="start"]').click();
+  await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
+  const recovered=await page.evaluate(()=>({
+   target:document.querySelector('.tb-target-card.selected')?.dataset.target,
+   killed:window.TowerboundRework.state.characters[0].run.stage?.killedIndices||[],
+   current:window.TowerboundRework.state.characters[0].run.stage?.targetIndex
+  }));
+  assert.ok(recovered.target&&recovered.target!=='0',name+' reload skips the defeated target and resumes on a living mob');
+  assert.ok(recovered.killed.includes(0),name+' reload records the previously defeated mob exactly once');
+  assert.equal(Number(recovered.target),recovered.current,name+' UI and persisted target remain synchronized after reload');
   assert.deepEqual(errors,[],name+' has no uncaught browser errors');
   assert.deepEqual(failed,[],name+' has no unexpected failed local/network requests');
   process.stdout.write('PASS '+name+' '+viewport.width+'x'+viewport.height+' — boot → character create → save/reload → 250-stage map\n');
