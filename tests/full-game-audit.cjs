@@ -172,3 +172,6 @@ assert.ok(nativeCss.includes('.tb-turn-tutorial-card{box-sizing:border-box;displ
 assert.ok(nativeCss.includes('padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))'),'modal panels reserve space for the iPhone home indicator');
 assert.ok(nativeCss.includes('.tb-v2 .tb-gear-slot.rarity-epic')&&nativeCss.includes('linear-gradient(145deg,#6a0dad,#351052)'),'epic gear uses purple styling');
 assert.ok(nativeCss.includes('.tb-v2 .tb-gear-slot.rarity-legendary')&&nativeCss.includes('linear-gradient(145deg,#ff8c00,#713900)'),'legendary gear uses orange styling');
+
+assert.ok(!uiSource.includes('data-action="map"')&&!uiSource.includes('data-action="systems"')&&!uiSource.includes('data-action="profile"'),'global navigation shortcuts are not duplicated outside the bottom tab bar');
+assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-nav-tab="map"')&&uiSource.includes('data-nav-tab="shop"')&&uiSource.includes('data-nav-tab="leaderboard"'),'all four global tabs use an isolated navigation attribute');
