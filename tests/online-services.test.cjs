@@ -36,7 +36,7 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=11'),'cloud module cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=12'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
 assert.ok(html.includes('./rpg-rework-ui.js?v=29'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=16'),'mobile profile stylesheet cache is refreshed');
@@ -136,6 +136,7 @@ assert.ok(characterGate.includes('СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖ
 assert.ok(ui.includes('Сначала войди в игровой аккаунт'),'new-character action is guarded by Supabase session');
 assert.ok(ui.includes('towerbound-auth-change')&&ui.includes('cloud.signIn(login,password,remember)'),'successful auth refreshes the character screen');
 assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new Event('towerbound-auth-change')"),'Supabase sign-in awaits cloud restore and emits auth state changes');
+assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:clean+\'@towerbound.game\''),'sign-in uses the virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
 assert.ok(css.includes('tb-login-gate')&&css.includes('white-space:nowrap')&&css.includes('@media(max-width:400px)'),'centered login and narrow mobile header styles are present');
