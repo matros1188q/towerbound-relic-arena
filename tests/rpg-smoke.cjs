@@ -77,6 +77,7 @@ const {chromium}=require('playwright');
  try{
   await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
   await page.waitForSelector('#tbCloudOverlay.login-required');
+  await page.waitForFunction(()=>{const el=document.querySelector('#tbCloudOverlay');return !!el&&getComputedStyle(el).display==='grid'&&el.getBoundingClientRect().width>0;});
   assert.equal(await page.locator('#tbCloudTitle').innerText(),'Вход в игру','unauthenticated launch is blocked by game login');
   await page.locator('#tbCloudEmail').fill('Matroscheg');
   await page.locator('#tbCloudPassword').fill('qa-password');
@@ -383,3 +384,5 @@ const {chromium}=require('playwright');
   console.log('Browser smoke passed: seven classes, progression, inventory, shop, systems, combat, fixed 390×844 and 430×932 mobile HUD, seven-target viewport stress, landscape layout, stable DOM and 20 rapid attack taps without scroll.');
  }finally{await browser.close();server.close();}
 })().catch(error=>{console.error(error);process.exit(1);});
+
+// Auth gate regression: inline overlay visibility is required even when app styles are overridden.
