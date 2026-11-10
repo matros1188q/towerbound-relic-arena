@@ -17,7 +17,7 @@ assert.ok(online.includes(".limit(100)"),'leaderboard must cap at 100');
 assert.ok(online.includes(".from('leaderboard').upsert"),'player leaderboard publication missing');
 assert.ok(online.includes(".from('pvp_ghosts').upsert"),'player ghost publication missing');
 assert.ok(ui.includes('function leaderboardScreen()'),'leaderboard screen missing');
-assert.ok(ui.includes('<button data-action="leaderboard">РЕЙТИНГ</button>'),'map menu leaderboard tab missing');
+assert.ok(ui.includes('data-action="bottom-rating" data-tab="leaderboard"'),'fixed bottom navigation leaderboard tab missing');
 assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action missing');
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
