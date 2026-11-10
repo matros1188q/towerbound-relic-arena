@@ -366,7 +366,7 @@ const {chromium}=require('playwright');
   assert.equal(mobilePanel.display,'grid','mobile combat controls use a fixed grid');
   assert.equal(mobilePanel.slotsDisplay,'grid','skill slots use a grid');
   assert.equal(mobilePanel.columns,3,'skills are arranged three per row');
-  assert.equal(mobilePanel.rows,2,'skills occupy two rows');
+  assert.equal(mobilePanel.rows,3,'six skill slots plus counter and ultimate occupy three rows in the three-column mobile grid');
   assert.ok(mobilePanel.endTurnHeight<=60,'End Turn button stays at or below 60px');
   assert.ok(mobilePanel.heroHpTop>=0&&mobilePanel.heroHpBottom<=844,'hero HP bar stays in the viewport');
   assert.equal(mobilePanel.bodyPosition,'fixed','body is fixed while battle is active');
