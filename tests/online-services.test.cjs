@@ -22,10 +22,10 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=3'),'cloud module cache is refreshed');
-assert.ok(html.includes('./rpg-rework-v2.js?v=12'),'engine cache is refreshed for chest data');
-assert.ok(html.includes('./rpg-rework-ui.js?v=21'),'map and settings UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=11'),'mobile battle stylesheet cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=4'),'cloud module cache is refreshed');
+assert.ok(html.includes('./rpg-rework-v2.js?v=13'),'engine cache is refreshed for gem socket support');
+assert.ok(html.includes('./rpg-rework-ui.js?v=22'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=12'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
 assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is awaitable and reports failure');
@@ -34,4 +34,10 @@ assert.ok(!cloud.includes("$('#tbCloudSyncNow').addEventListener('click',()=>{co
 assert.ok(cloud.includes("window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});"),'offline saves are retried after connectivity returns');
 assert.ok(cloud.includes('loadGame,saveGame,queueSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
 assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="cloud-account"'),'settings screen exposes cloud account and manual sync controls');
+assert.ok(cloud.includes("return login+'@towerbound.game'"),'game login maps to the synthetic Supabase email');
+assert.ok(cloud.includes("const rememberKey='tb-remember-me'"),'remember-me preference is persisted');
+assert.ok(cloud.includes("if(active&&!remembered())"),'unremembered sessions are cleared at startup');
+assert.ok(ui.includes('Зелье исцеления')&&ui.includes('Материал для крафта'),'inventory item IDs are localized');
+assert.ok(ui.includes('ОПИСАНИЕ КАМНЯ')&&ui.includes('ИЗВЛЕЧЬ КАМЕНЬ'),'gem descriptions and extraction are available');
+assert.ok(online.includes('function publishCurrent()'),'online publishing remains available');
 console.log('Online services static checks: OK');
