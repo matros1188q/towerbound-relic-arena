@@ -291,6 +291,7 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('.tb-turn-guidance').innerText(),/Твой ход/,'control returns to the player after enemy phase');
   assert.equal(await page.locator('[data-action="end-turn"]').isEnabled(),true,'end-turn button reactivates for the player');
   await page.waitForSelector('.tb-telegraph:not(.tb-telegraph-idle)',{timeout:6000});
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.resource=c.resourceMax;window.saveTowerboundRework();});
   assert.equal(await page.locator('[data-counter]').isEnabled(),true,'counter is available during a telegraph');
   const resourceBeforeCounter=await page.evaluate(()=>window.TowerboundRework.state.characters[0].resource);
   await page.locator('[data-counter]').click();
