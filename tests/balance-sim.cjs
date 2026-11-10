@@ -24,16 +24,29 @@ function simulateFight(engine,c,stage,enemy,opt={}){
    let healed=opt.onPotion?opt.onPotion(hp,res):{hp:Math.min(maxHp,hp+Math.round(maxHp*balance.healing.potion_heal_fraction)),resource:Math.min(c.resourceMax,res+(balance.resources.regeneration.potion||25))};
    if(healed){hp=healed.hp;res=healed.resource;used=true;}
   }
-  let raw;
-  if(enemy.type==='boss'&&ult?.damage_multiplier&&res>=uc+((counter&&turn>=counterReady)?cc:0)&&turn>=ultReady){raw=stats.attack*ult.damage_multiplier*stats.damageMultiplier;res-=uc;ultReady=turn+(ult.cooldown_turns||3);if(ult.heal_fraction)hp=Math.min(maxHp,hp+Math.round(maxHp*ult.heal_fraction));if(ult.shield_fraction)shield=Math.round(maxHp*ult.shield_fraction);}
-  else if(skill&&res>=sc+((counter&&turn>=counterReady)?cc:0)&&turn>=skillReady){raw=stats.attack*sm*stats.damageMultiplier;res-=sc;skillReady=turn+sd;}
+  let raw=0,hits=1,actionType=damageType;
+  const reserve=(counter&&turn>=counterReady)?cc:0;
+  if(enemy.type==='boss'&&ult?.damage_multiplier&&res>=uc+reserve&&turn>=ultReady){
+    raw=stats.attack*ult.damage_multiplier*stats.damageMultiplier;hits=['aoe_burst','single_burst','heal_aoe'].includes(ult.effect)?3:1;actionType=ult.damage_type||damageType;
+    res-=uc;ultReady=turn+(ult.cooldown_turns||3);
+    if(ult.heal_fraction)hp=Math.min(maxHp,hp+Math.round(maxHp*ult.heal_fraction));
+    if(ult.shield_fraction)shield+=Math.round(maxHp*ult.shield_fraction);
+  }else if(ult?.effect==='heal_shield'&&res>=uc+reserve&&turn>=ultReady&&hp<=maxHp*.7){
+    res-=uc;ultReady=turn+(ult.cooldown_turns||3);hp=Math.min(maxHp,hp+Math.round(maxHp*(ult.heal_fraction||0)));shield+=Math.round(maxHp*(ult.shield_fraction||0));hits=0;
+  }else if(skill&&res>=sc+reserve&&turn>=skillReady){raw=stats.attack*sm*stats.damageMultiplier;res-=sc;skillReady=turn+sd;}
   else{raw=basic.damage*stats.damageMultiplier;res=Math.min(c.resourceMax,res+basic.resourceGain);}
-  raw*=1+(rngFn()*2-1)*v;if(rngFn()<(stats.critChance||0))raw*=stats.critMultiplier||1.5;
-  raw*=engine.damageTypeMultiplier({...enemy,maxHp:es.hp},damageType);
-  let dealt=Math.max(1,Math.round(raw));if(enemy.role==='tank'&&turn%3===0)dealt=Math.round(dealt*(1-(balance.mobs.roles.tank.shield_fraction||.3)));if(enemy.type==='boss')dealt=engine.capBossDamage({...enemy,maxHp:es.hp},dealt,0);
-  ehp=Math.max(0,ehp-dealt);
+  let actionDamage=0,dealtTotal=0;
+  const target={...enemy,maxHp:es.hp};
+  for(let hit=0;hit<hits&&ehp>0;hit++){
+    let hitRaw=raw*(1+(rngFn()*2-1)*v);if(rngFn()<(stats.critChance||0))hitRaw*=stats.critMultiplier||1.5;
+    hitRaw*=engine.damageTypeMultiplier(target,actionType);
+    let dealt=Math.max(1,Math.round(hitRaw));
+    if(enemy.role==='tank'&&turn%3===0&&hit===0)dealt=Math.round(dealt*(1-(balance.mobs.roles.tank.shield_fraction||.3)));
+    if(enemy.type==='boss')dealt=engine.capBossDamage(target,dealt,actionDamage);
+    ehp=Math.max(0,ehp-dealt);actionDamage+=dealt;dealtTotal+=dealt;
+  }
   let vamp=balance.combat.vampirism?.default_fraction??.01;if(['assassin','destroyer','duelist'].includes(c.classId))vamp=balance.combat.vampirism.damage_dealer_fraction??.0175;if(c.classId==='bishop')vamp=0;
-  hp=Math.min(maxHp,hp+Math.floor(dealt*vamp));if(ehp<=0)break;
+  hp=Math.min(maxHp,hp+Math.floor(dealtTotal*vamp));if(ehp<=0)break;
   let incoming=Math.max(0,Math.round(es.damage*engine.mitigationMultiplier(stats.defense,stage)*(1-(stats.damageReduction||0))));
   if(counter&&res>=cc&&turn>=counterReady){incoming=engine.resolveReaction('strong_hit',counter.id,c.classId,incoming).damage;res-=cc;counterReady=turn+(counter.cooldown_turns||2);}
   if(shield>0){const absorbed=Math.min(shield,incoming);shield-=absorbed;incoming-=absorbed;}
