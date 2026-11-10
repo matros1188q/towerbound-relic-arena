@@ -322,6 +322,10 @@ const {chromium}=require('playwright');
     if(tab==='evolution'){
      await page.waitForFunction(()=>document.querySelectorAll('#tbEndgame [data-eg="evolve"]').length>=2,{timeout:5000});
      assert.ok(await page.locator('#tbEndgame [data-eg="evolve"]').count()>=2,'level 50 evolution screen offers both skill upgrades');
+     const option=await page.locator('#tbEndgame [data-eg="evolve"]').first().evaluate(el=>({skill:el.dataset.skill,choice:el.dataset.choice}));
+     await page.locator('#tbEndgame [data-eg="evolve"]').first().click();
+     await page.waitForFunction(({skill,choice})=>window.TowerboundRework.state.characters[0].ext?.evolvedSkills?.[skill]?.id===choice,option,{timeout:3000});
+     assert.equal(await page.evaluate(({skill})=>window.TowerboundEndgame.getSkillEvolution(skill)?.id,option),option.choice,'chosen evolution is persisted and exposed to the combat UI');
     }
     const bounds=await page.locator('#tbEndgame .eg-window').evaluate(el=>{
      const r=el.getBoundingClientRect(),back=el.querySelector('[data-eg="back-map"]').getBoundingClientRect();
@@ -360,6 +364,11 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('[data-panel-skill]').count(),6,'six configured skill slots are visible');
   assert.equal(await page.locator('[data-counter]').count(),1,'class counter occupies slot five');
   assert.equal(await page.locator('[data-ultimate]').count(),1,'class ultimate occupies slot six');
+  const evolvedPanel=await page.evaluate(()=>{
+   const c=window.TowerboundRework.state.characters[0],id=c.skillLoadout?.[0],e=window.TowerboundEndgame.getSkillEvolution(id),button=document.querySelector('[data-panel-skill="'+id+'"]');
+   return{evolved:e?.name,icon:e?.icon,text:button?.innerText||''};
+  });
+  assert.ok(evolvedPanel.evolved&&evolvedPanel.icon&&evolvedPanel.text.includes(evolvedPanel.evolved),'combat skill panel displays the evolved name and icon');
   assert.equal(await page.locator('.tb-panel-skill').count(),8,'six active skill slots plus counter and ultimate are rendered');
   assert.equal(await page.locator('[data-basic-attack]').count(),1,'free basic attack is available beside the skill grid');
   const attackLayout=await page.evaluate(()=>{const box=el=>{const r=el.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};};return{attack:box(document.querySelector('[data-basic-attack]')),skills:box(document.querySelector('.tb-panel-slots')),end:box(document.querySelector('[data-action="end-turn"]')),potion:box(document.querySelector('.tb-potion-belt button'))};});
