@@ -454,17 +454,49 @@
   }
   function currentEnemy(character){
    if(!character.run.stage)throw new Error("No active battle");
-   const stage=character.run.stage,index=stage.targetIndex??stage.enemyIndex;
-   return stage.mobs[index];
+   const stage=character.run.stage,killed=new Set(stage.killedIndices||[]);
+   const requested=stage.targetIndex??stage.enemyIndex;
+   const index=stage.mobs[requested]&&!killed.has(requested)?requested:stage.mobs.findIndex((_,i)=>!killed.has(i));
+   return index<0?null:stage.mobs[index];
   }
   function selectTarget(characterId,index){
    const character=getChar(characterId),stage=character.run.stage;
    if(!stage)throw new Error("No active battle");
    if(!Number.isInteger(index)||index<0||index>=stage.mobs.length)throw new Error("Invalid target");
-   if((stage.killedIndices||[]).includes(index))throw new Error("Target is already defeated");
+   const killed=new Set(stage.killedIndices||[]);
+   if(killed.has(index))index=stage.mobs.findIndex((_,i)=>!killed.has(i));
+   if(index<0)return null;
    stage.targetIndex=index;stage.enemyIndex=index;
    stage.potionSlotUsed=(stage.potionUsedTargets||[]).includes(index);
    return clone(stage.mobs[index]);
+  }
+  function sanitizeActiveStage(characterId){
+   const character=getChar(characterId),stage=character.run.stage;
+   if(!stage)return{active:false,completed:false,targetIndex:null};
+   stage.killedIndices=Array.isArray(stage.killedIndices)?stage.killedIndices:[];
+   stage.potionUsedTargets=Array.isArray(stage.potionUsedTargets)?stage.potionUsedTargets:[];
+   const snapshot=stage.uiBattleSnapshot&&Array.isArray(stage.uiBattleSnapshot.enemies)?stage.uiBattleSnapshot:null;
+   const deadIndexes=snapshot?snapshot.enemies.filter(enemy=>enemy&&Number.isInteger(enemy.index)&&(enemy.alive===false||enemy.dead===true||Number(enemy.hp)<=0)).map(enemy=>enemy.index).sort((a,b)=>a-b):[];
+   const processed=[];
+   for(const index of deadIndexes){
+    if(index<0||index>=stage.mobs.length||stage.killedIndices.includes(index))continue;
+    const result=finishEnemy(characterId,{targetIndex:index,speed2:!!character.run.speed2});
+    processed.push(index);
+    if(result.stageComplete)return{active:false,completed:true,targetIndex:null,processed};
+   }
+   const current=character.run.stage;
+   if(!current)return{active:false,completed:true,targetIndex:null,processed};
+   const aliveIndexes=current.mobs.map((_,i)=>i).filter(i=>!current.killedIndices.includes(i));
+   if(!aliveIndexes.length)return{active:false,completed:!character.run.stage,targetIndex:null,processed};
+   const preferred=snapshot?.targetIndex??current.targetIndex??current.enemyIndex;
+   const targetIndex=aliveIndexes.includes(preferred)?preferred:aliveIndexes[0];
+   current.targetIndex=targetIndex;current.enemyIndex=targetIndex;
+   current.potionSlotUsed=current.potionUsedTargets.includes(targetIndex);
+   if(snapshot){
+    snapshot.targetIndex=targetIndex;
+    snapshot.enemies=snapshot.enemies.map(enemy=>enemy&&current.killedIndices.includes(enemy.index)?{...enemy,hp:0,alive:false,dead:true}:enemy);
+   }
+   return{active:true,completed:false,targetIndex,processed};
   }
   function getEnemyStats(characterId,stage,enemy){
    const character=getChar(characterId),curve=balance.mobs.curves;
@@ -1230,7 +1262,7 @@
   }
   function saveSnapshot(){return clone(state);}
   return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,bossPhaseInfo,resolveReaction,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
-   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
+   getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,sanitizeActiveStage,getEnemyStats,mitigationMultiplier,resistanceMultiplier,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,craftStone,salvageItem,addSocket,socketStone,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
