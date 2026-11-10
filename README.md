@@ -57,7 +57,15 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
-Keep this section current. Every development session that changes the project must add a dated entry describing what changed, the files/areas affected, the commit SHA, and what remains unverified or unfinished. Do not record planned work as completed.
+Keep this section current. Every development session that changes the project must add a dated entry describing what changed, the files/areas affected, the commit SHA, and what remains unverified or unfinished.
+
+### 2026-11-10 — RPG gem socket click delegation
+
+- Fixed the RPG equipment gem actions: the root delegated click selector omitted `data-stone`, `data-extract-gem` and `data-inspect-stone`, so those existing handlers were unreachable. Added all three selectors; inserting a gem now reaches `insertGem`, updates `installedGems` and legacy `sockets`, and removes the consumed stone from the bag.
+- Added a regression assertion to `tests/rpg-smoke.cjs` so the delegated selector cannot silently lose these controls again.
+- Bumped the RPG UI script query to `v30` and the PWA shell cache to `towerbound-v26` so iPhone/PWA clients do not keep the old handler.
+- Commits: `a50fd6df` (UI fix), `6ed96c31` (regression assertion), `f1e82b0b` (script cache-bust), `76220a63` (PWA cache).
+- Verification: confirmed the updated selector, regression assertion, script version and service-worker cache directly on `main`. Full Playwright RPG smoke / GitHub Actions result, live Supabase authentication and physical iPhone testing remain unverified in this session. Every development session that changes the project must add a dated entry describing what changed, the files/areas affected, the commit SHA, and what remains unverified or unfinished. Do not record planned work as completed.
 
 ### 2026-11-10 — Centered login gate and iPhone header repair
 
