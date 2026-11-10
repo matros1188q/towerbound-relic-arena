@@ -37,7 +37,7 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=13'),'cloud module cache is refreshed');
+assert.ok(html.includes('./towerbound-cloud.js?v=14'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
 assert.ok(html.includes('./rpg-rework-ui.js?v=29'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=17'),'mobile profile stylesheet cache is refreshed');
@@ -52,6 +52,7 @@ assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="clo
 assert.ok(cloud.includes("return login+'@towerbound.game'"),'game login maps to the synthetic Supabase email');
 assert.ok(!cloud.includes("overlay.classList.add('open','login-required')")&&cloud.includes('const showLoginGate=(force=false)'), 'startup keeps the login flow in the character screen instead of covering it with a modal');
 assert.ok(cloud.includes("const rememberKey='tb-remember-me'"),'remember-me preference is persisted');
+assert.ok(cloud.includes('id="tbCloudRememberMe"')&&!cloud.includes('id="rememberMe"'),'cloud modal uses a distinct remember checkbox ID from the main login form');
 assert.ok(cloud.includes("if(active&&!remembered())"),'unremembered sessions are cleared at startup');
 assert.ok(ui.includes('Зелье исцеления')&&ui.includes('Материал для крафта')&&ui.includes('itemDisplayName'),'inventory item IDs are localized even when an item has its raw ID as name');
 assert.ok(ui.includes('ОПИСАНИЕ КАМНЯ')&&ui.includes('ИЗВЛЕЧЬ КАМЕНЬ'),'gem descriptions and extraction are available');
