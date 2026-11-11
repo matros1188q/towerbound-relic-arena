@@ -487,6 +487,14 @@ function createDialog(){
    (shopTab==="diamond"?'<div class="tb-packages"><h3>Пакеты алмазов</h3><div class="tb-package-grid">'+balance.economy.diamond_packages.map(pack=>'<div><b>'+pack[0]+' алмазов</b><span>'+pack[1]+' ₽</span></div>').join("")+'</div><small>1 алмаз = 1 ₽ · платежи не подключены в браузерной версии</small></div>':'')+
    (shopTab==="diamond"?'<div class="tb-cosmetic-chests"><h2>Косметика за алмазы</h2><p>Только внешний вид · без влияния на характеристики.</p>'+(balance.cosmetics?.chests||[]).map(ch=>'<article><b>'+esc(ch.name)+'</b><small>'+ch.price+' ◆ · случайный предмет из коллекции</small><button data-cosmetic-chest="'+ch.id+'" '+(engine.state.account.diamonds<ch.price?'disabled':'')+'>ОТКРЫТЬ СУНДУК</button></article>').join("")+'</div>':'')+'<p class="tb-note">Алмазы и премиум принадлежат аккаунту. Платёжный провайдер в браузерной версии не подключён.</p></section>';
  }
+ function progressScreen(){
+  const c=live();if(!c)return characterList();
+  const weekly=engine.weeklySnapshot(c.id),claimed=c.achievements||[];
+  const derived={highest_stage:c.progress.highestEver||0,lore_read:(c.loreRead||[]).length,paragon_level:c.paragon?.level||0,account_level:engine.accountLevel(),season_clear:c.stats.season_clear||0};
+  const achievements=balance.achievements.achievements.map(a=>{const value=derived[a.metric]??c.stats[a.metric]??c.progress[a.metric]??0,done=value>=a.target,owned=claimed.includes(a.id);return '<article class="tb-system-row"><div><b>'+esc(a.name)+'</b><small>'+esc(a.description||a.metric)+' · '+value+'/'+a.target+'</small></div><button data-achievement="'+a.id+'" '+(!done||owned?'disabled':'')+'>'+(owned?'ПОЛУЧЕНО':done?'ЗАБРАТЬ':'ЗАКРЫТО')+'</button></article>';}).join("");
+  const tasks=weekly.map(q=>'<div class="weekly-task-row"><div class="weekly-task-copy"><b>'+esc(q.name)+'</b><small>'+q.progress+'/'+q.target+' · '+(q.reward.silver||0)+' серебра</small></div><button class="weekly-task-status" data-weekly-claim="'+q.id+'" '+(!q.complete||q.claimed?'disabled':'')+'>'+(q.claimed?'ПОЛУЧЕНО':q.complete?'ЗАБРАТЬ':'В ПРОЦЕССЕ')+'</button></div>').join("");
+  return header("Прогресс","Достижения · викли · спидран")+'<section class="tb-systems"><h1>ПРОГРЕСС</h1><section class="tb-system-card"><h2>Достижения · '+claimed.length+'/'+balance.achievements.achievements.length+'</h2>'+achievements+'</section><section class="weekly-tasks-container"><h2>ВИКЛИ · '+esc(weekly[0]?.week||"ТЕКУЩАЯ НЕДЕЛЯ")+'</h2><div class="weekly-tasks-list">'+tasks+'</div><small class="weekly-tasks-note">Сброс каждый понедельник в 00:00 UTC.</small></section><section class="speedrun-container"><div class="tb-eyebrow">ИСПЫТАНИЕ СКОРОСТИ</div><h2>Спидран Башни</h2><b>ЛУЧШИЙ ЭТАП · '+(c.progress.highestEver||0)+' / 250</b><p>Завершено спидранов: '+(c.stats.speedrun_completions||0)+'</p></section></section>';
+ }
  function accountScreen(){
   const c=live();if(!c)return characterList();
   const prefs={sound_enabled:true,music_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,...(engine.state.account.settings||{})};
@@ -882,6 +890,7 @@ function createDialog(){
   else if(screen==="shop")root.innerHTML='<div class="tb-v2">'+shopScreen()+'</div>';
   else if(screen==="systems")root.innerHTML='<div class="tb-v2">'+systemsScreen()+'</div>';
   else if(screen==="account")root.innerHTML='<div class="tb-v2">'+accountScreen()+'</div>';
+  else if(screen==="progress")root.innerHTML='<div class="tb-v2">'+progressScreen()+'</div>';
   else if(screen==="leaderboard")root.innerHTML='<div class="tb-v2">'+leaderboardScreen()+'</div>';
   else if(screen==="death")root.innerHTML='<div class="tb-v2">'+deathScreen()+'</div>';
   else root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
@@ -981,7 +990,7 @@ function createDialog(){
    case "bottom-map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="map";render();save();break;
    case "bottom-profile":profileTab="stats";screen="profile";render();break;
    case "bottom-shop":screen="shop";render();break;
-   case "bottom-rating":screen="systems";render();break;
+   case "bottom-rating":screen="progress";render();break;
    case "bottom-account":screen="account";render();break;
    case "reset-current-battle":{const c=live(),stage=c?.run?.stage?.stage||c?.progress?.currentStage||selectedStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(c?.run){c.run.stage=null;c.run.active=true;}battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
    case "profile":profileTab="stats";screen="profile";render();break;
