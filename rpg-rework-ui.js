@@ -881,7 +881,7 @@ function createDialog(){
   const chest=!!engine.dailyChestSnapshot(c.id).available;
   const addBadge=(button,value)=>{if(!button||!value)return;const badge=document.createElement("i");badge.className="badge";badge.textContent=String(value===true?"!":value);button.appendChild(badge);};
   addBadge(nav.querySelector('[data-nav-tab="profile"]'),free+(upgrade?1:0));
-  addBadge(nav.querySelector('[data-nav-tab="progress"]'),achievement);
+  addBadge(nav.querySelector('[data-nav-tab="leaderboard"]'),achievement);
   addBadge(nav.querySelector('[data-nav-tab="shop"]'),chest?1:0);
   const skillsTab=root.querySelector('[data-tab="skills"]');addBadge(skillsTab,free);
   const bagTab=root.querySelector('[data-tab="bag"]');addBadge(bagTab,(upgrade?1:0)+(craft?1:0));
