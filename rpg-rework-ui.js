@@ -624,18 +624,18 @@ function createDialog(){
    </button>`;
   }).join("");
   const skillFallback='./assets/relics/image 10.png';
-  const skillsMarkup=slots.slice(0,4).map((skill,index)=>{
-   const cd=skill?(battle.skillCooldowns?.[skill.id]||0):0;
-   const evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null;
-   const effect=skill?(balance.skill_effects[skill.effect_template]||{}):{};
-   const cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill?.cost??skill?.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
-   const name=evolved?.name||skill?.name||skill?.label||skill?.title||"Пусто";
-   const iconSource = (skill && typeof skill.icon === 'string' && skill.icon.includes('.png')) ? skill.icon : './assets/relics/image 10.png';
-   return '<button type="button" class="tb-panel-skill '+(cd>0?'on-cooldown':'')+'" data-panel-skill="'+(skill?.id||'')+'" data-panel-slot="'+index+'" '+(!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0||battle.busy||battle.paused?'disabled':'')+'>'+
-    '<kbd>'+(index+1)+'</kbd><img src="'+esc(iconSource)+'" alt="" style="width:32px;height:32px;object-fit:contain;margin-bottom:4px;">'+
-    '<span class="tb-skill-button-name">'+esc(name)+'</span>'+
-    '<span class="tb-skill-button-cost">'+(skill?cost+' рес.':'')+'</span></button>';
-  }).join("");
+  const skillsMarkup = slots.slice(0, 4).map((skill, index) => {
+    const cd = skill ? (battle.skillCooldowns?.[skill.id] || 0) : 0;
+    const cost = skill ? (skill.cost || skill.resource_cost || 18) : 0;
+    const imgSrc = './assets/relics/image 10.png';
+    return `
+    <button type="button" class="tb-panel-skill ${cd > 0 ? 'on-cooldown' : ''}" data-panel-skill="${skill?.id || ''}" data-panel-slot="${index}" ${(!skill || battle.actor?.type !== "player" || battle.playerSkillUsed || cd > 0 || battle.busy || battle.paused) ? "disabled" : ""}>
+        <kbd style="position:absolute; top:2px; left:4px; font-size:10px; color:#aaa;">${index + 1}</kbd>
+        <img src="${imgSrc}" style="width:32px; height:32px; object-fit:contain; margin-bottom:4px;" alt="">
+        <span style="font-size:10px; color:white; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${esc(skill?.name || 'Пусто')}</span>
+        <span style="font-size:9px; color:#aaa;">${skill ? cost + ' рес.' : ''}</span>
+    </button>`;
+}).join("");
   const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
   const counterIconSource=(typeof counter?.icon==="string"&&counter.icon.includes(".png"))?counter.icon:"./assets/relics/image 10.png";
   const ultimateIconSource=(typeof ultimate?.icon==="string"&&ultimate.icon.includes(".png"))?ultimate.icon:"./assets/relics/image 10.png";
