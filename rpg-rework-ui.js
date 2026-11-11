@@ -70,7 +70,8 @@
   if(equipment)return relicIconHtml(item,item?.slot);
   const value=String(item?.type||item?.id||item?.name||"").toLowerCase();
   let icon="";
-  if(value.includes("helmet")||value.includes("helm")||value.includes("шлем"))icon="support-helmet";
+  if(value.includes("craft_material")||value.includes("craft material")||value.includes("материал")||value.includes("enhancement_stone")||value.includes("enhancement stone")||value.includes("камень усиления"))icon="support-orb";
+  else if(value.includes("helmet")||value.includes("helm")||value.includes("шлем"))icon="support-helmet";
   else if(value.includes("coin")||value.includes("silver")||value.includes("монет")||value.includes("сереб"))icon="support-purse";
   else if(value.includes("boot")||value.includes("shoe")||value.includes("обув")||value.includes("сапог"))icon="support-boot";
   else if(value.includes("shield")||value.includes("щит"))icon="support-shield";
@@ -142,7 +143,7 @@
  }catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
- function header(title,sub){return '<header class="tb-header"><div class="tb-brand"><img class="game-logo" src="./assets/ui/logo.jpeg" alt="TowerBound"></div><div class="tb-header-side">'+(live()?'<span class="tb-mini-avatar" aria-hidden="true"><img src="'+portrait(live().classId)+'" alt=""></span>':'')+'<span class="tb-subline">'+esc(sub||"")+'</span></div></header>';}
+ function header(title,sub){return '<header class="tb-header"><div class="tb-brand"><img class="game-logo" src="./assets/icons/image.png" alt="TowerBound" decoding="async"></div><div class="tb-header-side">'+(live()?'<span class="tb-mini-avatar" aria-hidden="true"><img src="'+portrait(live().classId)+'" alt=""></span>':'')+'<span class="tb-subline">'+esc(sub||"")+'</span></div></header>';}
 
  function characterList(){
   const chars=engine.state.characters;
