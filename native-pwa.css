@@ -430,3 +430,137 @@ html,body,#tbRpg,.tb-v2 {
   overflow-wrap: normal !important;
   word-break: normal !important;
 }
+
+/* Towerbound hard layout override v2: fix zero-width cards/forms and glyph-per-line wrapping. */
+#tbRpg,
+#tbRpg .tb-v2,
+#tbRpg .tb-v2 .tb-profile,
+#tbRpg .tb-v2 .tb-profile-content,
+#tbRpg .tb-v2 .tb-profile-body,
+#tbRpg .tb-v2 .tb-profile-panel,
+#tbRpg .tb-v2 .tb-account-auth,
+#tbRpg .tb-v2 .tb-speedrun-panel,
+#tbRpg .tb-v2 .tb-weekly-panel,
+#tbRpg .tb-v2 .tb-daily-quests,
+#tbRpg .tb-v2 .tb-daily-quest,
+#tbRpg .tb-v2 .tb-profile-account,
+#tbRpg .tb-v2 .tb-account-actions,
+#tbRpg .tb-v2 .tb-stat-grid,
+#tbRpg .tb-v2 .tb-stat-grid > div,
+#tbRpg .tb-v2 .tb-modal,
+#tbRpg .tb-v2 .modal-content {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+#tbRpg .tb-v2 .tb-profile-content,
+#tbRpg .tb-v2 .tb-profile-body,
+#tbRpg .tb-v2 .tb-profile-panel,
+#tbRpg .tb-v2 .tb-account-auth,
+#tbRpg .tb-v2 .tb-speedrun-panel,
+#tbRpg .tb-v2 .tb-weekly-panel,
+#tbRpg .tb-v2 .tb-daily-quests,
+#tbRpg .tb-v2 .tb-profile-account,
+#tbRpg .tb-v2 .tb-stat-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  flex: 1 1 100% !important;
+}
+#tbRpg .tb-v2 .tb-speedrun-panel,
+#tbRpg .tb-v2 .tb-weekly-panel,
+#tbRpg .tb-v2 .tb-account-auth,
+#tbRpg .tb-v2 .tb-daily-quest,
+#tbRpg .tb-v2 .tb-profile-account,
+#tbRpg .tb-v2 .tb-stat-grid,
+#tbRpg .tb-v2 .tb-speedrun-panel *,
+#tbRpg .tb-v2 .tb-weekly-panel *,
+#tbRpg .tb-v2 .tb-account-auth *,
+#tbRpg .tb-v2 .tb-daily-quest * {
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  word-wrap: normal !important;
+  white-space: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  transform: none;
+}
+#tbRpg .tb-v2 .tb-account-auth,
+#tbRpg .tb-v2 .tb-speedrun-panel,
+#tbRpg .tb-v2 .tb-weekly-panel {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+}
+#tbRpg .tb-v2 .tb-account-auth label,
+#tbRpg .tb-v2 .tb-account-auth input:not([type="checkbox"]),
+#tbRpg .tb-v2 .tb-account-actions,
+#tbRpg .tb-v2 .tb-account-actions button {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+#tbRpg .tb-v2 .tb-account-auth input:not([type="checkbox"]) {
+  height: 45px !important;
+  min-height: 45px !important;
+  padding: 10px !important;
+  margin: 0 0 15px !important;
+  font-size: 16px !important;
+}
+#tbRpg .tb-v2 .tb-account-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+#tbRpg .tb-v2 .tb-account-actions button {
+  height: 45px !important;
+  min-height: 45px !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+#tbRpg .tb-v2 .tb-daily-quest {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+#tbRpg .tb-v2 .tb-daily-quest > div {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+#tbRpg .tb-v2 .tb-daily-quest button {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: 44% !important;
+  white-space: normal !important;
+}
+#tbRpg .tb-v2 .tb-speedrun-panel .tb-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  width: 100% !important;
+}
+#tbRpg .tb-v2 .tb-speedrun-panel p,
+#tbRpg .tb-v2 .tb-speedrun-panel h3,
+#tbRpg .tb-v2 .tb-weekly-panel h3,
+#tbRpg .tb-v2 .tb-weekly-panel .tb-note,
+#tbRpg .tb-v2 .tb-daily-quest b,
+#tbRpg .tb-v2 .tb-daily-quest small {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+#tbRpg .tb-v2 * {
+  box-sizing: border-box !important;
+}
