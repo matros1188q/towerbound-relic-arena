@@ -79,7 +79,7 @@
   return icon?'<span class="tb-support-icon '+icon+'" aria-hidden="true"></span>':relicIconHtml(item);
  }
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
- const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
+ const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"],["craft","Крафт"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
  let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
@@ -456,6 +456,14 @@ function createDialog(){
    const branchSkills=c.branch?skills.filter(x=>x.class_id===c.classId&&x.branch_id===c.branch).map(x=>({...x,type:"active",branch:branch?.name||c.branch})):[];
    const available=base.concat(branchSkills),active=activeSkill(c);
    body='<h3>Умения персонажа</h3><p>Активное умение на арене: <b>'+esc(active?.name||"не выбрано")+'</b></p><div class="tb-skill-list">'+available.map(s=>{const effect=balance.skill_effects[s.effect_template]||{};const detail=s.description||(s.effect_template==="strike"?"Урон: "+Math.round((s.damage_multiplier??effect.damage_multiplier??1)*100)+"% · Стоимость: "+(s.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill)+" ресурса":s.effect_template==="buff"?"Усиление: "+Math.round((effect.power_multiplier||0)*100)+"%":s.effect_template==="heal"?"Лечение: "+Math.round((effect.heal_multiplier||0)*100)+"%":"Эффект: "+(s.effect_template||"особый"));return '<div class="tb-skill-row"><span class="tb-skill-glyph '+skillSpriteClass(s)+'" aria-hidden="true"></span><div><b>'+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+' · '+esc(humanSkillDescription(detail))+'</small></div><strong class="'+(c.level>=s.unlock_level?"unlocked":"locked")+'">'+(c.level>=s.unlock_level?"ОТКРЫТО":"УР. "+s.unlock_level)+'</strong>'+(s.type==="passive"||c.level<s.unlock_level?"":'<button data-select-skill="'+s.id+'" '+((c.activeSkills||c.skillLoadout||[]).includes(s.id)?"disabled":"")+'>'+((c.activeSkills||c.skillLoadout||[]).includes(s.id)?"ВЫБРАНО":"ВЫБРАТЬ")+'</button>')+'</div>';}).join("")+'</div>';
+
+  }else if(profileTab==="craft"){
+   const materials=(c.bag||[]).filter(item=>item.type==="craft_material").reduce((sum,item)=>sum+(Number(item.quantity)||1),0);
+   const stones=(c.bag||[]).filter(item=>item.type==="enhancement_stone");
+   const groups={};stones.forEach(item=>{const typeId=item.stoneType?.id||item.stoneType||"unknown",key=String(item.level||1)+":"+typeId;if(!groups[key])groups[key]={item,count:0};groups[key].count+=Number(item.quantity)||1;});
+   const stoneRows=Object.values(groups).map(group=>'<article class="tb-system-row"><div><b>'+esc(group.item.stoneType?.name||group.item.stoneType?.branch_id||"Камень усиления")+' · Уровень '+(group.item.level||1)+'</b><small>В наличии: '+group.count+' / 5 для слияния</small></div><button data-merge="'+group.item.id+'" '+(group.count<5?'disabled':'')+'>СЛИТЬ 5 КАМНЕЙ</button></article>').join("");
+   const materialButton='<section class="tb-system-card"><h3>Материалы для крафта</h3><p>Материалов: '+materials+' / 20</p><button data-craft-stone="1" '+(materials<20?'disabled':'')+'>КОВАТЬ КАМЕНЬ I · 20 МАТЕРИАЛОВ</button></section>';
+   body='<section class="tb-crafting-hub"><h3>Крафт и улучшение камней</h3>'+materialButton+'<section class="tb-system-card"><h3>Слияние камней</h3>'+(stoneRows||'<small>Камней усиления пока нет.</small>')+'</section><section class="tb-system-card"><h3>Камни заточки</h3><p>Камни заточки и долота отображаются в рюкзаке и применяются к экипировке.</p><p>В наличии: '+(c.bag||[]).filter(item=>item.type==="refine_stone").reduce((sum,item)=>sum+(Number(item.quantity)||1),0)+'</p></section></section>';
   }else if(profileTab==="account"){
    body=accountAuthPanel()+'<div class="tb-profile-account">'+systemsScreen()+'</div>';
   }else if(profileTab==="speedrun"){
@@ -869,7 +877,7 @@ function createDialog(){
   if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
   if(!nav){nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");host.appendChild(nav);}
-  nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-rating" data-nav-tab="leaderboard"><span>✦</span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
+  nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-progress" data-nav-tab="progress"><span>✦</span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
   const c=live(),spent=Object.values(c.talents||{}).reduce((n,v)=>n+(Number(v)||0),0),free=Math.max(0,(Number(c.talentPoints)||0)-spent);
   const statSum=item=>Object.values(item?.stats||{}).reduce((n,v)=>n+(Number(v)||0),0);
   const upgrade=(c.bag||[]).some(item=>item?.slot&&statSum(item)>statSum((c.gear||[]).find(g=>g?.slot===item.slot)));
@@ -886,7 +894,7 @@ function createDialog(){
   const skillsTab=root.querySelector('[data-tab="skills"]');addBadge(skillsTab,free);
   const bagTab=root.querySelector('[data-tab="bag"]');addBadge(bagTab,(upgrade?1:0)+(craft?1:0));
 
-  const active=screen==="map"?"map":screen==="profile"?"profile":screen==="progress"?"leaderboard":screen==="shop"?"shop":"account";
+  const active=screen==="map"?"map":screen==="profile"?"profile":screen==="progress"?"progress":screen==="shop"?"shop":"account";
   nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
  function renderView(){
@@ -1006,7 +1014,7 @@ function createDialog(){
    case "bottom-map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="map";render();save();break;
    case "bottom-profile":profileTab="stats";screen="profile";render();break;
    case "bottom-shop":screen="shop";render();break;
-   case "bottom-rating":screen="progress";render();break;
+   case "bottom-progress":screen="progress";render();break;
    case "bottom-account":screen="account";render();break;
    case "reset-current-battle":{const c=live(),stage=c?.run?.stage?.stage||c?.progress?.currentStage||selectedStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(c?.run){c.run.stage=null;c.run.active=true;}battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
    case "profile":profileTab="stats";screen="profile";render();break;
@@ -1019,7 +1027,7 @@ function createDialog(){
    case "cloud-account":if(window.TowerboundCloud?.open)window.TowerboundCloud.open();else notify("Облачный модуль ещё загружается");break;
    case "cloud-sync":(async()=>{try{const cloud=window.TowerboundCloud;if(!cloud?.syncNow)throw new Error("Облачный модуль недоступен");await cloud.syncNow();notify("Облачное сохранение синхронизировано");}catch(error){notify(error.message||"Не удалось синхронизировать");}})();break;
    case "daily-chest":try{const reward=engine.claimDailyChest(live().id);save();render();notify(reward.type==="silver"?"Сундук: +"+reward.amount+" серебра":reward.type==="potion"?"Сундук: +1 зелье исцеления":"Сундук: +10 материалов");}catch(error){notify(error.message);}break;
-   case "systems":screen="systems";render();break;
+   case "systems":screen="account";render();break;
    case "leaderboard":screen="leaderboard";onlineLeaderboardError="";render();refreshOnlineLeaderboard();break;
    case "leaderboard-refresh":refreshOnlineLeaderboard();break;
    case "tutorial-next":try{engine.tutorialStep(live().id);save();render();}catch(error){notify(error.message);}break;
