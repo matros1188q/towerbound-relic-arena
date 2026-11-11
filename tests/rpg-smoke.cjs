@@ -467,6 +467,11 @@ const {chromium}=require('playwright');
   console.log("SKILL DEBUG CAPTURE:",JSON.stringify(skillDebugLogs[0]));
   const noJump=await page.evaluate(()=>({before:window.__tbScrollBeforeTurn,after:window.scrollY}));
   assert.equal(noJump.after,noJump.before,'End Turn does not move the page');
+  if(await page.locator('[data-action="end-turn"]').count()===0){
+   assert.ok(await page.locator('[data-action="start"]').count()>0,'a lethal skill may finish the stage and return to the map');
+   await page.locator('[data-action="start"]').click();
+   await page.waitForSelector('[data-action="end-turn"]',{timeout:5000});
+  }
   await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=1;window.saveTowerboundRework();});
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForSelector('[data-action="confirm-death"]',{timeout:7000});
