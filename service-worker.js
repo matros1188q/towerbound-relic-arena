@@ -1,7 +1,7 @@
 'use strict';
 
-const CACHE = 'towerbound-v85';
-/* Final urgent battle/skills/crafting UI repair */
+const CACHE = 'towerbound-v81';
+/* Equipment and backpack layout refactor */
 const SHELL = [
   './',
   './index.html',
