@@ -86,9 +86,9 @@ for(const classId of classIds){
 assert.equal(stagePlans,1750,'all 250 stages are planned for all seven classes');
 assert.equal(bossPlans,175,'all 25 boss encounters are planned for each class');
 for(const [manifestPath,expected] of [
- ['assets/characters/heroes/manifest.json',4],
- ['assets/characters/enemies/manifest.json',20],
- ['assets/characters/bosses/manifest.json',9],
+ ['assets/characters/heroes/manifest.json',7],
+ ['assets/characters/enemies/manifest.json',19],
+ ['assets/characters/bosses/manifest.json',5],
  ['assets/skills/art-manifest.json',6],
  ['assets/synergies/art-manifest.json',15]
 ]){
@@ -99,21 +99,21 @@ for(const [manifestPath,expected] of [
   assert.ok(relative&&fs.existsSync(path.join(root,relative)),manifestPath+' references an existing asset: '+relative);
  }
 }
-const dedicatedClassPortraits=['dragonkin','elemental','duelist','shaman'];
-for(const id of dedicatedClassPortraits){
- const image=path.join(root,'assets/characters/heroes',id+'.jpg');
- assert.ok(fs.existsSync(image),id+' has a dedicated portrait asset');
+const dedicatedClassPortraits={assassin:'image.jpeg',bishop:'image 2.jpeg',dragonkin:'image 3.jpeg',destroyer:'image 4.jpeg',elemental:'image 5.jpeg',shaman:'image 6.jpeg',duelist:'image 7.jpeg'};
+for(const [id,fileName] of Object.entries(dedicatedClassPortraits)){
+ const image=path.join(root,'assets/characters/heroes',fileName);
+ assert.ok(fs.existsSync(image),id+' has a dedicated JPG portrait asset');
  assert.ok(fs.statSync(image).size>1024,id+' portrait is not an empty placeholder');
 }
-const crimsonRegent=path.join(root,'assets/characters/bosses/crimson-regent.jpg');
-assert.ok(fs.existsSync(crimsonRegent),'Crimson Regent has a dedicated boss portrait');
+const crimsonRegent=path.join(root,'assets/characters/bosses/image 11.jpeg');
+assert.ok(fs.existsSync(crimsonRegent),'Crimson Regent has a dedicated JPG boss portrait');
 assert.ok(fs.statSync(crimsonRegent).size>1024,'Crimson Regent portrait is not an empty placeholder');
 // Native PWA phase-2 release checks: dedicated class/boss art, fixed tab navigation and origin-safe Supabase auth.
 const uiSource=fs.readFileSync(path.join(root,'rpg-rework-ui.js'),'utf8');
-for(const [classId,fileName] of Object.entries({dragonkin:'dragonkin.jpg',elemental:'elemental.jpg',duelist:'duelist.jpg',shaman:'shaman.jpg'})){
+for(const [classId,fileName] of Object.entries({assassin:'image.jpeg',bishop:'image 2.jpeg',dragonkin:'image 3.jpeg',destroyer:'image 4.jpeg',elemental:'image 5.jpeg',shaman:'image 6.jpeg',duelist:'image 7.jpeg'})){
  assert.ok(uiSource.includes(classId+':"heroes/'+fileName+'"'),classId+' uses its own dedicated class portrait');
 }
-assert.ok(uiSource.includes('"bosses/crimson-regent.jpg"'),'Crimson Regent uses a dedicated boss portrait');
+assert.ok(uiSource.includes('"crimson-regent":"bosses/image 11.jpeg"'),'Crimson Regent uses a dedicated boss JPG portrait');
 assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
 assert.ok(uiSource.includes('host.querySelector(".tb-turn-tutorial")'),'bottom navigation yields to the first-run battle tutorial');
 for(const action of ['bottom-map','bottom-profile','bottom-shop','bottom-rating'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
@@ -147,7 +147,7 @@ assert.ok(achievements.length>=30,'achievement catalogue is populated');
 assert.equal(read('configs/balance/tutorial.json').steps_data.length,6,'six tutorial steps exist');
 assert.equal(read('configs/balance/death.json').lives_per_run,1,'base death config is consistent; difficulty overrides are tested separately');
 assert.deepEqual(read('configs/balance/equipment.json').set_bonus_thresholds,[2,3,5]);
-console.log('FULL GAME AUDIT PASS: 40 balance configs; 7 classes; 21 specializations; 210 talents/ranks; 420 skill records + 420 individual files; 1,750 stage plans; 175 boss plans; save/restore for every class; 59 character/UI art assets checked; relic assets; achievements, tutorial, death and equipment config.');
+console.log('FULL GAME AUDIT PASS: 40 balance configs; 7 classes; 21 specializations; 210 talents/ranks; 420 skill records + 420 individual files; 1,750 stage plans; 175 boss plans; save/restore for every class; 31 dedicated character JPG assets checked; relic assets; achievements, tutorial, death and equipment config.');
 
 // UI/UX navigation release checks.
 assert.ok(uiSource.includes('["account","Аккаунт"]')&&uiSource.includes('["speedrun","Спидран"]'),'profile contains account and speedrun sub-tabs');
