@@ -276,8 +276,8 @@
   }
   function setBonusTotals(character){
    const rarityRank={"Обычная":1,"Редкая":2,"Эпическая":3,"Легендарная":4,"Богоподобная":5};
-   const equipped=(character.gear||[]).filter(item=>item&&item.branch===character.branch&&item.rarity);
-   const lowest=equipped.reduce((value,item)=>Math.min(value,rarityRank[item.rarity]||99),99);
+   const equipped=(character.gear||[]).filter(item=>item&&item.branch===character.branch&&rarityRank[item.rarity]);
+   const lowest=equipped.reduce((value,item)=>Math.min(value,rarityRank[item.rarity]),99);
    const tier=Object.keys(rarityRank).find(key=>rarityRank[key]===lowest)||null;
    const pieces=equipped.length,total={damage:0,damageReduction:0,skillPower:0,attack:0,health:0,defense:0,crit:0,attackSpeed:0,pieces,rarity:tier,branch:character.branch,bonuses:[]};
    if(!tier||!character.branch)return total;
@@ -289,12 +289,17 @@
    const speedBranches=["water"];
    const magicBranches=["black_dragon","darkness","dark_gods","buffs"];
    const keyStat=attackBranches.includes(branchId)?"attack":defenseBranches.includes(branchId)?"defense":healthBranches.includes(branchId)?"health":critBranches.includes(branchId)?"crit":speedBranches.includes(branchId)?"attackSpeed":magicBranches.includes(branchId)?"skillPower":"attack";
-   const thresholds=[{pieces:2,value:.05},{pieces:4,value:.10},{pieces:6,value:.20}];
-   for(const threshold of thresholds){if(pieces<threshold.pieces)continue;const entry={pieces:threshold.pieces,value:threshold.value,keyStat,effect:threshold.pieces===6?"Уникальный эффект специализации":null};total[keyStat]+=threshold.value;if(keyStat==="attack"||keyStat==="skillPower")total.damage+=threshold.value;total.bonuses.push(entry);}
-   if(pieces>=6){total.damageReduction=.05;total.specialEffect="Сила специализации: +20% к ключевому стату и +5% к снижению входящего урона";}
+   const active=pieces>=6?{pieces:6,value:.20}:pieces>=4?{pieces:4,value:.10}:pieces>=2?{pieces:2,value:.05}:null;
+   if(active){
+    total[keyStat]=active.value;
+    if(keyStat==="attack"||keyStat==="skillPower")total.damage=active.value;
+    total.bonuses.push({pieces:active.pieces,value:active.value,keyStat,effect:active.pieces===6?"Уникальный эффект специализации":null});
+   }
+   if(pieces>=6){total.damageReduction=.05;total.specialEffect="Полный сет: +20% к ключевому стату и +5% к снижению входящего урона";}
+   total.setId=character.classId+"."+branchId+".set."+rarityKey(tier);
    return total;
   }
-  function getSetBonuses(characterId){return clone(setBonusTotals(getChar(characterId)));}
+    function getSetBonuses(characterId){return clone(setBonusTotals(getChar(characterId)));}
   function talentBonusTotals(character){
    const result={attack:0,health:0,crit:0,defense:0,attackSpeed:0,skillPower:0};
    const values=balance.classes.talent_bonuses||{},branch=(classTable[character.classId].branches||[]).find(entry=>entry.id===character.branch);
