@@ -55,6 +55,11 @@ for (const classname of ['icon-fire', 'icon-ice', 'icon-poison', 'icon-phys', 'u
 }
 assert.ok(source['index.html'].includes('./assets/ui/art-sprites.css'), 'Sprite stylesheet not linked by index.html');
 assert.ok(source['assets/ui/art-sprites.css'].includes('object-fit:contain'), 'JPG artwork must not be stretched');
+const spriteCss = source['assets/ui/art-sprites.css'];
+assert.match(spriteCss, /\.icon-poison[\\s\\S]*?background-size:300% 200%[\\s\\S]*?background-position:50% 0/, 'Poison must crop the middle tile of the 3×2 droplet sheet');
+assert.match(spriteCss, /\.skill-phys[\\s\\S]*?background-size:400% 300%/, 'Physical skill must use the 4×3 icon sheet geometry');
+assert.match(spriteCss, /\.ui-shield[\\s\\S]*?background-size:300% 200%[\\s\\S]*?background-position:0 100%/, 'Shield must crop the bottom-left tile of the 3×2 shield sheet');
+
 
 const tokens = ['hero-'+'illustrated.svg', 'foe-'+'illustrated.svg', 'skeleton-'+'illustrated.svg',
   'brute-'+'illustrated.svg', 'enemy-'+'atlas.webp', 'arena-'+'background.svg', 'arena-'+'background.webp'];
