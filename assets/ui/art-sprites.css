@@ -1,4 +1,4 @@
-/* Towerbound PNG icon atlas · verified sprite-sheet mapping */
+/* Towerbound JPG art pack · verified sprite-sheet mapping */
 #tbRpg .game-logo,.tb-v2 .game-logo{display:block;width:min(300px,70vw);max-width:100%;height:auto;margin:0 auto;object-fit:contain!important;object-position:center}
 img{object-fit:contain}#tbRpg img,#tbRpg .tb-v2 img,.tb-v2 img{object-fit:contain}
 .tb-relic-icon{display:block;width:42px;height:42px;max-width:100%;margin:0 auto;object-fit:contain!important;object-position:center}
@@ -10,30 +10,30 @@ img{object-fit:contain}#tbRpg img,#tbRpg .tb-v2 img,.tb-v2 img{object-fit:contai
 .tb-product-icon .tb-relic-icon{width:48px;height:48px}
 .tb-sprite{display:inline-block;width:30px;height:30px;flex:0 0 30px;background-repeat:no-repeat;background-size:400% 300%;background-position:0 0;background-color:transparent;object-fit:contain}
 
-/* image 13.png: 4 columns × 3 rows. First row = fire, ice, poison, physical. */
-.icon-fire{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:0 0}
-.icon-ice{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:33.333% 0}
-.icon-poison{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:66.667% 0}
-.icon-phys{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:100% 0}
+/* image 13.jpeg: 4 columns × 3 rows. First row = fire, ice, poison, physical. */
+.icon-fire{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:0 0}
+.icon-ice{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:33.333% 0}
+.icon-poison{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:66.667% 0}
+.icon-phys{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:100% 0}
 
-/* image 11.png: 4 columns × 3 rows. Gears = col 3; directional/target arrows = col 4. */
-.icon-settings,.ui-settings{background-image:url("../icons/image 11.png");background-size:400% 300%;background-position:66.667% 0}
-.icon-target,.ui-target{background-image:url("../icons/image 11.png");background-size:400% 300%;background-position:100% 0}
-/* image 11.png has no shield tile; use the actual blue shield at image 13.png row 3, col 1. */
-.icon-shield,.ui-shield{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:0 100%}
+/* image 11.jpeg: 4 columns × 3 rows. Gears = col 3; directional/target arrows = col 4. */
+.icon-settings,.ui-settings{background-image:url("../icons/image 11.jpeg");background-size:400% 300%;background-position:66.667% 0}
+.icon-target,.ui-target{background-image:url("../icons/image 11.jpeg");background-size:400% 300%;background-position:100% 0}
+/* image 11.jpeg has no shield tile; use the actual blue shield at image 13.jpeg row 3, col 1. */
+.icon-shield,.ui-shield{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:0 100%}
 
-/* image 17.png supplies the larger skill-menu glyphs; elemental/damage badges above use image 13. */
-.skill-fire{background-image:url("../icons/image 17.png");background-size:400% 400%;background-position:0 0}
-.skill-ice{background-image:url("../icons/image 17.png");background-size:400% 400%;background-position:33.333% 0}
-.skill-arcane{background-image:url("../icons/image 17.png");background-size:400% 400%;background-position:66.667% 33.333%}
-.skill-poison{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:66.667% 0}
-.skill-phys{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:100% 0}
+/* image 17.jpeg supplies the larger skill-menu glyphs; elemental/damage badges above use image 13. */
+.skill-fire{background-image:url("../icons/image 17.jpeg");background-size:400% 400%;background-position:0 0}
+.skill-ice{background-image:url("../icons/image 17.jpeg");background-size:400% 400%;background-position:33.333% 0}
+.skill-arcane{background-image:url("../icons/image 17.jpeg");background-size:400% 400%;background-position:66.667% 33.333%}
+.skill-poison{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:66.667% 0}
+.skill-phys{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:100% 0}
 
-.ui-dungeon-atlas{display:block;background-image:linear-gradient(180deg,#080a12aa,#080a12dd),url("../icons/image 11.png");background-size:cover;background-position:center;background-repeat:no-repeat}
-.tb-talent-icon.icon-talent{background-image:url("../icons/image 13.png");background-size:400% 300%;background-position:33.333% 0;background-repeat:no-repeat;display:inline-block;width:28px;height:28px;flex:0 0 28px}
+.ui-dungeon-atlas{display:block;background-image:linear-gradient(180deg,#080a12aa,#080a12dd),url("../icons/image 11.jpeg");background-size:cover;background-position:center;background-repeat:no-repeat}
+.tb-talent-icon.icon-talent{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:33.333% 0;background-repeat:no-repeat;display:inline-block;width:28px;height:28px;flex:0 0 28px}
 
-/* image 15.png: achievement portraits / reward badges. */
-.achievement-compass,.achievement-trophy,.achievement-heart,.achievement-skull,.achievement-shield,.achievement-star{display:inline-block;width:36px;height:36px;background-image:url("../icons/image 15.png");background-repeat:no-repeat;background-size:600% 500%}
+/* image 15.jpeg: achievement portraits / reward badges. */
+.achievement-compass,.achievement-trophy,.achievement-heart,.achievement-skull,.achievement-shield,.achievement-star{display:inline-block;width:36px;height:36px;background-image:url("../icons/image 15.jpeg");background-repeat:no-repeat;background-size:600% 500%}
 .achievement-compass{background-position:0 0}
 .achievement-trophy{background-position:60% 25%}
 .achievement-heart{background-position:60% 50%}
@@ -41,8 +41,8 @@ img{object-fit:contain}#tbRpg img,#tbRpg .tb-v2 img,.tb-v2 img{object-fit:contai
 .achievement-shield{background-position:20% 100%}
 .achievement-star{background-position:80% 50%}
 
-/* image 16.png: auxiliary inventory/currency/gear atlas crops. */
-.support-helmet,.support-purse,.support-boot,.support-shield,.support-orb{display:inline-block;width:34px;height:34px;background-image:url("../icons/image 16.png");background-repeat:no-repeat;background-size:600% 500%}
+/* image 16.jpeg: auxiliary inventory/currency/gear atlas crops. */
+.support-helmet,.support-purse,.support-boot,.support-shield,.support-orb{display:inline-block;width:34px;height:34px;background-image:url("../icons/image 16.jpeg");background-repeat:no-repeat;background-size:600% 500%}
 .support-helmet{background-position:20% 0}
 .support-purse{background-position:60% 0}
 .support-boot{background-position:60% 75%}
@@ -50,26 +50,8 @@ img{object-fit:contain}#tbRpg img,#tbRpg .tb-v2 img,.tb-v2 img{object-fit:contai
 .support-orb{background-position:80% 50%}
 .skill-icon{display:inline-block;width:32px;height:32px;background-repeat:no-repeat;background-size:400% 400%}
 
-/* image 19.png is a low-contrast inventory backdrop, not a UI icon sheet. */
-.tb-profile:has(.tb-bag-items) .tb-profile-content{position:relative;background-image:linear-gradient(180deg,rgba(9,12,20,.94),rgba(9,12,20,.88)),url("../icons/image 19.png");background-size:cover;background-position:center;background-attachment:local}
+/* image 19.jpeg is a low-contrast inventory backdrop, not a UI icon sheet. */
+.tb-profile:has(.tb-bag-items) .tb-profile-content{position:relative;background-image:linear-gradient(180deg,rgba(9,12,20,.94),rgba(9,12,20,.88)),url("../icons/image 19.jpeg");background-size:cover;background-position:center;background-attachment:local}
 .tb-map-screen{background-size:cover;background-position:center}
-.tb-arena{background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),var(--tb-arena-bg,none);background-size:cover;background-position:center}
+.tb-arena{background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),var(--tb-arena-bg,url("../chapters/image 2.jpeg"));background-size:cover;background-position:center}
 @media(max-width:560px){.tb-relic-icon{width:36px;height:36px}.tb-gear-slot-art .tb-relic-icon{width:44px;height:44px}.tb-bag-item-art .tb-relic-icon{width:42px;height:42px}}
-
-#tbRpg .tb-v2 .tb-character-stats{display:flex!important;flex-direction:column!important;align-items:stretch!important;width:100%!important;min-width:0!important;gap:8px!important}
-#tbRpg .tb-v2 .tb-character-stats>.tb-stat-row{display:flex!important;flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important;min-width:0!important;max-width:100%!important;gap:12px!important}
-#tbRpg .tb-v2 .tb-character-stats .tb-stat-name{display:block!important;flex:1 1 auto!important;min-width:0!important;width:auto!important;word-break:normal!important;overflow-wrap:normal!important;white-space:normal!important}
-#tbRpg .tb-v2 .tb-character-stats .tb-stat-value{display:block!important;flex:0 0 auto!important;min-width:max-content!important;width:auto!important;margin-left:auto!important;text-align:right!important;white-space:nowrap!important;word-break:normal!important}
-.sprite-icon{display:inline-block;flex:0 0 48px;width:48px;height:48px;min-width:48px;min-height:48px;background-repeat:no-repeat;background-size:400% 400%;background-position:0 0;overflow:hidden;vertical-align:middle}
-.talent-atk{background-image:url("../skills/image 17.png");background-position:0 0}
-.talent-hp{background-image:url("../skills/image 17.png");background-position:33.333% 0}
-.talent-def{background-image:url("../skills/image 17.png");background-position:66.667% 0}
-.talent-agi{background-image:url("../skills/image 17.png");background-position:100% 0}
-.talent-crit{background-image:url("../skills/image 17.png");background-position:0 33.333%}
-.shop-potion{background-image:url("../icons/image 13.png");background-position:0 0}
-.shop-premium{background-image:url("../icons/image 15.png");background-position:60% 25%;background-size:600% 500%}
-.shop-refine{background-image:url("../icons/image 11.png");background-position:66.667% 0;background-size:400% 300%}
-.shop-xp{background-image:url("../icons/image 15.png");background-position:0 0;background-size:600% 500%}
-.shop-drop{background-image:url("../icons/image 16.png");background-position:80% 50%;background-size:600% 500%}
-.shop-item{background-image:url("../icons/image 17.png");background-position:66.667% 33.333%}
-#tbRpg .tb-v2 .tb-product-icon .sprite-icon{width:48px;height:48px;flex-basis:48px}

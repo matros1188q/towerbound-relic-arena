@@ -5,42 +5,42 @@
     {
       "id": "fire",
       "name": "Fire",
-      "path": "assets/icons/image 17.png",
+      "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
       "usage": "Skill atlas crop; menu class skill-fire"
     },
     {
       "id": "arcane",
       "name": "Arcane",
-      "path": "assets/icons/image 17.png",
+      "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
       "usage": "Skill atlas crop; menu class skill-arcane"
     },
     {
       "id": "ice",
       "name": "Ice",
-      "path": "assets/icons/image 17.png",
+      "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
       "usage": "Skill atlas crop; menu class skill-ice"
     },
     {
       "id": "lightning",
       "name": "Lightning",
-      "path": "assets/icons/image 17.png",
+      "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
       "usage": "Skill atlas source; crop preset managed by CSS"
     },
     {
       "id": "nature",
       "name": "Nature",
-      "path": "assets/icons/image 17.png",
+      "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
       "usage": "Skill atlas source; crop preset managed by CSS"
     },
     {
       "id": "void",
       "name": "Void",
-      "path": "assets/icons/image 17.png",
+      "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
       "usage": "Skill atlas source; crop preset managed by CSS"
     }
