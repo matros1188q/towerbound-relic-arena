@@ -606,44 +606,51 @@ function createDialog(){
   return true;
  }
  function battleScreen(){
-  const c=live(),hp=engine.maxHp(c),heroPct=Math.max(0,Math.min(100,c.run.playerHp/hp*100));
-  const slots=ensureLoadout(c),counter=counterAbility(c),ultimate=ultimateAbility(c),living=battle.enemies.filter(enemy=>enemy&&enemy.alive&&Number(enemy.hp)>0);
-  const order=buildInitiative().map((actor,index)=>'<span class="tb-battle-initiative-item '+(actor.type==="player"?"player":"enemy")+(actor.id===battle.actor?.id?" active":"")+'">'+(index+1)+' · '+esc(actor.name)+(actor.id===battle.actor?.id?" · СЕЙЧАС":"")+'</span>').join("");
-  const targets=battle.enemies.filter(target=>target&&target.alive&&Number(target.hp)>0).map((target,index)=>{
+  const c=live();
+  const hp=engine.maxHp(c);
+  const hpPct=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
+  const slots=ensureLoadout(c);
+  const enemies=battle.enemies.filter(enemy=>enemy&&enemy.alive&&Number(enemy.hp)>0);
+  const enemyMarkup=enemies.map((target,i)=>{
    const targetIndex=Number.isInteger(target.index)?target.index:battle.enemies.indexOf(target);
-   const pct=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100));
+   const enemyHpPct=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100));
    const intent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&targetIndex===battle.targetIndex?battle.telegraph.label:"Готовит атаку");
-   const roleName=balance.mobs.roles[target.role]?.name||"Обычный";
-   return `<button type="button" class="tb-target-card enemy-card" data-target="${targetIndex}" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px;min-width:0">
-    <img class="tb-target-art" src="${esc(enemyPortrait(target))}" alt="" style="width:60px;height:60px;object-fit:contain;margin-bottom:5px">
-    <b style="font-size:12px;color:#fff">${target.type==="boss"?"БОСС":"ВРАГ "+(index+1)}</b>
-    <small style="font-size:10px;color:#aaa;margin-bottom:5px">${esc(roleName)}</small>
-    <span class="tb-target-hp" style="width:100%;height:6px;background:#333;border-radius:3px;display:block;margin-bottom:5px"><i style="display:block;height:100%;background:#e74c3c;width:${pct}%;border-radius:3px"></i></span>
-    <small style="font-size:10px;color:#fff;margin-bottom:5px">${Math.ceil(target.hp)} / ${Math.ceil(target.maxHp||target.hp)} HP</small>
-    <span class="tb-enemy-telegraph">⚔ ${esc(intent)}</span>
+   return `<div class="v2-enemy-card" data-target="${targetIndex}">
+    <img src="${esc(enemyPortrait(target))}" class="v2-enemy-img" alt="">
+    <div class="v2-enemy-name">${target.type==="boss"?"БОСС":"ВРАГ "+(i+1)}</div>
+    <div class="v2-enemy-intent">${esc(intent)}</div>
+    <div class="v2-hp-bar"><div style="width:${enemyHpPct}%"></div></div>
+   </div>`;
+  }).join("");
+  const skillMarkup=Array.from({length:6},(_,index)=>{
+   const skill=slots[index]||null;
+   const cooldown=skill?(battle.skillCooldowns?.[skill.id]||0):0;
+   const cost=skill?(skill.cost||skill.resource_cost||18):0;
+   const disabled=!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cooldown>0||battle.busy||battle.paused;
+   return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id||"")}" data-panel-slot="${index}" ${disabled?"disabled":""}>
+    <img src="./assets/relics/image 10.png" alt="">
+    <span>${esc(skill?.name||"Пусто")}${skill?" · "+cost+" рес.":""}</span>
    </button>`;
   }).join("");
-  const skillFallback='./assets/relics/image 10.png';
-  const skillsMarkup = slots.slice(0, 4).map((skill, index) => {
-    const cd = skill ? (battle.skillCooldowns?.[skill.id] || 0) : 0;
-    const cost = skill ? (skill.cost || skill.resource_cost || 18) : 0;
-    const imgSrc = './assets/relics/image 10.png';
-    return `
-    <button type="button" class="tb-panel-skill ${cd > 0 ? 'on-cooldown' : ''}" data-panel-skill="${skill?.id || ''}" data-panel-slot="${index}" ${(!skill || battle.actor?.type !== "player" || battle.playerSkillUsed || cd > 0 || battle.busy || battle.paused) ? "disabled" : ""}>
-        <kbd style="position:absolute; top:2px; left:4px; font-size:10px; color:#aaa;">${index + 1}</kbd>
-        <img src="${imgSrc}" style="width:32px; height:32px; object-fit:contain; margin-bottom:4px;" alt="">
-        <span style="font-size:10px; color:white; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${esc(skill?.name || 'Пусто')}</span>
-        <span style="font-size:9px; color:#aaa;">${skill ? cost + ' рес.' : ''}</span>
-    </button>`;
-}).join("");
-  const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
-  const counterIconSource=(typeof counter?.icon==="string"&&counter.icon.includes(".png"))?counter.icon:"./assets/relics/image 10.png";
-  const ultimateIconSource=(typeof ultimate?.icon==="string"&&ultimate.icon.includes(".png"))?ultimate.icon:"./assets/relics/image 10.png";
-  const counterButton='<button type="button" class="tb-panel-skill counter '+(counterCd>0?"on-cooldown":"")+'" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;min-height:60px" data-counter="1" '+(battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed||battle.counterPrimed||counterCd>0||c.resource<(counter.resource_cost||balance.resources.action_costs.counter)?"disabled":"")+'><kbd>5</kbd><img src="'+counterIconSource+'" onerror="this.onerror=null;this.src=\'./assets/relics/image 10.png\'" alt="" style="width:36px;height:36px;object-fit:contain;margin:4px 0"><span class="tb-skill-button-name" style="color:white;font-size:9px;text-align:center">'+esc(counter?.name||counter?.label||"Контратака")+'</span><span class="tb-skill-button-cost">'+(counter.resource_cost||balance.resources.action_costs.counter)+' рес.</span>'+(counterCd>0?'<span class="tb-skill-cooldown-overlay"><b>'+counterCd+'</b><small>ХОДА</small></span>':'')+'</button>';
-  const ultButton='<button type="button" class="tb-panel-skill ultimate '+(ultCd>0?"on-cooldown":"")+'" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;min-height:60px" data-ultimate="1" '+(battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed||ultCd>0||c.resource<(ultimate.resource_cost||balance.resources.action_costs.ultimate)?"disabled":"")+'><kbd>6</kbd><img src="'+ultimateIconSource+'" onerror="this.onerror=null;this.src=\'./assets/relics/image 10.png\'" alt="" style="width:36px;height:36px;object-fit:contain;margin:4px 0"><span class="tb-skill-button-name" style="color:white;font-size:9px;text-align:center">'+esc(ultimate?.name||ultimate?.label||"Ультимейт")+'</span><span class="tb-skill-button-cost">'+(ultimate.resource_cost||balance.resources.action_costs.ultimate)+' рес.</span>'+(ultCd>0?'<span class="tb-skill-cooldown-overlay"><b>'+ultCd+'</b><small>ХОДА</small></span>':'')+'</button>';
-  const attack='<button type="button" class="tb-basic-attack" style="color:#ffffff!important;text-shadow:1px 1px 3px #000000!important;font-weight:900!important;font-size:16px!important" data-basic-attack="1" '+(battle.actor?.type!=="player"||battle.playerSkillUsed||battle.busy||battle.paused?"disabled":"")+'><b>⚔ АТАКА</b><small>Без затрат ресурса · +15 ресурса</small></button>';
-  const potions=engine.potionBeltSnapshot(c.id).slice(0,5).map(slot=>'<button type="button" data-belt-use="'+slot.slot+'" '+(!slot.itemId||slot.available<=0||battle.potionUsedThisTurn||battle.actor?.type!=="player"||battle.busy||battle.paused||!balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt?"disabled":"")+' title="В наличии: '+slot.available+'">🧪 '+(slot.slot+1)+'</button>').join("");
-  return '<section class="tb-arena tb-battle-rebuild"><header class="tb-battle-top"><div class="tb-battle-top-label">ИНИЦИАТИВА · '+battle.round+' РАУНД</div><div class="tb-battle-initiative">'+order+'</div><button id="pause" type="button" data-action="pause">'+(battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА")+'</button></header><main class="tb-battle-middle"><aside class="tb-battle-hero"><div class="tb-battle-hero-class">'+esc(classData(c).name)+' · УР. '+c.level+'</div><div class="tb-battle-hero-art"><img src="'+portrait(c.classId)+'" alt="'+esc(c.name)+'"></div><b class="tb-battle-hero-name">'+esc(c.name)+'</b><div class="tb-battle-bar-label">ЗДОРОВЬЕ <strong>'+Math.ceil(c.run.playerHp)+' / '+hp+'</strong></div><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><div class="tb-battle-bar-label">РЕСУРС <strong>'+c.resource+' / '+c.resourceMax+'</strong></div><div class="tb-resourcebar"><span style="width:'+Math.max(0,Math.min(100,c.resource/Math.max(1,c.resourceMax)*100))+'%"></span></div><small class="tb-battle-resource-name">'+esc(classData(c).resource)+'</small></aside><section class="tb-battle-enemies"><div class="tb-battle-enemy-heading"><b>ПРОТИВНИКИ</b><span>'+living.length+' / '+battle.enemies.length+' В ЖИВЫХ</span></div><div class="tb-battle-enemy-grid">'+targets+'</div></section></main><footer class="tb-battle-bottom"><div class="tb-battle-skills">'+skillsMarkup+counterButton+ultButton+'</div>'+attack+'<div class="tb-battle-footer"><button type="button" class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"||battle.paused?"disabled":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА…")+'</button><div class="tb-potion-belt">'+potions+'</div></div></footer></section>';
+  return `<div class="v2-battle-wrap">
+   <div class="v2-battle-top">
+    <span>ИНИЦИАТИВА · РАУНД ${battle.round}</span>
+    <button type="button" class="v2-pause-btn" data-action="pause">${battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА"}</button>
+   </div>
+   <div class="v2-battle-middle">
+    <div class="v2-hero-side">
+     <img src="${esc(portrait(c.classId))}" class="v2-hero-img" alt="">
+     <div class="v2-hero-name">${esc(c.name)}</div>
+     <div class="v2-hp-bar"><div style="width:${hpPct}%"></div></div>
+    </div>
+    <div class="v2-enemies-side">${enemyMarkup}</div>
+   </div>
+   <div class="v2-battle-bottom">
+    <button type="button" class="v2-btn-attack" id="hit" data-basic-attack="1" ${battle.actor?.type!=="player"||battle.playerSkillUsed||battle.busy||battle.paused?"disabled":""}>⚔ АТАКА</button>
+    <div class="v2-skills-grid">${skillMarkup}</div>
+    <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type!=="player"||battle.paused?"disabled":""}>ЗАВЕРШИТЬ ХОД</button>
+   </div>
+  </div>`;
  }
  function beginStage(){postBattleSummary=null;
   const c=live();
