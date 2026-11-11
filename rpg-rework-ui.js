@@ -628,8 +628,10 @@ function createDialog(){
    const cost=skill?(skill.cost||skill.resource_cost||18):0;
    const disabled=!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cooldown>0||battle.busy||battle.paused;
    return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id||"")}" data-panel-slot="${index}" ${disabled?"disabled":""}>
-    <img src="./assets/relics/image 10.png" alt="">
-    <span>${esc(skill?.name||"Пусто")}${skill?" · "+cost+" рес.":""}</span>
+    <kbd>${index+1}</kbd>
+    <img src="./assets/relics/image 10.png" style="width:32px; height:32px; object-fit:contain; margin-bottom:4px;" alt="">
+    <span>${esc(skill?.name||"Пусто")}</span>
+    <span>${skill?cost+" рес.":""}</span>
    </button>`;
   }).join("");
   return `<div class="v2-battle-wrap">
