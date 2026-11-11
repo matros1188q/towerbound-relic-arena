@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v50';
+const CACHE = 'towerbound-v65';
 const SHELL = [
   './',
   './index.html',
