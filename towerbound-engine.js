@@ -88,7 +88,7 @@ setWave:function(wave,boss){
  const domHero=mount&&mount.querySelector('.tb-visible-hero');
  if(domHero){
   const heroId=(window.TowerboundHeroId||'assassin');
-  const heroSrc='./assets/characters/heroes/'+(heroFiles[heroId]||'image.png');
+  const heroSrc='./assets/characters/heroes/'+(heroFiles[heroId]||'image-Photoroom.png');
   if(domHero.dataset.tbArtSrc!==heroSrc){domHero.dataset.tbArtSrc=heroSrc;domHero.src=heroSrc;}
   domHero.alt='Герой: '+heroId;
   domHero.dataset.tbActorId=heroId;
@@ -122,7 +122,7 @@ setHero:function(heroId){
  const domHero=mount&&mount.querySelector('.tb-visible-hero');
  if(domHero){
   const id=heroFiles[window.TowerboundHeroId]?window.TowerboundHeroId:'assassin';
-  const src='./assets/characters/heroes/'+(heroFiles[id]||'image.png');
+  const src='./assets/characters/heroes/'+(heroFiles[id]||'image-Photoroom.png');
   if(domHero.dataset.tbArtSrc!==src){domHero.dataset.tbArtSrc=src;domHero.src=src;}
   domHero.alt='Герой: '+id;
   domHero.dataset.tbActorId=id;
@@ -273,7 +273,7 @@ function ensureVisibleActors(){
   style.textContent='@keyframes tbEnemyIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)}24%{translate:0 -5px;rotate:-1deg;scale:1.015}50%{translate:0 -10px;rotate:0deg;scale:1.025;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 18px #e7caff88)}76%{translate:0 -4px;rotate:1deg;scale:1.01}}@keyframes tbWardenIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}22%{translate:-1px -3px;rotate:-.45deg;scale:1.008}50%{translate:0 -8px;rotate:.25deg;scale:1.018;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 17px #b8caff88)}78%{translate:1px -2px;rotate:.4deg;scale:1.006}}@keyframes tbRangerIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}25%{translate:1px -4px;rotate:.65deg;scale:1.01}50%{translate:0 -7px;rotate:-.3deg;scale:1.014;filter:drop-shadow(0 14px 12px #000d) drop-shadow(0 0 16px #8ee8a988)}75%{translate:-1px -2px;rotate:-.7deg;scale:1.005}}@keyframes tbArcanistIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #c18bff66)}25%{translate:0 -5px;rotate:-.35deg;scale:1.012}50%{translate:0 -12px;rotate:0deg;scale:1.02;filter:drop-shadow(0 16px 12px #000d) drop-shadow(0 0 24px #d5a0ffbb)}75%{translate:0 -4px;rotate:.35deg;scale:1.008}}@keyframes tbReaperIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}24%{translate:-1px -3px;rotate:-.8deg;scale:1.008}50%{translate:0 -8px;rotate:.4deg;scale:1.018;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 19px #9e83dbaa)}76%{translate:1px -2px;rotate:.8deg;scale:1.006}}@media(prefers-reduced-motion:reduce){.tb-visible-hero,.tb-visible-enemy{animation:none!important;translate:0 0!important;rotate:0deg!important;scale:1!important}}';
   document.head.appendChild(style);
  }
- addActor('tb-visible-hero','./assets/characters/heroes/image.png','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
+ addActor('tb-visible-hero','./assets/characters/heroes/image-Photoroom.png','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
  const enemy=addActor('tb-visible-enemy','./assets/characters/enemies/image 3.png','Страж Бездны',{left:'68%',top:'49%',width:'clamp(118px,30vw,202px)',height:'72%',animation:'tbEnemyIdle 2.8s ease-in-out infinite'});
  enemy.onerror=()=>{enemy.onerror=null;enemy.src='./assets/characters/enemies/image 4.png';};
  return layer;
