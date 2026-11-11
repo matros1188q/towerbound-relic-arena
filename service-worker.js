@@ -1,7 +1,7 @@
 'use strict';
 
-const CACHE = 'towerbound-v81';
-/* Equipment and backpack layout refactor */
+const CACHE = 'towerbound-v90';
+/* Battle arena and post-battle loot mobile layout hotfix */
 const SHELL = [
   './',
   './index.html',
