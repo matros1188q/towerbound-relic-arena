@@ -12,7 +12,7 @@ const engine=fs.readFileSync('rpg-rework-v2.js','utf8');
 const serviceWorker=fs.readFileSync('service-worker.js','utf8');
 const pwa=fs.readFileSync('juice-pwa.js','utf8');
 const gems=JSON.parse(fs.readFileSync('configs/balance/equipment.json','utf8'));
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v65'"),'PWA cache version must advance on release');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v70'"),'PWA cache version must advance on release');
 assert.ok(serviceWorker.includes('self.skipWaiting()'),'new service worker must skip the waiting phase');
 assert.ok(serviceWorker.includes('self.clients.claim()'),'new service worker must claim open pages');
 assert.ok(serviceWorker.includes("request.mode === 'navigate'")&&serviceWorker.includes("url.pathname.endsWith('/index.html')"),'HTML documents must use the network-first branch');
@@ -39,7 +39,7 @@ assert.ok(ui.includes('Серверный рейтинг пока не начи�
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=16'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=40'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=42'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=19'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
