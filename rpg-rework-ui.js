@@ -25,18 +25,19 @@
  function chapterBackgroundPath(stage){const floor=Math.max(1,Math.min(250,Number(stage)||1));return "./assets/chapters/"+chapterBackgrounds[Math.floor((floor-1)/50)];}
  const relicArtFiles={head:"image 2.jpeg",chest:"image 3.jpeg",ring:"image 4.jpeg",accessory:"image 4.jpeg",amulet:"image 6.jpeg",weapon:"image 10.jpeg",hands:"image 12.jpeg",potion:"image 5.jpeg",scroll:"image 9.jpeg",redGem:"image 7.jpeg",blueGem:"image 8.jpeg",potionStack:"image 14.jpeg",bundle:"image 18.jpeg"};
  function relicArtPath(item,slot){
-  const value=String(item?.type||item?.id||item?.name||slot||"").toLowerCase();
-  if(value.includes("bundle")||value.includes("cache")||value.includes("набор")||value.includes("сундук"))return relicArtFiles.bundle;
-  if(value.includes("amulet")||value.includes("neck")||value.includes("амул"))return relicArtFiles.amulet;
-  if(value.includes("ring")||value.includes("accessory")||value.includes("кольц"))return relicArtFiles.ring;
-  if(value.includes("head")||value.includes("helmet")||value.includes("helm")||value.includes("шлем")||slot==="head")return relicArtFiles.head;
-  if(value.includes("chest")||value.includes("armor")||value.includes("breast")||value.includes("нагруд")||slot==="chest"||slot==="legs")return relicArtFiles.chest;
-  if(value.includes("hand")||value.includes("glove")||value.includes("перчат")||slot==="hands")return relicArtFiles.hands;
-  if(value.includes("weapon")||value.includes("sword")||value.includes("меч")||value.includes("оруж")||slot==="weapon")return relicArtFiles.weapon;
-  if(value.includes("scroll")||value.includes("enchant")||value.includes("свит"))return relicArtFiles.scroll;
-  if(value.includes("red")&&value.includes("gem")||value.includes("красн")&&value.includes("кам"))return relicArtFiles.redGem;
-  if(value.includes("blue")&&value.includes("gem")||value.includes("син")&&value.includes("кам"))return relicArtFiles.blueGem;
-  if(value.includes("potion")||value.includes("heal")||value.includes("зель"))return value.includes("stack")||value.includes("стоп")?relicArtFiles.potionStack:relicArtFiles.potion;
+  const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
+  if(parts.includes("craft material")||parts.includes("material")||parts.includes("материал")||parts.includes("craft"))return "image 15.png";
+  if(parts.includes("bundle")||parts.includes("cache")||parts.includes("набор")||parts.includes("сундук"))return relicArtFiles.bundle;
+  if(parts.includes("amulet")||parts.includes("neck")||parts.includes("амул"))return relicArtFiles.amulet;
+  if(parts.includes("ring")||parts.includes("accessory")||parts.includes("кольц"))return relicArtFiles.ring;
+  if(parts.includes("head")||parts.includes("helmet")||parts.includes("helm")||parts.includes("шлем")||slot==="head")return relicArtFiles.head;
+  if(parts.includes("chest")||parts.includes("armor")||parts.includes("breast")||parts.includes("нагруд")||slot==="chest"||slot==="legs")return relicArtFiles.chest;
+  if(parts.includes("hand")||parts.includes("glove")||parts.includes("перчат")||slot==="hands")return relicArtFiles.hands;
+  if(parts.includes("weapon")||parts.includes("sword")||parts.includes("меч")||parts.includes("оруж")||slot==="weapon")return relicArtFiles.weapon;
+  if(parts.includes("scroll")||parts.includes("enchant")||parts.includes("свит"))return relicArtFiles.scroll;
+  if((parts.includes("red")&&parts.includes("gem"))||(parts.includes("красн")&&parts.includes("кам")))return relicArtFiles.redGem;
+  if((parts.includes("blue")&&parts.includes("gem"))||(parts.includes("син")&&parts.includes("кам")))return relicArtFiles.blueGem;
+  if(parts.includes("potion")||parts.includes("heal")||parts.includes("зель"))return parts.includes("stack")||parts.includes("стоп")?relicArtFiles.potionStack:relicArtFiles.potion;
   if(slot==="accessory")return relicArtFiles.accessory;
   return relicArtFiles.potionStack;
  }
