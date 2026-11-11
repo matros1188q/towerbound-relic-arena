@@ -275,20 +275,26 @@
    return result;
   }
   function setBonusTotals(character){
-   const total={damage:0,damageReduction:0,skillPower:0},gear=equipmentTotals(character);
-   const thresholds=balance.equipment.set_bonus_thresholds||[2,3,5];
-   for(const branch of classTable[character.classId].branches||[]){
-    const set=branch.set;if(!set)continue;
-    const pieces=gear.setPieces[set.id]||0;
-    for(const bonus of set.bonuses||[]){
-     if(pieces<bonus.pieces||!thresholds.includes(bonus.pieces))continue;
-     if(bonus.effect==="specialization_damage")total.damage+=bonus.value;
-     if(bonus.effect==="incoming_damage_reduction")total.damageReduction+=bonus.value;
-     if(bonus.effect==="specialization_power")total.skillPower+=bonus.value;
-    }
-   }
+   const rarityRank={"Обычная":1,"Редкая":2,"Эпическая":3,"Легендарная":4,"Богоподобная":5};
+   const equipped=(character.gear||[]).filter(item=>item&&item.branch===character.branch&&item.rarity);
+   const lowest=equipped.reduce((value,item)=>Math.min(value,rarityRank[item.rarity]||99),99);
+   const tier=Object.keys(rarityRank).find(key=>rarityRank[key]===lowest)||null;
+   const pieces=equipped.length,total={damage:0,damageReduction:0,skillPower:0,attack:0,health:0,defense:0,crit:0,attackSpeed:0,pieces,rarity:tier,branch:character.branch,bonuses:[]};
+   if(!tier||!character.branch)return total;
+   const branchId=character.branch;
+   const attackBranches=["bleed","poison","execution","fire_dragon","greatsword","dual_swords","nature","exorcism"];
+   const defenseBranches=["wand_shield","sword_shield","ice_dragon","earth"];
+   const healthBranches=["healing","spirits"];
+   const critBranches=["rapier"];
+   const speedBranches=["water"];
+   const magicBranches=["black_dragon","darkness","dark_gods","buffs"];
+   const keyStat=attackBranches.includes(branchId)?"attack":defenseBranches.includes(branchId)?"defense":healthBranches.includes(branchId)?"health":critBranches.includes(branchId)?"crit":speedBranches.includes(branchId)?"attackSpeed":magicBranches.includes(branchId)?"skillPower":"attack";
+   const thresholds=[{pieces:2,value:.05},{pieces:4,value:.10},{pieces:6,value:.20}];
+   for(const threshold of thresholds){if(pieces<threshold.pieces)continue;const entry={pieces:threshold.pieces,value:threshold.value,keyStat,effect:threshold.pieces===6?"Уникальный эффект специализации":null};total[keyStat]+=threshold.value;if(keyStat==="attack"||keyStat==="skillPower")total.damage+=threshold.value;total.bonuses.push(entry);}
+   if(pieces>=6){total.damageReduction=.05;total.specialEffect="Сила специализации: +20% к ключевому стату и +5% к снижению входящего урона";}
    return total;
   }
+  function getSetBonuses(characterId){return clone(setBonusTotals(getChar(characterId)));}
   function talentBonusTotals(character){
    const result={attack:0,health:0,crit:0,defense:0,attackSpeed:0,skillPower:0};
    const values=balance.classes.talent_bonuses||{},branch=(classTable[character.classId].branches||[]).find(entry=>entry.id===character.branch);
@@ -309,7 +315,7 @@
    const base=curve?.length?interpolation(curve,character.level,"level","hp")/(balance.character_curves.base_divisor||1.5):
     stats.base_health+Math.max(0,character.level-1)*stats.health_per_level;
    const progression=character.progression||{},runeHealth=(progression.runewords||[]).reduce((value,word)=>value*(1+(word.health||0)),1);
-   return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+(progression.bonusHp||0))*runeHealth*(balance.combat.turn_based?.player_hp_multiplier??1)));
+   const sets=setBonusTotals(character);return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+sets.health)*(1+(progression.bonusHp||0))*runeHealth*(balance.combat.turn_based?.player_hp_multiplier??1)));
   }
   function getCombatStats(characterOrId){
    const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
@@ -318,8 +324,8 @@
    const baseDps=anchors?.length?interpolation(anchors,character.level,"level","dps")/(balance.character_curves.base_divisor||1.5):
     stats.base_attack+(character.level-1)*stats.attack_per_level;
    const dps=Math.max(1,(baseDps*(1+gear.itemLevelBonus)+gear.attack)*(1+talent.attack));
-   const attack=Math.max(1,Math.round(dps*balance.combat.attack_interval));
-   const defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense));
+   const attack=Math.max(1,Math.round(dps*balance.combat.attack_interval*(1+sets.attack)));
+   const defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)*(1+sets.defense));
    const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
    const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),critChance,critMultiplier,
@@ -593,30 +599,33 @@
   function createDrop(character,rarity,options){
     options=options||{};
     const itemLevel=itemLevelForStage(options.itemLevel||character.progress.currentStage||1);
-    const slots=["weapon","chest","head","accessory"],slot=options.slot||slots[Math.floor(random()*slots.length)];
+    const slots=["weapon","chest","head","legs","hands","accessory"],slot=options.slot||slots[Math.floor(random()*slots.length)];
     const rarityScale={"Обычная":1,"Редкая":1.35,"Эпическая":1.8,"Легендарная":2.4,"Богоподобная":3.2}[rarity]||1;
     const scale=(2+itemLevel*.65)*rarityScale;
     const statProfiles={
      weapon:{attack:Math.max(1,Math.round(scale*1.8)),crit:rarityScale>=1.8?.01:0},
      chest:{defense:Math.max(1,Math.round(scale*1.1)),health:Math.max(5,Math.round(scale*6))},
      head:{defense:Math.max(1,Math.round(scale*.8)),health:Math.max(3,Math.round(scale*2.5))},
+     legs:{defense:Math.max(1,Math.round(scale*.65)),health:Math.max(4,Math.round(scale*3.2))},
+     hands:{attack:Math.max(1,Math.round(scale*.55)),defense:Math.max(1,Math.round(scale*.3)),crit:rarityScale>=1.8?.008:0},
      accessory:{attack:Math.max(1,Math.round(scale*.8)),health:Math.max(2,Math.round(scale*1.5)),crit:Math.min(.08,.005*rarityScale),spellPower:Math.max(0,Math.round(scale*.45))}
     };
-    const slotNames={weapon:["Клинок тьмы","Меч расколотой клятвы","Боевой клинок"],chest:["Доспех бастиона","Нагрудник древнего стража","Доспех сумрачной стали"],head:["Шлем затмения","Шлем пепельного стража","Шлем бездны"],accessory:["Амулет забытого короля","Перстень сумрачной печати","Талисман древней силы"]};
+    const slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",accessory:"Аксессуар"};
     const rarityNames={"Обычная":"Обычный","Редкая":"Редкий","Эпическая":"Эпический","Легендарная":"Легендарный","Богоподобная":"Богоподобный"};
+    const branch=(classTable[character.classId]?.branches||[]).find(entry=>entry.id===character.branch);
+    const branchName=branch?.set?.name||branch?.theme||branch?.name||"Специализация";
     const stats={...(options.stats||statProfiles[slot]||statProfiles.accessory)};
-    const names=slotNames[slot]||slotNames.accessory;
-    const item={id:id(),type:"equipment",name:options.name||rarityNames[rarity]+" "+names[Math.floor(random()*names.length)]+" · ур. "+itemLevel,rarity,slot,setId:options.setId||null,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
-     itemLevel,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
+    const setId=character.branch?character.classId+"."+character.branch+".set."+rarityKey(rarity):null;
+    const item={id:id(),type:"equipment",name:options.name||rarityNames[rarity]+" · "+branchName+" · "+slotNames[slot],rarity,branch:character.branch||null,branchName,setId,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
+     itemLevel,slot,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
     const prefs=state.account.settings||{},threshold=Number(prefs.autoSalvageBelow||0),auto=!!prefs.autoSalvage&&["Обычная","Редкая"].includes(rarity)&&itemLevel<threshold&&!item.bossLoot;
     if(auto){const quantity=balance.materials.salvage[rarity]||0,stack=character.bag.find(x=>x.type==="craft_material");if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;item.autoSalvaged=true;item.type="auto_salvage";item.quantity=quantity;item.name="Авто-разбор · "+rarity;recordWeeklyProgress(character,"items_salvaged",1);}else character.bag.push(item);
-    character.run.foundItemIds.push(item.id);
-    character.stats.items_found=(character.stats.items_found||0)+1;
+    character.run.foundItemIds.push(item.id);character.stats.items_found=(character.stats.items_found||0)+1;
     if(item.uniqueId)character.stats.unique_items=(character.stats.unique_items||0)+1;
     return item;
    }
   function rollLoot(character,enemy,stage,firstClear,automatic){
-   if(automatic)return[];
+   if(automatic||character.level<10||!character.branch)return[];
    const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
    const uniqueBossDrop=rarity=>{
     const configured=classTable[character.classId].unique_items||[];
@@ -1317,10 +1326,13 @@
    bindItemOnUse(characterId,itemId);const old=character.gear[slot];character.gear[slot]=item;character.bag=character.bag.filter(entry=>entry.id!==itemId);if(old)character.bag.push(old);
    if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return clone(item);
   }
+  function equipmentRarityScore(item){return({"Обычная":1,"Редкая":2,"Эпическая":3,"Легендарная":4,"Богоподобная":5}[item?.rarity]||0);}
+  function equipmentScore(item){const s=item?.stats||{};return Number(s.attack||0)+Number(s.health||0)/10+Number(s.defense||0);}
   function equipBest(characterId){
-   const character=getChar(characterId),isGear=item=>!!(item&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0);
-   const candidates=[...(character.gear||[]).filter(Boolean),...(character.bag||[]).filter(isGear)],chosen=new Map();
-   for(let slot=0;slot<6;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
+   const character=getChar(characterId),isGear=item=>!!(item&&item.type==="equipment"&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0&&character.level>=10&&character.branch&&item.branch===character.branch);
+   if(character.level<10||!character.branch)return{equipped:0,gear:clone(character.gear||[]),bag:character.bag.length,locked:true};
+   const candidates=[...(character.gear||[]).filter(isGear),...(character.bag||[]).filter(isGear)],chosen=new Map();
+   for(let slot=0;slot<6;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
    const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:6},(_,slot)=>chosen.get(slot)||null);
    character.bag=(character.bag||[]).filter(item=>!isGear(item)).concat(candidates.filter(item=>!selected.has(item.id)));
    if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return{equipped:chosen.size,gear:clone(character.gear),bag:character.bag.length};
