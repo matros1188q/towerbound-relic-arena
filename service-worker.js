@@ -1,6 +1,7 @@
 'use strict';
 
 const CACHE = 'towerbound-v65';
+/* Final urgent battle/skills/crafting UI repair */
 const SHELL = [
   './',
   './index.html',
