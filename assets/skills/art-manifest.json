@@ -48,7 +48,7 @@
   "sprite_sheets": [
     {
       "id": "skill-school-icons",
-      "path": "assets/icons/image 17.jpeg",
+      "path": "assets/icons/image 17.png",
       "format": "jpeg",
       "crop_utility": "assets/ui/art-sprites.css",
       "classes": [
@@ -59,7 +59,7 @@
     },
     {
       "id": "damage-school-icons",
-      "path": "assets/icons/image 13.jpeg",
+      "path": "assets/icons/image 13.png",
       "format": "jpeg",
       "grid": {
         "columns": 4,

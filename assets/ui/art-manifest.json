@@ -5,7 +5,7 @@
   "spriteSheets": [
     {
       "id": "element-damage-icons",
-      "path": "assets/icons/image 13.jpeg",
+      "path": "assets/icons/image 13.png",
       "format": "jpeg",
       "grid": {
         "columns": 4,
@@ -40,7 +40,7 @@
     },
     {
       "id": "ui-controls",
-      "path": "assets/icons/image 11.jpeg",
+      "path": "assets/icons/image 11.png",
       "format": "jpeg",
       "grid": {
         "columns": 4,
@@ -66,7 +66,7 @@
     },
     {
       "id": "ui-shield",
-      "path": "assets/icons/image 13.jpeg",
+      "path": "assets/icons/image 13.png",
       "format": "jpeg",
       "grid": {
         "columns": 4,
@@ -84,7 +84,7 @@
     },
     {
       "id": "skill-menu",
-      "path": "assets/icons/image 17.jpeg",
+      "path": "assets/icons/image 17.png",
       "format": "jpeg",
       "classNames": [
         "skill-fire",
@@ -95,7 +95,7 @@
     },
     {
       "id": "achievements",
-      "path": "assets/icons/image 15.jpeg",
+      "path": "assets/icons/image 15.png",
       "format": "jpeg",
       "classNames": [
         "achievement-compass",
@@ -112,7 +112,7 @@
     },
     {
       "id": "support-items",
-      "path": "assets/icons/image 16.jpeg",
+      "path": "assets/icons/image 16.png",
       "format": "jpeg",
       "classNames": [
         "support-helmet",
@@ -129,7 +129,7 @@
     },
     {
       "id": "inventory-backdrop",
-      "path": "assets/icons/image 19.jpeg",
+      "path": "assets/icons/image 19.png",
       "format": "jpeg",
       "usage": "Low-opacity inventory content background, not an icon crop"
     }

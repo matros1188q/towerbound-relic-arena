@@ -6,8 +6,8 @@
     {
       "id": "mirror-executioner",
       "name": "Зеркальный палач",
-      "filename": "image 19.jpeg",
-      "relative_path": "assets/characters/bosses/image 19.jpeg",
+      "filename": "image 19.png",
+      "relative_path": "assets/characters/bosses/image 19.png",
       "image_format": "jpeg",
       "usage": "gameplay",
       "exact_asset_id": "boss.mirror-executioner"
@@ -15,8 +15,8 @@
     {
       "id": "ash-patriarch",
       "name": "Пепельный патриарх",
-      "filename": "image 3.jpeg",
-      "relative_path": "assets/characters/bosses/image 3.jpeg",
+      "filename": "image 3.png",
+      "relative_path": "assets/characters/bosses/image 3.png",
       "image_format": "jpeg",
       "usage": "gameplay",
       "exact_asset_id": "boss.ash-patriarch"
@@ -24,8 +24,8 @@
     {
       "id": "ice-abbot",
       "name": "Ледяной аббат",
-      "filename": "image 4.jpeg",
-      "relative_path": "assets/characters/bosses/image 4.jpeg",
+      "filename": "image 4.png",
+      "relative_path": "assets/characters/bosses/image 4.png",
       "image_format": "jpeg",
       "usage": "gameplay",
       "exact_asset_id": "boss.ice-abbot"
@@ -33,8 +33,8 @@
     {
       "id": "crimson-regent",
       "name": "Багровый регент",
-      "filename": "image 11.jpeg",
-      "relative_path": "assets/characters/bosses/image 11.jpeg",
+      "filename": "image 11.png",
+      "relative_path": "assets/characters/bosses/image 11.png",
       "image_format": "jpeg",
       "usage": "gameplay",
       "exact_asset_id": "boss.crimson-regent"
@@ -42,8 +42,8 @@
     {
       "id": "heart-of-tower",
       "name": "Сердце Башни",
-      "filename": "image 12.jpeg",
-      "relative_path": "assets/characters/bosses/image 12.jpeg",
+      "filename": "image 12.png",
+      "relative_path": "assets/characters/bosses/image 12.png",
       "image_format": "jpeg",
       "usage": "gameplay",
       "exact_asset_id": "boss.heart-of-tower"
