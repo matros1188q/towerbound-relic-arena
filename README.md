@@ -63,8 +63,10 @@ These phases are plans, not claims that the functionality is already implemented
 - Reclassified all earlier named PNG portrait paths as an explicitly historical pre-JPG mapping; current runtime mappings in `rpg-rework-ui.js` and `rpg-mode.js` were audited and already resolve the requested hero/enemy/boss JPGs.
 - Corrected sprite CSS: `image 13.jpeg` now supplies fire/ice/poison/physical badges; `image 11.jpeg` supplies settings/target; the actual shield glyph is sourced from `image 13.jpeg` because image 11 contains no shield tile; `image 17.jpeg` supplies skill-menu crops.
 - Replaced active PNG entries in `assets/skills/art-manifest.json` with six semantic JPG atlas records; refreshed UI manifest, sprite stylesheet cache key, service-worker cache and art regression checks.
-- Commit: this documentation/runtime synchronization update; see the current HEAD.
-- Verification: pending GitHub Actions art-manifest / syntax / regression jobs; manual iPhone crop approval is not claimed.
+- Implementation / follow-up commits on `main`: `d437cd63` (catalogue, sprite CSS, manifests, cache-bust and art test), `c8f49dd1` (PWA cache test), `69cc9252` (six semantic skill IDs retained on the JPG atlas), `1660c5b4` (full-game audit PWA cache expectation).
+- Passed on `1660c5b4`: JavaScript syntax checks; JPG art manifest and sprite validation; Towerbound regression assertions; `tests/online-services.test.cjs`; `tests/full-game-audit.cjs`; GitHub Pages deployment. CI run links: [regression](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/43018332329) · [Pages deploy](https://github.com/matros1188q/towerbound-relic-arena/actions/runs/43018332262).
+- Remaining verification: `tests/rpg-smoke.cjs` failed waiting for `.tb-turn-guidance` at line 457 after its login, class-skill, mobile-layout and endgame checks had passed. Cross-browser journeys were still running at the last check. Physical iPhone art-crop approval is not claimed.
+- Visual mapping note: image 11 contains gears and directional arrows but no shield; `.icon-shield` deliberately uses the visible blue-shield tile in image 13. The image 17 atlas has approved CSS crops for fire, ice and arcane; lightning, nature and void remain semantic JPG-atlas entries pending dedicated crop approval.
 
 ### 2026-11-11 — JPG art mapping reference
 
