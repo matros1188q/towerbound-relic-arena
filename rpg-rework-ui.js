@@ -660,7 +660,7 @@ function createDialog(){
   if(result.stageComplete){
    stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;const speedrun=c.run.speedrun;
    if(speedrun?.active){speedrun.remaining=Math.max(0,(speedrun.remaining||10)-1);if(speedrun.remaining>0&&c.progress.currentStage<=balance.map.total_stages){postBattleSummary.nextStage=true;postBattleSummary.speedrunRemaining=speedrun.remaining;}else{c.stats.speedrun_completions=(c.stats.speedrun_completions||0)+1;c.run.speedrun=null;}}
-   if(c.run.active&&c.progress.currentStage<=balance.map.total_stages)postBattleSummary.nextStage=true;
+   if(c.run.active&&c.progress.currentStage>postBattleSummary.stage&&c.progress.currentStage<=balance.map.total_stages)postBattleSummary.nextStage=true;
    postBattleSummary.ready=true;
    if(routeChoice==="elite"){c.silver+=30;postBattleSummary.silver+=30;routeChoice="standard";}
    battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();
