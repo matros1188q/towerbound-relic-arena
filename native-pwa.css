@@ -830,3 +830,7 @@ html,body,#tbRpg,.tb-v2 {
 .tb-daily-shop-chest small{font-size:9px;color:#d5d9eb}
 .tb-daily-shop-chest button{flex:none;max-width:58%;font-size:9px;padding:8px}
 @media(max-width:430px){.tb-daily-shop-chest{align-items:stretch;flex-direction:column}.tb-daily-shop-chest button{max-width:100%;width:100%}}
+
+/* Formation density: 3/5 enemies use two rows; 7 enemies use three */
+.tb-target-grid.crowded{grid-template-rows:repeat(2,minmax(0,1fr))}
+.tb-target-grid.full-formation{grid-template-rows:repeat(3,minmax(0,1fr))}
