@@ -487,6 +487,12 @@ function createDialog(){
    (shopTab==="diamond"?'<div class="tb-packages"><h3>Пакеты алмазов</h3><div class="tb-package-grid">'+balance.economy.diamond_packages.map(pack=>'<div><b>'+pack[0]+' алмазов</b><span>'+pack[1]+' ₽</span></div>').join("")+'</div><small>1 алмаз = 1 ₽ · платежи не подключены в браузерной версии</small></div>':'')+
    (shopTab==="diamond"?'<div class="tb-cosmetic-chests"><h2>Косметика за алмазы</h2><p>Только внешний вид · без влияния на характеристики.</p>'+(balance.cosmetics?.chests||[]).map(ch=>'<article><b>'+esc(ch.name)+'</b><small>'+ch.price+' ◆ · случайный предмет из коллекции</small><button data-cosmetic-chest="'+ch.id+'" '+(engine.state.account.diamonds<ch.price?'disabled':'')+'>ОТКРЫТЬ СУНДУК</button></article>').join("")+'</div>':'')+'<p class="tb-note">Алмазы и премиум принадлежат аккаунту. Платёжный провайдер в браузерной версии не подключён.</p></section>';
  }
+ function accountScreen(){
+  const c=live();if(!c)return characterList();
+  const prefs={sound_enabled:true,music_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,...(engine.state.account.settings||{})};
+  const settings='<div class="tb-system-settings"><label>Звуковые эффекты <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><label>Фоновая музыка <input type="checkbox" data-setting="music_enabled" '+(prefs.music_enabled!==false?'checked':'')+'></label><label>Громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label></div>';
+  return header("Аккаунт","Вход · облачное сохранение · настройки")+'<section class="tb-systems"><h1>АККАУНТ</h1>'+accountAuthPanel()+'<section class="tb-system-card"><h2>Настройки звука</h2>'+settings+'</section><section class="tb-system-card"><h2>Облачное сохранение</h2><div class="tb-system-actions">'+button("cloud-account","ВОЙТИ / РЕГИСТРАЦИЯ")+button("cloud-sync","СОХРАНИТЬ В ОБЛАКО")+'</div></section><section class="tb-system-card"><h2>Сброс прогресса</h2><p>Полный сброс удалит персонажа, предметы и достижения.</p>'+button("reset-character","СБРОСИТЬ ПРОГРЕСС")+'</section></section>';
+ }
   function systemsScreen(){
   const c=live();if(!c)return characterList();
   const account=engine.state.account,prefs={sound_enabled:true,music_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,language:"ru",disable_refinement_glow:false,disable_particles:false,invert_camera:false,combat_log_toggle:true,...(account.settings||{})};
@@ -875,6 +881,7 @@ function createDialog(){
   else if(screen==="profile")root.innerHTML='<div class="tb-v2">'+profileScreen()+'</div>';
   else if(screen==="shop")root.innerHTML='<div class="tb-v2">'+shopScreen()+'</div>';
   else if(screen==="systems")root.innerHTML='<div class="tb-v2">'+systemsScreen()+'</div>';
+  else if(screen==="account")root.innerHTML='<div class="tb-v2">'+accountScreen()+'</div>';
   else if(screen==="leaderboard")root.innerHTML='<div class="tb-v2">'+leaderboardScreen()+'</div>';
   else if(screen==="death")root.innerHTML='<div class="tb-v2">'+deathScreen()+'</div>';
   else root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
@@ -974,7 +981,8 @@ function createDialog(){
    case "bottom-map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="map";render();save();break;
    case "bottom-profile":profileTab="stats";screen="profile";render();break;
    case "bottom-shop":screen="shop";render();break;
-   case "bottom-rating":screen="leaderboard";onlineLeaderboardError="";render();refreshOnlineLeaderboard();break;
+   case "bottom-rating":screen="systems";render();break;
+   case "bottom-account":screen="account";render();break;
    case "reset-current-battle":{const c=live(),stage=c?.run?.stage?.stage||c?.progress?.currentStage||selectedStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(c?.run){c.run.stage=null;c.run.active=true;}battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
    case "profile":profileTab="stats";screen="profile";render();break;
    case "profile-gear":profileTab="gear";screen="profile";render();break;
