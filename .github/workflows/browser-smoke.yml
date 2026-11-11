@@ -9,6 +9,7 @@ on:
       - 'rpg-rework-v2.js'
       - 'rpg-rework-ui.js'
       - 'rpg-rework-ui.css.js'
+      - 'endgame-systems.js'
       - 'configs/**'
       - 'assets/**'
       - 'tests/**'
