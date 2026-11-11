@@ -403,6 +403,7 @@ function createDialog(){
     advanceToPlayerTurn();return;
    }
    const enemy=queue[index];
+   if(enemy&&Number(enemy.hp)<=0){enemy.alive=false;enemy.dead=true;enemy.hp=0;}
    if(enemy?.alive&&Number(enemy.hp)>0)enemyTurn(enemy);else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;}
    if(!battle)return;
    save();render();
