@@ -609,11 +609,32 @@ function createDialog(){
   const c=live(),hp=engine.maxHp(c),heroPct=Math.max(0,Math.min(100,c.run.playerHp/hp*100));
   const slots=ensureLoadout(c),counter=counterAbility(c),ultimate=ultimateAbility(c),living=battle.enemies.filter(enemy=>enemy&&enemy.alive&&Number(enemy.hp)>0);
   const order=buildInitiative().map((actor,index)=>'<span class="tb-battle-initiative-item '+(actor.type==="player"?"player":"enemy")+(actor.id===battle.actor?.id?" active":"")+'">'+(index+1)+' · '+esc(actor.name)+(actor.id===battle.actor?.id?" · СЕЙЧАС":"")+'</span>').join("");
-  const targets=battle.enemies.filter(Boolean).map((target,index)=>{const dead=!target.alive||Number(target.hp)<=0,targetIndex=Number.isInteger(target.index)?target.index:battle.enemies.indexOf(target),pct=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100)),intent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&targetIndex===battle.targetIndex?battle.telegraph.label:"Готовит атаку");return '<button type="button" class="tb-target-card enemy-card'+(dead?" dead":"")+'" data-target="'+targetIndex+'" '+(dead?"disabled":"")+'><span class="tb-target-art-wrap"><img class="tb-target-art" src="'+enemyPortrait(target)+'" alt="" loading="eager"></span><b>'+(target.type==="boss"?"БОСС":"ВРАГ "+(index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+pct+'%"></i></span><small>'+Math.ceil(target.hp)+' / '+Math.ceil(target.maxHp||target.hp)+' HP</small><span class="tb-enemy-telegraph">⚔ '+esc(intent)+'</span></button>';}).join("");
+  const targets=battle.enemies.filter(target=>target&&target.alive&&Number(target.hp)>0).map((target,index)=>{
+   const targetIndex=Number.isInteger(target.index)?target.index:battle.enemies.indexOf(target);
+   const pct=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100));
+   const intent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&targetIndex===battle.targetIndex?battle.telegraph.label:"Готовит атаку");
+   const roleName=balance.mobs.roles[target.role]?.name||"Обычный";
+   return `<button type="button" class="tb-target-card enemy-card" data-target="${targetIndex}" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px;min-width:0">
+    <img class="tb-target-art" src="${esc(enemyPortrait(target))}" alt="" style="width:60px;height:60px;object-fit:contain;margin-bottom:5px">
+    <b style="font-size:12px;color:#fff">${target.type==="boss"?"БОСС":"ВРАГ "+(index+1)}</b>
+    <small style="font-size:10px;color:#aaa;margin-bottom:5px">${esc(roleName)}</small>
+    <span class="tb-target-hp" style="width:100%;height:6px;background:#333;border-radius:3px;display:block;margin-bottom:5px"><i style="display:block;height:100%;background:#e74c3c;width:${pct}%;border-radius:3px"></i></span>
+    <small style="font-size:10px;color:#fff;margin-bottom:5px">${Math.ceil(target.hp)} / ${Math.ceil(target.maxHp||target.hp)} HP</small>
+    <span class="tb-enemy-telegraph">⚔ ${esc(intent)}</span>
+   </button>`;
+  }).join("");
   const skillFallback='./assets/relics/image 10.png';
   const skillsMarkup=slots.slice(0,4).map((skill,index)=>{
-   const cd=skill?(battle.skillCooldowns?.[skill.id]||0):0,evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null,effect=skill?(balance.skill_effects[skill.effect_template]||{}):{},cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill?.cost??skill?.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0),name=evolved?.name||skill?.name||skill?.label||skill?.title||"Пусто",iconSource=skill?.icon||skill?.icon_url||skill?.image||skillFallback;
-   return '<button type="button" class="tb-panel-skill" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;min-height:60px" data-panel-skill="'+(skill?.id||"")+'" data-panel-slot="'+index+'" '+(!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0||battle.busy||battle.paused?"disabled":"")+'><kbd>'+(index+1)+'</kbd><img src="'+iconSource+'" onerror="this.onerror=null;this.src=\'./assets/relics/image 10.png\'" alt="" style="width:36px;height:36px;object-fit:contain;margin:4px 0"><span style="font-size:10px;color:white;text-align:center;line-height:1.1;max-width:100%;overflow:hidden">'+esc(name)+'</span><span style="font-size:9px;color:#aaa">'+(skill?cost+' рес.':'')+'</span></button>';
+   const cd=skill?(battle.skillCooldowns?.[skill.id]||0):0;
+   const evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null;
+   const effect=skill?(balance.skill_effects[skill.effect_template]||{}):{};
+   const cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill?.cost??skill?.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
+   const name=evolved?.name||skill?.name||skill?.label||skill?.title||"Пусто";
+   const iconSource=skill?.icon||skill?.icon_url||skill?.image||skillFallback;
+   return '<button type="button" class="tb-panel-skill '+(cd>0?'on-cooldown':'')+'" data-panel-skill="'+(skill?.id||'')+'" data-panel-slot="'+index+'" '+(!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cd>0||battle.busy||battle.paused?'disabled':'')+'>'+
+    '<kbd>'+(index+1)+'</kbd><img src="'+esc(iconSource)+'" onerror="this.onerror=null;this.src=\'./assets/relics/image 10.png\'" alt="">'+
+    '<span class="tb-skill-button-name">'+esc(name)+'</span>'+
+    '<span style="font-size:9px;color:#aaa">'+(skill?cost+' рес.':'')+'</span></button>';
   }).join("");
   const counterCd=battle.counterCooldownTurns||0,ultCd=battle.ultimateCooldownTurns||0;
   const counterIconSource=(typeof counter?.icon==="string"&&counter.icon.includes("."))?counter.icon:skillFallback;
