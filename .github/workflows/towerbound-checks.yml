@@ -21,6 +21,9 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check service-worker.js
+          node --check rpg-mode.js
+          node --check towerbound-engine.js
+          node --check combat-visuals.js
           node --check juice-pwa.js
           node --check rpg-rework-v2.js
           node --check rpg-rework-ui.js
@@ -29,6 +32,8 @@ jobs:
           node --check towerbound-online.js
           node --check tests/balance-sim.cjs
           node --check tests/economy-sim.cjs
+      - name: Validate JPG art manifests and sprite mappings
+        run: npm run art:check
       - name: Run Towerbound regression assertions
         run: node tests/online-services.test.cjs
       - name: Run combat balance simulation

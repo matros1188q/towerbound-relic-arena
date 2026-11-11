@@ -2,7 +2,7 @@
 const getRoot=()=>document.querySelector('#tbRpg .tb-v2');
 const style=document.createElement('style');style.id='tb-combat-visuals-style';
 style.textContent=[
-'#tbRpg .tb-v2 .tb-arena{position:relative;isolation:isolate;background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),url(./assets/arena-background.webp);background-size:cover;background-position:center;transition:background-position 1.2s ease}',
+'#tbRpg .tb-v2 .tb-arena{position:relative;isolation:isolate;background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),var(--tb-arena-bg, url("./assets/chapters/image 2.jpeg"));background-size:cover;background-position:center;transition:background-position 1.2s ease}',
 '#tbRpg .tb-v2 .tb-arena:before,#tbRpg .tb-v2 .tb-arena:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background-repeat:no-repeat;background-size:cover;transition:transform 1.2s ease}',
 '#tbRpg .tb-v2 .tb-arena:before{background-image:linear-gradient(180deg,transparent,rgba(5,8,12,.25)),radial-gradient(ellipse at 50% 20%,rgba(100,130,150,.15),transparent 65%);transform:translateX(var(--tb-back-parallax,0px))}',
 '#tbRpg .tb-v2 .tb-arena:after{background-image:linear-gradient(90deg,rgba(5,8,12,.3),transparent 25%,transparent 75%,rgba(5,8,12,.3));transform:translateX(var(--tb-front-parallax,0px))}',

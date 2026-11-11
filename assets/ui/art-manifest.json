@@ -1,0 +1,72 @@
+{
+  "pack": "towerbound-ui-jpg-v1",
+  "logo": "assets/ui/logo.jpeg",
+  "stylesheet": "assets/ui/art-sprites.css",
+  "spriteSheets": [
+    {
+      "id": "damage-school",
+      "path": "assets/icons/image 13.jpeg",
+      "classNames": [
+        "icon-phys",
+        "ui-settings",
+        "ui-target"
+      ]
+    },
+    {
+      "id": "elements",
+      "path": "assets/icons/image 17.jpeg",
+      "classNames": [
+        "icon-fire",
+        "icon-ice",
+        "skill-arcane"
+      ]
+    },
+    {
+      "id": "poison-and-shield",
+      "path": "assets/icons/image 14.jpeg",
+      "classNames": [
+        "icon-poison",
+        "ui-shield"
+      ]
+    },
+    {
+      "id": "achievements",
+      "path": "assets/icons/image 15.jpeg",
+      "classNames": [
+        "achievement-compass",
+        "achievement-trophy",
+        "achievement-heart",
+        "achievement-skull",
+        "achievement-shield",
+        "achievement-star"
+      ]
+    },
+    {
+      "id": "support-items",
+      "path": "assets/icons/image 16.jpeg",
+      "classNames": [
+        "support-helmet",
+        "support-purse",
+        "support-boot",
+        "support-shield",
+        "support-orb"
+      ]
+    },
+    {
+      "id": "skill-sprites",
+      "path": "assets/icons/image 17.jpeg",
+      "classNames": [
+        "skill-fire",
+        "skill-ice",
+        "skill-poison",
+        "skill-phys",
+        "skill-arcane"
+      ]
+    },
+    {
+      "id": "inventory-atlas",
+      "path": "assets/icons/image 19.jpeg",
+      "usage": "low-opacity inventory background"
+    }
+  ]
+}

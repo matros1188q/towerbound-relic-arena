@@ -1,54 +1,63 @@
 {
-  "pack": "towerbound-character-art-v1",
+  "pack": "towerbound-jpg-art-v2",
   "category": "heroes",
+  "format": "jpeg",
   "assets": [
     {
-      "filename": "warden.png",
-      "relative_path": "assets/characters/heroes/warden.png",
-      "category": "heroes",
-      "exact_asset_id": "hero.warden",
-      "image_format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparency": true,
-      "source_filename": "7f5c7457-3498-464f-91df-d83335183855",
-      "short_description": "Armored guardian with tower shield"
+      "id": "assassin",
+      "name": "Убийца",
+      "filename": "image.jpeg",
+      "relative_path": "assets/characters/heroes/image.jpeg",
+      "image_format": "jpeg",
+      "usage": "gameplay"
     },
     {
-      "filename": "arcanist.png",
-      "relative_path": "assets/characters/heroes/arcanist.png",
-      "category": "heroes",
-      "exact_asset_id": "hero.arcanist",
-      "image_format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparency": true,
-      "source_filename": "16f4bbb7-a8ac-4cb3-8d93-a9647458bf3f",
-      "short_description": "Violet-robed mage with arcane staff"
+      "id": "bishop",
+      "name": "Епископ",
+      "filename": "image 2.jpeg",
+      "relative_path": "assets/characters/heroes/image 2.jpeg",
+      "image_format": "jpeg",
+      "usage": "gameplay"
     },
     {
-      "filename": "ranger.png",
-      "relative_path": "assets/characters/heroes/ranger.png",
-      "category": "heroes",
-      "exact_asset_id": "hero.ranger",
-      "image_format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparency": true,
-      "source_filename": "7305bd9e-5b85-49ad-a701-ec8ad192dcd7",
-      "short_description": "Hooded archer with bow and quiver"
+      "id": "dragonkin",
+      "name": "Драконит",
+      "filename": "image 3.jpeg",
+      "relative_path": "assets/characters/heroes/image 3.jpeg",
+      "image_format": "jpeg",
+      "usage": "gameplay"
     },
     {
-      "filename": "reaper.png",
-      "relative_path": "assets/characters/heroes/reaper.png",
-      "category": "heroes",
-      "exact_asset_id": "hero.reaper",
-      "image_format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparency": true,
-      "source_filename": "acea49d3-fa54-45a9-957a-ac057304b6ab",
-      "short_description": "Dark armored reaper-like warrior; source carries a sword rather than a scythe"
+      "id": "destroyer",
+      "name": "Разрушитель",
+      "filename": "image 4.jpeg",
+      "relative_path": "assets/characters/heroes/image 4.jpeg",
+      "image_format": "jpeg",
+      "usage": "gameplay"
+    },
+    {
+      "id": "elemental",
+      "name": "Владыка стихий",
+      "filename": "image 5.jpeg",
+      "relative_path": "assets/characters/heroes/image 5.jpeg",
+      "image_format": "jpeg",
+      "usage": "gameplay"
+    },
+    {
+      "id": "shaman",
+      "name": "Шаман",
+      "filename": "image 6.jpeg",
+      "relative_path": "assets/characters/heroes/image 6.jpeg",
+      "image_format": "jpeg",
+      "usage": "gameplay"
+    },
+    {
+      "id": "duelist",
+      "name": "Дуэлянт",
+      "filename": "image 7.jpeg",
+      "relative_path": "assets/characters/heroes/image 7.jpeg",
+      "image_format": "jpeg",
+      "usage": "gameplay"
     }
   ]
 }

@@ -1,0 +1,66 @@
+{
+  "pack": "towerbound-relic-jpg-v1",
+  "category": "relics",
+  "assets": [
+    {
+      "id": "helmet",
+      "name": "Шлем",
+      "path": "assets/relics/image 2.jpeg"
+    },
+    {
+      "id": "chest",
+      "name": "Нагрудник",
+      "path": "assets/relics/image 3.jpeg"
+    },
+    {
+      "id": "ring",
+      "name": "Кольцо",
+      "path": "assets/relics/image 4.jpeg"
+    },
+    {
+      "id": "amulet",
+      "name": "Амулет",
+      "path": "assets/relics/image 6.jpeg"
+    },
+    {
+      "id": "weapon",
+      "name": "Меч",
+      "path": "assets/relics/image 10.jpeg"
+    },
+    {
+      "id": "gloves",
+      "name": "Перчатки",
+      "path": "assets/relics/image 12.jpeg"
+    },
+    {
+      "id": "healing-potion",
+      "name": "Зелье лечения",
+      "path": "assets/relics/image 5.jpeg"
+    },
+    {
+      "id": "enchant-scroll",
+      "name": "Свиток зачарования",
+      "path": "assets/relics/image 9.jpeg"
+    },
+    {
+      "id": "red-socket",
+      "name": "Красный камень",
+      "path": "assets/relics/image 7.jpeg"
+    },
+    {
+      "id": "blue-socket",
+      "name": "Синий камень",
+      "path": "assets/relics/image 8.jpeg"
+    },
+    {
+      "id": "potion-stack",
+      "name": "Стопка зелий",
+      "path": "assets/relics/image 14.jpeg"
+    },
+    {
+      "id": "bundle",
+      "name": "Набор сундука и зелий",
+      "path": "assets/relics/image 18.jpeg"
+    }
+  ]
+}

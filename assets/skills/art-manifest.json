@@ -1,5 +1,5 @@
 {
-  "pack": "towerbound-ui-art-v1",
+  "pack": "towerbound-jpg-skill-sprites-v2",
   "category": "skills",
   "assets": [
     {
@@ -92,5 +92,37 @@
         827
       ]
     }
-  ]
+  ],
+  "sprite_sheets": [
+    {
+      "id": "skill-school-icons",
+      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "crop_utility": "assets/ui/art-sprites.css",
+      "classes": [
+        "skill-fire",
+        "skill-ice",
+        "skill-arcane"
+      ]
+    },
+    {
+      "id": "damage-school-icons",
+      "path": "assets/icons/image 13.jpeg",
+      "format": "jpeg",
+      "crop_utility": "assets/ui/art-sprites.css",
+      "classes": [
+        "skill-phys"
+      ]
+    },
+    {
+      "id": "poison-icon",
+      "path": "assets/icons/image 14.jpeg",
+      "format": "jpeg",
+      "crop_utility": "assets/ui/art-sprites.css",
+      "classes": [
+        "skill-poison"
+      ]
+    }
+  ],
+  "note": "JPG sprite sheets are cropped in CSS with background-image, background-size and background-position; coordinates are visual crop presets, not source pixel exports."
 }

@@ -1,0 +1,39 @@
+/* Towerbound art pack · JPG sprite sheets and item artwork */
+#tbRpg .game-logo,.tb-v2 .game-logo{display:block;width:min(300px,70vw);max-width:100%;height:auto;margin:0 auto;object-fit:contain!important;object-position:center}
+#tbRpg img,#tbRpg .tb-v2 img,.tb-v2 img{object-fit:contain}
+.tb-relic-icon{display:block;width:42px;height:42px;max-width:100%;margin:0 auto;object-fit:contain!important;object-position:center}
+.tb-gear-slot-art{min-height:58px;display:grid;place-items:center;margin:3px 0}
+.tb-gear-slot-art .tb-relic-icon{width:52px;height:52px}
+.tb-bag-item{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;column-gap:9px}
+.tb-bag-item-art{grid-row:span 5;display:grid;place-items:center;min-width:0}
+.tb-bag-item-art .tb-relic-icon{width:48px;height:48px}
+.tb-product-icon .tb-relic-icon{width:48px;height:48px}
+.tb-sprite{display:inline-block;width:30px;height:30px;flex:0 0 30px;background-repeat:no-repeat;background-size:400% 400%;background-position:0 0;background-color:transparent;object-fit:contain}
+.icon-fire,.skill-fire{background-image:url("../icons/image 17.jpeg");background-position:0 0}
+.icon-ice,.skill-ice{background-image:url("../icons/image 17.jpeg");background-position:33.333% 0}
+.icon-poison,.skill-poison{background-image:url("../icons/image 14.jpeg");background-position:33.333% 0}
+.icon-phys,.skill-phys{background-image:url("../icons/image 13.jpeg");background-position:0 0}
+.icon-arcane,.skill-arcane{background-image:url("../icons/image 17.jpeg");background-position:66.667% 33.333%}
+.ui-settings{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:66.667% 0}
+.ui-target{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:100% 0}
+.ui-shield{background-image:url("../icons/image 14.jpeg");background-size:400% 400%;background-position:0 33.333%}
+.ui-dungeon-atlas{display:block;background-image:linear-gradient(180deg,#080a12aa,#080a12dd),url("../icons/image 11.jpeg");background-size:cover;background-position:center;background-repeat:no-repeat}
+.tb-talent-icon.icon-talent{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:33.333% 0;background-repeat:no-repeat;display:inline-block;width:28px;height:28px;flex:0 0 28px}
+.achievement-compass,.achievement-trophy,.achievement-heart,.achievement-skull,.achievement-shield,.achievement-star{display:inline-block;width:36px;height:36px;background-image:url("../icons/image 15.jpeg");background-repeat:no-repeat;background-size:600% 500%}
+.achievement-compass{background-position:0 0}
+.achievement-trophy{background-position:60% 25%}
+.achievement-heart{background-position:60% 50%}
+.achievement-skull{background-position:80% 25%}
+.achievement-shield{background-position:20% 100%}
+.achievement-star{background-position:80% 50%}
+.support-helmet,.support-purse,.support-boot,.support-shield,.support-orb{display:inline-block;width:34px;height:34px;background-image:url("../icons/image 16.jpeg");background-repeat:no-repeat;background-size:600% 500%}
+.support-helmet{background-position:20% 0}
+.support-purse{background-position:60% 0}
+.support-boot{background-position:60% 75%}
+.support-shield{background-position:20% 100%}
+.support-orb{background-position:80% 50%}
+.skill-icon{display:inline-block;width:32px;height:32px;background-repeat:no-repeat;background-size:400% 400%}
+.tb-profile:has(.tb-bag-items) .tb-profile-content{position:relative;background-image:linear-gradient(180deg,rgba(9,12,20,.94),rgba(9,12,20,.88)),url("../icons/image 19.jpeg");background-size:cover;background-position:center;background-attachment:local}
+.tb-map-screen{background-size:cover;background-position:center}
+.tb-arena{background-image:linear-gradient(180deg,rgba(5,8,12,.25),rgba(5,8,12,.72)),var(--tb-arena-bg,url("../chapters/image 2.jpeg"));background-size:cover;background-position:center}
+@media(max-width:560px){.tb-relic-icon{width:36px;height:36px}.tb-gear-slot-art .tb-relic-icon{width:44px;height:44px}.tb-bag-item-art .tb-relic-icon{width:42px;height:42px}}

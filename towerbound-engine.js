@@ -5,7 +5,7 @@ const mount=document.getElementById('phaser-arena');
 const PALETTE={night:0x101326,stone:0x282b48,stone2:0x393858,edge:0x686184,cyan:0x78e7ef,gold:0xf8ce72,red:0xe85e78,purple:0x9b78ed};
 let arenaScene=null;
 const scene={key:'IllustratedArena',
-preload:function(){this.load.image('tb-arena-background','./assets/arena-background.svg?v=2');this.load.image('tb-hero','./assets/hero-illustrated.svg?v=3');this.load.image('tb-foe','./assets/foe-illustrated.svg?v=3');this.load.image('tb-skeleton','./assets/skeleton-illustrated.svg?v=3');this.load.image('tb-brute','./assets/brute-illustrated.svg?v=3');},
+preload:function(){this.load.image('tb-arena-background','./assets/chapters/image 2.jpeg');this.load.image('tb-hero','./assets/characters/heroes/image.jpeg');this.load.image('tb-foe','./assets/characters/enemies/image 2.jpeg');this.load.image('tb-skeleton','./assets/characters/enemies/image 13.jpeg');this.load.image('tb-brute','./assets/characters/enemies/image 18.jpeg');},
 create:function(){
  arenaScene=this;
  this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.actorSprites=[];this.fx=[];
@@ -84,12 +84,12 @@ setWave:function(wave,boss){
  const enemyFiles=['shadow-goblin','cursed-knight','ash-wolf','rune-golem','grave-archer','plague-witch','ash-imp','swamp-reaper','bone-warden','crimson-executioner','void-hunter','spider-matron','blind-monk','stone-minotaur','phantom-duelist','soul-harvester','forest-horror','abyss-knight','cursed-alchemist','root-colossus'];
  const bossFiles=['bone-colossus','abyss-queen','ash-patriarch','ice-abbot','mirror-executioner','soul-devourer','root-titan','void-hunter-boss',null,'heart-of-tower'];
  const labels=['Теневой гоблин','Проклятый рыцарь','Пепельный волк','Рунный голем','Могильный лучник','Чумная ведьма','Пепельный бес','Болотный жнец','Костяной страж','Багровый палач','Пустотный охотник','Паучья матрона','Слепой монах','Каменный минотавр','Призрачный дуэлянт','Собиратель душ','Лесной ужас','Рыцарь бездны','Проклятый алхимик','Корневой исполин'];
- const heroFiles={warden:'warden',arcanist:'arcanist',ranger:'ranger',reaper:'reaper'};
+ const heroFiles={assassin:'image.jpeg',bishop:'image 2.jpeg',dragonkin:'image 3.jpeg',destroyer:'image 4.jpeg',elemental:'image 5.jpeg',shaman:'image 6.jpeg',duelist:'image 7.jpeg',warden:'image 4.jpeg',ranger:'image 7.jpeg',arcanist:'image 5.jpeg',reaper:'image.jpeg'};
  const domHero=mount&&mount.querySelector('.tb-visible-hero');
  if(domHero){
-  const heroId=(window.TowerboundHeroId||'warden');
-  const heroSrc='./assets/characters/heroes/'+(heroFiles[heroId]||'warden')+'.png?v=arena-art-1';
-  if(!domHero.src.includes('/assets/characters/heroes/'+(heroFiles[heroId]||'warden')+'.png'))domHero.src=heroSrc;
+  const heroId=(window.TowerboundHeroId||'assassin');
+  const heroSrc='./assets/characters/heroes/'+(heroFiles[heroId]||'image.jpeg');
+  if(domHero.dataset.tbArtSrc!==heroSrc){domHero.dataset.tbArtSrc=heroSrc;domHero.src=heroSrc;}
   domHero.alt='Герой: '+heroId;
   domHero.dataset.tbActorId=heroId;
  }
@@ -98,7 +98,9 @@ setWave:function(wave,boss){
  const domEnemy=mount&&mount.querySelector('.tb-visible-enemy');
  if(domEnemy){
   const category=boss&&bossFiles[Math.max(0,Math.min(9,Math.ceil(n/7)-1))]?'bosses':'enemies';
-  const src='./assets/characters/'+category+'/'+foeId+'.png?v=arena-art-1';
+  const enemyJpg={'shadow-goblin':'image 4.jpeg','cursed-knight':'image 3.jpeg','ash-wolf':'image 7.jpeg','rune-golem':'image 8.jpeg','grave-archer':'image 13.jpeg','plague-witch':'image 10.jpeg','ash-imp':'image 11.jpeg','swamp-reaper':'image 2.jpeg','bone-warden':'image 13.jpeg','crimson-executioner':'image 9.jpeg','void-hunter':'image 16.jpeg','spider-matron':'image 14.jpeg','blind-monk':'image 17.jpeg','stone-minotaur':'image 18.jpeg','phantom-duelist':'image 5.jpeg','soul-harvester':'image 15.jpeg','forest-horror':'image 12.jpeg','abyss-knight':'image 6.jpeg','cursed-alchemist':'image 20.jpeg','root-colossus':'image.jpeg'};
+ const bossJpg={'bone-colossus':'image 13.jpeg','abyss-queen':'image 16.jpeg','ash-patriarch':'image 3.jpeg','ice-abbot':'image 4.jpeg','mirror-executioner':'image 19.jpeg','soul-devourer':'image 15.jpeg','root-titan':'image 8.jpeg','void-hunter-boss':'image 16.jpeg','crimson-regent':'image 11.jpeg','heart-of-tower':'image 12.jpeg'};
+ const src=boss?'./assets/characters/bosses/'+(bossJpg[foeId]||'image 12.jpeg'):'./assets/characters/enemies/'+(enemyJpg[foeId]||'image 4.jpeg');
   if(domEnemy.dataset.tbArtSrc!==src){domEnemy.dataset.tbArtSrc=src;domEnemy.src=src;}
   domEnemy.alt=(boss?'Босс: ':'')+(boss?(["Костяной колосс","Королева Бездны","Пепельный патриарх","Ледяной аббат","Зеркальный палач","Пожиратель душ","Корневой титан","Охотник Бездны","Сердце Башни"][Math.max(0,Math.min(8,Math.ceil(n/7)-1))]||labels[idx]):labels[idx]);
   domEnemy.dataset.tbActorId=foeId;
@@ -108,7 +110,7 @@ setWave:function(wave,boss){
   domEnemy.style.left=boss?'68%':'68%';domEnemy.style.top='49%';
   domEnemy.style.filter=boss?'drop-shadow(0 0 18px #ff687f) drop-shadow(0 10px 10px #000d)':'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)';
   domEnemy.style.animation='tbEnemyIdle 2.8s ease-in-out infinite';
-  domEnemy.onerror=()=>{domEnemy.onerror=null;domEnemy.src='./assets/foe-illustrated.svg?v=6';};
+  domEnemy.onerror=()=>{domEnemy.onerror=null;domEnemy.src='./assets/characters/enemies/image 3.jpeg';};
  }
  this.enemy.setTint(0xffffff);
  this.enemy.setScale(boss?1.02:.76);
@@ -116,11 +118,11 @@ setWave:function(wave,boss){
  scene.setPhase.call(this,this.phase||'prep');
 },
 setHero:function(heroId){
- window.TowerboundHeroId=heroId||'warden';
+ window.TowerboundHeroId=heroId||'assassin';
  const domHero=mount&&mount.querySelector('.tb-visible-hero');
  if(domHero){
-  const id=['warden','arcanist','ranger','reaper'].includes(window.TowerboundHeroId)?window.TowerboundHeroId:'warden';
-  const src='./assets/characters/heroes/'+id+'.png?v=arena-art-1';
+  const id=heroFiles[window.TowerboundHeroId]?window.TowerboundHeroId:'assassin';
+  const src='./assets/characters/heroes/'+(heroFiles[id]||'image.jpeg');
   if(domHero.dataset.tbArtSrc!==src){domHero.dataset.tbArtSrc=src;domHero.src=src;}
   domHero.alt='Герой: '+id;
   domHero.dataset.tbActorId=id;
@@ -271,9 +273,9 @@ function ensureVisibleActors(){
   style.textContent='@keyframes tbEnemyIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)}24%{translate:0 -5px;rotate:-1deg;scale:1.015}50%{translate:0 -10px;rotate:0deg;scale:1.025;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 18px #e7caff88)}76%{translate:0 -4px;rotate:1deg;scale:1.01}}@keyframes tbWardenIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}22%{translate:-1px -3px;rotate:-.45deg;scale:1.008}50%{translate:0 -8px;rotate:.25deg;scale:1.018;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 17px #b8caff88)}78%{translate:1px -2px;rotate:.4deg;scale:1.006}}@keyframes tbRangerIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}25%{translate:1px -4px;rotate:.65deg;scale:1.01}50%{translate:0 -7px;rotate:-.3deg;scale:1.014;filter:drop-shadow(0 14px 12px #000d) drop-shadow(0 0 16px #8ee8a988)}75%{translate:-1px -2px;rotate:-.7deg;scale:1.005}}@keyframes tbArcanistIdle{0%,100%{translate:0 0;rotate:0deg;scale:1;filter:drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #c18bff66)}25%{translate:0 -5px;rotate:-.35deg;scale:1.012}50%{translate:0 -12px;rotate:0deg;scale:1.02;filter:drop-shadow(0 16px 12px #000d) drop-shadow(0 0 24px #d5a0ffbb)}75%{translate:0 -4px;rotate:.35deg;scale:1.008}}@keyframes tbReaperIdle{0%,100%{translate:0 0;rotate:0deg;scale:1}24%{translate:-1px -3px;rotate:-.8deg;scale:1.008}50%{translate:0 -8px;rotate:.4deg;scale:1.018;filter:drop-shadow(0 15px 12px #000d) drop-shadow(0 0 19px #9e83dbaa)}76%{translate:1px -2px;rotate:.8deg;scale:1.006}}@media(prefers-reduced-motion:reduce){.tb-visible-hero,.tb-visible-enemy{animation:none!important;translate:0 0!important;rotate:0deg!important;scale:1!important}}';
   document.head.appendChild(style);
  }
- addActor('tb-visible-hero','./assets/hero-illustrated.svg?v=6','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
- const enemy=addActor('tb-visible-enemy','./assets/foe-illustrated.svg?v=6','Страж Бездны',{left:'68%',top:'49%',width:'clamp(118px,30vw,202px)',height:'72%',animation:'tbEnemyIdle 2.8s ease-in-out infinite'});
- enemy.onerror=()=>{enemy.onerror=null;enemy.src='./assets/foe-illustrated.svg?v=6';};
+ addActor('tb-visible-hero','./assets/characters/heroes/image.jpeg','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
+ const enemy=addActor('tb-visible-enemy','./assets/characters/enemies/image 3.jpeg','Страж Бездны',{left:'68%',top:'49%',width:'clamp(118px,30vw,202px)',height:'72%',animation:'tbEnemyIdle 2.8s ease-in-out infinite'});
+ enemy.onerror=()=>{enemy.onerror=null;enemy.src='./assets/characters/enemies/image 4.jpeg';};
  return layer;
 }
 ensureVisibleActors();

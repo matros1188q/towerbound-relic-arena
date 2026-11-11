@@ -5,6 +5,7 @@
   "scripts": {
     "balance": "node tests/balance-sim.cjs",
     "economy": "node tests/economy-sim.cjs",
-    "balance:all": "npm run balance && npm run economy"
+    "balance:all": "npm run balance && npm run economy",
+    "art:check": "node tests/art-asset-manifest.cjs"
   }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v26';
+const CACHE = 'towerbound-v27';
 const SHELL = [
   './',
   './index.html',
@@ -13,6 +13,9 @@ const SHELL = [
   './rpg-rework-v2.js',
   './rpg-rework-ui.css.js',
   './rpg-rework-ui.js',
+  './assets/ui/logo.jpeg',
+  './assets/ui/art-sprites.css',
+  './assets/chapters/image 2.jpeg',
   './endgame-systems.js',
   './assets/pwa/icon-192.png',
   './assets/pwa/icon-512.png'
