@@ -627,7 +627,7 @@ function createDialog(){
   const potions=engine.potionBeltSnapshot(c.id).slice(0,5).map(slot=>'<button type="button" data-belt-use="'+slot.slot+'" '+(!slot.itemId||slot.available<=0||battle.potionUsedThisTurn||battle.actor?.type!=="player"||battle.busy||battle.paused||!balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt?"disabled":"")+' title="В наличии: '+slot.available+'">🧪 '+(slot.slot+1)+'</button>').join("");
   return '<section class="tb-arena tb-battle-rebuild"><header class="tb-battle-top"><div class="tb-battle-top-label">ИНИЦИАТИВА · '+battle.round+' РАУНД</div><div class="tb-battle-initiative">'+order+'</div><button id="pause" type="button" data-action="pause">'+(battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА")+'</button></header><main class="tb-battle-middle"><aside class="tb-battle-hero"><div class="tb-battle-hero-class">'+esc(classData(c).name)+' · УР. '+c.level+'</div><div class="tb-battle-hero-art"><img src="'+portrait(c.classId)+'" alt="'+esc(c.name)+'"></div><b class="tb-battle-hero-name">'+esc(c.name)+'</b><div class="tb-battle-bar-label">ЗДОРОВЬЕ <strong>'+Math.ceil(c.run.playerHp)+' / '+hp+'</strong></div><div class="tb-healthbar hero"><span style="width:'+heroPct+'%"></span></div><div class="tb-battle-bar-label">РЕСУРС <strong>'+c.resource+' / '+c.resourceMax+'</strong></div><div class="tb-resourcebar"><span style="width:'+Math.max(0,Math.min(100,c.resource/Math.max(1,c.resourceMax)*100))+'%"></span></div><small class="tb-battle-resource-name">'+esc(classData(c).resource)+'</small></aside><section class="tb-battle-enemies"><div class="tb-battle-enemy-heading"><b>ПРОТИВНИКИ</b><span>'+living.length+' / '+battle.enemies.length+' В ЖИВЫХ</span></div><div class="tb-battle-enemy-grid">'+targets+'</div></section></main><footer class="tb-battle-bottom"><div class="tb-battle-skills">'+skillsMarkup+counterButton+ultButton+'</div>'+attack+'<div class="tb-battle-footer"><button type="button" class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"||battle.paused?"disabled":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА…")+'</button><div class="tb-potion-belt">'+potions+'</div></div></footer></section>';
  }
- function beginStage(){
+ function beginStage(){postBattleSummary=null;
   const c=live();
   try{
    const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
@@ -642,16 +642,21 @@ function createDialog(){
   clearTimeout(pendingTimer);pendingTimer=null;
   const c=live(),defeated=battle.enemy,dead=(battle.enemies||[]).filter(enemy=>!enemy.alive||enemy.hp<=0).sort((x,y)=>x.index-y.index);
   let result=null;const allLoot=[];
+  if(!postBattleSummary)postBattleSummary={stage:battle.stage,xp:0,silver:0,loot:[],autoEquipped:0,nextStage:false};
   for(const target of dead){
    if(c.run.stage?.killedIndices?.includes(target.index))continue;
    const current=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:target.index,overkillBonus:target.index===defeated.index&&!!battle.overkillBonus});
    battle.overkillBonus=false;allLoot.push(...(current.loot||[]));result=current;
+   postBattleSummary.xp+=Number(current.xp)||0;postBattleSummary.silver+=Number(current.silver)||0;postBattleSummary.autoEquipped+=Number(current.autoEquipped)||0;postBattleSummary.loot.push(...(current.loot||[]));
    target.hp=0;target.alive=false;target.dead=true;
   }
   if(!result)return;
   if(allLoot.length)notify("Добыча: "+allLoot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
-   stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;const speedrun=c.run.speedrun;if(speedrun?.active){speedrun.remaining=Math.max(0,(speedrun.remaining||10)-1);if(speedrun.remaining>0&&c.progress.currentStage<=balance.map.total_stages){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Спидран · осталось "+speedrun.remaining);beginStage();return;}c.stats.speedrun_completions=(c.stats.speedrun_completions||0)+1;c.run.speedrun=null;notify("Спидран завершён!");}if(routeChoice==="elite"){c.silver+=30;routeChoice="standard";notify("Элитный сундук · +30 серебра");}battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этап пройден · HP восстановлено · опыт сохранён");
+   stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;const speedrun=c.run.speedrun;
+   if(speedrun?.active){speedrun.remaining=Math.max(0,(speedrun.remaining||10)-1);if(speedrun.remaining>0&&c.progress.currentStage<=balance.map.total_stages){postBattleSummary.nextStage=true;postBattleSummary.speedrunRemaining=speedrun.remaining;}else{c.stats.speedrun_completions=(c.stats.speedrun_completions||0)+1;c.run.speedrun=null;}}
+   if(routeChoice==="elite"){c.silver+=30;postBattleSummary.silver+=30;routeChoice="standard";}
+   battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();
   }else{
    const carryShield=battle.nextDamageShield||0;
    loadBattleEnemy(result.nextTargetIndex);
@@ -907,6 +912,16 @@ function createDialog(){
   const active=screen==="map"?"map":screen==="profile"?"profile":screen==="progress"?"progress":screen==="shop"?"shop":"account";
   nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
+ function lootSummaryModal(){
+  if(!postBattleSummary)return "";
+  const rows=(postBattleSummary.loot||[]).map(item=>{
+   const disposition=item.disposition||(item.autoSalvaged?"salvaged":"bag");
+   const status=disposition==="equipped"?'<strong class="tb-loot-equipped">↑ НАДЕТО</strong>':disposition==="salvaged"?'<strong class="tb-loot-salvaged">РАЗОБРАНО</strong>':'<strong class="tb-loot-bag">В РЮКЗАК</strong>';
+   const art=item.type==="equipment"?relicIconHtml(item,item.slot):inventoryIconHtml(item,false);
+   return '<article class="tb-loot-row rarity-'+rarityClass(item.rarity)+'"><span class="tb-loot-art">'+art+'</span><span class="tb-loot-copy"><b>'+esc(itemDisplayName(item))+'</b><small>'+esc(item.rarity||itemTypeName(item.type))+(item.branchName?' · '+esc(item.branchName):'')+'</small></span>'+status+'</article>';
+  }).join("");
+  return '<div class="tb-loot-overlay" role="dialog" aria-modal="true" aria-label="Добыча"><section class="tb-loot-modal"><div class="tb-loot-eyebrow">TOWERBOUND · НАГРАДА</div><h2>Бой завершен</h2><div class="tb-loot-rewards"><span>✦ '+Number(postBattleSummary.xp||0)+' опыта</span><span>◈ '+Number(postBattleSummary.silver||0)+' серебра</span></div><h3>Добыча</h3><div class="tb-loot-list">'+(rows||'<p class="tb-loot-empty">Предметы не выпали. Вперёд, к следующей битве.</p>')+'</div><button type="button" data-loot-continue class="tb-loot-continue">ПРОДОЛЖИТЬ</button></section></div>';
+ }
  function renderView(){
   if(!engine)return;
   syncMusic();
@@ -933,6 +948,7 @@ function createDialog(){
   if(toastMessage){toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
   ensureBottomNav();
+  if(postBattleSummary)root.querySelector(".tb-v2")?.insertAdjacentHTML("beforeend",lootSummaryModal());
  }
  function renderWithScrollSave(){
   const container=document.getElementById('tbRpg')||document.querySelector('.profile');
@@ -949,9 +965,10 @@ function createDialog(){
   catch(error){notify(error.message);}
  }
  function handleClick(event){
-  const target=event.target.closest("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-stone],[data-extract-gem],[data-inspect-stone],[data-target],[data-route],[data-panel-skill],[data-replace-skill],[data-close-skill-replace],[data-counter],[data-ultimate],[data-basic-attack]");
+  const target=event.target.closest("[data-loot-continue],[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-stone],[data-extract-gem],[data-inspect-stone],[data-target],[data-route],[data-panel-skill],[data-replace-skill],[data-close-skill-replace],[data-counter],[data-ultimate],[data-basic-attack]");
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
+  if(target.dataset.lootContinue!==undefined){const next=!!postBattleSummary?.nextStage;postBattleSummary=null;save();render();if(next)beginStage();return;}
   playSfx("click");
   if(target.dataset.itemSelect!==undefined){selectedItemId=target.dataset.itemSelect||null;render();return;}if(target.dataset.gearFilter){gearFilter=target.dataset.gearFilter;selectedItemId=null;render();return;}if(target.dataset.route){routeChoice=target.dataset.route;render();return;}if(target.dataset.pick){selectedId=target.dataset.pick;pendingBranchId=null;engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;render();return;}
   if(target.dataset.class){selectedClass=target.dataset.class;render();return;}
