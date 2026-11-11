@@ -326,10 +326,10 @@
    const dps=Math.max(1,(baseDps*(1+gear.itemLevelBonus)+gear.attack)*(1+talent.attack));
    const attack=Math.max(1,Math.round(dps*balance.combat.attack_interval*(1+sets.attack)));
    const defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)*(1+sets.defense));
-   const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
+   const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit+sets.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
    const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),critChance,critMultiplier,
-    speed:1+talent.attackSpeed+gear.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed,damageMultiplier:1+sets.damage+sets.skillPower+talent.skillPower,
+    speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:1+sets.damage+sets.skillPower+talent.skillPower,
     damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
     iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,resists:{fire:gear.fireResist,ice:gear.iceResist,dark:gear.darkResist,physical:gear.physicalResist},
     setPieces:clone(gear.setPieces),glow:getRefinementGlow(character),itemLevelBonus:gear.itemLevelBonus};
@@ -720,7 +720,7 @@
     if(use2x)character.stats.speed_runs=(character.stats.speed_runs||0)+1;
     const clear=balance.xp_curve.stage_clear_xp;
     const bonus=(clear.base+stage*clear.per_stage+(enemy.type==="boss"?clear.boss_bonus:0))*multiplier;
-    awardXp(character,bonus);
+    var clearAward=awardXp(character,bonus);
     character.progress.highestEver=Math.max(character.progress.highestEver,stage);
     character.stats.highest_stage=Math.max(character.stats.highest_stage||0,stage);
     if(character.difficulty==="hardcore")character.stats.hardcore_clears=(character.stats.hardcore_clears||0)+1;
@@ -750,7 +750,7 @@
      character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);character.run.runModifierId=null;character.run.offeredModifierIds=null;publishGhost(character,"stage_250_clear");
     }
    }
-   return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,autoEquipped:autoResult.equipped,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
+   return{xp:gained.amount+(done?(clearAward?.amount||0):0),loot:clone(loot.concat(materials)),silver,autoEquipped:autoResult.equipped,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
   }
   function useHealingPotion(characterId,stackId){
    const character=getChar(characterId),stage=character.run.stage;
