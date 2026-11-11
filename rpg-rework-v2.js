@@ -694,6 +694,9 @@
     addMaterial({id:id(),type:"enchant_scroll",slot:"armor",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
    if(eligibility.weaponScroll&&random()<Math.min(1,balance.equipment.enchantment.weapon_scroll_chance*dropMultiplier))
     addMaterial({id:id(),type:"enchant_scroll",slot:"weapon",foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
+   const autoResult=character.level>=10&&character.branch?equipBest(character.id):{equipped:0};
+   const equippedIds=new Set((character.gear||[]).filter(Boolean).map(item=>item.id));
+   for(const item of loot){if(item.type==="equipment")item.disposition=item.autoSalvaged?"salvaged":equippedIds.has(item.id)?"equipped":"bag";else if(item.type==="auto_salvage")item.disposition="salvaged";else item.disposition="bag";}
    character.stats.kills++;
    if(enemy.type==="boss"){character.stats.boss_kills=(character.stats.boss_kills||0)+1;if(!potionUsed)character.stats.potionless_bosses=(character.stats.potionless_bosses||0)+1;}
    const silverBuff=activeBuff(character,"silver"),rewardMultiplier=runModifiers(character).reduce((value,modifier)=>value*(modifier.reward_silver_multiplier||1),1);
@@ -747,7 +750,7 @@
      character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);character.run.runModifierId=null;character.run.offeredModifierIds=null;publishGhost(character,"stage_250_clear");
     }
    }
-   return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
+   return{xp:gained.amount,loot:clone(loot.concat(materials)),silver,autoEquipped:autoResult.equipped,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
   }
   function useHealingPotion(characterId,stackId){
    const character=getChar(characterId),stage=character.run.stage;
