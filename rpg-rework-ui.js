@@ -79,7 +79,7 @@
   return icon?'<span class="tb-support-icon '+icon+'" aria-hidden="true"></span>':relicIconHtml(item);
  }
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
- const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"],["account","Аккаунт"],["speedrun","Спидран"]];
+ const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Экипировка"],["bag","Рюкзак"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
  let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
@@ -886,7 +886,7 @@ function createDialog(){
   const skillsTab=root.querySelector('[data-tab="skills"]');addBadge(skillsTab,free);
   const bagTab=root.querySelector('[data-tab="bag"]');addBadge(bagTab,(upgrade?1:0)+(craft?1:0));
 
-  const active=screen==="map"?"map":screen==="profile"?"profile":screen==="leaderboard"?"leaderboard":screen==="shop"?"shop":"account";
+  const active=screen==="map"?"map":screen==="profile"?"profile":screen==="progress"?"leaderboard":screen==="shop"?"shop":"account";
   nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
  function renderView(){
