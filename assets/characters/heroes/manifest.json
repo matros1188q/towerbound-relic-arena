@@ -9,7 +9,8 @@
       "filename": "image.jpeg",
       "relative_path": "assets/characters/heroes/image.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "hero.assassin"
     },
     {
       "id": "bishop",
@@ -17,7 +18,8 @@
       "filename": "image 2.jpeg",
       "relative_path": "assets/characters/heroes/image 2.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "hero.bishop"
     },
     {
       "id": "dragonkin",
@@ -25,7 +27,8 @@
       "filename": "image 3.jpeg",
       "relative_path": "assets/characters/heroes/image 3.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "hero.dragonkin"
     },
     {
       "id": "destroyer",
@@ -33,7 +36,8 @@
       "filename": "image 4.jpeg",
       "relative_path": "assets/characters/heroes/image 4.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "hero.destroyer"
     },
     {
       "id": "elemental",
@@ -41,7 +45,8 @@
       "filename": "image 5.jpeg",
       "relative_path": "assets/characters/heroes/image 5.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "hero.elemental"
     },
     {
       "id": "shaman",
@@ -49,7 +54,8 @@
       "filename": "image 6.jpeg",
       "relative_path": "assets/characters/heroes/image 6.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "hero.shaman"
     },
     {
       "id": "duelist",
@@ -57,7 +63,8 @@
       "filename": "image 7.jpeg",
       "relative_path": "assets/characters/heroes/image 7.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "hero.duelist"
     }
   ]
 }

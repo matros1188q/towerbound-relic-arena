@@ -9,7 +9,8 @@
       "filename": "image 19.jpeg",
       "relative_path": "assets/characters/bosses/image 19.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "boss.mirror-executioner"
     },
     {
       "id": "ash-patriarch",
@@ -17,7 +18,8 @@
       "filename": "image 3.jpeg",
       "relative_path": "assets/characters/bosses/image 3.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "boss.ash-patriarch"
     },
     {
       "id": "ice-abbot",
@@ -25,7 +27,8 @@
       "filename": "image 4.jpeg",
       "relative_path": "assets/characters/bosses/image 4.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "boss.ice-abbot"
     },
     {
       "id": "crimson-regent",
@@ -33,7 +36,8 @@
       "filename": "image 11.jpeg",
       "relative_path": "assets/characters/bosses/image 11.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "boss.crimson-regent"
     },
     {
       "id": "heart-of-tower",
@@ -41,7 +45,8 @@
       "filename": "image 12.jpeg",
       "relative_path": "assets/characters/bosses/image 12.jpeg",
       "image_format": "jpeg",
-      "usage": "gameplay"
+      "usage": "gameplay",
+      "exact_asset_id": "boss.heart-of-tower"
     }
   ]
 }
