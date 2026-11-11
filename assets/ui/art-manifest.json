@@ -1,37 +1,102 @@
 {
-  "pack": "towerbound-ui-jpg-v1",
+  "pack": "towerbound-ui-jpg-v2",
   "logo": "assets/ui/logo.jpeg",
   "stylesheet": "assets/ui/art-sprites.css",
   "spriteSheets": [
     {
-      "id": "damage-school",
+      "id": "element-damage-icons",
       "path": "assets/icons/image 13.jpeg",
-      "classNames": [
-        "icon-phys",
-        "ui-settings",
-        "ui-target"
-      ]
-    },
-    {
-      "id": "elements",
-      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "grid": {
+        "columns": 4,
+        "rows": 3
+      },
       "classNames": [
         "icon-fire",
         "icon-ice",
-        "skill-arcane"
+        "icon-poison",
+        "icon-phys",
+        "skill-poison",
+        "skill-phys"
+      ],
+      "crops": [
+        {
+          "className": "icon-fire",
+          "position": "0 0"
+        },
+        {
+          "className": "icon-ice",
+          "position": "33.333% 0"
+        },
+        {
+          "className": "icon-poison",
+          "position": "66.667% 0"
+        },
+        {
+          "className": "icon-phys",
+          "position": "100% 0"
+        }
       ]
     },
     {
-      "id": "poison-and-shield",
-      "path": "assets/icons/image 14.jpeg",
+      "id": "ui-controls",
+      "path": "assets/icons/image 11.jpeg",
+      "format": "jpeg",
+      "grid": {
+        "columns": 4,
+        "rows": 3
+      },
       "classNames": [
-        "icon-poison",
-        "ui-shield"
+        "icon-settings",
+        "icon-target"
+      ],
+      "crops": [
+        {
+          "className": "icon-settings",
+          "position": "66.667% 0",
+          "visual": "gears"
+        },
+        {
+          "className": "icon-target",
+          "position": "100% 0",
+          "visual": "directional arrows"
+        }
+      ],
+      "note": "No shield symbol is present on this sheet; the shield class intentionally uses the blue shield tile from image 13.jpeg."
+    },
+    {
+      "id": "ui-shield",
+      "path": "assets/icons/image 13.jpeg",
+      "format": "jpeg",
+      "grid": {
+        "columns": 4,
+        "rows": 3
+      },
+      "classNames": [
+        "icon-shield"
+      ],
+      "crops": [
+        {
+          "className": "icon-shield",
+          "position": "0 100%"
+        }
       ]
+    },
+    {
+      "id": "skill-menu",
+      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "classNames": [
+        "skill-fire",
+        "skill-ice",
+        "skill-arcane"
+      ],
+      "cropUtility": "assets/ui/art-sprites.css"
     },
     {
       "id": "achievements",
       "path": "assets/icons/image 15.jpeg",
+      "format": "jpeg",
       "classNames": [
         "achievement-compass",
         "achievement-trophy",
@@ -39,34 +104,38 @@
         "achievement-skull",
         "achievement-shield",
         "achievement-star"
-      ]
+      ],
+      "grid": {
+        "columns": 6,
+        "rows": 5
+      }
     },
     {
       "id": "support-items",
       "path": "assets/icons/image 16.jpeg",
+      "format": "jpeg",
       "classNames": [
         "support-helmet",
         "support-purse",
         "support-boot",
         "support-shield",
         "support-orb"
-      ]
+      ],
+      "grid": {
+        "columns": 6,
+        "rows": 5
+      },
+      "note": "Atlas crop positions are provisional and require visual approval per tile."
     },
     {
-      "id": "skill-sprites",
-      "path": "assets/icons/image 17.jpeg",
-      "classNames": [
-        "skill-fire",
-        "skill-ice",
-        "skill-poison",
-        "skill-phys",
-        "skill-arcane"
-      ]
-    },
-    {
-      "id": "inventory-atlas",
+      "id": "inventory-backdrop",
       "path": "assets/icons/image 19.jpeg",
-      "usage": "low-opacity inventory background"
+      "format": "jpeg",
+      "usage": "Low-opacity inventory content background, not an icon crop"
     }
+  ],
+  "notes": [
+    "CSS background-position values are percentage-alignment coordinates for the selected background-size, not source-pixel coordinates.",
+    "The source artwork is a montage; crops in assets/ui/art-sprites.css should be visually reviewed on the actual game UI."
   ]
 }

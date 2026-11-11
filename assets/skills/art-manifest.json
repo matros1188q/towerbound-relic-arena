@@ -1,96 +1,20 @@
 {
-  "pack": "towerbound-jpg-skill-sprites-v2",
+  "pack": "towerbound-jpg-skill-sprites-v3",
   "category": "skills",
   "assets": [
     {
-      "id": "fire",
-      "name": "fire",
-      "path": "assets/skills/fire.png",
-      "format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparent": true,
-      "alpha_bounds": [
-        84,
-        117,
-        917,
-        920
-      ]
+      "id": "skill-school-atlas",
+      "name": "Skill menu atlas",
+      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "usage": "Active JPG sprite sheet; CSS classes skill-fire, skill-ice and skill-arcane"
     },
     {
-      "id": "arcane",
-      "name": "arcane",
-      "path": "assets/skills/arcane.png",
-      "format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparent": true,
-      "alpha_bounds": [
-        84,
-        118,
-        917,
-        920
-      ]
-    },
-    {
-      "id": "ice",
-      "name": "ice",
-      "path": "assets/skills/ice.png",
-      "format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparent": true,
-      "alpha_bounds": [
-        124,
-        149,
-        937,
-        908
-      ]
-    },
-    {
-      "id": "lightning",
-      "name": "lightning",
-      "path": "assets/skills/lightning.png",
-      "format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparent": true,
-      "alpha_bounds": [
-        178,
-        168,
-        816,
-        842
-      ]
-    },
-    {
-      "id": "nature",
-      "name": "nature",
-      "path": "assets/skills/nature.png",
-      "format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparent": true,
-      "alpha_bounds": [
-        113,
-        164,
-        931,
-        910
-      ]
-    },
-    {
-      "id": "void",
-      "name": "void",
-      "path": "assets/skills/void.png",
-      "format": "png",
-      "width": 1024,
-      "height": 1024,
-      "transparent": true,
-      "alpha_bounds": [
-        196,
-        191,
-        779,
-        827
-      ]
+      "id": "damage-school-atlas",
+      "name": "Element and damage badges",
+      "path": "assets/icons/image 13.jpeg",
+      "format": "jpeg",
+      "usage": "Active JPG sprite sheet; CSS classes skill-poison and skill-phys"
     }
   ],
   "sprite_sheets": [
@@ -109,20 +33,16 @@
       "id": "damage-school-icons",
       "path": "assets/icons/image 13.jpeg",
       "format": "jpeg",
+      "grid": {
+        "columns": 4,
+        "rows": 3
+      },
       "crop_utility": "assets/ui/art-sprites.css",
       "classes": [
+        "skill-poison",
         "skill-phys"
-      ]
-    },
-    {
-      "id": "poison-icon",
-      "path": "assets/icons/image 14.jpeg",
-      "format": "jpeg",
-      "crop_utility": "assets/ui/art-sprites.css",
-      "classes": [
-        "skill-poison"
       ]
     }
   ],
-  "note": "JPG sprite sheets are cropped in CSS with background-image, background-size and background-position; coordinates are visual crop presets, not source pixel exports."
+  "note": "These JPG atlases are the active menu/damage glyph sources. The previous isolated PNG art entries are not active in this manifest; the original PNG files, if retained in the repository, are legacy source assets only."
 }

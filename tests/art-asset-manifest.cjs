@@ -50,15 +50,53 @@ for (const [id, filename] of [
 ]) {
   assert.ok(uiScript.includes(id + ':"heroes/' + filename + '"'), 'Hero portrait map missing ' + id);
 }
-for (const classname of ['icon-fire', 'icon-ice', 'icon-poison', 'icon-phys', 'ui-settings', 'ui-target', 'ui-shield', 'skill-fire', 'skill-ice', 'skill-poison', 'skill-phys']) {
+for (const classname of ['icon-fire','icon-ice','icon-poison','icon-phys','icon-settings','icon-target','icon-shield','skill-fire','skill-ice','skill-poison','skill-phys','skill-arcane']) {
   assert.ok(source['assets/ui/art-sprites.css'].includes('.' + classname), 'Missing sprite class ' + classname);
 }
-assert.ok(source['index.html'].includes('./assets/ui/art-sprites.css'), 'Sprite stylesheet not linked by index.html');
+assert.ok(source['index.html'].includes('./assets/ui/art-sprites.css?v=2'), 'Sprite stylesheet not linked with refreshed cache key');
 assert.ok(source['assets/ui/art-sprites.css'].includes('object-fit:contain'), 'JPG artwork must not be stretched');
 const spriteCss = source['assets/ui/art-sprites.css'];
-assert.ok(spriteCss.includes('.icon-poison,.skill-poison{background-image:url("../icons/image 14.jpeg");background-size:300% 200%;background-position:50% 0}'), 'Poison must crop the middle tile of the 3×2 droplet sheet');
-assert.ok(spriteCss.includes('.icon-phys,.skill-phys{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:0 0}'), 'Physical skill must use the 4×3 icon sheet geometry');
-assert.ok(spriteCss.includes('.ui-shield{background-image:url("../icons/image 14.jpeg");background-size:300% 200%;background-position:0 100%}'), 'Shield must crop the bottom-left tile of the 3×2 shield sheet');
+for (const rule of [
+  '.icon-fire{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:0 0}',
+  '.icon-ice{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:33.333% 0}',
+  '.icon-poison{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:66.667% 0}',
+  '.icon-phys{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:100% 0}',
+  '.icon-settings,.ui-settings{background-image:url("../icons/image 11.jpeg");background-size:400% 300%;background-position:66.667% 0}',
+  '.icon-target,.ui-target{background-image:url("../icons/image 11.jpeg");background-size:400% 300%;background-position:100% 0}',
+  '.icon-shield,.ui-shield{background-image:url("../icons/image 13.jpeg");background-size:400% 300%;background-position:0 100%}',
+  '.skill-fire{background-image:url("../icons/image 17.jpeg");background-size:400% 400%;background-position:0 0}'
+]) assert.ok(spriteCss.includes(rule), 'Incorrect/missing sprite crop: ' + rule);
+
+const modeScript = source['rpg-mode.js'];
+for (const [id, filename] of [
+  ['assassin','image.jpeg'],['bishop','image 2.jpeg'],['dragonkin','image 3.jpeg'],
+  ['destroyer','image 4.jpeg'],['elemental','image 5.jpeg'],['shaman','image 6.jpeg'],['duelist','image 7.jpeg']
+]) assert.ok(modeScript.includes(id + ":'./assets/characters/heroes/" + filename + "'"), 'Legacy RPG hero JPG map missing ' + id);
+for (const [id, filename] of [
+  ['swamp-reaper','image 2.jpeg'],['cursed-knight','image 3.jpeg'],['shadow-goblin','image 4.jpeg'],
+  ['phantom-duelist','image 5.jpeg'],['abyss-knight','image 6.jpeg'],['ash-wolf','image 7.jpeg'],
+  ['rune-golem','image 8.jpeg'],['crimson-executioner','image 9.jpeg'],['plague-witch','image 10.jpeg'],
+  ['ash-imp','image 11.jpeg'],['forest-horror','image 12.jpeg'],['bone-warden','image 13.jpeg'],
+  ['spider-matron','image 14.jpeg'],['soul-harvester','image 15.jpeg'],['void-hunter','image 16.jpeg'],
+  ['blind-monk','image 17.jpeg'],['stone-minotaur','image 18.jpeg'],['cursed-alchemist','image 20.jpeg'],
+  ['root-colossus','image.jpeg']
+]) assert.ok(modeScript.includes("'" + id + "':'./assets/characters/enemies/" + filename + "'"), 'Legacy RPG enemy JPG map missing ' + id);
+for (const [id, filename] of [
+  ['mirror-executioner','image 19.jpeg'],['ash-patriarch','image 3.jpeg'],['ice-abbot','image 4.jpeg'],
+  ['crimson-regent','image 11.jpeg'],['heart-of-tower','image 12.jpeg']
+]) assert.ok(modeScript.includes("'" + id + "':'./assets/characters/bosses/" + filename + "'"), 'Legacy RPG boss JPG map missing ' + id);
+
+assert.ok(skills.assets.every(asset => asset.format === 'jpeg' && asset.path.endsWith('.jpeg')), 'Active skill art manifest must reference JPG files only');
+const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+const catalogueAt = readme.indexOf('## Current JPG artwork catalogue (2026-11-11)');
+const historicalAt = readme.indexOf('## Historical character artwork integration');
+assert.ok(catalogueAt > 0 && historicalAt > 0 && historicalAt < catalogueAt, 'README must mark old PNG mappings Historical and place the current JPG catalogue after Historical baseline');
+for (const item of ['heroes/reaper.png','enemies/shadow-goblin.png','bosses/ice-abbot.png']) {
+  const at = readme.indexOf(item);
+  assert.ok(at > historicalAt && at < catalogueAt, 'Legacy PNG path must appear only in the historical section: ' + item);
+}
+assert.ok(readme.includes('assets/icons/image 11.jpeg') && readme.includes('icon-settings') && readme.includes('icon-target'), 'README UI sprite map is incomplete');
+assert.ok(readme.includes('assets/icons/image 13.jpeg') && readme.includes('icon-fire') && readme.includes('icon-poison') && readme.includes('icon-phys'), 'README element/damage sprite map is incomplete');
 
 
 const tokens = ['hero-'+'illustrated.svg', 'foe-'+'illustrated.svg', 'skeleton-'+'illustrated.svg',
