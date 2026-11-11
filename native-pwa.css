@@ -818,58 +818,75 @@ html,body,#tbRpg,.tb-v2 {
 .tb-target-grid.crowded .tb-target-card>small{font-size:7px}
 @media(max-width:560px){.tb-target-grid.crowded .tb-target-art-wrap{max-height:54px}.tb-target-grid.crowded .tb-target-card{gap:1px}}
 
-/* Final battle viewport and crafting navigation refinements */
-.tb-target-grid{overflow:hidden}
-.tb-target-grid.crowded{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}
-.tb-target-grid.crowded .tb-target-card{min-height:0}
-.tb-crafting-hub{display:grid;gap:12px}
-.tb-crafting-hub .tb-system-card{display:grid;gap:8px}
-.tb-daily-shop-chest{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;margin:10px 0;border:1px solid #d9b66b66;border-radius:14px;background:linear-gradient(120deg,#40331fdd,#171a2ddd)}
-.tb-daily-shop-chest>div{display:flex;flex-direction:column;gap:4px;min-width:0}
-.tb-daily-shop-chest b{font-size:11px;color:#f4d99b}
-.tb-daily-shop-chest small{font-size:9px;color:#d5d9eb}
-.tb-daily-shop-chest button{flex:none;max-width:58%;font-size:9px;padding:8px}
-@media(max-width:430px){.tb-daily-shop-chest{align-items:stretch;flex-direction:column}.tb-daily-shop-chest button{max-width:100%;width:100%}}
 
-/* Formation density: 3/5 enemies use two rows; 7 enemies use three */
-.tb-target-grid.crowded{grid-template-rows:repeat(2,minmax(0,1fr))}
-.tb-target-grid.full-formation{grid-template-rows:repeat(3,minmax(0,1fr))}
-
-/* URGENT battle screen rewrite: a single 10/60/30 CSS Grid, overriding legacy mobile rules. */
-#tbRpg .tb-v2 .tb-fixed-battle{height:100dvh!important;min-height:0!important;max-height:100dvh!important;width:100%!important;box-sizing:border-box!important;overflow:hidden!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,10fr) minmax(0,60fr) minmax(0,30fr)!important;gap:6px!important;padding:8px!important;align-content:stretch!important}
-#tbRpg .tb-v2 .tb-fixed-battle>.tb-turn-initiative{grid-row:1;min-height:0!important;overflow:hidden!important;padding:5px 8px!important;display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;gap:4px!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-initiative-heading{min-width:0;white-space:nowrap}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-initiative-heading>b{min-width:0;white-space:nowrap;font-size:clamp(8px,2.3vw,11px)!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-initiative-list{min-width:0;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap}
-#tbRpg .tb-v2 .tb-fixed-battle>.tb-combat-layout{grid-row:2;min-height:0!important;height:100%!important;flex:none!important;display:grid!important;grid-template-columns:minmax(0,2fr) minmax(0,3fr)!important;gap:8px!important;overflow:hidden!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-battle-hero{min-width:0;min-height:0!important;justify-content:center!important;gap:5px!important;padding:6px!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-hero-art{height:min(34dvh,220px)!important;min-height:0!important;max-height:42%!important;width:100%!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-hero-art img{max-width:100%;max-height:100%;object-fit:contain!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-enemy-side{min-width:0;min-height:0!important;display:grid!important;grid-template-rows:auto auto minmax(0,1fr)!important;gap:5px!important;overflow:hidden!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-target-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(72px,1fr)!important;grid-template-rows:none!important;gap:8px!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;align-content:start!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-target-card{min-width:0;min-height:72px!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(28px,1fr) auto auto 5px auto!important;padding:5px!important;gap:3px!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-target-art-wrap{height:100%!important;min-height:28px!important;max-height:90px!important}
-#tbRpg .tb-v2 .tb-fixed-battle>.tb-combat-bottom{grid-row:3;min-height:0!important;height:100%!important;display:grid!important;grid-template-rows:minmax(0,1fr) auto!important;gap:3px!important;overflow:hidden!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-panel-actions{min-height:0!important;height:100%!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(42px,.8fr) minmax(0,1.5fr) minmax(38px,.8fr)!important;gap:5px!important;overflow:hidden!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-basic-attack{grid-column:1!important;grid-row:1!important;display:flex!important;min-height:0!important;height:100%!important;width:100%!important;flex-direction:row!important;gap:10px!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-basic-attack kbd{font-size:18px!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-basic-attack b{font-size:14px!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-panel-slots{grid-column:1!important;grid-row:2!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:5px!important;min-height:0!important;overflow:hidden!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-panel-skill{min-width:0!important;min-height:0!important;height:100%!important;padding:3px!important;overflow:hidden!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-panel-skill b{font-size:clamp(8px,2.2vw,11px)!important;line-height:1.1!important;overflow-wrap:anywhere}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-panel-skill small{font-size:clamp(7px,1.8vw,9px)!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-action-footer{grid-column:1!important;grid-row:3!important;min-width:0!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr)!important;align-items:stretch!important;gap:6px!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-end-turn{grid-column:1!important;grid-row:1!important;display:block!important;min-width:0!important;width:100%!important;height:100%!important;min-height:38px!important;margin:0!important;padding:4px!important;font-size:clamp(9px,2.4vw,12px)!important;white-space:nowrap!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-potion-belt{grid-column:2!important;grid-row:1!important;min-width:0!important;min-height:0!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;overflow:hidden!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-potion-belt button{min-width:0!important;width:100%!important;height:100%!important;min-height:0!important;padding:2px!important;font-size:clamp(6px,1.7vw,9px)!important;white-space:nowrap!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-combat-note{min-width:0!important;display:block!important;overflow:hidden!important;text-align:center!important;white-space:nowrap!important;text-overflow:ellipsis!important;font-size:9px!important;line-height:1.1!important}
-#tbRpg .tb-v2 .tb-fixed-battle>.tb-fx-layer{position:absolute!important;inset:0!important;pointer-events:none!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-target-card.defeated{opacity:.28!important;pointer-events:none!important}
-#tbRpg .tb-v2 .tb-fixed-battle .tb-target-card.defeated:after{content:"УБИТ"}
-#tbRpg .tb-v2 .tb-crafting-hub .tb-craft-material-card{display:flex!important;flex-wrap:wrap!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
-#tbRpg .tb-v2 .tb-craft-material-copy{flex:1 1 130px!important;min-width:0!important}
-#tbRpg .tb-v2 .tb-craft-material-card .tb-forge-button{flex:0 0 auto!important;flex-shrink:0!important;max-width:100%!important;width:auto!important;min-width:0!important;white-space:normal!important;overflow-wrap:anywhere!important;position:relative!important;z-index:2!important;pointer-events:auto!important;margin:0!important}
-#tbRpg .tb-v2 .tb-skill-row.is-locked{opacity:.5!important;filter:grayscale(1)}
-#tbRpg .tb-v2 .tb-skill-row.is-locked button{display:none!important}
-@media(max-width:560px){#tbRpg .tb-v2 .tb-fixed-battle{gap:4px!important;padding:5px!important}#tbRpg .tb-v2 .tb-fixed-battle>.tb-combat-layout{gap:5px!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-target-grid{gap:5px!important;grid-auto-rows:minmax(62px,1fr)!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-target-card{min-height:62px!important;padding:3px!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-hero-art{height:min(31dvh,180px)!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-panel-actions{gap:4px!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-action-footer{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)!important;gap:4px!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-potion-belt{gap:2px!important}}
-@media(max-height:700px){#tbRpg .tb-v2 .tb-fixed-battle .tb-hero-art{height:min(26dvh,135px)!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-target-art-wrap{max-height:55px!important}#tbRpg .tb-v2 .tb-fixed-battle .tb-combat-note{font-size:7px!important}}
+/* Clean replacement layouts for battle, crafting, skills and XP shop products. */
+#tbRpg .tb-v2:has(.tb-battle-rebuild){height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;padding:0!important;margin:0!important;overflow:hidden!important;display:block!important;box-sizing:border-box!important}
+#tbRpg .tb-v2 .tb-battle-rebuild{position:relative!important;width:100%!important;height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;box-sizing:border-box!important;padding:8px!important;margin:0!important;display:flex!important;flex-direction:column!important;gap:8px!important;overflow:hidden!important;background:linear-gradient(135deg,rgba(8,12,24,.96),rgba(15,20,34,.91)),var(--tb-arena-bg) center/cover!important;color:#f3f0e8!important}
+#tbRpg .tb-v2 .tb-battle-top{height:40px!important;min-height:40px!important;max-height:40px!important;flex:0 0 40px!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:8px!important;min-width:0!important;padding:3px 7px!important;border:1px solid #c9a86b66!important;border-radius:10px!important;background:#0b1020e8!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-top-label{font-size:9px!important;font-weight:900!important;white-space:nowrap!important;color:#e9c982!important}
+#tbRpg .tb-v2 .tb-battle-initiative{display:flex!important;align-items:center!important;gap:5px!important;min-width:0!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-battle-initiative-item{flex:0 0 auto!important;padding:4px 6px!important;border-radius:6px!important;background:#ffffff12!important;font-size:9px!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-battle-initiative-item.active{background:#a77c37!important;color:#fff!important}
+#tbRpg .tb-v2 .tb-battle-top>button{height:30px!important;min-width:68px!important;padding:3px 8px!important;font-size:10px!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-battle-middle{flex:1 1 auto!important;min-height:0!important;min-width:0!important;display:flex!important;flex-direction:row!important;gap:8px!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-hero{flex:0 0 35%!important;width:35%!important;min-width:0!important;min-height:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;padding:8px 6px!important;border:1px solid #c7a96b55!important;border-radius:13px!important;background:linear-gradient(180deg,#1b2338ed,#0b1020f2)!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-hero-class{font-size:9px!important;font-weight:900!important;text-align:center!important;color:#e7c782!important}
+#tbRpg .tb-v2 .tb-battle-hero-art{width:100%!important;height:min(30dvh,190px)!important;min-height:0!important;max-height:190px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-hero-art img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+#tbRpg .tb-v2 .tb-battle-hero-name{max-width:100%!important;font-size:clamp(10px,2.8vw,14px)!important;text-align:center!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-battle-bar-label{display:flex!important;justify-content:space-between!important;gap:5px!important;width:100%!important;font-size:8px!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-battle-bar-label strong{font-variant-numeric:tabular-nums!important}
+#tbRpg .tb-v2 .tb-battle-hero .tb-healthbar,#tbRpg .tb-v2 .tb-battle-hero .tb-resourcebar{display:block!important;position:relative!important;width:100%!important;height:8px!important;min-height:8px!important;border-radius:9px!important;overflow:hidden!important;background:#080b13!important}
+#tbRpg .tb-v2 .tb-battle-hero .tb-healthbar span,#tbRpg .tb-v2 .tb-battle-hero .tb-resourcebar span{display:block!important;height:100%!important;border-radius:9px!important}
+#tbRpg .tb-v2 .tb-battle-hero .tb-healthbar span{background:linear-gradient(90deg,#8d252b,#e75a58)!important}
+#tbRpg .tb-v2 .tb-battle-hero .tb-resourcebar span{background:linear-gradient(90deg,#226d9d,#5abbe8)!important}
+#tbRpg .tb-v2 .tb-battle-resource-name{font-size:8px!important;color:#a8cde3!important}
+#tbRpg .tb-v2 .tb-battle-enemies{flex:1 1 65%!important;width:65%!important;min-width:0!important;min-height:0!important;display:flex!important;flex-direction:column!important;gap:7px!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-enemy-heading{flex:0 0 26px!important;display:flex!important;justify-content:space-between!important;align-items:center!important;gap:5px!important;padding:0 6px!important;border-bottom:1px solid #c9a86b55!important;font-size:10px!important}
+#tbRpg .tb-v2 .tb-battle-enemy-heading span{font-size:8px!important;color:#d2bd91!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid{flex:1 1 auto!important;min-height:0!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(112px,1fr)!important;align-content:start!important;gap:8px!important;overflow-y:auto!important;overflow-x:hidden!important;padding:2px!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-card{min-width:0!important;min-height:0!important;max-height:100%!important;display:grid!important;grid-template-rows:minmax(38px,1fr) auto auto 5px auto auto!important;align-content:stretch!important;justify-items:center!important;gap:3px!important;padding:5px!important;box-sizing:border-box!important;border:1px solid #bd995855!important;border-radius:10px!important;background:linear-gradient(180deg,#222b40ee,#101626f2)!important;color:#f5f0e5!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-card.selected{border-color:#e9c16d!important;box-shadow:0 0 0 1px #e9c16d55!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-card.defeated{opacity:.28!important;filter:grayscale(1)!important;pointer-events:none!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-art-wrap{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;max-height:100px!important;min-height:38px!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-art{display:block!important;width:100%!important;height:100%!important;max-height:100px!important;object-fit:contain!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-card>b{font-size:9px!important;line-height:1.1!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-card>small{font-size:8px!important;line-height:1.1!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-hp{display:block!important;width:100%!important;height:5px!important;background:#080b13!important;border-radius:8px!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-enemy-grid .tb-target-hp i{display:block!important;height:100%!important;background:#d64b50!important}
+#tbRpg .tb-v2 .tb-enemy-telegraph{display:block!important;max-width:100%!important;font-size:7px!important;line-height:1.1!important;color:#e6bd79!important;text-align:center!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-battle-bottom{flex:0 0 250px!important;height:250px!important;min-height:250px!important;max-height:250px!important;display:grid!important;grid-template-rows:minmax(0,1fr) 50px 48px!important;gap:7px!important;padding:7px!important;box-sizing:border-box!important;border:1px solid #c7a96b66!important;border-radius:13px!important;background:linear-gradient(180deg,#1a2235f5,#090e1af8)!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-skills{min-height:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:6px!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-skills .tb-panel-skill{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-width:0!important;min-height:0!important;width:100%!important;height:100%!important;padding:5px 7px!important;box-sizing:border-box!important;overflow:hidden!important;border:1px solid #8e794f88!important;border-radius:8px!important;background:#202a40!important;color:#f4f0e7!important}
+#tbRpg .tb-v2 .tb-battle-skills .tb-panel-skill kbd{font-size:8px!important}
+#tbRpg .tb-v2 .tb-battle-skills .tb-panel-skill b{font-size:clamp(8px,2.5vw,11px)!important;line-height:1.1!important;max-width:100%!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-battle-skills .tb-panel-skill small{font-size:7px!important;line-height:1.1!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-battle-skills .tb-panel-skill:disabled{opacity:.45!important}
+#tbRpg .tb-v2 .tb-battle-bottom .tb-basic-attack{width:100%!important;height:50px!important;min-height:50px!important;max-height:50px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;margin:0!important;padding:4px 10px!important;box-sizing:border-box!important;border:1px solid #f0c36d!important;border-radius:9px!important;background:linear-gradient(90deg,#9e4c21,#d48a36)!important;color:#fff!important}
+#tbRpg .tb-v2 .tb-battle-bottom .tb-basic-attack b{font-size:15px!important;letter-spacing:.08em!important}
+#tbRpg .tb-v2 .tb-battle-bottom .tb-basic-attack small{font-size:9px!important}
+#tbRpg .tb-v2 .tb-battle-footer{min-width:0!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr)!important;gap:7px!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-footer .tb-end-turn{width:100%!important;height:100%!important;min-width:0!important;min-height:42px!important;margin:0!important;padding:4px!important;white-space:nowrap!important;font-size:clamp(8px,2.3vw,11px)!important}
+#tbRpg .tb-v2 .tb-battle-footer .tb-potion-belt{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:4px!important;min-width:0!important;min-height:0!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-battle-footer .tb-potion-belt button{width:100%!important;min-width:0!important;height:100%!important;min-height:0!important;padding:2px!important;font-size:10px!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-battle-rebuild .tb-fx-layer{position:absolute!important;inset:0!important;pointer-events:none!important}
+#tbRpg .tb-v2 .tb-craft-rebuild{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+#tbRpg .tb-v2 .tb-craft-main-card{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;width:100%!important;min-width:0!important;max-width:100%!important;padding:15px!important;box-sizing:border-box!important;border:1px solid #b99a6266!important;border-radius:14px!important;background:linear-gradient(145deg,#1b2639,#111827)!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-craft-main-card h3{margin:0!important;font-size:16px!important}
+#tbRpg .tb-v2 .tb-craft-material-count{display:block!important;width:100%!important;min-width:0!important;margin:0!important;font-size:clamp(11px,3vw,14px)!important;line-height:1.4!important;white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important}
+#tbRpg .tb-v2 .tb-craft-main-card .tb-forge-button{display:block!important;width:100%!important;height:45px!important;min-height:45px!important;max-height:45px!important;margin:10px 0 0!important;padding:0 12px!important;box-sizing:border-box!important;flex:0 0 45px!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-skill-screen-rebuilt{display:flex!important;flex-direction:column!important;gap:10px!important;width:100%!important;min-width:0!important;box-sizing:border-box!important}
+#tbRpg .tb-v2 .tb-skill-list-rebuilt{display:flex!important;flex-direction:column!important;gap:8px!important;width:100%!important;min-width:0!important}
+#tbRpg .tb-v2 .tb-skill-entry-rebuilt{display:grid!important;grid-template-columns:34px minmax(0,1fr) auto!important;align-items:center!important;gap:9px!important;width:100%!important;min-width:0!important;padding:10px!important;box-sizing:border-box!important;border:1px solid #a98a5555!important;border-radius:10px!important;background:#1b2639!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-skill-entry-icon{display:flex!important;align-items:center!important;justify-content:center!important;width:30px!important;height:30px!important;border-radius:8px!important;background:#b08b4b22!important;font-size:18px!important}
+#tbRpg .tb-v2 .tb-skill-entry-copy{display:block!important;min-width:0!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-skill-entry-copy>b{display:block!important;font-size:12px!important;line-height:1.25!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-skill-entry-copy>small{display:block!important;margin-top:3px!important;font-size:9px!important;line-height:1.3!important;white-space:normal!important}
+#tbRpg .tb-v2 .tb-skill-entry-copy>p{display:block!important;margin:4px 0 0!important;font-size:10px!important;line-height:1.35!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-skill-entry-rebuilt>button{flex:none!important;min-width:76px!important;padding:7px 9px!important;font-size:9px!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-skill-entry-rebuilt.locked{grid-template-columns:30px minmax(0,1fr)!important;background:#343b47!important;border-color:#697181!important;opacity:.72!important;filter:grayscale(1)!important}
+#tbRpg .tb-v2 .tb-skill-entry-rebuilt.locked .tb-skill-entry-icon{background:#111827!important;color:#c3c8d1!important}
+#tbRpg .tb-v2 .tb-skill-entry-lock{grid-column:2!important;display:block!important;margin-top:3px!important;font-size:10px!important;line-height:1.3!important;color:#c4cbd5!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-shop-xp-icon{display:block!important;width:64px!important;height:64px!important;max-width:100%!important;object-fit:contain!important;margin:auto!important;background:transparent!important}
+@media(max-width:600px){#tbRpg .tb-v2 .tb-battle-rebuild{padding:5px!important;gap:5px!important}#tbRpg .tb-v2 .tb-battle-middle{gap:5px!important}#tbRpg .tb-v2 .tb-battle-hero{padding:5px 3px!important;gap:5px!important}#tbRpg .tb-v2 .tb-battle-hero-art{height:min(26dvh,150px)!important}#tbRpg .tb-v2 .tb-battle-enemy-grid{gap:5px!important;grid-auto-rows:minmax(100px,1fr)!important}#tbRpg .tb-v2 .tb-battle-bottom{flex-basis:250px!important;padding:5px!important;gap:5px!important}#tbRpg .tb-v2 .tb-battle-skills{gap:4px!important}#tbRpg .tb-v2 .tb-battle-footer{gap:4px!important}#tbRpg .tb-v2 .tb-battle-footer .tb-potion-belt{gap:2px!important}}
+@media(max-height:720px){#tbRpg .tb-v2 .tb-battle-hero-art{height:min(22dvh,115px)!important}#tbRpg .tb-v2 .tb-battle-enemy-grid{grid-auto-rows:minmax(90px,1fr)!important}}
