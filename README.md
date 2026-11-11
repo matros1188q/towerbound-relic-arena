@@ -57,6 +57,15 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-11 — JPG art mapping reference
+
+- Added a current, file-by-file JPG artwork catalogue below, including hero / enemy / boss portraits, chapter backgrounds, relics, sprite-sheet CSS classes and the exact crop coordinates used by the stylesheet.
+- Added an explicit visual-audit note for atlas classes whose current file/crop may not depict the semantic label. The README separates implemented paths from visual matches that still need a manual review.
+- Documentation-only update based on the current mappings in `main`; no runtime assets or gameplay code were changed in this README commit.
+- Previous implementation commits: `34cdc949` (JPG pack wiring), `624513f8` (sprite crop geometry), `34998f7b` (art audit assertion fix).
+- Verification status for the referenced runtime commit `34998f7b`: JavaScript syntax, JPG manifest/art checks, regression assertions, combat/economy simulations, RPG smoke and GitHub Pages deployment passed. Cross-browser browser journeys were still running at the last recorded check; manual iPhone visual approval is not claimed.
+
+
 Keep this section current. Every development session that changes the project must add a dated entry describing what changed, the files/areas affected, the commit SHA, and what remains unverified or unfinished.
 
 ### 2026-11-10 — RPG gem socket click delegation
@@ -104,6 +113,8 @@ Keep this section current. Every development session that changes the project mu
 
 
 ## Character artwork integration
+
+> **Historical note:** the PNG mappings and `art-inbox/01-characters/` UUID inventory in this section describe the earlier 2026-11-09 art pass. They are not the current runtime map. For the active JPG implementation, use the newer **Current JPG artwork catalogue (2026-11-11)** at the end of this README.
 
 ### Status — connected in `main`
 
@@ -661,3 +672,190 @@ All commits below are on `main` and form the account / gem / localization / mobi
 - Added the registration hint below the form and localized/red error styling in the profile account form.
 - Added regression assertions for the new address mapping, legacy sign-in fallback, Russian error messages and registration hint. Updated the cloud/UI asset cache keys to v16/v31.
 - Live Supabase registration/login with `Test123` and `123456` was not executed: this repository session does not have a test Supabase user/session or permission to create an account in the project's Auth service. The automated source regression checks must be confirmed in GitHub Actions.
+
+
+---
+
+# Current JPG artwork catalogue (2026-11-11)
+
+This is the current implementation reference for the JPG pack on `main`. Paths below are repository-relative. The tables describe what the code currently loads; they do not imply that every atlas crop has passed a manual visual approval.
+
+## 1. Heroes
+
+The seven-class picker, create-character dialog, character cards, profile portraits and active RPG hero display resolve these files through `classPortraits` in `rpg-rework-ui.js`. The older selector in `rpg-mode.js` has a matching `HERO_ART` map.
+
+| Class | Current JPG | Main use |
+|---|---|---|
+| Убийца / Assassin | `assets/characters/heroes/image.jpeg` | Character picker, profile, map and battle hero |
+| Епископ / Bishop | `assets/characters/heroes/image 2.jpeg` | Character picker, profile, map and battle hero |
+| Драконит / Dragonkin | `assets/characters/heroes/image 3.jpeg` | Character picker, profile, map and battle hero |
+| Разрушитель / Destroyer | `assets/characters/heroes/image 4.jpeg` | Character picker, profile, map and battle hero |
+| Владыка стихий / Elemental | `assets/characters/heroes/image 5.jpeg` | Character picker, profile, map and battle hero |
+| Шаман / Shaman | `assets/characters/heroes/image 6.jpeg` | Character picker, profile, map and battle hero |
+| Дуэлянт / Duelist | `assets/characters/heroes/image 7.jpeg` | Character picker, profile, map and battle hero |
+
+Legacy class aliases in `rpg-mode.js` are also mapped for compatibility: Warden → `image 4.jpeg`, Ranger → `image 7.jpeg`, Arcanist → `image 5.jpeg`, Reaper → `image.jpeg`.
+
+## 2. Enemies / mobs
+
+The exact `mobId` map in `rpg-rework-ui.js` takes priority over the role fallback.
+
+| Mob ID | Display name | Current JPG |
+|---|---|---|
+| `swamp-reaper` | Болотный жнец | `assets/characters/enemies/image 2.jpeg` |
+| `cursed-knight` | Проклятый рыцарь | `assets/characters/enemies/image 3.jpeg` |
+| `shadow-goblin` | Теневой гоблин | `assets/characters/enemies/image 4.jpeg` |
+| `phantom-duelist` | Призрачный дуэлянт | `assets/characters/enemies/image 5.jpeg` |
+| `abyss-knight` | Рыцарь бездны | `assets/characters/enemies/image 6.jpeg` |
+| `ash-wolf` | Пепельный волк | `assets/characters/enemies/image 7.jpeg` |
+| `rune-golem` | Рунный голем | `assets/characters/enemies/image 8.jpeg` |
+| `crimson-executioner` | Багровый палач | `assets/characters/enemies/image 9.jpeg` |
+| `plague-witch` | Чумная ведьма | `assets/characters/enemies/image 10.jpeg` |
+| `ash-imp` | Пепельный бес | `assets/characters/enemies/image 11.jpeg` |
+| `forest-horror` | Лесной ужас | `assets/characters/enemies/image 12.jpeg` |
+| `bone-warden` | Костяной страж | `assets/characters/enemies/image 13.jpeg` |
+| `spider-matron` | Паучья матрона | `assets/characters/enemies/image 14.jpeg` |
+| `soul-harvester` | Собиратель душ | `assets/characters/enemies/image 15.jpeg` |
+| `void-hunter` | Пустотный охотник | `assets/characters/enemies/image 16.jpeg` |
+| `blind-monk` | Слепой монах | `assets/characters/enemies/image 17.jpeg` |
+| `stone-minotaur` | Каменный минотавр | `assets/characters/enemies/image 18.jpeg` |
+| `cursed-alchemist` | Проклятый алхимик | `assets/characters/enemies/image 20.jpeg` |
+| `root-colossus` | Корневой исполин | `assets/characters/enemies/image.jpeg` |
+| `grave-archer` | Могильный лучник (compatibility alias) | `assets/characters/enemies/image 4.jpeg` |
+
+### Role fallback
+
+| Role | Fallback JPG |
+|---|---|
+| `healer` | `assets/characters/enemies/image 17.jpeg` |
+| `poison` | `assets/characters/enemies/image 10.jpeg` |
+| `tank` | `assets/characters/enemies/image 8.jpeg` |
+| `normal` / unknown role | `assets/characters/enemies/image 4.jpeg` |
+
+## 3. Bosses
+
+The named boss map uses these dedicated paths. Unknown boss IDs fall back to the configured boss portrait list, indexed by stage.
+
+| Boss ID | Display name | Current JPG |
+|---|---|---|
+| `mirror-executioner` | Зеркальный палач | `assets/characters/bosses/image 19.jpeg` |
+| `ash-patriarch` | Пепельный патриарх | `assets/characters/bosses/image 3.jpeg` |
+| `ice-abbot` | Ледяной аббат | `assets/characters/bosses/image 4.jpeg` |
+| `crimson-regent` | Багровый регент | `assets/characters/bosses/image 11.jpeg` |
+| `heart-of-tower` | Сердце Башни | `assets/characters/bosses/image 12.jpeg` |
+
+## 4. Chapter / map backgrounds
+
+The active map screen selects a background from `chapterBackgroundPath(stage)` in `rpg-rework-ui.js`. The same five JPG paths are represented in `configs/balance/chapters.json`.
+
+| Stage range | Theme from the art task | JPG background | Chapter title currently supplied by config |
+|---|---|---|---|
+| 1–50 | Кладбище | `assets/chapters/image 2.jpeg` | Порог семи печатей |
+| 51–100 | Лёд | `assets/chapters/image 3.jpeg` | Пепельные владения |
+| 101–150 | Огонь | `assets/chapters/image 4.jpeg` | Затонувший собор |
+| 151–200 | Тёмная пещера | `assets/chapters/image 5.jpeg` | Кузни расколотого неба |
+| 201–250 | Факелы | `assets/chapters/image.jpeg` | Сердце бездны |
+
+Background display rules: `background-size: cover`, `background-position: center`. The “Theme from the art task” column records the requested art-pack assignment; the chapter titles shown to players still come from the existing balance config and have not been renamed to those theme labels.
+
+## 5. Relics, equipment and consumables
+
+`relicArtPath(item, slot)` in `rpg-rework-ui.js` chooses these JPGs for equipment slots, bag items and shop product cards.
+
+| Item / category | Current JPG |
+|---|---|
+| Шлем / head | `assets/relics/image 2.jpeg` |
+| Нагрудник / chest | `assets/relics/image 3.jpeg` |
+| Поножи / legs | Reuses `assets/relics/image 3.jpeg` (same chest mapping; no separate legs art in this map) |
+| Кольцо / ring | `assets/relics/image 4.jpeg` |
+| Аксессуар / generic accessory | `assets/relics/image 4.jpeg` |
+| Амулет / amulet | `assets/relics/image 6.jpeg` |
+| Оружие / sword | `assets/relics/image 10.jpeg` |
+| Перчатки / hands | `assets/relics/image 12.jpeg` |
+| Зелье лечения | `assets/relics/image 5.jpeg` |
+| Свиток зачарования | `assets/relics/image 9.jpeg` |
+| Красный камень / socket | `assets/relics/image 7.jpeg` |
+| Синий камень / socket | `assets/relics/image 8.jpeg` |
+| Стопка зелий | `assets/relics/image 14.jpeg` |
+| Набор / сундук | `assets/relics/image 18.jpeg` |
+
+If an item does not match a more specific name/type rule, the current helper falls back to the potion-stack art (`image 14.jpeg`). The runtime icon is an `img.tb-relic-icon`; its dimensions preserve the artwork with `object-fit: contain`.
+
+## 6. JPG sprite sheets and crop classes
+
+The crop utility is `assets/ui/art-sprites.css`. It uses CSS `background-image`, `background-size` and `background-position`, so these are rendered crop windows, not separate exported image files. Percent positions below are the literal CSS values currently in `main`.
+
+| Source JPG | CSS class(es) | Crop CSS (size; position) | Current UI usage |
+|---|---|---|---|
+| `assets/icons/image 17.jpeg` | `.icon-fire`, `.skill-fire` | `400% 400%; 0% 0%` | Fire skill / damage icon |
+| `assets/icons/image 17.jpeg` | `.icon-ice`, `.skill-ice` | `400% 400%; 33.333% 0%` | Ice skill / damage icon |
+| `assets/icons/image 14.jpeg` | `.icon-poison`, `.skill-poison` | `300% 200%; 50% 0%` | Poison skill / damage icon (green droplet crop) |
+| `assets/icons/image 13.jpeg` | `.icon-phys`, `.skill-phys` | `400% 300%; 0% 0%` | Physical skill / damage icon |
+| `assets/icons/image 17.jpeg` | `.icon-arcane`, `.skill-arcane` | `400% 400%; 66.667% 33.333%` | Arcane skill icon |
+| `assets/icons/image 13.jpeg` | `.ui-settings` | `400% 300%; 66.667% 0%` | Settings UI icon class |
+| `assets/icons/image 13.jpeg` | `.ui-target` | `400% 300%; 100% 0%` | Target / aim UI icon class |
+| `assets/icons/image 14.jpeg` | `.ui-shield` | `300% 200%; 0% 100%` | Shield UI icon class |
+| `assets/icons/image 13.jpeg` | `.tb-talent-icon.icon-talent` | `400% 300%; 33.333% 0%` | Talent-row glyph |
+| `assets/icons/image 15.jpeg` | `.achievement-compass` | `600% 500%; 0% 0%` | Achievement: exploration / lore |
+| `assets/icons/image 15.jpeg` | `.achievement-trophy` | `600% 500%; 60% 25%` | Achievement: stage / victory |
+| `assets/icons/image 15.jpeg` | `.achievement-heart` | `600% 500%; 60% 50%` | Achievement: health / survival |
+| `assets/icons/image 15.jpeg` | `.achievement-skull` | `600% 500%; 80% 25%` | Achievement: boss / kill |
+| `assets/icons/image 15.jpeg` | `.achievement-shield` | `600% 500%; 20% 100%` | Achievement: defense |
+| `assets/icons/image 15.jpeg` | `.achievement-star` | `600% 500%; 80% 50%` | Generic achievement |
+| `assets/icons/image 16.jpeg` | `.support-helmet` | `600% 500%; 20% 0%` | Auxiliary item icon class |
+| `assets/icons/image 16.jpeg` | `.support-purse` | `600% 500%; 60% 0%` | Auxiliary currency icon class |
+| `assets/icons/image 16.jpeg` | `.support-boot` | `600% 500%; 60% 75%` | Auxiliary equipment icon class |
+| `assets/icons/image 16.jpeg` | `.support-shield` | `600% 500%; 20% 100%` | Auxiliary defence icon class |
+| `assets/icons/image 16.jpeg` | `.support-orb` | `600% 500%; 80% 50%` | Auxiliary crystal icon class |
+| `assets/icons/image 11.jpeg` | `.ui-dungeon-atlas` | `cover; center` | Large decorative dungeon / interior atlas background; not used as a tiny icon crop |
+| `assets/icons/image 19.jpeg` | — | `cover; center` | Low-opacity inventory content background |
+
+### Sprite-sheet visual QA notes
+
+- The current CSS map is the source of truth for which file and crop are loaded. Some semantic class names should still be visually checked against the actual atlas tiles before treating them as approved final icons.
+- In particular, `.ui-settings` and `.ui-target` currently crop the third and fourth cells of the first row of `image 13.jpeg`; inspect that row before approving the “settings” and “target” labels.
+- `.icon-phys` currently crops the first cell of the first row of `image 13.jpeg`; compare that tile with the intended physical-damage symbol.
+- The `.support-*` classes currently source `image 16.jpeg`; compare each crop against the intended helmet / purse / boot / shield / orb semantics. The neighbouring equipment/achievement atlas is `image 15.jpeg`.
+- `image 13.jpeg` is the elemental / damage-symbol atlas; `image 14.jpeg` contains droplet and shield imagery; `image 15.jpeg` is used for achievement tiles; `image 16.jpeg` is configured for auxiliary items; `image 17.jpeg` is configured for skill-school tiles; `image 11.jpeg` is used as a large dungeon-scene atlas; `image 19.jpeg` is used as the inventory backdrop.
+- Existing isolated transparent skill art in `assets/skills/` remains PNG (`fire.png`, `ice.png`, `arcane.png`, `lightning.png`, `nature.png`, `void.png`). The JPG sheets above provide compact cropped menu/damage glyphs; they do not replace those larger isolated skill assets.
+
+## 7. Logo, presentation and cache
+
+| Source | Destination / runtime use |
+|---|---|
+| `assets/icons/image.jpeg` | Copied to `assets/ui/logo.jpeg` and shown by the active RPG header as `.game-logo` |
+| `assets/ui/art-sprites.css` | Linked from `index.html`; holds sprite crops and artwork fit rules |
+| `assets/ui/art-manifest.json` | Lists the JPG UI sheets, class names and inventory atlas |
+| `assets/relics/art-manifest.json` | Lists the equipment / consumable JPG mapping |
+| `assets/characters/heroes/manifest.json` | Lists the seven class portraits |
+| `assets/characters/enemies/manifest.json` | Lists the semantic enemy JPGs |
+| `assets/characters/bosses/manifest.json` | Lists the boss JPGs |
+| `assets/skills/art-manifest.json` | Lists separate skill PNG assets and JPG sprite-sheet sources |
+| `service-worker.js` | Pre-caches the logo, UI stylesheet, character, chapter, relic and sprite JPG files for offline use |
+
+The common image rule is `object-fit: contain`; map, chapter and atlas backgrounds use `background-size: cover` and centered positioning where configured.
+
+## 8. Deprecated placeholder references
+
+The following legacy paths were removed from runtime JS / CSS / HTML references:
+
+- `hero-illustrated.svg`
+- `foe-illustrated.svg`
+- `skeleton-illustrated.svg`
+- `brute-illustrated.svg`
+- `enemy-atlas.webp`
+- `arena-background.svg`
+- `arena-background.webp`
+
+## 9. Files to inspect during an art review
+
+- `rpg-rework-ui.js` — class, mob, boss, chapter and relic selectors; fallback logic; UI icon class assignment.
+- `rpg-mode.js` — legacy class / mob / boss portrait maps.
+- `assets/ui/art-sprites.css` — exact sprite crop geometry and decorative atlas backgrounds.
+- `assets/ui/art-manifest.json`, `assets/relics/art-manifest.json`, `assets/skills/art-manifest.json` — machine-readable art inventory.
+- `configs/balance/chapters.json` — chapter background paths and player-facing chapter names.
+- `service-worker.js` — offline cache inclusion.
+- `tests/art-asset-manifest.cjs` — file existence, mapping, sprite-class and obsolete-path assertions.
+
+Runtime implementation / sprite geometry commit: `624513f8d28b0aaf45e49c4a15265c31dfa90b73`.
+Art test assertion fix commit: `34998f7b8000320c19552c48325d650d9282ca11`.
