@@ -852,17 +852,12 @@ function createDialog(){
  function ensureBottomNav(){
   const host=root.querySelector(".tb-v2");if(!host)return;
   let nav=host.querySelector(".tb-bottom-nav");
-  // Combat owns the full mobile viewport: keep the global tabs on navigation screens only.
-  // This prevents the fixed tab bar from intercepting the End Turn and potion controls.
   if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
-  if(!nav){
-   nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");
-   nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⌂</span><small>Карта</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>Персонаж</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>Магазин</small></button><button type="button" data-action="bottom-rating" data-nav-tab="leaderboard"><span>♜</span><small>Рейтинг</small></button>';
-   host.appendChild(nav);
-  }
-  const active=screen==="battle"?"map":screen;
-  nav.querySelectorAll("[data-nav-tab]").forEach(b=>{const on=b.dataset.navTab===active;b.classList.toggle("active",on);b.setAttribute("aria-current",on?"page":"false");});
+  if(!nav){nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");host.appendChild(nav);}
+  nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-rating" data-nav-tab="leaderboard"><span>✦</span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
+  const active=screen==="map"?"map":screen==="profile"?"profile":screen==="leaderboard"?"leaderboard":screen==="shop"?"shop":"account";
+  nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
  function renderView(){
   if(!engine)return;
