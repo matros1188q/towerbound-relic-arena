@@ -924,7 +924,7 @@ function createDialog(){
    const art=item.type==="equipment"?relicIconHtml(item,item.slot):inventoryIconHtml(item,false);
    return '<article class="tb-loot-row rarity-'+rarityClass(item.rarity)+'"><span class="tb-loot-art">'+art+'</span><span class="tb-loot-copy"><b>'+esc(itemDisplayName(item))+'</b><small>'+esc(item.rarity||itemTypeName(item.type))+(item.branchName?' · '+esc(item.branchName):'')+'</small></span>'+status+'</article>';
   }).join("");
-  return '<div class="tb-loot-overlay" role="dialog" aria-modal="true" aria-label="Добыча"><section class="tb-loot-modal"><div class="tb-loot-eyebrow">TOWERBOUND · НАГРАДА</div><h2>Бой завершен</h2><div class="tb-loot-rewards"><span>✦ '+Number(postBattleSummary.xp||0)+' опыта</span><span>◈ '+Number(postBattleSummary.silver||0)+' серебра</span></div><h3>Добыча</h3><div class="tb-loot-list">'+(rows||'<p class="tb-loot-empty">Предметы не выпали. Вперёд, к следующей битве.</p>')+'</div><button type="button" data-loot-continue class="tb-loot-continue">ПРОДОЛЖИТЬ</button></section></div>';
+  return '<div class="tb-loot-overlay" role="dialog" aria-modal="true" aria-label="Добыча"><section class="tb-loot-modal"><div class="tb-loot-eyebrow">TOWERBOUND · НАГРАДА</div><h2>БОЙ ЗАВЕРШЕН</h2><div class="tb-loot-rewards"><span>✦ '+Number(postBattleSummary.xp||0)+' опыта</span><span>◈ '+Number(postBattleSummary.silver||0)+' серебра</span></div>'+(rows?'<h3>ДОБЫЧА</h3><div class="tb-loot-list">'+rows+'</div>':'<p class="tb-loot-empty">Предметы не выпали. Вперёд, к следующей битве.</p>')+'<button type="button" data-loot-continue class="tb-loot-continue">ПРОДОЛЖИТЬ</button></section></div>';
  }
  function renderView(){
   if(!engine)return;
