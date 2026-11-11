@@ -1,85 +1,104 @@
 'use strict';
-const fs = require('node:fs');
-const assert = require('node:assert/strict');
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
 
-const ui = fs.readFileSync('rpg-rework-ui.js', 'utf8');
-const html = fs.readFileSync('index.html', 'utf8');
-const artDir = 'art-inbox/01-characters';
-const inventory = fs.readdirSync(artDir);
-const imageFiles = inventory.filter(name =>
-  ['.jpg', '.jpeg', '.png', '.webp'].some(ext => name.toLowerCase().endsWith(ext))
-);
-assert.equal(imageFiles.length, 33, 'reviewed art inbox inventory changed; update this audit');
-for (const file of imageFiles) {
-  const size = fs.statSync(artDir + '/' + file).size;
-  assert.ok(size > 0, 'empty art file: ' + file);
-  assert.ok(size <= 1024 * 1024, 'art inbox image exceeds 1 MB: ' + file);
-}
+const ui=fs.readFileSync('rpg-rework-ui.js','utf8');
+const legacy=fs.readFileSync('rpg-mode.js','utf8');
+const engine=fs.readFileSync('towerbound-engine.js','utf8');
+const html=fs.readFileSync('index.html','utf8');
+const heroManifest=JSON.parse(fs.readFileSync('assets/characters/heroes/manifest.json','utf8'));
+const enemyManifest=JSON.parse(fs.readFileSync('assets/characters/enemies/manifest.json','utf8'));
+const bossManifest=JSON.parse(fs.readFileSync('assets/characters/bosses/manifest.json','utf8'));
+const chapters=JSON.parse(fs.readFileSync('configs/balance/chapters.json','utf8'));
 
-const heroManifest = JSON.parse(fs.readFileSync('assets/characters/heroes/manifest.json', 'utf8'));
-const enemyManifest = JSON.parse(fs.readFileSync('assets/characters/enemies/manifest.json', 'utf8'));
-const inboxSourceSet = new Set(imageFiles);
-const bossManifest = JSON.parse(fs.readFileSync('assets/characters/bosses/manifest.json', 'utf8'));
-assert.equal(heroManifest.assets.length, 4, 'hero art count changed');
-assert.equal(enemyManifest.assets.length, 20, 'enemy art count changed');
-assert.equal(bossManifest.assets.length, 9, 'boss art count changed');
-const unclassified = imageFiles.filter(file =>
-  ![...heroManifest.assets, ...enemyManifest.assets, ...bossManifest.assets]
-    .some(asset => asset.source_filename + '.jpg' === file)
-).sort();
-assert.deepEqual(unclassified, [
-  '1ce15225-7162-4858-8fa7-41363266e71e.jpg',
-  '70524780-ece1-4aa2-ad6b-1e1035c9a136.jpg',
-  'be7caee1-03c5-49ca-989c-bbab2c3d2063.jpg'
-], 'unclassified art inbox assets changed; review their mapping');
+const heroes={
+  "assassin": "heroes/image.jpeg",
+  "bishop": "heroes/image 2.jpeg",
+  "dragonkin": "heroes/image 3.jpeg",
+  "destroyer": "heroes/image 4.jpeg",
+  "elemental": "heroes/image 5.jpeg",
+  "shaman": "heroes/image 6.jpeg",
+  "duelist": "heroes/image 7.jpeg"
+};
+const mobs={
+  "swamp-reaper": "enemies/image 2.jpeg",
+  "cursed-knight": "enemies/image 3.jpeg",
+  "shadow-goblin": "enemies/image 4.jpeg",
+  "phantom-duelist": "enemies/image 5.jpeg",
+  "abyss-knight": "enemies/image 6.jpeg",
+  "ash-wolf": "enemies/image 7.jpeg",
+  "rune-golem": "enemies/image 8.jpeg",
+  "crimson-executioner": "enemies/image 9.jpeg",
+  "plague-witch": "enemies/image 10.jpeg",
+  "ash-imp": "enemies/image 11.jpeg",
+  "forest-horror": "enemies/image 12.jpeg",
+  "bone-warden": "enemies/image 13.jpeg",
+  "spider-matron": "enemies/image 14.jpeg",
+  "soul-harvester": "enemies/image 15.jpeg",
+  "void-hunter": "enemies/image 16.jpeg",
+  "blind-monk": "enemies/image 17.jpeg",
+  "stone-minotaur": "enemies/image 18.jpeg",
+  "cursed-alchemist": "enemies/image 20.jpeg",
+  "root-colossus": "enemies/image.jpeg"
+};
+const bosses={
+  "mirror-executioner": "bosses/image 19.jpeg",
+  "ash-patriarch": "bosses/image 3.jpeg",
+  "ice-abbot": "bosses/image 4.jpeg",
+  "crimson-regent": "bosses/image 11.jpeg",
+  "heart-of-tower": "bosses/image 12.jpeg"
+};
 
+assert.equal(heroManifest.assets.length,7,'JPG hero roster must contain all seven classes');
+assert.equal(enemyManifest.assets.length,19,'JPG enemy mapping must contain all nineteen supplied roles');
+assert.equal(bossManifest.assets.length,5,'JPG boss mapping must contain all five supplied bosses');
 
-for (const manifest of [heroManifest, enemyManifest, bossManifest]) {
-  for (const asset of manifest.assets) {
-    assert.ok(inventory.includes(asset.source_filename + '.jpg'),
-      'manifest source missing from art inbox: ' + asset.source_filename);
-    assert.ok(fs.existsSync(asset.relative_path), 'named asset missing: ' + asset.relative_path);
+function validateManifest(manifest,expected,label){
+  for(const [id,file] of Object.entries(expected)){
+    const item=manifest.assets.find(asset=>asset.id===id);
+    assert.ok(item,label+' manifest entry missing: '+id);
+    assert.equal(item.relative_path,'assets/characters/'+file,label+' path mismatch for '+id);
+    assert.equal(item.image_format,'jpeg',label+' must remain JPEG: '+id);
+    assert.ok(fs.existsSync(item.relative_path),'missing JPG: '+item.relative_path);
   }
 }
+validateManifest(heroManifest,heroes,'hero');
+validateManifest(enemyManifest,mobs,'enemy');
+validateManifest(bossManifest,bosses,'boss');
 
-const requiredClassMappings = [
-  'assassin:"heroes/reaper.png"',
-  'bishop:"heroes/arcanist.png"',
-  'dragonkin:"heroes/dragonkin.jpg"',
-  'destroyer:"heroes/warden.png"',
-  'elemental:"heroes/elemental.jpg"',
-  'duelist:"heroes/duelist.jpg"',
-  'shaman:"heroes/shaman.jpg"'
-];
-for (const mapping of requiredClassMappings) assert.ok(ui.includes(mapping), 'missing class mapping: ' + mapping);
-
-const requiredMobs = [
-  'shadow-goblin','cursed-knight','ash-wolf','rune-golem','grave-archer',
-  'plague-witch','ash-imp','swamp-reaper','bone-warden','crimson-executioner',
-  'void-hunter','spider-matron','blind-monk','stone-minotaur','phantom-duelist',
-  'soul-harvester','forest-horror','abyss-knight','cursed-alchemist','root-colossus'
-];
-for (const id of requiredMobs) {
-  assert.ok(ui.includes('"'+id+'":'), 'RPG mob art mapping missing: ' + id);
-  assert.ok(html.includes('/enemies/'+id+'.png'), 'legacy mob art mapping missing: ' + id);
+for(const [id,file] of Object.entries(heroes)){
+  assert.ok(ui.includes(id+':"'+file+'"'),'modern class portrait missing: '+id);
+  assert.ok(legacy.includes(id+':\'./assets/characters/'+file+'\''),'legacy class portrait missing: '+id);
 }
-for (const id of ['bone-colossus','abyss-queen','ash-patriarch','ice-abbot','mirror-executioner','soul-devourer','root-titan','void-hunter-boss','heart-of-tower']) {
-  assert.ok(ui.includes('bosses/'+id+'.png'), 'RPG boss art mapping missing: ' + id);
-  assert.ok(html.includes('/bosses/'+id+'.png'), 'legacy boss art mapping missing: ' + id);
+for(const [id,file] of Object.entries(mobs)){
+  assert.ok(ui.includes('"'+id+'":"'+file+'"'),'modern enemy portrait missing: '+id);
+  assert.ok(engine.includes("'"+id+"':'"+file.split('/').pop()+"'"),'Phaser enemy portrait missing: '+id);
 }
-assert.ok(ui.includes('target?.mobId'), 'RPG portrait selection must use the concrete mob id');
-assert.ok(ui.includes('object-fit:contain!important'), 'RPG image containers must preserve aspect ratio');
-assert.ok(html.includes('object-fit:contain!important'), 'legacy character art must preserve aspect ratio');
-assert.ok(ui.includes('function enemyPortrait(target)'), 'enemy portrait selector missing');
-assert.ok(ui.includes('enemyPortrait(target)'), 'enemy target card portrait missing');
-assert.ok(ui.includes('enemyPortrait(enemy)'), 'focused enemy/boss portrait missing');
-assert.ok(!ui.includes('ART_INBOX_BASE'), 'runtime RPG UI should use stable named assets, not staging paths');
-assert.ok(!html.includes('./art-inbox/01-characters/'), 'legacy game must not load staging art paths');
-for (const path of Object.values({
-  warden:'./assets/characters/heroes/warden.png',
-  arcanist:'./assets/characters/heroes/arcanist.png',
-  ranger:'./assets/characters/heroes/ranger.png',
-  reaper:'./assets/characters/heroes/reaper.png'
-})) assert.ok(html.includes(path), 'legacy hero picker asset missing: ' + path);
+for(const [id,file] of Object.entries(bosses)){
+  assert.ok(ui.includes('"'+id+'":"'+file+'"'),'modern boss portrait missing: '+id);
+  assert.ok(engine.includes("'"+id+"':'"+file.split('/').pop()+"'"),'Phaser boss portrait missing: '+id);
+  assert.ok(legacy.includes("'"+id+"':'./assets/characters/"+file+"'"),'legacy boss portrait missing: '+id);
+}
 
-console.log('Character art integration checks: OK (33 inbox images, 4 hero assets, 20 enemy assets, 9 boss assets)');
+const chapterFiles=['assets/chapters/image 2.jpeg','assets/chapters/image 3.jpeg','assets/chapters/image 4.jpeg','assets/chapters/image 5.jpeg','assets/chapters/image.jpeg'];
+assert.equal(chapters.chapters.length,5,'five chapter backgrounds expected');
+for(let i=0;i<5;i++){
+ assert.equal(chapters.chapters[i].background,chapterFiles[i],'chapter range/background mapping mismatch at '+(i+1));
+ assert.ok(fs.existsSync(chapterFiles[i]),'chapter JPG missing: '+chapterFiles[i]);
+}
+assert.ok(ui.includes('function chapterBackgroundPath(stage)'),'chapter stage background helper missing');
+assert.ok(ui.includes('background-size:cover;background-position:center'),'chapter backgrounds must cover and center');
+assert.ok(ui.includes('function enemyPortrait(target)')&&ui.includes('target?.mobId'),'enemy renderer must prefer the concrete mob id');
+assert.ok(ui.includes('object-fit:contain!important'),'modern art must preserve image aspect ratio');
+assert.ok(legacy.includes('object-fit:contain!important'),'legacy art must preserve image aspect ratio');
+assert.ok(html.includes('./assets/ui/art-sprites.css'),'sprite sheet stylesheet must be loaded');
+assert.ok(html.includes('./assets/ui/logo.jpeg')||legacy.includes('./assets/ui/logo.jpeg'),'TowerBound JPG logo must be referenced');
+assert.ok(!ui.includes('ART_INBOX_BASE')&&!html.includes('./art-inbox/01-characters/'),'runtime must not reference staging art paths');
+
+const obsolete=['hero-'+'illustrated.svg','foe-'+'illustrated.svg','skeleton-'+'illustrated.svg','brute-'+'illustrated.svg','enemy-'+'atlas.webp','arena-'+'background.svg','arena-'+'background.webp'];
+for(const name of obsolete){
+ assert.ok(!ui.includes(name),'obsolete RPG art path remains in modern renderer: '+name);
+ assert.ok(!engine.includes(name),'obsolete art path remains in Phaser renderer: '+name);
+ assert.ok(!html.includes(name),'obsolete art path remains in index: '+name);
+}
+console.log('Character art integration checks: OK (7 hero JPGs, 19 enemy JPGs, 5 boss JPGs, 5 chapter JPGs)');

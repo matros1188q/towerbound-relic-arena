@@ -20,6 +20,35 @@ def png_info(path):
     width, height, depth, color_type = struct.unpack(">IIBB", header[16:26])
     return width, height, depth, color_type
 
+def jpeg_info(path):
+    data = path.read_bytes()
+    if len(data) < 4 or data[:2] != b"\xff\xd8":
+        raise ValueError("not a valid JPEG/SOI")
+    sof_markers = {0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF}
+    i = 2
+    while i < len(data):
+        if data[i] != 0xFF:
+            i += 1
+            continue
+        while i < len(data) and data[i] == 0xFF:
+            i += 1
+        if i >= len(data):
+            break
+        marker = data[i]
+        i += 1
+        if marker in {0xD8, 0xD9, 0x01} or 0xD0 <= marker <= 0xD7:
+            continue
+        if i + 2 > len(data):
+            break
+        segment_length = struct.unpack(">H", data[i:i+2])[0]
+        if segment_length < 2 or i + segment_length > len(data):
+            break
+        if marker in sof_markers and segment_length >= 7:
+            height, width = struct.unpack(">HH", data[i+3:i+7])
+            return width, height
+        i += segment_length
+    raise ValueError("JPEG has no supported start-of-frame marker")
+
 def validate_rig(path, expected_id, expected_image, errors):
     rig = load_json(path)
     if rig.get("schema_version") != 1: errors.append(f"{path}: schema_version must be 1")
@@ -96,10 +125,21 @@ def main():
             if not image.is_file(): errors.append(f"{aid}: missing source image {rel}")
             else:
                 try:
-                    w,h,depth,color=png_info(image)
-                    if w!=asset.get("width") or h!=asset.get("height"): errors.append(f"{aid}: manifest size mismatch, actual {w}x{h}")
-                    if color not in (4,6): errors.append(f"{aid}: source PNG has no alpha channel (color type {color})")
-                except Exception as exc: errors.append(f"{aid}: {exc}")
+                    image_format = str(asset.get("image_format") or image.suffix.lstrip(".")).lower()
+                    if image_format in ("jpg", "jpeg"):
+                        w, h = jpeg_info(image)
+                        if asset.get("width") is not None and w != asset.get("width"):
+                            errors.append(f"{aid}: manifest width mismatch, actual {w}")
+                        if asset.get("height") is not None and h != asset.get("height"):
+                            errors.append(f"{aid}: manifest height mismatch, actual {h}")
+                    else:
+                        w, h, depth, color = png_info(image)
+                        if w != asset.get("width") or h != asset.get("height"):
+                            errors.append(f"{aid}: manifest size mismatch, actual {w}x{h}")
+                        if color not in (4, 6):
+                            errors.append(f"{aid}: source PNG has no alpha channel (color type {color})")
+                except Exception as exc:
+                    errors.append(f"{aid}: {exc}")
             rig_path=ROOT/"assets"/"characters"/"rigs"/category/(aid.split(".",1)[1]+".rig.json")
             row={"id":aid,"category":category,"source_image":rel,"rig_manifest":str(rig_path.relative_to(ROOT))}
             roster.append(row)
