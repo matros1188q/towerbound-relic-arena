@@ -870,6 +870,22 @@ function createDialog(){
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
   if(!nav){nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");host.appendChild(nav);}
   nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-rating" data-nav-tab="leaderboard"><span>✦</span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
+  const c=live(),spent=Object.values(c.talents||{}).reduce((n,v)=>n+(Number(v)||0),0),free=Math.max(0,(Number(c.talentPoints)||0)-spent);
+  const statSum=item=>Object.values(item?.stats||{}).reduce((n,v)=>n+(Number(v)||0),0);
+  const upgrade=(c.bag||[]).some(item=>item?.slot&&statSum(item)>statSum((c.gear||[]).find(g=>g?.slot===item.slot)));
+  const craftItems=(c.bag||[]).filter(item=>/stone|material|камень|материал/i.test(String(item.type||"")));
+  const craftLevels={};craftItems.forEach(item=>{const key=(item.type||"")+":"+(item.level||item.itemLevel||1);craftLevels[key]=(craftLevels[key]||0)+(Number(item.quantity)||1);});
+  const craft=Object.values(craftLevels).some(n=>n>=5)||craftItems.reduce((n,item)=>n+(Number(item.quantity)||1),0)>=20;
+  const claimed=c.achievements||[],derived={highest_stage:c.progress?.highestEver||0,lore_read:(c.loreRead||[]).length,paragon_level:c.paragon?.level||0,account_level:engine.accountLevel(),season_clear:c.stats?.season_clear||0};
+  const achievement=(balance.achievements?.achievements||[]).some(a=>!claimed.includes(a.id)&&(derived[a.metric]??c.stats?.[a.metric]??c.progress?.[a.metric]??0)>=a.target);
+  const chest=!!engine.dailyChestSnapshot(c.id).available;
+  const addBadge=(button,value)=>{if(!button||!value)return;const badge=document.createElement("i");badge.className="badge";badge.textContent=String(value===true?"!":value);button.appendChild(badge);};
+  addBadge(nav.querySelector('[data-nav-tab="profile"]'),free+(upgrade?1:0));
+  addBadge(nav.querySelector('[data-nav-tab="progress"]'),achievement);
+  addBadge(nav.querySelector('[data-nav-tab="shop"]'),chest?1:0);
+  const skillsTab=root.querySelector('[data-tab="skills"]');addBadge(skillsTab,free);
+  const bagTab=root.querySelector('[data-tab="bag"]');addBadge(bagTab,(upgrade?1:0)+(craft?1:0));
+
   const active=screen==="map"?"map":screen==="profile"?"profile":screen==="leaderboard"?"leaderboard":screen==="shop"?"shop":"account";
   nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
