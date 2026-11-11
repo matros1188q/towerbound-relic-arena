@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v29';
+const CACHE = 'towerbound-v31';
 const SHELL = [
   './',
   './index.html',
@@ -63,12 +63,12 @@ const SHELL = [
   "./assets/relics/image 12.jpeg",
   "./assets/relics/image 14.jpeg",
   "./assets/relics/image 18.jpeg",
-  "./assets/icons/image 11.jpeg",
-  "./assets/icons/image 13.jpeg",
+  "./assets/icons/image 11.png",
+  "./assets/icons/image 13.png",
   "./assets/icons/image 14.jpeg",
-  "./assets/icons/image 15.jpeg",
-  "./assets/icons/image 16.jpeg",
-  "./assets/icons/image 17.jpeg",
+  "./assets/icons/image 15.png",
+  "./assets/icons/image 16.png",
+  "./assets/icons/image 17.png",
   "./assets/icons/image 19.jpeg",
   "./assets/icons/image.jpeg",
   "./assets/ui/art-manifest.json",
