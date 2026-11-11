@@ -310,7 +310,7 @@ const {chromium}=require('playwright');
    const c=window.TowerboundRework.state.characters[0];
    c.level=50;
    c.progress.highestEver=10;
-   c.skillLoadout=['assassin.base.1'];
+   c.skillLoadout=['assassin.base.1','assassin.base.2'];
    window.saveTowerboundRework();
   });
   assert.equal(await page.evaluate(()=>typeof window.TowerboundEndgame?.open),'function','endgame screens expose their navigation API');
