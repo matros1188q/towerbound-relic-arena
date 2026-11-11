@@ -810,3 +810,10 @@ html,body,#tbRpg,.tb-v2 {
 .tb-bottom-nav button>small{font-size:8px;line-height:1.1;white-space:normal;text-align:center;letter-spacing:.015em}
 .tb-tabs button{position:relative}
 .tb-tabs .badge{top:0;right:0}
+
+.tb-target-grid.crowded{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.tb-target-grid.crowded .tb-target-card{padding:3px 2px}
+.tb-target-grid.crowded .tb-target-art-wrap{max-height:62px;min-height:28px}
+.tb-target-grid.crowded .tb-target-card>b{font-size:8px}
+.tb-target-grid.crowded .tb-target-card>small{font-size:7px}
+@media(max-width:560px){.tb-target-grid.crowded .tb-target-art-wrap{max-height:54px}.tb-target-grid.crowded .tb-target-card{gap:1px}}
