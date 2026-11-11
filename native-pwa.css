@@ -391,3 +391,42 @@ html,body,#tbRpg,.tb-v2 {
 #tbRpg .tb-v2 .tb-account-auth input:not([type=checkbox]){box-sizing:border-box!important;max-width:100%!important}
 #tbRpg .tb-v2 .tb-header .game-logo{display:block!important;width:min(280px,58vw)!important;max-width:280px!important;height:auto!important;max-height:76px!important;margin:0!important;object-fit:contain!important;object-position:left center!important;background:transparent!important}
 @media(max-width:430px){#tbRpg .tb-v2 .tb-character-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}#tbRpg .tb-v2 .tb-character-stats .tb-stat-row{padding:9px!important;gap:5px!important}#tbRpg .tb-v2 .tb-system-row{align-items:flex-start!important}#tbRpg .tb-v2 .tb-system-row button{max-width:42%;font-size:9px!important;padding:7px 6px!important}#tbRpg .tb-v2 .tb-system-stats span{font-size:10px!important;padding:7px 8px!important}#tbRpg .tb-v2 .tb-header .game-logo{width:min(210px,54vw)!important;max-height:58px!important}}
+
+/* Final account + speedrun modal layout repair: force readable horizontal flow. */
+.auth-form,
+.speedrun-stats,
+.stats-container,
+.modal-content {
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+.auth-form input {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 40px !important;
+  margin-bottom: 10px !important;
+  padding: 10px !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  transform: none !important;
+}
+.auth-form button,
+.speedrun-stats button {
+  box-sizing: border-box !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  transform: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-top: 10px !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
