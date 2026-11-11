@@ -14,6 +14,19 @@
   #tbRpg .tb-target-art{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center center!important;filter:drop-shadow(0 3px 6px #0009)}
   #tbRpg .tb-target-card{min-width:0}
  `;
+ artInboxStyle.textContent += `
+  /* Transparent character PNGs: never paint a rectangular backdrop behind alpha pixels. */
+  #tbRpg img[src*="/characters/"],#heroChoices img[src*="/characters/"],#enemies img[src*="/characters/"],
+  #tbRpg .tb-hero-art img,#tbRpg .tb-mini-avatar img,#tbRpg .tb-character-card img,
+  #tbRpg .tb-profile-avatar img,#tbRpg .tb-hero-chip img,#tbRpg .tb-char-art img,
+  #tbRpg .tb-class-picker img,#heroChoices .tb-hero-portrait img,
+  #enemies .tb-character-sprite,.tb-visible-hero,.tb-visible-enemy {
+    background:transparent!important;
+    background-color:transparent!important;
+  }
+  #phaser-arena, #phaser-arena canvas { background:transparent!important; }
+ `;
+ artInboxStyle.id="tb-transparent-character-art-v1";
  document.head.appendChild(artInboxStyle);
  const CHARACTER_ART_ROOT="./assets/characters/";
  const classPortraits={assassin:"heroes/image-Photoroom.png",bishop:"heroes/image 2-Photoroom(1).png",dragonkin:"heroes/image 3-Photoroom.png",destroyer:"heroes/image 4-Photoroom.png",elemental:"heroes/image 5-Photoroom.png",shaman:"heroes/image 6-Photoroom.png",duelist:"heroes/image 7-Photoroom.png"};
