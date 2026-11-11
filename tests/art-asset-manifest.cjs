@@ -21,7 +21,7 @@ for(const sheet of ui.spriteSheets)exists(sheet.path);
 for(const sheet of skills.sprite_sheets||[])exists(sheet.path);
 for(const chapter of chapters.chapters){assert.ok(chapter.background.endsWith('.jpeg'),'Chapter backgrounds must remain JPEG');exists(chapter.background);}
 exists(ui.logo);exists(ui.stylesheet);
-const sourceFiles=['rpg-rework-ui.js','rpg-mode.js','service-worker.js','assets/ui/art-sprites.css','assets/relics/art-manifest.json','assets/skills/art-manifest.json','assets/ui/art-manifest.json','assets/characters/heroes/manifest.json','assets/characters/enemies/manifest.json','assets/characters/bosses/manifest.json'];
+const sourceFiles=['rpg-rework-ui.js','rpg-mode.js','towerbound-engine.js','index.html','service-worker.js','assets/ui/art-sprites.css','assets/relics/art-manifest.json','assets/skills/art-manifest.json','assets/ui/art-manifest.json','assets/characters/heroes/manifest.json','assets/characters/enemies/manifest.json','assets/characters/bosses/manifest.json'];
 const source=Object.fromEntries(sourceFiles.map(p=>[p,fs.readFileSync(path.join(root,p),'utf8')]));
 for(const [file,content] of Object.entries(source)){
  assert.ok(!/assets\/(?:characters|relics|skills|icons)\/[^"'\x60]+?\.jpeg/.test(content),'JPEG path remains in PNG art folder: '+file);
