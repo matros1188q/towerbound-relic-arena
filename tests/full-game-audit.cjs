@@ -99,21 +99,21 @@ for(const [manifestPath,expected] of [
   assert.ok(relative&&fs.existsSync(path.join(root,relative)),manifestPath+' references an existing asset: '+relative);
  }
 }
-const dedicatedClassPortraits={assassin:'image.jpeg',bishop:'image 2.jpeg',dragonkin:'image 3.jpeg',destroyer:'image 4.jpeg',elemental:'image 5.jpeg',shaman:'image 6.jpeg',duelist:'image 7.jpeg'};
+const dedicatedClassPortraits={assassin:'image-Photoroom.png',bishop:'image 2-Photoroom(1).png',dragonkin:'image 3-Photoroom.png',destroyer:'image 4-Photoroom.png',elemental:'image 5-Photoroom.png',shaman:'image 6-Photoroom.png',duelist:'image 7-Photoroom.png'};
 for(const [id,fileName] of Object.entries(dedicatedClassPortraits)){
  const image=path.join(root,'assets/characters/heroes',fileName);
- assert.ok(fs.existsSync(image),id+' has a dedicated JPG portrait asset');
+ assert.ok(fs.existsSync(image),id+' has a dedicated PNG portrait asset');
  assert.ok(fs.statSync(image).size>1024,id+' portrait is not an empty placeholder');
 }
-const crimsonRegent=path.join(root,'assets/characters/bosses/image 11.jpeg');
-assert.ok(fs.existsSync(crimsonRegent),'Crimson Regent has a dedicated JPG boss portrait');
+const crimsonRegent=path.join(root,'assets/characters/bosses/image 11.png');
+assert.ok(fs.existsSync(crimsonRegent),'Crimson Regent has a dedicated PNG boss portrait');
 assert.ok(fs.statSync(crimsonRegent).size>1024,'Crimson Regent portrait is not an empty placeholder');
 // Native PWA phase-2 release checks: dedicated class/boss art, fixed tab navigation and origin-safe Supabase auth.
 const uiSource=fs.readFileSync(path.join(root,'rpg-rework-ui.js'),'utf8');
-for(const [classId,fileName] of Object.entries({assassin:'image.jpeg',bishop:'image 2.jpeg',dragonkin:'image 3.jpeg',destroyer:'image 4.jpeg',elemental:'image 5.jpeg',shaman:'image 6.jpeg',duelist:'image 7.jpeg'})){
+for(const [classId,fileName] of Object.entries({assassin:'image-Photoroom.png',bishop:'image 2-Photoroom(1).png',dragonkin:'image 3-Photoroom.png',destroyer:'image 4-Photoroom.png',elemental:'image 5-Photoroom.png',shaman:'image 6-Photoroom.png',duelist:'image 7-Photoroom.png'})){
  assert.ok(uiSource.includes(classId+':"heroes/'+fileName+'"'),classId+' uses its own dedicated class portrait');
 }
-assert.ok(uiSource.includes('"crimson-regent":"bosses/image 11.jpeg"'),'Crimson Regent uses a dedicated boss JPG portrait');
+assert.ok(uiSource.includes('"crimson-regent":"bosses/image 11.png"'),'Crimson Regent uses a dedicated boss JPG portrait');
 assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
 assert.ok(uiSource.includes('host.querySelector(".tb-turn-tutorial")'),'bottom navigation yields to the first-run battle tutorial');
 for(const action of ['bottom-map','bottom-profile','bottom-shop','bottom-rating'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
@@ -132,7 +132,7 @@ assert.match(pageSource,/<meta name="apple-mobile-web-app-status-bar-style" cont
 assert.ok(nativeCss.includes('height:100dvh')&&nativeCss.includes('overflow:hidden')&&nativeCss.includes('overscroll-behavior:none'),'native app shell locks document scrolling at dynamic viewport height');
 assert.ok(nativeCss.includes('padding-top:env(safe-area-inset-top')&&nativeCss.includes('padding-bottom:env(safe-area-inset-bottom'),'native app shell respects iOS safe areas');
 assert.ok(nativeCss.includes('.tb-bottom-nav{position:fixed')&&nativeCss.includes('bottom:0')&&nativeCss.includes('display:flex'),'bottom tab bar is fixed above the home-indicator safe area');
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v29'"),'PWA shell cache was invalidated for the native release');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v33'"),'PWA shell cache was invalidated for the native release');
 assert.ok(uiSource.includes('function syncMusic()')&&uiSource.includes('function unlockAudioAndMusic()'),'Web Audio ambient music and iOS gesture unlock are implemented');
 assert.ok(uiSource.includes('prefs.music_enabled!==false')&&uiSource.includes('screen==="battle"?[73.42,110]:[55,82.41]'),'music switches between map ambience and battle ambience');
 assert.ok(uiSource.includes('data-setting="music_enabled"')&&uiSource.includes('data-setting="sound_enabled"'),'music and sound effects have independent settings');
@@ -147,7 +147,7 @@ assert.ok(achievements.length>=30,'achievement catalogue is populated');
 assert.equal(read('configs/balance/tutorial.json').steps_data.length,6,'six tutorial steps exist');
 assert.equal(read('configs/balance/death.json').lives_per_run,1,'base death config is consistent; difficulty overrides are tested separately');
 assert.deepEqual(read('configs/balance/equipment.json').set_bonus_thresholds,[2,3,5]);
-console.log('FULL GAME AUDIT PASS: 40 balance configs; 7 classes; 21 specializations; 210 talents/ranks; 420 skill records + 420 individual files; 1,750 stage plans; 175 boss plans; save/restore for every class; 31 dedicated character JPG assets checked; relic assets; achievements, tutorial, death and equipment config.');
+console.log('FULL GAME AUDIT PASS: 40 balance configs; 7 classes; 21 specializations; 210 talents/ranks; 420 skill records + 420 individual files; 1,750 stage plans; 175 boss plans; save/restore for every class; 31 dedicated character PNG assets checked; relic assets; achievements, tutorial, death and equipment config.');
 
 // UI/UX navigation release checks.
 assert.ok(uiSource.includes('["account","Аккаунт"]')&&uiSource.includes('["speedrun","Спидран"]'),'profile contains account and speedrun sub-tabs');

@@ -12,7 +12,7 @@ const engine=fs.readFileSync('rpg-rework-v2.js','utf8');
 const serviceWorker=fs.readFileSync('service-worker.js','utf8');
 const pwa=fs.readFileSync('juice-pwa.js','utf8');
 const gems=JSON.parse(fs.readFileSync('configs/balance/equipment.json','utf8'));
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v29'"),'PWA cache version must advance on release');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v33'"),'PWA cache version must advance on release');
 assert.ok(serviceWorker.includes('self.skipWaiting()'),'new service worker must skip the waiting phase');
 assert.ok(serviceWorker.includes('self.clients.claim()'),'new service worker must claim open pages');
 assert.ok(serviceWorker.includes("request.mode === 'navigate'")&&serviceWorker.includes("url.pathname.endsWith('/index.html')"),'HTML documents must use the network-first branch');
