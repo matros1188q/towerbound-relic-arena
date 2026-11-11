@@ -62,7 +62,7 @@ These phases are plans, not claims that the functionality is already implemented
 - Replaced the previous end-of-file art note with the complete Current JPG artwork catalogue: 7 heroes, 19 enemies, 5 bosses, 5 chapter backgrounds, 10 requested relics plus the currently mapped potion-stack and bundle assets, and each sprite atlas/class.
 - Reclassified all earlier named PNG portrait paths as an explicitly historical pre-JPG mapping; current runtime mappings in `rpg-rework-ui.js` and `rpg-mode.js` were audited and already resolve the requested hero/enemy/boss JPGs.
 - Corrected sprite CSS: `image 13.jpeg` now supplies fire/ice/poison/physical badges; `image 11.jpeg` supplies settings/target; the actual shield glyph is sourced from `image 13.jpeg` because image 11 contains no shield tile; `image 17.jpeg` supplies skill-menu crops.
-- Replaced active PNG entries in `assets/skills/art-manifest.json` with JPG sprite-sheet entries; refreshed UI manifest, sprite stylesheet cache key, service-worker cache and art regression checks.
+- Replaced active PNG entries in `assets/skills/art-manifest.json` with six semantic JPG atlas records; refreshed UI manifest, sprite stylesheet cache key, service-worker cache and art regression checks.
 - Commit: this documentation/runtime synchronization update; see the current HEAD.
 - Verification: pending GitHub Actions art-manifest / syntax / regression jobs; manual iPhone crop approval is not claimed.
 
@@ -798,7 +798,7 @@ The source montages are not all perfectly regular grids. The 4×3 coordinates fo
 - `assets/icons/image 17.jpeg` — skill-menu glyphs.
 - `assets/icons/image 13.jpeg` — elemental / damage glyphs.
 
-The former isolated `assets/skills/*.png` files are not active entries in the skill manifest or current skill-menu CSS. They may remain in the repository as legacy source files. PWA install icons (`assets/pwa/icon-192.png`, `assets/pwa/icon-512.png`) and the embedded data-URI favicon in `index.html` are application chrome, not character / enemy / skill artwork.
+The skill manifest retains six semantic IDs (fire, arcane, ice, lightning, nature, void), each resolving to the active JPG atlas `assets/icons/image 17.jpeg`; the CSS crop utility provides the visible menu classes for the supported crops. The former isolated `assets/skills/*.png` files are not active manifest assets and may remain in the repository only as legacy source files. PWA install icons (`assets/pwa/icon-192.png`, `assets/pwa/icon-512.png`) and the embedded data-URI favicon in `index.html` are application chrome, not character / enemy / skill artwork.
 
 ### Logo and implementation files
 

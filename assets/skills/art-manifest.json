@@ -1,20 +1,48 @@
 {
-  "pack": "towerbound-jpg-skill-sprites-v3",
+  "pack": "towerbound-jpg-skill-sprites-v4",
   "category": "skills",
   "assets": [
     {
-      "id": "skill-school-atlas",
-      "name": "Skill menu atlas",
+      "id": "fire",
+      "name": "Fire",
       "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
-      "usage": "Active JPG sprite sheet; CSS classes skill-fire, skill-ice and skill-arcane"
+      "usage": "Skill atlas crop; menu class skill-fire"
     },
     {
-      "id": "damage-school-atlas",
-      "name": "Element and damage badges",
-      "path": "assets/icons/image 13.jpeg",
+      "id": "arcane",
+      "name": "Arcane",
+      "path": "assets/icons/image 17.jpeg",
       "format": "jpeg",
-      "usage": "Active JPG sprite sheet; CSS classes skill-poison and skill-phys"
+      "usage": "Skill atlas crop; menu class skill-arcane"
+    },
+    {
+      "id": "ice",
+      "name": "Ice",
+      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "usage": "Skill atlas crop; menu class skill-ice"
+    },
+    {
+      "id": "lightning",
+      "name": "Lightning",
+      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "usage": "Skill atlas source; crop preset managed by CSS"
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "usage": "Skill atlas source; crop preset managed by CSS"
+    },
+    {
+      "id": "void",
+      "name": "Void",
+      "path": "assets/icons/image 17.jpeg",
+      "format": "jpeg",
+      "usage": "Skill atlas source; crop preset managed by CSS"
     }
   ],
   "sprite_sheets": [
@@ -44,5 +72,5 @@
       ]
     }
   ],
-  "note": "These JPG atlases are the active menu/damage glyph sources. The previous isolated PNG art entries are not active in this manifest; the original PNG files, if retained in the repository, are legacy source assets only."
+  "note": "All six logical skill-school entries now resolve to the JPG atlas. Individual menu crop classes are defined in assets/ui/art-sprites.css. The prior isolated PNG entries are not active manifest assets."
 }

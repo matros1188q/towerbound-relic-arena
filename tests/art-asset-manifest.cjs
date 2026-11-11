@@ -87,6 +87,7 @@ for (const [id, filename] of [
 ]) assert.ok(modeScript.includes("'" + id + "':'./assets/characters/bosses/" + filename + "'"), 'Legacy RPG boss JPG map missing ' + id);
 
 assert.ok(skills.assets.every(asset => asset.format === 'jpeg' && asset.path.endsWith('.jpeg')), 'Active skill art manifest must reference JPG files only');
+assert.deepEqual(skills.assets.map(asset => asset.id).sort(), ['arcane','fire','ice','lightning','nature','void'], 'Skill manifest must retain six semantic skill IDs mapped to JPG atlas assets');
 const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 const catalogueAt = readme.indexOf('## Current JPG artwork catalogue (2026-11-11)');
 const historicalAt = readme.indexOf('## Historical character artwork integration');
