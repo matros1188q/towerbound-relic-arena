@@ -1,68 +1,68 @@
 {
-  "pack": "towerbound-jpg-art-v2",
+  "pack": "towerbound-png-art-v3",
   "category": "heroes",
-  "format": "jpeg",
+  "format": "png",
   "assets": [
     {
       "id": "assassin",
       "name": "Убийца",
-      "filename": "image.png",
-      "relative_path": "assets/characters/heroes/image.png",
-      "image_format": "jpeg",
+      "filename": "image-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image-Photoroom.png",
+      "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "hero.assassin"
     },
     {
       "id": "bishop",
       "name": "Епископ",
-      "filename": "image 2.png",
-      "relative_path": "assets/characters/heroes/image 2.png",
-      "image_format": "jpeg",
+      "filename": "image 2-Photoroom(1).png",
+      "relative_path": "assets/characters/heroes/image 2-Photoroom(1).png",
+      "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "hero.bishop"
     },
     {
       "id": "dragonkin",
       "name": "Драконит",
-      "filename": "image 3.png",
-      "relative_path": "assets/characters/heroes/image 3.png",
-      "image_format": "jpeg",
+      "filename": "image 3-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image 3-Photoroom.png",
+      "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "hero.dragonkin"
     },
     {
       "id": "destroyer",
       "name": "Разрушитель",
-      "filename": "image 4.png",
-      "relative_path": "assets/characters/heroes/image 4.png",
-      "image_format": "jpeg",
+      "filename": "image 4-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image 4-Photoroom.png",
+      "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "hero.destroyer"
     },
     {
       "id": "elemental",
       "name": "Владыка стихий",
-      "filename": "image 5.png",
-      "relative_path": "assets/characters/heroes/image 5.png",
-      "image_format": "jpeg",
+      "filename": "image 5-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image 5-Photoroom.png",
+      "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "hero.elemental"
     },
     {
       "id": "shaman",
       "name": "Шаман",
-      "filename": "image 6.png",
-      "relative_path": "assets/characters/heroes/image 6.png",
-      "image_format": "jpeg",
+      "filename": "image 6-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image 6-Photoroom.png",
+      "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "hero.shaman"
     },
     {
       "id": "duelist",
       "name": "Дуэлянт",
-      "filename": "image 7.png",
-      "relative_path": "assets/characters/heroes/image 7.png",
-      "image_format": "jpeg",
+      "filename": "image 7-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image 7-Photoroom.png",
+      "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "hero.duelist"
     }
