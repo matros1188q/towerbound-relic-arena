@@ -8,7 +8,7 @@ const scene={key:'IllustratedArena',
 preload:function(){this.load.image('tb-arena-background','./assets/chapters/image 2.jpeg');this.load.image('tb-hero','./assets/characters/heroes/image-Photoroom.png');this.load.image('tb-foe','./assets/characters/enemies/image 2.png');this.load.image('tb-skeleton','./assets/characters/enemies/image 13.png');this.load.image('tb-brute','./assets/characters/enemies/image 18.png');},
 create:function(){
  arenaScene=this;
- this.phase='prep';this.cameras.main.setBackgroundColor('#101326');this.actorSprites=[];this.fx=[];
+ this.phase='prep';this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');this.actorSprites=[];this.fx=[];
  // Sync the visible iPhone DOM portraits with the Phaser scene on every scene creation.
  // The DOM layer is the reliable renderer on iOS Safari; Phaser keeps the combat arena and FX.
  const w=this.scale.width,h=this.scale.height;
@@ -283,7 +283,7 @@ if(!window.Phaser){console.warn('Towerbound: Phaser CDN unavailable; DOM actor f
 const tbMobilePerf=window.matchMedia('(max-width:700px)').matches;
 const game=new Phaser.Game({
  type:Phaser.CANVAS,parent:mount,width:700,height:300,
- backgroundColor:'#101326',pixelArt:false,antialias:!tbMobilePerf,roundPixels:tbMobilePerf,
+ transparent:true,pixelArt:false,antialias:!tbMobilePerf,roundPixels:tbMobilePerf,
  scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},
  fps:{target:tbMobilePerf?30:60,forceSetTimeOut:tbMobilePerf},
  render:{antialias:!tbMobilePerf,pixelArt:false,roundPixels:tbMobilePerf,powerPreference:'low-power',preserveDrawingBuffer:false},
