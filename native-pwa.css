@@ -817,3 +817,16 @@ html,body,#tbRpg,.tb-v2 {
 .tb-target-grid.crowded .tb-target-card>b{font-size:8px}
 .tb-target-grid.crowded .tb-target-card>small{font-size:7px}
 @media(max-width:560px){.tb-target-grid.crowded .tb-target-art-wrap{max-height:54px}.tb-target-grid.crowded .tb-target-card{gap:1px}}
+
+/* Final battle viewport and crafting navigation refinements */
+.tb-target-grid{overflow:hidden}
+.tb-target-grid.crowded{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}
+.tb-target-grid.crowded .tb-target-card{min-height:0}
+.tb-crafting-hub{display:grid;gap:12px}
+.tb-crafting-hub .tb-system-card{display:grid;gap:8px}
+.tb-daily-shop-chest{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;margin:10px 0;border:1px solid #d9b66b66;border-radius:14px;background:linear-gradient(120deg,#40331fdd,#171a2ddd)}
+.tb-daily-shop-chest>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tb-daily-shop-chest b{font-size:11px;color:#f4d99b}
+.tb-daily-shop-chest small{font-size:9px;color:#d5d9eb}
+.tb-daily-shop-chest button{flex:none;max-width:58%;font-size:9px;padding:8px}
+@media(max-width:430px){.tb-daily-shop-chest{align-items:stretch;flex-direction:column}.tb-daily-shop-chest button{max-width:100%;width:100%}}
