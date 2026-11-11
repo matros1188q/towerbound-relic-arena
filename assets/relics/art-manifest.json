@@ -1,5 +1,5 @@
 {
-  "pack": "towerbound-relic-jpg-v1",
+  "pack": "towerbound-png-relic-art-v2",
   "category": "relics",
   "assets": [
     {
@@ -61,6 +61,11 @@
       "id": "bundle",
       "name": "Набор сундука и зелий",
       "path": "assets/relics/image 18.png"
+    },
+    {
+      "id": "craft-material",
+      "name": "Материал для крафта",
+      "path": "assets/relics/image 15.png"
     }
   ]
 }
