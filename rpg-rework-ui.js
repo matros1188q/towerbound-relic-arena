@@ -346,7 +346,7 @@ function createDialog(){
   }
   if(battle.enemyStunned){battle.enemyStunned=false;notify("Враг оглушён · ход пропущен");return;}
   if(enemy.role==="healer"&&enemy.turnsTaken%2===0){
-   const ally=battle.enemies.filter(x=>x.alive&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
+   const ally=battle.enemies.filter(x=>x.alive&&x.hp>0&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
    if(ally){const amount=Math.round(ally.maxHp*.2);ally.hp=Math.min(ally.maxHp,ally.hp+amount);if(ally.index===battle.targetIndex)battle.enemyHp=ally.hp;notify("Лекарь восстановил "+amount+" HP союзнику");}
   }
   if(enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=1;
@@ -665,9 +665,9 @@ function createDialog(){
   if(!battle||battle.paused)return;
   const c=live(),now=Date.now();let changed=false;
   for(const enemy of battle.enemies||[]){
-   if(!enemy.alive)continue;
+   if(!enemy.alive||Number(enemy.hp)<=0){enemy.alive=false;enemy.dead=true;enemy.hp=0;continue;}
    if(enemy.role==="healer"&&now>=enemy.nextHealAt){
-    const ally=battle.enemies.filter(x=>x.alive&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
+    const ally=battle.enemies.filter(x=>x.alive&&x.hp>0&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
     if(ally){const before=ally.hp;ally.hp=Math.min(ally.maxHp,ally.hp+Math.round(ally.maxHp*balance.mobs.roles.healer.heal_fraction));const healed=ally.hp-before;if(healed>0)showFloatingText(ally,"+"+healed,"#58e38b");if(battle.enemy===ally)battle.enemyHp=ally.hp;changed=true;}
     enemy.nextHealAt=now+balance.mobs.roles.healer.interval_ms;
    }
