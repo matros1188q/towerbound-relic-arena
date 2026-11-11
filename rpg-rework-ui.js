@@ -298,7 +298,7 @@ function createDialog(){
  function buildInitiative(){
   const c=live(),stats=engine.getCombatStats(c),playerSpeed=Math.max(.01,stats.speed||stats.attackSpeedMultiplier||1);
   const actors=[{type:"player",id:"player",name:c.name,speed:playerSpeed}];
-  for(const enemy of battle.enemies||[])if(enemy.alive)actors.push({type:"enemy",id:"enemy-"+enemy.index,index:enemy.index,name:enemy.type==="boss"?"Босс":(balance.mobs.roles[enemy.role]?.name||"Моб")+" "+(enemy.index+1),speed:Math.max(.01,enemy.speed||1)});
+  for(const enemy of battle.enemies||[])if(enemy.alive&&Number(enemy.hp)>0)actors.push({type:"enemy",id:"enemy-"+enemy.index,index:enemy.index,name:enemy.type==="boss"?"Босс":(balance.mobs.roles[enemy.role]?.name||"Моб")+" "+(enemy.index+1),speed:Math.max(.01,enemy.speed||1)});
   return actors.sort((a,b)=>b.speed-a.speed||(a.type==="player"?-1:b.type==="player"?1:a.index-b.index));
  }
  function syncInitiative(){battle.turnOrder=buildInitiative();battle.turnIndex=0;battle.actor=battle.turnOrder[0]||{type:"player",id:"player",name:live().name};}
@@ -338,7 +338,7 @@ function createDialog(){
   if(c.run.playerHp<=0)endFromDamage();
  }
  function enemyTurn(enemy){
-  if(!battle||!enemy||!enemy.alive)return;
+  if(!battle||!enemy||!enemy.alive||Number(enemy.hp)<=0){if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;}return;}
   const c=live();enemy.turnsTaken=(enemy.turnsTaken||0)+1;enemy.pendingAttack=false;
   if(enemy.type==="boss"){
    battle.bossTurns=(battle.bossTurns||0)+1;
@@ -403,7 +403,7 @@ function createDialog(){
     advanceToPlayerTurn();return;
    }
    const enemy=queue[index];
-   if(enemy?.alive)enemyTurn(enemy);
+   if(enemy?.alive&&Number(enemy.hp)>0)enemyTurn(enemy);else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;}
    if(!battle)return;
    save();render();
    scheduleEnemyTurnQueue(queue,index+1,token,500);
@@ -424,7 +424,7 @@ function createDialog(){
    if(target){applyTargetDamage(target,battle.dot.damage,"dark");battle.dot.ticks--;if(target.hp<=0){finishCurrentEnemy();if(!battle)return;}}
   }
   if(battle.hot?.ticks>0){c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;}
-  const queue=(battle.enemies||[]).filter(enemy=>enemy.alive);
+  const queue=(battle.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0);
   if(!queue.length){advanceToPlayerTurn();return;}
   battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;const queueToken=battle.enemyQueueToken;
   battle.busy=true;battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
@@ -583,7 +583,7 @@ function createDialog(){
   const order=buildInitiative().map((actor,index)=>'<span class="'+(actor.type==="player"?"player":"enemy")+(actor.id===battle.actor?.id?" active":"")+'">'+(actor.type==="player"?'<img class="tb-initiative-avatar" src="'+portrait(c.classId)+'" alt="" aria-hidden="true">':'<i class="tb-initiative-mob" aria-hidden="true">◆</i>')+'<span class="tb-initiative-label">'+(index+1)+' · '+esc(actor.name)+(actor.id===battle.actor?.id?" · СЕЙЧАС":"")+'</span></span>').join("");
   const roleIcon={healer:"✚",poison:"☠",tank:"🛡",normal:"",boss:"♛"},skillRoleLabels=["НАКОПЛЕНИЕ","ДЕТОНАТОР","МАССОВАЯ АТАКА","ТАКТИКА"];
   const telegraph=battle.telegraph?'<div class="tb-telegraph '+(battle.telegraph.lethal?"lethal":"strong_hit")+'"><b>'+(battle.telegraph.icon||"⚔")+'</b><span>'+esc(battle.telegraph.label)+'</span><small>СЛЕДУЮЩИЙ ХОД</small></div>':'<div class="tb-telegraph-idle">Враг пока не заряжает атаку</div>';
-  const targets=battle.enemies.map(target=>'<button class="tb-target-card '+(target.index===battle.targetIndex?"selected ":"")+(!target.alive?"defeated":"")+'" data-target="'+target.index+'" '+(!target.alive?"disabled":"")+'><span class=\"tb-target-art-wrap\"><img class=\"tb-target-art\" src=\"'+enemyPortrait(target)+'\" alt=\"\" loading=\"lazy\" decoding=\"async\"></span><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+(target.hp/Math.max(1,target.maxHp)*100)+'%"></i></span><small>'+Math.ceil(target.hp)+' HP</small></button>').join("");
+  const targets=battle.enemies.map(target=>'<button class="tb-target-card '+(target.index===battle.targetIndex?"selected ":"")+(!target.alive||Number(target.hp)<=0?"defeated":"")+'" data-target="'+target.index+'" '+(!target.alive||Number(target.hp)<=0?"disabled":"")+'><span class=\"tb-target-art-wrap\"><img class=\"tb-target-art\" src=\"'+enemyPortrait(target)+'\" alt=\"\" loading=\"lazy\" decoding=\"async\"></span><span class="tb-target-role">'+(roleIcon[target.role]||"◆")+'</span><b>'+(target.type==="boss"?"БОСС":"МОБ "+(target.index+1))+'</b><small>'+(balance.mobs.roles[target.role]?.name||"Обычный")+'</small><span class="tb-target-hp"><i style="width:'+(target.hp/Math.max(1,target.maxHp)*100)+'%"></i></span><small>'+Math.ceil(target.hp)+' HP</small></button>').join("");
   const skillsMarkup=slots.map((skill,index)=>{
    const skillObject=skill;
    if(skillObject)console.log('SKILL DEBUG:',skillObject);
