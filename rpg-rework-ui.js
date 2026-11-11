@@ -453,10 +453,10 @@ function createDialog(){
    else body+='<div class="tb-talent-grid">'+branch.talents.map(t=>'<div class="tb-talent"><span class="tb-talent-icon sprite-icon '+talentSpriteClass(t.effect_template)+'" aria-hidden="true"></span><div><b>'+esc(t.name)+'</b><small>'+esc(talentEffectLabel(t.effect_template))+' · '+(c.talents[t.id]||0)+'/3</small></div><button data-talent="'+t.id+'" '+(free<=0||(c.talents[t.id]||0)>=3?"disabled":"")+' >＋</button></div>').join("")+'</div>';
   }else if(profileTab==="skills"){
    const base=(def.base_skills||[]).map(x=>({...x,branch:"Базовые"})).concat((def.passives||[]).map(x=>({...x,type:"passive",branch:"Пассивное"})));
-   const branchSkills=c.branch?skills.filter(x=>x.class_id===c.classId&&x.branch_id===c.branch).map(x=>({...x,type:"active",branch:branch?.name||c.branch})):[];
-   const available=base.concat(branchSkills),active=activeSkill(c);
-   body='<h3>Умения персонажа</h3><p>Активное умение на арене: <b>'+esc(active?.name||"не выбрано")+'</b></p><div class="tb-skill-list">'+available.map(s=>{const effect=balance.skill_effects[s.effect_template]||{};const detail=s.description||(s.effect_template==="strike"?"Урон: "+Math.round((s.damage_multiplier??effect.damage_multiplier??1)*100)+"% · Стоимость: "+(s.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill)+" ресурса":s.effect_template==="buff"?"Усиление: "+Math.round((effect.power_multiplier||0)*100)+"%":s.effect_template==="heal"?"Лечение: "+Math.round((effect.heal_multiplier||0)*100)+"%":"Эффект: "+(s.effect_template||"особый"));return '<div class="tb-skill-row"><span class="tb-skill-glyph '+skillSpriteClass(s)+'" aria-hidden="true"></span><div><b>'+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+' · '+esc(humanSkillDescription(detail))+'</small></div><strong class="'+(c.level>=s.unlock_level?"unlocked":"locked")+'">'+(c.level>=s.unlock_level?"ОТКРЫТО":"УР. "+s.unlock_level)+'</strong>'+(s.type==="passive"||c.level<s.unlock_level?"":'<button data-select-skill="'+s.id+'" '+((c.activeSkills||c.skillLoadout||[]).includes(s.id)?"disabled":"")+'>'+((c.activeSkills||c.skillLoadout||[]).includes(s.id)?"ВЫБРАНО":"ВЫБРАТЬ")+'</button>')+'</div>';}).join("")+'</div>';
-
+   const branchSkills=skills.filter(x=>x.class_id===c.classId).map(x=>({...x,type:"active",branch:(def.branches||[]).find(br=>br.id===x.branch_id)?.name||x.branch_id||"Специализация"}));
+   const available=base.concat(branchSkills).filter((item,index,list)=>list.findIndex(other=>other.id===item.id)===index).sort((x,y)=>(Number(x.unlock_level)||1)-(Number(y.unlock_level)||1));
+   const active=activeSkill(c);
+   body='<h3>Умения персонажа</h3><p>Активное умение на арене: <b>'+esc(active?.name||"не выбрано")+'</b></p><div class="tb-skill-list">'+available.map(s=>{const effect=balance.skill_effects[s.effect_template]||{},detail=s.description||(s.effect_template==="strike"?"Урон: "+Math.round((s.damage_multiplier??effect.damage_multiplier??1)*100)+"% · Стоимость: "+(s.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill)+" ресурса":s.effect_template==="buff"?"Усиление: "+Math.round((effect.power_multiplier||0)*100)+"%":s.effect_template==="heal"?"Лечение: "+Math.round((effect.heal_multiplier||0)*100)+"%":"Эффект: "+(s.effect_template||"особый")),unlocked=c.level>=(Number(s.unlock_level)||1),selected=(c.activeSkills||c.skillLoadout||[]).includes(s.id);return '<div class="tb-skill-row '+(unlocked?"is-unlocked":"is-locked")+'"><span class="tb-skill-glyph '+skillSpriteClass(s)+'" aria-hidden="true"></span><div><b>'+(!unlocked?'🔒 ':'')+esc(s.name)+'</b><small>'+esc(s.branch)+' · '+(s.type==="passive"?"Пассивное":"Активное")+' · '+esc(humanSkillDescription(detail))+(unlocked?"":" · 🔒 Откроется на "+(Number(s.unlock_level)||1)+" уровне")+'</small></div><strong class="'+(unlocked?"unlocked":"locked")+'">'+(unlocked?"ОТКРЫТО":"🔒 УР. "+(Number(s.unlock_level)||1))+'</strong>'+(s.type==="passive"||!unlocked?"":'<button data-select-skill="'+s.id+'" '+(selected?"disabled":"")+'>'+(selected?"ВЫБРАНО":"ВЫБРАТЬ")+'</button>')+'</div>';}).join("")+'</div>';
   }else if(profileTab==="craft"){
    const materials=(c.bag||[]).filter(item=>item.type==="craft_material").reduce((sum,item)=>sum+(Number(item.quantity)||1),0);
    const stones=(c.bag||[]).filter(item=>item.type==="enhancement_stone");
@@ -869,7 +869,7 @@ function createDialog(){
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
   if(!nav){nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");host.appendChild(nav);}
   nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-progress" data-nav-tab="progress"><span>✦</span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
-  const c=live(),spent=Object.values(c.talents||{}).reduce((n,v)=>n+(Number(v)||0),0),free=Math.max(0,(Number(c.talentPoints)||0)-spent);
+  const c=live(),spent=Object.values(c.talents||{}).reduce((n,v)=>n+(Number(v)||0),0),free=Math.max(0,(Number(c.talentPoints)||0)-spent),unspentSkillPoints=Math.max(0,Number(c.unspentSkillPoints)||0),skillBadge=free+unspentSkillPoints;
   const statSum=item=>Object.values(item?.stats||{}).reduce((n,v)=>n+(Number(v)||0),0);
   const slotIndex={weapon:0,chest:1,head:2,legs:3,hands:4,accessory:5};
   const upgrade=(c.bag||[]).some(item=>{const index=slotIndex[item?.slot];return Number.isInteger(index)&&statSum(item)>statSum((c.gear||[])[index]);});
@@ -881,10 +881,10 @@ function createDialog(){
   const achievement=(balance.achievements?.achievements||[]).some(a=>!claimed.includes(a.id)&&(derived[a.metric]??c.stats?.[a.metric]??c.progress?.[a.metric]??0)>=a.target);
   const chest=!!engine.dailyChestSnapshot(c.id).available;
   const addBadge=(button,value)=>{if(!button||!value)return;const badge=document.createElement("i");badge.className="badge";badge.textContent=String(value===true?"!":value);button.appendChild(badge);};
-  addBadge(nav.querySelector('[data-nav-tab="profile"]'),free+(upgrade?1:0));
+  addBadge(nav.querySelector('[data-nav-tab="profile"]'),skillBadge+(upgrade?1:0));
   addBadge(nav.querySelector('[data-nav-tab="progress"]'),achievement);
   addBadge(nav.querySelector('[data-nav-tab="shop"]'),chest?1:0);
-  const skillsTab=root.querySelector('[data-tab="skills"]');addBadge(skillsTab,free);
+  const skillsTab=root.querySelector('[data-tab="skills"]');addBadge(skillsTab,skillBadge);
   const bagTab=root.querySelector('[data-tab="bag"]');addBadge(bagTab,upgrade?1:0);
   const craftTab=root.querySelector('[data-tab="craft"]');addBadge(craftTab,craft?1:0);
   root.querySelectorAll('[data-craft-stone]').forEach(button=>addBadge(button,craftMaterials>=20?1:0));
