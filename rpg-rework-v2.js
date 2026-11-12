@@ -467,7 +467,7 @@
    beginRun(character);
    const plan=stagePlan(character,stage),previousStage=character.run.stage;
    character.run.stage={...plan,enemyIndex:0,targetIndex:0,killedIndices:[],potionUsedTargets:[],potionSlotUsed:false,startedAt:now(),bossPhase:1};
-   const startFraction=resourceConfig.starting_fraction??0.58;
+   const startFraction=resourceConfig.starting_fraction_by_class?.[character.classId]??resourceConfig.starting_fraction??0.58;
    character.resource=Math.min(character.resourceMax,Math.max(character.resource||0,Math.round(character.resourceMax*startFraction)));
    character.run.speed2=false;
    return clone(character.run.stage);
@@ -529,10 +529,7 @@
    }
    if(enemy?.type==="boss"){
     hp*=balance.bosses.hp_multiplier;damage*=balance.bosses.damage_multiplier;
-    if(stage<=balance.bosses.newbie_exception.max_stage){
-     hp*=Number(balance.bosses.newbie_exception.hp_multiplier??1);
-     damage*=balance.bosses.newbie_exception.damage_multiplier;
-    }
+    if(stage<=balance.bosses.newbie_exception.max_stage)damage*=balance.bosses.newbie_exception.damage_multiplier;
    }
    const heroic=character.heroic?balance.heroic.mob_stat_multiplier:1;
    const modifiers=runModifiers(character);
