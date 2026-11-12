@@ -13,6 +13,12 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
 
 {
  const e=make(),c=e.createCharacter('Loot QA','assassin'),live=e.state.characters[0];
+ live.xp=Array.from({length:9},(_,index)=>e.requiredXp(index+1)).reduce((sum,xp)=>sum+xp,0);
+ live.level=e.levelForXp(live.xp);
+ const firstBranch=balance.classes.classes.assassin.branches[0];
+ e.chooseBranch(c.id,typeof firstBranch==="string"?firstBranch:firstBranch.id);
+ assert.equal(live.level,10,'forced loot test character has enough XP for level ten');
+ assert.ok(live.branch,'forced loot test character has a selected specialization');
  const normal=e.rollLoot(live,{type:'normal'},100,true,false);
  assert.equal(normal.length,1,'a forced normal drop produces one equipment item');
  const item=normal[0];
