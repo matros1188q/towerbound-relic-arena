@@ -357,6 +357,7 @@ function createDialog(){
   return phase;
  }
  function applyEnemyHit(attacker,raw){
+  if(!battle||!attacker||attacker.alive!==true||Number(attacker.hp)<=0){if(attacker){attacker.alive=false;attacker.dead=true;attacker.hp=0;attacker.pendingAttack=false;}return;}
   const c=live(),phase=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp).phase:0;
   if(battle.counterPrimed&&!battle.counterConsumed&&(battle.counterTargetIndex===undefined||battle.counterTargetIndex===attacker.index)){
    battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=battle.telegraph?.targetIndex;
@@ -373,7 +374,7 @@ function createDialog(){
   if(c.run.playerHp<=0)endFromDamage();
  }
  function enemyTurn(enemy){
-  if(!battle||!enemy||!enemy.alive||Number(enemy.hp)<=0){if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;}return;}
+  if(!battle||!enemy||enemy.alive!==true||Number(enemy.hp)<=0){if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}return;}
   const c=live();enemy.turnsTaken=(enemy.turnsTaken||0)+1;enemy.pendingAttack=false;
   if(enemy.type==="boss"){
    battle.bossTurns=(battle.bossTurns||0)+1;
@@ -445,11 +446,13 @@ function createDialog(){
     advanceToPlayerTurn();return;
    }
    const enemy=queue[index];
-   if(enemy&&Number(enemy.hp)<=0){enemy.alive=false;enemy.dead=true;enemy.hp=0;}
-   if(enemy?.alive&&Number(enemy.hp)>0)enemyTurn(enemy);else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;}
+   if(enemy&&enemy.alive===true&&Number(enemy.hp)>0)enemyTurn(enemy);
+   else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}
    if(!battle)return;
    save();render();
-   scheduleEnemyTurnQueue(queue,index+1,token,500);
+   const nextIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
+   if(nextIndex<0){scheduleEnemyTurnQueue([],0,token,500);return;}
+   scheduleEnemyTurnQueue(queue,nextIndex,token,500);
   }catch(error){recoverPlayerTurn(error);}
  }
  function endPlayerTurn(){
@@ -846,7 +849,7 @@ return `<div class="v2-battle-wrap">
   if(!battle||battle.paused)return;
   const c=live(),now=Date.now();let changed=false;
   for(const enemy of battle.enemies||[]){
-   if(!enemy.alive||Number(enemy.hp)<=0){enemy.alive=false;enemy.dead=true;enemy.hp=0;continue;}
+   if(enemy.alive!==true||Number(enemy.hp)<=0){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;continue;}
    if(enemy.role==="healer"&&now>=enemy.nextHealAt){
     const ally=battle.enemies.filter(x=>x.alive&&x.hp>0&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
     if(ally){const before=ally.hp;ally.hp=Math.min(ally.maxHp,ally.hp+Math.round(ally.maxHp*balance.mobs.roles.healer.heal_fraction));const healed=ally.hp-before;if(healed>0)showFloatingText(ally,"+"+healed,"#58e38b");if(battle.enemy===ally)battle.enemyHp=ally.hp;changed=true;}
@@ -898,6 +901,7 @@ return `<div class="v2-battle-wrap">
    if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};const used=battle.actionDamageLedger[target.index]||0;damage=engine.capBossDamage(target,damage,used);}
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
+  if(target.hp<=0){target.hp=0;target.alive=false;target.dead=true;target.pendingAttack=false;target.pendingAction=null;}
   if(dealt>0){target.lastDamagedByPlayer=true;if(target.role==="healer")target.provoked=true;}
   if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism")target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&battle.actionIsSkill&&battle.actionIsPrimaryHit&&rawDamage>2*hpBeforeHit)battle.overkillBonus=true;
   if(dealt>0){showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ffffff");playSfx(options.critical?"crit":"hit");}
