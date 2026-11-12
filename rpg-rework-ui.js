@@ -912,7 +912,7 @@ return `<div class="v2-battle-wrap">
   if(armorPenetration>0&&multiplier<1)multiplier=1-(1-multiplier)*(1-armorPenetration);
   if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3)*(1-armorPenetration);target.guardCharges--; }
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
-   if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};const used=battle.actionDamageLedger[target.index]||0;damage=engine.capBossDamage(target,damage,used);}
+   if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};const used=battle.actionDamageLedger[target.index]||0;damage=engine.capBossDamage(target,damage,used,options.ultimate?"ultimate":undefined);}
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
   if(target.hp<=0){target.hp=0;target.alive=false;target.dead=true;target.pendingAttack=false;target.pendingAction=null;}
@@ -958,8 +958,8 @@ return `<div class="v2-battle-wrap">
   const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1);battle.actionDamageLedger={};
   if(ultimate.effect==="heal_shield"||ultimate.effect==="heal_aoe")c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*ultimate.heal_fraction));
   if(ultimate.effect==="heal_shield")battle.nextDamageShield=Math.round(engine.maxHp(c)*ultimate.shield_fraction);
-  if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0;hit++)applyTargetDamage(target,damage,ultimate.damage_type);}}
-  else if(ultimate.effect==="single_burst"){const hitDamage=battle.enemy.type==="boss"?Math.min(damage,battle.enemy.maxHp*.35/3):damage;for(let hit=0;hit<3&&battle.enemy.hp>0;hit++)applyTargetDamage(battle.enemy,hitDamage,ultimate.damage_type);}
+  if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0;hit++)applyTargetDamage(target,damage,ultimate.damage_type,{ultimate:true});}}
+  else if(ultimate.effect==="single_burst"){const hitDamage=battle.enemy.type==="boss"?Math.min(damage,battle.enemy.maxHp*.8/3):damage;for(let hit=0;hit<3&&battle.enemy.hp>0;hit++)applyTargetDamage(battle.enemy,hitDamage,ultimate.damage_type,{ultimate:true});}
   triggerVfx("ultimate",ultimate.damage_type,false);if(battle.enemy.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function enemyCounter(){resolveEnemyTelegraph();}
