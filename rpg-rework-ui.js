@@ -246,7 +246,6 @@ function createDialog(){
   if(skill.branch_id&&skill.branch_id!==c.branch)return null;
   return skill;
  }
- const SKILL_UPGRADE_LEVELS=Object.freeze({1:1,2:20,3:50});
  function getSkillStats(character,skill){
   const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike||{},saved=character.skillUpgrades?.[skill.id]||{},level=Math.max(1,Math.min(3,Number(saved.level)||1)),type=saved.type==="cost"||saved.type==="power"?saved.type:null,stacks=level-1;
   const baseCost=character.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill.cost??skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
