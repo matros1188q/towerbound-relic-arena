@@ -694,7 +694,19 @@ return `<div class="v2-battle-wrap">
     <div class="v2-skills-grid">${skillMarkup}</div>
     <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>${battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА..."}</button>
   </div>
-</div>`;
+</div>${battle.showTutorial ? `<div class="tb-turn-tutorial" role="dialog" aria-modal="true" aria-labelledby="tb-turn-tutorial-title">
+  <section class="tb-turn-tutorial-card">
+    <div class="tb-eyebrow">ПОШАГОВЫЙ БОЙ</div>
+    <h2 id="tb-turn-tutorial-title">Твой первый бой</h2>
+    <ol>
+      <li><b>Базовая атака.</b> Она доступна каждый ход и не тратит ресурс.</li>
+      <li><b>Умения 1–6.</b> Используй их по ситуации, проверяй стоимость и перезарядку.</li>
+      <li><b>Телеграф врага.</b> Враг показывает намерение. Нажми «ЗАВЕРШИТЬ ХОД», чтобы противники действовали.</li>
+      <li><b>Выживание.</b> Применяй зелья и защиту до завершения своего хода.</li>
+    </ol>
+    <button type="button" class="tb-primary tb-wide" data-action="dismiss-turn-tutorial">ПОНЯТНО, В БОЙ</button>
+  </section>
+</div>` : ""}`;
  }
  function beginStage(){postBattleSummary=null;
   const c=live();

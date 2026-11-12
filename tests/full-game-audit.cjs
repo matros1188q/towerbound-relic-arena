@@ -182,6 +182,6 @@ assert.ok(uiSource.includes('function systemsScreen(){')&&uiSource.includes('che
 assert.ok(nativeCss.includes('[role=dialog]:not(.tb-turn-tutorial)'),'dialog height constraints do not shrink the full-screen tutorial overlay');
 assert.ok(nativeCss.includes('display:flex!important;align-items:center;justify-content:center')&&nativeCss.includes('grid-template-rows:auto auto minmax(0,1fr) auto'),'tutorial uses a bounded layout with a permanently visible action row');
 
-assert.ok(uiSource.includes(`+'</section>'+(battle.showTutorial?'<div class="tb-turn-tutorial"`),'battle tutorial overlay is a sibling of the overflow-clipped arena, not its child');
+assert.ok(uiSource.includes('</div>${battle.showTutorial ? `<div class="tb-turn-tutorial"')&&uiSource.includes('data-action="dismiss-turn-tutorial"'),'battle tutorial overlay is a dismissible sibling of the overflow-clipped arena');
 
 assert.ok(uiSource.includes('if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}'),'global navigation never overlays active combat controls');

@@ -103,12 +103,14 @@ async function journey(type,name,viewport,url){
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
-  // First-run tutorial is an intentional modal: dismiss it before testing combat input.
-  if(await page.locator('[data-action="dismiss-turn-tutorial"]').count()){
-   const tutorial=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),b=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{bottom:r.bottom,buttonBottom:b.bottom,viewport:innerHeight};});
-   assert.ok(tutorial.bottom<=tutorial.viewport+1&&tutorial.buttonBottom<=tutorial.viewport+1,name+' tutorial and CTA fit inside the viewport');
-   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
-  }
+  // The first battle must show the turn-based tutorial outside the clipped arena.
+  assert.equal(await page.locator('.tb-turn-tutorial').count(),1,name+' shows the first-run turn-based tutorial');
+  const tutorial=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),b=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{bottom:r.bottom,buttonBottom:b.bottom,viewport:innerHeight,maxHeight:parseFloat(getComputedStyle(el).maxHeight)};});
+  assert.ok(tutorial.bottom<=tutorial.viewport+1&&tutorial.buttonBottom<=tutorial.viewport+1,name+' tutorial and CTA fit inside the viewport');
+  assert.ok(tutorial.maxHeight<=tutorial.viewport*.81,name+' tutorial card respects the 80dvh maximum');
+  assert.match(await page.locator('.tb-turn-tutorial-card').innerText(),/ТВОЙ ПЕРВЫЙ БОЙ[\\s\\S]*БАЗОВАЯ АТАКА[\\s\\S]*УМЕНИЯ[\\s\\S]*ТЕЛЕГРАФ ВРАГА[\\s\\S]*ЗАВЕРШИТЬ ХОД/i,name+' tutorial explains attacks, skills, enemy telegraphs and End Turn');
+  await page.locator('[data-action="dismiss-turn-tutorial"]').click();
+  assert.equal(await page.locator('.tb-turn-tutorial').count(),0,name+' dismisses the first-run tutorial');
   assert.equal(await page.locator('.v2-btn-attack').count(),1,name+' renders the free basic attack control');
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>Number(document.querySelector('.v2-battle-top')?.innerText.match(/РАУНД\s+(\d+)/)?.[1]||0)>=2,{timeout:10000});
