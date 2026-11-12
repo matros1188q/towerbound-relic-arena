@@ -17,14 +17,14 @@
     "boss_multiplier": 6.5
   },
   "player_damage": {
-    "attack_multiplier": 0.5,
-    "skill_multiplier": 2.5,
+    "attack_multiplier": 0.56,
+    "skill_multiplier": 2.8,
     "crit_chance": 0.05,
     "crit_multiplier": 1.5,
     "attack_variance": 0.15,
     "crit_damage_bonus_cap": 0.5,
     "gear_crit_chance_bonus_cap": 0.25,
-    "ultimate_multiplier": 6
+    "ultimate_multiplier": 6.72
   },
   "fight_timing": {
     "turn_based": true
@@ -80,9 +80,9 @@
   },
   "turn_based": {
     "enabled": true,
-    "auto_attack_dps_multiplier": 0.5,
-    "skill_dps_multiplier": 2.5,
-    "ultimate_dps_multiplier": 6,
+    "auto_attack_dps_multiplier": 0.56,
+    "skill_dps_multiplier": 2.8,
+    "ultimate_dps_multiplier": 6.72,
     "player_hp_multiplier": 0.5,
     "enemy_hp_multiplier": 1,
     "enemy_damage_multiplier": 1,
