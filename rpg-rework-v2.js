@@ -321,7 +321,7 @@
    const base=curve?.length?interpolation(curve,character.level,"level","hp")/(balance.character_curves.base_divisor||1.5):
     stats.base_health+Math.max(0,character.level-1)*stats.health_per_level;
    const progression=character.progression||{},runeHealth=(progression.runewords||[]).reduce((value,word)=>value*(1+(word.health||0)),1);
-   const sets=setBonusTotals(character),branchKey=character.classId+"."+(character.branch||character.simBranch||""),branchHp=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.max_hp_multiplier||1);return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+sets.health)*(1+(progression.bonusHp||0))*runeHealth*branchHp*(balance.combat.turn_based?.player_hp_multiplier??1)));
+   const sets=setBonusTotals(character),branchKey=character.classId+"."+(character.branch||""),branchHp=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.max_hp_multiplier||1);return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+sets.health)*(1+(progression.bonusHp||0))*runeHealth*branchHp*(balance.combat.turn_based?.player_hp_multiplier??1)));
   }
   function getCombatStats(characterOrId){
    const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
@@ -1150,7 +1150,7 @@
    if(character.branch===branchId)return branchId;
    const cost=character.branch===null?0:(price===undefined?balance.classes.respec_cost:price);
    if(character.silver<cost)throw new Error("Not enough silver for specialization change");
-   character.silver-=cost;character.branch=branchId;return branchId;
+   const hpBefore=maxHp(character);character.silver-=cost;character.branch=branchId;const hpAfter=maxHp(character);if(character.run&&Number(character.run.playerHp)>0)character.run.playerHp=Math.min(hpAfter,Math.max(0,character.run.playerHp+hpAfter-hpBefore));return branchId;
   }
   function resetTalents(characterId){
    const character=getChar(characterId),cost=balance.classes.talent_reset_cost;
