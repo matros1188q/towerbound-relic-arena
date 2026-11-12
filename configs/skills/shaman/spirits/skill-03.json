@@ -2,15 +2,17 @@
   "id": "shaman.spirits.03",
   "class_id": "shaman",
   "branch_id": "spirits",
-  "name": "Дух-хранитель",
+  "name": "Гнев предков",
   "unlock_level": 19,
   "is_active": true,
-  "effect_template": "heal",
+  "effect_template": "strike",
   "targeting": "template_defined",
   "scaling": "class_primary_stat",
   "cooldown_tier": "short",
   "resource_cost_tier": "low",
   "animation_key": "heal",
-  "description": "Дух-хранитель — spirits specialization skill.",
-  "template_file": "configs/balance/skill_effects.json"
+  "description": "Гнев предков — мощная атака духов, наносящая 250% урона от силы атаки.",
+  "template_file": "configs/balance/skill_effects.json",
+  "damage_type": "physical",
+  "damage_multiplier": 2.5
 }
