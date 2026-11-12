@@ -1027,7 +1027,9 @@ return `<div class="v2-battle-wrap">
    }));
   }));
   const statNames={attack:"АТК",defense:"ЗАЩ",health:"HP",crit:"КРИТ",spellPower:"МАГИЯ",fireDamage:"ОГОНЬ",iceDamage:"ЛЁД",darkDamage:"ТЬМА"};
-  const statMarkup=item=>Object.entries(item?.stats||{}).filter(([,v])=>Number(v)!==0).map(([key,value])=>'<span>'+esc(statNames[key]||key)+' '+(Number(value)>0?"+":"")+Number(value).toFixed(key==="crit"?2:0)+'</span>').join("");
+  const percentStats=new Set(["crit","critDamage","evasion","dodge","attackSpeed","critChance","criticalChance","critical_chance","crit_chance","evasionChance","evasion_chance","dodgeChance","fireDamage","iceDamage","darkDamage"]);
+  const formatCollectionStat=(key,value)=>percentStats.has(key)?((Number(value)>0?"+":"")+(Number(value)*100).toFixed(1).replace(/\.0$/,"")+"%"):((Number(value)>0?"+":"")+Number(value).toFixed(0));
+  const statMarkup=item=>Object.entries(item?.stats||{}).filter(([,v])=>Number(v)!==0).map(([key,value])=>'<span>'+esc(statNames[key]||key)+' '+formatCollectionStat(key,value)+'</span>').join("");
   const grouped=Object.entries(classes).map(([classId,classInfo])=>'<section class="tb-collection-class"><h3>'+esc(classInfo.name||classId)+'</h3>'+
    (classInfo.branches||[]).map(branch=>{
     const entries=catalog.filter(item=>item.classId===classId&&item.branchId===branch.id);
@@ -1038,7 +1040,30 @@ return `<div class="v2-battle-wrap">
      }).join("")+'</section>';
    }).join("")+'</section>').join("");
   const current=catalog.find(item=>item.key===collectionSelection);
-  const detail=current?'<div class="tb-collection-detail-overlay"><section class="tb-collection-detail" role="dialog" aria-modal="true"><button type="button" class="tb-item-detail-close" data-collection-close>×</button><div class="tb-collection-detail-art">'+(current.owned?relicIconHtml(current.item,current.slot):relicIconHtml({rarity:current.rarity,slot:current.slot,name:current.itemName},current.slot))+'</div><h3>'+esc(current.item?.name||current.itemName)+'</h3><p>'+esc(current.className)+' · '+esc(current.branchName)+' · '+esc(slotNames[current.slot])+'</p><p>'+esc(current.rarity)+(current.item?.itemLevel?' · ур. '+current.item.itemLevel:'')+'</p><div class="tb-collection-stats">'+statMarkup(current.item||current)+'</div>'+(current.owned?((c.gear||[]).some(item=>item?.id===current.item.id)?'<strong class="tb-collection-equipped">УЖЕ НАДЕТО</strong>':'<button type="button" class="tb-collection-equip" data-equip="'+esc(current.item.id)+'">НАДЕТЬ</button>'):'<p class="tb-collection-missing">Предмет не найден. Выпадает с боссов/элиток.</p>')+'</section></div>':'';
+  const currentItem=current?.item||null;
+  const currentEquipped=!!(current?.owned&&currentItem&&(c.gear||[]).some(item=>item?.id===currentItem.id));
+  const currentGems=currentItem?installedGemsOf(currentItem):[];
+  const activeBranch=typeof c.branch==="object"?c.branch?.id:c.branch;
+  const currentIsWeapon=current?.slot==="weapon";
+  const hasMatchingStone=(c.bag||[]).some(stone=>{
+   if(stone.type!=="enhancement_stone")return false;
+   const stoneType=stone.stoneType||stone.stone_type||{},stoneBranch=stoneType.branch_id||stoneType.branchId;
+   return (stoneType.class_id||stoneType.classId)===c.classId&&String(stoneBranch||"")===String(activeBranch||"")&&(!stoneType.slot||(stoneType.slot==="weapon")===currentIsWeapon);
+  });
+  const currentHasRefineStone=(c.bag||[]).some(item=>item.type==="refine_stone");
+  const currentHasChisel=(c.bag||[]).some(item=>item.type==="chisel");
+  const currentSockets=Math.max(0,Number(currentItem?.socketsAvailable)||0);
+  const maxSockets=Number(balance.equipment?.max_sockets)||0;
+  const maxRefine=Number(balance.equipment?.refine_max)||20;
+  const detailActions=!current?.owned?'<p class="tb-collection-missing">Предмет не найден. Выпадает с боссов/элиток.</p>':!currentEquipped?'<button type="button" class="tb-collection-equip" data-equip="'+esc(currentItem.id)+'">НАДЕТЬ</button>':[
+   '<strong class="tb-collection-equipped">УЖЕ НАДЕТО</strong>',
+   '<p class="tb-collection-item-progress">Заточка +'+Number(currentItem.refine||0)+' · Гнёзда '+currentGems.length+'/'+currentSockets+'</p>',
+   currentHasRefineStone&&Number(currentItem.refine||0)<maxRefine?'<button type="button" class="tb-collection-action" data-refine="'+esc(currentItem.id)+'">ЗАТОЧИТЬ</button>':"",
+   currentHasChisel&&currentSockets<maxSockets?'<button type="button" class="tb-collection-action" data-socket="'+esc(currentItem.id)+'">ДОБАВИТЬ ГНЕЗДО</button>':"",
+   hasMatchingStone&&currentGems.length<currentSockets?'<button type="button" class="tb-collection-action" data-stone="'+esc(currentItem.id)+'">ВСТАВИТЬ КАМЕНЬ</button>':"",
+   currentGems.map((gem,index)=>'<div class="tb-collection-gem-row"><span>'+esc(gem.stoneType?.name||"Камень усиления")+' · ур. '+Math.max(1,Number(gem.level)||1)+'</span><button type="button" class="tb-collection-action" data-extract-gem="'+esc(currentItem.id)+'" data-gem-index="'+index+'">ИЗВЛЕЧЬ КАМЕНЬ</button></div>').join("")
+  ].join("");
+  const detail=current?'<div class="tb-collection-detail-overlay"><section class="tb-collection-detail" role="dialog" aria-modal="true"><button type="button" class="tb-item-detail-close" data-collection-close>×</button><div class="tb-collection-detail-art">'+(current.owned?relicIconHtml(current.item,current.slot):relicIconHtml({rarity:current.rarity,slot:current.slot,name:current.itemName},current.slot))+'</div><h3>'+esc(current.item?.name||current.itemName)+'</h3><p>'+esc(current.className)+' · '+esc(current.branchName)+' · '+esc(slotNames[current.slot])+'</p><p>'+esc(current.rarity)+(current.item?.itemLevel?' · ур. '+current.item.itemLevel:'')+'</p><div class="tb-collection-stats">'+statMarkup(current.item||current)+'</div><div class="tb-collection-actions">'+detailActions+'</div></section></div>':'';
   return '<header class="tb-collection-header"><div><h2>КОЛЛЕКЦИЯ</h2><p>Текущий класс · все его специализации · 6 слотов · 5 редкостей</p></div><strong>'+catalog.filter(item=>item.owned).length+' / '+catalog.length+'</strong></header>'+grouped+detail;
  }
  function renderView(){

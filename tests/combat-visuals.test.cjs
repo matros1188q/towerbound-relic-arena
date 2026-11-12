@@ -14,7 +14,9 @@ for(const [name,source,re] of [
 ['checkpoint heal gating preserved',ui,/healReady=balance\.map\.checkpoints\.includes\(cp\)&&c\.run\.healingPenaltyUntil/],
 ['poison status',ui,/ОТРАВЛЕН/],
 ['elemental steam',ui,/ПАР · ОГЛУШЕНИЕ/],['electric shock',ui,/ЭЛЕКТРОШОК/],['boss interrupt',ui,/ПРЕРВАНО/],
-['boss rage',ui,/bossTurns>15/],['heroic mutations',ui,/mutation==="vampirism"/],['speedrun',ui,/speedrun/],
+['boss rage',ui,/bossTurns>15/],
+['phase-four boss deadline is two completed player turns',ui,/if\(phase===4\)battle\.bossDeadlineTurns=\(battle\.playerTurnCount\|\|0\)\+1/],
+['phase-four boss deadline uses strict timeout and lethal 9999 damage',ui,/playerTurnCount>Number\(battle\.bossDeadlineTurns\)[\s\S]{0,240}playerHp=Math\.max\(0,c\.run\.playerHp-9999\)/],['heroic mutations',ui,/mutation==="vampirism"/],['speedrun',ui,/speedrun/],
 ['companion strike',ui,/stats\.attack\*\.5/],['antidote trap',ui,/type==="antidote"/],['branch route',ui,/data-route="elite"/]
 ])assert.match(source,re,name);
 console.log('Combat visual/tactical static checks passed.');
