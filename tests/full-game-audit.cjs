@@ -137,7 +137,7 @@ const pwaManifest=read('manifest.json');
 assert.ok(Array.isArray(pwaManifest.icons)&&pwaManifest.icons.length>=2&&pwaManifest.icons.every(icon=>icon.src==='./assets/icons/image.png'&&icon.type==='image/png'),'PWA manifest uses the Towerbound T logo for all app icon sizes');
 assert.ok(pageSource.includes('<link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/image.png">'),'iOS home-screen icon uses the Towerbound T logo');
 assert.ok(serviceWorker.includes('./assets/icons/image.png'),'service worker precaches the Towerbound T logo for offline launch');
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v280'"),'PWA shell cache matches release v270');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v285'"),'PWA shell cache matches release v285');
 assert.ok(uiSource.includes('function syncMusic()')&&uiSource.includes('function unlockAudioAndMusic()'),'Web Audio ambient music and iOS gesture unlock are implemented');
 assert.ok(uiSource.includes('prefs.music_enabled!==false')&&uiSource.includes('screen==="battle"?[73.42,110]:[55,82.41]'),'music switches between map ambience and battle ambience');
 assert.ok(uiSource.includes('data-setting="music_enabled"')&&uiSource.includes('data-setting="sound_enabled"'),'music and sound effects have independent settings');
