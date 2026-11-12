@@ -22,6 +22,12 @@ for(const [id,definition] of Object.entries(balance.classes.classes)){
   assert.ok((definition.base_skills||[]).some(skill=>skill.unlock_level<=1),id+' has an active level-one base skill');
 }
 
+character.xp=Array.from({length:9},(_,index)=>engine.requiredXp(index+1)).reduce((sum,xp)=>sum+xp,0);
+character.level=engine.levelForXp(character.xp);
+const firstBranch=balance.classes.classes.assassin.branches[0];
+engine.chooseBranch(character.id,typeof firstBranch==="string"?firstBranch:firstBranch.id);
+assert.equal(character.level,10,'boss loot test character has enough XP for level ten');
+assert.ok(character.branch,'boss loot test character has a selected specialization');
 character.progress.highestEver=10;
 character.progress.currentStage=11;
 const plan=engine.beginStage(character.id,10);

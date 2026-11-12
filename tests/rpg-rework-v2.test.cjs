@@ -397,10 +397,11 @@ if(balance.combat.turn_based?.enabled){
 }
 {
  const e=makeEngine(()=>0.2),c=makeCharacter(e),live=e.state.characters[0];
- live.level=10;
+ live.xp=Array.from({length:9},(_,index)=>e.requiredXp(index+1)).reduce((sum,xp)=>sum+xp,0);
+ live.level=e.levelForXp(live.xp);
  const firstBranch=balance.classes.classes.assassin.branches[0];
  e.chooseBranch(c.id,typeof firstBranch==="string"?firstBranch:firstBranch.id);
- assert.equal(live.level,10,'boss loot test character is level ten');
+ assert.equal(live.level,10,'boss loot test character has enough XP for level ten');
  assert.ok(live.branch,'boss loot test character has a selected specialization');
  live.progress.highestEver=2;live.progress.currentStage=3;
  e.beginStage(c.id,3);
