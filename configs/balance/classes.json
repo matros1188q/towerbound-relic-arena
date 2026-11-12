@@ -2734,5 +2734,19 @@
     "defense_per_rank": 0.02,
     "attack_speed_per_rank": 0.01,
     "skill_power_per_rank": 0.01
+  },
+  "branch_stat_bonuses": {
+    "assassin.bleed": {
+      "max_hp_multiplier": 1.05
+    },
+    "bishop.healing": {
+      "max_hp_multiplier": 1.05
+    },
+    "destroyer.fists": {
+      "max_hp_multiplier": 1.05
+    },
+    "duelist.sword_shield": {
+      "max_hp_multiplier": 1.05
+    }
   }
 }
