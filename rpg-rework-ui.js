@@ -398,7 +398,7 @@ function createDialog(){
    const ally=battle.enemies.filter(x=>x.alive&&x.hp>0&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
    if(ally){const amount=Math.round(ally.maxHp*.2);ally.hp=Math.min(ally.maxHp,ally.hp+amount);if(ally.index===battle.targetIndex)battle.enemyHp=ally.hp;notify("Лекарь восстановил "+amount+" HP союзнику");}
   }
-  if(enemy.role==="tank"&&enemy.pendingCleanseDebuff){enemy.pendingCleanseDebuff=false;enemy.debuffKind=null;battle.dot=null;notify("Танк очищает яд/кровотечение вместо установки щита");}
+  if(enemy.role==="tank"&&enemy.pendingCleanseDebuff){enemy.pendingCleanseDebuff=false;enemy.debuffKind=null;battle.dot=null;battle.dots=[];notify("Танк очищает яд/кровотечение вместо установки щита");}
   else if(enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=1;
   if(enemy.role==="poison"){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}
   const stats=engine.getEnemyStats(c.id,battle.stage,enemy);
@@ -479,10 +479,7 @@ function createDialog(){
    c.resource=Math.min(c.resourceMax,c.resource+Math.max(1,Math.round(c.resourceMax*(balance.combat.turn_based?.resource_regeneration_fraction||.2))));
    triggerVfx("attack","physical",false);showFloatingText("player","Автоатака!","#ffd34e");if(hit.killed){finishCurrentEnemy();if(!battle)return;}
   }
-  if(battle.dot?.ticks>0){
-   const target=battle.enemies.find(x=>x.index===battle.targetIndex&&x.alive);
-   if(target){applyTargetDamage(target,battle.dot.damage,"dark");battle.dot.ticks--;if(target.hp<=0){finishCurrentEnemy();if(!battle)return;}}
-  }
+  const activeDots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);for(const dot of activeDots){if(dot?.ticks>0){const target=battle.enemies.find(x=>x.index===battle.targetIndex&&x.alive);if(target){applyTargetDamage(target,dot.damage,"dark");dot.ticks--;if(target.hp<=0){finishCurrentEnemy();if(!battle)return;}}}}battle.dots=activeDots.filter(dot=>dot&&dot.ticks>0);battle.dot=battle.dots[0]||null;
   if(battle.hot?.ticks>0){c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;}
   const queue=(battle.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0);
   if(!queue.length){advanceToPlayerTurn();return;}
@@ -712,7 +709,7 @@ function talentBonusDescription(talent,rank){
   if(!selected){index=battle.enemies.find(enemy=>enemy.alive)?.index;if(index===undefined)return false;engine.selectTarget(c.id,index);}
   battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);
   battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;if(c.heroic&&!battle.enemy.mutation&&battle.enemy.type!=="boss")battle.enemy.mutation=Math.random()<.5?"vampirism":"thorns";
-  battle.counterAction=null;battle.pendingKill=false;battle.enemyStunned=false;battle.dot=null;battle.hot=null;battle.parryChance=0;battle.nextDamageShield=0;battle.teleportUsed=false;
+  battle.counterAction=null;battle.pendingKill=false;battle.enemyStunned=false;battle.dot=null;battle.dots=[];battle.hot=null;battle.parryChance=0;battle.nextDamageShield=0;battle.teleportUsed=false;
   battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;
   battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase():0;
   return true;
@@ -980,7 +977,7 @@ return `<div class="v2-battle-wrap">
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier*skillStats.powerMultiplier));
   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier*skillStats.powerMultiplier),ticks:effect.ticks||3};
   if(effect.type==="shield"&&effect.shield_fraction)battle.nextDamageShield=Math.round(engine.maxHp(c)*effect.shield_fraction);
-  if(effect.type==="dot"&&effect.damage_multiplier){battle.dot={damage:Math.max(1,Math.round(stats.dps*effect.damage_multiplier*skillStats.powerMultiplier)),ticks:effect.ticks||3};if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="dot";}}
+  if(effect.type==="dot"&&effect.damage_multiplier){const dotDamage=Math.max(1,Math.round(stats.dps*effect.damage_multiplier*skillStats.powerMultiplier*(c.classId==="assassin"&&c.branch==="poison"?1.15:1)));battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);if(battle.dots.length<20)battle.dots.push({damage:dotDamage,ticks:effect.ticks||3});else battle.dots[battle.dots.length-1]={damage:dotDamage,ticks:effect.ticks||3};battle.dot=battle.dots[0]||null;if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="dot";}}
   if(effect.type==="buff"){battle.playerDamageBuff=effect.power_multiplier||0;battle.playerDamageBuffTurns=Math.max(1,effect.duration_turns||effect.duration||3);battle.buffsUsed=(battle.buffsUsed||0)+1;}
   if(effect.type==="debuff"){battle.enemyDamageReduction=effect.power_multiplier||0;battle.enemyDamageReductionTurns=Math.max(1,effect.duration_turns||effect.duration||3);if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="debuff";}}
   if(effect.type==="control")battle.enemyStunned=true;
