@@ -24,5 +24,8 @@
   },
   "post_75_xp_per_level": 2500000,
   "post_75_levels": 25,
-  "post_75_total_xp": 62500000
+  "post_75_total_xp": 62500000,
+  "early_level_cap": 10,
+  "early_level_multiplier": 0.4,
+  "early_mob_xp_multiplier": 1.2
 }
