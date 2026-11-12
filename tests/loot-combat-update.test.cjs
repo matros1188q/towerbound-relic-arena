@@ -98,7 +98,7 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.match(ui,/function safeTimeoutMs\(value,fallback=1000\)/,'enemy turn timer normalizes delays to a finite numeric fallback');
  assert.match(ui,/function recoverPlayerTurn\(error\)[\s\S]*?battle\.busy=false;battle\.isPlayerTurn=true/,'turn errors restore player control and clear the busy flag');
  assert.match(fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8'),/Number\.isFinite\(attackIntervalMs\)/,'enemy attack interval never propagates NaN into combat timing');
- assert.match(ui,/Number\.isFinite\(until\).*ПОСЛЕ ТВОЕГО ХОДА/,'turn-based telegraph never renders NaN seconds without a numeric deadline');
+ assert.match(ui,/label:"ВРАГ ГОТОВИТ АТАКУ · ЗАВЕРШИ ХОД"/,'turn-based telegraph prompts the player to end the turn instead of using a wall-clock countdown');
  assert.match(ui,/battle\.isPlayerTurn=true;[\s\S]*?battle\.actor=\{type:"player"/,'enemy turn exceptions restore player control');
  assert.match(ui,/ПОДТВЕРДИТЬ ВЫБОР/,'specialization selection requires explicit confirmation');
  assert.match(ui,/data-action="confirm-branch"/,'specialization confirmation has a dedicated action');

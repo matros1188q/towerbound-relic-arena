@@ -85,7 +85,7 @@ async function journey(type,name,viewport,url){
   assert.equal(mapLayout.navButtons,5,name+' exposes the five primary bottom navigation tabs: map, profile, progress, shop and account');
   assert.equal(mapLayout.navPointer,'auto',name+' keeps bottom navigation clickable');
   await page.locator('[data-action="bottom-profile"]').click();
-  assert.equal(await page.locator('.tb-tabs button').count(),7,name+' groups character features into one compact subnavigation');
+  assert.equal(await page.locator('.tb-tabs button').count(),6,name+' renders the six implemented profile tabs: characteristics, talents, skills, collection, backpack and crafting');
   await page.locator('[data-tab="gear"]').click();
   assert.ok(await page.locator('.tb-gear-slot.is-empty').count()>=1,name+' renders named empty equipment slots');
   const emptySlot=await page.locator('.tb-gear-slot.is-empty').first().evaluate(el=>({label:el.querySelector('small')?.textContent,height:el.getBoundingClientRect().height}));
