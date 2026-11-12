@@ -124,6 +124,7 @@ assert.ok(cloudSource.includes('redirectTo:window.location.origin+window.locatio
 // Native PWA phase-3 release checks: background music, independent SFX switch and combat recovery controls.
 const pageSource=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const nativeCss=fs.readFileSync(path.join(root,'native-pwa.css'),'utf8');
+const uiCssSource=fs.readFileSync(path.join(root,'rpg-rework-ui.css.js'),'utf8');
 const serviceWorker=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
 const engineSource=fs.readFileSync(path.join(root,'rpg-rework-v2.js'),'utf8');
 assert.ok(pageSource.includes('<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">'),'iOS viewport is configured for edge-to-edge layout');
@@ -166,15 +167,15 @@ assert.ok(uiSource.indexOf('tb-stage-toolbar')<uiSource.indexOf('tb-map-layout')
 assert.ok(nativeCss.includes('.tb-stage-toolbar .tb-stage-start')&&nativeCss.includes('.tb-map-layout{display:block!important'),'compact stage layout is responsive and single-column');
 
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
-assert.ok(uiSource.includes('gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"]'),'equipment slots use localized names instead of generic slot numbers');
-assert.ok(uiSource.includes('"is-empty"'),'empty equipment slots have a compact empty state');
+assert.ok(uiSource.includes('slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",accessory:"Аксессуар"}'),'equipment collection uses localized names for all six slots');
+assert.ok(uiSource.includes('is-locked')&&uiSource.includes('is-owned')&&uiSource.includes('data-collection-item='),'equipment collection distinguishes locked and owned entries');
 assert.ok(nativeCss.includes('.tb-turn-tutorial-card{box-sizing:border-box;display:grid!important;grid-template-rows:auto auto minmax(0,1fr) auto')&&nativeCss.includes('max-height:80dvh!important'),'battle tutorial uses a bounded scrollable card with a fixed action row');
 assert.ok(nativeCss.includes('padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))'),'modal panels reserve space for the iPhone home indicator');
-assert.ok(nativeCss.includes('.tb-v2 .tb-gear-slot.rarity-epic')&&nativeCss.includes('linear-gradient(145deg,#6a0dad,#351052)'),'epic gear uses purple styling');
-assert.ok(nativeCss.includes('.tb-v2 .tb-gear-slot.rarity-legendary')&&nativeCss.includes('linear-gradient(145deg,#ff8c00,#713900)'),'legendary gear uses orange styling');
+assert.ok(uiCssSource.includes('.tb-collection-item.rarity-epic.is-owned')&&uiCssSource.includes('border-color:#a66be0'),'epic collection entries use purple rarity styling');
+assert.ok(uiCssSource.includes('.tb-collection-item.rarity-legendary.is-owned')&&uiCssSource.includes('border-color:#e6a53e'),'legendary collection entries use orange rarity styling');
 
 assert.ok(!uiSource.includes('data-action="map"')&&!uiSource.includes('data-action="systems"')&&!uiSource.includes('data-action="profile"'),'global navigation shortcuts are not duplicated outside the bottom tab bar');
-assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-nav-tab="map"')&&uiSource.includes('data-nav-tab="shop"')&&uiSource.includes('data-nav-tab="leaderboard"'),'all four global tabs use an isolated navigation attribute');
+assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-nav-tab="map"')&&uiSource.includes('data-nav-tab="progress"')&&uiSource.includes('data-nav-tab="shop"')&&uiSource.includes('data-nav-tab="account"'),'all five global tabs use an isolated navigation attribute');
 
 assert.ok(uiSource.includes('function systemsScreen(){')&&uiSource.includes('chest=engine.dailyChestSnapshot(c.id)'),'account hub computes its own daily chest availability');
 
