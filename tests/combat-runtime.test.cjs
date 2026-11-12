@@ -105,7 +105,7 @@ for(const classId of classes){
  const boss=engine.getEnemyStats(character.id,50,{type:'boss'});
  if(balance.combat.turn_based?.enabled){
   assert.deepEqual([normal.hp,normal.damage],[250,50]);
-  assert.deepEqual([elite.hp,elite.damage],[550,350]);
+  assert.deepEqual([elite.hp,elite.damage],[550,175]);
   assert.deepEqual([boss.hp,boss.damage],[1075,325]);
  }else{
   assert.deepEqual([normal.hp,normal.damage],[550,150]);

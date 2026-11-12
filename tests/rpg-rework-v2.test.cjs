@@ -141,7 +141,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
   assert.equal(newbieBoss.damage,120,'map10 newbie boss is the explicit exception');
  }
  assert.equal(balance.mobs.elite.hp_multiplier,2.2);
- assert.equal(balance.mobs.elite.damage_multiplier,7);
+ assert.equal(balance.mobs.elite.damage_multiplier,3.5);
  assert.equal(balance.bosses.hp_multiplier,4.3);
  assert.equal(balance.bosses.damage_multiplier,6.5);
  assert.equal(balance.bosses.attack_interval_seconds,balance.combat.turn_based?.enabled?1:2.5);
