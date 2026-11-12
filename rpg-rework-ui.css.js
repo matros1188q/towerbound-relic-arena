@@ -259,5 +259,8 @@
  "#tbRpg .tb-v2 .tb-collection-item{aspect-ratio:1/1!important;min-height:60px!important;max-height:70px!important;padding:2px!important;overflow:hidden!important;min-width:0!important;box-sizing:border-box!important}\n"+
  "#tbRpg .tb-v2 .tb-collection-item b,#tbRpg .tb-v2 .tb-collection-item small{font-size:8px!important;line-height:1.1!important;white-space:normal!important;overflow-wrap:anywhere!important}\n";
 
+ css += "\n/* Keep the five-column collection cells square on wide displays */\n"+
+ "#tbRpg .tb-v2 .tb-collection-grid{max-width:366px!important;margin-left:0!important;margin-right:auto!important}\n"+
+ "#tbRpg .tb-v2 .tb-collection-item{width:100%!important;max-width:70px!important;justify-self:start!important}\n";
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
 })();
