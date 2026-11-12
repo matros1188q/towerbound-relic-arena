@@ -1,0 +1,53 @@
+name: Temporary P0 Balance Verification
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  p0-balance-simulation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run P0-adjusted deterministic simulation
+        run: |
+          sed -i 's/phase4Turns>=2/phase4Turns>2/g' tests/balance-simulation.test.cjs
+          node tests/balance-simulation.test.cjs > /tmp/balance-results.json
+          node - <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('/tmp/balance-results.json','utf8'));
+          const wanted = new Set(['dragonkin','elemental','shaman','assassin']);
+          const rows = data.builds.filter(x => wanted.has(x.classId) &&
+            ((x.classId==='dragonkin') || (x.classId==='elemental' && x.branchId==='earth') ||
+             (x.classId==='shaman' && x.branchId==='dark_gods') ||
+             (x.classId==='assassin' && x.branchId==='poison')));
+          console.log('P0_TARGETED_BUILDS=' + JSON.stringify(rows.map(x => ({
+            classId:x.classId, branchId:x.branchId, cleared:x.cleared,
+            deathStage:x.deathStage, deathReason:x.deathReason,
+            phasesReached:x.phaseCounts, phase4Fails:x.phase4Fails,
+            potionsBought:x.potionsBought, silverSpent:x.silverSpent
+          }))));
+          console.log('ALL_BUILDS=' + JSON.stringify(data.builds.map(x => ({
+            classId:x.classId, branchId:x.branchId, cleared:x.cleared,
+            deathStage:x.deathStage, deathReason:x.deathReason, phase4Fails:x.phase4Fails
+          }))));
+          NODE
+      - name: Verify elite role multipliers against engine
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'),path=require('path');
+          const dir='configs/balance';
+          const balance=Object.fromEntries(fs.readdirSync(dir).filter(n=>n.endsWith('.json')).map(n=>[n.slice(0,-5),JSON.parse(fs.readFileSync(path.join(dir,n),'utf8'))]));
+          const {createEngine}=require('./rpg-rework-v2.js');
+          const engine=createEngine(balance,{random:()=>0.25,now:()=>Date.UTC(2026,10,12,12)});
+          engine.createCharacter('Elite QA','assassin');
+          const c=engine.state.characters[0];
+          const result={};
+          for(const role of ['normal','healer','poison','tank']){
+            const base=engine.getEnemyStats(c.id,89,{type:'normal',role}).damage;
+            const elite=engine.getEnemyStats(c.id,89,{type:'elite',role}).damage;
+            result[role]={base,elite,ratio:Number((elite/base).toFixed(2))};
+          }
+          console.log('ELITE_ROLE_DAMAGE=' + JSON.stringify(result));
+          NODE
