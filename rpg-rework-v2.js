@@ -521,7 +521,12 @@
   function getEnemyStats(characterId,stage,enemy){
    const character=getChar(characterId),curve=balance.mobs.curves;
    let hp=interpolation(curve,stage,"stage","hp"),damage=interpolation(curve,stage,"stage","damage");
-   if(enemy?.type==="elite"){hp*=balance.mobs.elite.hp_multiplier;damage*=balance.mobs.elite.damage_multiplier;}
+   if(enemy?.type==="elite"){
+    hp*=balance.mobs.elite.hp_multiplier;
+    const role=String(enemy.role||"normal");
+    const roleMultiplier=balance.mobs.elite.role_damage_multipliers?.[role];
+    damage*=Number.isFinite(Number(roleMultiplier))?Number(roleMultiplier):balance.mobs.elite.damage_multiplier;
+   }
    if(enemy?.type==="boss"){
     hp*=balance.bosses.hp_multiplier;damage*=balance.bosses.damage_multiplier;
     if(stage<=balance.bosses.newbie_exception.max_stage)damage*=balance.bosses.newbie_exception.damage_multiplier;
