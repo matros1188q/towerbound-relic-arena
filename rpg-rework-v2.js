@@ -331,7 +331,7 @@
     stats.base_attack+(character.level-1)*stats.attack_per_level;
    const dps=Math.max(1,(baseDps*(1+gear.itemLevelBonus)+gear.attack)*(1+talent.attack));
    const attack=Math.max(1,Math.round(dps*balance.combat.attack_interval*(1+sets.attack)));
-   const defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)*(1+sets.defense));
+   const branchStats=balance.classes.branch_stat_bonuses?.[character.classId+"."+(character.branch||"")]||{},defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)*(1+sets.defense)*Number(branchStats.defense_multiplier||1));
    const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit+sets.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
    const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
    const earlyBonus=balance.combat.early_branch_bonuses||{},earlyTargets=earlyBonus.targets?.[character.classId]||[],bonusBranch=character.branch||character.simBranch,isEarlyBonusTarget=character.level<=Number(earlyBonus.max_level||0)&&(earlyTargets.includes(bonusBranch)||(!character.branch&&(earlyBonus.pre_branch_classes||[]).includes(character.classId)));
