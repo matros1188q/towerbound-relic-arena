@@ -9,6 +9,10 @@
     "shaman": 100
   },
   "starting_fraction": 0.58,
+  "starting_fraction_by_class": {
+    "dragonkin": 0.7,
+    "elemental": 0.7
+  },
   "action_costs": {
     "attack_skill": 22,
     "counter": 18,
