@@ -94,5 +94,23 @@
       "potions": 1,
       "end_turn": true
     }
+  },
+  "early_branch_bonuses": {
+    "max_level": 15,
+    "basic_attack_multiplier": 1.25,
+    "skill_damage_multiplier": 1.1,
+    "targets": {
+      "dragonkin": [
+        "fire_dragon",
+        "ice_dragon",
+        "black_dragon"
+      ],
+      "elemental": [
+        "earth"
+      ],
+      "shaman": [
+        "dark_gods"
+      ]
+    }
   }
 }
