@@ -27,7 +27,7 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.ok(item.rarity&&item.itemLevel>=1,'equipment has rarity and item level');
  assert.ok(Object.values(item.stats).some(value=>value>0),'equipment has non-zero stats');
  assert.ok(!/трофей/i.test(item.name),'equipment name is not the generic trophy placeholder');
- assert.match(item.name,/ур\./,'generated name includes item level');
+ assert.match(item.name,/Кровавый клинок/,'generated equipment name includes its selected specialization set');
  const boss=e.rollLoot(live,{type:'boss'},10,true,false);
  assert.ok(boss.some(drop=>drop.type==='equipment'&&drop.slot==='weapon'),'first-clear boss reward is a real weapon');
 }
