@@ -3,23 +3,27 @@
   "achievements": [
     {
       "id": "achievement_01",
-      "name": "Первый шаг",
+      "name": "Первое восхождение",
       "metric": "stages_cleared",
       "target": 1,
       "reward": {
         "silver": 500,
         "cosmetic": []
-      }
+      },
+      "description": "Пройдите 1 этап Башни.",
+      "metric_label": "Завершённые этапы"
     },
     {
       "id": "achievement_02",
-      "name": "Охотник",
+      "name": "Первая кровь",
       "metric": "kills",
       "target": 10,
       "reward": {
         "silver": 600,
         "cosmetic": []
-      }
+      },
+      "description": "Убейте 10 противников в боях Башни.",
+      "metric_label": "Побеждённые противники"
     },
     {
       "id": "achievement_03",
@@ -29,121 +33,145 @@
       "reward": {
         "silver": 700,
         "cosmetic": []
-      }
+      },
+      "description": "Найдите 5 предметов в награде за бои.",
+      "metric_label": "Найденные предметы"
     },
     {
       "id": "achievement_04",
-      "name": "Кузнец",
+      "name": "Кузнец-разборщик",
       "metric": "items_salvaged",
       "target": 1,
       "reward": {
         "silver": 800,
         "cosmetic": []
-      }
+      },
+      "description": "Разберите 1 предмет и получите материалы.",
+      "metric_label": "Разобранные предметы"
     },
     {
       "id": "achievement_05",
-      "name": "Покоритель",
+      "name": "Десятый рубеж",
       "metric": "stages_cleared",
       "target": 10,
       "reward": {
         "silver": 900,
         "cosmetic": []
-      }
+      },
+      "description": "Завершите 10 этапов Башни.",
+      "metric_label": "Завершённые этапы"
     },
     {
       "id": "achievement_06",
-      "name": "Элитный охотник",
+      "name": "Гроза элиты",
       "metric": "elite_kills",
       "target": 10,
       "reward": {
         "silver": 1000,
         "cosmetic": []
-      }
+      },
+      "description": "Победите 10 элитных монстров.",
+      "metric_label": "Побеждённые элитные монстры"
     },
     {
       "id": "achievement_07",
-      "name": "Боссоборец",
+      "name": "Первый поверженный босс",
       "metric": "boss_kills",
       "target": 1,
       "reward": {
         "silver": 1200,
         "cosmetic": []
-      }
+      },
+      "description": "Победите 1 босса Башни.",
+      "metric_label": "Побеждённые боссы"
     },
     {
       "id": "achievement_08",
-      "name": "Собиратель",
+      "name": "Охотник за реликвиями",
       "metric": "items_found",
       "target": 25,
       "reward": {
         "silver": 1500,
         "cosmetic": []
-      }
+      },
+      "description": "Найдите 25 предметов за прохождения.",
+      "metric_label": "Найденные предметы"
     },
     {
       "id": "achievement_09",
-      "name": "Мастер таланта",
+      "name": "Путь мастера",
       "metric": "talents_spent",
       "target": 3,
       "reward": {
         "silver": 800,
         "cosmetic": []
-      }
+      },
+      "description": "Потратьте 3 очка талантов на развитие специализации.",
+      "metric_label": "Изученные ранги талантов"
     },
     {
       "id": "achievement_10",
-      "name": "Искатель",
+      "name": "Хранитель хроник",
       "metric": "lore_read",
       "target": 1,
       "reward": {
         "silver": 500,
         "cosmetic": []
-      }
+      },
+      "description": "Прочитайте 1 запись истории Башни.",
+      "metric_label": "Прочитанные записи"
     },
     {
       "id": "achievement_11",
-      "name": "Ветеран",
+      "name": "Ветеран походов",
       "metric": "runs_completed",
       "target": 3,
       "reward": {
         "silver": 1200,
         "cosmetic": []
-      }
+      },
+      "description": "Полностью завершите 3 забега.",
+      "metric_label": "Завершённые забеги"
     },
     {
       "id": "achievement_12",
-      "name": "Скоростной забег",
+      "name": "Молниеносный забег",
       "metric": "speed_runs",
       "target": 1,
       "reward": {
         "silver": 1500,
         "cosmetic": []
-      }
+      },
+      "description": "Завершите 1 скоростное испытание.",
+      "metric_label": "Скоростные забеги"
     },
     {
       "id": "achievement_13",
-      "name": "Без зелья",
+      "name": "Без права на ошибку",
       "metric": "potionless_bosses",
       "target": 1,
       "reward": {
         "silver": 1000,
         "cosmetic": []
-      }
+      },
+      "description": "Победите босса, не используя зелья в этом бою.",
+      "metric_label": "Победы над боссами без зелий"
     },
     {
       "id": "achievement_14",
-      "name": "Закалённый",
+      "name": "Стальная воля",
       "metric": "hardcore_clears",
       "target": 1,
       "reward": {
         "silver": 2000,
         "cosmetic": []
-      }
+      },
+      "description": "Завершите 1 этап в режиме «Хардкор».",
+      "metric_label": "Этапы в режиме «Хардкор»"
     },
     {
       "id": "achievement_15",
-      "name": "Легенда башни",
+      "name": "Легенда героического пути",
       "metric": "heroic_clears",
       "target": 1,
       "reward": {
@@ -151,51 +179,61 @@
         "cosmetic": [
           "achievement-frame-15"
         ]
-      }
+      },
+      "description": "Завершите Башню в героическом режиме.",
+      "metric_label": "Героические прохождения"
     },
     {
       "id": "achievement_16",
-      "name": "Покоритель 50",
+      "name": "Покоритель Башни I",
       "metric": "highest_stage",
       "target": 50,
       "reward": {
         "silver": 1500,
         "cosmetic": []
-      }
+      },
+      "description": "Достигните 50-го этапа Башни.",
+      "metric_label": "Наивысший этап"
     },
     {
       "id": "achievement_17",
-      "name": "Покоритель 100",
+      "name": "Покоритель Башни II",
       "metric": "highest_stage",
       "target": 100,
       "reward": {
         "silver": 2000,
         "cosmetic": []
-      }
+      },
+      "description": "Достигните 100-го этапа Башни.",
+      "metric_label": "Наивысший этап"
     },
     {
       "id": "achievement_18",
-      "name": "Покоритель 150",
+      "name": "Покоритель Башни III",
       "metric": "highest_stage",
       "target": 150,
       "reward": {
         "silver": 2500,
         "cosmetic": []
-      }
+      },
+      "description": "Достигните 150-го этапа Башни.",
+      "metric_label": "Наивысший этап"
     },
     {
       "id": "achievement_19",
-      "name": "Покоритель 200",
+      "name": "Покоритель Башни IV",
       "metric": "highest_stage",
       "target": 200,
       "reward": {
         "silver": 3000,
         "cosmetic": []
-      }
+      },
+      "description": "Достигните 200-го этапа Башни.",
+      "metric_label": "Наивысший этап"
     },
     {
       "id": "achievement_20",
-      "name": "Покоритель 250",
+      "name": "Вершина Башни",
       "metric": "highest_stage",
       "target": 250,
       "reward": {
@@ -203,7 +241,9 @@
         "cosmetic": [
           "achievement-frame-20"
         ]
-      }
+      },
+      "description": "Достигните 250-го этапа и покорите всю Башню.",
+      "metric_label": "Наивысший этап"
     },
     {
       "id": "achievement_21",
@@ -213,41 +253,49 @@
       "reward": {
         "silver": 1200,
         "cosmetic": []
-      }
+      },
+      "description": "Создайте 1 предмет с помощью крафта.",
+      "metric_label": "Созданные предметы"
     },
     {
       "id": "achievement_22",
-      "name": "Мастер заточки",
+      "name": "Искусный кузнец",
       "metric": "refine_success",
       "target": 10,
       "reward": {
         "silver": 2000,
         "cosmetic": []
-      }
+      },
+      "description": "Успешно заточите экипировку 10 раз.",
+      "metric_label": "Успешные заточки"
     },
     {
       "id": "achievement_23",
-      "name": "Зачарователь",
+      "name": "Мастер зачарования",
       "metric": "enchants_applied",
       "target": 1,
       "reward": {
         "silver": 1800,
         "cosmetic": []
-      }
+      },
+      "description": "Нанесите 1 зачарование на экипировку.",
+      "metric_label": "Наложенные зачарования"
     },
     {
       "id": "achievement_24",
-      "name": "Коллекционер",
+      "name": "Собиратель сетов",
       "metric": "unique_items",
       "target": 5,
       "reward": {
         "silver": 2500,
         "cosmetic": []
-      }
+      },
+      "description": "Соберите 5 уникальных предметов экипировки.",
+      "metric_label": "Уникальные предметы"
     },
     {
       "id": "achievement_25",
-      "name": "Победитель PvP",
+      "name": "Первая победа на арене",
       "metric": "pvp_wins",
       "target": 1,
       "reward": {
@@ -255,47 +303,57 @@
         "cosmetic": [
           "achievement-frame-25"
         ]
-      }
+      },
+      "description": "Одержите 1 победу в PvP-дуэли.",
+      "metric_label": "Победы в PvP"
     },
     {
       "id": "achievement_26",
-      "name": "Гладиатор",
+      "name": "Гладиатор Башни",
       "metric": "pvp_duels",
       "target": 10,
       "reward": {
         "silver": 1500,
         "cosmetic": []
-      }
+      },
+      "description": "Проведите 10 PvP-дуэлей.",
+      "metric_label": "Проведённые PvP-дуэли"
     },
     {
       "id": "achievement_27",
-      "name": "Герой",
+      "name": "Герой испытаний",
       "metric": "heroic_clears",
       "target": 10,
       "reward": {
         "silver": 2500,
         "cosmetic": []
-      }
+      },
+      "description": "Завершите 10 этапов в героическом режиме.",
+      "metric_label": "Героические этапы"
     },
     {
       "id": "achievement_28",
-      "name": "Парагон",
+      "name": "Пробуждение Парагона",
       "metric": "paragon_level",
       "target": 10,
       "reward": {
         "silver": 2000,
         "cosmetic": []
-      }
+      },
+      "description": "Достигните 10-го уровня Парагона.",
+      "metric_label": "Уровень Парагона"
     },
     {
       "id": "achievement_29",
-      "name": "Хранитель сезона",
+      "name": "Страж сезона",
       "metric": "season_clear",
       "target": 250,
       "reward": {
         "silver": 0,
         "cosmetic": []
-      }
+      },
+      "description": "Завершите сезонное испытание Башни на 250 этапов.",
+      "metric_label": "Сезонные этапы"
     },
     {
       "id": "achievement_30",
@@ -307,7 +365,9 @@
         "cosmetic": [
           "achievement-frame-30"
         ]
-      }
+      },
+      "description": "Достигните 50-го уровня игрового аккаунта.",
+      "metric_label": "Уровень аккаунта"
     }
   ]
 }

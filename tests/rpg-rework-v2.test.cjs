@@ -75,13 +75,37 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const expectedLevel75Hp=Math.round(balance.character_curves.level_to_stage_anchors.find(anchor=>anchor.level===75).hp/balance.character_curves.base_divisor*(1+balance.item_level.full_set_level_120_bonus)*turnHpScale);
  assert.ok(Math.abs(stats.maxHp-expectedLevel75Hp)<200,`gear-inclusive HP curve respects the selected combat mode (actual ${stats.maxHp}, expected about ${expectedLevel75Hp})`);
  assert.ok(Math.abs(stats.dps-4400)<20,'gear-inclusive DPS curve restored by six ilvl120 items');
- assert.equal(e.combatPower(live),25580);
+ assert.equal(e.combatPower(live),25586);
  live.level=100;equipSix(live,'Легендарная');
- assert.equal(e.combatPower(live),65440);
+ assert.equal(e.combatPower(live),65446);
  assert.equal(balance.item_level.max,120);
  assert.equal(balance.item_level.stat_bonus_per_level,0.0007);
  assert.equal(balance.item_level.full_set_level_120_bonus,0.504);
  assert.equal(balance.character_curves.base_divisor,1.5);
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ live.level=20;live.branch="bleed";live.talents={};
+ const before=e.getCombatStats(live),beforePower=e.combatPower(live);
+ const branch=balance.classes.classes.assassin.branches.find(item=>item.id==="bleed");
+ const attackTalent=branch.talents.find(item=>item.effect_template==="attack");
+ const healthTalent=branch.talents.find(item=>item.effect_template==="health");
+ const defenseTalent=branch.talents.find(item=>item.effect_template==="defense");
+ live.talents[attackTalent.id]=3;live.talents[healthTalent.id]=3;live.talents[defenseTalent.id]=3;
+ const after=e.getCombatStats(live),afterPower=e.combatPower(live);
+ assert.ok(after.attack>before.attack,"attack increases after investing in an attack talent");
+ assert.ok(after.maxHp>before.maxHp,"HP increases after investing in a health talent");
+ assert.ok(after.defense>before.defense,"defense increases after investing in a defense talent");
+ assert.ok(afterPower>beforePower,"BP includes earned talent stat bonuses");
+ const noGearPower=afterPower;
+ live.gear[0]={id:"qa-v270-weapon",slot:"weapon",rarity:"Эпическая",itemLevel:50,stats:{attack:25,defense:0,health:0}};
+ assert.ok(e.getCombatStats(live).attack>after.attack,"equipping a weapon increases attack shown by combat stats");
+ assert.ok(e.combatPower(live)>noGearPower,"equipping equipment increases BP");
+ const noGearStats=e.getCombatStats(live),noGearBp=e.combatPower(live);
+ live.level=30;
+ const levelStats=e.getCombatStats(live);
+ assert.ok(levelStats.attack>noGearStats.attack&&levelStats.maxHp>noGearStats.maxHp&&levelStats.defense>noGearStats.defense,"level growth increases attack, HP and defense");
+ assert.ok(e.combatPower(live)>noGearBp,"level growth increases BP");
 }
 {
  const e=makeEngine(()=>0.9),c=makeCharacter(e);
@@ -282,9 +306,9 @@ if(balance.combat.turn_based?.enabled){
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=75;equipSix(live,'Эпическая');
- assert.equal(e.combatPower(live),25580);
+ assert.equal(e.combatPower(live),25586);
  live.level=100;equipSix(live,'Легендарная');
- assert.equal(e.combatPower(live),65440);
+ assert.equal(e.combatPower(live),65446);
  assert.deepEqual(balance.bp.tiers.map(t=>[t.min,t.max]),[[0,1999],[2000,7999],[8000,19999],[20000,44999],[45000,null]]);
  assert.equal(balance.bp.heroic_min_bp,15000);
 }

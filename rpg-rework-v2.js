@@ -349,8 +349,17 @@
    const base=interpolation(balance.bp.base_by_level,character.level,"level","bp");
    const weight=interpolation(balance.bp.item_level_bp_per_level,character.level,"level","weight");
    const rarity=balance.bp.rarity_bp_per_item||{};
-   const gear=(character.gear||[]).filter(Boolean).reduce((sum,item)=>sum+(rarity[rarityKey(item.rarity)]||rarity[item.rarity]||0)+Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*weight,0);
-   return Math.round(base+gear);
+   const gear=(character.gear||[]).filter(Boolean).reduce((sum,item)=>{
+    const rarityPower=rarity[rarityKey(item.rarity)]||rarity[item.rarity]||0;
+    const itemLevelPower=Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*weight;
+    const stats=item.stats||{};
+    const itemStatPower=Math.max(1,Math.round((stats.attack||0)*.25+(stats.defense||0)*.35+(stats.health||0)*.015+(stats.crit||0)*75+(stats.critDamage||0)*30+(stats.spellPower||0)*.2));
+    return sum+rarityPower+itemLevelPower+itemStatPower;
+   },0);
+   const talents=talentBonusTotals(character);
+   const talentWeight=talents.attack*.5+talents.health*.35+talents.defense*.5+talents.crit*2+talents.attackSpeed*.8+talents.skillPower*.6;
+   const talentPower=Math.round(base*Math.max(0,talentWeight));
+   return Math.round(base+gear+talentPower);
   }
   function recalcLevel(character){
    const previous=character.level;

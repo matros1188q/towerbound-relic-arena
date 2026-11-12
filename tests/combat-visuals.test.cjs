@@ -14,6 +14,15 @@ for(const [name,source,re] of [
 ['element inference',ui,/elementHint\.includes\("fire"\)[\s\S]*elementHint\.includes\("water"\)[\s\S]*elementHint\.includes\("lightning"\)/],
 ['skill icon uses skill asset then class fallback',ui,/const icon=evolved\?evolved\.icon:skill\?\.icon[\s\S]*const kind=\(\{assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"\}/],
 ['route click delegation',ui,/\[data-route\]/],
+['post-battle summary button says Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
+['post-battle summary returns to map without starting a stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
+['map nodes show rising recommended battle power',ui,/tb-map-power[^\n]*Рек\. Мощь/],
+['skills are filtered to the chosen specialization and base skills',ui,/skills\.filter\(x=>x\.class_id===c\.classId&&x\.branch_id===c\.branch\)/],
+['skill cards expose type, damage, cost and cooldown details',ui,/function profileSkillDetails[\s\S]*Тип:[\s\S]*Стоимость:[\s\S]*Откат:/],
+['talent cards explain stat gains and current rank',ui,/function talentBonusDescription[\s\S]*Каждый ранг даёт/],
+['weekly tasks have localized heading and descriptions',ui,/ЕЖЕНЕДЕЛЬНЫЕ ЗАДАНИЯ[\s\S]*q\.description/],
+['map header removes portrait/progression header content',ui,/function header\(title,sub\)\{const mapHeader=title===\"Карта 250 уровней\"/],
+['Duelist dual blade specialization has detailed combat description',ui,/dual_swords:\"Фокус на высоком темпе атак/],
 ['loot button is labeled Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
 ['loot action closes summary and returns to map without starting a new stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
 ['battle DOM finds the V2 arena wrapper',battleDom,/root\.querySelector\("\.v2-battle-wrap"\)/],
@@ -35,3 +44,8 @@ for(const [name,source,re] of [
 ['companion strike',ui,/stats\.attack\*\.5/],['antidote trap',ui,/type==="antidote"/],['branch route',ui,/data-route="elite"/]
 ])assert.match(source,re,name);
 console.log('Combat visual/tactical static checks passed.');
+
+assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map screen has no extra top padding');
+assert.ok(css.includes('.v2-enemies-side{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important'),'enemy target cards use a stable two-column grid');
+assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}'),'bag uses a four-column grid');
+assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
