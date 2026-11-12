@@ -334,7 +334,7 @@
    const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit+sets.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
    const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
    const earlyBonus=balance.combat.early_branch_bonuses||{},earlyTargets=earlyBonus.targets?.[character.classId]||[],bonusBranch=character.branch||character.simBranch,isEarlyBonusTarget=character.level<=Number(earlyBonus.max_level||0)&&(earlyTargets.includes(bonusBranch)||(!character.branch&&(earlyBonus.pre_branch_classes||[]).includes(character.classId)));
-   const branchDamageBonus=isEarlyBonusTarget?Number(earlyBonus.skill_damage_multiplier||1):1,basicAttackDamageMultiplier=isEarlyBonusTarget?Number(earlyBonus.basic_attack_multiplier||1):1;
+   const branchOverride=earlyBonus.branch_overrides?.[character.classId]?.[bonusBranch]||{},branchDamageBonus=isEarlyBonusTarget?Number(branchOverride.skill_damage_multiplier??earlyBonus.skill_damage_multiplier??1):1,basicAttackDamageMultiplier=isEarlyBonusTarget?Number(branchOverride.basic_attack_multiplier??earlyBonus.basic_attack_multiplier??1):1;
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),critChance,critMultiplier,
     speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:(1+sets.damage+sets.skillPower+talent.skillPower)*branchDamageBonus,basicAttackDamageMultiplier,
     damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
