@@ -529,7 +529,10 @@
    }
    if(enemy?.type==="boss"){
     hp*=balance.bosses.hp_multiplier;damage*=balance.bosses.damage_multiplier;
-    if(stage<=balance.bosses.newbie_exception.max_stage)damage*=balance.bosses.newbie_exception.damage_multiplier;
+    if(stage<=balance.bosses.newbie_exception.max_stage){
+     hp*=Number(balance.bosses.newbie_exception.hp_multiplier??1);
+     damage*=balance.bosses.newbie_exception.damage_multiplier;
+    }
    }
    const heroic=character.heroic?balance.heroic.mob_stat_multiplier:1;
    const modifiers=runModifiers(character);
