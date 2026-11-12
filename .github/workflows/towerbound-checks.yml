@@ -38,5 +38,7 @@ jobs:
         run: node tests/online-services.test.cjs
       - name: Run combat balance simulation
         run: npm run balance
+      - name: Run full 21-build balance progression simulation
+        run: node tests/balance-simulation.test.cjs
       - name: Run 250-stage economy simulation
         run: npm run economy
