@@ -49,8 +49,9 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  dragonLive.branch='black_dragon';assert.equal(e.basicAttackStats(dragon.id).multiplier,.5,'black dragon magic branch uses 50% basic attack');
  const shaman=e.createCharacter('Spirit Shaman','shaman'),shamanLive=e.state.characters.find(x=>x.id===shaman.id);
  shamanLive.branch='dark_gods';assert.equal(e.basicAttackStats(shaman.id).multiplier,.5,'dark gods magic branch uses 50% basic attack');
- assert.equal(e.capBossDamage({type:'boss',maxHp:1000},900,0),350,'one boss damage action is capped at 35% max HP');
- assert.equal(e.capBossDamage({type:'boss',maxHp:1000},300,250),100,'multi-hit actions share the same boss damage cap');
+ assert.equal(e.capBossDamage({type:'boss',maxHp:1000},900,0),600,'ordinary boss damage action is capped at 60% max HP per hit');
+ assert.equal(e.capBossDamage({type:'boss',maxHp:1000},900,600),600,'boss damage cap resets for each ordinary hit');
+ assert.equal(e.capBossDamage({type:'boss',maxHp:1000},900,0,'ultimate'),800,'ultimate boss damage action has an 80% max HP cap');
  assert.equal(e.capBossDamage({type:'normal',maxHp:1000},900,0),900,'normal enemies are not affected by the boss cap');
 }
 
