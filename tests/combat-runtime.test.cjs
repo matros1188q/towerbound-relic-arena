@@ -128,7 +128,7 @@ for(const classId of classes){
   assert.match(ui,/function buildInitiative[\s\S]*?sort\(\(a,b\)=>b\.speed-a\.speed/,'turn order sorts actors by speed');
   assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
   assert.match(ui,/battle\.busy=false;[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'enemy phase begins with a clean busy flag and 500ms stagger');
-  assert.match(ui,/scheduleEnemyTurnQueue\(queue,index\+1,token,500\)/,'each living enemy acts with a 500ms delay between attacks');
+  assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?scheduleEnemyTurnQueue\(queue,nextIndex,token,500\)/,'enemy turn queue skips dead enemies and schedules the next living enemy after 500ms');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
   assert.match(ui,/data-action="end-turn"/,'End Turn control is present');
   assert.match(ui,/tb-telegraph/,"enemy telegraph content remains visible");
