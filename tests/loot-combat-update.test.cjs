@@ -90,7 +90,7 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.match(ui,/data-basic-attack/,'battle UI renders and routes the basic attack button');
  assert.match(ui,/engine\.restoreResource\(c\.id,profile\.resourceGain\)/,'basic attack restores resource on a successful hit');
  assert.match(ui,/for\(let hit=0;hit<3&&battle\.enemy\.hp>0;hit\+\+\)/,'single-target ultimate is resolved as three hits');
- assert.match(ui,/engine\.capBossDamage\(target,damage,used\)/,'every boss hit uses the per-action damage cap');
+ assert.match(ui,/engine\.capBossDamage\(target,damage,used,options\.ultimate\?"ultimate":undefined\)/,'ordinary and ultimate boss hits use their separate per-hit caps');
  assert.match(ui,/data-action="equip-best"/,'inventory exposes equip best');
  assert.match(ui,/data-action="salvage-gray"/,'inventory exposes bulk gray salvage');
  assert.match(ui,/is-better/,'gear comparison renders better stats in green');
