@@ -47,8 +47,8 @@ for(const [name,source,re] of [
 ['poison status',ui,/ОТРАВЛЕН/],
 ['elemental steam',ui,/ПАР · ОГЛУШЕНИЕ/],['electric shock',ui,/ЭЛЕКТРОШОК/],['boss interrupt',ui,/ПРЕРВАНО/],
 ['boss rage',ui,/bossTurns>15/],
-['phase-four boss deadline is two completed player turns',ui,/if\(phase===4\)battle\.bossDeadlineTurns=\(battle\.playerTurnCount\|\|0\)\+1/],
-['phase-four boss deadline uses strict timeout and lethal 9999 damage',ui,/playerTurnCount>Number\(battle\.bossDeadlineTurns\)[\s\S]{0,240}playerHp=Math\.max\(0,c\.run\.playerHp-9999\)/],['heroic mutations',ui,/mutation==="vampirism"/],['speedrun',ui,/speedrun/],
+['phase-four boss deadline uses configured two-turn window',ui,/const deadline=Math\.max\(1,Number\(phaseConfig\.player_turn_deadline\?\?balance\.bosses\.player_turn_deadline\?\?2\)\)[\s\S]*battle\.bossDeadlineTurns=\(battle\.playerTurnCount\|\|0\)\+deadline/],
+['phase-four boss deadline uses strict timeout and configured enrage damage',ui,/playerTurnCount>Number\(battle\.bossDeadlineTurns\)[\s\S]{0,320}playerHp=Math\.max\(0,c\.run\.playerHp-enrageDamage\)/],['heroic mutations',ui,/mutation==="vampirism"/],['speedrun',ui,/speedrun/],
 ['companion strike',ui,/stats\.attack\*\.5/],['antidote trap',ui,/type==="antidote"/],['branch route',ui,/data-route="elite"/]
 ])assert.match(source,re,name);
 console.log('Combat visual/tactical static checks passed.');
