@@ -404,7 +404,20 @@ const {chromium}=require('playwright');
   const hpBeforeEnemyTurn=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   await page.locator('#endturn').click();
   await page.waitForFunction(()=>document.querySelector('#endturn')?.disabled,undefined,{timeout:5000});
-  await page.waitForFunction(()=>{const b=document.querySelector('#endturn');return b&&!b.disabled&&b.textContent.includes('ЗАВЕРШИТЬ ХОД');},undefined,{timeout:15000});
+  try{
+   await page.waitForFunction(()=>{const b=document.querySelector('#endturn');return b&&!b.disabled&&b.textContent.includes('ЗАВЕРШИТЬ ХОД');},undefined,{timeout:15000});
+  }catch(error){
+   const handoff=await page.evaluate(()=>({
+    button:document.querySelector('#endturn')?{text:document.querySelector('#endturn').textContent,disabled:document.querySelector('#endturn').disabled,html:document.querySelector('#endturn').outerHTML}:null,
+    guidance:document.querySelector('.v2-turn-guidance')?.textContent||null,
+    playerHp:window.TowerboundRework?.state?.characters?.[0]?.run?.playerHp,
+    stage:window.TowerboundRework?.state?.characters?.[0]?.run?.stage,
+    livingEnemies:[...document.querySelectorAll('.v2-enemy-card')].map(el=>({target:el.dataset.target,text:el.innerText.slice(0,180)})),
+    battleText:document.querySelector('.v2-battle-wrap')?.innerText.slice(0,1800)||null
+   }));
+   process.stderr.write('END TURN HANDOFF DIAGNOSTIC '+JSON.stringify({handoff,errors,consoleErrors})+'\\n');
+   throw error;
+  }
   const hpAfterEnemyTurn=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   assert.ok(hpAfterEnemyTurn<hpBeforeEnemyTurn,'enemy phase attacks before returning control to the player');
   const endAfter=await page.locator('#endturn').evaluate(el=>({display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility,height:el.getBoundingClientRect().height}));
