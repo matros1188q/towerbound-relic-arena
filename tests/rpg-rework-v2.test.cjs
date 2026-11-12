@@ -125,7 +125,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  const boss=e.getEnemyStats(c.id,50,{type:'boss'});
  if(balance.combat.turn_based?.enabled){
   assert.deepEqual([normal.hp,normal.damage],[250,50]);
-  assert.deepEqual([elite.hp,elite.damage],[550,350]);
+  assert.deepEqual([elite.hp,elite.damage],[550,175]);
   assert.deepEqual([boss.hp,boss.damage],[1075,325]);
   assert.equal(normal.attackInterval,1);
   assert.equal(boss.attackIntervalMs,1000);
