@@ -233,7 +233,7 @@ const {chromium}=require('playwright');
    if(!c.bag.some(item=>item.id==='qa-weapon'))c.bag.push({id:'qa-weapon',name:'Эпический Боевой клинок',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10,crit:.05},refine:0,sockets:[],socketsAvailable:0});
    if(!c.bag.some(item=>item.id==='qa-chisel'))c.bag.push({id:'qa-chisel',type:'chisel'});
    // Auto-equip accepts only gear for the character's confirmed specialization.
-   for(const item of c.bag)if(['qa-weapon','qa-salvage','qa-chest-best','qa-weapon-best'].includes(item.id))item.branch=c.branch;
+   for(const item of c.bag)if(['qa-weapon','qa-salvage','qa-chest-best','qa-weapon-best'].includes(item.id)){item.branch=c.branch;if(item.id==='qa-weapon')item.type='equipment';}
    localStorage.setItem('tb-rpg-v2',JSON.stringify(window.TowerboundRework.state));
   });
   await page.locator('#tbRpg .tb-profile .tb-tabs [data-tab="bag"]').click();
