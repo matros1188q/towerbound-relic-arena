@@ -250,6 +250,8 @@ const {chromium}=require('playwright');
   assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].gear[0]?.id),'qa-weapon-best','Equip Best selects the highest-stat weapon');
   assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].gear[1]?.id),'qa-chest-best','Equip Best selects the highest-stat chest item');
   await page.locator('[data-item-select="qa-weapon"]').click();
+  const manualEquipDiag=await page.evaluate(()=>({item:window.TowerboundRework.state.characters[0].bag.find(x=>x.id==='qa-weapon')||null,detail:document.querySelector('.tb-item-detail-overlay')?.innerText||null,detailHtml:document.querySelector('.tb-item-detail-overlay')?.innerHTML.slice(0,1200)||null}));
+  process.stdout.write('MANUAL EQUIP DIAGNOSTIC '+JSON.stringify(manualEquipDiag)+'\\n');
   await page.waitForSelector('.tb-item-detail-overlay [data-equip="qa-weapon"]');
   await page.locator('.tb-item-detail-overlay [data-equip="qa-weapon"]').click();
   assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].gear[0]?.id),'qa-weapon','manual equip still replaces the equipped weapon');
