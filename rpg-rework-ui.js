@@ -475,7 +475,7 @@ function createDialog(){
   battle.isPlayerTurn=false;clearPendingTurnTimer();battle.busy=false;
   const c=live(),stats=engine.getCombatStats(c);
   if(!battle.playerSkillUsed){
-   const damage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5))),hit=applyTargetDamage(battle.enemy,damage,"physical");
+   const damage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*.5:0))),hit=applyTargetDamage(battle.enemy,damage,"physical");
    c.resource=Math.min(c.resourceMax,c.resource+Math.max(1,Math.round(c.resourceMax*(balance.combat.turn_based?.resource_regeneration_fraction||.2))));
    triggerVfx("attack","physical",false);showFloatingText("player","Автоатака!","#ffd34e");if(hit.killed){finishCurrentEnemy();if(!battle)return;}
   }
@@ -956,7 +956,7 @@ return `<div class="v2-battle-wrap">
   const c=live(),ultimate=ultimateAbility(c),cost=ultimate.resource_cost??balance.resources.action_costs.ultimate;
   if(c.resource<cost){notify("Не хватает ресурса для ультимейта");return;}
   c.resource-=cost;battle.playerSkillUsed=true;battle.ultimateCooldownTurns=Math.max(1,ultimate.cooldown_turns||3);
-  const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1);battle.actionDamageLedger={};
+  const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*.5:0);battle.actionDamageLedger={};
   if(ultimate.effect==="heal_shield"||ultimate.effect==="heal_aoe")c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*ultimate.heal_fraction));
   if(ultimate.effect==="heal_shield")battle.nextDamageShield=Math.round(engine.maxHp(c)*ultimate.shield_fraction);
   if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0;hit++)applyTargetDamage(target,damage,ultimate.damage_type,{ultimate:true});}}
