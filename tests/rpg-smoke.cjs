@@ -183,7 +183,7 @@ const {chromium}=require('playwright');
    c.bag.push({id:'qa-weapon',name:'Эпический Боевой клинок',slot:'weapon',rarity:'Эпическая',stats:{attack:10,defense:2,health:10,crit:.05},refine:0,sockets:[],socketsAvailable:0});
    c.bag.push({id:'qa-chisel',type:'chisel'});
    c.bag.push({id:'qa-refine',type:'refine_stone'});
-   c.bag.push({id:'qa-salvage',name:'QA Salvage Armor',slot:'chest',rarity:'Эпическая',itemLevel:120,stats:{attack:0,defense:10,health:25},refine:0,sockets:[],socketsAvailable:0});
+   c.bag.push({id:'qa-salvage',type:'equipment',name:'QA Salvage Armor',slot:'chest',rarity:'Эпическая',itemLevel:120,stats:{attack:0,defense:10,health:25},refine:0,sockets:[],socketsAvailable:0});
    c.bag.push({id:'qa-chest-best',type:'equipment',name:'QA Best Chest',slot:'chest',rarity:'Легендарная',itemLevel:120,stats:{defense:20,health:150},refine:0,sockets:[],socketsAvailable:0});
    c.bag.push({id:'qa-weapon-best',type:'equipment',name:'QA Best Blade',slot:'weapon',rarity:'Легендарная',itemLevel:120,stats:{attack:25,crit:.05},refine:0,sockets:[],socketsAvailable:0});
    c.bag.push({id:'qa-gray',type:'equipment',name:'QA Gray Boots',slot:'legs',rarity:'Обычная',itemLevel:1,stats:{defense:1},refine:0,sockets:[],socketsAvailable:0});
