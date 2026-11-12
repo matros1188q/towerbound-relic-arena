@@ -1,5 +1,5 @@
 {
-  "hp_multiplier": 4.3,
+  "hp_multiplier": 3.6,
   "damage_multiplier": 6.5,
   "attack_interval_seconds": 1,
   "newbie_exception": {
