@@ -4,6 +4,7 @@
   "attack_interval_seconds": 1,
   "newbie_exception": {
     "max_stage": 10,
+    "hp_multiplier": 0.95,
     "damage_multiplier": 1
   },
   "first_hit_at_seconds": 2.5,
