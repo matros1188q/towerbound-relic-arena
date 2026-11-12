@@ -14,7 +14,7 @@
     "animation_key": "dot",
     "description": "Рваная рана — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.02",
@@ -31,7 +31,7 @@
     "animation_key": "dot",
     "description": "Кровавый росчерк — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.03",
@@ -48,7 +48,7 @@
     "animation_key": "dot",
     "description": "Жажда плоти — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.04",
@@ -65,7 +65,7 @@
     "animation_key": "dot",
     "description": "Алый водоворот — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.05",
@@ -82,7 +82,7 @@
     "animation_key": "dot",
     "description": "Кровавый долг — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.06",
@@ -99,7 +99,7 @@
     "animation_key": "dot",
     "description": "Сердце палача — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.07",
@@ -116,7 +116,7 @@
     "animation_key": "dot",
     "description": "Кровавая жатва — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.08",
@@ -133,7 +133,7 @@
     "animation_key": "dot",
     "description": "Багровый шторм — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.09",
@@ -150,7 +150,7 @@
     "animation_key": "dot",
     "description": "Пир ворона — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.10",
@@ -167,7 +167,7 @@
     "animation_key": "dot",
     "description": "Последний разрез — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.11",
@@ -184,7 +184,7 @@
     "animation_key": "dot",
     "description": "Пробуждение: Рваная рана — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.12",
@@ -201,7 +201,7 @@
     "animation_key": "dot",
     "description": "Усиленная форма: Кровавый росчерк — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.13",
@@ -218,7 +218,7 @@
     "animation_key": "dot",
     "description": "Совершенная форма: Жажда плоти — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.14",
@@ -235,7 +235,7 @@
     "animation_key": "dot",
     "description": "Высшая техника: Алый водоворот — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.15",
@@ -252,7 +252,7 @@
     "animation_key": "dot",
     "description": "Мастерский приём: Кровавый долг — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.16",
@@ -269,7 +269,7 @@
     "animation_key": "dot",
     "description": "Предельная форма: Сердце палача — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.17",
@@ -286,7 +286,7 @@
     "animation_key": "dot",
     "description": "Знак превосходства: Кровавая жатва — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.18",
@@ -303,7 +303,7 @@
     "animation_key": "dot",
     "description": "Абсолютная техника: Багровый шторм — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.19",
@@ -320,7 +320,7 @@
     "animation_key": "dot",
     "description": "Возвышение: Пир ворона — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.bleed.20",
@@ -337,7 +337,7 @@
     "animation_key": "dot",
     "description": "Легендарная форма: Последний разрез — bleed specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.3825
+    "damage_multiplier": 0.3978
   },
   {
     "id": "assassin.poison.01",
@@ -354,7 +354,7 @@
     "animation_key": "dot",
     "description": "Токсичный выпад — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.02",
@@ -371,7 +371,7 @@
     "animation_key": "dot",
     "description": "Смертельная эссенция — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.03",
@@ -388,7 +388,7 @@
     "animation_key": "dot",
     "description": "Змеиный след — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.04",
@@ -405,7 +405,7 @@
     "animation_key": "dot",
     "description": "Кислотный туман — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.05",
@@ -422,7 +422,7 @@
     "animation_key": "dot",
     "description": "Чума клинков — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.06",
@@ -439,7 +439,7 @@
     "animation_key": "dot",
     "description": "Ядовитый дождь — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.07",
@@ -456,7 +456,7 @@
     "animation_key": "dot",
     "description": "Поглощение токсина — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.08",
@@ -473,7 +473,7 @@
     "animation_key": "dot",
     "description": "Зелёная смерть — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.09",
@@ -490,7 +490,7 @@
     "animation_key": "dot",
     "description": "Корона миазмов — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.10",
@@ -507,7 +507,7 @@
     "animation_key": "dot",
     "description": "Пандемия — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.11",
@@ -524,7 +524,7 @@
     "animation_key": "dot",
     "description": "Пробуждение: Токсичный выпад — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.12",
@@ -541,7 +541,7 @@
     "animation_key": "dot",
     "description": "Усиленная форма: Смертельная эссенция — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.13",
@@ -558,7 +558,7 @@
     "animation_key": "dot",
     "description": "Совершенная форма: Змеиный след — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.14",
@@ -575,7 +575,7 @@
     "animation_key": "dot",
     "description": "Высшая техника: Кислотный туман — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.15",
@@ -592,7 +592,7 @@
     "animation_key": "dot",
     "description": "Мастерский приём: Чума клинков — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.16",
@@ -609,7 +609,7 @@
     "animation_key": "dot",
     "description": "Предельная форма: Ядовитый дождь — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.17",
@@ -626,7 +626,7 @@
     "animation_key": "dot",
     "description": "Знак превосходства: Поглощение токсина — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.18",
@@ -643,7 +643,7 @@
     "animation_key": "dot",
     "description": "Абсолютная техника: Зелёная смерть — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.19",
@@ -660,7 +660,7 @@
     "animation_key": "dot",
     "description": "Возвышение: Корона миазмов — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.poison.20",
@@ -677,7 +677,7 @@
     "animation_key": "dot",
     "description": "Легендарная форма: Пандемия — poison specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 0.9525
+    "damage_multiplier": 1.095375
   },
   {
     "id": "assassin.execution.01",
@@ -1410,7 +1410,7 @@
     "animation_key": "heal",
     "description": "Исцеляющий свет — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.03",
@@ -1443,7 +1443,7 @@
     "animation_key": "heal",
     "description": "Возвращение крови — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.05",
@@ -1476,7 +1476,7 @@
     "animation_key": "heal",
     "description": "Оберег жизни — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.07",
@@ -1509,7 +1509,7 @@
     "animation_key": "heal",
     "description": "Воскрешающий гимн — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.09",
@@ -1542,7 +1542,7 @@
     "animation_key": "heal",
     "description": "Полное восстановление — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.11",
@@ -1575,7 +1575,7 @@
     "animation_key": "heal",
     "description": "Усиленная форма: Исцеляющий свет — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.13",
@@ -1608,7 +1608,7 @@
     "animation_key": "heal",
     "description": "Высшая техника: Возвращение крови — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.15",
@@ -1641,7 +1641,7 @@
     "animation_key": "heal",
     "description": "Предельная форма: Оберег жизни — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.17",
@@ -1674,7 +1674,7 @@
     "animation_key": "heal",
     "description": "Абсолютная техника: Воскрешающий гимн — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.healing.19",
@@ -1707,7 +1707,7 @@
     "animation_key": "heal",
     "description": "Легендарная форма: Полное восстановление — healing specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 3.8
+    "damage_multiplier": 3.952
   },
   {
     "id": "bishop.buffs.01",
@@ -3074,7 +3074,7 @@
     "animation_key": "strike",
     "description": "Шквал кастетов — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.02",
@@ -3091,7 +3091,7 @@
     "animation_key": "strike",
     "description": "Быстрые руки — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.03",
@@ -3108,7 +3108,7 @@
     "animation_key": "strike",
     "description": "Серия ударов — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.04",
@@ -3125,7 +3125,7 @@
     "animation_key": "strike",
     "description": "Ливень кулаков — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.05",
@@ -3142,7 +3142,7 @@
     "animation_key": "strike",
     "description": "Сломанный ритм — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.06",
@@ -3159,7 +3159,7 @@
     "animation_key": "strike",
     "description": "Железный град — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.07",
@@ -3176,7 +3176,7 @@
     "animation_key": "strike",
     "description": "Точный кастет — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.08",
@@ -3193,7 +3193,7 @@
     "animation_key": "strike",
     "description": "Буря костей — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.09",
@@ -3210,7 +3210,7 @@
     "animation_key": "strike",
     "description": "Тысяча попаданий — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.10",
@@ -3227,7 +3227,7 @@
     "animation_key": "strike",
     "description": "Неостановимый шквал — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.11",
@@ -3244,7 +3244,7 @@
     "animation_key": "strike",
     "description": "Пробуждение: Шквал кастетов — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.12",
@@ -3261,7 +3261,7 @@
     "animation_key": "strike",
     "description": "Усиленная форма: Быстрые руки — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.13",
@@ -3278,7 +3278,7 @@
     "animation_key": "strike",
     "description": "Совершенная форма: Серия ударов — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.14",
@@ -3295,7 +3295,7 @@
     "animation_key": "strike",
     "description": "Высшая техника: Ливень кулаков — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.15",
@@ -3312,7 +3312,7 @@
     "animation_key": "strike",
     "description": "Мастерский приём: Сломанный ритм — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.16",
@@ -3329,7 +3329,7 @@
     "animation_key": "strike",
     "description": "Предельная форма: Железный град — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.17",
@@ -3346,7 +3346,7 @@
     "animation_key": "strike",
     "description": "Знак превосходства: Точный кастет — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.18",
@@ -3363,7 +3363,7 @@
     "animation_key": "strike",
     "description": "Абсолютная техника: Буря костей — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.19",
@@ -3380,7 +3380,7 @@
     "animation_key": "strike",
     "description": "Возвышение: Тысяча попаданий — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.fists.20",
@@ -3397,7 +3397,7 @@
     "animation_key": "strike",
     "description": "Легендарная форма: Неостановимый шквал — fists specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 2.704
   },
   {
     "id": "destroyer.greatsword.01",
@@ -3770,7 +3770,8 @@
     "animation_key": "shield",
     "description": "Магический заслон — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.03",
@@ -3803,7 +3804,8 @@
     "animation_key": "shield",
     "description": "Удар печати — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.05",
@@ -3836,7 +3838,8 @@
     "animation_key": "shield",
     "description": "Всплеск силы — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.07",
@@ -3869,7 +3872,8 @@
     "animation_key": "shield",
     "description": "Арканный кулак — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.09",
@@ -3902,7 +3906,8 @@
     "animation_key": "shield",
     "description": "Несокрушимый фокус — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.11",
@@ -3935,7 +3940,8 @@
     "animation_key": "shield",
     "description": "Усиленная форма: Магический заслон — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.13",
@@ -3968,7 +3974,8 @@
     "animation_key": "shield",
     "description": "Высшая техника: Удар печати — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.15",
@@ -4001,7 +4008,8 @@
     "animation_key": "shield",
     "description": "Предельная форма: Всплеск силы — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.17",
@@ -4034,7 +4042,8 @@
     "animation_key": "shield",
     "description": "Абсолютная техника: Арканный кулак — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "destroyer.wand_shield.19",
@@ -4067,7 +4076,8 @@
     "animation_key": "shield",
     "description": "Легендарная форма: Несокрушимый фокус — wand_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 2.99,
+    "defense_damage_multiplier": 0.5
   },
   {
     "id": "elemental.darkness.01",
@@ -5460,7 +5470,7 @@
     "animation_key": "shield",
     "description": "Ответный выпад — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.03",
@@ -5493,7 +5503,7 @@
     "animation_key": "shield",
     "description": "Контрудар — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.05",
@@ -5526,7 +5536,7 @@
     "animation_key": "shield",
     "description": "Непробиваемая защита — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.07",
@@ -5559,7 +5569,7 @@
     "animation_key": "shield",
     "description": "Возмездие — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.09",
@@ -5592,7 +5602,7 @@
     "animation_key": "shield",
     "description": "Последний защитник — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.11",
@@ -5625,7 +5635,7 @@
     "animation_key": "shield",
     "description": "Усиленная форма: Ответный выпад — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.13",
@@ -5658,7 +5668,7 @@
     "animation_key": "shield",
     "description": "Высшая техника: Контрудар — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.15",
@@ -5691,7 +5701,7 @@
     "animation_key": "shield",
     "description": "Предельная форма: Непробиваемая защита — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.17",
@@ -5724,7 +5734,7 @@
     "animation_key": "shield",
     "description": "Абсолютная техника: Возмездие — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.sword_shield.19",
@@ -5757,7 +5767,7 @@
     "animation_key": "shield",
     "description": "Легендарная форма: Последний защитник — sword_shield specialization skill.",
     "damage_type": "physical",
-    "damage_multiplier": 2.99
+    "damage_multiplier": 3.1096
   },
   {
     "id": "duelist.rapier.01",
@@ -6436,7 +6446,7 @@
     "animation_key": "debuff",
     "description": "Проклятие праха — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.02",
@@ -6453,7 +6463,7 @@
     "animation_key": "debuff",
     "description": "Тёмный идол — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.03",
@@ -6470,7 +6480,7 @@
     "animation_key": "debuff",
     "description": "Шёпот божества — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.04",
@@ -6487,7 +6497,7 @@
     "animation_key": "debuff",
     "description": "Печать распада — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.05",
@@ -6504,7 +6514,7 @@
     "animation_key": "debuff",
     "description": "Жертвоприношение — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.06",
@@ -6521,7 +6531,7 @@
     "animation_key": "debuff",
     "description": "Гнев забытых — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.07",
@@ -6538,7 +6548,7 @@
     "animation_key": "debuff",
     "description": "Око тьмы — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.08",
@@ -6555,7 +6565,7 @@
     "animation_key": "debuff",
     "description": "Гниение души — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.09",
@@ -6572,7 +6582,7 @@
     "animation_key": "debuff",
     "description": "Глас бездны — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.10",
@@ -6589,7 +6599,7 @@
     "animation_key": "debuff",
     "description": "Воля тёмных богов — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.11",
@@ -6606,7 +6616,7 @@
     "animation_key": "debuff",
     "description": "Пробуждение: Проклятие праха — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.12",
@@ -6623,7 +6633,7 @@
     "animation_key": "debuff",
     "description": "Усиленная форма: Тёмный идол — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.13",
@@ -6640,7 +6650,7 @@
     "animation_key": "debuff",
     "description": "Совершенная форма: Шёпот божества — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.14",
@@ -6657,7 +6667,7 @@
     "animation_key": "debuff",
     "description": "Высшая техника: Печать распада — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.15",
@@ -6674,7 +6684,7 @@
     "animation_key": "debuff",
     "description": "Мастерский приём: Жертвоприношение — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.16",
@@ -6691,7 +6701,7 @@
     "animation_key": "debuff",
     "description": "Предельная форма: Гнев забытых — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.17",
@@ -6708,7 +6718,7 @@
     "animation_key": "debuff",
     "description": "Знак превосходства: Око тьмы — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.18",
@@ -6725,7 +6735,7 @@
     "animation_key": "debuff",
     "description": "Абсолютная техника: Гниение души — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.19",
@@ -6742,7 +6752,7 @@
     "animation_key": "debuff",
     "description": "Возвышение: Глас бездны — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.dark_gods.20",
@@ -6759,7 +6769,7 @@
     "animation_key": "debuff",
     "description": "Легендарная форма: Воля тёмных богов — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 4.8
+    "damage_multiplier": 5.52
   },
   {
     "id": "shaman.nature.01",
