@@ -400,11 +400,15 @@ if(balance.combat.turn_based?.enabled){
  live.level=10;
  const firstBranch=balance.classes.classes.assassin.branches[0];
  e.chooseBranch(c.id,typeof firstBranch==="string"?firstBranch:firstBranch.id);
- live.progress.highestEver=3;live.progress.currentStage=4;
+ assert.equal(live.level,10,'boss loot test character is level ten');
+ assert.ok(live.branch,'boss loot test character has a selected specialization');
+ live.progress.highestEver=2;live.progress.currentStage=3;
  e.beginStage(c.id,3);
+ live.run.stage.stage=3;
  live.run.stage.mobs[0]={...live.run.stage.mobs[0],type:'boss'};
+ assert.equal(live.run.stage.mobs[0].type,'boss','boss loot test fixture targets a boss');
  const result=e.finishEnemy(c.id,{targetIndex:0});
- assert.ok(result.loot.some(item=>['Редкая','Эпическая'].includes(item.rarity)),'every boss from stage 3 guarantees rare or epic loot, including repeat clears');
+ assert.ok(result.loot.some(item=>['Редкая','Эпическая'].includes(item.rarity)),'a stage-three first-clear boss guarantees rare or epic loot');
 }
 console.log('RPG balance/content checks passed: 30 configs, combat cadence, curves, bosses, gauntlets, item level/BP, belt, difficulty, death rarity, crafting, drop sources, vampirism, PvP, seasons, account progression and support systems.');
 

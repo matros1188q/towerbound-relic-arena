@@ -102,9 +102,9 @@ async function journey(type,name,viewport,url){
    assert.ok(tutorial.bottom<=tutorial.viewport+1&&tutorial.buttonBottom<=tutorial.viewport+1,name+' tutorial and CTA fit inside the viewport');
    await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   }
-  assert.equal(await page.locator('.tb-basic-attack').count(),1,name+' renders the free basic attack control');
+  assert.equal(await page.locator('.v2-btn-attack').count(),1,name+' renders the free basic attack control');
   await page.locator('[data-action="end-turn"]').click();
-  await page.waitForFunction(()=>Number(document.querySelector('.tb-arena-top')?.innerText.match(/РАУНД\s+(\d+)/)?.[1]||0)>=2,{timeout:10000});
+  await page.waitForFunction(()=>Number(document.querySelector('.v2-battle-top')?.innerText.match(/РАУНД\s+(\d+)/)?.[1]||0)>=2,{timeout:10000});
   fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
   await page.screenshot({path:path.join(root,'artifacts','turn-based-end-turn-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
   const diagnostics=await page.evaluate(()=>({
@@ -133,7 +133,7 @@ async function journey(type,name,viewport,url){
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   const recovered=await page.evaluate(()=>({
-   target:document.querySelector('.tb-target-card.selected')?.dataset.target,
+   target:document.querySelector('.v2-enemy-card.selected')?.dataset.target,
    killed:window.TowerboundRework.state.characters[0].run.stage?.killedIndices||[],
    current:window.TowerboundRework.state.characters[0].run.stage?.targetIndex
   }));

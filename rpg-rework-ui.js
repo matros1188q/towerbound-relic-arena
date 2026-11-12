@@ -650,7 +650,7 @@ function createDialog(){
   const enemyHpPct = Math.max(0, Math.min(100, Number(target.hp) / Math.max(1, Number(target.maxHp) || 1) * 100));
   const intent = target.telegraph?.label || target.intent?.label || (battle.telegraph && targetIndex === battle.targetIndex ? battle.telegraph.label : "Готовит атаку");
   
-  return `<div class="v2-enemy-card" data-target="${targetIndex}">
+  return `<div class="v2-enemy-card${targetIndex===battle.targetIndex?" selected":""}" data-target="${targetIndex}" aria-pressed="${targetIndex===battle.targetIndex?"true":"false"}">
     <img src="${esc(enemyPortrait(target))}" class="v2-enemy-img" alt="">
     <div class="v2-enemy-name">${target.type === "boss" ? "БОСС" : "ВРАГ " + (i + 1)}</div>
     <div class="v2-enemy-intent">${esc(intent)}</div>
@@ -692,7 +692,7 @@ return `<div class="v2-battle-wrap">
     <div class="v2-turn-guidance" aria-live="polite">${battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют..."}</div>
     <button type="button" class="v2-btn-attack" id="hit" data-basic-attack="1" ${battle.actor?.type !== "player" || battle.playerSkillUsed || battle.busy || battle.paused ? "disabled" : ""}>⚔ АТАКА</button>
     <div class="v2-skills-grid">${skillMarkup}</div>
-    <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>ЗАВЕРШИТЬ ХОД</button>
+    <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>${battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА..."}</button>
   </div>
 </div>`;
  }

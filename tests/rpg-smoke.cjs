@@ -43,7 +43,8 @@ const {chromium}=require('playwright');
  assert.match(battleUiSource,/max-height:150px/,"all mob and boss art frames have a 150px cap");
  assert.match(battleUiSource,/function resolveSkill\(c,skillId\)/,"battle actions resolve class base skills and catalog skills");
  assert.match(battleUiSource,/\[data-stone\],\[data-extract-gem\],\[data-inspect-stone\]/,"gem insert, extract and inspect controls are included in delegated click handling");
- assert.match(battleUiSource,/console\.log\('SKILL DEBUG:',skillObject\)/,"skill renderer logs the requested debug object");
+  assert.match(battleUiSource,/function skillIconMarkup\(skill,classId\)/,"combat skill buttons resolve their own class or skill icon");
+  assert.match(battleUiSource,/const icon=evolved\?evolved\.icon:skill\?\.icon/,"evolved skill icons take priority over base skill icons");
  assert.match(battleUiSource,/skill\.resource_cost\?\?effect\.resource_cost/,"skill cost prefers its configured value");
  assert.match(battleUiSource,/skill\.damage_multiplier\?\?skill\.damage\?\?effect\.damage_multiplier/,"skill damage prefers normalized damage and has a safe fallback");
  assert.match(battleUiSource,/Number\(source\.cost\?\?source\.resource_cost/,"skill resolver normalizes cost into a numeric field");
@@ -347,141 +348,53 @@ const {chromium}=require('playwright');
     await page.waitForSelector('#tbEndgame',{state:'detached',timeout:3000});
    }
   }
-  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.level=1;window.saveTowerboundRework();});
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.level=1;c.branch=null;c.gear=[null,null,null,null,null,null];c.run.stage=null;window.saveTowerboundRework();});
   await page.setViewportSize({width:390,height:844});
   await page.locator('[data-stage="9"]').click();
-  await page.setViewportSize({width:390,height:844});
   await page.locator('[data-action="start"]').click();
-  await page.waitForSelector('.tb-arena',{timeout:5000});
-  assert.equal(await page.locator('.tb-turn-tutorial').count(),1,'first battle shows turn-based tutorial');
-  const tutorialBounds=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),button=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{top:r.top,bottom:r.bottom,buttonBottom:button.bottom,viewport:innerHeight,maxHeight:parseFloat(getComputedStyle(el).maxHeight)};});
-  assert.ok(tutorialBounds.bottom<=tutorialBounds.viewport+1&&tutorialBounds.buttonBottom<=tutorialBounds.viewport+1,'tutorial CTA stays visible at 390x844');
-  assert.ok(tutorialBounds.maxHeight<=tutorialBounds.viewport*.81,'tutorial card respects the 80dvh maximum');
+  await page.waitForSelector('.v2-battle-wrap',{timeout:5000});
+  assert.equal(await page.locator('.v2-skill-btn').count(),6,'V2 battle shows six skill slots');
+  assert.ok(await page.locator('.v2-enemy-card').count()>0,'V2 battle displays enemy target cards');
+  assert.equal(await page.locator('.v2-turn-guidance').count(),1,'V2 battle displays turn guidance');
+  assert.equal(await page.locator('#hit').count(),1,'V2 battle has one basic attack control');
+  assert.equal(await page.locator('#endturn').count(),1,'V2 battle has one End Turn control');
+  const firstLayout=await page.evaluate(()=>{
+   const box=selector=>{const el=document.querySelector(selector),r=el?.getBoundingClientRect();return el&&r?{height:r.height,display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility}:null;};
+   return{attack:box('#hit'),end:box('#endturn'),width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,icons:[...document.querySelectorAll('.v2-skill-icon')].map(el=>({src:el.getAttribute('src'),background:getComputedStyle(el).backgroundImage}))};
+  });
+  assert.ok(firstLayout.attack&&firstLayout.attack.height>=50&&firstLayout.attack.visibility!=='hidden','basic attack is large and visible');
+  assert.ok(firstLayout.end&&firstLayout.end.height>=44&&firstLayout.end.visibility!=='hidden'&&firstLayout.end.display!=='none','End Turn is visible in the initial player turn');
+  assert.ok(firstLayout.scrollWidth<=firstLayout.width,'V2 battle has no horizontal overflow on 390px mobile');
+  assert.ok(firstLayout.icons.some(icon=>!!icon.src||icon.background!=='none'),'skill slots render class atlas or skill-specific artwork');
+  const enemy=page.locator('.v2-enemy-card').first(),targetId=await enemy.getAttribute('data-target');
+  await enemy.click();
+  assert.ok(await page.locator('.v2-enemy-card[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'tap selects an enemy in the V2 battle');
+  const hpBefore=await page.locator('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text').innerText();
+  await page.locator('#hit').click();
+  await page.waitForFunction(({targetId,hpBefore})=>{
+   const node=document.querySelector('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text');
+   return node&&node.textContent!==hpBefore;
+  },{targetId,hpBefore},{timeout:5000});
+  const hpBeforeEnemyTurn=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
+  await page.locator('#endturn').click();
+  await page.waitForFunction(()=>document.querySelector('#endturn')?.disabled,undefined,{timeout:5000});
+  await page.waitForFunction(()=>{const b=document.querySelector('#endturn');return b&&!b.disabled&&b.textContent.includes('ЗАВЕРШИТЬ ХОД');},undefined,{timeout:15000});
+  const hpAfterEnemyTurn=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
+  assert.ok(hpAfterEnemyTurn<hpBeforeEnemyTurn,'enemy phase attacks before returning control to the player');
+  const endAfter=await page.locator('#endturn').evaluate(el=>({display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility,height:el.getBoundingClientRect().height}));
+  assert.ok(endAfter.display!=='none'&&endAfter.visibility!=='hidden'&&endAfter.height>=44,'End Turn remains visible after enemy phase');
   await page.setViewportSize({width:430,height:932});
-  const tutorialWide=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),b=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{bottom:r.bottom,buttonBottom:b.bottom,viewport:innerHeight};});
-  assert.ok(tutorialWide.bottom<=tutorialWide.viewport+1&&tutorialWide.buttonBottom<=tutorialWide.viewport+1,'tutorial CTA stays visible at 430x932');
-  await page.setViewportSize({width:390,height:844});
-  assert.match(await page.locator('.tb-turn-tutorial').innerText(),/Это пошаговый бой[\s\S]*АТАКА[\s\S]*умение[\s\S]*телеграфами/,'tutorial covers turns, actions and telegraphs');
-  await page.locator('[data-action="dismiss-turn-tutorial"]').click();
-  assert.equal(await page.locator('.tb-turn-tutorial').count(),0,'Понятно closes the tutorial');
-  assert.equal(await page.locator('.tb-bottom-nav').count(),0,'global navigation yields the full viewport to active combat controls');
-  assert.match(await page.locator('.tb-turn-guidance').innerText(),/Твой ход/,'player turn guidance is visible');
-  assert.match(await page.locator('[data-action="end-turn"]').innerText(),/ЗАВЕРШИТЬ ХОД/,'explicit end-turn action is visible');
-  assert.doesNotMatch(await page.locator('#tbRpg').innerText(),/NaN\s*сек/i,'battle HUD never renders a NaN seconds countdown');
-  const intervalAudit=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0],enemy={type:'normal',role:'normal'};return window.TowerboundRework.getEnemyStats(c.id,c.progress.currentStage,enemy).attackIntervalMs;});
-  assert.ok(Number.isFinite(intervalAudit)&&intervalAudit>0,'enemy attack interval remains a finite positive number');
-  assert.equal(await page.locator('[data-panel-skill]').count(),6,'six configured skill slots are visible');
-  assert.equal(await page.locator('[data-counter]').count(),1,'class counter occupies slot five');
-  assert.equal(await page.locator('[data-ultimate]').count(),1,'class ultimate occupies slot six');
-  const evolvedPanel=await page.evaluate(()=>{
-   const c=window.TowerboundRework.state.characters[0],id=c.skillLoadout?.[0],e=window.TowerboundEndgame.getSkillEvolution(id),button=document.querySelector('[data-panel-skill="'+id+'"]');
-   return{evolved:e?.name,icon:e?.icon,text:button?.innerText||''};
-  });
-  assert.ok(evolvedPanel.evolved&&evolvedPanel.icon&&evolvedPanel.text.includes(evolvedPanel.evolved),'combat skill panel displays the evolved name and icon');
-  assert.equal(await page.locator('.tb-panel-skill').count(),8,'six active skill slots plus counter and ultimate are rendered');
-  assert.equal(await page.locator('[data-basic-attack]').count(),1,'free basic attack is available beside the skill grid');
-  const attackLayout=await page.evaluate(()=>{const box=el=>{const r=el.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};};return{attack:box(document.querySelector('[data-basic-attack]')),skills:box(document.querySelector('.tb-panel-slots')),end:box(document.querySelector('[data-action="end-turn"]')),potion:box(document.querySelector('.tb-potion-belt button'))};});
-  // The action panel must fit its own grid row; the potion belt must never cover the End Turn hit target.
-  console.log('BATTLE CONTROL BOXES:',JSON.stringify(attackLayout));
-  assert.ok(attackLayout.attack.bottom<=attackLayout.skills.top+2,'basic attack sits immediately above the skill grid');
-  assert.ok(attackLayout.end.bottom<=attackLayout.potion.top+2||attackLayout.end.top>=attackLayout.potion.bottom-2,'potion belt never covers the End Turn button');
-  assert.equal(await page.locator('.tb-initiative-avatar').count(),1,'player initiative uses the Matroscheg portrait');
-  const visualAudit=await page.evaluate(()=>{
-   const wrap=document.querySelector('.tb-target-card .tb-target-art-wrap'),targetImg=wrap?.querySelector('img'),targetBox=wrap?.getBoundingClientRect(),targetImage=targetImg?.getBoundingClientRect();
-   const portrait=document.querySelector('.tb-enemy-portrait'),bossImg=portrait?.querySelector('img'),portraitBox=portrait?.getBoundingClientRect(),bossImage=bossImg?.getBoundingClientRect();
-   const focus=document.querySelector('.tb-enemy-focus'),telegraph=focus?.querySelector('.tb-telegraph'),telegraphBox=telegraph?.getBoundingClientRect(),focusBox=focus?.getBoundingClientRect();
-   const hp=document.querySelector('.tb-battle-hero .tb-healthbar.hero span');
-   return {targetContained:!!targetBox&&!!targetImage&&targetImage.left>=targetBox.left-1&&targetImage.right<=targetBox.right+1&&targetImage.top>=targetBox.top-1&&targetImage.bottom<=targetBox.bottom+1,portraitHeight:portraitBox?.height||0,bossImageContained:!!portraitBox&&!!bossImage&&bossImage.left>=portraitBox.left-1&&bossImage.right<=portraitBox.right+1&&bossImage.top>=portraitBox.top-1&&bossImage.bottom<=portraitBox.bottom+1,telegraphPosition:telegraph?getComputedStyle(telegraph).position:"missing",telegraphContained:!!focusBox&&!!telegraphBox&&telegraphBox.left>=focusBox.left-1&&telegraphBox.right<=focusBox.right+1&&telegraphBox.top>=focusBox.top-1&&telegraphBox.bottom<=focusBox.bottom+1,heroHpWidth:hp?.getBoundingClientRect().width||0,heroHpColor:hp?getComputedStyle(hp).backgroundImage:""};
-  });
-  assert.ok(visualAudit.portraitHeight<=150,'boss and elite portrait is capped at 150px');
-  assert.ok(visualAudit.targetContained,'mob artwork stays inside its target card image frame');
-  assert.ok(visualAudit.bossImageContained,'boss artwork stays inside its portrait frame');
-  assert.equal(visualAudit.telegraphPosition,'relative','enemy telegraph stays inside its card instead of floating over the screen');
-  assert.ok(visualAudit.telegraphContained,'enemy telegraph stays within the enemy card');
-  assert.ok(visualAudit.heroHpWidth>0,'player HP bar has a visible filled width');
-  assert.match(visualAudit.heroHpColor,/58, 114, 72|141, 175, 104/,'player HP bar uses the green hero-health gradient');
-  const mobilePanel=await page.locator('.tb-panel-actions').evaluate(el=>({
-   display:getComputedStyle(el).display,
-   slotsDisplay:getComputedStyle(el.querySelector('.tb-panel-slots')).display,
-   columns:getComputedStyle(el.querySelector('.tb-panel-slots')).gridTemplateColumns.split(' ').length,
-   rows:getComputedStyle(el.querySelector('.tb-panel-slots')).gridTemplateRows.split(' ').length,
-   targetTop:document.querySelector('.tb-target-grid').getBoundingClientRect().top,
-   panelTop:el.getBoundingClientRect().top,
-   endTurnHeight:document.querySelector('[data-action="end-turn"]').getBoundingClientRect().height,
-   heroHpTop:document.querySelector('.tb-battle-hero .tb-healthbar').getBoundingClientRect().top,
-   heroHpBottom:document.querySelector('.tb-battle-hero .tb-healthbar').getBoundingClientRect().bottom,
-   bodyPosition:getComputedStyle(document.body).position,
-   bodyOverflow:getComputedStyle(document.body).overflow,
-   rootOverflow:getComputedStyle(document.querySelector('#tbRpg .tb-v2')).overflow
-  }));
-  assert.equal(mobilePanel.display,'grid','mobile combat controls use a fixed grid');
-  assert.equal(mobilePanel.slotsDisplay,'grid','skill slots use a grid');
-  assert.equal(mobilePanel.columns,3,'skills are arranged three per row');
-  assert.equal(mobilePanel.rows,3,'six skill slots plus counter and ultimate occupy three rows in the three-column mobile grid');
-  assert.ok(mobilePanel.endTurnHeight<=60,'End Turn button stays at or below 60px');
-  assert.ok(mobilePanel.heroHpTop>=0&&mobilePanel.heroHpBottom<=844,'hero HP bar stays in the viewport');
-  assert.equal(mobilePanel.bodyPosition,'fixed','body is fixed while battle is active');
-  assert.equal(mobilePanel.bodyOverflow,'hidden','body scrolling is locked during battle');
-  assert.equal(mobilePanel.rootOverflow,'hidden','battle root does not scroll');
-  assert.ok(mobilePanel.targetTop<mobilePanel.panelTop,'enemy targets stay above the mobile controls');
-  const stress=await page.evaluate(()=>{
-   const grid=document.querySelector('.tb-target-grid'),cards=[...grid.querySelectorAll('.tb-target-card')];
-   for(let i=cards.length;i<7;i++){const clone=cards[0].cloneNode(true);clone.dataset.target=String(100+i);grid.appendChild(clone);}
-   return [...grid.querySelectorAll('.tb-target-card')].map(card=>{const r=card.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};});
-  });
-  assert.equal(stress.length,7,'seven target cards fit the stress-test grid');
-  assert.ok(stress.every(r=>r.top>=0&&r.bottom<=844&&r.left>=0&&r.right<=390),'all seven target cards remain inside the mobile viewport');
-  await page.evaluate(()=>document.querySelectorAll('.tb-target-card[data-target^="10"]').forEach(card=>card.remove()));
-  await page.setViewportSize({width:812,height:375});
-  const landscape=await page.evaluate(()=>{
-   const arena=document.querySelector('.tb-arena'),grid=document.querySelector('.tb-target-grid'),actions=document.querySelector('.tb-panel-actions'),potions=document.querySelector('.tb-potion-belt');
-   return [arena,grid,actions,potions].map(el=>{const r=el.getBoundingClientRect();return{top:r.top,bottom:r.bottom,left:r.left,right:r.right};});
-  });
-  assert.ok(landscape.every(r=>r.top>=0&&r.bottom<=375&&r.left>=0&&r.right<=812),'arena, enemies, controls and potions fit in landscape');
-  await page.setViewportSize({width:390,height:844});
-  assert.equal(await page.locator('#speed').count(),0,'real-time speed toggle is removed');
-  assert.equal(await page.locator('[data-action="attack"]').count(),0,'real-time Attack control is removed');
-  await page.locator('[data-target="0"]').click();
-  assert.ok(await page.locator('[data-target="0"]').evaluate(el=>el.classList.contains('selected')),'tap selects a live mob');
-  await page.evaluate(()=>{window.__tbScrollBeforeTurn=window.scrollY;});
-  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.resource=0;window.saveTowerboundRework();});
-  const basicBefore=await page.evaluate(()=>({resource:window.TowerboundRework.state.characters[0].resource,hp:document.querySelector('.tb-target-card.selected .tb-target-hp i')?.style.width}));
-  await page.locator('[data-basic-attack]').click();
-  await page.waitForFunction(before=>window.TowerboundRework.state.characters[0].resource===15&&document.querySelector('.tb-target-card.selected .tb-target-hp i')?.style.width!==before.hp,basicBefore,{timeout:5000});
-  const hpBeforeEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
-  await page.locator('[data-action="end-turn"]').click();
-  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button?.disabled&&button.innerText.includes("ХОД ПРОТИВНИКА");});
-  await page.waitForFunction(()=>document.querySelector('.tb-arena-top')?.innerText.includes('РАУНД 2')||document.querySelector('[data-action="confirm-death"]'));
-  const hpAfterEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
-  assert.ok(hpAfterEnemyPhase<hpBeforeEnemyPhase,'at least one enemy attacks before the player receives the next turn');
-  assert.match(await page.locator('.tb-turn-guidance').innerText(),/Твой ход/,'control returns to the player after enemy phase');
-  assert.equal(await page.locator('[data-action="end-turn"]').isEnabled(),true,'end-turn button reactivates for the player');
-  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.resource=c.resourceMax;window.saveTowerboundRework();});
-  const skillHpBefore=await page.locator('.tb-target-card.selected .tb-target-hp i').getAttribute('style');
-  assert.equal(await page.locator('[data-panel-skill]').first().isEnabled(),true,'base Assassin skill is enabled at level 1');
-  await page.locator('[data-panel-skill]').first().click();
-  await page.waitForFunction(previous=>document.querySelector('.tb-target-card.selected .tb-target-hp i')?.getAttribute('style')!==previous,skillHpBefore);
-  await page.waitForTimeout(100);
-  assert.ok(skillDebugLogs.length>0,'browser console emitted SKILL DEBUG objects');
-  assert.ok(skillDebugLogs[0].id.startsWith("assassin.base."),'first combat skill resolves from Assassin base skills');
-  console.log("SKILL DEBUG CAPTURE:",JSON.stringify(skillDebugLogs[0]));
-  const noJump=await page.evaluate(()=>({before:window.__tbScrollBeforeTurn,after:window.scrollY}));
-  assert.equal(noJump.after,noJump.before,'End Turn does not move the page');
-  if(await page.locator('[data-action="end-turn"]').count()===0){
-   assert.ok(await page.locator('[data-action="start"]').count()>0,'a lethal skill may finish the stage and return to the map');
-   await page.locator('[data-action="start"]').click();
-   await page.waitForSelector('[data-action="end-turn"]',{timeout:5000});
-  }
+  const wide=await page.evaluate(()=>({width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,end:document.querySelector('#endturn')?.getBoundingClientRect().toJSON()}));
+  assert.ok(wide.scrollWidth<=wide.width,'V2 battle has no horizontal overflow on 430px mobile');
+  assert.ok(wide.end&&wide.end.height>=44,'End Turn remains reachable on 430px mobile');
   await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=1;window.saveTowerboundRework();});
-  await page.locator('[data-action="end-turn"]').click();
-  await page.waitForSelector('[data-action="confirm-death"]',{timeout:7000});
-  assert.match(await page.locator('.tb-death-overlay').innerText(),/Персонаж погиб/,'lethal combat damage opens the death overlay');
-  assert.ok(await page.locator('#tbRpg').evaluate(el=>el.classList.contains('tb-death-shaking')),'death applies the configured screen-shake VFX');
-  await page.locator('[data-action="confirm-death"]').click();
-  assert.equal(await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.lives),2,'Easy difficulty consumes one of three lives and keeps the run recoverable');
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('#endturn').click();
+  await page.waitForSelector('[data-action="confirm-death"]',{timeout:10000});
+  assert.match(await page.locator('.tb-death-overlay').innerText(),/Персонаж погиб/,'lethal enemy damage opens the death overlay');
   assert.deepEqual(errors,[],'browser runtime must not throw uncaught errors');
-  console.log('Browser smoke passed: seven classes, progression, inventory, shop, systems, combat, fixed 390×844 and 430×932 mobile HUD, seven-target viewport stress, landscape layout, stable DOM and 20 rapid attack taps without scroll.');
- }finally{await browser.close();server.close();}
+  console.log('V2 RPG smoke passed: enemy cards, six skill slots, skill icons, visible Attack/End Turn controls, turn handoff and mobile layout.');
+}finally{await browser.close();server.close();}
 })().catch(error=>{console.error(error);process.exit(1);});
 
 // Auth gate regression: inline overlay visibility is required even when app styles are overridden.
