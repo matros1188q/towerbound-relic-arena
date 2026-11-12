@@ -321,7 +321,7 @@
    const base=curve?.length?interpolation(curve,character.level,"level","hp")/(balance.character_curves.base_divisor||1.5):
     stats.base_health+Math.max(0,character.level-1)*stats.health_per_level;
    const progression=character.progression||{},runeHealth=(progression.runewords||[]).reduce((value,word)=>value*(1+(word.health||0)),1);
-   const sets=setBonusTotals(character);return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+sets.health)*(1+(progression.bonusHp||0))*runeHealth*(balance.combat.turn_based?.player_hp_multiplier??1)));
+   const sets=setBonusTotals(character),branchKey=character.classId+"."+(character.branch||character.simBranch||""),branchHp=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.max_hp_multiplier||1);return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+sets.health)*(1+(progression.bonusHp||0))*runeHealth*branchHp*(balance.combat.turn_based?.player_hp_multiplier??1)));
   }
   function getCombatStats(characterOrId){
    const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
