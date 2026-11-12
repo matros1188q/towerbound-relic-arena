@@ -111,6 +111,11 @@
       "shaman": [
         "dark_gods"
       ]
-    }
+    },
+    "pre_branch_classes": [
+      "dragonkin",
+      "elemental",
+      "shaman"
+    ]
   }
 }
