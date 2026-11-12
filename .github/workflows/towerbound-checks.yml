@@ -1,7 +1,7 @@
 name: Towerbound regression checks
 on:
   push:
-    branches: [main]
+    branches: [main, 'balance-lab/**']
   workflow_dispatch:
 permissions:
   contents: read
@@ -10,6 +10,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   static-and-syntax:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,3 +45,15 @@ jobs:
         run: node tests/balance-simulation.test.cjs
       - name: Run 250-stage economy simulation
         run: npm run economy
+  balance-variant-simulation:
+    if: startsWith(github.ref, 'refs/heads/balance-lab/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run exhaustive 250-stage simulation for all 21 builds
+        run: node tests/full-250-build-balance.test.cjs
