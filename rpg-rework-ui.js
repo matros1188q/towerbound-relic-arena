@@ -240,7 +240,8 @@ function createDialog(){
   const effect=balance.skill_effects[source.effect_template]||balance.skill_effects.strike||{};
   const unlockLevel=Number.isFinite(Number(source.unlock_level))?Number(source.unlock_level):1;
   const damage=Number(source.damage??source.damage_multiplier??effect.damage_multiplier??effect.heal_multiplier??effect.power_multiplier??0)||0;
-  const cost=Number(source.cost??source.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0)||0;
+  const defaultSkillCost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(balance.resources.action_costs.attack_skill??0);
+  const cost=Number(source.cost??source.resource_cost??effect.resource_cost??defaultSkillCost)||0;
   const skill={...source,unlock_level:unlockLevel,damage,cost,damage_multiplier:Number(source.damage_multiplier??source.damage??effect.damage_multiplier??1)||1,resource_cost:cost};
   if(skill.class_id&&skill.class_id!==c.classId)return null;
   if(skill.branch_id&&skill.branch_id!==c.branch)return null;
@@ -755,7 +756,7 @@ function talentBonusDescription(talent,rank){
 const skillMarkup = Array.from({ length: 6 }, (_, index) => {
   const skill = slots[index] || null;
   const cooldown = skill ? (battle.skillCooldowns?.[skill.id] || 0) : 0;
-  const cost = skill ? (skill.cost || skill.resource_cost || 18) : 0;
+  const cost = skill ? (c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill.cost || skill.resource_cost || 18)) : 0;
   const disabled = !skill || battle.actor?.type !== "player" || battle.playerSkillUsed || cooldown > 0 || battle.busy || battle.paused;
   
   return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id || "")}" data-panel-slot="${index}" ${disabled ? "disabled" : ""}>
@@ -935,7 +936,7 @@ return `<div class="v2-battle-wrap">
  }
  function useCounterSkill(){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.counterPrimed||(battle.counterCooldownTurns||0)>0)return;
-  const c=live(),counter=counterAbility(c),cost=counter.resource_cost??balance.resources.action_costs.counter;
+  const c=live(),counter=counterAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.counter??2):(counter.resource_cost??balance.resources.action_costs.counter);
   if(c.resource<cost){notify("Не хватает ресурса для контр-умения");return;}
   c.resource-=cost;battle.counterPrimed=true;battle.playerSkillUsed=true;battle.counterCooldownTurns=Math.max(1,counter.cooldown_turns||2);battle.counterAction=counter;battle.counterTargetIndex=undefined;
   notify("Контр-умение готово: следующая атака противника будет отражена на 100%");save();render();
@@ -950,7 +951,7 @@ return `<div class="v2-battle-wrap">
  }
  function useUltimate(){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||(battle.ultimateCooldownTurns||0)>0)return;
-  const c=live(),ultimate=ultimateAbility(c),cost=ultimate.resource_cost??balance.resources.action_costs.ultimate;
+  const c=live(),ultimate=ultimateAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.ultimate??4):(ultimate.resource_cost??balance.resources.action_costs.ultimate);
   if(c.resource<cost){notify("Не хватает ресурса для ультимейта");return;}
   c.resource-=cost;battle.playerSkillUsed=true;battle.ultimateCooldownTurns=Math.max(1,ultimate.cooldown_turns||3);
   const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*(Number(balance.classes.branch_stat_bonuses?.["destroyer.wand_shield"]?.defense_damage_fraction)||.5):0);battle.actionDamageLedger={};
