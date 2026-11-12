@@ -1,0 +1,44 @@
+name: Temporary balance simulation verification
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate simulator syntax
+        run: node --check tests/balance-simulation.test.cjs
+      - name: Run 21 builds through Node.js
+        run: |
+          node - <<'NODE'
+          const rows = require('./tests/balance-simulation.test.cjs').run();
+          const summary = rows.map(x => ({
+            build: x.className + ' / ' + x.branchName,
+            cleared: x.cleared,
+            deathStage: x.deathStage,
+            levelAtDeath: x.deathLevel,
+            avgDps: Number(x.avgDps.toFixed(1)),
+            avgMobTurns: Number(x.avgOrdinaryTurns.toFixed(1)),
+            avgBossTurns: Number(x.avgBossTurns.toFixed(1)),
+            potions: x.potions,
+            potionsBought: x.potionsBought,
+            silverSpent: x.silverSpent,
+            phase4Fails: x.phase4Fails,
+            potionShortages: x.shortageStages.length,
+            vampirism: x.vampirism
+          }));
+          const avg = rows.reduce((s, x) => s + x.avgDps, 0) / rows.length;
+          console.log('BALANCE_SIM_SUMMARY=' + JSON.stringify({
+            buildCount: rows.length,
+            cleared250: rows.filter(x => x.cleared === 250).length,
+            meanDps: Number(avg.toFixed(1)),
+            above2xMean: rows.filter(x => x.avgDps >= avg * 2).map(x => x.classId + '.' + x.branchId),
+            summary
+          }));
+          NODE
