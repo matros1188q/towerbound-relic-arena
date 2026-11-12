@@ -391,6 +391,7 @@ const {chromium}=require('playwright');
   assert.ok(firstLayout.end&&firstLayout.end.height>=44&&firstLayout.end.visibility!=='hidden'&&firstLayout.end.display!=='none','End Turn is visible in the initial player turn');
   assert.ok(firstLayout.scrollWidth<=firstLayout.width,'V2 battle has no horizontal overflow on 390px mobile');
   assert.ok(firstLayout.icons.some(icon=>!!icon.src||icon.background!=='none'),'skill slots render class atlas or skill-specific artwork');
+  await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   const enemy=page.locator('.v2-enemy-card').first(),targetId=await enemy.getAttribute('data-target');
   await enemy.click();
   assert.ok(await page.locator('.v2-enemy-card[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'tap selects an enemy in the V2 battle');
