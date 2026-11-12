@@ -15,7 +15,7 @@ const SHELL = [
   './rpg-rework-ui.css.js',
   './rpg-rework-ui.js',
   './assets/ui/logo.jpeg',
-  './assets/icons/image.png',
+
   './assets/ui/art-sprites.css',
   "./assets/characters/bosses/void-hunter-boss.png",
   "./assets/characters/bosses/soul-devourer.png",
