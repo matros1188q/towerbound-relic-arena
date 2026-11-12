@@ -12,7 +12,7 @@ const engine=fs.readFileSync('rpg-rework-v2.js','utf8');
 const serviceWorker=fs.readFileSync('service-worker.js','utf8');
 const pwa=fs.readFileSync('juice-pwa.js','utf8');
 const gems=JSON.parse(fs.readFileSync('configs/balance/equipment.json','utf8'));
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v240'"),'PWA cache version must match release v240');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v260'"),'PWA cache version must match release v260');
 const shellMatch=serviceWorker.match(/const SHELL = \[([\s\S]*?)\];/);
 assert.ok(shellMatch,'service worker precache shell must exist');
 const shellUrls=[...shellMatch[1].matchAll(/['"]([^'"]+)['"]/g)].map(match=>match[1]);
