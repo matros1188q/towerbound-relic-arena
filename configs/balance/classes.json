@@ -2737,16 +2737,26 @@
   },
   "branch_stat_bonuses": {
     "assassin.bleed": {
-      "max_hp_multiplier": 1.05
+      "max_hp_multiplier": 1.05,
+      "damage_multiplier": 1.05
     },
     "bishop.healing": {
-      "max_hp_multiplier": 1.05
+      "max_hp_multiplier": 1.05,
+      "damage_multiplier": 1.05
     },
     "destroyer.fists": {
-      "max_hp_multiplier": 1.05
+      "max_hp_multiplier": 1.05,
+      "damage_multiplier": 1.25
     },
     "duelist.sword_shield": {
-      "max_hp_multiplier": 1.05
+      "max_hp_multiplier": 1.05,
+      "damage_multiplier": 1.05
+    },
+    "assassin.poison": {
+      "damage_multiplier": 1.25
+    },
+    "destroyer.wand_shield": {
+      "damage_multiplier": 1.35
     }
   }
 }
