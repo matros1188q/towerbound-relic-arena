@@ -238,7 +238,8 @@
   function requiredXp(level){
    const curve=balance.xp_curve;
    if(level>=75&&curve.post_75_xp_per_level)return curve.post_75_xp_per_level;
-   return Math.max(1,Math.round((curve.base_required+curve.per_level*Math.pow(level,curve.exponent))*curve.base_multiplier));
+   const earlyMultiplier=level<(curve.early_level_cap||1)?(curve.early_level_multiplier||1):1;
+   return Math.max(1,Math.round((curve.base_required+curve.per_level*Math.pow(level,curve.exponent))*curve.base_multiplier*earlyMultiplier));
   }
   function levelForXp(total){
    let level=1,remaining=Math.max(0,Number(total)||0);
@@ -616,9 +617,11 @@
   }
   function enemyXp(enemy,stage){
    const table=balance.xp_curve.mob_xp;
-   if(enemy.type==="boss")return table.boss_base+stage*table.boss_per_stage;
-   if(enemy.type==="elite")return table.elite_base+stage*table.elite_per_stage;
-   return table.normal_base+stage*table.normal_per_stage;
+   let amount;
+   if(enemy.type==="boss")amount=table.boss_base+stage*table.boss_per_stage;
+   else if(enemy.type==="elite")amount=table.elite_base+stage*table.elite_per_stage;
+   else amount=table.normal_base+stage*table.normal_per_stage;
+   return amount*(stage<=15?(balance.xp_curve.early_mob_xp_multiplier||1):1);
   }
   function createDrop(character,rarity,options){
     options=options||{};
