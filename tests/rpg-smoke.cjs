@@ -369,7 +369,7 @@ const {chromium}=require('playwright');
   }
   await page.evaluate(()=>{
     const engine=window.TowerboundRework,c=engine.state.characters[0];
-    c.level=1;c.branch=null;c.gear=[null,null,null,null,null,null];c.run.stage=null;c.run.playerHp=5000;
+    c.level=1;c.branch=null;c.gear=[null,null,null,null,null,null];c.run.stage=null;
     const base=(engine.balance.classes.classes[c.classId]?.base_skills||[]).find(skill=>Number(skill.unlock_level||1)<=c.level);
     c.activeSkills=base?[base.id]:[];c.skillLoadout=[...c.activeSkills];
     window.saveTowerboundRework();
@@ -378,6 +378,8 @@ const {chromium}=require('playwright');
   await page.locator('[data-stage="9"]').click();
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('.v2-battle-wrap',{timeout:5000});
+  // beginStage restores/clamps the carried HP; seed the interaction fixture after battle creation.
+  await page.evaluate(()=>{window.TowerboundRework.state.characters[0].run.playerHp=100000;window.saveTowerboundRework();});
   assert.equal(await page.locator('.v2-skill-btn').count(),6,'V2 battle shows six skill slots');
   assert.ok(await page.locator('.v2-enemy-card').count()>0,'V2 battle displays enemy target cards');
   assert.equal(await page.locator('.v2-turn-guidance').count(),1,'V2 battle displays turn guidance');
