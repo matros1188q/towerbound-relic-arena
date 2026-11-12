@@ -359,7 +359,11 @@ function createDialog(){
   if(phase!==battle.bossPhase){
    battle.bossPhase=phase;battle.phaseFlashUntil=Date.now()+1000;battle.phaseNotice="ФАЗА "+phase;
    if(phase===2)addSummonedBossMobs();
-   if(phase===4)battle.bossDeadlineTurns=(battle.playerTurnCount||0)+1;
+   if(phase===4){
+    const phaseConfig=(balance.bosses.phases||[]).find(item=>Number(item.phase)===4)||{};
+    const deadline=Math.max(1,Number(phaseConfig.player_turn_deadline??balance.bosses.player_turn_deadline??2));
+    battle.bossDeadlineTurns=(battle.playerTurnCount||0)+deadline;
+   }
   }
   return phase;
  }
@@ -440,8 +444,10 @@ function createDialog(){
     battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;
     const deadlineBoss=(battle.enemies||[]).find(enemy=>enemy.type==="boss"&&enemy.alive&&Number(enemy.hp)>0);
     if(deadlineBoss&&battle.bossDeadlineTurns!==null&&battle.bossDeadlineTurns!==undefined&&battle.playerTurnCount>Number(battle.bossDeadlineTurns)&&engine.bossPhaseInfo(deadlineBoss.hp,deadlineBoss.maxHp).phase===4){
-     const c=live();c.run.playerHp=Math.max(0,c.run.playerHp-9999);
-     notify("ЯРОСТЬ БОССА · 9999 урона · время вышло");showFloatingText("player","-9999","#ff596b");endFromDamage();return;
+     const phaseConfig=(balance.bosses.phases||[]).find(item=>Number(item.phase)===4)||{};
+     const enrageDamage=Math.max(0,Number(phaseConfig.damage_flat??balance.bosses.damage_flat)||0);
+     const c=live();c.run.playerHp=Math.max(0,c.run.playerHp-enrageDamage);
+     notify("ЯРОСТЬ БОССА · "+enrageDamage+" урона · время вышло");showFloatingText("player","-"+enrageDamage,"#ff596b");endFromDamage();return;
     }
     if((battle.poisonStacks||0)>0){
      const c=live(),tick=Math.round(engine.maxHp(c)*.05*battle.poisonStacks);
