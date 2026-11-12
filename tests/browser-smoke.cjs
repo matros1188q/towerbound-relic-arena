@@ -87,10 +87,13 @@ async function journey(type,name,viewport,url){
   await page.locator('[data-action="bottom-profile"]').click();
   assert.equal(await page.locator('.tb-tabs button').count(),6,name+' renders the six implemented profile tabs: characteristics, talents, skills, collection, backpack and crafting');
   await page.locator('[data-tab="gear"]').click();
-  assert.ok(await page.locator('.tb-gear-slot.is-empty').count()>=1,name+' renders named empty equipment slots');
-  const emptySlot=await page.locator('.tb-gear-slot.is-empty').first().evaluate(el=>({label:el.querySelector('small')?.textContent,height:el.getBoundingClientRect().height}));
-  assert.ok(emptySlot.label&&!/слот\\s*\\d/i.test(emptySlot.label),name+' names the equipment slot by item type');
-  assert.ok(emptySlot.height<=80,name+' keeps empty equipment slots compact');
+  const collectionItems=page.locator('.tb-collection-item');
+  assert.ok(await collectionItems.count()>=30,name+' renders at least 30 class collection entries across equipment slots and rarities');
+  const collectionEntry=await collectionItems.first().evaluate(el=>({slot:el.querySelector('b')?.textContent?.trim(),rarity:el.querySelector('small')?.textContent?.trim()}));
+  assert.ok(collectionEntry.slot&&collectionEntry.rarity,name+' labels collection entries by equipment slot and rarity');
+  await collectionItems.first().click();
+  assert.equal(await page.locator('.tb-collection-detail').count(),1,name+' opens the selected collection item detail');
+  await page.locator('[data-collection-close]').click();
   await page.locator('[data-action="bottom-map"]').click();
   await page.waitForSelector('.tb-stage-toolbar');
   await page.locator('[data-action="start"]').click();
