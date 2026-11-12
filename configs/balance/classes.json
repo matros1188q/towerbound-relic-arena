@@ -2335,9 +2335,9 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 15,
+      "resource_gain_per_attack": 1,
       "resource_gain_on_defense": 1,
-      "resource_cost_per_skill": 18
+      "resource_cost_per_skill": 1
     },
     "shaman": {
       "name": "Шаман",
