@@ -2741,7 +2741,7 @@
       "damage_multiplier": 1.05
     },
     "bishop.healing": {
-      "max_hp_multiplier": 1.05,
+      "max_hp_multiplier": 1.1,
       "damage_multiplier": 1.05
     },
     "destroyer.fists": {
@@ -2753,10 +2753,14 @@
       "damage_multiplier": 1.05
     },
     "assassin.poison": {
-      "damage_multiplier": 1.5
+      "damage_multiplier": 1.5,
+      "max_hp_multiplier": 1.15,
+      "defense_multiplier": 1.1
     },
     "destroyer.wand_shield": {
-      "damage_multiplier": 1.65
+      "damage_multiplier": 1.65,
+      "max_hp_multiplier": 1.25,
+      "defense_multiplier": 1.25
     }
   }
 }
