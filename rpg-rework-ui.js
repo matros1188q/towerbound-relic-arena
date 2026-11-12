@@ -79,7 +79,7 @@
   return icon?'<span class="tb-support-icon '+icon+'" aria-hidden="true"></span>':relicIconHtml(item);
  }
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
- const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Коллекция"],["bag","Рюкзак"],["craft","Крафт"]];
+ const tabs=[["stats","Характеристики"],["talents","Таланты"],["skills","Умения"],["gear","Коллекция"],["bag","Рюкзак"],["craft","Крафт"],["account","Аккаунт"],["speedrun","Спидран"]];
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
  let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,postBattleSummary=null,gearFilter="branch",selectedItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}

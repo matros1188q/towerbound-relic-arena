@@ -85,7 +85,11 @@ async function journey(type,name,viewport,url){
   assert.equal(mapLayout.navButtons,5,name+' exposes the five primary bottom navigation tabs: map, profile, progress, shop and account');
   assert.equal(mapLayout.navPointer,'auto',name+' keeps bottom navigation clickable');
   await page.locator('[data-action="bottom-profile"]').click();
-  assert.equal(await page.locator('.tb-tabs button').count(),6,name+' renders the six implemented profile tabs: characteristics, talents, skills, collection, backpack and crafting');
+  assert.equal(await page.locator('.tb-tabs button').count(),8,name+' renders all eight profile tabs');
+  await page.locator('[data-tab="account"]').click();
+  assert.equal(await page.locator('.tb-profile-account').count(),1,name+' opens the account panel');
+  await page.locator('[data-tab="speedrun"]').click();
+  assert.equal(await page.locator('.speedrun-container').count(),1,name+' opens the speedrun panel');
   await page.locator('[data-tab="gear"]').click();
   const collectionItems=page.locator('.tb-collection-item');
   assert.ok(await collectionItems.count()>=30,name+' renders at least 30 class collection entries across equipment slots and rarities');
