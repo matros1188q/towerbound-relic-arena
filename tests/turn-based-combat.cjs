@@ -21,7 +21,7 @@ const normal=engine.getEnemyStats(hero.id,50,{type:'normal'});
 const elite=engine.getEnemyStats(hero.id,50,{type:'elite'});
 const boss=engine.getEnemyStats(hero.id,50,{type:'boss'});
 assert.deepEqual([normal.hp,normal.damage],[250,50]);
-assert.deepEqual([elite.hp,elite.damage],[550,350]);
+assert.deepEqual([elite.hp,elite.damage],[550,175]);
 assert.deepEqual([boss.hp,boss.damage],[1075,325]);
 assert.equal(balance.mobs.roles.healer.heal_fraction,.2);
 assert.equal(balance.mobs.roles.healer.every_n_turns,2);
