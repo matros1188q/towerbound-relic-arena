@@ -353,7 +353,8 @@
     "resource_cost_tier": "high",
     "animation_key": "dot",
     "description": "Токсичный выпад — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.02",
@@ -369,7 +370,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Смертельная эссенция — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.03",
@@ -385,7 +387,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Змеиный след — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.04",
@@ -401,7 +404,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "dot",
     "description": "Кислотный туман — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.05",
@@ -417,7 +421,8 @@
     "resource_cost_tier": "high",
     "animation_key": "dot",
     "description": "Чума клинков — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.06",
@@ -433,7 +438,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Ядовитый дождь — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.07",
@@ -449,7 +455,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "dot",
     "description": "Поглощение токсина — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.08",
@@ -465,7 +472,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Зелёная смерть — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.09",
@@ -481,7 +489,8 @@
     "resource_cost_tier": "high",
     "animation_key": "dot",
     "description": "Корона миазмов — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.10",
@@ -497,7 +506,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "dot",
     "description": "Пандемия — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.11",
@@ -513,7 +523,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Пробуждение: Токсичный выпад — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.12",
@@ -529,7 +540,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Усиленная форма: Смертельная эссенция — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.13",
@@ -545,7 +557,8 @@
     "resource_cost_tier": "high",
     "animation_key": "dot",
     "description": "Совершенная форма: Змеиный след — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.14",
@@ -561,7 +574,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Высшая техника: Кислотный туман — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.15",
@@ -577,7 +591,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Мастерский приём: Чума клинков — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.16",
@@ -593,7 +608,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "dot",
     "description": "Предельная форма: Ядовитый дождь — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.17",
@@ -609,7 +625,8 @@
     "resource_cost_tier": "high",
     "animation_key": "dot",
     "description": "Знак превосходства: Поглощение токсина — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.18",
@@ -625,7 +642,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Абсолютная техника: Зелёная смерть — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.19",
@@ -641,7 +659,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "dot",
     "description": "Возвышение: Корона миазмов — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.poison.20",
@@ -657,7 +676,8 @@
     "resource_cost_tier": "low",
     "animation_key": "dot",
     "description": "Легендарная форма: Пандемия — poison specialization skill.",
-    "damage_type": "dark"
+    "damage_type": "dark",
+    "damage_multiplier": 0.75
   },
   {
     "id": "assassin.execution.01",
@@ -673,7 +693,8 @@
     "resource_cost_tier": "high",
     "animation_key": "execute",
     "description": "Метка обречённого — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.02",
@@ -689,7 +710,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Теневой рывок — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.03",
@@ -705,7 +727,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Удар в уязвимость — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.04",
@@ -721,7 +744,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "execute",
     "description": "Срез судьбы — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.05",
@@ -737,7 +761,8 @@
     "resource_cost_tier": "high",
     "animation_key": "execute",
     "description": "Палач — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.06",
@@ -753,7 +778,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Исчезновение — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.07",
@@ -769,7 +795,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "execute",
     "description": "Касание пустоты — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.08",
@@ -785,7 +812,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Казнь безмолвия — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.09",
@@ -801,7 +829,8 @@
     "resource_cost_tier": "high",
     "animation_key": "execute",
     "description": "Последний свидетель — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.10",
@@ -817,7 +846,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "execute",
     "description": "Абсолютное уничтожение — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.11",
@@ -833,7 +863,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Пробуждение: Метка обречённого — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.12",
@@ -849,7 +880,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Усиленная форма: Теневой рывок — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.13",
@@ -865,7 +897,8 @@
     "resource_cost_tier": "high",
     "animation_key": "execute",
     "description": "Совершенная форма: Удар в уязвимость — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.14",
@@ -881,7 +914,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Высшая техника: Срез судьбы — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.15",
@@ -897,7 +931,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Мастерский приём: Палач — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.16",
@@ -913,7 +948,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "execute",
     "description": "Предельная форма: Исчезновение — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.17",
@@ -929,7 +965,8 @@
     "resource_cost_tier": "high",
     "animation_key": "execute",
     "description": "Знак превосходства: Касание пустоты — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.18",
@@ -945,7 +982,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Абсолютная техника: Казнь безмолвия — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.19",
@@ -961,7 +999,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "execute",
     "description": "Возвышение: Последний свидетель — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "assassin.execution.20",
@@ -977,7 +1016,8 @@
     "resource_cost_tier": "low",
     "animation_key": "execute",
     "description": "Легендарная форма: Абсолютное уничтожение — execution specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.7
   },
   {
     "id": "bishop.exorcism.01",
@@ -993,7 +1033,8 @@
     "resource_cost_tier": "high",
     "animation_key": "aoe",
     "description": "Изгнание скверны — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.02",
@@ -1009,7 +1050,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Кара света — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.03",
@@ -1025,7 +1067,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Печать отлучения — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.04",
@@ -1041,7 +1084,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
     "description": "Суд небес — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.05",
@@ -1057,7 +1101,8 @@
     "resource_cost_tier": "high",
     "animation_key": "aoe",
     "description": "Ослепляющий приговор — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.06",
@@ -1073,7 +1118,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Крылья экзорциста — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.07",
@@ -1089,7 +1135,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
     "description": "Священный разлом — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.08",
@@ -1105,7 +1152,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Небесный огонь — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.09",
@@ -1121,7 +1169,8 @@
     "resource_cost_tier": "high",
     "animation_key": "aoe",
     "description": "Вердикт — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.10",
@@ -1137,7 +1186,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
     "description": "Изгнание легиона — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.11",
@@ -1153,7 +1203,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Пробуждение: Изгнание скверны — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.12",
@@ -1169,7 +1220,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Усиленная форма: Кара света — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.13",
@@ -1185,7 +1237,8 @@
     "resource_cost_tier": "high",
     "animation_key": "aoe",
     "description": "Совершенная форма: Печать отлучения — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.14",
@@ -1201,7 +1254,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Высшая техника: Суд небес — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.15",
@@ -1217,7 +1271,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Мастерский приём: Ослепляющий приговор — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.16",
@@ -1233,7 +1288,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
     "description": "Предельная форма: Крылья экзорциста — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.17",
@@ -1249,7 +1305,8 @@
     "resource_cost_tier": "high",
     "animation_key": "aoe",
     "description": "Знак превосходства: Священный разлом — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.18",
@@ -1265,7 +1322,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Абсолютная техника: Небесный огонь — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.19",
@@ -1281,7 +1339,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
     "description": "Возвышение: Вердикт — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.exorcism.20",
@@ -1297,7 +1356,8 @@
     "resource_cost_tier": "low",
     "animation_key": "aoe",
     "description": "Легендарная форма: Изгнание легиона — exorcism specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.01",
@@ -1313,7 +1373,8 @@
     "resource_cost_tier": "high",
     "animation_key": "heal",
     "description": "Малое причастие — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.02",
@@ -1322,14 +1383,15 @@
     "name": "Исцеляющий свет",
     "unlock_level": 15,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Исцеляющий свет — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.03",
@@ -1345,7 +1407,8 @@
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Руки милосердия — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.04",
@@ -1354,14 +1417,15 @@
     "name": "Возвращение крови",
     "unlock_level": 24,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
     "description": "Возвращение крови — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.05",
@@ -1377,7 +1441,8 @@
     "resource_cost_tier": "high",
     "animation_key": "heal",
     "description": "Священный источник — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.06",
@@ -1386,14 +1451,15 @@
     "name": "Оберег жизни",
     "unlock_level": 34,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Оберег жизни — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.07",
@@ -1409,7 +1475,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "heal",
     "description": "Чудо — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.08",
@@ -1418,14 +1485,15 @@
     "name": "Воскрешающий гимн",
     "unlock_level": 43,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Воскрешающий гимн — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.09",
@@ -1441,7 +1509,8 @@
     "resource_cost_tier": "high",
     "animation_key": "heal",
     "description": "Божественное дыхание — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.10",
@@ -1450,14 +1519,15 @@
     "name": "Полное восстановление",
     "unlock_level": 53,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
     "description": "Полное восстановление — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.11",
@@ -1473,7 +1543,8 @@
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Пробуждение: Малое причастие — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.12",
@@ -1482,14 +1553,15 @@
     "name": "Усиленная форма: Исцеляющий свет",
     "unlock_level": 62,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Усиленная форма: Исцеляющий свет — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.13",
@@ -1505,7 +1577,8 @@
     "resource_cost_tier": "high",
     "animation_key": "heal",
     "description": "Совершенная форма: Руки милосердия — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.14",
@@ -1514,14 +1587,15 @@
     "name": "Высшая техника: Возвращение крови",
     "unlock_level": 72,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Высшая техника: Возвращение крови — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.15",
@@ -1537,7 +1611,8 @@
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Мастерский приём: Священный источник — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.16",
@@ -1546,14 +1621,15 @@
     "name": "Предельная форма: Оберег жизни",
     "unlock_level": 81,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
     "description": "Предельная форма: Оберег жизни — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.17",
@@ -1569,7 +1645,8 @@
     "resource_cost_tier": "high",
     "animation_key": "heal",
     "description": "Знак превосходства: Чудо — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.18",
@@ -1578,14 +1655,15 @@
     "name": "Абсолютная техника: Воскрешающий гимн",
     "unlock_level": 91,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Абсолютная техника: Воскрешающий гимн — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.healing.19",
@@ -1601,7 +1679,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "heal",
     "description": "Возвышение: Божественное дыхание — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.35
   },
   {
     "id": "bishop.healing.20",
@@ -1610,14 +1689,15 @@
     "name": "Легендарная форма: Полное восстановление",
     "unlock_level": 100,
     "is_active": true,
-    "effect_template": "heal",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
     "description": "Легендарная форма: Полное восстановление — healing specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 3.8
   },
   {
     "id": "bishop.buffs.01",
@@ -1954,7 +2034,7 @@
     "animation_key": "dot",
     "description": "Искра дракона — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.02",
@@ -1971,7 +2051,7 @@
     "animation_key": "dot",
     "description": "Пламенный коготь — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.03",
@@ -1988,7 +2068,7 @@
     "animation_key": "dot",
     "description": "Огненное дыхание — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.04",
@@ -2005,7 +2085,7 @@
     "animation_key": "dot",
     "description": "Жар ядра — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.05",
@@ -2022,7 +2102,7 @@
     "animation_key": "dot",
     "description": "Крылья пепла — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.06",
@@ -2039,7 +2119,7 @@
     "animation_key": "dot",
     "description": "Метеоритный рёв — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.07",
@@ -2056,7 +2136,7 @@
     "animation_key": "dot",
     "description": "Пылающая чешуя — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.08",
@@ -2073,7 +2153,7 @@
     "animation_key": "dot",
     "description": "Драконий шторм — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.09",
@@ -2090,7 +2170,7 @@
     "animation_key": "dot",
     "description": "Солнце в пасти — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.10",
@@ -2107,7 +2187,7 @@
     "animation_key": "dot",
     "description": "Катаклизм пламени — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.11",
@@ -2124,7 +2204,7 @@
     "animation_key": "dot",
     "description": "Пробуждение: Искра дракона — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.12",
@@ -2141,7 +2221,7 @@
     "animation_key": "dot",
     "description": "Усиленная форма: Пламенный коготь — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.13",
@@ -2158,7 +2238,7 @@
     "animation_key": "dot",
     "description": "Совершенная форма: Огненное дыхание — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.14",
@@ -2175,7 +2255,7 @@
     "animation_key": "dot",
     "description": "Высшая техника: Жар ядра — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.15",
@@ -2192,7 +2272,7 @@
     "animation_key": "dot",
     "description": "Мастерский приём: Крылья пепла — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.16",
@@ -2209,7 +2289,7 @@
     "animation_key": "dot",
     "description": "Предельная форма: Метеоритный рёв — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.17",
@@ -2226,7 +2306,7 @@
     "animation_key": "dot",
     "description": "Знак превосходства: Пылающая чешуя — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.18",
@@ -2243,7 +2323,7 @@
     "animation_key": "dot",
     "description": "Абсолютная техника: Драконий шторм — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.19",
@@ -2260,7 +2340,7 @@
     "animation_key": "dot",
     "description": "Возвышение: Солнце в пасти — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.fire_dragon.20",
@@ -2277,7 +2357,7 @@
     "animation_key": "dot",
     "description": "Легендарная форма: Катаклизм пламени — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 0.585
+    "damage_multiplier": 0.9
   },
   {
     "id": "dragonkin.ice_dragon.01",
@@ -2311,7 +2391,7 @@
     "animation_key": "shield",
     "description": "Чешуя вечной зимы — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.03",
@@ -2345,7 +2425,7 @@
     "animation_key": "shield",
     "description": "Кристальный панцирь — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.05",
@@ -2379,7 +2459,7 @@
     "animation_key": "shield",
     "description": "Сковывающий иней — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.07",
@@ -2413,7 +2493,7 @@
     "animation_key": "shield",
     "description": "Сердце ледника — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.09",
@@ -2447,7 +2527,7 @@
     "animation_key": "shield",
     "description": "Вечная мерзлота — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.11",
@@ -2481,7 +2561,7 @@
     "animation_key": "shield",
     "description": "Усиленная форма: Чешуя вечной зимы — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.13",
@@ -2515,7 +2595,7 @@
     "animation_key": "shield",
     "description": "Высшая техника: Кристальный панцирь — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.15",
@@ -2549,7 +2629,7 @@
     "animation_key": "shield",
     "description": "Предельная форма: Сковывающий иней — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.17",
@@ -2583,7 +2663,7 @@
     "animation_key": "shield",
     "description": "Абсолютная техника: Сердце ледника — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.ice_dragon.19",
@@ -2617,7 +2697,7 @@
     "animation_key": "shield",
     "description": "Легендарная форма: Вечная мерзлота — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "dragonkin.black_dragon.01",
@@ -2634,7 +2714,7 @@
     "animation_key": "debuff",
     "description": "Теневой сгусток — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.02",
@@ -2651,7 +2731,7 @@
     "animation_key": "debuff",
     "description": "Чёрное пламя — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.03",
@@ -2668,7 +2748,7 @@
     "animation_key": "debuff",
     "description": "Поглощение маны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.04",
@@ -2685,7 +2765,7 @@
     "animation_key": "debuff",
     "description": "Разлом бездны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.05",
@@ -2702,7 +2782,7 @@
     "animation_key": "debuff",
     "description": "Сумрачный импульс — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.06",
@@ -2719,7 +2799,7 @@
     "animation_key": "debuff",
     "description": "Пожиратель чар — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.07",
@@ -2736,7 +2816,7 @@
     "animation_key": "debuff",
     "description": "Пустотный вихрь — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.08",
@@ -2753,7 +2833,7 @@
     "animation_key": "debuff",
     "description": "Затмение — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.09",
@@ -2770,7 +2850,7 @@
     "animation_key": "debuff",
     "description": "Драконья сингулярность — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.10",
@@ -2787,7 +2867,7 @@
     "animation_key": "debuff",
     "description": "Чёрное солнце — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.11",
@@ -2804,7 +2884,7 @@
     "animation_key": "debuff",
     "description": "Пробуждение: Теневой сгусток — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.12",
@@ -2821,7 +2901,7 @@
     "animation_key": "debuff",
     "description": "Усиленная форма: Чёрное пламя — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.13",
@@ -2838,7 +2918,7 @@
     "animation_key": "debuff",
     "description": "Совершенная форма: Поглощение маны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.14",
@@ -2855,7 +2935,7 @@
     "animation_key": "debuff",
     "description": "Высшая техника: Разлом бездны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.15",
@@ -2872,7 +2952,7 @@
     "animation_key": "debuff",
     "description": "Мастерский приём: Сумрачный импульс — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.16",
@@ -2889,7 +2969,7 @@
     "animation_key": "debuff",
     "description": "Предельная форма: Пожиратель чар — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.17",
@@ -2906,7 +2986,7 @@
     "animation_key": "debuff",
     "description": "Знак превосходства: Пустотный вихрь — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.18",
@@ -2923,7 +3003,7 @@
     "animation_key": "debuff",
     "description": "Абсолютная техника: Затмение — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.19",
@@ -2940,7 +3020,7 @@
     "animation_key": "debuff",
     "description": "Возвышение: Драконья сингулярность — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "dragonkin.black_dragon.20",
@@ -2957,7 +3037,7 @@
     "animation_key": "debuff",
     "description": "Легендарная форма: Чёрное солнце — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "destroyer.fists.01",
@@ -2973,7 +3053,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Шквал кастетов — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.02",
@@ -2989,7 +3070,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Быстрые руки — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.03",
@@ -3005,7 +3087,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Серия ударов — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.04",
@@ -3021,7 +3104,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Ливень кулаков — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.05",
@@ -3037,7 +3121,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Сломанный ритм — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.06",
@@ -3053,7 +3138,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Железный град — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.07",
@@ -3069,7 +3155,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Точный кастет — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.08",
@@ -3085,7 +3172,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Буря костей — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.09",
@@ -3101,7 +3189,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Тысяча попаданий — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.10",
@@ -3117,7 +3206,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Неостановимый шквал — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.11",
@@ -3133,7 +3223,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Пробуждение: Шквал кастетов — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.12",
@@ -3149,7 +3240,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Усиленная форма: Быстрые руки — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.13",
@@ -3165,7 +3257,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Совершенная форма: Серия ударов — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.14",
@@ -3181,7 +3274,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Высшая техника: Ливень кулаков — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.15",
@@ -3197,7 +3291,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Мастерский приём: Сломанный ритм — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.16",
@@ -3213,7 +3308,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Предельная форма: Железный град — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.17",
@@ -3229,7 +3325,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Знак превосходства: Точный кастет — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.18",
@@ -3245,7 +3342,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Абсолютная техника: Буря костей — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.19",
@@ -3261,7 +3359,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Возвышение: Тысяча попаданий — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.fists.20",
@@ -3277,7 +3376,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Легендарная форма: Неостановимый шквал — fists specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.greatsword.01",
@@ -3633,7 +3733,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Руна мощи — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.02",
@@ -3642,14 +3743,15 @@
     "name": "Магический заслон",
     "unlock_level": 15,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Магический заслон — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.03",
@@ -3665,7 +3767,8 @@
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Боевой импульс — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.04",
@@ -3674,14 +3777,15 @@
     "name": "Удар печати",
     "unlock_level": 24,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Удар печати — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.05",
@@ -3697,7 +3801,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Каменная кожа — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.06",
@@ -3706,14 +3811,15 @@
     "name": "Всплеск силы",
     "unlock_level": 34,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Всплеск силы — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.07",
@@ -3729,7 +3835,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Щит грома — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.08",
@@ -3738,14 +3845,15 @@
     "name": "Арканный кулак",
     "unlock_level": 43,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Арканный кулак — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.09",
@@ -3761,7 +3869,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Руна титана — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.10",
@@ -3770,14 +3879,15 @@
     "name": "Несокрушимый фокус",
     "unlock_level": 53,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Несокрушимый фокус — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.11",
@@ -3793,7 +3903,8 @@
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Пробуждение: Руна мощи — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.12",
@@ -3802,14 +3913,15 @@
     "name": "Усиленная форма: Магический заслон",
     "unlock_level": 62,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Усиленная форма: Магический заслон — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.13",
@@ -3825,7 +3937,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Совершенная форма: Боевой импульс — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.14",
@@ -3834,14 +3947,15 @@
     "name": "Высшая техника: Удар печати",
     "unlock_level": 72,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Высшая техника: Удар печати — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.15",
@@ -3857,7 +3971,8 @@
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Мастерский приём: Каменная кожа — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.16",
@@ -3866,14 +3981,15 @@
     "name": "Предельная форма: Всплеск силы",
     "unlock_level": 81,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Предельная форма: Всплеск силы — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.17",
@@ -3889,7 +4005,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Знак превосходства: Щит грома — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.18",
@@ -3898,14 +4015,15 @@
     "name": "Абсолютная техника: Арканный кулак",
     "unlock_level": 91,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Абсолютная техника: Арканный кулак — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "destroyer.wand_shield.19",
@@ -3921,7 +4039,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Возвышение: Руна титана — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "destroyer.wand_shield.20",
@@ -3930,14 +4049,15 @@
     "name": "Легендарная форма: Несокрушимый фокус",
     "unlock_level": 100,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Легендарная форма: Несокрушимый фокус — wand_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "elemental.darkness.01",
@@ -3954,7 +4074,7 @@
     "animation_key": "debuff",
     "description": "Порча — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.02",
@@ -3971,7 +4091,7 @@
     "animation_key": "debuff",
     "description": "Шёпот бездны — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.03",
@@ -3988,7 +4108,7 @@
     "animation_key": "debuff",
     "description": "Проклятая метка — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.04",
@@ -4005,7 +4125,7 @@
     "animation_key": "debuff",
     "description": "Увядание — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.05",
@@ -4022,7 +4142,7 @@
     "animation_key": "debuff",
     "description": "Тёмный шип — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.06",
@@ -4039,7 +4159,7 @@
     "animation_key": "debuff",
     "description": "Пожиратель надежды — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.07",
@@ -4056,7 +4176,7 @@
     "animation_key": "debuff",
     "description": "Чёрная луна — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.08",
@@ -4073,7 +4193,7 @@
     "animation_key": "debuff",
     "description": "Мрак души — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.09",
@@ -4090,7 +4210,7 @@
     "animation_key": "debuff",
     "description": "Бездна внутри — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.10",
@@ -4107,7 +4227,7 @@
     "animation_key": "debuff",
     "description": "Вечное проклятие — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.11",
@@ -4124,7 +4244,7 @@
     "animation_key": "debuff",
     "description": "Пробуждение: Порча — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.12",
@@ -4141,7 +4261,7 @@
     "animation_key": "debuff",
     "description": "Усиленная форма: Шёпот бездны — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.13",
@@ -4158,7 +4278,7 @@
     "animation_key": "debuff",
     "description": "Совершенная форма: Проклятая метка — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.14",
@@ -4175,7 +4295,7 @@
     "animation_key": "debuff",
     "description": "Высшая техника: Увядание — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.15",
@@ -4192,7 +4312,7 @@
     "animation_key": "debuff",
     "description": "Мастерский приём: Тёмный шип — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.16",
@@ -4209,7 +4329,7 @@
     "animation_key": "debuff",
     "description": "Предельная форма: Пожиратель надежды — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.17",
@@ -4226,7 +4346,7 @@
     "animation_key": "debuff",
     "description": "Знак превосходства: Чёрная луна — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.18",
@@ -4243,7 +4363,7 @@
     "animation_key": "debuff",
     "description": "Абсолютная техника: Мрак души — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.19",
@@ -4260,7 +4380,7 @@
     "animation_key": "debuff",
     "description": "Возвышение: Бездна внутри — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.darkness.20",
@@ -4277,7 +4397,7 @@
     "animation_key": "debuff",
     "description": "Легендарная форма: Вечное проклятие — darkness specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "elemental.water.01",
@@ -4294,7 +4414,7 @@
     "animation_key": "aoe",
     "description": "Водяная игла — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.02",
@@ -4311,7 +4431,7 @@
     "animation_key": "aoe",
     "description": "Быстрый поток — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.03",
@@ -4328,7 +4448,7 @@
     "animation_key": "aoe",
     "description": "Ледяная рябь — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.04",
@@ -4345,7 +4465,7 @@
     "animation_key": "aoe",
     "description": "Водоворот — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.05",
@@ -4362,7 +4482,7 @@
     "animation_key": "aoe",
     "description": "Серебряный дождь — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.06",
@@ -4379,7 +4499,7 @@
     "animation_key": "aoe",
     "description": "Текучий барьер — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.07",
@@ -4396,7 +4516,7 @@
     "animation_key": "aoe",
     "description": "Цепная волна — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.08",
@@ -4413,7 +4533,7 @@
     "animation_key": "aoe",
     "description": "Глубинный прилив — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.09",
@@ -4430,7 +4550,7 @@
     "animation_key": "aoe",
     "description": "Тысяча капель — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.10",
@@ -4447,7 +4567,7 @@
     "animation_key": "aoe",
     "description": "Океан ярости — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.11",
@@ -4464,7 +4584,7 @@
     "animation_key": "aoe",
     "description": "Пробуждение: Водяная игла — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.12",
@@ -4481,7 +4601,7 @@
     "animation_key": "aoe",
     "description": "Усиленная форма: Быстрый поток — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.13",
@@ -4498,7 +4618,7 @@
     "animation_key": "aoe",
     "description": "Совершенная форма: Ледяная рябь — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.14",
@@ -4515,7 +4635,7 @@
     "animation_key": "aoe",
     "description": "Высшая техника: Водоворот — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.15",
@@ -4532,7 +4652,7 @@
     "animation_key": "aoe",
     "description": "Мастерский приём: Серебряный дождь — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.16",
@@ -4549,7 +4669,7 @@
     "animation_key": "aoe",
     "description": "Предельная форма: Текучий барьер — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.17",
@@ -4566,7 +4686,7 @@
     "animation_key": "aoe",
     "description": "Знак превосходства: Цепная волна — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.18",
@@ -4583,7 +4703,7 @@
     "animation_key": "aoe",
     "description": "Абсолютная техника: Глубинный прилив — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.19",
@@ -4600,7 +4720,7 @@
     "animation_key": "aoe",
     "description": "Возвышение: Тысяча капель — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.water.20",
@@ -4617,7 +4737,7 @@
     "animation_key": "aoe",
     "description": "Легендарная форма: Океан ярости — water specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 1.485
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.01",
@@ -4633,7 +4753,8 @@
     "resource_cost_tier": "high",
     "animation_key": "control",
     "description": "Каменный шип — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.02",
@@ -4649,7 +4770,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Сейсмический толчок — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.03",
@@ -4665,7 +4787,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Глыба стража — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.04",
@@ -4681,7 +4804,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "control",
     "description": "Окаменение — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.05",
@@ -4697,7 +4821,8 @@
     "resource_cost_tier": "high",
     "animation_key": "control",
     "description": "Разлом почвы — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.06",
@@ -4713,7 +4838,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Гравитационный кулак — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.07",
@@ -4729,7 +4855,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "control",
     "description": "Столп земли — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.08",
@@ -4745,7 +4872,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Дрожь недр — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.09",
@@ -4761,7 +4889,8 @@
     "resource_cost_tier": "high",
     "animation_key": "control",
     "description": "Горный обвал — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.10",
@@ -4777,7 +4906,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "control",
     "description": "Сердце материка — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.11",
@@ -4793,7 +4923,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Пробуждение: Каменный шип — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.12",
@@ -4809,7 +4940,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Усиленная форма: Сейсмический толчок — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.13",
@@ -4825,7 +4957,8 @@
     "resource_cost_tier": "high",
     "animation_key": "control",
     "description": "Совершенная форма: Глыба стража — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.14",
@@ -4841,7 +4974,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Высшая техника: Окаменение — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.15",
@@ -4857,7 +4991,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Мастерский приём: Разлом почвы — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.16",
@@ -4873,7 +5008,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "control",
     "description": "Предельная форма: Гравитационный кулак — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.17",
@@ -4889,7 +5025,8 @@
     "resource_cost_tier": "high",
     "animation_key": "control",
     "description": "Знак превосходства: Столп земли — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.18",
@@ -4905,7 +5042,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Абсолютная техника: Дрожь недр — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.19",
@@ -4921,7 +5059,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "control",
     "description": "Возвышение: Горный обвал — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "elemental.earth.20",
@@ -4937,7 +5076,8 @@
     "resource_cost_tier": "low",
     "animation_key": "control",
     "description": "Легендарная форма: Сердце материка — earth specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 3.9
   },
   {
     "id": "duelist.dual_swords.01",
@@ -4953,7 +5093,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Двойной выпад — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.02",
@@ -4969,7 +5110,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Крест клинков — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.03",
@@ -4985,7 +5127,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Ритм стали — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.04",
@@ -5001,7 +5144,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Вихрь двух мечей — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.05",
@@ -5017,7 +5161,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Танец лезвий — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.06",
@@ -5033,7 +5178,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Разрыв темпа — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.07",
@@ -5049,7 +5195,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Смертельная связка — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.08",
@@ -5065,7 +5212,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Шквал дуэлянта — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.09",
@@ -5081,7 +5229,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Десять порезов — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.10",
@@ -5097,7 +5246,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Идеальная комбинация — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.11",
@@ -5113,7 +5263,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Пробуждение: Двойной выпад — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.12",
@@ -5129,7 +5280,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Усиленная форма: Крест клинков — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.13",
@@ -5145,7 +5297,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Совершенная форма: Ритм стали — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.14",
@@ -5161,7 +5314,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Высшая техника: Вихрь двух мечей — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.15",
@@ -5177,7 +5331,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Мастерский приём: Танец лезвий — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.16",
@@ -5193,7 +5348,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Предельная форма: Разрыв темпа — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.17",
@@ -5209,7 +5365,8 @@
     "resource_cost_tier": "high",
     "animation_key": "strike",
     "description": "Знак превосходства: Смертельная связка — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.18",
@@ -5225,7 +5382,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Абсолютная техника: Шквал дуэлянта — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.19",
@@ -5241,7 +5399,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "strike",
     "description": "Возвышение: Десять порезов — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.dual_swords.20",
@@ -5257,7 +5416,8 @@
     "resource_cost_tier": "low",
     "animation_key": "strike",
     "description": "Легендарная форма: Идеальная комбинация — dual_swords specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.01",
@@ -5273,7 +5433,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Стойка бастиона — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.02",
@@ -5282,14 +5443,15 @@
     "name": "Ответный выпад",
     "unlock_level": 15,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Ответный выпад — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.03",
@@ -5305,7 +5467,8 @@
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Железный заслон — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.04",
@@ -5314,14 +5477,15 @@
     "name": "Контрудар",
     "unlock_level": 24,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Контрудар — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.05",
@@ -5337,7 +5501,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Щитовой натиск — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.06",
@@ -5346,14 +5511,15 @@
     "name": "Непробиваемая защита",
     "unlock_level": 34,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Непробиваемая защита — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.07",
@@ -5369,7 +5535,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Клятва стража — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.08",
@@ -5378,14 +5545,15 @@
     "name": "Возмездие",
     "unlock_level": 43,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Возмездие — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.09",
@@ -5401,7 +5569,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Непоколебимый рубеж — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.10",
@@ -5410,14 +5579,15 @@
     "name": "Последний защитник",
     "unlock_level": 53,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Последний защитник — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.11",
@@ -5433,7 +5603,8 @@
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Пробуждение: Стойка бастиона — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.12",
@@ -5442,14 +5613,15 @@
     "name": "Усиленная форма: Ответный выпад",
     "unlock_level": 62,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Усиленная форма: Ответный выпад — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.13",
@@ -5465,7 +5637,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Совершенная форма: Железный заслон — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.14",
@@ -5474,14 +5647,15 @@
     "name": "Высшая техника: Контрудар",
     "unlock_level": 72,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Высшая техника: Контрудар — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.15",
@@ -5497,7 +5671,8 @@
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Мастерский приём: Щитовой натиск — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.16",
@@ -5506,14 +5681,15 @@
     "name": "Предельная форма: Непробиваемая защита",
     "unlock_level": 81,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Предельная форма: Непробиваемая защита — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.17",
@@ -5529,7 +5705,8 @@
     "resource_cost_tier": "high",
     "animation_key": "shield",
     "description": "Знак превосходства: Клятва стража — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.18",
@@ -5538,14 +5715,15 @@
     "name": "Абсолютная техника: Возмездие",
     "unlock_level": 91,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Абсолютная техника: Возмездие — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.sword_shield.19",
@@ -5561,7 +5739,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "shield",
     "description": "Возвышение: Непоколебимый рубеж — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.18
   },
   {
     "id": "duelist.sword_shield.20",
@@ -5570,14 +5749,15 @@
     "name": "Легендарная форма: Последний защитник",
     "unlock_level": 100,
     "is_active": true,
-    "effect_template": "shield",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
     "description": "Легендарная форма: Последний защитник — sword_shield specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.01",
@@ -5593,7 +5773,8 @@
     "resource_cost_tier": "high",
     "animation_key": "parry",
     "description": "Укол шпаги — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.02",
@@ -5602,14 +5783,15 @@
     "name": "Точный выпад",
     "unlock_level": 15,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Точный выпад — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.03",
@@ -5625,7 +5807,8 @@
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Чтение движения — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.04",
@@ -5634,14 +5817,15 @@
     "name": "Искра парирования",
     "unlock_level": 24,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
     "description": "Искра парирования — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.05",
@@ -5657,7 +5841,8 @@
     "resource_cost_tier": "high",
     "animation_key": "parry",
     "description": "Ответ мастера — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.06",
@@ -5666,14 +5851,15 @@
     "name": "Линия клинка",
     "unlock_level": 34,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Линия клинка — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.07",
@@ -5689,7 +5875,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "parry",
     "description": "Безупречная защита — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.08",
@@ -5698,14 +5885,15 @@
     "name": "Рипост",
     "unlock_level": 43,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Рипост — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.09",
@@ -5721,7 +5909,8 @@
     "resource_cost_tier": "high",
     "animation_key": "parry",
     "description": "Тысяча отражений — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.10",
@@ -5730,14 +5919,15 @@
     "name": "Совершенное парирование",
     "unlock_level": 53,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
     "description": "Совершенное парирование — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.11",
@@ -5753,7 +5943,8 @@
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Пробуждение: Укол шпаги — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.12",
@@ -5762,14 +5953,15 @@
     "name": "Усиленная форма: Точный выпад",
     "unlock_level": 62,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Усиленная форма: Точный выпад — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.13",
@@ -5785,7 +5977,8 @@
     "resource_cost_tier": "high",
     "animation_key": "parry",
     "description": "Совершенная форма: Чтение движения — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.14",
@@ -5794,14 +5987,15 @@
     "name": "Высшая техника: Искра парирования",
     "unlock_level": 72,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Высшая техника: Искра парирования — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.15",
@@ -5817,7 +6011,8 @@
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Мастерский приём: Ответ мастера — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.16",
@@ -5826,14 +6021,15 @@
     "name": "Предельная форма: Линия клинка",
     "unlock_level": 81,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
     "description": "Предельная форма: Линия клинка — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.17",
@@ -5849,7 +6045,8 @@
     "resource_cost_tier": "high",
     "animation_key": "parry",
     "description": "Знак превосходства: Безупречная защита — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.18",
@@ -5858,14 +6055,15 @@
     "name": "Абсолютная техника: Рипост",
     "unlock_level": 91,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Абсолютная техника: Рипост — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "duelist.rapier.19",
@@ -5881,7 +6079,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "parry",
     "description": "Возвышение: Тысяча отражений — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 0.25
   },
   {
     "id": "duelist.rapier.20",
@@ -5890,14 +6089,15 @@
     "name": "Легендарная форма: Совершенное парирование",
     "unlock_level": 100,
     "is_active": true,
-    "effect_template": "parry",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
     "description": "Легендарная форма: Совершенное парирование — rapier specialization skill.",
-    "damage_type": "physical"
+    "damage_type": "physical",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.spirits.01",
@@ -5931,7 +6131,7 @@
     "animation_key": "heal",
     "description": "Вселение волка — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.03",
@@ -5965,7 +6165,7 @@
     "animation_key": "heal",
     "description": "Дыхание предков — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.05",
@@ -5999,7 +6199,7 @@
     "animation_key": "heal",
     "description": "Дух медведя — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.07",
@@ -6033,7 +6233,7 @@
     "animation_key": "heal",
     "description": "Исцеление души — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.09",
@@ -6067,7 +6267,7 @@
     "animation_key": "heal",
     "description": "Первозданный союз — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.11",
@@ -6101,7 +6301,7 @@
     "animation_key": "heal",
     "description": "Усиленная форма: Вселение волка — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.13",
@@ -6135,7 +6335,7 @@
     "animation_key": "heal",
     "description": "Высшая техника: Дыхание предков — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.15",
@@ -6169,7 +6369,7 @@
     "animation_key": "heal",
     "description": "Предельная форма: Дух медведя — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.17",
@@ -6203,7 +6403,7 @@
     "animation_key": "heal",
     "description": "Абсолютная техника: Исцеление души — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.spirits.19",
@@ -6237,7 +6437,7 @@
     "animation_key": "heal",
     "description": "Легендарная форма: Первозданный союз — spirits specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3.2
   },
   {
     "id": "shaman.dark_gods.01",
@@ -6254,7 +6454,7 @@
     "animation_key": "debuff",
     "description": "Проклятие праха — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.02",
@@ -6271,7 +6471,7 @@
     "animation_key": "debuff",
     "description": "Тёмный идол — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.03",
@@ -6288,7 +6488,7 @@
     "animation_key": "debuff",
     "description": "Шёпот божества — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.04",
@@ -6305,7 +6505,7 @@
     "animation_key": "debuff",
     "description": "Печать распада — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.05",
@@ -6322,7 +6522,7 @@
     "animation_key": "debuff",
     "description": "Жертвоприношение — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.06",
@@ -6339,7 +6539,7 @@
     "animation_key": "debuff",
     "description": "Гнев забытых — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.07",
@@ -6356,7 +6556,7 @@
     "animation_key": "debuff",
     "description": "Око тьмы — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.08",
@@ -6373,7 +6573,7 @@
     "animation_key": "debuff",
     "description": "Гниение души — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.09",
@@ -6390,7 +6590,7 @@
     "animation_key": "debuff",
     "description": "Глас бездны — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.10",
@@ -6407,7 +6607,7 @@
     "animation_key": "debuff",
     "description": "Воля тёмных богов — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.11",
@@ -6424,7 +6624,7 @@
     "animation_key": "debuff",
     "description": "Пробуждение: Проклятие праха — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.12",
@@ -6441,7 +6641,7 @@
     "animation_key": "debuff",
     "description": "Усиленная форма: Тёмный идол — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.13",
@@ -6458,7 +6658,7 @@
     "animation_key": "debuff",
     "description": "Совершенная форма: Шёпот божества — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.14",
@@ -6475,7 +6675,7 @@
     "animation_key": "debuff",
     "description": "Высшая техника: Печать распада — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.15",
@@ -6492,7 +6692,7 @@
     "animation_key": "debuff",
     "description": "Мастерский приём: Жертвоприношение — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.16",
@@ -6509,7 +6709,7 @@
     "animation_key": "debuff",
     "description": "Предельная форма: Гнев забытых — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.17",
@@ -6526,7 +6726,7 @@
     "animation_key": "debuff",
     "description": "Знак превосходства: Око тьмы — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.18",
@@ -6543,7 +6743,7 @@
     "animation_key": "debuff",
     "description": "Абсолютная техника: Гниение души — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.19",
@@ -6560,7 +6760,7 @@
     "animation_key": "debuff",
     "description": "Возвышение: Глас бездны — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.dark_gods.20",
@@ -6577,7 +6777,7 @@
     "animation_key": "debuff",
     "description": "Легендарная форма: Воля тёмных богов — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 1.35
+    "damage_multiplier": 3.6
   },
   {
     "id": "shaman.nature.01",
@@ -6593,7 +6793,8 @@
     "resource_cost_tier": "high",
     "animation_key": "buff",
     "description": "Огненная смола — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.02",
@@ -6602,14 +6803,15 @@
     "name": "Ледяное клеймо",
     "unlock_level": 15,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Ледяное клеймо — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.03",
@@ -6625,7 +6827,8 @@
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Громовая булава — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.04",
@@ -6634,14 +6837,15 @@
     "name": "Каменная кора",
     "unlock_level": 24,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
     "description": "Каменная кора — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.05",
@@ -6657,7 +6861,8 @@
     "resource_cost_tier": "high",
     "animation_key": "buff",
     "description": "Духовное масло — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.06",
@@ -6666,14 +6871,15 @@
     "name": "Стихийная заточка",
     "unlock_level": 34,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Стихийная заточка — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.07",
@@ -6689,7 +6895,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "buff",
     "description": "Пылающие оковы — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.08",
@@ -6698,14 +6905,15 @@
     "name": "Морозный раскол",
     "unlock_level": 43,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Морозный раскол — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.09",
@@ -6721,7 +6929,8 @@
     "resource_cost_tier": "high",
     "animation_key": "buff",
     "description": "Грозовой резонанс — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.10",
@@ -6730,14 +6939,15 @@
     "name": "Оружие первостихии",
     "unlock_level": 53,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
     "description": "Оружие первостихии — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.11",
@@ -6753,7 +6963,8 @@
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Пробуждение: Огненная смола — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.12",
@@ -6762,14 +6973,15 @@
     "name": "Усиленная форма: Ледяное клеймо",
     "unlock_level": 62,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Усиленная форма: Ледяное клеймо — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.13",
@@ -6785,7 +6997,8 @@
     "resource_cost_tier": "high",
     "animation_key": "buff",
     "description": "Совершенная форма: Громовая булава — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.14",
@@ -6794,14 +7007,15 @@
     "name": "Высшая техника: Каменная кора",
     "unlock_level": 72,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Высшая техника: Каменная кора — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.15",
@@ -6817,7 +7031,8 @@
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Мастерский приём: Духовное масло — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.16",
@@ -6826,14 +7041,15 @@
     "name": "Предельная форма: Стихийная заточка",
     "unlock_level": 81,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
     "description": "Предельная форма: Стихийная заточка — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.17",
@@ -6849,7 +7065,8 @@
     "resource_cost_tier": "high",
     "animation_key": "buff",
     "description": "Знак превосходства: Пылающие оковы — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.18",
@@ -6858,14 +7075,15 @@
     "name": "Абсолютная техника: Морозный раскол",
     "unlock_level": 91,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Абсолютная техника: Морозный раскол — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   },
   {
     "id": "shaman.nature.19",
@@ -6881,7 +7099,8 @@
     "resource_cost_tier": "medium",
     "animation_key": "buff",
     "description": "Возвышение: Грозовой резонанс — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 0.12
   },
   {
     "id": "shaman.nature.20",
@@ -6890,13 +7109,14 @@
     "name": "Легендарная форма: Оружие первостихии",
     "unlock_level": 100,
     "is_active": true,
-    "effect_template": "buff",
+    "effect_template": "strike",
     "targeting": "template_defined",
     "scaling": "class_primary_stat",
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
     "description": "Легендарная форма: Оружие первостихии — nature specialization skill.",
-    "damage_type": "fire"
+    "damage_type": "fire",
+    "damage_multiplier": 2.6
   }
 ]
