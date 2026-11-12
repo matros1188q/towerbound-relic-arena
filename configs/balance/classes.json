@@ -2651,7 +2651,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 3.5
+          "damage_multiplier": 3.7
         },
         {
           "id": "shaman.base.4",

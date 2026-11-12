@@ -2024,7 +2024,7 @@
     "animation_key": "dot",
     "description": "Искра дракона — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.02",
@@ -2041,7 +2041,7 @@
     "animation_key": "dot",
     "description": "Пламенный коготь — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.03",
@@ -2058,7 +2058,7 @@
     "animation_key": "dot",
     "description": "Огненное дыхание — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.04",
@@ -2075,7 +2075,7 @@
     "animation_key": "dot",
     "description": "Жар ядра — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.05",
@@ -2092,7 +2092,7 @@
     "animation_key": "dot",
     "description": "Крылья пепла — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.06",
@@ -2109,7 +2109,7 @@
     "animation_key": "dot",
     "description": "Метеоритный рёв — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.07",
@@ -2126,7 +2126,7 @@
     "animation_key": "dot",
     "description": "Пылающая чешуя — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.08",
@@ -2143,7 +2143,7 @@
     "animation_key": "dot",
     "description": "Драконий шторм — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.09",
@@ -2160,7 +2160,7 @@
     "animation_key": "dot",
     "description": "Солнце в пасти — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.10",
@@ -2177,7 +2177,7 @@
     "animation_key": "dot",
     "description": "Катаклизм пламени — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 1.5
+    "damage_multiplier": 2
   },
   {
     "id": "dragonkin.fire_dragon.11",
@@ -2194,7 +2194,7 @@
     "animation_key": "dot",
     "description": "Пробуждение: Искра дракона — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.12",
@@ -2211,7 +2211,7 @@
     "animation_key": "dot",
     "description": "Усиленная форма: Пламенный коготь — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.13",
@@ -2228,7 +2228,7 @@
     "animation_key": "dot",
     "description": "Совершенная форма: Огненное дыхание — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.14",
@@ -2245,7 +2245,7 @@
     "animation_key": "dot",
     "description": "Высшая техника: Жар ядра — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.15",
@@ -2262,7 +2262,7 @@
     "animation_key": "dot",
     "description": "Мастерский приём: Крылья пепла — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.16",
@@ -2279,7 +2279,7 @@
     "animation_key": "dot",
     "description": "Предельная форма: Метеоритный рёв — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.17",
@@ -2296,7 +2296,7 @@
     "animation_key": "dot",
     "description": "Знак превосходства: Пылающая чешуя — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.18",
@@ -2313,7 +2313,7 @@
     "animation_key": "dot",
     "description": "Абсолютная техника: Драконий шторм — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.19",
@@ -2330,7 +2330,7 @@
     "animation_key": "dot",
     "description": "Возвышение: Солнце в пасти — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.fire_dragon.20",
@@ -2347,7 +2347,7 @@
     "animation_key": "dot",
     "description": "Легендарная форма: Катаклизм пламени — fire_dragon specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2
+    "damage_multiplier": 2.2
   },
   {
     "id": "dragonkin.ice_dragon.01",
@@ -2380,7 +2380,7 @@
     "animation_key": "shield",
     "description": "Чешуя вечной зимы — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.03",
@@ -2413,7 +2413,7 @@
     "animation_key": "shield",
     "description": "Кристальный панцирь — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.05",
@@ -2446,7 +2446,7 @@
     "animation_key": "shield",
     "description": "Сковывающий иней — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.07",
@@ -2479,7 +2479,7 @@
     "animation_key": "shield",
     "description": "Сердце ледника — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.09",
@@ -2512,7 +2512,7 @@
     "animation_key": "shield",
     "description": "Вечная мерзлота — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.11",
@@ -2545,7 +2545,7 @@
     "animation_key": "shield",
     "description": "Усиленная форма: Чешуя вечной зимы — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.13",
@@ -2578,7 +2578,7 @@
     "animation_key": "shield",
     "description": "Высшая техника: Кристальный панцирь — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.15",
@@ -2611,7 +2611,7 @@
     "animation_key": "shield",
     "description": "Предельная форма: Сковывающий иней — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.17",
@@ -2644,7 +2644,7 @@
     "animation_key": "shield",
     "description": "Абсолютная техника: Сердце ледника — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.ice_dragon.19",
@@ -2677,7 +2677,7 @@
     "animation_key": "shield",
     "description": "Легендарная форма: Вечная мерзлота — ice_dragon specialization skill.",
     "damage_type": "ice",
-    "damage_multiplier": 3
+    "damage_multiplier": 3.4
   },
   {
     "id": "dragonkin.black_dragon.01",
@@ -2694,7 +2694,7 @@
     "animation_key": "debuff",
     "description": "Теневой сгусток — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.02",
@@ -2711,7 +2711,7 @@
     "animation_key": "debuff",
     "description": "Чёрное пламя — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.03",
@@ -2728,7 +2728,7 @@
     "animation_key": "debuff",
     "description": "Поглощение маны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.04",
@@ -2745,7 +2745,7 @@
     "animation_key": "debuff",
     "description": "Разлом бездны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.05",
@@ -2762,7 +2762,7 @@
     "animation_key": "debuff",
     "description": "Сумрачный импульс — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.06",
@@ -2779,7 +2779,7 @@
     "animation_key": "debuff",
     "description": "Пожиратель чар — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.07",
@@ -2796,7 +2796,7 @@
     "animation_key": "debuff",
     "description": "Пустотный вихрь — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.08",
@@ -2813,7 +2813,7 @@
     "animation_key": "debuff",
     "description": "Затмение — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.09",
@@ -2830,7 +2830,7 @@
     "animation_key": "debuff",
     "description": "Драконья сингулярность — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.10",
@@ -2847,7 +2847,7 @@
     "animation_key": "debuff",
     "description": "Чёрное солнце — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.11",
@@ -2864,7 +2864,7 @@
     "animation_key": "debuff",
     "description": "Пробуждение: Теневой сгусток — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.12",
@@ -2881,7 +2881,7 @@
     "animation_key": "debuff",
     "description": "Усиленная форма: Чёрное пламя — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.13",
@@ -2898,7 +2898,7 @@
     "animation_key": "debuff",
     "description": "Совершенная форма: Поглощение маны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.14",
@@ -2915,7 +2915,7 @@
     "animation_key": "debuff",
     "description": "Высшая техника: Разлом бездны — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.15",
@@ -2932,7 +2932,7 @@
     "animation_key": "debuff",
     "description": "Мастерский приём: Сумрачный импульс — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.16",
@@ -2949,7 +2949,7 @@
     "animation_key": "debuff",
     "description": "Предельная форма: Пожиратель чар — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.17",
@@ -2966,7 +2966,7 @@
     "animation_key": "debuff",
     "description": "Знак превосходства: Пустотный вихрь — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.18",
@@ -2983,7 +2983,7 @@
     "animation_key": "debuff",
     "description": "Абсолютная техника: Затмение — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.19",
@@ -3000,7 +3000,7 @@
     "animation_key": "debuff",
     "description": "Возвышение: Драконья сингулярность — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "dragonkin.black_dragon.20",
@@ -3017,7 +3017,7 @@
     "animation_key": "debuff",
     "description": "Легендарная форма: Чёрное солнце — black_dragon specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "destroyer.fists.01",
@@ -6396,7 +6396,7 @@
     "animation_key": "debuff",
     "description": "Проклятие праха — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.02",
@@ -6413,7 +6413,7 @@
     "animation_key": "debuff",
     "description": "Тёмный идол — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.03",
@@ -6430,7 +6430,7 @@
     "animation_key": "debuff",
     "description": "Шёпот божества — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.04",
@@ -6447,7 +6447,7 @@
     "animation_key": "debuff",
     "description": "Печать распада — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.05",
@@ -6464,7 +6464,7 @@
     "animation_key": "debuff",
     "description": "Жертвоприношение — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.06",
@@ -6481,7 +6481,7 @@
     "animation_key": "debuff",
     "description": "Гнев забытых — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.07",
@@ -6498,7 +6498,7 @@
     "animation_key": "debuff",
     "description": "Око тьмы — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.08",
@@ -6515,7 +6515,7 @@
     "animation_key": "debuff",
     "description": "Гниение души — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.09",
@@ -6532,7 +6532,7 @@
     "animation_key": "debuff",
     "description": "Глас бездны — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.10",
@@ -6549,7 +6549,7 @@
     "animation_key": "debuff",
     "description": "Воля тёмных богов — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.11",
@@ -6566,7 +6566,7 @@
     "animation_key": "debuff",
     "description": "Пробуждение: Проклятие праха — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.12",
@@ -6583,7 +6583,7 @@
     "animation_key": "debuff",
     "description": "Усиленная форма: Тёмный идол — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.13",
@@ -6600,7 +6600,7 @@
     "animation_key": "debuff",
     "description": "Совершенная форма: Шёпот божества — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.14",
@@ -6617,7 +6617,7 @@
     "animation_key": "debuff",
     "description": "Высшая техника: Печать распада — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.15",
@@ -6634,7 +6634,7 @@
     "animation_key": "debuff",
     "description": "Мастерский приём: Жертвоприношение — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.16",
@@ -6651,7 +6651,7 @@
     "animation_key": "debuff",
     "description": "Предельная форма: Гнев забытых — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.17",
@@ -6668,7 +6668,7 @@
     "animation_key": "debuff",
     "description": "Знак превосходства: Око тьмы — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.18",
@@ -6685,7 +6685,7 @@
     "animation_key": "debuff",
     "description": "Абсолютная техника: Гниение души — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.19",
@@ -6702,7 +6702,7 @@
     "animation_key": "debuff",
     "description": "Возвышение: Глас бездны — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.dark_gods.20",
@@ -6719,7 +6719,7 @@
     "animation_key": "debuff",
     "description": "Легендарная форма: Воля тёмных богов — dark_gods specialization skill.",
     "damage_type": "dark",
-    "damage_multiplier": 3.6
+    "damage_multiplier": 4
   },
   {
     "id": "shaman.nature.01",
@@ -6752,7 +6752,7 @@
     "animation_key": "buff",
     "description": "Ледяное клеймо — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.03",
@@ -6785,7 +6785,7 @@
     "animation_key": "buff",
     "description": "Каменная кора — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.05",
@@ -6818,7 +6818,7 @@
     "animation_key": "buff",
     "description": "Стихийная заточка — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.07",
@@ -6851,7 +6851,7 @@
     "animation_key": "buff",
     "description": "Морозный раскол — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.09",
@@ -6884,7 +6884,7 @@
     "animation_key": "buff",
     "description": "Оружие первостихии — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.11",
@@ -6917,7 +6917,7 @@
     "animation_key": "buff",
     "description": "Усиленная форма: Ледяное клеймо — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.13",
@@ -6950,7 +6950,7 @@
     "animation_key": "buff",
     "description": "Высшая техника: Каменная кора — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.15",
@@ -6983,7 +6983,7 @@
     "animation_key": "buff",
     "description": "Предельная форма: Стихийная заточка — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.17",
@@ -7016,7 +7016,7 @@
     "animation_key": "buff",
     "description": "Абсолютная техника: Морозный раскол — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   },
   {
     "id": "shaman.nature.19",
@@ -7049,6 +7049,6 @@
     "animation_key": "buff",
     "description": "Легендарная форма: Оружие первостихии — nature specialization skill.",
     "damage_type": "fire",
-    "damage_multiplier": 2.6
+    "damage_multiplier": 3
   }
 ]
