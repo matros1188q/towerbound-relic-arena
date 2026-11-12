@@ -56,9 +56,13 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
 
 {
  const e=make(),c=e.createCharacter('Gear QA','assassin'),live=e.state.characters[0];
+ live.xp=Array.from({length:9},(_,index)=>e.requiredXp(index+1)).reduce((sum,xp)=>sum+xp,0);
+ live.level=e.levelForXp(live.xp);
+ const firstBranch=balance.classes.classes.assassin.branches[0];
+ e.chooseBranch(c.id,typeof firstBranch==="string"?firstBranch:firstBranch.id);
  live.bag.push(
-  {id:'epic-weapon',type:'equipment',slot:'weapon',rarity:'Эпическая',itemLevel:20,stats:{attack:35},refine:0,sockets:[]},
-  {id:'common-chest',type:'equipment',slot:'chest',rarity:'Обычная',itemLevel:10,stats:{defense:10,health:80},refine:0,sockets:[]},
+  {id:'epic-weapon',type:'equipment',branch:live.branch,slot:'weapon',rarity:'Эпическая',itemLevel:20,stats:{attack:35},refine:0,sockets:[]},
+  {id:'common-chest',type:'equipment',branch:live.branch,slot:'chest',rarity:'Обычная',itemLevel:10,stats:{defense:10,health:80},refine:0,sockets:[]},
   {id:'craft-stack',type:'craft_material',quantity:4}
  );
  const equipped=e.equipBest(c.id);
