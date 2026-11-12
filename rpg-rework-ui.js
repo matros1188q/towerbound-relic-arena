@@ -475,7 +475,7 @@ function createDialog(){
   battle.isPlayerTurn=false;clearPendingTurnTimer();battle.busy=false;
   const c=live(),stats=engine.getCombatStats(c);
   if(!battle.playerSkillUsed){
-   const damage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*.5:0))),hit=applyTargetDamage(battle.enemy,damage,"physical");
+   const damage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5)*(stats.basicAttackDamageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*.5:0))),hit=applyTargetDamage(battle.enemy,damage,"physical");
    c.resource=Math.min(c.resourceMax,c.resource+Math.max(1,Math.round(c.resourceMax*(balance.combat.turn_based?.resource_regeneration_fraction||.2))));
    triggerVfx("attack","physical",false);showFloatingText("player","Автоатака!","#ffd34e");if(hit.killed){finishCurrentEnemy();if(!battle)return;}
   }
@@ -972,14 +972,14 @@ return `<div class="v2-battle-wrap">
   const mastered=(c.progression?.skillMastery?.[skill.id]||0)>=100?1:0,cooldownTurns=effect.cooldown_turns||effect.cooldown||4;
   battle.skillCooldowns[skill.id]=Math.max(1,(effect.cooldown||4)-mastered);
   if(effect.cooldown_turns)battle.skillCooldowns[skill.id]=Math.max(1,effect.cooldown_turns-mastered);
-  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1)*(skill.damage_multiplier??skill.damage??effect.damage_multiplier??1)*skillStats.powerMultiplier,guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="burst")damage*=1.2;
+  let damage=stats.dps*(balance.combat.turn_based?.skill_dps_multiplier||2.5)*(stats.damageMultiplier||1)*(skill.damage_multiplier??skill.damage??effect.damage_multiplier??1)*skillStats.powerMultiplier+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*.5:0),guaranteedCrit=false;const evolvedSkill=window.TowerboundEndgame?.getSkillEvolution(skill.id);if(evolvedSkill?.id==="burst")damage*=1.2;
   const elementHint=String(skill.element||skill.branch_id||skill.name||"").toLowerCase();const damageType=skill.damage_type||(elementHint.includes("fire")||/огн|плам|жар/.test(elementHint)?"fire":elementHint.includes("water")||/вод/.test(elementHint)?"water":elementHint.includes("lightning")||/молни|гроз|электр/.test(elementHint)?"lightning":"physical");
   if(effect.type==="heal"&&effect.heal_multiplier)c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*effect.heal_multiplier*skillStats.powerMultiplier));
   if(effect.type==="hot"&&effect.heal_multiplier)battle.hot={heal:Math.round(engine.maxHp(c)*effect.heal_multiplier*skillStats.powerMultiplier),ticks:effect.ticks||3};
   if(effect.type==="shield"&&effect.shield_fraction)battle.nextDamageShield=Math.round(engine.maxHp(c)*effect.shield_fraction);
   if(effect.type==="dot"&&effect.damage_multiplier){const dotDamage=Math.max(1,Math.round(stats.dps*effect.damage_multiplier*skillStats.powerMultiplier*(c.classId==="assassin"&&c.branch==="poison"?1.15:1)));battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);if(battle.dots.length<20)battle.dots.push({damage:dotDamage,ticks:effect.ticks||3});else battle.dots[battle.dots.length-1]={damage:dotDamage,ticks:effect.ticks||3};battle.dot=battle.dots[0]||null;if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="dot";}}
   if(effect.type==="buff"){battle.playerDamageBuff=effect.power_multiplier||0;battle.playerDamageBuffTurns=Math.max(1,effect.duration_turns||effect.duration||3);battle.buffsUsed=(battle.buffsUsed||0)+1;}
-  if(effect.type==="debuff"){battle.enemyDamageReduction=effect.power_multiplier||0;battle.enemyDamageReductionTurns=Math.max(1,effect.duration_turns||effect.duration||3);if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="debuff";}}
+  if(effect.type==="debuff"){battle.enemyDamageReduction=effect.power_multiplier||0;battle.enemyDamageReductionTurns=Math.max(1,effect.duration_turns||effect.duration||3);if(c.classId==="shaman"&&c.branch==="dark_gods"){const curseDamage=Math.max(1,Math.round(stats.dps*(effect.damage_multiplier||skill.damage_multiplier||.45)*.45*1.15));battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);if(battle.dots.length<20)battle.dots.push({damage:curseDamage,ticks:effect.duration||3});else battle.dots[battle.dots.length-1]={damage:curseDamage,ticks:effect.duration||3};battle.dot=battle.dots[0]||null;}if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="debuff";}}
   if(effect.type==="control")battle.enemyStunned=true;
   if(effect.type==="parry")battle.parryChance=effect.parry_chance||0;
   const combo=processCombo(slotIndex);if(combo){damage*=combo.bonus.damage_mult||1;guaranteedCrit=!!combo.bonus.guaranteed_crit;}
