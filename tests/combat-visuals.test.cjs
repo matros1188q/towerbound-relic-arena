@@ -3,6 +3,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');
 const fx=fs.readFileSync(path.join(__dirname,'../combat-visuals.js'),'utf8');
+const css=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8');
+const battleDom=ui.slice(ui.indexOf('function updateBattleDOM'),ui.indexOf('function ensureBottomNav'));
 for(const [name,source,re] of [
 ['two-layer parallax',fx,/tb-back-parallax[\s\S]*tb-front-parallax/],
 ['hit spark',fx,/tb-hit-spark/],['boss intro',fx,/tb-boss-intro/],['low hp vignette',fx,/tb-low-hp/],
@@ -12,6 +14,12 @@ for(const [name,source,re] of [
 ['element inference',ui,/elementHint\.includes\("fire"\)[\s\S]*elementHint\.includes\("water"\)[\s\S]*elementHint\.includes\("lightning"\)/],
 ['skill icon uses skill asset then class fallback',ui,/const icon=evolved\?evolved\.icon:skill\?\.icon[\s\S]*const kind=\(\{assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"\}/],
 ['route click delegation',ui,/\[data-route\]/],
+['battle DOM finds the V2 arena wrapper',battleDom,/root\.querySelector\("\.v2-battle-wrap"\)/],
+['battle DOM updates V2 skill buttons',battleDom,/arena\.querySelectorAll\("\.v2-skill-btn\[data-panel-slot\]"\)/],
+['battle DOM updates V2 enemy cards',battleDom,/arena\.querySelectorAll\("\.v2-enemy-card\[data-target\]"\)/],
+['battle DOM no longer queries legacy arena, skill or target selectors',battleDom,/^((?!\.tb-arena|\.tb-panel-skill|\.tb-target-card)[\s\S])*$/],
+['Attack control is high-contrast and at least 54px',css,/\.v2-btn-attack\{display:flex!important[\s\S]*?min-height:54px!important[\s\S]*?background:linear-gradient\(180deg,#f08a32,#bc4e22\)!important/],
+['End Turn remains displayed with at least 48px height',css,/\.v2-btn-end\{display:flex!important[\s\S]*?min-height:48px!important[\s\S]*?visibility:visible!important/],
 ['checkpoint heal gating preserved',ui,/healReady=balance\.map\.checkpoints\.includes\(cp\)&&c\.run\.healingPenaltyUntil/],
 ['poison status',ui,/ОТРАВЛЕН/],
 ['elemental steam',ui,/ПАР · ОГЛУШЕНИЕ/],['electric shock',ui,/ЭЛЕКТРОШОК/],['boss interrupt',ui,/ПРЕРВАНО/],
