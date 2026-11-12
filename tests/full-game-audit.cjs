@@ -165,7 +165,7 @@ assert.ok(nativeCss.includes('.tb-bottom-nav{z-index:12000!important;pointer-eve
 
 // Specialization descriptions and compact stage selector checks.
 assert.ok(uiSource.includes('const specializationDescriptions='),'all class specializations have mechanics descriptions');
-for(const phrase of ['самолечение','проклятия и наносят урон по площади','парирование','оглушения'])assert.ok(uiSource.toLowerCase().includes(phrase.toLowerCase()),'specialization mechanics description includes '+phrase);
+for(const phrase of ['самолечение','проклятия, поражающие сразу несколько целей','парирование','оглушения'])assert.ok(uiSource.toLowerCase().includes(phrase.toLowerCase()),'specialization mechanics description includes '+phrase);
 assert.ok(uiSource.includes('tb-branch-description'),'selected specialization description is visible below branch choices');
 assert.ok(uiSource.includes('tb-stage-toolbar')&&uiSource.includes('tb-stage-more'),'selected stage is rendered as a compact toolbar with collapsed advanced actions');
 assert.ok(uiSource.indexOf('tb-stage-toolbar')<uiSource.indexOf('tb-map-layout'),'selected stage toolbar appears before the map grid');
