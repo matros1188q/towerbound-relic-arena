@@ -116,8 +116,8 @@ for(const [classId,fileName] of Object.entries({assassin:'image-Photoroom.png',b
 assert.ok(uiSource.includes('"crimson-regent":"bosses/image 11.png"'),'Crimson Regent uses a dedicated boss JPG portrait');
 assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
 assert.ok(uiSource.includes('host.querySelector(".tb-turn-tutorial")'),'bottom navigation yields to the first-run battle tutorial');
-for(const action of ['bottom-map','bottom-profile','bottom-shop','bottom-rating'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
-for(const label of ['Карта','Персонаж','Магазин','Рейтинг'])assert.ok(uiSource.includes(label),'bottom navigation label exists: '+label);
+for(const action of ['bottom-map','bottom-profile','bottom-progress','bottom-shop','bottom-account'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
+for(const label of ['БОЙ / КАРТА','ПЕРСОНАЖ','ПРОГРЕСС','МАГАЗИН','АККАУНТ'])assert.ok(uiSource.includes(label),'bottom navigation label exists: '+label);
 const cloudSource=fs.readFileSync(path.join(root,'towerbound-cloud.js'),'utf8');
 assert.ok(cloudSource.includes('emailRedirectTo:window.location.origin+window.location.pathname'),'email confirmation redirect follows the current deployment URL');
 assert.ok(cloudSource.includes('redirectTo:window.location.origin+window.location.pathname'),'OAuth redirect follows the current deployment URL');
