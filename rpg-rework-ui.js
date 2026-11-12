@@ -154,13 +154,31 @@
   const emptyContent=authenticated
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button type="button" data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>'
    : '<div class="tb-empty tb-login-gate"><div class="tb-empty-crest">✦</div><h2>Вход в игру</h2><p>Войди в аккаунт или зарегистрируйся, чтобы создать персонажа и сохранить прогресс.</p><form class="tb-character-login" novalidate><label for="login">Логин</label><input id="login" name="login" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Логин"><label for="pass">Пароль</label><input id="pass" name="password" type="password" autocomplete="current-password" placeholder="Пароль"><label class="tb-login-remember"><input id="rememberMe" type="checkbox" checked> Запомнить меня</label><button type="button" data-action="empty-login" class="tb-primary tb-login-submit">ВОЙТИ</button><button type="button" data-action="empty-register" class="tb-text-link">Зарегистрироваться</button><p class="tb-login-message" role="status" aria-live="polite"></p></form></div>';
-  return header("Выбор персонажа",authenticated?"Аккаунт · "+(engine.state.account.diamonds||0)+" алмазов":"Войди, чтобы начать")+
-   '<section class="tb-characters"><div class="tb-section-title"><div><h1>Персонажи</h1><p>Твой путь в Башне начинается с аккаунта</p></div></div>'+
-   (chars.length?'<div class="tb-character-grid">'+chars.map(c=>{
-    const d=balance.classes.classes[c.classId],chosen=c.id===selectedId;
-    return '<button type="button" class="tb-character-card '+(chosen?"selected":"")+'" data-pick="'+esc(c.id)+'"><div class="tb-char-art"><img src="'+portrait(c.classId)+'" alt="'+esc(d.name)+'"></div><div class="tb-char-info"><strong>'+esc(c.name)+'</strong><span>'+esc(d.name)+' · Уровень '+c.level+'</span><small>Мощь '+engine.combatPower(c)+' · Пройдено '+c.progress.highestEver+'/250</small><small>Серебро '+c.silver+' · '+(c.branch?esc(d.branches.find(b=>b.id===c.branch)?.name||c.branch):"Без специализации")+'</small></div><span class="tb-selected-mark">'+(chosen?"✓":"")+'</span></button>';
-   }).join("")+'</div><div class="tb-character-actions"><button data-action="play" class="tb-primary">ИГРАТЬ ЗА '+esc(selected.name.toUpperCase())+'</button></div>':emptyContent)+
-   '</section>'+createDialog();
+  return header("Выбор персонажа", authenticated ? "Аккаунт · " + (engine.state.account.diamonds || 0) + " алмазов" : "Войди, чтобы начать") +
+    '<section class="fix-char-section">' +
+    '<div class="fix-char-title"><h1>Персонажи</h1><p>Твой путь в Башне начинается с аккаунта</p></div>' +
+    (chars.length ? 
+      '<div class="fix-char-grid">' + 
+      chars.map(c => {
+        const d = balance.classes.classes[c.classId];
+        const chosen = c.id === selectedId;
+        return '<button type="button" class="fix-char-card ' + (chosen ? "selected" : "") + '" data-pick="' + esc(c.id) + '">' +
+          '<div class="fix-char-art"><img src="' + portrait(c.classId) + '" alt=""></div>' +
+          '<div class="fix-char-info">' +
+            '<strong>' + esc(c.name) + '</strong>' +
+            '<span>' + esc(d.name) + ' · Уровень ' + c.level + '</span>' +
+            '<small>Мощь ' + engine.combatPower(c) + ' · Пройдено ' + c.progress.highestEver + '/250</small>' +
+            '<small>Серебро ' + c.silver + ' · ' + (c.branch ? esc(d.branches.find(b => b.id === c.branch)?.name || c.branch) : "Без специализации") + '</small>' +
+          '</div>' +
+          '<span class="fix-char-mark">' + (chosen ? "✓" : "") + '</span>' +
+        '</button>';
+      }).join("") + 
+      '</div>' +
+      '<div class="fix-char-actions">' +
+        '<button data-action="play" class="fix-play-btn">ИГРАТЬ ЗА ' + esc(selected.name.toUpperCase()) + '</button>' +
+      '</div>' : 
+      emptyContent) +
+    '</section>' + createDialog();
  }
 function createDialog(){
   if(!dialogOpen)return "";
