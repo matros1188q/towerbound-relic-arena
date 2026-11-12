@@ -333,8 +333,9 @@
    const defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)*(1+sets.defense));
    const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit+sets.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
    const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
+   const branchDamageBonus=(character.classId==="dragonkin"&&["fire_dragon","ice_dragon","black_dragon"].includes(character.branch))||(character.classId==="elemental"&&character.branch==="earth")||(character.classId==="shaman"&&character.branch==="dark_gods")?1.10:1;
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),critChance,critMultiplier,
-    speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:1+sets.damage+sets.skillPower+talent.skillPower,
+    speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:(1+sets.damage+sets.skillPower+talent.skillPower)*branchDamageBonus,
     damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
     iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,resists:{fire:gear.fireResist,ice:gear.iceResist,dark:gear.darkResist,physical:gear.physicalResist},
     setPieces:clone(gear.setPieces),glow:getRefinementGlow(character),itemLevelBonus:gear.itemLevelBonus};
