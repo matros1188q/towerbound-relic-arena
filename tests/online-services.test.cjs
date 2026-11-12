@@ -39,8 +39,8 @@ assert.ok(ui.includes('Серверный рейтинг пока не начи�
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=16'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=42'),'profile and inventory UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=19'),'mobile profile stylesheet cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=43'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=20'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
 assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is awaitable and reports failure');
@@ -147,7 +147,7 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(progression.includes("if(bar&&c&&!bar.querySelector('[data-tbp-open]'))")&&progression.includes("b.className='tb-progression-button'"),'progression control is only added when a character exists');
 assert.ok(css.includes('white-space:nowrap')&&css.includes('tb-progression-button::before')&&css.includes('@media(max-width:400px)'),'iPhone header and progression control stay on one line and collapse to an icon');
-assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=19'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=20'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
