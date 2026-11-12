@@ -385,18 +385,11 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('#endturn').count(),1,'V2 battle has one End Turn control');
   const firstLayout=await page.evaluate(()=>{
    const box=selector=>{const el=document.querySelector(selector),r=el?.getBoundingClientRect();return el&&r?{height:r.height,display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility}:null;};
-   return{attack:box('#hit'),end:box('#endturn'),width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,icons:[...document.querySelectorAll('.v2-skill-icon')].map(el=>({src:el.getAttribute('src'),background:getComputedStyle(el).backgroundImage}))};
+   return{attack:box('#hit'),end:box('#endturn'),width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,icons:[...document.querySelectorAll('.v2-skill-icon')].map(el=>({src:el.getAttribute('src')||el.querySelector('img')?.getAttribute('src')||null,background:getComputedStyle(el).backgroundImage}))};
   });
   assert.ok(firstLayout.attack&&firstLayout.attack.height>=50&&firstLayout.attack.visibility!=='hidden','basic attack is large and visible');
   assert.ok(firstLayout.end&&firstLayout.end.height>=44&&firstLayout.end.visibility!=='hidden'&&firstLayout.end.display!=='none','End Turn is visible in the initial player turn');
   assert.ok(firstLayout.scrollWidth<=firstLayout.width,'V2 battle has no horizontal overflow on 390px mobile');
-  const iconDiagnostic=await page.evaluate(()=>({
-   character:{classId:window.TowerboundRework.state.characters[0].classId,level:window.TowerboundRework.state.characters[0].level,activeSkills:window.TowerboundRework.state.characters[0].activeSkills,skillLoadout:window.TowerboundRework.state.characters[0].skillLoadout},
-   slots:[...document.querySelectorAll('.v2-skill-btn')].map(button=>{const icon=button.querySelector('.v2-skill-icon');return{name:button.querySelector('.v2-skill-name')?.textContent,html:icon?.outerHTML,background:icon?getComputedStyle(icon).backgroundImage:'missing',display:icon?getComputedStyle(icon).display:'missing'};}),
-   stylePresent:!!document.getElementById('tb-rework-v2-style'),
-   skillCss:document.getElementById('tb-rework-v2-style')?.textContent.includes('.v2-skill-icon.skill-poison')
-  }));
-  process.stdout.write('V2 SKILL ICON DIAGNOSTIC '+JSON.stringify(iconDiagnostic)+'\\n');
   assert.ok(firstLayout.icons.some(icon=>!!icon.src||icon.background!=='none'),'skill slots render class atlas or skill-specific artwork');
   const enemy=page.locator('.v2-enemy-card').first(),targetId=await enemy.getAttribute('data-target');
   await enemy.click();

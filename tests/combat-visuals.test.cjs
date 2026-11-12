@@ -10,6 +10,7 @@ for(const [name,source,re] of [
 ['status popups',fx,/tb:combat-status/],['profile idle',fx,/tb-hero-idle/],['colored hp',fx,/w>60[\s\S]*w>25/],
 ['ultimate dim overlay',fx,/tb-fx-ultimate/],['overkill bonus',core,/flags\.overkillBonus\?1\.1:1/],
 ['element inference',ui,/elementHint\.includes\("fire"\)[\s\S]*elementHint\.includes\("water"\)[\s\S]*elementHint\.includes\("lightning"\)/],
+['skill icon uses skill asset then class fallback',ui,/const icon=evolved\?evolved\.icon:skill\?\.icon[\s\S]*const kind=\(\{assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"\}/],
 ['route click delegation',ui,/\[data-route\]/],
 ['checkpoint heal gating preserved',ui,/healReady=balance\.map\.checkpoints\.includes\(cp\)&&c\.run\.healingPenaltyUntil/],
 ['poison status',ui,/ОТРАВЛЕН/],

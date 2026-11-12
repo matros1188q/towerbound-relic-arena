@@ -635,8 +635,7 @@ function createDialog(){
    if(/^(?:https?:)?\/\//i.test(value)||/^(?:\.{0,2}\/|\/|assets\/)/i.test(value)||/\.(?:png|jpe?g|webp|svg)(?:[?#].*)?$/i.test(value))return '<img class="v2-skill-icon" src="'+esc(value)+'" alt="">';
    if(/[^\x00-\x7F]/.test(value))return '<span class="v2-skill-icon v2-skill-icon-glyph" aria-hidden="true">'+esc(value)+'</span>';
   }
-  const hint=String(skill?.damage_type||skill?.element||skill?.branch_id||skill?.effect_template||"").toLowerCase();
-  const kind=/fire|огн|плам/.test(hint)?"skill-fire":/ice|water|лед|вод/.test(hint)?"skill-ice":/poison|bleed|venom|яд|кров/.test(hint)?"skill-poison":/physical|strike|phys|удар/.test(hint)?"skill-phys":({assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"}[classId]||"skill-arcane");
+  const kind=({assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"}[classId]||"skill-arcane");
   return '<span class="v2-skill-icon '+kind+'" aria-hidden="true"></span>';
  }
  function battleScreen(){
