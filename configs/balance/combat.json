@@ -120,7 +120,8 @@
     "branch_overrides": {
       "shaman": {
         "dark_gods": {
-          "basic_attack_multiplier": 1.4
+          "basic_attack_multiplier": 1.6,
+          "skill_damage_multiplier": 1.2
         }
       }
     }
