@@ -121,7 +121,7 @@
       "shaman": {
         "dark_gods": {
           "basic_attack_multiplier": 1.6,
-          "skill_damage_multiplier": 1.2
+          "skill_damage_multiplier": 1.3
         }
       }
     }
