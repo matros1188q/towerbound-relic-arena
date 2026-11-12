@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v230';
+const CACHE = 'towerbound-v240';
 /* Battle arena and post-battle loot mobile layout hotfix */
 const SHELL = [
   './',
@@ -89,9 +89,6 @@ const SHELL = [
   "./assets/icons/image 19.png",
   "./assets/icons/image.png",
   "./assets/ui/art-manifest.json",
-  "./assets/ui/logo.jpeg",
-  "./assets/ui/art-sprites.css",
-  './assets/chapters/image 2.jpeg',
   './endgame-systems.js',
   './assets/pwa/icon-192.png',
   './assets/pwa/icon-512.png'

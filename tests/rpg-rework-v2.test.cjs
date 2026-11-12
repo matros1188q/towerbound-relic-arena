@@ -397,6 +397,9 @@ if(balance.combat.turn_based?.enabled){
 }
 {
  const e=makeEngine(()=>0.2),c=makeCharacter(e),live=e.state.characters[0];
+ live.level=10;
+ const firstBranch=balance.classes.classes.assassin.branches[0];
+ e.chooseBranch(c.id,typeof firstBranch==="string"?firstBranch:firstBranch.id);
  live.progress.highestEver=3;live.progress.currentStage=4;
  e.beginStage(c.id,3);
  live.run.stage.mobs[0]={...live.run.stage.mobs[0],type:'boss'};

@@ -303,12 +303,6 @@ function createDialog(){
   battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;
   save();render();
  }
- function updateBossPhase(){
-  if(!battle||battle.enemy?.type!=="boss")return 1;
-  const phase=engine.bossPhaseInfo(battle.enemyHp,battle.enemyMax).phase;
-  if(phase!==battle.bossPhase){battle.bossPhase=phase;battle.phaseFlashUntil=Date.now()+1000;battle.phaseNotice="ФАЗА "+phase;if(phase===2)addSummonedBossMobs();if(phase===4)battle.bossDeadlineTurns=(battle.playerTurnCount||0)+(battle.actor?.type==="player"?3:2);}
-  return phase;
- }
  function activeComboNextSlots(){
   if(!battle)return[];const configs=(balance.combos?.combos||[]).filter(combo=>combo.class===live().classId),slots=[];
   for(const combo of configs){const progress=battle.comboProgress?.[combo.id]||0,next=combo.chain[progress];if(next)slots.push({combo,slot:Number(String(next).replace("slot",""))-1,progress});}
@@ -337,7 +331,11 @@ function createDialog(){
  function updateBossPhase(){
   if(!battle||battle.enemy?.type!=="boss")return 1;
   const phase=engine.bossPhaseInfo(battle.enemyHp,battle.enemyMax).phase;
-  if(phase!==battle.bossPhase){battle.bossPhase=phase;battle.phaseFlashUntil=Date.now()+1000;battle.phaseNotice="ФАЗА "+phase;if(phase===2)addSummonedBossMobs();if(phase===4)battle.bossDeadlineTurns=2;}
+  if(phase!==battle.bossPhase){
+   battle.bossPhase=phase;battle.phaseFlashUntil=Date.now()+1000;battle.phaseNotice="ФАЗА "+phase;
+   if(phase===2)addSummonedBossMobs();
+   if(phase===4)battle.bossDeadlineTurns=(battle.playerTurnCount||0)+1;
+  }
   return phase;
  }
  function applyEnemyHit(attacker,raw){
@@ -412,6 +410,11 @@ function createDialog(){
    if(battle.paused){scheduleEnemyTurnQueue(queue,index,token,250);return;}
    if(index>=queue.length){
     battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;
+    const deadlineBoss=(battle.enemies||[]).find(enemy=>enemy.type==="boss"&&enemy.alive&&Number(enemy.hp)>0);
+    if(deadlineBoss&&battle.bossDeadlineTurns!==null&&battle.bossDeadlineTurns!==undefined&&battle.playerTurnCount>Number(battle.bossDeadlineTurns)&&engine.bossPhaseInfo(deadlineBoss.hp,deadlineBoss.maxHp).phase===4){
+     const c=live();c.run.playerHp=Math.max(0,c.run.playerHp-9999);
+     notify("ЯРОСТЬ БОССА · 9999 урона · время вышло");showFloatingText("player","-9999","#ff596b");endFromDamage();return;
+    }
     if((battle.poisonStacks||0)>0){
      const c=live(),tick=Math.round(engine.maxHp(c)*.05*battle.poisonStacks);
      c.run.playerHp=Math.max(0,c.run.playerHp-tick);
@@ -623,6 +626,19 @@ function createDialog(){
   battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase():0;
   return true;
  }
+ function skillIconMarkup(skill,classId){
+  const evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null;
+  const icon=evolved?evolved.icon:skill?.icon;
+  if(typeof icon==="string"&&icon.trim()){
+   const value=icon.trim(),alias={fire:"skill-fire",ice:"skill-ice",water:"skill-ice",arcane:"skill-arcane",dark:"skill-arcane",nature:"skill-arcane",poison:"skill-poison",physical:"skill-phys",phys:"skill-phys"};
+   if(alias[value.toLowerCase()]||/^skill-(?:fire|ice|arcane|poison|phys)$/.test(value.toLowerCase()))return '<span class="v2-skill-icon '+(alias[value.toLowerCase()]||value.toLowerCase())+'" aria-hidden="true"></span>';
+   if(/^(?:https?:)?\/\//i.test(value)||/^(?:\.{0,2}\/|\/|assets\/)/i.test(value)||/\.(?:png|jpe?g|webp|svg)(?:[?#].*)?$/i.test(value))return '<img class="v2-skill-icon" src="'+esc(value)+'" alt="">';
+   if(/[^\x00-\x7F]/.test(value))return '<span class="v2-skill-icon v2-skill-icon-glyph" aria-hidden="true">'+esc(value)+'</span>';
+  }
+  const hint=String(skill?.damage_type||skill?.element||skill?.branch_id||skill?.effect_template||"").toLowerCase();
+  const kind=/fire|огн|плам/.test(hint)?"skill-fire":/ice|water|лед|вод/.test(hint)?"skill-ice":/poison|bleed|venom|яд|кров/.test(hint)?"skill-poison":/physical|strike|phys|удар/.test(hint)?"skill-phys":({assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"}[classId]||"skill-arcane");
+  return '<span class="v2-skill-icon '+kind+'" aria-hidden="true"></span>';
+ }
  function battleScreen(){
   const c=live();
   const hp=engine.maxHp(c);
@@ -651,7 +667,7 @@ const skillMarkup = Array.from({ length: 6 }, (_, index) => {
   
   return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id || "")}" data-panel-slot="${index}" ${disabled ? "disabled" : ""}>
     <kbd>${index + 1}</kbd>
-    <img src="./assets/relics/image 10.png" alt="">
+    ${skill ? skillIconMarkup(skill,c.classId) : '<span class="v2-skill-icon v2-skill-icon-empty" aria-hidden="true">—</span>'}
     <span class="v2-skill-name">${esc(skill?.name || "Пусто")}</span>
     <span class="v2-skill-cost">${skill ? cost + " рес." : ""}</span>
   </button>`;
@@ -667,10 +683,13 @@ return `<div class="v2-battle-wrap">
       <img src="${esc(portrait(c.classId))}" class="v2-hero-img" alt="">
       <div class="v2-hero-name">${esc(c.name)}</div>
       <div class="v2-hp-bar"><div style="width:${hpPct}%"></div></div>
+      <div class="v2-hero-hp-text">${Math.ceil(c.run.playerHp)} / ${hp} HP</div>
+      <div class="v2-hero-resource-text">${esc(classData(c).resource)} · ${Math.round(c.resource)} / ${Math.round(c.resourceMax)}</div>
     </div>
     <div class="v2-enemies-side">${enemyMarkup}</div>
   </div>
   <div class="v2-battle-bottom">
+    <div class="v2-turn-guidance" aria-live="polite">${battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют..."}</div>
     <button type="button" class="v2-btn-attack" id="hit" data-basic-attack="1" ${battle.actor?.type !== "player" || battle.playerSkillUsed || battle.busy || battle.paused ? "disabled" : ""}>⚔ АТАКА</button>
     <div class="v2-skills-grid">${skillMarkup}</div>
     <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>ЗАВЕРШИТЬ ХОД</button>
@@ -893,45 +912,49 @@ return `<div class="v2-battle-wrap">
  }
  function updateBattleDOM(){
   if(!battle)return;
-  const c=live(),arena=root.querySelector(".tb-arena");if(!arena)return;
-  const hp=engine.maxHp(c),hero=root.querySelector(".tb-battle-hero"),heroBars=hero?.querySelectorAll(".tb-healthbar span,.tb-resourcebar span")||[];
-  if(heroBars[0])heroBars[0].style.width=Math.max(0,Math.min(100,c.run.playerHp/hp*100))+"%";
-  if(heroBars[1])heroBars[1].style.width=Math.min(100,c.resource/Math.max(1,c.resourceMax)*100)+"%";
-  const heroLabels=hero?.querySelectorAll(".tb-battle-bar-label strong")||[];
-  if(heroLabels[0])heroLabels[0].textContent=Math.ceil(c.run.playerHp)+" / "+hp;
-  if(heroLabels[1])heroLabels[1].textContent=c.resource+" / "+c.resourceMax;
-  const heroSmall=hero?.querySelectorAll("small")||[];
-  if(heroSmall[1])heroSmall[1].textContent=Math.ceil(c.run.playerHp)+" / "+hp+" HP";
-  if(heroSmall[2])heroSmall[2].textContent=classData(c).resource+": "+c.resource+"/"+c.resourceMax;
-  const focus=root.querySelector(".tb-enemy-focus"),enemyBar=focus?.querySelector(".tb-healthbar.enemy span");
-  if(enemyBar)enemyBar.style.width=Math.max(0,Math.min(100,battle.enemyHp/Math.max(1,battle.enemyMax)*100))+"%";
-  const focusSmall=focus?.querySelectorAll("small")||[];
-  if(focusSmall.length)focusSmall[focusSmall.length-1].textContent=Math.max(0,Math.ceil(battle.enemyHp))+" / "+battle.enemyMax+" HP"+(battle.shield>0?" · Щит "+battle.shield:"");
-  (battle.enemies||[]).forEach(target=>{
-   const card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');if(!card)return;
-   const bar=card.querySelector(".tb-target-hp i");if(bar)bar.style.width=Math.max(0,target.hp/Math.max(1,target.maxHp)*100)+"%";
-   const small=card.querySelectorAll("small");if(small.length)small[small.length-1].textContent=Math.max(0,Math.ceil(target.hp))+" HP";
-   card.disabled=!target.alive||Number(target.hp)<=0;card.classList.toggle("defeated",!target.alive||Number(target.hp)<=0);card.classList.toggle("selected",target.index===battle.targetIndex);
+  const c=live(),arena=root.querySelector(".v2-battle-wrap");if(!arena)return;
+  const hp=engine.maxHp(c),playerHp=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
+  const heroBar=arena.querySelector(".v2-hero-side .v2-hp-bar>div");if(heroBar)heroBar.style.width=playerHp+"%";
+  const heroHpText=arena.querySelector(".v2-hero-hp-text");if(heroHpText)heroHpText.textContent=Math.ceil(c.run.playerHp)+" / "+hp+" HP";
+  const heroResource=arena.querySelector(".v2-hero-resource-text");if(heroResource)heroResource.textContent=classData(c).resource+" · "+Math.round(c.resource)+" / "+Math.round(c.resourceMax);
+  const heroName=arena.querySelector(".v2-hero-name");if(heroName)heroName.textContent=c.name;
+  arena.querySelectorAll(".v2-enemy-card[data-target]").forEach(card=>{
+   const index=Number(card.dataset.target),target=(battle.enemies||[]).find(enemy=>enemy.index===index);
+   if(!target)return;
+   const alive=!!target.alive&&Number(target.hp)>0,bar=card.querySelector(".v2-hp-bar>div"),hpText=card.querySelector(".v2-enemy-hp-text"),intent=card.querySelector(".v2-enemy-intent");
+   if(bar)bar.style.width=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100))+"%";
+   if(hpText)hpText.textContent=Math.max(0,Math.ceil(target.hp))+" HP";
+   if(intent)intent.textContent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&index===battle.targetIndex?battle.telegraph.label:"Готовит атаку");
+   card.classList.toggle("selected",index===battle.targetIndex);card.classList.toggle("defeated",!alive);
+   card.setAttribute("aria-pressed",index===battle.targetIndex?"true":"false");
   });
-  const hit=root.querySelector("#hit");if(hit)hit.disabled=!!(battle.busy||battle.paused);
-  const basic=root.querySelector("[data-basic-attack],[data-gear-filter],[data-item-select]");if(basic)basic.disabled=battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed;
+  const playerTurn=battle.actor?.type==="player";
+  const hit=arena.querySelector("#hit");if(hit)hit.disabled=!playerTurn||battle.playerSkillUsed||battle.busy||battle.paused;
   const slots=ensureLoadout(c);
-  root.querySelectorAll("[data-panel-skill]").forEach(button=>{const skill=slots[Number(button.dataset.panelSlot)],cd=skill?(battle.skillCooldowns?.[skill.id]||0):Infinity;button.disabled=!skill||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed||cd>0;});
-  const counter=counterAbility(c),ult=ultimateAbility(c);
-  const counterButton=root.querySelector("[data-counter]");if(counterButton)counterButton.disabled=battle.actor?.type!=="player"||battle.busy||battle.playerSkillUsed||battle.counterPrimed||(battle.counterCooldownTurns||0)>0||battle.paused||c.resource<(counter.resource_cost||balance.resources.action_costs.counter);
-  const ultButton=root.querySelector("[data-ultimate]");if(ultButton)ultButton.disabled=battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed||(battle.ultimateCooldownTurns||0)>0||c.resource<(ult.resource_cost||balance.resources.action_costs.ultimate);
-  const potionEnabled=balance.difficulty.modes[c.difficulty||balance.difficulty.default].potion_belt&&!c.run.stage.potionUsedTargets?.includes(battle.targetIndex);
-  root.querySelectorAll("[data-belt-use]").forEach(button=>{const slot=engine.potionBeltSnapshot(c.id).find(x=>x.slot===Number(button.dataset.beltUse));button.disabled=!slot||!slot.itemId||slot.available<=0||!potionEnabled||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.potionUsedThisTurn||battle.busy||battle.paused;});
-  const endTurn=root.querySelector("[data-action=\"end-turn\"]");if(endTurn){const playerTurn=battle.actor?.type==="player";endTurn.disabled=!playerTurn||battle.paused;endTurn.textContent=playerTurn?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА...";endTurn.classList.toggle("is-player-turn",playerTurn);}
-  const guidance=root.querySelector(".tb-turn-guidance");if(guidance)guidance.textContent=battle.actor?.type==="player"?"Твой ход. Нажми «АТАКА» без затрат ресурса или выбери умение.":"Противники атакуют...";
-  const pause=root.querySelector("#pause");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
-  const speed=root.querySelector("#speed");if(speed)speed.textContent=c.run.speed2?"×2 ВКЛ":"×2 ВЫКЛ";
-  const telegraph=root.querySelector(".tb-telegraph small");if(telegraph&&battle.telegraph){const until=Number(battle.telegraph.until);telegraph.textContent=Number.isFinite(until)&&until>0?(Math.max(0,(until-Date.now())/1000)).toFixed(1)+" сек":"ПОСЛЕ ТВОЕГО ХОДА";}
-  root.querySelector(".tb-panel-actions")?.classList.toggle("tb-player-turn",!battle.busy&&!battle.paused);
+  arena.querySelectorAll(".v2-skill-btn[data-panel-slot]").forEach(button=>{
+   const slot=Number(button.dataset.panelSlot),skill=slots[slot]||null,cd=skill?(battle.skillCooldowns?.[skill.id]||0):Infinity;
+   button.dataset.panelSkill=skill?.id||"";
+   button.disabled=!skill||!playerTurn||battle.playerSkillUsed||battle.busy||battle.paused||cd>0;
+   const name=button.querySelector(".v2-skill-name"),cost=button.querySelector(".v2-skill-cost"),icon=button.querySelector(".v2-skill-icon");
+   if(name)name.textContent=skill?.name||"Пусто";
+   if(cost)cost.textContent=skill?(skill.cost||skill.resource_cost||18)+" рес.":"";
+   const markup=skill?skillIconMarkup(skill,c.classId):'<span class="v2-skill-icon v2-skill-icon-empty" aria-hidden="true">—</span>';
+   if(icon)icon.outerHTML=markup;else button.insertAdjacentHTML("afterbegin",markup);
+  });
+  const endTurn=arena.querySelector("#endturn");
+  if(endTurn){
+   endTurn.hidden=false;endTurn.style.display="flex";endTurn.style.visibility="visible";endTurn.style.opacity="1";
+   endTurn.disabled=!playerTurn||battle.paused;
+   endTurn.textContent=playerTurn?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА...";
+   endTurn.classList.toggle("is-player-turn",playerTurn);
+  }
+  const guidance=arena.querySelector(".v2-turn-guidance");
+  if(guidance)guidance.textContent=playerTurn?"Твой ход. Нажми «АТАКА» или выбери умение, затем заверши ход.":"Противники атакуют...";
+  const pause=arena.querySelector(".v2-pause-btn");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
+  const round=arena.querySelector(".v2-battle-top>span");if(round)round.textContent="ИНИЦИАТИВА · РАУНД "+battle.round;
   arena.classList.toggle("tb-shaking",!!(battle.shakeUntil>Date.now()));
   arena.classList.toggle("tb-phase-flash",!!(battle.phaseFlashUntil>Date.now()));
   ["attack","skill","ultimate","telegraph"].forEach(kind=>arena.classList.toggle("tb-fx-"+kind,!!(battle.fx&&battle.fx.kind===kind&&battle.fx.until>Date.now())));
-  const fx=root.querySelector(".tb-fx-layer");if(fx)fx.style.setProperty("--tb-fx-color",battle.fx?.color||"#f3c968");
  }
  function ensureBottomNav(){
   const host=root.querySelector(".tb-v2");if(!host)return;
@@ -1013,10 +1036,10 @@ return `<div class="v2-battle-wrap">
   document.body.classList.toggle("tb-battle-lock",isBattle);
   document.documentElement.classList.toggle("tb-battle-lock",isBattle);
   if(isBattle){
-   const existing=root.querySelector(".tb-arena"),key=battleRenderKey();
+   const existing=root.querySelector(".v2-battle-wrap"),key=battleRenderKey();
    if(existing&&existing.dataset.renderKey===key){updateBattleDOM();ensureBottomNav();return;}
    root.innerHTML='<div class="tb-v2">'+battleScreen()+'</div>';
-   const arena=root.querySelector(".tb-arena");if(arena)arena.dataset.renderKey=key;
+   const arena=root.querySelector(".v2-battle-wrap");if(arena)arena.dataset.renderKey=key;
   }else if(screen==="characters")root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
   else if(screen==="map")root.innerHTML='<div class="tb-v2">'+mapScreen()+'</div>';
   else if(screen==="profile")root.innerHTML='<div class="tb-v2">'+profileScreen()+'</div>';

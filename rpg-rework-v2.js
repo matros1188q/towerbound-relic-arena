@@ -1335,7 +1335,6 @@
    if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return clone(item);
   }
   function equipmentRarityScore(item){return({"Обычная":1,"Редкая":2,"Эпическая":3,"Легендарная":4,"Богоподобная":5}[item?.rarity]||0);}
-  function equipmentScore(item){const s=item?.stats||{};return Number(s.attack||0)+Number(s.health||0)/10+Number(s.defense||0);}
   function equipBest(characterId){
    const character=getChar(characterId),isGear=item=>!!(item&&item.type==="equipment"&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0&&character.level>=10&&character.branch&&item.branch===character.branch);
    if(character.level<10||!character.branch)return{equipped:0,gear:clone(character.gear||[]),bag:character.bag.length,locked:true};
