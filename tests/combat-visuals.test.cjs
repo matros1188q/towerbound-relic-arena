@@ -27,7 +27,7 @@ for(const [name,source,re] of [
 ['achievement rewards include silver and diamonds in localized text',ui,/Награда:.*rewardLabel/],
 ['talent cards identify the improved stat and current rank',ui,/Повышает.*Ранг.*maxRank/],
 ['talent descriptions explain per-rank and accumulated stat bonuses',ui,/function talentBonusDescription[\s\S]*Увеличивает силу базовых ударов[\s\S]*Каждый ранг даёт[\s\S]*Текущий бонус:/],
-['branch skills preserve passive/active type and are restricted to current branch',ui,/x\.type\|\|\(x\.is_active===false\?"passive":"active"\)[\s\S]*skills\.filter\(x=>x\.class_id===c\.classId&&x\.branch_id===c\.branch\)/],
+['branch skills preserve passive/active type and are restricted to current branch',ui,/skills\.filter\(x=>x\.class_id===c\.classId&&x\.branch_id===c\.branch\)[\s\S]*type:x\.type\|\|\(x\.is_active===false\?"passive":"active"\)/],
 ['all seven classes have detailed specialization descriptions',ui,/const specializationDescriptions=\{[\s\S]*assassin:\{[\s\S]*bishop:\{[\s\S]*dragonkin:\{[\s\S]*destroyer:\{[\s\S]*elemental:\{[\s\S]*duelist:\{[\s\S]*shaman:\{/],
 ['map header removes portrait/progression header content',ui,/function header\(title,sub\)\{const mapHeader=title===\"Карта 250 уровней\"/],
 ['Duelist dual blade specialization has detailed combat description',ui,/dual_swords:\"Фокус на высоком темпе атак/],
