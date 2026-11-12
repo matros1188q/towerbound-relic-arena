@@ -2738,30 +2738,45 @@
   "branch_stat_bonuses": {
     "assassin.bleed": {
       "max_hp_multiplier": 1.05,
-      "damage_multiplier": 1.05
+      "damage_multiplier": 1.09
     },
     "bishop.healing": {
       "max_hp_multiplier": 1.1,
-      "damage_multiplier": 1.05,
+      "damage_multiplier": 1.09,
       "healing_multiplier": 1.2
     },
     "destroyer.fists": {
       "max_hp_multiplier": 1.05,
-      "damage_multiplier": 1.25
+      "damage_multiplier": 1.3
     },
     "duelist.sword_shield": {
       "max_hp_multiplier": 1.05,
-      "damage_multiplier": 1.05
+      "damage_multiplier": 1.09
     },
     "assassin.poison": {
-      "damage_multiplier": 1.5,
+      "damage_multiplier": 1.65,
       "max_hp_multiplier": 1.15,
-      "defense_multiplier": 1.1
+      "defense_multiplier": 1.1,
+      "dot_damage_multiplier": 1.15
     },
     "destroyer.wand_shield": {
-      "damage_multiplier": 1.65,
+      "damage_multiplier": 1.75,
       "max_hp_multiplier": 1.25,
-      "defense_multiplier": 1.25
+      "defense_multiplier": 1.25,
+      "defense_damage_fraction": 0.5
+    },
+    "shaman.dark_gods": {
+      "damage_multiplier": 1.15,
+      "dot_damage_multiplier": 1.15,
+      "max_hp_multiplier": 1.05
+    },
+    "dragonkin.ice_dragon": {
+      "counterattack_chance": 0.55,
+      "counterattack_damage_multiplier": 1.1
+    },
+    "duelist.rapier": {
+      "counterattack_chance": 0.6,
+      "counterattack_damage_multiplier": 1.5
     }
   }
 }
