@@ -5,7 +5,7 @@
     "dragonkin": 100,
     "destroyer": 100,
     "elemental": 100,
-    "duelist": 100,
+    "duelist": 5,
     "shaman": 100
   },
   "starting_fraction": 0.58,
@@ -16,9 +16,9 @@
   },
   "class_costs": {
     "duelist": {
-      "attack_skill": 22,
-      "counter": 18,
-      "ultimate": 42
+      "attack_skill": 1,
+      "counter": 2,
+      "ultimate": 4
     }
   },
   "regeneration": {
@@ -28,5 +28,5 @@
     "auto_attack_unit": "max_resource_fraction"
   },
   "battle_budget_fraction": 1,
-  "note": "The initial pool plus slow attack and kill regeneration is tuned for about 3–4 of the six panel actions per stage."
+  "note": "Дуэлянт использует отдельную шкалу из 5 тактических зарядов; остальные классы используют общую шкалу ресурса."
 }
