@@ -95,6 +95,8 @@ async function journey(type,name,viewport,url){
   assert.ok(await collectionItems.count()>=30,name+' renders at least 30 class collection entries across equipment slots and rarities');
   const collectionEntry=await collectionItems.first().evaluate(el=>({slot:el.querySelector('b')?.textContent?.trim(),rarity:el.querySelector('small')?.textContent?.trim()}));
   assert.ok(collectionEntry.slot&&collectionEntry.rarity,name+' labels collection entries by equipment slot and rarity');
+  const collectionHit=await collectionItems.first().evaluate(el=>{const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y),siblings=[...el.parentElement.querySelectorAll('.tb-collection-item')].slice(0,3).map(item=>{const b=item.getBoundingClientRect();return{key:item.dataset.collectionItem,left:b.left,top:b.top,right:b.right,bottom:b.bottom};});return{first:{key:el.dataset.collectionItem,left:r.left,top:r.top,right:r.right,bottom:r.bottom},hit:hit?.outerHTML?.slice(0,260)||null,siblings,computed:{position:getComputedStyle(el).position,zIndex:getComputedStyle(el).zIndex,transform:getComputedStyle(el).transform,pointerEvents:getComputedStyle(el).pointerEvents}};});
+  process.stdout.write('COLLECTION HIT DIAGNOSTIC '+name+' '+JSON.stringify(collectionHit)+'\\n');
   await collectionItems.first().click();
   assert.equal(await page.locator('.tb-collection-detail').count(),1,name+' opens the selected collection item detail');
   await page.locator('[data-collection-close]').click();
