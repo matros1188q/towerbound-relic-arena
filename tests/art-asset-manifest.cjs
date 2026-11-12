@@ -39,7 +39,7 @@ const css=source['assets/ui/art-sprites.css'];
 assert.ok(css.includes('.sprite-icon{')&&css.includes('../skills/image 17.png'),'Talent atlas uses the dedicated skills PNG');
 for(const name of ['talent-atk','talent-hp','talent-def','talent-agi','talent-crit','shop-potion','shop-premium','shop-refine'])assert.ok(css.includes('.'+name),'Missing sprite crop '+name);
 const sw=source['service-worker.js'];
-assert.ok(sw.includes("const CACHE = 'towerbound-v280'"),'PWA cache must match release v270');
+assert.ok(sw.includes("const CACHE = 'towerbound-v285'"),'PWA cache must match release v285');
 assert.ok(sw.includes('./assets/chapters/image 2.jpeg'),'Service worker must preserve chapter JPEG backgrounds');
 assert.ok(relics.assets.some(x=>x.id==='craft-material'&&x.path==='assets/relics/image 15.png'),'Craft material PNG must be registered');
 assert.ok(skills.sprite_sheets.some(x=>x.id==='talent-attribute-icons'&&x.path==='assets/skills/image 17.png'),'Talent PNG atlas must be registered');
