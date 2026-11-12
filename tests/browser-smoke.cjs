@@ -108,7 +108,8 @@ async function journey(type,name,viewport,url){
   const tutorial=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),b=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{bottom:r.bottom,buttonBottom:b.bottom,viewport:innerHeight,maxHeight:parseFloat(getComputedStyle(el).maxHeight)};});
   assert.ok(tutorial.bottom<=tutorial.viewport+1&&tutorial.buttonBottom<=tutorial.viewport+1,name+' tutorial and CTA fit inside the viewport');
   assert.ok(tutorial.maxHeight<=tutorial.viewport*.81,name+' tutorial card respects the 80dvh maximum');
-  assert.match(await page.locator('.tb-turn-tutorial-card').innerText(),/ТВОЙ ПЕРВЫЙ БОЙ[\\s\\S]*БАЗОВАЯ АТАКА[\\s\\S]*УМЕНИЯ[\\s\\S]*ТЕЛЕГРАФ ВРАГА[\\s\\S]*ЗАВЕРШИТЬ ХОД/i,name+' tutorial explains attacks, skills, enemy telegraphs and End Turn');
+  const tutorialText=(await page.locator('.tb-turn-tutorial-card').innerText()).toLocaleLowerCase();
+  for(const phrase of ['твой первый бой','базовая атака','умения 1–6','телеграф врага','завершить ход'])assert.ok(tutorialText.includes(phrase),name+' tutorial covers '+phrase);
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   assert.equal(await page.locator('.tb-turn-tutorial').count(),0,name+' dismisses the first-run tutorial');
   assert.equal(await page.locator('.v2-btn-attack').count(),1,name+' renders the free basic attack control');
