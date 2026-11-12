@@ -611,48 +611,53 @@ function createDialog(){
   const hpPct=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
   const slots=ensureLoadout(c);
   const enemies=battle.enemies.filter(enemy=>enemy&&enemy.alive&&Number(enemy.hp)>0);
-  const enemyMarkup=enemies.map((target,i)=>{
-   const targetIndex=Number.isInteger(target.index)?target.index:battle.enemies.indexOf(target);
-   const enemyHpPct=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100));
-   const intent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&targetIndex===battle.targetIndex?battle.telegraph.label:"Готовит атаку");
-   return `<div class="v2-enemy-card" data-target="${targetIndex}">
+  const enemyMarkup = enemies.map((target, i) => {
+  const targetIndex = Number.isInteger(target.index) ? target.index : battle.enemies.indexOf(target);
+  const enemyHpPct = Math.max(0, Math.min(100, Number(target.hp) / Math.max(1, Number(target.maxHp) || 1) * 100));
+  const intent = target.telegraph?.label || target.intent?.label || (battle.telegraph && targetIndex === battle.targetIndex ? battle.telegraph.label : "Готовит атаку");
+  
+  return `<div class="v2-enemy-card" data-target="${targetIndex}">
     <img src="${esc(enemyPortrait(target))}" class="v2-enemy-img" alt="">
-    <div class="v2-enemy-name">${target.type==="boss"?"БОСС":"ВРАГ "+(i+1)}</div>
+    <div class="v2-enemy-name">${target.type === "boss" ? "БОСС" : "ВРАГ " + (i + 1)}</div>
     <div class="v2-enemy-intent">${esc(intent)}</div>
     <div class="v2-hp-bar"><div style="width:${enemyHpPct}%"></div></div>
-   </div>`;
-  }).join("");
-  const skillMarkup=Array.from({length:6},(_,index)=>{
-   const skill=slots[index]||null;
-   const cooldown=skill?(battle.skillCooldowns?.[skill.id]||0):0;
-   const cost=skill?(skill.cost||skill.resource_cost||18):0;
-   const disabled=!skill||battle.actor?.type!=="player"||battle.playerSkillUsed||cooldown>0||battle.busy||battle.paused;
-   return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id||"")}" data-panel-slot="${index}" ${disabled?"disabled":""}>
-    <kbd>${index+1}</kbd>
-    <img src="./assets/relics/image 10.png" style="width:32px; height:32px; object-fit:contain; margin-bottom:4px;" alt="">
-    <span>${esc(skill?.name||"Пусто")}</span>
-    <span>${skill?cost+" рес.":""}</span>
-   </button>`;
-  }).join("");
-  return `<div class="v2-battle-wrap">
-   <div class="v2-battle-top">
+    <div class="v2-enemy-hp-text">${Math.ceil(target.hp)} HP</div>
+  </div>`;
+}).join("");
+
+const skillMarkup = Array.from({ length: 6 }, (_, index) => {
+  const skill = slots[index] || null;
+  const cooldown = skill ? (battle.skillCooldowns?.[skill.id] || 0) : 0;
+  const cost = skill ? (skill.cost || skill.resource_cost || 18) : 0;
+  const disabled = !skill || battle.actor?.type !== "player" || battle.playerSkillUsed || cooldown > 0 || battle.busy || battle.paused;
+  
+  return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id || "")}" data-panel-slot="${index}" ${disabled ? "disabled" : ""}>
+    <kbd>${index + 1}</kbd>
+    <img src="./assets/relics/image 10.png" alt="">
+    <span class="v2-skill-name">${esc(skill?.name || "Пусто")}</span>
+    <span class="v2-skill-cost">${skill ? cost + " рес." : ""}</span>
+  </button>`;
+}).join("");
+
+return `<div class="v2-battle-wrap">
+  <div class="v2-battle-top">
     <span>ИНИЦИАТИВА · РАУНД ${battle.round}</span>
-    <button type="button" class="v2-pause-btn" data-action="pause">${battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА"}</button>
-   </div>
-   <div class="v2-battle-middle">
+    <button type="button" class="v2-pause-btn" data-action="pause">${battle.paused ? "ПРОДОЛЖИТЬ" : "ПАУЗА"}</button>
+  </div>
+  <div class="v2-battle-middle">
     <div class="v2-hero-side">
-     <img src="${esc(portrait(c.classId))}" class="v2-hero-img" alt="">
-     <div class="v2-hero-name">${esc(c.name)}</div>
-     <div class="v2-hp-bar"><div style="width:${hpPct}%"></div></div>
+      <img src="${esc(portrait(c.classId))}" class="v2-hero-img" alt="">
+      <div class="v2-hero-name">${esc(c.name)}</div>
+      <div class="v2-hp-bar"><div style="width:${hpPct}%"></div></div>
     </div>
     <div class="v2-enemies-side">${enemyMarkup}</div>
-   </div>
-   <div class="v2-battle-bottom">
-    <button type="button" class="v2-btn-attack" id="hit" data-basic-attack="1" ${battle.actor?.type!=="player"||battle.playerSkillUsed||battle.busy||battle.paused?"disabled":""}>⚔ АТАКА</button>
+  </div>
+  <div class="v2-battle-bottom">
+    <button type="button" class="v2-btn-attack" id="hit" data-basic-attack="1" ${battle.actor?.type !== "player" || battle.playerSkillUsed || battle.busy || battle.paused ? "disabled" : ""}>⚔ АТАКА</button>
     <div class="v2-skills-grid">${skillMarkup}</div>
-    <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type!=="player"||battle.paused?"disabled":""}>ЗАВЕРШИТЬ ХОД</button>
-   </div>
-  </div>`;
+    <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>ЗАВЕРШИТЬ ХОД</button>
+  </div>
+</div>`;
  }
  function beginStage(){postBattleSummary=null;
   const c=live();
