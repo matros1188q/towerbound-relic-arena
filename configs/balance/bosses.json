@@ -1,6 +1,6 @@
 {
   "hp_multiplier": 4.3,
-  "damage_multiplier": 6.5,
+  "damage_multiplier": 5.2,
   "attack_interval_seconds": 1,
   "newbie_exception": {
     "max_stage": 10,
