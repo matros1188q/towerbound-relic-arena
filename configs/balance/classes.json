@@ -2742,8 +2742,8 @@
     },
     "bishop.healing": {
       "max_hp_multiplier": 1.1,
-      "damage_multiplier": 1.4,
-      "healing_multiplier": 1.35
+      "damage_multiplier": 1.2,
+      "healing_multiplier": 1.2
     },
     "destroyer.fists": {
       "max_hp_multiplier": 1.05,
