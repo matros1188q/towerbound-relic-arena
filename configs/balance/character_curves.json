@@ -6,55 +6,55 @@
       "level": 1,
       "stage": 1,
       "hp": 575,
-      "dps": 20
+      "dps": 22
     },
     {
       "level": 4,
       "stage": 10,
       "hp": 2070,
-      "dps": 30
+      "dps": 34
     },
     {
       "level": 10,
       "stage": 30,
       "hp": 3450,
-      "dps": 55
+      "dps": 62
     },
     {
       "level": 16,
       "stage": 50,
       "hp": 4830,
-      "dps": 110
+      "dps": 123
     },
     {
       "level": 31,
       "stage": 100,
       "hp": 11500,
-      "dps": 300
+      "dps": 336
     },
     {
       "level": 45,
       "stage": 150,
       "hp": 25300,
-      "dps": 1040
+      "dps": 1165
     },
     {
       "level": 60,
       "stage": 200,
       "hp": 40250,
-      "dps": 2000
+      "dps": 2240
     },
     {
       "level": 75,
       "stage": 250,
       "hp": 57500,
-      "dps": 4400
+      "dps": 4928
     },
     {
       "level": 100,
       "stage": 251,
       "hp": 92000,
-      "dps": 12000
+      "dps": 13440
     }
   ],
   "item_level_contribution": true,
