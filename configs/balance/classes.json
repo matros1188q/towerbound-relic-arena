@@ -824,7 +824,7 @@
               "id": "fire_dragon.talent.5",
               "name": "Огненный дракон · Темп",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "skill_power"
             },
             {
               "id": "fire_dragon.talent.6",
@@ -914,7 +914,7 @@
               "id": "ice_dragon.talent.5",
               "name": "Ледяной дракон · Темп",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "skill_power"
             },
             {
               "id": "ice_dragon.talent.6",
@@ -1004,7 +1004,7 @@
               "id": "black_dragon.talent.5",
               "name": "Чёрный дракон · Темп",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "skill_power"
             },
             {
               "id": "black_dragon.talent.6",
@@ -1082,7 +1082,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.6
         },
         {
           "id": "dragonkin.base.2",
@@ -1091,7 +1091,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.6
         },
         {
           "id": "dragonkin.base.3",
@@ -1100,7 +1100,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.6
         },
         {
           "id": "dragonkin.base.4",
@@ -1600,7 +1600,7 @@
               "id": "darkness.talent.5",
               "name": "Тьма · Темп",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "skill_power"
             },
             {
               "id": "darkness.talent.6",
@@ -1690,7 +1690,7 @@
               "id": "water.talent.5",
               "name": "Вода · Темп",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "skill_power"
             },
             {
               "id": "water.talent.6",
@@ -1858,7 +1858,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.2
+          "damage_multiplier": 2.86
         },
         {
           "id": "elemental.base.2",
@@ -1867,7 +1867,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.2
+          "damage_multiplier": 2.86
         },
         {
           "id": "elemental.base.3",
@@ -1876,7 +1876,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2.2
+          "damage_multiplier": 2.86
         },
         {
           "id": "elemental.base.4",
@@ -2376,7 +2376,7 @@
               "id": "spirits.talent.5",
               "name": "Сила духов · Темп",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "skill_power"
             },
             {
               "id": "spirits.talent.6",
@@ -2466,7 +2466,7 @@
               "id": "dark_gods.talent.5",
               "name": "Тёмные боги · Темп",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "skill_power"
             },
             {
               "id": "dark_gods.talent.6",
@@ -2642,7 +2642,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.6
         },
         {
           "id": "shaman.base.3",
@@ -2651,7 +2651,7 @@
           "type": "active",
           "effect_template": "strike",
           "cooldown_tier": "short",
-          "damage_multiplier": 2
+          "damage_multiplier": 2.6
         },
         {
           "id": "shaman.base.4",

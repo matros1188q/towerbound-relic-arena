@@ -41,7 +41,15 @@
     "damage_dealer_fraction": 0.0175,
     "ice_tank_fraction": 0.01,
     "default_fraction": 0.01,
-    "healer_fraction": 0
+    "healer_fraction": 0,
+    "by_branch": {
+      "assassin": {
+        "bleed": 0.014875
+      },
+      "destroyer": {
+        "greatsword": 0.014875
+      }
+    }
   },
   "armor_formula": "damage*(1-min(0.75,armor/(armor+100+10*attacker_level)))",
   "resistance_formula": "damage*(1-min(0.75,resistance/(resistance+100+10*attacker_level)))",

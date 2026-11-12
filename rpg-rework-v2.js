@@ -579,6 +579,7 @@
    if(classId==="bishop")fraction=0;
    else if(["destroyer","assassin","duelist"].includes(classId))fraction=balance.combat.vampirism?.damage_dealer_fraction??0.0175;
    else if(classId==="dragonkin"&&character.branch==="ice_dragon")fraction=balance.combat.vampirism?.ice_tank_fraction??0.01;
+   const branchFraction=balance.combat.vampirism?.by_branch?.[classId]?.[character.branch];if(Number.isFinite(Number(branchFraction)))fraction=Number(branchFraction);
    const healed=Math.max(0,Math.floor(Math.max(0,damage)*fraction));
    const before=character.run.playerHp;character.run.playerHp=Math.min(maxHp(character),before+healed);
    return{healed:character.run.playerHp-before,hp:character.run.playerHp,fraction};

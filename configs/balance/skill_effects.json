@@ -50,7 +50,7 @@
     "type": "debuff",
     "target": "single_enemy",
     "scaling": "spell_power",
-    "power_multiplier": 0.12,
+    "power_multiplier": 0.24,
     "duration": 3,
     "resource_cost": 22,
     "animation": "curse",
