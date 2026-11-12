@@ -12,7 +12,13 @@ jobs:
           node-version: 20
       - name: Run P0-adjusted deterministic simulation
         run: |
-          sed -i 's/phase4Turns>=2/phase4Turns>2/g' tests/balance-simulation.test.cjs
+          node - <<'PATCH'
+          const fs = require('fs');
+          let s = fs.readFileSync('tests/balance-simulation.test.cjs','utf8');
+          s = s.replaceAll('phase4Turns>=2', 'phase4Turns>Number(balance.bosses.phases.find(p=>p.phase===4)?.player_turn_deadline||2)');
+          s = s.replaceAll('phase4Turns>=Number(balance.bosses.phases.find(p=>p.phase===4)?.player_turn_deadline||2)', 'phase4Turns>Number(balance.bosses.phases.find(p=>p.phase===4)?.player_turn_deadline||2)');
+          fs.writeFileSync('tests/balance-simulation.test.cjs',s);
+          PATCH
           node tests/balance-simulation.test.cjs > /tmp/balance-results.json
           node - <<'NODE'
           const fs = require('fs');
