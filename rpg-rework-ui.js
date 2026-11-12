@@ -398,7 +398,7 @@ function createDialog(){
    const ally=battle.enemies.filter(x=>x.alive&&x.hp>0&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
    if(ally){const amount=Math.round(ally.maxHp*.2);ally.hp=Math.min(ally.maxHp,ally.hp+amount);if(ally.index===battle.targetIndex)battle.enemyHp=ally.hp;notify("Лекарь восстановил "+amount+" HP союзнику");}
   }
-  if(enemy.role==="tank"&&enemy.pendingCleanseDebuff){enemy.pendingCleanseDebuff=false;enemy.debuffKind=null;battle.dot=null;battle.dots=[];notify("Танк очищает яд/кровотечение вместо установки щита");}
+  if(enemy.role==="tank"&&enemy.pendingCleanseDebuff){enemy.pendingCleanseDebuff=false;enemy.debuffKind=null;battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);battle.dots.shift();battle.dot=battle.dots[0]||null;notify("Танк очищает один заряд яда/кровотечения");}
   else if(enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=1;
   if(enemy.role==="poison"){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}
   const stats=engine.getEnemyStats(c.id,battle.stage,enemy);
