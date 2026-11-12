@@ -116,6 +116,13 @@
       "dragonkin",
       "elemental",
       "shaman"
-    ]
+    ],
+    "branch_overrides": {
+      "shaman": {
+        "dark_gods": {
+          "basic_attack_multiplier": 1.4
+        }
+      }
+    }
   }
 }
