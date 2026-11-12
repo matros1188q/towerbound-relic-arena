@@ -367,7 +367,13 @@ const {chromium}=require('playwright');
     await page.waitForSelector('#tbEndgame',{state:'detached',timeout:3000});
    }
   }
-  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.level=1;c.branch=null;c.gear=[null,null,null,null,null,null];c.run.stage=null;window.saveTowerboundRework();});
+  await page.evaluate(()=>{
+    const engine=window.TowerboundRework,c=engine.state.characters[0];
+    c.level=1;c.branch=null;c.gear=[null,null,null,null,null,null];c.run.stage=null;
+    const base=(engine.balance.classes.classes[c.classId]?.base_skills||[]).find(skill=>Number(skill.unlock_level||1)<=c.level);
+    c.activeSkills=base?[base.id]:[];c.skillLoadout=[...c.activeSkills];
+    window.saveTowerboundRework();
+   });
   await page.setViewportSize({width:390,height:844});
   await page.locator('[data-stage="9"]').click();
   await page.locator('[data-action="start"]').click();
