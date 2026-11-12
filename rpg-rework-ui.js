@@ -376,7 +376,7 @@ function createDialog(){
    if(reflected.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();}
    return;
   }
-  let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));
+  if(battle.parryChance>0){const chance=battle.parryChance;battle.parryChance=0;if(Math.random()<chance){const riposte=Math.max(1,Math.round(engine.getCombatStats(c).dps*(c.classId==="duelist"&&c.branch==="rapier"?1.2:.8)));const counter=applyTargetDamage(attacker,riposte,"physical");notify("ПАРИРОВАНИЕ · КОНТРАТАКА −"+counter.dealt+" HP");if(counter.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();return;}return;}}\n  let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));
   if((battle.enemyDamageReductionTurns||0)>0)incoming=Math.round(incoming*(1-(battle.enemyDamageReduction||0)));
   if((battle.nextDamageShield||0)>0){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
   c.run.playerHp=Math.max(0,c.run.playerHp-incoming);notify("Враг наносит "+incoming+" урона");
