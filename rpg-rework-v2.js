@@ -587,6 +587,7 @@
    multiplier*=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
    multiplier*=1+(character.progression?.permanentXpBonus||0);
    for(const modifier of runModifiers(character))if(modifier.reward_xp_multiplier)multiplier*=modifier.reward_xp_multiplier;
+   if(character.run?.dailyChallengeActive)multiplier*=2;
    return multiplier;
   }
   function awardXp(character,amount){
