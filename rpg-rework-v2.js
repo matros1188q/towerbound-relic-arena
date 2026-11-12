@@ -552,10 +552,11 @@
    const attackIntervalMs=Math.round(attackInterval*1000);
    return{hp,damage,attackInterval,attackIntervalMs:Number.isFinite(attackIntervalMs)&&attackIntervalMs>0?attackIntervalMs:1000,weakness:enemy?.weakness||null,resistance:enemy?.resistance||null,role:enemy?.role||"normal"};
   }
-  function capBossDamage(target,rawDamage,alreadyDealt){
+  function capBossDamage(target,rawDamage,alreadyDealt,kind){
    const raw=Math.max(0,Number(rawDamage)||0);if(target?.type!=="boss")return raw;
-   const cap=Math.max(1,Number(target.maxHp)||0)*0.35,used=Math.max(0,Number(alreadyDealt)||0);
-   return Math.max(0,Math.min(raw,cap-used));
+   const perHitLimit=kind==="ultimate"?.8:.6;
+   const cap=Math.max(1,Number(target.maxHp)||0)*perHitLimit;
+   return Math.min(raw,cap);
   }
   function basicAttackStats(characterId){
    const character=getChar(characterId),stats=getCombatStats(character);let multiplier=.75;
