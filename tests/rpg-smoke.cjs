@@ -60,7 +60,7 @@ const {chromium}=require('playwright');
  assert.match(battleUiSource,/scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,"enemy turns retain the 500ms sequential handoff");
  assert.match(battleUiSource,/function advanceToPlayerTurn\(\)[\s\S]*?battle\.busy=false/,"player turn handoff always clears battle.busy");
 
- assert.match(battleUiSource,/s\.description\|\|/,"skill descriptions use safe fallbacks when config fields are absent");
+ assert.match(battleUiSource,/skill\.description\|\|/,"skill descriptions use safe fallbacks when config fields are absent");
  const server=http.createServer((req,res)=>{
   const pathname=decodeURIComponent((req.url||'/').split('?')[0]);
   const relative=pathname==='/'?'index.html':pathname.replace(/^\/+/,'');
