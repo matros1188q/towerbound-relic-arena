@@ -34,18 +34,20 @@ for (const classId of classIds) {
     });
   }
 }
-console.log(JSON.stringify({
+const summary = {
   audit: 'full-250-stage-progression',
   targetStage: 250,
   totalBuilds: builds.length,
   passed: builds.filter(build => build.cleared === 250).length,
   failed: builds.filter(build => build.cleared !== 250).length,
-  builds
-}, null, 2));
+  builds: builds.map(({ className, branchName, cleared, deathStage, deathLevel, deathReason }) =>
+    ({ className, branchName, cleared, deathStage, deathLevel, deathReason }))
+};
+console.log(JSON.stringify(summary));
 assert.equal(builds.length, 21, 'must simulate all 21 class specializations');
 const failures = builds.filter(build => build.cleared !== 250);
 assert.deepEqual(
   failures.map(build => ({ class: build.classId, branch: build.branchId, cleared: build.cleared, deathStage: build.deathStage })),
   [],
-  'every class specialization must clear all 250 stages'
+  'every class specialization must clear all 250 stages; results: ' + builds.map(build => build.className + '/' + build.branchName + '=' + build.cleared + '/250 (death ' + build.deathStage + ')').join('; ')
 );
