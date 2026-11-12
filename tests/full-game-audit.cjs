@@ -133,6 +133,10 @@ assert.match(pageSource,/<meta name="apple-mobile-web-app-status-bar-style" cont
 assert.ok(nativeCss.includes('height:100dvh')&&nativeCss.includes('overflow:hidden')&&nativeCss.includes('overscroll-behavior:none'),'native app shell locks document scrolling at dynamic viewport height');
 assert.ok(nativeCss.includes('padding-top:env(safe-area-inset-top')&&nativeCss.includes('padding-bottom:env(safe-area-inset-bottom'),'native app shell respects iOS safe areas');
 assert.ok(nativeCss.includes('.tb-bottom-nav{position:fixed')&&nativeCss.includes('bottom:0')&&nativeCss.includes('display:flex'),'bottom tab bar is fixed above the home-indicator safe area');
+const pwaManifest=read('manifest.json');
+assert.ok(Array.isArray(pwaManifest.icons)&&pwaManifest.icons.length>=2&&pwaManifest.icons.every(icon=>icon.src==='./assets/icons/image.png'&&icon.type==='image/png'),'PWA manifest uses the Towerbound T logo for all app icon sizes');
+assert.ok(pageSource.includes('<link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/image.png">'),'iOS home-screen icon uses the Towerbound T logo');
+assert.ok(serviceWorker.includes('./assets/icons/image.png'),'service worker precaches the Towerbound T logo for offline launch');
 assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v270'"),'PWA shell cache matches release v270');
 assert.ok(uiSource.includes('function syncMusic()')&&uiSource.includes('function unlockAudioAndMusic()'),'Web Audio ambient music and iOS gesture unlock are implemented');
 assert.ok(uiSource.includes('prefs.music_enabled!==false')&&uiSource.includes('screen==="battle"?[73.42,110]:[55,82.41]'),'music switches between map ambience and battle ambience');
@@ -140,7 +144,7 @@ assert.ok(uiSource.includes('data-setting="music_enabled"')&&uiSource.includes('
 assert.ok(uiSource.includes('case "reset-current-battle"')&&uiSource.includes('function ensureBottomNav()'),'recovery action and tab navigation are wired into the app');
 assert.ok(engineSource.includes('function sanitizeActiveStage')&&engineSource.includes('selectTarget'),'saved dead-target states are sanitized before resuming combat');
 const achievementsConfig=read('configs/balance/achievements.json').achievements;
-assert.ok(achievementsConfig.every(item=>item.description&&item.metric_label),'achievement conditions and metric labels are localized');
+assert.ok(achievementsConfig.every(item=>item.description&&item.metric_label&&/[А-Яа-яЁё]/.test(item.description)&&/[А-Яа-яЁё]/.test(item.metric_label)),'achievement descriptions and metric labels are written in Russian');
 const weeklyConfig=read('configs/balance/weekly_quests.json').quests;
 assert.ok(weeklyConfig.every(item=>item.description&&item.description.includes('Награда:')),'weekly quests show localized conditions and rewards');
 assert.ok(uiSource.includes('ЕЖЕНЕДЕЛЬНЫЕ ЗАДАНИЯ')&&uiSource.includes('q.description'),'weekly task panel displays the expanded Russian heading and task conditions');

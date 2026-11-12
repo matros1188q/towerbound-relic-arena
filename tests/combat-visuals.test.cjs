@@ -22,6 +22,13 @@ for(const [name,source,re] of [
 ['talent cards explain stat gains and current rank',ui,/function talentBonusDescription[\s\S]*Каждый ранг даёт/],
 ['weekly tasks have localized heading',ui,/ЕЖЕНЕДЕЛЬНЫЕ ЗАДАНИЯ/],
 ['weekly rows show their detailed condition text',ui,/q\.description/],
+['weekly reward confirmation uses Russian wording',ui,/Еженедельное задание: награда получена/],
+['achievement cards show localized metric labels and explicit progress',ui,/a\.metric_label\|\|"Показатель"[\s\S]*Прогресс:/],
+['achievement rewards include silver and diamonds in localized text',ui,/Награда:.*rewardLabel/],
+['talent cards identify the improved stat and current rank',ui,/Повышает.*Ранг.*maxRank/],
+['talent descriptions explain per-rank and accumulated stat bonuses',ui,/Каждый ранг даёт[\s\S]*Текущий бонус:[\s\S]*Увеличивает силу базовых ударов/],
+['branch skills preserve passive/active type and are restricted to current branch',ui,/x\.type\|\|\(x\.is_active===false\?"passive":"active"\)[\s\S]*skills\.filter\(x=>x\.class_id===c\.classId&&x\.branch_id===c\.branch\)/],
+['all seven classes have detailed specialization descriptions',ui,/const specializationDescriptions=\{[\s\S]*assassin:\{[\s\S]*bishop:\{[\s\S]*dragonkin:\{[\s\S]*destroyer:\{[\s\S]*elemental:\{[\s\S]*duelist:\{[\s\S]*shaman:\{/],
 ['map header removes portrait/progression header content',ui,/function header\(title,sub\)\{const mapHeader=title===\"Карта 250 уровней\"/],
 ['Duelist dual blade specialization has detailed combat description',ui,/dual_swords:\"Фокус на высоком темпе атак/],
 ['loot button is labeled Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
@@ -50,3 +57,6 @@ assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map screen ha
 assert.ok(css.includes('.v2-enemies-side{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important'),'enemy target cards use a stable two-column grid');
 assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}'),'bag uses a four-column grid');
 assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
+assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map has no extra top padding after the header');
+assert.ok(css.includes('.tb-map-top img{max-height:80px!important'),'map header character art is capped at 80px');
+assert.ok(ui.includes('const mapHeader=title==="Карта 250 уровней"')&&!ui.includes('ПРОГРЕССИЯ'),'map header has no redundant Progression button or avatar panel');
