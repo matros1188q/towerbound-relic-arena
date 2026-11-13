@@ -51,6 +51,7 @@ jobs:
       - run: node tests/rpg-expansion-static.cjs
       - run: node tests/gamefeel.test.cjs
       - run: node tests/rpg-rework-v2.test.cjs
+      - run: node tests/ui-polish-regression.test.cjs
       - run: node tests/loot-combat-update.test.cjs
       - run: node tests/combat-runtime.test.cjs
       - run: node tests/combat-visuals.test.cjs

@@ -12,7 +12,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Рваная рана — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -29,7 +29,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Кровавый росчерк — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -46,7 +46,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Жажда плоти — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -63,7 +63,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Алый водоворот — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -80,7 +80,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Кровавый долг — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -97,7 +97,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Сердце палача — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -114,7 +114,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Кровавая жатва — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -131,7 +131,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Багровый шторм — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -148,7 +148,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Пир ворона — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -165,7 +165,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Последний разрез — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -182,7 +182,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Пробуждение: Рваная рана — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -199,7 +199,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Усиленная форма: Кровавый росчерк — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -216,7 +216,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Совершенная форма: Жажда плоти — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -233,7 +233,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Высшая техника: Алый водоворот — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -250,7 +250,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Мастерский приём: Кровавый долг — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -267,7 +267,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Предельная форма: Сердце палача — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -284,7 +284,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Знак превосходства: Кровавая жатва — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -301,7 +301,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Абсолютная техника: Багровый шторм — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -318,7 +318,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Возвышение: Пир ворона — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -335,7 +335,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Легендарная форма: Последний разрез — bleed specialization skill.",
+    "description": "Специализация «Кровотечение»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 0.401625
   },
@@ -352,7 +352,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Токсичный выпад — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -369,7 +369,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Смертельная эссенция — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -386,7 +386,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Змеиный след — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -403,7 +403,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Кислотный туман — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -420,7 +420,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Чума клинков — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -437,7 +437,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Ядовитый дождь — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -454,7 +454,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Поглощение токсина — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -471,7 +471,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Зелёная смерть — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -488,7 +488,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Корона миазмов — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -505,7 +505,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Пандемия — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -522,7 +522,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Пробуждение: Токсичный выпад — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -539,7 +539,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Усиленная форма: Смертельная эссенция — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -556,7 +556,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Совершенная форма: Змеиный след — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -573,7 +573,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Высшая техника: Кислотный туман — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -590,7 +590,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Мастерский приём: Чума клинков — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -607,7 +607,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Предельная форма: Ядовитый дождь — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -624,7 +624,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Знак превосходства: Поглощение токсина — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -641,7 +641,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Абсолютная техника: Зелёная смерть — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -658,7 +658,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Возвышение: Корона миазмов — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -675,7 +675,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Легендарная форма: Пандемия — poison specialization skill.",
+    "description": "Специализация «Яды»: накладывает на цель периодический урон.",
     "damage_type": "dark",
     "damage_multiplier": 1.095375
   },
@@ -692,7 +692,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "execute",
-    "description": "Метка обречённого — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -709,7 +709,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Теневой рывок — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -726,7 +726,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Удар в уязвимость — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -743,7 +743,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "execute",
-    "description": "Срез судьбы — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -760,7 +760,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "execute",
-    "description": "Палач — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -777,7 +777,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Исчезновение — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -794,7 +794,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "execute",
-    "description": "Касание пустоты — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -811,7 +811,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Казнь безмолвия — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -828,7 +828,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "execute",
-    "description": "Последний свидетель — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -845,7 +845,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "execute",
-    "description": "Абсолютное уничтожение — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -862,7 +862,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Пробуждение: Метка обречённого — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -879,7 +879,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Усиленная форма: Теневой рывок — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -896,7 +896,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "execute",
-    "description": "Совершенная форма: Удар в уязвимость — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -913,7 +913,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Высшая техника: Срез судьбы — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -930,7 +930,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Мастерский приём: Палач — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -947,7 +947,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "execute",
-    "description": "Предельная форма: Исчезновение — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -964,7 +964,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "execute",
-    "description": "Знак превосходства: Касание пустоты — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -981,7 +981,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Абсолютная техника: Казнь безмолвия — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -998,7 +998,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "execute",
-    "description": "Возвышение: Последний свидетель — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -1015,7 +1015,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "execute",
-    "description": "Легендарная форма: Абсолютное уничтожение — execution specialization skill.",
+    "description": "Специализация «Уничтожение»: проводит добивающий приём по ослабленной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.7
   },
@@ -1032,7 +1032,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Изгнание скверны — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1050,7 +1050,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Кара света — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1068,7 +1068,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Печать отлучения — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1086,7 +1086,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Суд небес — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1104,7 +1104,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Ослепляющий приговор — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1122,7 +1122,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Крылья экзорциста — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1140,7 +1140,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Священный разлом — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1158,7 +1158,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Небесный огонь — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1176,7 +1176,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Вердикт — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1194,7 +1194,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Изгнание легиона — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1212,7 +1212,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Пробуждение: Изгнание скверны — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1230,7 +1230,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Усиленная форма: Кара света — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1248,7 +1248,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Совершенная форма: Печать отлучения — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1266,7 +1266,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Высшая техника: Суд небес — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1284,7 +1284,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Мастерский приём: Ослепляющий приговор — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1302,7 +1302,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Предельная форма: Крылья экзорциста — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1320,7 +1320,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Знак превосходства: Священный разлом — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1338,7 +1338,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Абсолютная техника: Небесный огонь — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1356,7 +1356,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Возвышение: Вердикт — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1374,7 +1374,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Легендарная форма: Изгнание легиона — exorcism specialization skill.",
+    "description": "Специализация «Изгнание»: поражает всех противников на поле боя.",
     "damage_type": "fire",
     "damage_multiplier": 3.8,
     "resource_cost": 20
@@ -1392,7 +1392,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Малое причастие — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1408,7 +1408,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Исцеляющий свет — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1425,7 +1425,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Руки милосердия — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1441,7 +1441,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Возвращение крови — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1458,7 +1458,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Священный источник — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1474,7 +1474,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Оберег жизни — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1491,7 +1491,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Чудо — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1507,7 +1507,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Воскрешающий гимн — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1524,7 +1524,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Божественное дыхание — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1540,7 +1540,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Полное восстановление — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1557,7 +1557,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Пробуждение: Малое причастие — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1573,7 +1573,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Усиленная форма: Исцеляющий свет — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1590,7 +1590,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Совершенная форма: Руки милосердия — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1606,7 +1606,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Высшая техника: Возвращение крови — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1623,7 +1623,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Мастерский приём: Священный источник — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1639,7 +1639,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Предельная форма: Оберег жизни — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1656,7 +1656,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Знак превосходства: Чудо — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1672,7 +1672,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Абсолютная техника: Воскрешающий гимн — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1689,7 +1689,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Возвышение: Божественное дыхание — healing specialization skill.",
+    "description": "Специализация «Лечение»: восстанавливает здоровье.",
     "damage_type": "fire"
   },
   {
@@ -1705,7 +1705,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Легендарная форма: Полное восстановление — healing specialization skill.",
+    "description": "Специализация «Лечение»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3.99
   },
@@ -1722,7 +1722,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Благословение стали — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1738,7 +1738,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Аура веры — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1754,7 +1754,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Песнь доблести — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1770,7 +1770,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Освящённое оружие — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1786,7 +1786,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Щит паствы — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1802,7 +1802,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Клятва мученика — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1818,7 +1818,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Хор ангелов — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1834,7 +1834,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Несокрушимая вера — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1850,7 +1850,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Святой аватар — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1866,7 +1866,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Знамя спасения — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1882,7 +1882,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Пробуждение: Благословение стали — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1898,7 +1898,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Усиленная форма: Аура веры — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1914,7 +1914,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Совершенная форма: Песнь доблести — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1930,7 +1930,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Высшая техника: Освящённое оружие — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1946,7 +1946,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Мастерский приём: Щит паствы — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1962,7 +1962,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Предельная форма: Клятва мученика — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1978,7 +1978,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Знак превосходства: Хор ангелов — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -1994,7 +1994,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Абсолютная техника: Несокрушимая вера — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -2010,7 +2010,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Возвышение: Святой аватар — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -2026,7 +2026,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Легендарная форма: Знамя спасения — buffs specialization skill.",
+    "description": "Специализация «Усиления»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -2042,7 +2042,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Искра дракона — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2060,7 +2060,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Пламенный коготь — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2078,7 +2078,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Огненное дыхание — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2096,7 +2096,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Жар ядра — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2114,7 +2114,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Крылья пепла — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2132,7 +2132,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Метеоритный рёв — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2150,7 +2150,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Пылающая чешуя — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2168,7 +2168,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Драконий шторм — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2186,7 +2186,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Солнце в пасти — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2204,7 +2204,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Катаклизм пламени — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2,
     "resource_cost": 17
@@ -2222,7 +2222,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Пробуждение: Искра дракона — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2240,7 +2240,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Усиленная форма: Пламенный коготь — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2258,7 +2258,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Совершенная форма: Огненное дыхание — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2276,7 +2276,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Высшая техника: Жар ядра — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2294,7 +2294,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Мастерский приём: Крылья пепла — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2312,7 +2312,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Предельная форма: Метеоритный рёв — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2330,7 +2330,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "dot",
-    "description": "Знак превосходства: Пылающая чешуя — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2348,7 +2348,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Абсолютная техника: Драконий шторм — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2366,7 +2366,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "dot",
-    "description": "Возвышение: Солнце в пасти — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2384,7 +2384,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "dot",
-    "description": "Легендарная форма: Катаклизм пламени — fire_dragon specialization skill.",
+    "description": "Специализация «Огненный дракон»: накладывает на цель периодический урон.",
     "damage_type": "fire",
     "damage_multiplier": 2.2,
     "resource_cost": 17
@@ -2402,7 +2402,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Ледяной укус — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2418,7 +2418,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Чешуя вечной зимы — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2435,7 +2435,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Морозный рёв — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2451,7 +2451,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Кристальный панцирь — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2468,7 +2468,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Ледяная стена — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2484,7 +2484,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Сковывающий иней — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2501,7 +2501,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Полярный щит — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2517,7 +2517,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Сердце ледника — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2534,7 +2534,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Дыхание титана — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2550,7 +2550,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Вечная мерзлота — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2567,7 +2567,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Пробуждение: Ледяной укус — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2583,7 +2583,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Усиленная форма: Чешуя вечной зимы — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2600,7 +2600,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Совершенная форма: Морозный рёв — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2616,7 +2616,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Высшая техника: Кристальный панцирь — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2633,7 +2633,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Мастерский приём: Ледяная стена — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2649,7 +2649,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Предельная форма: Сковывающий иней — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2666,7 +2666,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Знак превосходства: Полярный щит — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2682,7 +2682,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Абсолютная техника: Сердце ледника — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2699,7 +2699,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Возвышение: Дыхание титана — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: создаёт защитный щит.",
     "damage_type": "ice"
   },
   {
@@ -2715,7 +2715,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Легендарная форма: Вечная мерзлота — ice_dragon specialization skill.",
+    "description": "Специализация «Ледяной дракон»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.4
   },
@@ -2732,7 +2732,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Теневой сгусток — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2749,7 +2749,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Чёрное пламя — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2766,7 +2766,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Поглощение маны — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2783,7 +2783,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Разлом бездны — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2800,7 +2800,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Сумрачный импульс — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2817,7 +2817,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Пожиратель чар — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2834,7 +2834,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Пустотный вихрь — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2851,7 +2851,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Затмение — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2868,7 +2868,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Драконья сингулярность — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2885,7 +2885,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Чёрное солнце — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2902,7 +2902,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Пробуждение: Теневой сгусток — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2919,7 +2919,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Усиленная форма: Чёрное пламя — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2936,7 +2936,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Совершенная форма: Поглощение маны — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2953,7 +2953,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Высшая техника: Разлом бездны — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2970,7 +2970,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Мастерский приём: Сумрачный импульс — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -2987,7 +2987,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Предельная форма: Пожиратель чар — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -3004,7 +3004,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Знак превосходства: Пустотный вихрь — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -3021,7 +3021,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Абсолютная техника: Затмение — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -3038,7 +3038,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Возвышение: Драконья сингулярность — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -3055,7 +3055,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Легендарная форма: Чёрное солнце — black_dragon specialization skill.",
+    "description": "Специализация «Чёрный дракон»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 4
   },
@@ -3072,7 +3072,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Шквал кастетов — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3089,7 +3089,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Быстрые руки — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3106,7 +3106,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Серия ударов — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3123,7 +3123,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Ливень кулаков — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3140,7 +3140,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Сломанный ритм — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3157,7 +3157,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Железный град — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3174,7 +3174,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Точный кастет — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3191,7 +3191,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Буря костей — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3208,7 +3208,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Тысяча попаданий — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3225,7 +3225,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Неостановимый шквал — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3242,7 +3242,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Пробуждение: Шквал кастетов — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3259,7 +3259,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Усиленная форма: Быстрые руки — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3276,7 +3276,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Совершенная форма: Серия ударов — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3293,7 +3293,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Высшая техника: Ливень кулаков — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3310,7 +3310,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Мастерский приём: Сломанный ритм — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3327,7 +3327,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Предельная форма: Железный град — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3344,7 +3344,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Знак превосходства: Точный кастет — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3361,7 +3361,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Абсолютная техника: Буря костей — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3378,7 +3378,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Возвышение: Тысяча попаданий — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3395,7 +3395,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Легендарная форма: Неостановимый шквал — fists specialization skill.",
+    "description": "Специализация «Кастеты»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.73
   },
@@ -3412,7 +3412,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Раскол брони — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3429,7 +3429,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Тяжёлый замах — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3446,7 +3446,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Рубящий разлом — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3463,7 +3463,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Казнь титана — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3480,7 +3480,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Грохот стали — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3497,7 +3497,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Сокрушение — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3514,7 +3514,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Мясорубка — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3531,7 +3531,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Удар горы — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3548,7 +3548,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Колоссальный разрез — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3565,7 +3565,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Последний раскол — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3582,7 +3582,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Пробуждение: Раскол брони — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3599,7 +3599,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Усиленная форма: Тяжёлый замах — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3616,7 +3616,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Совершенная форма: Рубящий разлом — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3633,7 +3633,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Высшая техника: Казнь титана — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3650,7 +3650,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Мастерский приём: Грохот стали — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3667,7 +3667,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Предельная форма: Сокрушение — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3684,7 +3684,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Знак превосходства: Мясорубка — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3701,7 +3701,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Абсолютная техника: Удар горы — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3718,7 +3718,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Возвышение: Колоссальный разрез — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3735,7 +3735,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Легендарная форма: Последний раскол — greatsword specialization skill.",
+    "description": "Специализация «Двуручный меч»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 1.7
   },
@@ -3752,7 +3752,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Руна мощи — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -3768,7 +3768,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Магический заслон — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -3786,7 +3786,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Боевой импульс — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -3802,7 +3802,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Удар печати — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -3820,7 +3820,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Каменная кожа — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -3836,7 +3836,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Всплеск силы — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -3854,7 +3854,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Щит грома — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -3870,7 +3870,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Арканный кулак — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -3888,7 +3888,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Руна титана — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -3904,7 +3904,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Несокрушимый фокус — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -3922,7 +3922,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Пробуждение: Руна мощи — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -3938,7 +3938,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Усиленная форма: Магический заслон — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -3956,7 +3956,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Совершенная форма: Боевой импульс — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -3972,7 +3972,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Высшая техника: Удар печати — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -3990,7 +3990,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Мастерский приём: Каменная кожа — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -4006,7 +4006,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Предельная форма: Всплеск силы — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -4024,7 +4024,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Знак превосходства: Щит грома — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -4040,7 +4040,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Абсолютная техника: Арканный кулак — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -4058,7 +4058,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Возвышение: Руна титана — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -4074,7 +4074,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Легендарная форма: Несокрушимый фокус — wand_shield specialization skill.",
+    "description": "Специализация «Жезл и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.99,
     "defense_damage_multiplier": 0.5
@@ -4092,7 +4092,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Порча — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4109,7 +4109,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Шёпот бездны — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4126,7 +4126,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Проклятая метка — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4143,7 +4143,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Увядание — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4160,7 +4160,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Тёмный шип — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4177,7 +4177,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Пожиратель надежды — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4194,7 +4194,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Чёрная луна — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4211,7 +4211,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Мрак души — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4228,7 +4228,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Бездна внутри — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4245,7 +4245,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Вечное проклятие — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4262,7 +4262,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Пробуждение: Порча — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4279,7 +4279,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Усиленная форма: Шёпот бездны — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4296,7 +4296,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Совершенная форма: Проклятая метка — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4313,7 +4313,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Высшая техника: Увядание — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4330,7 +4330,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Мастерский приём: Тёмный шип — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4347,7 +4347,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Предельная форма: Пожиратель надежды — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4364,7 +4364,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Знак превосходства: Чёрная луна — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4381,7 +4381,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Абсолютная техника: Мрак души — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4398,7 +4398,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Возвышение: Бездна внутри — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4415,7 +4415,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Легендарная форма: Вечное проклятие — darkness specialization skill.",
+    "description": "Специализация «Тьма»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 3.6
   },
@@ -4432,7 +4432,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Водяная игла — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4449,7 +4449,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Быстрый поток — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4466,7 +4466,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Ледяная рябь — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4483,7 +4483,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Водоворот — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4500,7 +4500,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Серебряный дождь — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4517,7 +4517,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Текучий барьер — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4534,7 +4534,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Цепная волна — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4551,7 +4551,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Глубинный прилив — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4568,7 +4568,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Тысяча капель — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4585,7 +4585,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Океан ярости — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4602,7 +4602,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Пробуждение: Водяная игла — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4619,7 +4619,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Усиленная форма: Быстрый поток — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4636,7 +4636,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Совершенная форма: Ледяная рябь — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4653,7 +4653,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Высшая техника: Водоворот — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4670,7 +4670,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Мастерский приём: Серебряный дождь — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4687,7 +4687,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Предельная форма: Текучий барьер — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4704,7 +4704,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "aoe",
-    "description": "Знак превосходства: Цепная волна — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4721,7 +4721,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Абсолютная техника: Глубинный прилив — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4738,7 +4738,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "aoe",
-    "description": "Возвышение: Тысяча капель — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4755,7 +4755,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "aoe",
-    "description": "Легендарная форма: Океан ярости — water specialization skill.",
+    "description": "Специализация «Вода»: поражает всех противников на поле боя.",
     "damage_type": "ice",
     "damage_multiplier": 3.9
   },
@@ -4772,7 +4772,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "control",
-    "description": "Каменный шип — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4789,7 +4789,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Сейсмический толчок — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4806,7 +4806,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Глыба стража — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4823,7 +4823,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "control",
-    "description": "Окаменение — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4840,7 +4840,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "control",
-    "description": "Разлом почвы — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4857,7 +4857,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Гравитационный кулак — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4874,7 +4874,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "control",
-    "description": "Столп земли — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4891,7 +4891,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Дрожь недр — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4908,7 +4908,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "control",
-    "description": "Горный обвал — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4925,7 +4925,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "control",
-    "description": "Сердце материка — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4942,7 +4942,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Пробуждение: Каменный шип — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4959,7 +4959,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Усиленная форма: Сейсмический толчок — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4976,7 +4976,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "control",
-    "description": "Совершенная форма: Глыба стража — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -4993,7 +4993,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Высшая техника: Окаменение — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -5010,7 +5010,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Мастерский приём: Разлом почвы — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -5027,7 +5027,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "control",
-    "description": "Предельная форма: Гравитационный кулак — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -5044,7 +5044,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "control",
-    "description": "Знак превосходства: Столп земли — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -5061,7 +5061,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Абсолютная техника: Дрожь недр — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -5078,7 +5078,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "control",
-    "description": "Возвышение: Горный обвал — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -5095,7 +5095,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "control",
-    "description": "Легендарная форма: Сердце материка — earth specialization skill.",
+    "description": "Специализация «Земля»: наносит урон и ограничивает действия противника.",
     "damage_type": "physical",
     "damage_multiplier": 3.9
   },
@@ -5112,7 +5112,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Двойной выпад — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5129,7 +5129,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Крест клинков — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5146,7 +5146,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Ритм стали — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5163,7 +5163,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Вихрь двух мечей — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5180,7 +5180,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Танец лезвий — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5197,7 +5197,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Разрыв темпа — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5214,7 +5214,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Смертельная связка — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5231,7 +5231,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Шквал дуэлянта — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5248,7 +5248,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Десять порезов — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5265,7 +5265,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Идеальная комбинация — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5282,7 +5282,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Пробуждение: Двойной выпад — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5299,7 +5299,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Усиленная форма: Крест клинков — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5316,7 +5316,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Совершенная форма: Ритм стали — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5333,7 +5333,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Высшая техника: Вихрь двух мечей — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5350,7 +5350,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Мастерский приём: Танец лезвий — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5367,7 +5367,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Предельная форма: Разрыв темпа — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5384,7 +5384,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "strike",
-    "description": "Знак превосходства: Смертельная связка — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5401,7 +5401,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Абсолютная техника: Шквал дуэлянта — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5418,7 +5418,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "strike",
-    "description": "Возвышение: Десять порезов — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5435,7 +5435,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "strike",
-    "description": "Легендарная форма: Идеальная комбинация — dual_swords specialization skill.",
+    "description": "Специализация «Парные мечи»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5452,7 +5452,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Стойка бастиона — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5468,7 +5468,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Ответный выпад — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5485,7 +5485,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Железный заслон — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5501,7 +5501,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Контрудар — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5518,7 +5518,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Щитовой натиск — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5534,7 +5534,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Непробиваемая защита — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5551,7 +5551,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Клятва стража — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5567,7 +5567,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Возмездие — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5584,7 +5584,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Непоколебимый рубеж — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5600,7 +5600,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Последний защитник — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5617,7 +5617,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Пробуждение: Стойка бастиона — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5633,7 +5633,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Усиленная форма: Ответный выпад — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5650,7 +5650,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Совершенная форма: Железный заслон — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5666,7 +5666,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Высшая техника: Контрудар — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5683,7 +5683,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Мастерский приём: Щитовой натиск — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5699,7 +5699,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Предельная форма: Непробиваемая защита — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5716,7 +5716,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "shield",
-    "description": "Знак превосходства: Клятва стража — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5732,7 +5732,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Абсолютная техника: Возмездие — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5749,7 +5749,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "shield",
-    "description": "Возвышение: Непоколебимый рубеж — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: создаёт защитный щит.",
     "damage_type": "physical"
   },
   {
@@ -5765,7 +5765,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "shield",
-    "description": "Легендарная форма: Последний защитник — sword_shield specialization skill.",
+    "description": "Специализация «Меч и щит»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 3.1395
   },
@@ -5782,7 +5782,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "parry",
-    "description": "Укол шпаги — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -5798,7 +5798,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Точный выпад — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5815,7 +5815,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Чтение движения — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -5831,7 +5831,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
-    "description": "Искра парирования — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5848,7 +5848,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "parry",
-    "description": "Ответ мастера — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -5864,7 +5864,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Линия клинка — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5881,7 +5881,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
-    "description": "Безупречная защита — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -5897,7 +5897,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Рипост — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5914,7 +5914,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "parry",
-    "description": "Тысяча отражений — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -5930,7 +5930,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
-    "description": "Совершенное парирование — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5947,7 +5947,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Пробуждение: Укол шпаги — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -5963,7 +5963,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Усиленная форма: Точный выпад — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -5980,7 +5980,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "parry",
-    "description": "Совершенная форма: Чтение движения — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -5996,7 +5996,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Высшая техника: Искра парирования — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -6013,7 +6013,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Мастерский приём: Ответ мастера — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -6029,7 +6029,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
-    "description": "Предельная форма: Линия клинка — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -6046,7 +6046,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "parry",
-    "description": "Знак превосходства: Безупречная защита — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -6062,7 +6062,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Абсолютная техника: Рипост — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -6079,7 +6079,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "parry",
-    "description": "Возвышение: Тысяча отражений — rapier specialization skill.",
+    "description": "Специализация «Шпага»: парирует атаку и открывает возможность для контратаки.",
     "damage_type": "physical"
   },
   {
@@ -6095,7 +6095,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "parry",
-    "description": "Легендарная форма: Совершенное парирование — rapier specialization skill.",
+    "description": "Специализация «Шпага»: наносит урон выбранной цели.",
     "damage_type": "physical",
     "damage_multiplier": 2.6
   },
@@ -6129,7 +6129,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Вселение волка — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6163,7 +6163,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Дыхание предков — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6180,7 +6180,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Тотем жизни — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6196,7 +6196,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Дух медведя — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6213,7 +6213,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Облик пращура — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6229,7 +6229,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Исцеление души — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6246,7 +6246,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Хоровод духов — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6262,7 +6262,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Первозданный союз — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6279,7 +6279,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Пробуждение: Зов предков — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6295,7 +6295,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Усиленная форма: Вселение волка — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6312,7 +6312,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Совершенная форма: Дух-хранитель — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6328,7 +6328,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Высшая техника: Дыхание предков — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6345,7 +6345,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Мастерский приём: Тотем жизни — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6361,7 +6361,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Предельная форма: Дух медведя — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6378,7 +6378,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "heal",
-    "description": "Знак превосходства: Облик пращура — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6394,7 +6394,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Абсолютная техника: Исцеление души — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6411,7 +6411,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "heal",
-    "description": "Возвышение: Хоровод духов — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: восстанавливает здоровье.",
     "damage_type": "ice"
   },
   {
@@ -6427,7 +6427,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "heal",
-    "description": "Легендарная форма: Первозданный союз — spirits specialization skill.",
+    "description": "Специализация «Сила духов»: наносит урон выбранной цели.",
     "damage_type": "ice",
     "damage_multiplier": 3.2
   },
@@ -6444,7 +6444,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Проклятие праха — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6461,7 +6461,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Тёмный идол — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6478,7 +6478,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Шёпот божества — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6495,7 +6495,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Печать распада — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6512,7 +6512,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Жертвоприношение — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6529,7 +6529,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Гнев забытых — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6546,7 +6546,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Око тьмы — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6563,7 +6563,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Гниение души — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6580,7 +6580,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Глас бездны — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6597,7 +6597,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Воля тёмных богов — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6614,7 +6614,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Пробуждение: Проклятие праха — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6631,7 +6631,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Усиленная форма: Тёмный идол — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6648,7 +6648,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Совершенная форма: Шёпот божества — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6665,7 +6665,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Высшая техника: Печать распада — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6682,7 +6682,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Мастерский приём: Жертвоприношение — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6699,7 +6699,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Предельная форма: Гнев забытых — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6716,7 +6716,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "debuff",
-    "description": "Знак превосходства: Око тьмы — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6733,7 +6733,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Абсолютная техника: Гниение души — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6750,7 +6750,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "debuff",
-    "description": "Возвышение: Глас бездны — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6767,7 +6767,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "debuff",
-    "description": "Легендарная форма: Воля тёмных богов — dark_gods specialization skill.",
+    "description": "Специализация «Тёмные боги»: ослабляет противника.",
     "damage_type": "dark",
     "damage_multiplier": 5.52
   },
@@ -6784,7 +6784,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Огненная смола — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -6800,7 +6800,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Ледяное клеймо — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -6817,7 +6817,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Громовая булава — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -6833,7 +6833,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Каменная кора — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -6850,7 +6850,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Духовное масло — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -6866,7 +6866,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Стихийная заточка — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -6883,7 +6883,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Пылающие оковы — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -6899,7 +6899,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Морозный раскол — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -6916,7 +6916,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Грозовой резонанс — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -6932,7 +6932,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Оружие первостихии — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -6949,7 +6949,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Пробуждение: Огненная смола — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -6965,7 +6965,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Усиленная форма: Ледяное клеймо — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -6982,7 +6982,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Совершенная форма: Громовая булава — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -6998,7 +6998,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Высшая техника: Каменная кора — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -7015,7 +7015,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Мастерский приём: Духовное масло — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -7031,7 +7031,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Предельная форма: Стихийная заточка — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -7048,7 +7048,7 @@
     "cooldown_tier": "long",
     "resource_cost_tier": "high",
     "animation_key": "buff",
-    "description": "Знак превосходства: Пылающие оковы — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -7064,7 +7064,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Абсолютная техника: Морозный раскол — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   },
@@ -7081,7 +7081,7 @@
     "cooldown_tier": "medium",
     "resource_cost_tier": "medium",
     "animation_key": "buff",
-    "description": "Возвышение: Грозовой резонанс — nature specialization skill.",
+    "description": "Специализация «Сила природы»: усиливает боевые характеристики.",
     "damage_type": "fire"
   },
   {
@@ -7097,7 +7097,7 @@
     "cooldown_tier": "short",
     "resource_cost_tier": "low",
     "animation_key": "buff",
-    "description": "Легендарная форма: Оружие первостихии — nature specialization skill.",
+    "description": "Специализация «Сила природы»: наносит урон выбранной цели.",
     "damage_type": "fire",
     "damage_multiplier": 3
   }

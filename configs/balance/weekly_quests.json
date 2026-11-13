@@ -58,7 +58,7 @@
     },
     {
       "id": "heroic",
-      "name": "Закалённый героем",
+      "name": "Герой испытаний",
       "metric": "heroic_stages",
       "target": 15,
       "reward": {

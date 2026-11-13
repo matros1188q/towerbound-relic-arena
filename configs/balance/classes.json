@@ -1953,7 +1953,7 @@
     },
     "duelist": {
       "name": "Дуэлянт",
-      "resource": "Тактические заряды",
+      "resource": "Тактическая энергия",
       "branches": [
         {
           "id": "dual_swords",
@@ -2227,7 +2227,7 @@
         }
       ],
       "role": "Фехтовальщик и контратакующий боец",
-      "resource_max": 5,
+      "resource_max": 100,
       "resource_gain": "От атак, блоков и парирований",
       "strengths": [
         "Комбо парных мечей",
@@ -2335,9 +2335,9 @@
           "boss_only": true
         }
       ],
-      "resource_gain_per_attack": 1,
+      "resource_gain_per_attack": 15,
       "resource_gain_on_defense": 1,
-      "resource_cost_per_skill": 1
+      "resource_cost_per_skill": 18
     },
     "shaman": {
       "name": "Шаман",

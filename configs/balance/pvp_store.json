@@ -136,7 +136,7 @@
     {
       "id": "class_epic_assassin",
       "category": "class_epic",
-      "name": "Уникальный эпик · assassin",
+      "name": "Реликтовый комплект · Убийца",
       "price": 5000,
       "kind": "character_item",
       "classId": "assassin",
@@ -146,7 +146,7 @@
     {
       "id": "class_epic_bishop",
       "category": "class_epic",
-      "name": "Уникальный эпик · bishop",
+      "name": "Реликтовый комплект · Епископ",
       "price": 5000,
       "kind": "character_item",
       "classId": "bishop",
@@ -156,7 +156,7 @@
     {
       "id": "class_epic_dragonkin",
       "category": "class_epic",
-      "name": "Уникальный эпик · dragonkin",
+      "name": "Реликтовый комплект · Драконит",
       "price": 5000,
       "kind": "character_item",
       "classId": "dragonkin",
@@ -166,7 +166,7 @@
     {
       "id": "class_epic_destroyer",
       "category": "class_epic",
-      "name": "Уникальный эпик · destroyer",
+      "name": "Реликтовый комплект · Разрушитель",
       "price": 5000,
       "kind": "character_item",
       "classId": "destroyer",
@@ -176,7 +176,7 @@
     {
       "id": "class_epic_elemental",
       "category": "class_epic",
-      "name": "Уникальный эпик · elemental",
+      "name": "Реликтовый комплект · Владыка стихий",
       "price": 5000,
       "kind": "character_item",
       "classId": "elemental",
@@ -186,7 +186,7 @@
     {
       "id": "class_epic_duelist",
       "category": "class_epic",
-      "name": "Уникальный эпик · duelist",
+      "name": "Реликтовый комплект · Дуэлянт",
       "price": 5000,
       "kind": "character_item",
       "classId": "duelist",
@@ -196,7 +196,7 @@
     {
       "id": "class_epic_shaman",
       "category": "class_epic",
-      "name": "Уникальный эпик · shaman",
+      "name": "Реликтовый комплект · Шаман",
       "price": 5000,
       "kind": "character_item",
       "classId": "shaman",

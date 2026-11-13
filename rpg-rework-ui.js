@@ -240,7 +240,7 @@ function createDialog(){
   const effect=balance.skill_effects[source.effect_template]||balance.skill_effects.strike||{};
   const unlockLevel=Number.isFinite(Number(source.unlock_level))?Number(source.unlock_level):1;
   const damage=Number(source.damage??source.damage_multiplier??effect.damage_multiplier??effect.heal_multiplier??effect.power_multiplier??0)||0;
-  const defaultSkillCost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(balance.resources.action_costs.attack_skill??0);
+  const defaultSkillCost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??22):(balance.resources.action_costs.attack_skill??0);
   const cost=Number(source.cost??source.resource_cost??effect.resource_cost??defaultSkillCost)||0;
   const skill={...source,unlock_level:unlockLevel,damage,cost,damage_multiplier:Number(source.damage_multiplier??source.damage??effect.damage_multiplier??1)||1,resource_cost:cost};
   if(skill.class_id&&skill.class_id!==c.classId)return null;
@@ -249,7 +249,7 @@ function createDialog(){
  }
  function getSkillStats(character,skill){
   const effect=balance.skill_effects[skill.effect_template]||balance.skill_effects.strike||{},saved=character.skillUpgrades?.[skill.id]||{},level=Math.max(1,Math.min(3,Number(saved.level)||1)),type=saved.type==="cost"||saved.type==="power"?saved.type:null,stacks=level-1;
-  const baseCost=character.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill.cost??skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
+  const baseCost=character.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??22):(skill.cost??skill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??0);
   return {level,type,cost:Math.max(0,baseCost*(type==="cost"?1-.2*stacks:1)),powerMultiplier:type==="power"?1+.2*stacks:1};
  }
  function skillSummary(skill,c){
@@ -512,7 +512,7 @@ function createDialog(){
     else if(effect.type==="parry")parts.push("Парирование: "+Math.round(Number(effect.parry_chance||0)*100)+"% шанс");
     else if(multiplier>0)parts.push("Урон: "+Math.round(multiplier*100)+"% от "+scalingLabel+(effect.type==="dot"?" за тик"+(effect.ticks?" · "+effect.ticks+" тика":""):""));
     else parts.push("Особый эффект: "+(skill.effect_template||"уникальная техника"));
-    parts.push("Стоимость: "+cost+" ресурса","Откат: "+(cooldown?cooldown+" хода":"нет"));
+    parts.push("Стоимость: "+cost+(c.classId==="duelist"?" ед. энергии":" ед. ресурса"),"Откат: "+(cooldown?cooldown+" хода":"нет"));
   }
   const descriptions={strike:"Мощный удар по одной цели.",aoe:"Поражает всех противников на поле боя.",dot:"Накладывает периодический урон и ослабляет цель.",heal:"Восстанавливает здоровье себе или союзнику.",hot:"Постепенно восстанавливает здоровье в течение нескольких ходов.",buff:"Усиливает характеристики на несколько ходов.",debuff:"Ослабляет противника и снижает его боевую эффективность.",shield:"Создаёт защитный барьер и поглощает входящий урон.",control:"Наносит урон и прерывает действия противника оглушением.",execute:"Добивающий приём, особенно опасный для ослабленной цели.",parry:"Готовит точное парирование и открывает возможность для контратаки."};
   const raw=String(skill.description||"").trim();
@@ -640,18 +640,19 @@ function talentBonusDescription(talent,rank){
    const read=(c.loreRead||[]).includes(entry.id),open=c.progress.highestEver>=entry.unlock_stage;
    return '<article class="tb-system-row"><div><b>'+esc(entry.title)+'</b><small>Этап '+entry.unlock_stage+' · '+(read?'прочитано':open?'доступно':'закрыто')+' · +'+entry.xp_reward+' XP</small></div><button data-lore="'+entry.id+'" '+(!open||read?'disabled':'')+'>'+(read?'ПРОЧИТАНО':open?'ЧИТАТЬ':'ЗАКРЫТО')+'</button></article>';
   }).join("");
-  const stash=(engine.state.stash||[]).map(item=>'<article class="tb-system-row"><div><b>'+esc(item.name)+'</b><small>'+esc(item.rarity)+' · ilvl '+item.itemLevel+'</small></div><button data-stash-withdraw="'+item.id+'">ЗАБРАТЬ</button></article>').join("");
-  const depositable=c.bag.filter(item=>item.rarity&&rank[item.rarity]>=rank[balance.stash.min_rarity]&&!item.bound&&!item.bossLoot).map(item=>'<article class="tb-system-row"><div><b>'+esc(item.name)+'</b><small>'+esc(item.rarity)+' · ilvl '+item.itemLevel+'</small></div><button data-stash-deposit="'+item.id+'">В ОБЩИЙ СТЕШ</button></article>').join("");
+  const stash=(engine.state.stash||[]).map(item=>'<article class="tb-system-row"><div><b>'+esc(item.name)+'</b><small>'+esc(item.rarity)+' · Уровень предмета '+item.itemLevel+'</small></div><button data-stash-withdraw="'+item.id+'">ЗАБРАТЬ</button></article>').join("");
+  const depositable=c.bag.filter(item=>item.rarity&&rank[item.rarity]>=rank[balance.stash.min_rarity]&&!item.bound&&!item.bossLoot).map(item=>'<article class="tb-system-row"><div><b>'+esc(item.name)+'</b><small>'+esc(item.rarity)+' · Уровень предмета '+item.itemLevel+'</small></div><button data-stash-deposit="'+item.id+'">В ОБЩИЙ СТЕШ</button></article>').join("");
   const ownedCosmetics=(account.cosmetics||[]).map(id=>(balance.cosmetics?.items||[]).find(x=>x.id===id)).filter(Boolean),activeCosmetics=account.activeCosmetics||{};
    const cosmeticCards=ownedCosmetics.map(item=>'<article class="tb-system-row"><div><b>'+esc(item.name)+'</b><small>'+esc(item.type)+' · '+(activeCosmetics[item.type]===item.id?'НАДЕТО':'В КОЛЛЕКЦИИ')+'</small></div><button data-equip-cosmetic="'+item.id+'" '+(activeCosmetics[item.type]===item.id?'disabled':'')+'>НАДЕТЬ</button></article>').join("");
+   const pvpCategoryNames={frame:"Рамка",title:"Титул",weapon_skin:"Облик оружия",relic:"Реликвия",class_epic:"Экипировка класса",consumable:"Расходник"};
    const store=balance.pvp_store.items.map(item=>{
    const owned=item.kind==="cosmetic"?(account.cosmetics||[]).includes(item.id):item.kind==="account_relic"?(account.relics||[]).includes(item.id):item.kind==="character_item"?(account.classEpics||[]).includes(item.classId):false;
    const classBlocked=item.kind==="character_item"&&item.classId!==c.classId;
-   return '<article class="tb-system-product"><b>'+esc(item.name)+'</b><small>'+esc(item.category)+' · '+item.price+' PvP-очков</small><button data-pvp-buy="'+item.id+'" '+(owned||classBlocked||(account.pvpPoints||0)<item.price?'disabled':'')+'>'+(owned?(item.kind==="character_item"?"УЖЕ ПОЛУЧЕНО":"УЖЕ КУПЛЕНО"):classBlocked?'ДРУГОЙ КЛАСС':'КУПИТЬ')+'</button></article>';
+   return '<article class="tb-system-product"><b>'+esc(item.name)+'</b><small>'+esc(pvpCategoryNames[item.category]||'Предмет')+' · '+item.price+' очков арены</small><button data-pvp-buy="'+item.id+'" '+(owned||classBlocked||(account.pvpPoints||0)<item.price?'disabled':'')+'>'+(owned?(item.kind==="character_item"?"УЖЕ ПОЛУЧЕНО":"УЖЕ КУПЛЕНО"):classBlocked?'ДРУГОЙ КЛАСС':'КУПИТЬ')+'</button></article>';
   }).join("");
   const paragon=c.paragon||{level:0,xp:0,stats:{}};
   const paragonRows=balance.paragon.stats.map(stat=>'<div class="tb-system-row"><div><b>'+esc(stat)+'</b><small>Ранг '+(paragon.stats?.[stat]||0)+'</small></div><button data-paragon-stat="'+stat+'" '+(c.level<balance.paragon.unlock_level||Object.values(paragon.stats||{}).reduce((a,b)=>a+b,0)>=paragon.level?'disabled':'')+'>+1</button></div>').join("");
-  const settings='<div class="tb-system-settings"><label>Звуковые эффекты: Вкл/Выкл <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><label>Фоновая музыка: Вкл/Выкл <input type="checkbox" data-setting="music_enabled" '+(prefs.music_enabled!==false?'checked':'')+'></label><button type="button" class="tb-secondary" data-action="toggle-mute">'+(prefs.sound_enabled!==false?'ЗВУК ВКЛ · MUTE':'ЗВУК ВЫКЛ · ВКЛ')+'</button><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Авто-разбор обычных и редких предметов ниже ilvl N <input type="checkbox" data-setting="autoSalvage" '+(prefs.autoSalvage?'checked':'')+'></label><label>Порог ilvl для авто-разбора <input type="number" min="1" max="120" data-setting="autoSalvageBelow" value="'+(prefs.autoSalvageBelow||40)+'"></label><label>Чистый экран · скрыть цифры урона и второстепенные иконки <input type="checkbox" data-setting="clean_ui" '+(prefs.clean_ui?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Easy</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Normal</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Hardcore</option></select></label></div><div class="tb-system-actions"><button type="button" data-action="cloud-account">ОБЛАЧНЫЙ АККАУНТ</button><button type="button" data-action="cloud-sync">СИНХРОНИЗИРОВАТЬ</button></div>';
+  const settings='<div class="tb-system-settings"><label>Звуковые эффекты: Вкл/Выкл <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><label>Фоновая музыка: Вкл/Выкл <input type="checkbox" data-setting="music_enabled" '+(prefs.music_enabled!==false?'checked':'')+'></label><button type="button" class="tb-secondary" data-action="toggle-mute">'+(prefs.sound_enabled!==false?'ЗВУК ВКЛ · ОТКЛЮЧИТЬ':'ЗВУК ВЫКЛ · ВКЛЮЧИТЬ')+'</button><label>Главная громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label><label>Язык <select data-setting="language"><option value="ru" '+(prefs.language==="ru"?'selected':'')+'>Русский</option><option value="en" '+(prefs.language==="en"?'selected':'')+'>English</option></select></label><label>Отключить свечение заточки +20 <input type="checkbox" data-setting="disable_refinement_glow" '+(prefs.disable_refinement_glow?'checked':'')+'></label><label>Отключить частицы <input type="checkbox" data-setting="disable_particles" '+(prefs.disable_particles?'checked':'')+'></label><label>Инверсия камеры <input type="checkbox" data-setting="invert_camera" '+(prefs.invert_camera?'checked':'')+'></label><label>Комбат-лог <input type="checkbox" data-setting="combat_log_toggle" '+(prefs.combat_log_toggle!==false?'checked':'')+'></label><label>Отключить тряску экрана <input type="checkbox" data-setting="disable_screen_shake" '+(prefs.disable_screen_shake?'checked':'')+'></label><label>Отключить вспышки умений <input type="checkbox" data-setting="disable_skill_flashes" '+(prefs.disable_skill_flashes?'checked':'')+'></label><label>Отключить телеграфы (хардкорная опция) <input type="checkbox" data-setting="disable_telegraphs" '+(prefs.disable_telegraphs?'checked':'')+'></label><label>Авто-разбор обычных и редких предметов ниже заданного уровня <input type="checkbox" data-setting="autoSalvage" '+(prefs.autoSalvage?'checked':'')+'></label><label>Минимальный уровень предмета для авторазбора <input type="number" min="1" max="120" data-setting="autoSalvageBelow" value="'+(prefs.autoSalvageBelow||40)+'"></label><label>Чистый экран · скрыть цифры урона и второстепенные иконки <input type="checkbox" data-setting="clean_ui" '+(prefs.clean_ui?'checked':'')+'></label><label>Сложность <select data-setting="difficulty"><option value="easy" '+(c.difficulty==="easy"?'selected':'')+'>Лёгкая</option><option value="normal" '+(c.difficulty==="normal"?'selected':'')+'>Обычная</option><option value="hardcore" '+(c.difficulty==="hardcore"?'selected':'')+'>Героическая</option></select></label></div><div class="tb-system-actions"><button type="button" data-action="cloud-account">ОБЛАЧНЫЙ АККАУНТ</button><button type="button" data-action="cloud-sync">СИНХРОНИЗИРОВАТЬ</button></div>';
   const pending=account.pvpDaily?.pending;
   const weekly=engine.weeklyLeaderboard();
   const activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier;
@@ -756,14 +757,14 @@ function talentBonusDescription(talent,rank){
 const skillMarkup = Array.from({ length: 6 }, (_, index) => {
   const skill = slots[index] || null;
   const cooldown = skill ? (battle.skillCooldowns?.[skill.id] || 0) : 0;
-  const cost = skill ? (c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??1):(skill.cost || skill.resource_cost || 18)) : 0;
+  const cost = skill ? (c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??22):(skill.cost || skill.resource_cost || 18)) : 0;
   const disabled = !skill || battle.actor?.type !== "player" || battle.playerSkillUsed || cooldown > 0 || battle.busy || battle.paused;
   
   return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id || "")}" data-panel-slot="${index}" ${disabled ? "disabled" : ""}>
     <kbd>${index + 1}</kbd>
     ${skill ? skillIconMarkup(skill,c.classId) : '<span class="v2-skill-icon v2-skill-icon-empty" aria-hidden="true">—</span>'}
     <span class="v2-skill-name">${esc(skill?.name || "Пусто")}</span>
-    <span class="v2-skill-cost">${skill ? cost + " рес." : ""}</span>
+    <span class="v2-skill-cost">${skill ? cost + (c.classId==="duelist" ? " ед. энергии" : " ед. ресурса") : ""}</span>
   </button>`;
 }).join("");
 
@@ -936,7 +937,7 @@ return `<div class="v2-battle-wrap">
  }
  function useCounterSkill(){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||battle.counterPrimed||(battle.counterCooldownTurns||0)>0)return;
-  const c=live(),counter=counterAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.counter??2):(counter.resource_cost??balance.resources.action_costs.counter);
+  const c=live(),counter=counterAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.counter??18):(counter.resource_cost??balance.resources.action_costs.counter);
   if(c.resource<cost){notify("Не хватает ресурса для контр-умения");return;}
   c.resource-=cost;battle.counterPrimed=true;battle.playerSkillUsed=true;battle.counterCooldownTurns=Math.max(1,counter.cooldown_turns||2);battle.counterAction=counter;battle.counterTargetIndex=undefined;
   notify("Контр-умение готово: следующая атака противника будет отражена на 100%");save();render();
@@ -951,7 +952,7 @@ return `<div class="v2-battle-wrap">
  }
  function useUltimate(){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed||(battle.ultimateCooldownTurns||0)>0)return;
-  const c=live(),ultimate=ultimateAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.ultimate??4):(ultimate.resource_cost??balance.resources.action_costs.ultimate);
+  const c=live(),ultimate=ultimateAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.ultimate??42):(ultimate.resource_cost??balance.resources.action_costs.ultimate);
   if(c.resource<cost){notify("Не хватает ресурса для ультимейта");return;}
   c.resource-=cost;battle.playerSkillUsed=true;battle.ultimateCooldownTurns=Math.max(1,ultimate.cooldown_turns||3);
   const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*(Number(balance.classes.branch_stat_bonuses?.["destroyer.wand_shield"]?.defense_damage_fraction)||.5):0);battle.actionDamageLedger={};
@@ -1053,7 +1054,7 @@ return `<div class="v2-battle-wrap">
    button.disabled=!skill||!playerTurn||battle.playerSkillUsed||battle.busy||battle.paused||cd>0;
    const name=button.querySelector(".v2-skill-name"),cost=button.querySelector(".v2-skill-cost"),icon=button.querySelector(".v2-skill-icon");
    if(name)name.textContent=skill?.name||"Пусто";
-   if(cost)cost.textContent=skill?getSkillStats(c,skill).cost+" рес.":"";
+   if(cost)cost.textContent=skill?getSkillStats(c,skill).cost+(c.classId==="duelist"?" ед. энергии":" ед. ресурса"):"";
    const markup=skill?skillIconMarkup(skill,c.classId):'<span class="v2-skill-icon v2-skill-icon-empty" aria-hidden="true">—</span>';
    if(icon)icon.outerHTML=markup;else button.insertAdjacentHTML("afterbegin",markup);
   });
