@@ -29,6 +29,7 @@ jobs:
           node --check rpg-rework-ui.js
           node --check towerbound-polish.js
           node --check tests/polish-onboarding.test.cjs
+          node --check tests/progression-math.test.cjs
           node --check rpg-rework-ui.css.js
           node --check towerbound-cloud.js
           node --check towerbound-online.js
@@ -38,6 +39,8 @@ jobs:
         run: npm run art:check
       - name: Run polish and onboarding regression assertions
         run: npm run test:polish
+      - name: Verify BP, talent and skill upgrade math
+        run: node tests/progression-math.test.cjs
       - name: Run Towerbound regression assertions
         run: node tests/online-services.test.cjs
       - name: Run combat balance simulation
