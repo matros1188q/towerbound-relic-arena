@@ -8,6 +8,14 @@ function has(text, needle, label) {
   assert.ok(text.includes(needle), 'missing ' + label + ': ' + needle);
 }
 [
+  ['function currentSeason()', 'monthly season source'],
+  ['t.seasonModifier=season.modifier', 'season modifier is locked per run'],
+  ['eliteChance=Math.min(.8', 'season doubles elite spawn chance'],
+  ['modifier.id===\'cursed_levels\'', 'cursed floor effect'],
+  ['boss_no_potion', 'seasonal boss potion restriction'],
+  ['reward_xp_multiplier', 'seasonal tower XP rewards'],
+  ['reward_silver_multiplier', 'seasonal tower silver rewards'],
+  ['Сезон \'+(season.id+1)', 'season displayed in tower UI'],
   ['function startTower()', 'Endless Tower entry'],
   ["highestEver||0)<10", 'Tower unlock after stage 10'],
   ['engine.stagePlan(s.character,10)', 'stage 10 base enemy stats'],
