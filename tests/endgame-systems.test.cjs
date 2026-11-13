@@ -24,7 +24,7 @@ function has(text, needle, label) {
   ['eliteChance=Math.min(.8', 'season-adjusted elite spawn chance'],
   ['normalLimit=1-eliteChance-.1', 'normal, elite and boss encounter distribution'],
   ['function claimTowerRewards(t)', 'Tower reward banking'],
-  ['t.rewards.silver+=Math.round(100+b.floor*25)', 'Tower silver rewards'],
+  ['t.rewards.silver+=Math.round((100+b.floor*25)*(Number(modifier.reward_silver_multiplier)||1))', 'season-scaled Tower silver rewards'],
   ['t.rewards.diamonds+=1', 'one diamond every ten floors'],
   ['engine.awardXp(c,xp)', 'Tower XP payout on exit'],
   ['function passState()', 'Battle Pass lifecycle'],
