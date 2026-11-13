@@ -56,6 +56,8 @@
     const overlay=root.querySelector('.tb-turn-tutorial');if(!overlay)return;
     const title=overlay.querySelector('#tb-turn-tutorial-title'),list=overlay.querySelector('ol'),button=overlay.querySelector('[data-action="dismiss-turn-tutorial"]');
     if(!title||!list||!button)return;
+    overlay.dataset.started=String(tutorialStarted);
+    overlay.setAttribute('aria-modal',String(!tutorialStarted));
     const step=tutorialSteps[Math.min(tutorialStep,tutorialSteps.length-1)];
     const nextTitle=tutorialStarted?step.title:'Твой первый бой';if(title.textContent!==nextTitle)title.textContent=nextTitle;
     const html=tutorialStarted?'<li><b>'+step.text+'</b></li>':'<li><b>Базовая атака.</b> Она доступна каждый ход и не тратит ресурс.</li><li><b>Умения 1–6.</b> Используй их по ситуации и следи за стоимостью.</li><li><b>Телеграф врага.</b> Нажми «ЗАВЕРШИТЬ ХОД», чтобы увидеть намерение противника и его действие.</li>';
