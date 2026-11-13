@@ -27,6 +27,8 @@ jobs:
           node --check juice-pwa.js
           node --check rpg-rework-v2.js
           node --check rpg-rework-ui.js
+          node --check towerbound-polish.js
+          node --check tests/polish-onboarding.test.cjs
           node --check rpg-rework-ui.css.js
           node --check towerbound-cloud.js
           node --check towerbound-online.js
@@ -34,6 +36,8 @@ jobs:
           node --check tests/economy-sim.cjs
       - name: Validate JPG art manifests and sprite mappings
         run: npm run art:check
+      - name: Run polish and onboarding regression assertions
+        run: npm run test:polish
       - name: Run Towerbound regression assertions
         run: node tests/online-services.test.cjs
       - name: Run combat balance simulation
