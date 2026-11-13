@@ -32,7 +32,7 @@ assert.equal(balance.bosses.phases.length,4);
 assert.equal(balance.bosses.phases[1].summon_count,2);
 assert.equal(balance.bosses.phases[2].immediate_attack,true);
 assert.equal(balance.bosses.phases[3].damage_flat,9999);
-assert.equal(balance.bosses.phases[3].player_turn_deadline,3);
+assert.equal(balance.bosses.phases[3].player_turn_deadline,4,'phase four allows four player turns after the final telegraph');
 const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 assert.match(ui,/function buildInitiative[\s\S]*?sort\(\(a,b\)=>b\.speed-a\.speed/);
 assert.match(ui,/a\.type==="player"\?-1:b\.type==="player"\?1/);
