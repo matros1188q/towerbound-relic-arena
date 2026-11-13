@@ -17,8 +17,8 @@ function allocateTalents(engine,c){
  if(!branch||!Array.isArray(branch.talents))return 0;
  const priority=['attack','skill_power','critical','health','defense','attack_speed'];
  const talents=branch.talents.slice().sort((a,b)=>priority.indexOf(a.effect_template)-priority.indexOf(b.effect_template));
- let left=Math.max(0,Number(c.talentPoints)||0),spent=0;
- for(const talent of talents){for(let rank=0;rank<Math.min(3,left);rank++){engine.useTalentPoint(c.id,talent.id,3);left--;spent++;}}
+ let left=Math.max(0,(Number(c.talentPoints)||0)-Object.values(c.talents||{}).reduce((sum,n)=>sum+(Number(n)||0),0)),spent=0;
+ for(const talent of talents){let rank=Number(c.talents?.[talent.id])||0;while(rank<3&&left>0){engine.useTalentPoint(c.id,talent.id,3);rank++;left--;spent++;}}
  return spent;
 }
 function setup(classId,branchId,stage,seed){
