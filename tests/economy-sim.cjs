@@ -1,67 +1,66 @@
 'use strict';
-const {balance,rng,builds,setup,equip,allocateTalents,simulateFight}=require('./balance-sim.cjs');
-const silverPrice=balance.economy.silver_store.heal_25;
-function runBuild(build,seed){
- const {engine,c}=setup(build.classId,build.branchId,1,seed),startingSilver=c.silver;
- const offered=engine.runModifierOptions(c.id)||[];
- const chosen=offered.find(m=>m.id==='arcane_hunt')||offered.find(m=>m.id==='last_stand')||offered.find(m=>m.id==='glass_cannon')||offered[0];
- if(chosen)engine.setRunModifier(c.id,chosen.id);
- let turns=0,used=0,bought=0,death=null,deathDetails=null,cleared=0,branchUnlockedAt=null;
- for(let stage=1;stage<=250;stage++){
-  if(!c.branch&&c.level>=10){
-   engine.chooseBranch(c.id,build.branchId);
-   allocateTalents(engine,c);
-   branchUnlockedAt=stage;
-  }
-  allocateTalents(engine,c);
-  equip(c,stage);
-  engine.beginStage(c.id,stage);
-  const stageData=c.run.stage;
-  c.run.dailyModifier=null;
-  if(c.run.season)c.run.season.modifier=null;
-  for(let i=0;i<stageData.mobs.length;i++){
-   const enemy=stageData.mobs[i];
-   stageData.targetIndex=i;
-   const result=simulateFight(engine,c,stage,enemy,{
-    playerHp:c.run.playerHp,resource:c.resource,
-    random:rng(seed+stage*701+i*13),potionThreshold:.6,allowNormalPotion:true,
-    onPotion:(currentHp,currentResource)=>{
-     c.run.playerHp=currentHp;c.resource=currentResource;
-     let stack=c.bag.find(x=>x.type==='healing_potion'&&x.quantity>0);
-     if(!stack&&c.silver>=silverPrice){engine.purchase(c.id,'silver','heal_25');bought++;stack=c.bag.find(x=>x.type==='healing_potion'&&x.quantity>0);}
-     if(!stack)return null;
-     const hp=engine.useHealingPotion(c.id,stack.id);used++;return{hp,resource:c.resource};
-    }
-   });
-   turns+=result.turns;c.run.playerHp=result.hp;c.resource=result.resource;
-   if(!result.win){death=stage;deathDetails={type:enemy.type,role:enemy.role,turns:result.turns,hpPct:result.hp/result.maxHp*100};break;}
-   engine.finishEnemy(c.id,{targetIndex:i});
-   allocateTalents(engine,c);
-   if(!c.branch&&c.level>=10){
-    engine.chooseBranch(c.id,build.branchId);
-    allocateTalents(engine,c);
-    branchUnlockedAt=stage;
-    equip(c,stage);
-   }
-  }
-  if(death)break;
-  cleared=stage;
- }
- const silverEarned=c.silver-startingSilver+bought*silverPrice,silverSpent=bought*silverPrice,netSilver=silverEarned-silverSpent;
- const seconds=turns*(balance.combat.attack_interval||1)+cleared*3;
- const estimatedRuns5d=seconds?Math.floor(25*3600/seconds):0;
- return{classId:build.classId,branchId:build.branchId,branchName:build.branchName,selectedModifier:chosen?.id||'none',branchUnlockedAt,cleared,death,deathDetails,level:c.level,xp:c.xp,silverEarned,potionsUsed:used,potionsBought:bought,silverSpent,netSilver,minutes:seconds/60,estimatedRuns5d,silver5d:Math.max(0,estimatedRuns5d*netSilver),premium:Math.max(0,estimatedRuns5d*netSilver)>=balance.economy.silver_store.premium_7d};
+
+const fs=require('node:fs');
+const path=require('node:path');
+const {simulateBuild}=require('./balance-simulation.test.cjs');
+
+const configDir=path.join(__dirname,'../configs/balance');
+const balance=Object.fromEntries(fs.readdirSync(configDir)
+ .filter(name=>name.endsWith('.json'))
+ .map(name=>[name.slice(0,-5),JSON.parse(fs.readFileSync(path.join(configDir,name),'utf8'))]));
+const builds=Object.entries(balance.classes.classes).flatMap(([classId,definition])=>
+ (definition.branches||[]).map(branch=>({
+  classId,branchId:branch.id,className:definition.name,branchName:branch.name
+ })));
+const seeds=[0,1,2];
+
+function summarize(build,index){
+ const runs=seeds.map(seedOffset=>simulateBuild(build.classId,build.branchId,index,seedOffset));
+ const best=runs[0];
+ const seconds=best.totalTurns*(balance.combat.attack_interval||1)+best.cleared*3;
+ const estimatedRuns5d=seconds>0?Math.floor(25*60*60/seconds):0;
+ return{
+  classId:build.classId,branchId:build.branchId,className:build.className,branchName:build.branchName,
+  cleared:best.cleared,deathStage:best.deathStage,deathReason:best.deathReason,
+  level:best.deathLevel||best.checkpoints?.[250]?.level||best.checkpoints?.[200]?.level||1,
+  potionsUsed:best.potions,potionsBought:best.potionsBought,silverSpent:best.silverSpent,
+  netSilver:best.netSilver,minutes:seconds/60,estimatedRuns5d,
+  silver5d:Math.max(0,estimatedRuns5d*best.netSilver),
+  canBuyPremium:Math.max(0,estimatedRuns5d*best.netSilver)>=balance.economy.silver_store.premium_7d,
+  seedClears:runs.map(run=>run.cleared),
+  worstSeedClear:Math.min(...runs.map(run=>run.cleared))
+ };
 }
+
 function run(){
- const rows=builds.map((build,index)=>runBuild(build,9001+index*997));
- console.log('Класс\tСпециализация\tЭтап\tУровень\tЭлиток/зелья\tСмерть');
- for(const r of rows){
-  const why=r.death?String(r.death)+' '+r.deathDetails.type+'/'+r.deathDetails.role+'/'+r.deathDetails.turns+' ходов/'+r.deathDetails.hpPct.toFixed(0)+'% HP':'—';
-  console.log([r.classId,r.branchId,r.cleared,r.level,r.potionsUsed+'/'+r.potionsBought,why].join('\t'));
- }
- const summary={builds:rows.length,allClear250:rows.every(r=>r.cleared===250),allLevel60:rows.every(r=>r.level>=60),clears:rows.filter(r=>r.cleared===250).length,weakBuilds:rows.filter(r=>r.cleared<250).map(r=>({build:r.classId+'.'+r.branchId,cleared:r.cleared,death:r.death,reason:r.deathDetails})),minLevel:Math.min(...rows.map(r=>r.level)),averageLevel:rows.reduce((sum,r)=>sum+r.level,0)/rows.length,averageNetSilver:rows.reduce((sum,r)=>sum+r.netSilver,0)/rows.length,averagePotions:rows.reduce((sum,r)=>sum+r.potionsUsed,0)/rows.length};
- console.log('SUMMARY '+JSON.stringify(summary,null,2));
+ if(builds.length!==21)throw new Error('Expected 21 class specializations; received '+builds.length);
+ const rows=builds.map(summarize);
+ console.table(rows.map(row=>({
+  build:row.className+' · '+row.branchName,
+  cleared:row.cleared,
+  worstSeed:row.worstSeedClear,
+  level:row.level,
+  potions:row.potionsUsed,
+  bought:row.potionsBought,
+  netSilver:row.netSilver,
+  premium5d:row.canBuyPremium
+ })));
+ const summary={
+  builds:rows.length,
+  allClear250:rows.every(row=>row.cleared===250),
+  allThreeSeedsClear250:rows.every(row=>row.worstSeedClear===250),
+  cleared250:rows.filter(row=>row.cleared===250).length,
+  weakest:rows.filter(row=>row.cleared<250).map(row=>({
+   build:row.className+' · '+row.branchName,
+   cleared:row.cleared,deathStage:row.deathStage,reason:row.deathReason
+  })),
+  averageNetSilver:rows.reduce((sum,row)=>sum+row.netSilver,0)/rows.length,
+  averageSilverFiveDays:rows.reduce((sum,row)=>sum+row.silver5d,0)/rows.length,
+  canBuyPremium:rows.filter(row=>row.canBuyPremium).length
+ };
+ console.log('ECONOMY SUMMARY '+JSON.stringify(summary,null,2));
  return rows;
 }
+
 if(require.main===module)run();
-module.exports={runBuild,run};
+module.exports={run,summarize};
