@@ -105,14 +105,16 @@
     helpPop?.remove();const pop=document.createElement('div');pop.className='tb-help-pop';pop.textContent=button.dataset.tbHelp||'';document.body.appendChild(pop);const r=button.getBoundingClientRect(),w=pop.getBoundingClientRect();pop.style.left=Math.max(14,Math.min(innerWidth-w.width-14,r.left))+'px';pop.style.top=Math.max(12,Math.min(innerHeight-w.height-12,r.bottom+7))+'px';helpPop=pop;
     const close=e=>{if(!pop.contains(e.target)&&e.target!==button){pop.remove();helpPop=null;document.removeEventListener('pointerdown',close,true);}};document.addEventListener('pointerdown',close,true);
   }
-  function score(item){const s=item?.stats||{};const rarity={'Обычная':1,'Редкая':2,'Эпическая':3,'Легендарная':4,'Богоподобная':5}[item?.rarity]||0;return rarity*1000+(s.attack||0)*.25+(s.defense||0)*.35+(s.health||0)*.015+(s.crit||0)*75+(s.critDamage||0)*30+(s.spellPower||0)*.2;}
+  function score(item){const s=item?.stats||{};const rarity={'Обычная':1,'Редкая':2,'Эпическая':3,'Легендарная':4,'Богоподобная':5}[item?.rarity]||0;return rarity*1000000+(s.attack||0)+(s.defense||0)*1.5+(s.health||0)*.08+(s.crit||0)*100+(s.critDamage||0)*30+(s.spellPower||0)*1.1+(s.fireDamage||0)+(s.iceDamage||0)+(s.darkDamage||0)+((s.fireResist||0)+(s.iceResist||0)+(s.darkResist||0)+(s.physicalResist||0))*.5;}
   function highlightUpgrades(){
     const c=active(read());if(!c)return;const slots=['weapon','chest','head','legs','hands','accessory'];
     root.querySelectorAll('[data-equip]').forEach(button=>{
       const id=button.dataset.equip,item=(c.bag||[]).find(x=>x.id===id);if(!item||item.type!=='equipment'||!item.stats){button.classList.remove('tb-equip-upgrade');return;}
-      const slot=slots.indexOf(item.slot),current=slot>=0?c.gear?.[slot]:null;const better=!current||score(item)>score(current)+.01;
+      const slot=slots.indexOf(item.slot),current=slot>=0?c.gear?.[slot]:null;const compatible=(!item.classId||item.classId===c.classId)&&(!item.class_id||item.class_id===c.classId)&&(!item.branch||item.branch===c.branch)&&(!item.branch_id||item.branch_id===c.branch);const better=compatible&&(!current||score(item)>score(current)+.01);
+      if(!button.dataset.tbOriginalLabel)button.dataset.tbOriginalLabel=button.textContent.trim();
       button.classList.toggle('tb-equip-upgrade',better);
-      if(better){if(button.textContent.trim()!=='НАДЕТЬ · ЛУЧШЕ')button.textContent='НАДЕТЬ · ЛУЧШЕ';button.setAttribute('aria-label','Надеть улучшение: '+(item.name||'предмет'));}
+      const label=better?'НАДЕТЬ · ЛУЧШЕ':button.dataset.tbOriginalLabel;if(button.textContent.trim()!==label)button.textContent=label;
+      if(better)button.setAttribute('aria-label','Надеть улучшение: '+(item.name||'предмет'));else button.removeAttribute('aria-label');
     });
   }
   function lootTone(kind){
