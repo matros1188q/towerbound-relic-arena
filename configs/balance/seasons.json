@@ -1,5 +1,5 @@
 {
-  "season_length_days": 90,
+  "season_length_days": 30,
   "timezone": "UTC",
   "reward_first_clear_stage": 250,
   "season_reward_cosmetic": "seasonal-tower-crest",
