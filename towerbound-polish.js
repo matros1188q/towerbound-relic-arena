@@ -57,10 +57,10 @@
     const title=overlay.querySelector('#tb-turn-tutorial-title'),list=overlay.querySelector('ol'),button=overlay.querySelector('[data-action="dismiss-turn-tutorial"]');
     if(!title||!list||!button)return;
     const step=tutorialSteps[Math.min(tutorialStep,tutorialSteps.length-1)];
-    title.textContent=tutorialStarted?step.title:'Твой первый бой';
+    const nextTitle=tutorialStarted?step.title:'Твой первый бой';if(title.textContent!==nextTitle)title.textContent=nextTitle;
     const html=tutorialStarted?'<li><b>'+step.text+'</b></li>':'<li><b>Базовая атака.</b> Она доступна каждый ход и не тратит ресурс.</li><li><b>Умения 1–6.</b> Используй их по ситуации и следи за стоимостью.</li><li><b>Ход противника.</b> Завершай ход, чтобы враги выполнили свои действия.</li>';
     if(list.dataset.tbStep!==String(tutorialStarted?tutorialStep:'intro')){list.innerHTML=html;list.dataset.tbStep=String(tutorialStarted?tutorialStep:'intro');}
-    button.textContent=tutorialStarted?'ОЖИДАЕТСЯ: '+(tutorialStep===0?'АТАКА':tutorialStep===1||tutorialStep===3?'ЗАВЕРШИТЬ ХОД':'УМЕНИЕ'):'НАЧАТЬ ОБУЧЕНИЕ';
+    const nextLabel=tutorialStarted?'ОЖИДАЕТСЯ: '+(tutorialStep===0?'АТАКА':tutorialStep===1||tutorialStep===3?'ЗАВЕРШИТЬ ХОД':'УМЕНИЕ'):'НАЧАТЬ ОБУЧЕНИЕ';if(button.textContent.trim()!==nextLabel)button.textContent=nextLabel;
   }
   function tutorialClick(event){
     const dismiss=event.target.closest('[data-action="dismiss-turn-tutorial"]');
@@ -110,7 +110,7 @@
     const c=active(read());if(!c)return;const slots=['weapon','chest','head','legs','hands','accessory'];
     root.querySelectorAll('[data-equip]').forEach(button=>{
       const id=button.dataset.equip,item=(c.bag||[]).find(x=>x.id===id);if(!item||item.type!=='equipment'||!item.stats){button.classList.remove('tb-equip-upgrade');return;}
-      const slot=slots.indexOf(item.slot),current=slot>=0?c.gear?.[slot]:null;const compatible=(!item.classId||item.classId===c.classId)&&(!item.class_id||item.class_id===c.classId)&&(!item.branch||item.branch===c.branch)&&(!item.branch_id||item.branch_id===c.branch);const better=compatible&&(!current||score(item)>score(current)+.01);
+      const slot=Number.isInteger(item.slot)?item.slot:slots.indexOf(item.slot),current=slot>=0?c.gear?.[slot]:null;const compatible=(!item.classId||item.classId===c.classId)&&(!item.class_id||item.class_id===c.classId)&&(!item.branch||item.branch===c.branch)&&(!item.branch_id||item.branch_id===c.branch);const better=compatible&&(!current||score(item)>score(current)+.01);
       if(!button.dataset.tbOriginalLabel)button.dataset.tbOriginalLabel=button.textContent.trim();
       button.classList.toggle('tb-equip-upgrade',better);
       const label=better?'НАДЕТЬ · ЛУЧШЕ':button.dataset.tbOriginalLabel;if(button.textContent.trim()!==label)button.textContent=label;
