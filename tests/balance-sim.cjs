@@ -100,7 +100,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
   else if(parrySkill&&parryChance<=0&&hp<=maxHp*.7&&resource>=supportCost(parrySkill))actionSkill=parrySkill;
   else if(buffSkill&&buffTurns<=0&&damageSkills.length===0&&resource>=supportCost(buffSkill))actionSkill=buffSkill;
   else actionSkill=useDamageSkill();
-  if(actionSkill){
+  if(!ultimateUsed&&actionSkill){
    const effect=effects[actionSkill.effect_template]||effects.strike||{},type=effect.type||actionSkill.effect_template;
    const cost=c.classId==='duelist'?(costs.attack_skill??22):Number(actionSkill.cost??actionSkill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??22);
    if(resource>=cost){
@@ -117,7 +117,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
      actionDamage+=hit(damage,damageType);
      if(type==='dot'&&Number(effect.damage_multiplier)>0){
       const dotMult=c.classId==='assassin'&&c.branch==='poison'?(Number(balance.classes.branch_stat_bonuses?.['assassin.poison']?.dot_damage_multiplier)||1.15):1;
-      enemyDots.push({damage:Math.max(1,Math.round(stats.dps*effect.damage_multiplier*(1+stats.damageMultiplier-1)*dotMult*Number(actionSkill.powerMultiplier||1))),ticks:Math.max(1,Number(effect.ticks)||3),type:damageType});
+      enemyDots.push({damage:Math.max(1,Math.round(stats.dps*effect.damage_multiplier*dotMult*Number(actionSkill.powerMultiplier||1))),ticks:Math.max(1,Number(effect.ticks)||3),type:damageType});
      }
     }else if(type==='debuff'){
      debuffPower=Number(effect.power_multiplier)||0;debuffTurns=Math.max(1,Number(effect.duration_turns||effect.duration)||3);
@@ -135,20 +135,19 @@ function simulateFight(engine,c,stage,enemy,opt={}){
      parryChance=Number(effect.parry_chance)||.25;
     }
    }
-  }else{
-   const raw=basic.damage*(stats.basicAttackDamageMultiplier||1);
+  }else if(!ultimateUsed){
    actionDamage+=hit(basic.damage,'physical');
    resource=Math.min(c.resourceMax,resource+basic.resourceGain);
   }
+  }
   if(enemyHp<=0)break;
-  if(ult&&resource>=ultCost&&turn>=ultimateReady){
-   const defensive=ult.effect==='heal_shield'&&hp<=maxHp*.75;
-   if(defensive){
-    resource-=ultCost;ultimateReady=turn+Math.max(1,Number(ult.cooldown_turns)||3);
+  let ultimateUsed=false;
+  if(ult&&resource>=ultCost+reserve&&turn>=ultimateReady&&(ult.effect!=='heal_shield'||hp<=maxHp*.75)){
+   resource-=ultCost;ultimateReady=turn+Math.max(1,Number(ult.cooldown_turns)||3);ultimateUsed=true;
+   if(ult.effect==='heal_shield'){
     hp=Math.min(maxHp,hp+Math.round(maxHp*(Number(ult.heal_fraction)||0)));
     shield+=Math.round(maxHp*(Number(ult.shield_fraction)||0));
-   }else if(ult.effect!=='heal_shield'&&resource>=ultCost+reserve){
-    resource-=ultCost;ultimateReady=turn+Math.max(1,Number(ult.cooldown_turns)||3);
+   }else{
     const raw=stats.dps*2.0*(stats.damageMultiplier||1);
     const hits=['aoe_burst','heal_aoe','single_burst'].includes(ult.effect)?3:1;
     for(let i=0;i<hits&&enemyHp>0;i++){
@@ -159,23 +158,26 @@ function simulateFight(engine,c,stage,enemy,opt={}){
    }
   }
   if(enemyHp<=0)break;
+  if(ultimateUsed){
+   // Ultimate occupies the single skill action for this turn; no normal attack or branch skill follows.
+  }else{
   let incoming=Math.max(0,Math.round(enemyStats.damage*engine.mitigationMultiplier(stats.defense,stage)*(1-(stats.damageReduction||0))));
   if(debuffTurns>0){incoming=Math.round(incoming*(1-debuffPower));debuffTurns--;}
   if(parryChance>0){if(random()<parryChance)incoming=0;parryChance=0;}
-  if(counter&&resource>=counterCost&&turn>=counterReady){
+  let cleansedPoison=false;
+  const bossPhase=enemy.type==='boss'?engine.bossPhaseInfo(enemyHp,enemyStats.hp).phase:0;
+  const canCounter=enemy.type!=='boss'||bossPhase!==3;
+  if(counter&&canCounter&&resource>=counterCost&&turn>=counterReady){
    const telegraph=enemy.role==='poison'?'poison':'strong_hit';
    const reaction=engine.resolveReaction(telegraph,counter.id,c.classId,incoming);
    incoming=reaction.damage;resource-=counterCost;counterReady=turn+Math.max(1,Number(counter.cooldown_turns)||2);
-   if(reaction.cleansesPoison)poisonStacks=0;
+   cleansedPoison=!!reaction.cleansesPoison;if(cleansedPoison)poisonStacks=0;
   }
   if(shield>0){const absorbed=Math.min(shield,incoming);shield-=absorbed;incoming-=absorbed;}
   let phaseLethal=false;
-  if(enemy.type==='boss'){
-   const phase=engine.bossPhaseInfo(enemyHp,enemyStats.hp).phase;
-   if(phase===4){phase4Turns++;if(phase4Turns>=Number(balance.bosses.phases.find(x=>x.phase===4)?.player_turn_deadline||3)){incoming=Number(balance.bosses.phases.find(x=>x.phase===4)?.damage_flat||9999);phaseLethal=true;}}
-  }
+  if(enemy.type==='boss'&&bossPhase===4){phase4Turns++;if(phase4Turns>=Number(balance.bosses.phases.find(x=>x.phase===4)?.player_turn_deadline||3)){incoming=Number(balance.bosses.phases.find(x=>x.phase===4)?.damage_flat||9999);phaseLethal=true;}}
   hp=Math.max(0,hp-incoming);
-  if(enemy.role==='poison'&&!((counter||{}).effect==='cleanse')){poisonStacks++;hp=Math.max(0,hp-Math.round(maxHp*(balance.mobs.roles.poison.damage_fraction_per_turn||.01)*poisonStacks));}
+  if(enemy.role==='poison'&&!cleansedPoison){poisonStacks++;hp=Math.max(0,hp-Math.round(maxHp*(balance.mobs.roles.poison.damage_fraction_per_turn||.01)*poisonStacks));}
   if(enemy.role==='healer'&&turn%(balance.mobs.roles.healer.every_n_turns||2)===0)enemyHp=Math.min(enemyStats.hp,enemyHp+Math.round(enemyStats.hp*(balance.mobs.roles.healer.heal_fraction||.2)));
   for(const dot of enemyDots.slice()){if(dot.ticks>0&&enemyHp>0){const dealt=hit(dot.damage,dot.type);actionDamage+=dealt;dot.ticks--;}}
   enemyDots=enemyDots.filter(x=>x.ticks>0);
