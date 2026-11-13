@@ -21,6 +21,7 @@ assert.ok(polish.includes("target.matches('[data-action=\"attack\"")&&polish.inc
 assert.ok(polish.includes('БОЕВАЯ МОЩЬ')&&polish.includes('ЗАЩИТА')&&polish.includes('КРИТ'),'stat info buttons explain power, armor and critical chance');
 assert.ok(polish.includes('function showLevelUp')&&polish.includes('Доступно очков талантов'),'level-up reward modal shows talent points');
 assert.ok(polish.includes('function lootTone')&&polish.includes('navigator.vibrate'),'high-rarity loot has synthesized audio and vibration feedback');
+assert.ok(ui.includes('const bestEquippedSet=')&&ui.includes('item?.setId'),'avatar frame follows the strongest equipped set');
 assert.ok(polish.includes('tb-equip-upgrade')&&polish.includes('НАДЕТЬ · ЛУЧШЕ'),'better equipment receives an emphasized equip action');
 assert.equal(tutorial.steps_data.length,6,'existing six-step general tutorial remains intact');
 assert.ok(endgame.includes('function startTower()'),'existing endless tower remains intact');
