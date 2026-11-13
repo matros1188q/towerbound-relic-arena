@@ -11,7 +11,7 @@ const sw=read('service-worker.js');
 const tutorial=JSON.parse(read('configs/balance/tutorial.json'));
 const seasons=JSON.parse(read('configs/balance/seasons.json'));
 const endgame=read('endgame-systems.js');
-assert.ok(index.includes('towerbound-polish.js?v=2'),'polish module is loaded after the RPG UI');
+assert.ok(index.includes('towerbound-polish.js?v=4'),'polish module is loaded after the RPG UI');
 assert.ok(sw.includes('./towerbound-polish.js'),'polish module is included in offline shell cache');
 assert.ok(sw.includes("towerbound-v300"),'offline shell cache is versioned for this release');
 assert.ok(polish.includes('250 этапов'),'new character guide explains the 250-stage goal');
