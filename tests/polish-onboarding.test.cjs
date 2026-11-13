@@ -13,7 +13,7 @@ const seasons=JSON.parse(read('configs/balance/seasons.json'));
 const endgame=read('endgame-systems.js');
 assert.ok(index.includes('towerbound-polish.js?v=4'),'polish module is loaded after the RPG UI');
 assert.ok(sw.includes('./towerbound-polish.js'),'polish module is included in offline shell cache');
-assert.ok(sw.includes("towerbound-v300"),'offline shell cache is versioned for this release');
+assert.ok(sw.includes("towerbound-v301"),'offline shell cache is versioned for this release');
 assert.ok(polish.includes('250 этапов'),'new character guide explains the 250-stage goal');
 assert.ok(polish.includes('на 10 уровне выбери одну из трёх веток'),'new character guide explains specialization unlock');
 assert.ok(polish.includes('Шаг 1 из 4')&&polish.includes('Шаг 4 из 4'),'first battle tutorial has four guided actions');
