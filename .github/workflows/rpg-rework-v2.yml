@@ -54,6 +54,14 @@ jobs:
       - run: node tests/ui-polish-regression.test.cjs
       - run: node tests/loot-combat-update.test.cjs
       - run: node tests/combat-runtime.test.cjs
+      - name: Check specialization balance simulator syntax
+        run: |
+          node --check tests/balance-sim.cjs
+          node --check tests/economy-sim.cjs
+      - name: Run 21-specialization balance matrix
+        run: node tests/balance-sim.cjs
+      - name: Simulate all 21 builds through the 250-stage tower
+        run: node tests/economy-sim.cjs
       - run: node tests/combat-visuals.test.cjs
       - run: node tests/character-art.test.cjs
       - run: node tests/progression-24.test.cjs
