@@ -541,7 +541,7 @@ function talentBonusDescription(talent,rank){
  function profileScreen(){
   const c=live();if(!c)return characterList();
   const def=classData(c),branch=(def.branches||[]).find(b=>b.id===c.branch),stats=balance.classes.base_stats,combatStats=engine.getCombatStats(c),gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"],gearSlotKeys=["weapon","chest","head","legs","hands","accessory"];
-  const equippedRarities=(c.gear||[]).filter(Boolean).map(item=>item.rarity),rarityFrame=(c.gear||[]).length===6&&(c.gear||[]).every(Boolean)&&new Set(equippedRarities).size===1?({"Эпическая":"tb-rarity-frame-epic","Легендарная":"tb-rarity-frame-legendary","Богоподобная":"tb-rarity-frame-godlike"}[equippedRarities[0]]||""):"";
+  const rarityRank={"Обычная":1,"Редкая":2,"Эпическая":3,"Легендарная":4,"Богоподобная":5},setGroups=new Map();(c.gear||[]).filter(item=>item?.setId).forEach(item=>{const group=setGroups.get(item.setId)||{count:0,rarity:item.rarity};group.count++;if((rarityRank[item.rarity]||0)>(rarityRank[group.rarity]||0))group.rarity=item.rarity;setGroups.set(item.setId,group);});const bestEquippedSet=[...setGroups.values()].sort((a,b)=>b.count-a.count||(rarityRank[b.rarity]||0)-(rarityRank[a.rarity]||0))[0],rarityFrame=bestEquippedSet?.count>=2?({"Эпическая":"tb-rarity-frame-epic","Легендарная":"tb-rarity-frame-legendary","Богоподобная":"tb-rarity-frame-godlike"}[bestEquippedSet.rarity]||""):"";
   const spent=Object.values(c.talents||{}).reduce((a,b)=>a+b,0),free=Math.max(0,c.talentPoints-spent);
   let body="";
   if(profileTab==="stats"){
