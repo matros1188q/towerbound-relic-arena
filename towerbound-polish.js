@@ -73,7 +73,7 @@
       const id=button.dataset.equip,item=(c.bag||[]).find(x=>x.id===id);if(!item||item.type!=='equipment'||!item.stats){button.classList.remove('tb-equip-upgrade');return;}
       const slot=slots.indexOf(item.slot),current=slot>=0?c.gear?.[slot]:null;const better=!current||score(item)>score(current)+.01;
       button.classList.toggle('tb-equip-upgrade',better);
-      if(better){button.textContent='НАДЕТЬ · ЛУЧШЕ';button.setAttribute('aria-label','Надеть улучшение: '+(item.name||'предмет'));}
+      if(better){if(button.textContent.trim()!=='НАДЕТЬ · ЛУЧШЕ')button.textContent='НАДЕТЬ · ЛУЧШЕ';button.setAttribute('aria-label','Надеть улучшение: '+(item.name||'предмет'));}
     });
   }
   function lootTone(kind){
