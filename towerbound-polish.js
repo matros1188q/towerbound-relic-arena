@@ -58,7 +58,7 @@
     if(!title||!list||!button)return;
     const step=tutorialSteps[Math.min(tutorialStep,tutorialSteps.length-1)];
     const nextTitle=tutorialStarted?step.title:'Твой первый бой';if(title.textContent!==nextTitle)title.textContent=nextTitle;
-    const html=tutorialStarted?'<li><b>'+step.text+'</b></li>':'<li><b>Базовая атака.</b> Она доступна каждый ход и не тратит ресурс.</li><li><b>Умения 1–6.</b> Используй их по ситуации и следи за стоимостью.</li><li><b>Ход противника.</b> Завершай ход, чтобы враги выполнили свои действия.</li>';
+    const html=tutorialStarted?'<li><b>'+step.text+'</b></li>':'<li><b>Базовая атака.</b> Она доступна каждый ход и не тратит ресурс.</li><li><b>Умения 1–6.</b> Используй их по ситуации и следи за стоимостью.</li><li><b>Телеграф врага.</b> Завершай ход, чтобы увидеть намерение противника и его действие.</li>';
     if(list.dataset.tbStep!==String(tutorialStarted?tutorialStep:'intro')){list.innerHTML=html;list.dataset.tbStep=String(tutorialStarted?tutorialStep:'intro');}
     const nextLabel=tutorialStarted?'ОЖИДАЕТСЯ: '+(tutorialStep===0?'АТАКА':tutorialStep===1||tutorialStep===3?'ЗАВЕРШИТЬ ХОД':'УМЕНИЕ'):'НАЧАТЬ ОБУЧЕНИЕ';if(button.textContent.trim()!==nextLabel)button.textContent=nextLabel;
   }
@@ -77,6 +77,7 @@
       tutorialStep===1||tutorialStep===3?target.matches('[data-action="end-turn"],.tb-end-turn,#endturn'):
       target.matches('[data-action="skill"],[data-panel-skill],.v2-skill-btn');
     if(!action)return;
+    if(tutorialStep===0)window.TB_TUTORIAL_FREE_SKILL=true;
     tutorialStep++;
     if(tutorialStep>=tutorialSteps.length){
       tutorialCompleting=true;localStorage.setItem('tb-turn-tutorial-seen-v1','1');
