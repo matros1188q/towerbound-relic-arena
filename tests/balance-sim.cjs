@@ -492,7 +492,7 @@ function run(){
      const seed=stage*1009+classes.indexOf(build)*997+enemyTypes.indexOf(type)*97+trial*17;
      const random=rng(seed);
      const engine=createEngine(balance,{random,now:()=>Date.UTC(2026,10,10)});
-     engine.createCharacter('Sim '+build.classId+' '+build.branchId,build.classId);
+     engine.createCharacter('QA',build.classId);
      const character=engine.state.characters[0];
      character.level=levelAt(stage);character.branch=build.branchId;
      character.progress.highestEver=stage-1;character.progress.currentStage=stage;
