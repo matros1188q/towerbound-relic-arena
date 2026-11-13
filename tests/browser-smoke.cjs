@@ -113,10 +113,18 @@ async function journey(type,name,viewport,url){
   const tutorialText=(await page.locator('.tb-turn-tutorial-card').innerText()).toLocaleLowerCase();
   for(const phrase of ['твой первый бой','базовая атака','умения 1–6','телеграф врага','завершить ход'])assert.ok(tutorialText.includes(phrase),name+' tutorial covers '+phrase);
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
-  assert.equal(await page.locator('.tb-turn-tutorial').count(),0,name+' dismisses the first-run tutorial');
+  assert.equal(await page.locator('.tb-turn-tutorial').count(),1,name+' starts rather than skips the forced tutorial');
   assert.equal(await page.locator('.v2-btn-attack').count(),1,name+' renders the free basic attack control');
+  await page.locator('.v2-btn-attack').click();
+  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
   await page.locator('[data-action="end-turn"]').click();
-  await page.waitForFunction(()=>Number(document.querySelector('.v2-battle-top')?.innerText.match(/РАУНД\s+(\d+)/)?.[1]||0)>=2,{timeout:10000});
+  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: УМЕНИЕ'),{timeout:10000});
+  await page.waitForSelector('[data-panel-skill]:not([disabled])',{timeout:10000});
+  await page.locator('[data-panel-skill]:not([disabled])').first().click();
+  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
+  await page.locator('[data-action="end-turn"]').click();
+  await page.waitForSelector('.tb-turn-tutorial',{state:'detached',timeout:10000});
+  await page.waitForFunction(()=>Number(document.querySelector('.v2-battle-top')?.innerText.match(/РАУНД\\s+(\\d+)/)?.[1]||0)>=2,{timeout:10000});
   fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
   await page.screenshot({path:path.join(root,'artifacts','turn-based-end-turn-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
   const diagnostics=await page.evaluate(()=>({
