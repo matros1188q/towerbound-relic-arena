@@ -23,7 +23,14 @@ function startServer(){
 }
 async function journey(type,name,viewport,url){
  const browser=await type.launch({headless:true});
- const context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',isMobile:viewport.width<500,hasTouch:viewport.width<500});
+ let context;
+ try{
+  const mobileEmulation=type===firefox?{}:{isMobile:viewport.width<500,hasTouch:viewport.width<500};
+  context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',...mobileEmulation});
+ }catch(error){
+  await browser.close().catch(()=>{});
+  throw error;
+ }
  const page=await context.newPage(),errors=[],failed=[];
  page.on('pageerror',error=>errors.push(error.message));
  page.on('requestfailed',request=>{const url=request.url(),reason=request.failure()?.errorText;if(reason!=='net::ERR_ABORTED'&&reason!=='NS_BINDING_ABORTED'&&!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+reason);});
