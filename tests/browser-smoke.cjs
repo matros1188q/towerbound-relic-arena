@@ -27,11 +27,7 @@ async function journey(type,name,viewport,url){
  try{
   const mobileEmulation=type===firefox?{}:{isMobile:viewport.width<500,hasTouch:viewport.width<500};
   context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',...mobileEmulation});
- }catch(error){
-  await browser.close().catch(()=>{});
-  throw error;
- }
- const page=await context.newPage(),errors=[],failed=[];
+  const page=await context.newPage(),errors=[],failed=[];
  page.on('pageerror',error=>errors.push(error.message));
  page.on('requestfailed',request=>{const url=request.url(),reason=request.failure()?.errorText;if(reason!=='net::ERR_ABORTED'&&reason!=='NS_BINDING_ABORTED'&&!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+reason);});
  await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
@@ -47,7 +43,6 @@ async function journey(type,name,viewport,url){
      rpc:async()=>({data:{revision:1},error:null})};
    }};
   });
- try{
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework,{timeout:20000});
   await page.waitForSelector('#tbRpg .tb-v2',{timeout:15000});
@@ -171,7 +166,7 @@ async function journey(type,name,viewport,url){
   assert.deepEqual(errors,[],name+' has no uncaught browser errors');
   assert.deepEqual(failed,[],name+' has no unexpected failed local/network requests');
   process.stdout.write('PASS '+name+' '+viewport.width+'x'+viewport.height+' — boot → character create → save/reload → 250-stage map\n');
- }finally{await context.close();await browser.close();}
+ }finally{if(context)await context.close().catch(()=>{});await browser.close().catch(()=>{});}
 }
 (async()=>{
  const server=await startServer(),url='http://127.0.0.1:'+server.address().port+'/';
