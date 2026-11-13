@@ -23,7 +23,7 @@ function allocateTalents(engine,c){
 }
 function setup(classId,branchId,stage,seed){
  const engine=createEngine(balance,{random:rng(seed),now:()=>Date.UTC(2026,10,10)});
- engine.createCharacter('Sim '+classId+' '+branchId,classId);
+ engine.createCharacter('QA',classId);
  const c=engine.state.characters[0];c.level=levelAt(stage);c.talentPoints=Math.max(0,c.level-1);
  if(branchId&&c.level>=10)engine.chooseBranch(c.id,branchId);
  const talentPointsSpent=allocateTalents(engine,c);equip(c,stage);
