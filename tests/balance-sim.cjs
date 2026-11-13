@@ -85,62 +85,8 @@ function simulateFight(engine,c,stage,enemy,opt={}){
    const healed=opt.onPotion?opt.onPotion(hp,resource):{hp:Math.min(maxHp,hp+Math.round(maxHp*balance.healing.potion_heal_fraction)),resource:Math.min(c.resourceMax,resource+(balance.resources.regeneration.potion||25))};
    if(healed){hp=healed.hp;resource=healed.resource;usedPotion=true;}
   }
-  let actionDamage=0,actedWithSkill=false;
+  let actionDamage=0;
   const reserve=(counter&&turn>=counterReady)?counterCost:0;
-  let actionSkill=null;
-  const healSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='heal'&&(skillReady[s.id]||1)<=turn);
-  const shieldSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='shield'&&(skillReady[s.id]||1)<=turn);
-  const buffSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='buff'&&(skillReady[s.id]||1)<=turn);
-  const debuffSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='debuff'&&(skillReady[s.id]||1)<=turn);
-  const parrySkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='parry'&&(skillReady[s.id]||1)<=turn);
-  const supportCost=s=>!s?Infinity:(c.classId==='duelist'?(costs.attack_skill??22):Number(s.cost??s.resource_cost??(effects[s.effect_template]||{}).resource_cost??balance.resources.action_costs.attack_skill??22));
-  if(healSkill&&hp<=maxHp*.62&&resource>=supportCost(healSkill))actionSkill=healSkill;
-  else if(shieldSkill&&shield<=0&&hp<=maxHp*.78&&resource>=supportCost(shieldSkill))actionSkill=shieldSkill;
-  else if(debuffSkill&&debuffTurns<=0&&hp<=maxHp*.72&&resource>=supportCost(debuffSkill))actionSkill=debuffSkill;
-  else if(parrySkill&&parryChance<=0&&hp<=maxHp*.7&&resource>=supportCost(parrySkill))actionSkill=parrySkill;
-  else if(buffSkill&&buffTurns<=0&&damageSkills.length===0&&resource>=supportCost(buffSkill))actionSkill=buffSkill;
-  else actionSkill=useDamageSkill();
-  if(!ultimateUsed&&actionSkill){
-   const effect=effects[actionSkill.effect_template]||effects.strike||{},type=effect.type||actionSkill.effect_template;
-   const cost=c.classId==='duelist'?(costs.attack_skill??22):Number(actionSkill.cost??actionSkill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??22);
-   if(resource>=cost){
-    resource-=cost;actedWithSkill=true;
-    const cooldown=Math.max(1,Number(effect.cooldown_turns??effect.cooldown??4));skillReady[actionSkill.id]=turn+cooldown;
-    const power=Number(actionSkill.damage_multiplier??actionSkill.damage??effect.damage_multiplier??1);
-    let damage=stats.dps*turnMultiplier*(stats.damageMultiplier||1)*power;
-    if(c.classId==='destroyer'&&c.branch==='wand_shield')damage+=(stats.defense*(Number(balance.classes.branch_stat_bonuses?.['destroyer.wand_shield']?.defense_damage_fraction)||.5));
-    if(buffTurns>0)damage*=1+buffPower;
-    if(random()<(stats.critChance||0))damage*=stats.critMultiplier||1.5;
-    const damageType=damageTypeFor(actionSkill);
-    if(['strike','aoe','execute','control','dot'].includes(type)){
-     if(type==='execute'&&enemyHp<=enemyStats.hp*.3)damage*=1+(Number(effect.below_health_bonus)||.3);
-     actionDamage+=hit(damage,damageType);
-     if(type==='dot'&&Number(effect.damage_multiplier)>0){
-      const dotMult=c.classId==='assassin'&&c.branch==='poison'?(Number(balance.classes.branch_stat_bonuses?.['assassin.poison']?.dot_damage_multiplier)||1.15):1;
-      enemyDots.push({damage:Math.max(1,Math.round(stats.dps*effect.damage_multiplier*dotMult*Number(actionSkill.powerMultiplier||1))),ticks:Math.max(1,Number(effect.ticks)||3),type:damageType});
-     }
-    }else if(type==='debuff'){
-     debuffPower=Number(effect.power_multiplier)||0;debuffTurns=Math.max(1,Number(effect.duration_turns||effect.duration)||3);
-     if(c.classId==='shaman'&&c.branch==='dark_gods'){
-      const dotMult=Number(balance.classes.branch_stat_bonuses?.['shaman.dark_gods']?.dot_damage_multiplier)||1.15;
-      enemyDots.push({damage:Math.max(1,Math.round(stats.dps*(Number(effect.damage_multiplier||actionSkill.damage_multiplier||.45))*.45*dotMult)),ticks:Math.max(1,Number(effect.duration)||3),type:damageType});
-     }
-    }else if(type==='buff'){
-     buffPower=Number(effect.power_multiplier)||0;buffTurns=Math.max(1,Number(effect.duration_turns||effect.duration)||3);
-    }else if(type==='heal'){
-     hp=Math.min(maxHp,hp+Math.round(maxHp*(Number(effect.heal_multiplier)||0)*(stats.healingMultiplier||1)));
-    }else if(type==='shield'){
-     shield+=Math.round(maxHp*(Number(effect.shield_fraction)||0));
-    }else if(type==='parry'){
-     parryChance=Number(effect.parry_chance)||.25;
-    }
-   }
-  }else if(!ultimateUsed){
-   actionDamage+=hit(basic.damage,'physical');
-   resource=Math.min(c.resourceMax,resource+basic.resourceGain);
-  }
-  }
-  if(enemyHp<=0)break;
   let ultimateUsed=false;
   if(ult&&resource>=ultCost+reserve&&turn>=ultimateReady&&(ult.effect!=='heal_shield'||hp<=maxHp*.75)){
    resource-=ultCost;ultimateReady=turn+Math.max(1,Number(ult.cooldown_turns)||3);ultimateUsed=true;
@@ -158,9 +104,61 @@ function simulateFight(engine,c,stage,enemy,opt={}){
    }
   }
   if(enemyHp<=0)break;
-  if(ultimateUsed){
-   // Ultimate occupies the single skill action for this turn; no normal attack or branch skill follows.
-  }else{
+  if(!ultimateUsed){
+   let actionSkill=null;
+   const healSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='heal'&&(skillReady[s.id]||1)<=turn);
+   const shieldSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='shield'&&(skillReady[s.id]||1)<=turn);
+   const buffSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='buff'&&(skillReady[s.id]||1)<=turn);
+   const debuffSkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='debuff'&&(skillReady[s.id]||1)<=turn);
+   const parrySkill=supportSkills.find(s=>(effects[s.effect_template]||{}).type==='parry'&&(skillReady[s.id]||1)<=turn);
+   const supportCost=s=>!s?Infinity:(c.classId==='duelist'?(costs.attack_skill??22):Number(s.cost??s.resource_cost??(effects[s.effect_template]||{}).resource_cost??balance.resources.action_costs.attack_skill??22));
+   if(healSkill&&hp<=maxHp*.62&&resource>=supportCost(healSkill))actionSkill=healSkill;
+   else if(shieldSkill&&shield<=0&&hp<=maxHp*.78&&resource>=supportCost(shieldSkill))actionSkill=shieldSkill;
+   else if(debuffSkill&&debuffTurns<=0&&hp<=maxHp*.72&&resource>=supportCost(debuffSkill))actionSkill=debuffSkill;
+   else if(parrySkill&&parryChance<=0&&hp<=maxHp*.7&&resource>=supportCost(parrySkill))actionSkill=parrySkill;
+   else if(buffSkill&&buffTurns<=0&&damageSkills.length===0&&resource>=supportCost(buffSkill))actionSkill=buffSkill;
+   else actionSkill=useDamageSkill();
+   if(actionSkill){
+    const effect=effects[actionSkill.effect_template]||effects.strike||{},type=effect.type||actionSkill.effect_template;
+    const cost=c.classId==='duelist'?(costs.attack_skill??22):Number(actionSkill.cost??actionSkill.resource_cost??effect.resource_cost??balance.resources.action_costs.attack_skill??22);
+    if(resource>=cost){
+     resource-=cost;
+     const cooldown=Math.max(1,Number(effect.cooldown_turns??effect.cooldown??4));skillReady[actionSkill.id]=turn+cooldown;
+     const power=Number(actionSkill.damage_multiplier??actionSkill.damage??effect.damage_multiplier??1);
+     let damage=stats.dps*turnMultiplier*(stats.damageMultiplier||1)*power;
+     if(c.classId==='destroyer'&&c.branch==='wand_shield')damage+=(stats.defense*(Number(balance.classes.branch_stat_bonuses?.['destroyer.wand_shield']?.defense_damage_fraction)||.5));
+     if(buffTurns>0)damage*=1+buffPower;
+     if(random()<(stats.critChance||0))damage*=stats.critMultiplier||1.5;
+     const damageType=damageTypeFor(actionSkill);
+     if(['strike','aoe','execute','control','dot'].includes(type)){
+      if(type==='execute'&&enemyHp<=enemyStats.hp*.3)damage*=1+(Number(effect.below_health_bonus)||.3);
+      actionDamage+=hit(damage,damageType);
+      if(type==='dot'&&Number(effect.damage_multiplier)>0){
+       const dotMult=c.classId==='assassin'&&c.branch==='poison'?(Number(balance.classes.branch_stat_bonuses?.['assassin.poison']?.dot_damage_multiplier)||1.15):1;
+       enemyDots.push({damage:Math.max(1,Math.round(stats.dps*effect.damage_multiplier*dotMult*Number(actionSkill.powerMultiplier||1))),ticks:Math.max(1,Number(effect.ticks)||3),type:damageType});
+      }
+     }else if(type==='debuff'){
+      debuffPower=Number(effect.power_multiplier)||0;debuffTurns=Math.max(1,Number(effect.duration_turns||effect.duration)||3);
+      if(c.classId==='shaman'&&c.branch==='dark_gods'){
+       const dotMult=Number(balance.classes.branch_stat_bonuses?.['shaman.dark_gods']?.dot_damage_multiplier)||1.15;
+       enemyDots.push({damage:Math.max(1,Math.round(stats.dps*(Number(effect.damage_multiplier||actionSkill.damage_multiplier||.45))*.45*dotMult)),ticks:Math.max(1,Number(effect.duration)||3),type:damageType});
+      }
+     }else if(type==='buff'){
+      buffPower=Number(effect.power_multiplier)||0;buffTurns=Math.max(1,Number(effect.duration_turns||effect.duration)||3);
+     }else if(type==='heal'){
+      hp=Math.min(maxHp,hp+Math.round(maxHp*(Number(effect.heal_multiplier)||0)*(stats.healingMultiplier||1)));
+     }else if(type==='shield'){
+      shield+=Math.round(maxHp*(Number(effect.shield_fraction)||0));
+     }else if(type==='parry'){
+      parryChance=Number(effect.parry_chance)||.25;
+     }
+    }
+   }else{
+    actionDamage+=hit(basic.damage,'physical');
+    resource=Math.min(c.resourceMax,resource+basic.resourceGain);
+   }
+  }
+  if(enemyHp<=0)break;
   let incoming=Math.max(0,Math.round(enemyStats.damage*engine.mitigationMultiplier(stats.defense,stage)*(1-(stats.damageReduction||0))));
   if(debuffTurns>0){incoming=Math.round(incoming*(1-debuffPower));debuffTurns--;}
   if(parryChance>0){if(random()<parryChance)incoming=0;parryChance=0;}
