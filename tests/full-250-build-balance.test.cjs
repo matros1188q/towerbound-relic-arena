@@ -15,23 +15,47 @@ const classIds = ['assassin', 'bishop', 'dragonkin', 'destroyer', 'elemental', '
 const builds = [];
 for (const classId of classIds) {
   for (const branch of classes[classId].branches) {
-    const result = simulateBuild(classId, branch.id, builds.length);
+    const buildIndex = builds.length;
+    const seedRuns = [];
+    for (const seedOffset of [0, 1, 2]) {
+      const result = simulateBuild(classId, branch.id, buildIndex, seedOffset);
+      seedRuns.push({
+        seedOffset,
+        cleared: result.cleared,
+        deathStage: result.deathStage,
+        deathLevel: result.deathLevel,
+        deathReason: result.deathReason,
+        averageDps: Number(result.avgDps.toFixed(2)),
+        averageBossTurns: Number(result.avgBossTurns.toFixed(2)),
+        averageOrdinaryTurns: Number(result.avgOrdinaryTurns.toFixed(2)),
+        damageTaken: result.totalDamageTaken,
+        potionsUsed: result.potions,
+        silverNet: result.netSilver
+      });
+    }
+    const result = seedRuns[0];
+    const clears = seedRuns.map(run => run.cleared).sort((a,b)=>a-b);
     builds.push({
       classId,
       className: classes[classId].name,
       branchId: branch.id,
       branchName: branch.name,
       cleared: result.cleared,
+      worstSeedClear: Math.min(...clears),
+      medianSeedClear: clears[1],
+      bestSeedClear: Math.max(...clears),
+      failedSeedRuns: seedRuns.filter(run => run.cleared < 250).length,
       deathStage: result.deathStage,
       deathLevel: result.deathLevel,
       deathReason: result.deathReason,
       checkpoints: result.checkpoints,
-      averageDps: Number(result.avgDps.toFixed(2)),
-      averageBossTurns: Number(result.avgBossTurns.toFixed(2)),
-      averageOrdinaryTurns: Number(result.avgOrdinaryTurns.toFixed(2)),
-      damageTaken: result.totalDamageTaken,
-      potionsUsed: result.potions,
-      silverNet: result.netSilver
+      averageDps: result.averageDps,
+      averageBossTurns: result.averageBossTurns,
+      averageOrdinaryTurns: result.averageOrdinaryTurns,
+      damageTaken: result.damageTaken,
+      potionsUsed: result.potionsUsed,
+      silverNet: result.silverNet,
+      seedRuns
     });
   }
 }
