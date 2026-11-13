@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v301';
+const CACHE = 'towerbound-v302';
 /* Battle arena and post-battle loot mobile layout hotfix */
 const SHELL = [
   './',
