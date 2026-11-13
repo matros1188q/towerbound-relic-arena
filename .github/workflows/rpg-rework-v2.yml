@@ -54,6 +54,7 @@ jobs:
       - run: node tests/ui-polish-regression.test.cjs
       - run: node tests/loot-combat-update.test.cjs
       - run: node tests/combat-runtime.test.cjs
+      - run: node tests/balance-sim.cjs
       - name: Check specialization balance simulator syntax
         run: |
           node --check tests/balance-sim.cjs
