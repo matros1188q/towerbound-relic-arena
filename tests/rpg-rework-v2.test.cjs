@@ -270,7 +270,7 @@ if(balance.combat.turn_based?.enabled){
  testBalance.equipment.enchantment.armor_scroll_chance=1;testBalance.equipment.enchantment.weapon_scroll_chance=1;
  const e=createEngine(testBalance,{now,random:()=>0}),c=makeCharacter(e),live=e.state.characters[0];
  live.branch=testBalance.equipment.stone_types.find(type=>type.class_id==='assassin').branch_id;live.heroic=true;live.progress.highestEver=100;live.progress.currentStage=101;
- const seasonId=Math.floor(baseTime/(90*86400000));e.state.season={id:seasonId,modifier:null,firstClearRewardClaimed:false};
+ const seasonId=Math.floor(baseTime/(30*86400000));e.state.season={id:seasonId,modifier:null,firstClearRewardClaimed:false};
  const plan=e.beginStage(c.id,101);
  assert.equal(plan.stage,101);
  live.run.stage.mobs[0]={type:'elite',statMultiplier:1,damageType:'physical'};
@@ -340,7 +340,7 @@ if(balance.combat.turn_based?.enabled){
  assert.equal(e.submitWeeklyRating(c.id).length,1);
  assert.equal(e.weeklyLeaderboard().length,1);
  assert.equal(balance.seasons.modifiers.length,4);
- assert.equal(balance.seasons.season_length_days,90);
+ assert.equal(balance.seasons.season_length_days,30);
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
