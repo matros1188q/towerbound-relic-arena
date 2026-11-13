@@ -137,7 +137,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
    }
   }else{
    const raw=basic.damage*(stats.basicAttackDamageMultiplier||1);
-   actionDamage+=hit(raw,'physical');
+   actionDamage+=hit(basic.damage,'physical');
    resource=Math.min(c.resourceMax,resource+basic.resourceGain);
   }
   if(enemyHp<=0)break;
@@ -147,7 +147,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
     resource-=ultCost;ultimateReady=turn+Math.max(1,Number(ult.cooldown_turns)||3);
     hp=Math.min(maxHp,hp+Math.round(maxHp*(Number(ult.heal_fraction)||0)));
     shield+=Math.round(maxHp*(Number(ult.shield_fraction)||0));
-   }else if(ult.effect!=='heal_shield'&&ult.effect!=='heal_aoe'&&ult.effect!=='aoe_burst'&&ult.effect!=='single_burst'||enemy.type==='boss'&&resource>=ultCost+reserve){
+   }else if(ult.effect!=='heal_shield'&&resource>=ultCost+reserve){
     resource-=ultCost;ultimateReady=turn+Math.max(1,Number(ult.cooldown_turns)||3);
     const raw=stats.dps*2.0*(stats.damageMultiplier||1);
     const hits=['aoe_burst','heal_aoe','single_burst'].includes(ult.effect)?3:1;
