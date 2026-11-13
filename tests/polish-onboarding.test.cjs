@@ -24,6 +24,6 @@ assert.ok(polish.includes('function lootTone')&&polish.includes('navigator.vibra
 assert.ok(polish.includes('tb-equip-upgrade')&&polish.includes('НАДЕТЬ · ЛУЧШЕ'),'better equipment receives an emphasized equip action');
 assert.equal(tutorial.steps_data.length,6,'existing six-step general tutorial remains intact');
 assert.ok(endgame.includes('function startTower()'),'existing endless tower remains intact');
-assert.equal(seasons.season_length_days,90,'existing season duration remains unchanged by polish patch');
+assert.equal(seasons.season_length_days,30,'season rotation is configured for a monthly 30-day cycle');
 assert.ok(ui.includes('function finishCurrentEnemy')&&ui.includes('function save()'),'core combat and save paths remain present');
 console.log('Towerbound polish checks passed: onboarding, action-guided battle tutorial, stat help, level-up feedback, loot feel, equipment comparison, offline cache and existing endgame.');
