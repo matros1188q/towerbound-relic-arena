@@ -182,7 +182,7 @@ function simulateFight(engine,c,stage,enemy,opt={}){
   if(buffTurns>0)buffTurns--;
   if(phaseLethal)hp=0;
  }
- return{win:enemyHp<=0&&hp>0,turns:turn,hp:Math.max(0,hp),maxHp,hpPct:Math.max(0,hp)/maxHp*100,potionHpPct,usedPotion,resource,damage:actionDamage};
+ return{win:enemyHp<=0&&hp>0,turns:turn,hp:Math.max(0,hp),maxHp,hpPct:Math.max(0,hp)/maxHp*100,potionHpPct,usedPotion,resource};
 }
 function run(){
  const rows=[];
