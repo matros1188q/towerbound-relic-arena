@@ -44,7 +44,7 @@ assert.ok(ui.includes('Серверный рейтинг пока не начи�
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=16'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=43'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=44'),'profile and inventory UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=20'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes("'tb-endgame-v1'")&&cloud.includes("'tb-social-v1'"),'cloud allowlist persists endgame and social local data');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
