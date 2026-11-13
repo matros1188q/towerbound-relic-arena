@@ -56,7 +56,7 @@
       "telegraph": true,
       "damage_flat": 9999,
       "lethal": true,
-      "player_turn_deadline": 3,
+      "player_turn_deadline": 4,
       "patterns": [
         "strong_hit"
       ]

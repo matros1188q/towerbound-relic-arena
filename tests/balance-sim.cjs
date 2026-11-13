@@ -235,7 +235,8 @@ function applySkillAction(fight,skill,slotIndex){
   }else dealt=applyDamage(fight,target,raw,damageType,'skill');
   if(effectType==='control')fight.enemyStunned=true;
  }else if(effectType==='dot'){
-  const dotDamage=Math.max(1,Math.round(stats.dps*(effect.damage_multiplier||.45)*(Number(skill.power_multiplier)||1)*
+  const dotMultiplier=Number(skill.damage_multiplier??skill.damage??effect.damage_multiplier??1);
+  const dotDamage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based.skill_dps_multiplier||2.5)*damageMultiplier*dotMultiplier*(Number(skill.power_multiplier)||1)*modifier*comboMultiplier*
    (character.classId==='assassin'&&character.branch==='poison'?(Number(branchStats.dot_damage_multiplier)||1.15):1)));
   fight.dots.push({targetIndex:target.index,damage:dotDamage,ticks:Math.max(1,Number(effect.ticks)||3),damageType});
  }else if(effectType==='heal'||effectType==='hot'){
@@ -414,7 +415,7 @@ function playerTurn(fight){
    const direct=Number(item.skill.damage_multiplier??item.skill.damage??item.effect.damage_multiplier??0);
    let score=0;
    if(['strike','aoe','execute','control'].includes(effectType))score=fight.stats.dps*(balance.combat.turn_based.skill_dps_multiplier||2.5)*fight.stats.damageMultiplier*direct;
-   else if(effectType==='dot')score=fight.stats.dps*(item.effect.damage_multiplier||.45)*(item.effect.ticks||3);
+   else if(effectType==='dot')score=fight.stats.dps*(balance.combat.turn_based.skill_dps_multiplier||2.5)*fight.stats.damageMultiplier*Number(item.skill.damage_multiplier??item.skill.damage??item.effect.damage_multiplier??1)*(item.effect.ticks||3);
    else if(effectType==='buff')score=fight.stats.dps*(item.effect.power_multiplier||.12)*3;
    else if(effectType==='debuff')score=target.attackStats.damage*(item.effect.power_multiplier||.24)*2;
    else if(effectType==='shield'&&fight.hp<fight.maxHp*.5)score=fight.maxHp*(item.effect.shield_fraction||.18);

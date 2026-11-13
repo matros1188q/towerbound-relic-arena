@@ -42,7 +42,7 @@
     "role_damage_multipliers": {
       "healer": 3.5,
       "poison": 3.5,
-      "tank": 4.5,
+      "tank": 3.5,
       "normal": 3.5
     }
   },

@@ -127,6 +127,7 @@ for(const classId of classes){
  if(balance.combat.turn_based?.enabled){
   assert.match(ui,/function buildInitiative[\s\S]*?sort\(\(a,b\)=>b\.speed-a\.speed/,'turn order sorts actors by speed');
   assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
+  assert.match(ui,/const dotAmplifier=c\.classId==="assassin"&&c\.branch==="poison"\?[\s\S]*?const dotDamage=Math\.max\(1,Math\.round\(damage\*dotAmplifier\)\)/,'damage-over-time uses the catalog skill multiplier and full turn-based action scaling');
   assert.match(ui,/battle\.busy=false;[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'enemy phase begins with a clean busy flag and 500ms stagger');
   assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?scheduleEnemyTurnQueue\(queue,nextIndex,token,500\)/,'enemy turn queue skips dead enemies and schedules the next living enemy after 500ms');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
