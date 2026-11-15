@@ -297,5 +297,6 @@
  "#tbRpg .tb-v2 #endturn.v2-btn-end{flex:0 0 50px!important;min-height:50px!important;height:50px!important;margin-top:0!important}\n"+
  "@media(max-width:430px){#tbRpg .tb-v2 .v2-card-hand{height:142px!important;min-height:142px!important;flex-basis:142px!important;gap:5px!important;padding-left:5px!important;padding-right:5px!important}#tbRpg .tb-v2 .v2-card{flex-basis:70px!important;width:70px!important;min-width:70px!important;height:116px!important;min-height:116px!important}}\n"+
  "@media(max-height:740px){#tbRpg .tb-v2 .v2-card-hand{height:124px!important;min-height:124px!important;flex-basis:124px!important}#tbRpg .tb-v2 .v2-card{height:104px!important;min-height:104px!important}}\n";
+ css += "\n#tbRpg .tb-turn-tutorial[data-started='true']{pointer-events:none!important}\n";
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
 })()
