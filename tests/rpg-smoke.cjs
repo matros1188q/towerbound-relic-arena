@@ -413,7 +413,13 @@ const {chromium}=require('playwright');
   await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   await page.locator('.v2-card.defense:not([disabled])').first().click();
   await page.locator('#endturn').click();
-  await page.waitForFunction(()=>document.querySelector('#energyDisplay')?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5,undefined,{timeout:15000});
+  try{
+   await page.waitForFunction(()=>document.querySelector('#energyDisplay')?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5,undefined,{timeout:15000});
+  }catch(error){
+   const diagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0],snapshot=c?.run?.stage?.uiBattleSnapshot;return{button:document.querySelector('#endturn')?.outerHTML||null,energy:document.querySelector('#energyDisplay')?.textContent||null,hand:document.querySelector('#cardHand')?.innerText||null,stage:c?.run?.stage||null,cardState:snapshot?.cardState||null,enemies:snapshot?.enemies?.map(enemy=>({index:enemy.index,alive:enemy.alive,hp:enemy.hp,turnsTaken:enemy.turnsTaken,role:enemy.role}))||null,guidance:document.querySelector('.v2-turn-guidance')?.textContent||null};});
+   process.stderr.write('CARD TURN DIAGNOSTIC '+JSON.stringify({diagnostic,errors,consoleErrors})+'\\n');
+   throw error;
+  }
   assert.equal(await page.locator('.v2-card').count(),5,'next player turn draws a fresh five-card hand');
   assert.match(await page.locator('#energyDisplay').innerText(),/3\/3/,'next player turn restores all three energy');
   const endAfter=await page.locator('#endturn').evaluate(el=>({display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility,height:el.getBoundingClientRect().height}));
