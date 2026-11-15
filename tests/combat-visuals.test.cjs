@@ -34,10 +34,11 @@ for(const [name,source,re] of [
 ['loot button is labeled Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
 ['loot action closes summary and returns to map without starting a new stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
 ['battle DOM finds the V2 arena wrapper',battleDom,/root\.querySelector\("\.v2-battle-wrap"\)/],
-['battle DOM updates V2 skill buttons',battleDom,/arena\.querySelectorAll\("\.v2-skill-btn\[data-panel-slot\]"\)/],
+['battle DOM updates the card hand',battleDom,/arena\.querySelector\("#cardHand"\)[\s\S]*renderHand\(\)/],
+['battle DOM updates energy and deck counters',battleDom,/energyDisplay[\s\S]*deckCount[\s\S]*discardCount/],
 ['battle DOM updates V2 enemy cards',battleDom,/arena\.querySelectorAll\("\.v2-enemy-card\[data-target\]"\)/],
 ['battle DOM no longer queries legacy arena, skill or target selectors',battleDom,/^((?!\.tb-arena|\.tb-panel-skill|\.tb-target-card)[\s\S])*$/],
-['Attack control is high-contrast and at least 54px',css,/\.v2-btn-attack\{display:flex!important[\s\S]*?min-height:54px!important[\s\S]*?background:linear-gradient\(180deg,#f08a32,#bc4e22\)!important/],
+['Attack cards have a distinct high-contrast combat style',css,/\.v2-card\.attack\{border-color:#e76b5e!important;background:linear-gradient\(180deg,#633b3a,#251b22\)!important/],
 ['End Turn remains displayed with at least 48px height',css,/\.v2-btn-end\{display:flex!important[\s\S]*?min-height:48px!important[\s\S]*?visibility:visible!important/],
 ['map top padding and compact header image cap',css,/\.tb-map-screen\{padding-top:10px!important\}[\s\S]*?\.tb-map-top img\{max-height:80px!important/],
 ['enemies use a fixed two-column grid with wrapped intents',css,/\.v2-enemies-side\{display:grid!important;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important;gap:8px!important;align-content:start!important;width:100%!important[\s\S]*?\.v2-enemy-intent\{white-space:normal!important;word-break:break-word!important;font-size:9px!important;line-height:1\.2!important;text-align:center!important/],
@@ -54,7 +55,7 @@ for(const [name,source,re] of [
 console.log('Combat visual/tactical static checks passed.');
 
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map screen has no extra top padding');
-assert.ok(css.includes('.v2-enemies-side{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important'),'enemy target cards use a stable two-column grid');
+assert.ok(css.includes('.v2-enemies-side{order:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important'),'enemy target cards use a stable three-column arena grid');
 assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}'),'bag uses a four-column grid');
 assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map has no extra top padding after the header');
