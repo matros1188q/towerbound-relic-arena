@@ -74,3 +74,9 @@ assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map has no extra top padding after the header');
 assert.ok(css.includes('.tb-map-top img{max-height:80px!important'),'map header character art is capped at 80px');
 assert.ok(ui.includes('const mapHeader=title==="Карта 250 уровней"')&&!ui.includes('ПРОГРЕССИЯ'),'map header has no redundant Progression button or avatar panel');
+
+
+assert.match(ui,/function enemyIntentDamage\(target\)[\s\S]*engine\.mitigationMultiplier\(engine\.getCombatStats\(c\)\.defense,battle\.stage\)/,'enemy intent preview includes player defense mitigation');
+assert.match(ui,/if\(appliedEnemyStatus\)planEnemyIntents\(\)/,'enemy intent refreshes immediately when a card applies a status');
+assert.match(ui,/root\.addEventListener\("pointerdown",event=>\{const card=event\.target\.closest\("\[data-card-play\]"\);if\(card\)showCardDamagePreview/,'damage preview also appears on touch press');
+assert.match(ui,/root\.addEventListener\("focusout",event=>\{const card=event\.target\.closest\("\[data-card-play\]"\)/,'keyboard focus leaving a card clears the old damage preview');
