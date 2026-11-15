@@ -23,6 +23,7 @@ assert.ok(polish.includes("overlay.setAttribute('aria-modal',String(!tutorialSta
 assert.ok(ui.includes(".tb-turn-tutorial[data-started='true'] .tb-turn-tutorial-card{pointer-events:none}"),'guided tutorial card releases underlying combat controls after it starts');
 assert.ok(fs.readFileSync(path.join(__dirname,'../towerbound-polish.js'),'utf8').includes("overlay.style.pointerEvents=tutorialStarted?'none':'auto'"),'guided tutorial releases all pointer events after its intro');
 assert.ok(fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8').includes(".tb-turn-tutorial[data-started='true']{pointer-events:none!important}"),'guided tutorial overlay does not block card and End Turn input');
+assert.ok(fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8').includes(".tb-turn-tutorial[data-started='true'] *{pointer-events:none!important}"),'guided tutorial children cannot intercept card and End Turn clicks');
 assert.ok(polish.includes('[data-card-type="attack"]')&&polish.includes('[data-card-type="defense"]')&&polish.includes("target.matches('[data-action=\"end-turn\""),'tutorial checks attack cards, defense cards and end-turn actions before advancing');
 assert.ok(polish.includes('БОЕВАЯ МОЩЬ')&&polish.includes('ЗАЩИТА')&&polish.includes('КРИТ'),'stat info buttons explain power, armor and critical chance');
 assert.ok(polish.includes('function showLevelUp')&&polish.includes('Доступно очков талантов'),'level-up reward modal shows talent points');
