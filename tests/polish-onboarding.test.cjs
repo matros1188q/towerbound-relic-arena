@@ -21,7 +21,7 @@ assert.ok(polish.includes('Шаг 1 из 4')&&polish.includes('Шаг 4 из 4')
 assert.ok(polish.includes('overlay.dataset.started=String(tutorialStarted)'),'guided tutorial exposes its active state to the UI');
 assert.ok(polish.includes("overlay.setAttribute('aria-modal',String(!tutorialStarted))"),'tutorial semantics switch when guided combat actions become available');
 assert.ok(ui.includes(".tb-turn-tutorial[data-started='true'] .tb-turn-tutorial-card{pointer-events:none}"),'guided tutorial card releases underlying combat controls after it starts');
-assert.ok(polish.includes("target.matches('[data-action=\"attack\"")&&polish.includes("target.matches('[data-action=\"end-turn\""),'tutorial checks actual combat actions before advancing');
+assert.ok(polish.includes('[data-card-type="attack"]')&&polish.includes('[data-card-type="defense"]')&&polish.includes("target.matches('[data-action=\"end-turn\""),'tutorial checks attack cards, defense cards and end-turn actions before advancing');
 assert.ok(polish.includes('БОЕВАЯ МОЩЬ')&&polish.includes('ЗАЩИТА')&&polish.includes('КРИТ'),'stat info buttons explain power, armor and critical chance');
 assert.ok(polish.includes('function showLevelUp')&&polish.includes('Доступно очков талантов'),'level-up reward modal shows talent points');
 assert.ok(polish.includes('function lootTone')&&polish.includes('navigator.vibrate'),'high-rarity loot has synthesized audio and vibration feedback');
