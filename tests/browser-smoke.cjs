@@ -127,7 +127,7 @@ async function journey(type,name,viewport,url){
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForSelector('.tb-turn-tutorial',{state:'detached',timeout:10000});
-  await page.waitForFunction(()=>Number(document.querySelector('.v2-battle-top')?.innerText.match(/РАУНД\\s+(\\d+)/)?.[1]||0)>=2,{timeout:10000});
+  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&!button.disabled;},{timeout:15000});
   fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
   await page.screenshot({path:path.join(root,'artifacts','turn-based-end-turn-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
   const diagnostics=await page.evaluate(()=>({
