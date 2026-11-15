@@ -124,11 +124,12 @@
  function addCardToDeck(c,id){if(!c)return false;ensureCardDeck(c);const card=createCardInstance(id);if(!card)return false;c.deck.push(card);return true;}
  function cardEffects(card){return card?.isUpgraded?(card.upgradedEffects||card.effects||{}):(card.effects||{});}
  function makeStarterDeck(){const ids=["strike","strike","strike","strike","strike","defend","defend","defend","defend","dash"],cards=ids.map(createCardInstance),classCards=({assassin:["assassin_poison_blade","assassin_bleed"],bishop:["bishop_prayer","bishop_divine_shield"],dragonkin:["dragonkin_flame","dragonkin_frost"],destroyer:["destroyer_crush","destroyer_warcry"],elemental:["elemental_chain","elemental_storm"],duelist:["duelist_parry","duelist_riposte"],shaman:["shaman_totem","shaman_spirit"]})[selectedClass]||[];classCards.forEach(id=>cards.push(createCardInstance(id)));return cards;}
- function ensureCardDeck(c){if(!c)return;if(!Array.isArray(c.deck))c.deck=[];if(!Array.isArray(c.hand))c.hand=[];if(!Array.isArray(c.discard))c.discard=[];c.energy=Math.max(1,Math.min(6,Number(c.energy)||3));c.currentEnergy=Math.max(0,Math.min(c.energy,Number.isFinite(Number(c.currentEnergy))?Number(c.currentEnergy):c.energy));if(c.cardDeckVersion!==1){if(c.deck.length+c.hand.length+c.discard.length===0)c.deck=makeStarterDeck();c.cardDeckVersion=1;}}
+ function ensureCardDeck(c){if(!c)return;if(!Array.isArray(c.deck))c.deck=[];if(!Array.isArray(c.hand))c.hand=[];if(!Array.isArray(c.discard))c.discard=[];if(!Array.isArray(c.exhaustPile))c.exhaustPile=[];c.energy=Math.max(1,Math.min(6,Number(c.energy)||3));c.currentEnergy=Math.max(0,Math.min(c.energy,Number.isFinite(Number(c.currentEnergy))?Number(c.currentEnergy):c.energy));if(c.cardDeckVersion!==2){if(c.deck.length+c.hand.length+c.discard.length===0)c.deck=makeStarterDeck();else{[...c.deck,...c.hand,...c.discard].forEach(card=>{const d=CARD_DATABASE[card?.id];if(d){Object.assign(card,d,{instanceId:card.instanceId||d.id+"-"+Math.random().toString(36).slice(2),isUpgraded:!!card.isUpgraded,effects:{...(card.isUpgraded?(d.upgradedEffects||d.effects):d.effects)}});if(card.isUpgraded)card.description=d.upgradedDescription||d.description;}});}c.cardDeckVersion=2;}}
  function shuffleCards(cards){const result=cards.slice();for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
  function resetCardBattle(c){ensureCardDeck(c);const combined=[...(c.deck||[]),...(c.hand||[]),...(c.discard||[])],seen=new Set(),cards=[];for(const card of combined){const key=card?.instanceId||card?.id;if(!card||seen.has(key))continue;seen.add(key);cards.push(card);}c.deck=shuffleCards(cards.length?cards:makeStarterDeck());c.hand=[];c.discard=[];c.currentEnergy=c.energy;}
  function drawCards(amount){const c=live();if(!c)return 0;ensureCardDeck(c);let drawn=0;const count=Math.max(0,Math.floor(Number(amount)||0));while(drawn<count){if(!c.deck.length&&c.discard.length){c.deck=shuffleCards(c.discard);c.discard=[];}if(!c.deck.length)break;c.hand.push(c.deck.shift());drawn++;}return drawn;}
- function renderHand(){const c=live();if(!c)return "";ensureCardDeck(c);return c.hand.map((card,index)=>{const disabled=battle?.actor?.type!=="player"||battle?.busy||battle?.paused||Number(c.currentEnergy)<Number(card.cost||0),type=card.type||"skill";return '<button type="button" class="v2-card '+esc(type)+(disabled?' is-disabled':'')+'" data-card-play="'+index+'" '+(type==="attack"?'data-action="attack" ':'')+'data-card-type="'+esc(type)+'" '+(disabled?'disabled':'')+' aria-label="'+esc(card.name)+', '+Number(card.cost||0)+' энергии. '+esc(card.description||'')+'"><span class="card-cost">'+Number(card.cost||0)+'</span><span class="card-name">'+esc(card.name)+'</span><span class="card-type">'+esc(({attack:"АТАКА",defense:"ЗАЩИТА",skill:"НАВЫК",power:"СИЛА"})[type]||"НАВЫК")+'</span><span class="card-desc">'+esc(card.description||"")+'</span></button>';}).join("");}
+ function renderHand(){const c=live();if(!c)return "";ensureCardDeck(c);return c.hand.map((card,index)=>{const cost=card.costX?"X":Number(card.cost)||0,disabled=card.type==="curse"||cardEffects(card).unplayable||battle?.actor?.type!=="player"||battle?.busy||battle?.paused||(!card.costX&&Number(c.currentEnergy)<Number(cost)),type=card.type||"skill",rarity=card.rarity||"common";return '<button type="button" class="v2-card '+esc(type)+' rarity-'+esc(rarity)+(disabled?' is-disabled':'')+(card.isUpgraded?' is-upgraded':'')+'" data-card-play="'+index+'" data-card-type="'+esc(type)+'" '+(disabled?'disabled':'')+' aria-label="'+esc(card.name)+', '+cost+' энергии. '+esc(card.description||'')+'"><span class="card-cost">'+cost+'</span><span class="card-name">'+esc(card.name)+(card.isUpgraded?' <b class="tb-card-upgrade-mark">+</b>':'')+'</span><span class="card-type">'+esc(({attack:"АТАКА",defense:"ЗАЩИТА",skill:"НАВЫК",power:"СИЛА",curse:"ПРОКЛЯТИЕ"})[type]||"НАВЫК")+' · '+esc(rarity.toUpperCase())+'</span><span class="card-desc">'+esc(card.description||"")+(card.exhaust?' · Истощение':'')+(card.retain?' · Сохранение':'')+(card.ethereal?' · Эфемерная':'')+(card.innate?' · Врождённая':'')+'</span></button>';}).join("");}
+
 
  function cardPreviewDamage(card,target){if(!card||!target||!target.alive||target.hp<=0)return 0;const c=live(),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),base=Number(card.damage)||Number(card.damageAll)||0;if(base<=0)return 0;const bonus=Number(card.damage)>0?.18:.12,raw=Math.max(1,Math.round((base+Number(stats.attack||0)*bonus)*scale)),type=card.damageType||(Number(card.damageAll)>0?"fire":"physical");let mult=engine.damageTypeMultiplier(target,type);if(target.role==="tank"&&(target.guardCharges||0)>0)mult*=1-(balance.mobs.roles.tank.shield_fraction||.3);let damage=Math.max(0,Math.round(raw*mult*(Number(target.vulnerable)>0?1.5:1)));if(target.type==="boss")damage=engine.capBossDamage(target,damage,battle.actionDamageLedger?.[target.index]||0);return Math.max(0,Math.min(Number(target.hp)||0,damage-Math.min(Number(target.shield)||0,damage)));}
  function showCardDamagePreview(index){if(!battle||battle.actor?.type!=="player")return;const c=live(),card=c.hand[index];if(!card)return;const targets=Number(card.damageAll)>0?(battle.enemies||[]).filter(x=>x.alive&&x.hp>0):(battle.enemies||[]).filter(x=>x.index===battle.targetIndex&&x.alive&&x.hp>0);for(const target of targets){const node=root.querySelector('.v2-enemy-card[data-target="'+target.index+'"]');if(!node)continue;let preview=node.querySelector(".v2-damage-preview");if(!preview){preview=document.createElement("div");preview.className="v2-damage-preview";node.appendChild(preview);}const damage=cardPreviewDamage(card,target);preview.textContent=damage>0?"−"+damage+" HP":"БЕЗ УРОНА";preview.classList.toggle("lethal",damage>=target.hp);}}
@@ -398,7 +399,7 @@ function createDialog(){
   const c=live();ensureCardDeck(c);
   battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
   battle.actor={type:"player",id:"player",name:c.name};battle.busy=false;battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
-  if(battle.cardResume){battle.cardResume=false;}else{battle.cardBlock=0;c.currentEnergy=c.energy;drawCards(Math.max(0,5-c.hand.length));}
+  if(battle.cardResume){battle.cardResume=false;}else{battle.cardBlock=0;c.currentEnergy=c.energy;const innate=c.deck.filter(card=>card.innate);for(const card of innate){c.deck.splice(c.deck.indexOf(card),1);c.hand.push(card);}drawCards(Math.max(0,5-c.hand.length));}
   for(const id of Object.keys(battle.skillCooldowns||{}))battle.skillCooldowns[id]=Math.max(0,battle.skillCooldowns[id]-1);
   planEnemyIntents();
   battle.counterCooldownTurns=Math.max(0,(battle.counterCooldownTurns||0)-1);battle.ultimateCooldownTurns=Math.max(0,(battle.ultimateCooldownTurns||0)-1);
@@ -504,7 +505,7 @@ function createDialog(){
   try{
    if(battle.paused){scheduleEnemyTurnQueue(queue,index,token,250);return;}
    if(index>=queue.length){
-    battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;
+    battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;if((battle.playerWeakTurns||0)>0)battle.playerWeakTurns--;
     const deadlineBoss=(battle.enemies||[]).find(enemy=>enemy.type==="boss"&&enemy.alive&&Number(enemy.hp)>0);
     if(deadlineBoss&&battle.bossDeadlineTurns!==null&&battle.bossDeadlineTurns!==undefined&&battle.playerTurnCount>Number(battle.bossDeadlineTurns)&&engine.bossPhaseInfo(deadlineBoss.hp,deadlineBoss.maxHp).phase===4){
      const phaseConfig=(balance.bosses.phases||[]).find(item=>Number(item.phase)===4)||{};
@@ -536,33 +537,39 @@ function createDialog(){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
   const c=live();ensureCardDeck(c);const index=Number(cardIndex),card=c.hand[index];
   if(!Number.isInteger(index)||!card){notify("Карта больше не в руке");return;}
-  const cost=Math.max(0,Number(card.cost)||0);if(c.currentEnergy<cost){notify("Недостаточно энергии");return;}
+  const effects=cardEffects(card),cost=card.costX?c.currentEnergy:Math.max(0,Number(card.cost)||0);
+  if(card.type==="curse"||effects.unplayable){notify("Это проклятие нельзя разыграть");return;}
+  if(c.currentEnergy<cost){notify("Недостаточно энергии");return;}
   const target=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);
-  if((Number(card.damage)>0||Number(card.damageAll)>0)&&!target){notify("Нет доступной цели");return;}
-  c.currentEnergy-=cost;c.hand.splice(index,1);c.discard.push(card);
+  const baseDamage=Number(effects.damage)||0,allDamage=Number(effects.damageAll)||0;
+  if((baseDamage>0||allDamage>0||Number(effects.damagePerEnergy)>0)&&!target){notify("Нет доступной цели");return;}
+  c.currentEnergy-=cost;c.hand.splice(index,1);if(card.exhaust||card.upgradedExhaust)c.exhaustPile.push(card);else c.discard.push(card);
   battle.actionDamageLedger={};battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
-  let killed=false;const stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1);
-  const baseDamage=Number(card.damage)||0,allDamage=Number(card.damageAll)||0;
-  if(baseDamage>0&&target){const raw=Math.max(1,Math.round((baseDamage+Number(stats.attack||0)*.18)*scale));const hit=applyTargetDamage(target,raw,card.damageType||"physical");killed=!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
-  if(allDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){const raw=Math.max(1,Math.round((allDamage+Number(stats.attack||0)*.12)*scale));const hit=applyTargetDamage(enemy,raw,card.damageType||"fire");killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
-  battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;
-  if(c.run.playerHp<=0){endFromDamage();return;}
-  if(Number(card.block)>0){const block=Math.max(0,Math.round(Number(card.block)+Number(stats.defense||0)*.1));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");}
-  if(Number(card.heal)>0){const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(Number(card.heal))));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");}
-  const statusPayload={...(card.statuses||{})};for(const key of ["poison","bleed","weak","vulnerable"])if(Number(card[key])>0)statusPayload[key]=(Number(statusPayload[key])||0)+Number(card[key]);
-  const statusTargets=allDamage>0?(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0):target?[target]:[];
-  let appliedEnemyStatus=false;
-  for(const enemy of statusTargets){for(const key of ["poison","bleed","weak","vulnerable"]){const stacks=Math.max(0,Math.floor(Number(statusPayload[key])||0));if(stacks){enemy[key]=Math.max(0,Number(enemy[key])||0)+stacks;appliedEnemyStatus=true;}}}
-  if(appliedEnemyStatus)planEnemyIntents();
-  if(Number(card.draw)>0)drawCards(card.draw);
-  if(killed&&battle){finishCurrentEnemy();if(!battle)return;}
+  const stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),weakScale=Number(battle.playerWeakTurns)>0?.75:1;
+  const rawFor=(base,bonus)=>Math.max(1,Math.round((base+Number(stats.attack||0)*bonus)*scale*weakScale)),damageType=effects.damageType||card.damageType||"physical";
+  const singleDamage=baseDamage+((Number(effects.bonusDamageIfBlock)>0&&(battle.cardBlock||0)>0)?Number(effects.bonusDamageIfBlock):0)+(card.costX?Number(effects.damagePerEnergy||0)*cost:0);
+  if(singleDamage>0&&target){applyTargetDamage(target,rawFor(singleDamage,.18),damageType,{ignoreArmor:!!effects.ignoreArmor});battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
+  if(allDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets)applyTargetDamage(enemy,rawFor(allDamage,.12),damageType,{ignoreArmor:!!effects.ignoreArmor});battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
+  if(Number(effects.hits)>1&&singleDamage>0&&target)for(let n=1;n<Number(effects.hits);n++)applyTargetDamage(target,rawFor(singleDamage,.18),damageType,{ignoreArmor:!!effects.ignoreArmor});
+  battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;if(c.run.playerHp<=0){endFromDamage();return;}
+  if(Number(effects.block)>0){const block=Math.max(0,Math.round(Number(effects.block)+Number(stats.defense||0)*.1));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");}
+  if(Number(effects.heal)>0){const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(Number(effects.heal))));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");}
+  const statusPayload={...(effects.statuses||{})};for(const key of ["poison","bleed","weak","vulnerable"])if(Number(effects[key])>0)statusPayload[key]=(Number(statusPayload[key])||0)+Number(effects[key]);
+  if(Number(effects.conditionalBleed)>0&&target&&Number(target.poison)>0)statusPayload.bleed=(Number(statusPayload.bleed)||0)+Number(effects.conditionalBleed);
+  const statusTargets=allDamage>0?(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0):target?[target]:[];let applied=false;
+  for(const enemy of statusTargets)for(const key of ["poison","bleed","weak","vulnerable"]){const stacks=Math.max(0,Math.floor(Number(statusPayload[key])||0));if(stacks){enemy[key]=Math.max(0,Number(enemy[key])||0)+stacks;applied=true;}}
+  if(applied)planEnemyIntents();
+  if(Number(effects.playerWeak)>0)battle.playerWeakTurns=Math.max(Number(battle.playerWeakTurns)||0,2);
+  if(Number(effects.fury)>0){battle.playerDamageBuffTurns=Math.max(Number(battle.playerDamageBuffTurns)||0,2);battle.playerDamageBuff=Math.max(Number(battle.playerDamageBuff)||0,Number(effects.fury)*.1);}
+  if(Number(effects.energy)>0)c.currentEnergy=Math.min(c.energy,c.currentEnergy+Number(effects.energy));
+  if(Number(effects.draw)>0)drawCards(effects.draw);
+  if(card.generate){const generated=createCardInstance(card.generate);if(generated)c.hand.push(generated);}
   save();render();
  }
-
  function endPlayerTurn(){
   if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy)return;
   try{
-  const c=live();ensureCardDeck(c);c.discard.push(...c.hand);c.hand=[];c.currentEnergy=0;
+  const c=live();ensureCardDeck(c);const retained=[],discarded=[];for(const card of c.hand){if(card.retain)retained.push(card);else if(card.ethereal)c.exhaustPile.push(card);else discarded.push(card);}c.discard.push(...discarded);c.hand=retained;c.currentEnergy=0;
   battle.isPlayerTurn=false;clearPendingTurnTimer();battle.busy=false;
   const activeDots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);for(const dot of activeDots){if(dot?.ticks>0){const target=battle.enemies.find(x=>x.index===battle.targetIndex&&x.alive);if(target){applyTargetDamage(target,dot.damage,"dark");dot.ticks--;if(target.hp<=0){finishCurrentEnemy();if(!battle)return;}}}}battle.dots=activeDots.filter(dot=>dot&&dot.ticks>0);battle.dot=battle.dots[0]||null;
   if(battle.hot?.ticks>0){c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;}
