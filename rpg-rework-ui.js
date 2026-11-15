@@ -84,6 +84,16 @@
  let pendingSkillUpgradeId=null;
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
  let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false;
+
+ const CARD_DATABASE=Object.freeze({strike:{id:"strike",name:"Удар",cost:1,type:"attack",damage:6,description:"Наносит 6 урона"},defend:{id:"defend",name:"Защита",cost:1,type:"defense",block:5,description:"Даёт 5 временной брони"},dash:{id:"dash",name:"Рывок",cost:1,type:"skill",block:3,draw:1,description:"Даёт 3 брони и добирает 1 карту"}});
+ function makeStarterDeck(){const cards=[];for(let i=0;i<5;i++)cards.push({...CARD_DATABASE.strike,instanceId:"strike-"+i+"-"+Math.random().toString(36).slice(2)});for(let i=0;i<4;i++)cards.push({...CARD_DATABASE.defend,instanceId:"defend-"+i+"-"+Math.random().toString(36).slice(2)});cards.push({...CARD_DATABASE.dash,instanceId:"dash-0-"+Math.random().toString(36).slice(2)});return cards;}
+ function ensureCardDeck(c){if(!c)return;if(!Array.isArray(c.deck))c.deck=[];if(!Array.isArray(c.hand))c.hand=[];if(!Array.isArray(c.discard))c.discard=[];c.energy=Math.max(1,Math.min(6,Number(c.energy)||3));c.currentEnergy=Math.max(0,Math.min(c.energy,Number.isFinite(Number(c.currentEnergy))?Number(c.currentEnergy):c.energy));if(c.cardDeckVersion!==1){if(c.deck.length+c.hand.length+c.discard.length===0)c.deck=makeStarterDeck();c.cardDeckVersion=1;}}
+ function shuffleCards(cards){const result=cards.slice();for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}return result;}
+ function resetCardBattle(c){ensureCardDeck(c);const combined=[...(c.deck||[]),...(c.hand||[]),...(c.discard||[])],seen=new Set(),cards=[];for(const card of combined){const key=card?.instanceId||card?.id;if(!card||seen.has(key))continue;seen.add(key);cards.push(card);}c.deck=shuffleCards(cards.length?cards:makeStarterDeck());c.hand=[];c.discard=[];c.currentEnergy=c.energy;}
+ function drawCards(amount){const c=live();if(!c)return 0;ensureCardDeck(c);let drawn=0;const count=Math.max(0,Math.floor(Number(amount)||0));while(drawn<count){if(!c.deck.length&&c.discard.length){c.deck=shuffleCards(c.discard);c.discard=[];}if(!c.deck.length)break;c.hand.push(c.deck.shift());drawn++;}return drawn;}
+ function renderHand(){const c=live();if(!c)return "";ensureCardDeck(c);return c.hand.map((card,index)=>{const disabled=battle?.actor?.type!=="player"||battle?.busy||battle?.paused||Number(c.currentEnergy)<Number(card.cost||0),type=card.type||"skill";return '<button type="button" class="v2-card '+esc(type)+(disabled?' is-disabled':'')+'" data-card-play="'+index+'" '+(disabled?'disabled':'')+' aria-label="'+esc(card.name)+', '+Number(card.cost||0)+' энергии. '+esc(card.description||'')+'"><span class="card-cost">'+Number(card.cost||0)+'</span><span class="card-name">'+esc(card.name)+'</span><span class="card-type">'+esc(({attack:"АТАКА",defense:"ЗАЩИТА",skill:"НАВЫК",power:"СИЛА"})[type]||"НАВЫК")+'</span><span class="card-desc">'+esc(card.description||"")+'</span></button>';}).join("");}
+ function enemyIntentText(target){if(!target)return "Ожидает";if(target.telegraph?.label||target.intent?.label)return target.telegraph?.label||target.intent.label;if(target.role==="healer"&&!target.provoked&&((Number(target.turnsTaken||0)+1)%2===0)){const ally=(battle?.enemies||[]).find(x=>x.alive&&x.hp>0&&x.index!==target.index&&x.hp<x.maxHp);if(ally)return "✚ ЛЕЧЕНИЕ · +"+Math.round(ally.maxHp*.2);}const stats=engine.getEnemyStats(live().id,battle.stage,target),damage=Math.max(1,Math.round(Number(stats.damage)||0));if(target.role==="poison")return "☠ ЯД + ⚔ "+damage;if(target.role==="tank"&&((Number(target.turnsTaken||0)+1)%3===0))return "🛡 ЗАЩИТА + ⚔ "+damage;return "⚔ АТАКА · "+damage;}
+
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  const itemTypeNames={healing_potion:"Зелье исцеления",craft_material:"Материал для крафта",enhancement_stone:"Камень усиления",refine_stone:"Камень заточки",chisel:"Долото",enchant_scroll:"Свиток зачарования"};
  function itemTypeName(value){return itemTypeNames[value]||String(value||"Предмет").replace(/_/g," ");}
@@ -140,7 +150,7 @@
  function save(){try{
   const c=live();
   if(c?.run?.stage&&battle){
-   c.run.stage.uiBattleSnapshot={enemies:JSON.parse(JSON.stringify(battle.enemies||[])),targetIndex:battle.targetIndex,round:battle.round||1,comboStacks:battle.comboStacks||0,skillCooldowns:JSON.parse(JSON.stringify(battle.skillCooldowns||{})),comboProgress:JSON.parse(JSON.stringify(battle.comboProgress||{}))};
+   c.run.stage.uiBattleSnapshot={enemies:JSON.parse(JSON.stringify(battle.enemies||[])),targetIndex:battle.targetIndex,round:battle.round||1,comboStacks:battle.comboStacks||0,skillCooldowns:JSON.parse(JSON.stringify(battle.skillCooldowns||{})),comboProgress:JSON.parse(JSON.stringify(battle.comboProgress||{})),cardState:{deck:JSON.parse(JSON.stringify(c.deck||[])),hand:JSON.parse(JSON.stringify(c.hand||[])),discard:JSON.parse(JSON.stringify(c.discard||[])),currentEnergy:Number(c.currentEnergy)||0,cardBlock:Number(battle.cardBlock)||0}};
   }
   localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));window.TowerboundCloud?.queueSave?.();window.TowerboundOnline?.queuePublish();
  }catch(e){notify("Не удалось сохранить: "+e.message);}}
@@ -342,8 +352,10 @@ function createDialog(){
  }
  function syncInitiative(){battle.turnOrder=buildInitiative();battle.turnIndex=0;battle.actor=battle.turnOrder[0]||{type:"player",id:"player",name:live().name};}
  function showPlayerTurn(){
+  const c=live();ensureCardDeck(c);
   battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
-  battle.actor={type:"player",id:"player",name:live().name};battle.busy=false;battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
+  battle.actor={type:"player",id:"player",name:c.name};battle.busy=false;battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
+  if(battle.cardResume){battle.cardResume=false;}else{battle.cardBlock=0;c.currentEnergy=c.energy;drawCards(Math.max(0,5-c.hand.length));}
   for(const id of Object.keys(battle.skillCooldowns||{}))battle.skillCooldowns[id]=Math.max(0,battle.skillCooldowns[id]-1);
   battle.counterCooldownTurns=Math.max(0,(battle.counterCooldownTurns||0)-1);battle.ultimateCooldownTurns=Math.max(0,(battle.ultimateCooldownTurns||0)-1);
   const preview=(battle.enemies||[]).find(enemy=>enemy.alive);
@@ -380,9 +392,13 @@ function createDialog(){
   const branchStats=balance.classes.branch_stat_bonuses?.[c.classId+"."+c.branch]||{},branchCounterChance=Number(branchStats.counterattack_chance)||0,parryChance=Math.max(branchCounterChance,Number(battle.parryChance)||0);battle.parryChance=0;if(parryChance>0&&Math.random()<parryChance){const iceCounter=c.classId==="dragonkin",riposte=Math.max(1,Math.round(engine.getCombatStats(c).dps*(Number(branchStats.counterattack_damage_multiplier)||(iceCounter?.75:1.2)))),counter=applyTargetDamage(attacker,riposte,iceCounter?"ice":"physical");notify((iceCounter?"ЛЕДЯНАЯ ЗАЩИТА":"ПАРИРОВАНИЕ")+" · КОНТРАТАКА −"+counter.dealt+" HP");if(counter.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();return;}return;}
   let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));
   if((battle.enemyDamageReductionTurns||0)>0)incoming=Math.round(incoming*(1-(battle.enemyDamageReduction||0)));
+  const blockedByCards=Math.min(Math.max(0,Number(battle.cardBlock)||0),incoming);incoming=Math.max(0,incoming-blockedByCards);battle.cardBlock=Math.max(0,(Number(battle.cardBlock)||0)-blockedByCards);
   if((battle.nextDamageShield||0)>0){incoming=Math.max(0,incoming-battle.nextDamageShield);battle.nextDamageShield=0;}
-  c.run.playerHp=Math.max(0,c.run.playerHp-incoming);notify("Враг наносит "+incoming+" урона");
+  c.run.playerHp=Math.max(0,c.run.playerHp-incoming);
+  if(blockedByCards>0)notify("Щит карт поглотил "+blockedByCards+" урона"+(incoming>0?" · получено "+incoming:" · атака полностью отражена"));
+  else notify("Враг наносит "+incoming+" урона");
   if(incoming>0){if(navigator.vibrate)navigator.vibrate(50);showFloatingText("player","-"+incoming,"#ff596b");playSfx("hurt");if(!settings().disable_screen_shake&&incoming>=Math.max(1,Math.round(engine.maxHp(c)*.1)))battle.shakeUntil=Date.now()+280;}
+  else if(blockedByCards>0)showFloatingText("player","БЛОК "+blockedByCards,"#78c9ff");
   triggerVfx("enemy-hit","physical",phase===4||attacker.type==="boss");
   if(c.run.playerHp<=0)endFromDamage();
  }
@@ -470,16 +486,34 @@ function createDialog(){
    scheduleEnemyTurnQueue(queue,nextIndex,token,500);
   }catch(error){recoverPlayerTurn(error);}
  }
+
+ function playCard(cardIndex){
+  if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
+  const c=live();ensureCardDeck(c);const index=Number(cardIndex),card=c.hand[index];
+  if(!Number.isInteger(index)||!card){notify("Карта больше не в руке");return;}
+  const cost=Math.max(0,Number(card.cost)||0);if(c.currentEnergy<cost){notify("Недостаточно энергии");return;}
+  const target=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);
+  if((Number(card.damage)>0||Number(card.damageAll)>0)&&!target){notify("Нет доступной цели");return;}
+  c.currentEnergy-=cost;c.hand.splice(index,1);c.discard.push(card);
+  battle.actionDamageLedger={};battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
+  let killed=false;const stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1);
+  const baseDamage=Number(card.damage)||0,allDamage=Number(card.damageAll)||0;
+  if(baseDamage>0&&target){const raw=Math.max(1,Math.round((baseDamage+Number(stats.attack||0)*.18)*scale));const hit=applyTargetDamage(target,raw,card.damageType||"physical");killed=!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
+  if(allDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){const raw=Math.max(1,Math.round((allDamage+Number(stats.attack||0)*.12)*scale));const hit=applyTargetDamage(enemy,raw,card.damageType||"fire");killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
+  battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;
+  if(c.run.playerHp<=0){endFromDamage();return;}
+  if(Number(card.block)>0){const block=Math.max(0,Math.round(Number(card.block)+Number(stats.defense||0)*.1));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");}
+  if(Number(card.heal)>0){const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(Number(card.heal))));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");}
+  if(Number(card.draw)>0)drawCards(card.draw);
+  if(killed&&battle){finishCurrentEnemy();if(!battle)return;}
+  save();render();
+ }
+
  function endPlayerTurn(){
-  if(!battle||battle.actor?.type!=="player"||battle.paused)return;
+  if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy)return;
   try{
+  const c=live();ensureCardDeck(c);c.discard.push(...c.hand);c.hand=[];c.currentEnergy=0;
   battle.isPlayerTurn=false;clearPendingTurnTimer();battle.busy=false;
-  const c=live(),stats=engine.getCombatStats(c);
-  if(!battle.playerSkillUsed){
-   const damage=Math.max(1,Math.round(stats.dps*(balance.combat.turn_based?.auto_attack_dps_multiplier||.5)*(stats.basicAttackDamageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*(Number(balance.classes.branch_stat_bonuses?.["destroyer.wand_shield"]?.defense_damage_fraction)||.5):0))),hit=applyTargetDamage(battle.enemy,damage,"physical");
-   c.resource=Math.min(c.resourceMax,c.resource+Math.max(1,Math.round(c.resourceMax*(balance.combat.turn_based?.resource_regeneration_fraction||.2))));
-   triggerVfx("attack","physical",false);showFloatingText("player","Автоатака!","#ffd34e");if(hit.killed){finishCurrentEnemy();if(!battle)return;}
-  }
   const activeDots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);for(const dot of activeDots){if(dot?.ticks>0){const target=battle.enemies.find(x=>x.index===battle.targetIndex&&x.alive);if(target){applyTargetDamage(target,dot.damage,"dark");dot.ticks--;if(target.hp<=0){finishCurrentEnemy();if(!battle)return;}}}}battle.dots=activeDots.filter(dot=>dot&&dot.ticks>0);battle.dot=battle.dots[0]||null;
   if(battle.hot?.ticks>0){c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;}
   const queue=(battle.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0);
@@ -737,7 +771,7 @@ function talentBonusDescription(talent,rank){
   const enemyMarkup = enemies.map((target, i) => {
   const targetIndex = Number.isInteger(target.index) ? target.index : battle.enemies.indexOf(target);
   const enemyHpPct = Math.max(0, Math.min(100, Number(target.hp) / Math.max(1, Number(target.maxHp) || 1) * 100));
-  const intent = target.telegraph?.label || target.intent?.label || (battle.telegraph && targetIndex === battle.targetIndex ? battle.telegraph.label : "Готовит атаку");
+  const intent = target.telegraph?.label || target.intent?.label || (battle.telegraph && targetIndex === battle.targetIndex ? battle.telegraph.label : enemyIntentText(target));
   const weaknessIcons={fire:"🔥",ice:"❄️",dark:"💀",physical:"⚔️"};
   const weaknessIcon=weaknessIcons[String(target.weakness||"").toLowerCase()]||"";
   const attackInterval=Math.max(1,Number(target.attackIntervalTurns||target.turnInterval||(target.type==="boss"?2:3)));
@@ -754,19 +788,7 @@ function talentBonusDescription(talent,rank){
   </div>`;
 }).join("");
 
-const skillMarkup = Array.from({ length: 6 }, (_, index) => {
-  const skill = slots[index] || null;
-  const cooldown = skill ? (battle.skillCooldowns?.[skill.id] || 0) : 0;
-  const cost = skill ? (c.classId==="duelist"?(balance.resources.class_costs?.duelist?.attack_skill??22):(skill.cost || skill.resource_cost || 18)) : 0;
-  const disabled = !skill || battle.actor?.type !== "player" || battle.playerSkillUsed || cooldown > 0 || battle.busy || battle.paused;
-  
-  return `<button type="button" class="v2-skill-btn" data-panel-skill="${esc(skill?.id || "")}" data-panel-slot="${index}" ${disabled ? "disabled" : ""}>
-    <kbd>${index + 1}</kbd>
-    ${skill ? skillIconMarkup(skill,c.classId) : '<span class="v2-skill-icon v2-skill-icon-empty" aria-hidden="true">—</span>'}
-    <span class="v2-skill-name">${esc(skill?.name || "Пусто")}</span>
-    <span class="v2-skill-cost">${skill ? cost + (c.classId==="duelist" ? " ед. энергии" : " ед. ресурса") : ""}</span>
-  </button>`;
-}).join("");
+const handMarkup=renderHand();
 
 return `<div class="v2-battle-wrap">
   <div class="v2-battle-top">
@@ -785,8 +807,8 @@ return `<div class="v2-battle-wrap">
   </div>
   <div class="v2-battle-bottom">
     <div class="v2-turn-guidance" aria-live="polite">${battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют..."}</div>
-    <button type="button" class="v2-btn-attack" id="hit" data-basic-attack="1" ${battle.actor?.type !== "player" || battle.playerSkillUsed || battle.busy || battle.paused ? "disabled" : ""}>⚔ АТАКА</button>
-    <div class="v2-skills-grid">${skillMarkup}</div>
+    <div class="v2-energy-bar"><span id="energyDisplay">ЭНЕРГИЯ: ${c.currentEnergy}/${c.energy}</span><span class="deck-info">КОЛОДА: <b id="deckCount">${c.deck.length}</b> · СБРОС: <b id="discardCount">${c.discard.length}</b></span></div>
+    <div class="v2-card-hand" id="cardHand">${handMarkup}</div>
     <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>${battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА..."}</button>
   </div>
 </div>${battle.showTutorial ? `<div class="tb-turn-tutorial" role="dialog" aria-modal="true" aria-labelledby="tb-turn-tutorial-title">
@@ -794,9 +816,9 @@ return `<div class="v2-battle-wrap">
     <div class="tb-eyebrow">ПОШАГОВЫЙ БОЙ</div>
     <h2 id="tb-turn-tutorial-title">Твой первый бой</h2>
     <ol>
-      <li><b>Базовая атака.</b> Она доступна каждый ход и не тратит ресурс.</li>
-      <li><b>Умения 1–6.</b> Используй их по ситуации, проверяй стоимость и перезарядку.</li>
-      <li><b>Телеграф врага.</b> Враг показывает намерение. Нажми «ЗАВЕРШИТЬ ХОД», чтобы противники действовали.</li>
+      <li><b>Карты.</b> Разыгрывай карты из руки, оплачивая их энергией.</li>
+      <li><b>Колода и сброс.</b> Сыгранные карты уходят в сброс. Когда колода закончится, сброс перемешается.</li>
+      <li><b>Намерения врагов.</b> Смотри, кто атакует или лечит, и используй защиту до завершения хода.</li>
       <li><b>Выживание.</b> Применяй зелья и защиту до завершения своего хода.</li>
     </ol>
     <button type="button" class="tb-primary tb-wide" data-action="dismiss-turn-tutorial">ПОНЯТНО, В БОЙ</button>
@@ -806,13 +828,16 @@ return `<div class="v2-battle-wrap">
  function beginStage(){postBattleSummary=null;
   const c=live();
   try{
+   ensureCardDeck(c);
    const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
    if(routeChoice==="elite"&&!plan.boss&&c.run.stage?.mobs?.length){c.run.stage.mobs[0].type="elite";c.run.stage.mobs[0].mechanic="shield";}
    if(c.run.dailyChallengeActive&&Array.isArray(c.run.stage?.mobs))c.run.stage.mobs.forEach(mob=>{if(mob.type!=="boss")mob.type="elite";});
    if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
    battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
-   const savedSnapshot=plan.uiBattleSnapshot;if(savedSnapshot){battle.round=Math.max(1,Number(savedSnapshot.round)||1);battle.skillCooldowns={...(savedSnapshot.skillCooldowns||{})};battle.comboStacks=savedSnapshot.comboStacks||0;battle.comboProgress={...(savedSnapshot.comboProgress||{})};}if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}syncInitiative();showPlayerTurn();screen="battle";save();render();
+   const savedSnapshot=plan.uiBattleSnapshot;if(savedSnapshot){battle.round=Math.max(1,Number(savedSnapshot.round)||1);battle.skillCooldowns={...(savedSnapshot.skillCooldowns||{})};battle.comboStacks=savedSnapshot.comboStacks||0;battle.comboProgress={...(savedSnapshot.comboProgress||{})};}
+   if(savedSnapshot?.cardState){const state=savedSnapshot.cardState;c.deck=Array.isArray(state.deck)?state.deck:[];c.hand=Array.isArray(state.hand)?state.hand:[];c.discard=Array.isArray(state.discard)?state.discard:[];c.currentEnergy=Math.max(0,Math.min(c.energy,Number(state.currentEnergy)||0));battle.cardBlock=Math.max(0,Number(state.cardBlock)||0);battle.cardResume=true;}else{resetCardBattle(c);battle.cardResume=false;}
+   if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}syncInitiative();showPlayerTurn();screen="battle";save();render();
   }catch(error){notify(error.message);}
  }
  function finishCurrentEnemy(){
@@ -1025,7 +1050,7 @@ return `<div class="v2-battle-wrap">
  function showScreen(name){screen=name;render();}
  function battleRenderKey(){
   if(!battle)return "";
-  return [battle.stage,battle.round,battle.actor?.type||"",battle.playerSkillUsed?1:0,battle.potionUsedThisTurn?1:0,battle.counterPrimed?1:0,battle.showTutorial?1:0,Math.round(live().run.playerHp),Math.round(live().resource),battle.targetIndex,battle.bossPhase||0,battle.telegraph?.targetIndex??"",battle.telegraph?.label||"",(battle.enemies||[]).map(x=>x.index+":"+x.role+":"+(x.alive?1:0)+":"+Math.round(x.hp)).join(",")].join("|");
+  const c=live();return [battle.stage,battle.round,battle.actor?.type||"",battle.potionUsedThisTurn?1:0,battle.showTutorial?1:0,Math.round(c.run.playerHp),Math.round(c.currentEnergy),c.hand.map(card=>card.instanceId||card.id).join(","),c.deck.length,c.discard.length,battle.cardBlock||0,battle.targetIndex,battle.bossPhase||0,battle.telegraph?.targetIndex??"",battle.telegraph?.label||"",(battle.enemies||[]).map(x=>x.index+":"+x.role+":"+(x.alive?1:0)+":"+Math.round(x.hp)).join(",")].join("|");
  }
  function updateBattleDOM(){
   if(!battle)return;
@@ -1033,7 +1058,7 @@ return `<div class="v2-battle-wrap">
   const hp=engine.maxHp(c),playerHp=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
   const heroBar=arena.querySelector(".v2-hero-side .v2-hp-bar>div");if(heroBar)heroBar.style.width=playerHp+"%";
   const heroHpText=arena.querySelector(".v2-hero-hp-text");if(heroHpText)heroHpText.textContent=Math.ceil(c.run.playerHp)+" / "+hp+" HP";
-  const heroResource=arena.querySelector(".v2-hero-resource-text");if(heroResource)heroResource.textContent=classData(c).resource+" · "+Math.round(c.resource)+" / "+Math.round(c.resourceMax);
+  const heroResource=arena.querySelector(".v2-hero-resource-text");if(heroResource)heroResource.textContent="Энергия · "+Math.round(c.currentEnergy)+"/"+Math.round(c.energy);
   const heroName=arena.querySelector(".v2-hero-name");if(heroName)heroName.textContent=c.name;
   arena.querySelectorAll(".v2-enemy-card[data-target]").forEach(card=>{
    const index=Number(card.dataset.target),target=(battle.enemies||[]).find(enemy=>enemy.index===index);
@@ -1041,23 +1066,15 @@ return `<div class="v2-battle-wrap">
    const alive=!!target.alive&&Number(target.hp)>0,bar=card.querySelector(".v2-hp-bar>div"),hpText=card.querySelector(".v2-enemy-hp-text"),intent=card.querySelector(".v2-enemy-intent");
    if(bar)bar.style.width=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100))+"%";
    if(hpText)hpText.textContent=Math.max(0,Math.ceil(target.hp))+" HP";
-   if(intent)intent.textContent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&index===battle.targetIndex?battle.telegraph.label:"Готовит атаку");
+   if(intent)intent.textContent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&index===battle.targetIndex?battle.telegraph.label:enemyIntentText(target));
    card.classList.toggle("selected",index===battle.targetIndex);card.classList.toggle("defeated",!alive);
    card.setAttribute("aria-pressed",index===battle.targetIndex?"true":"false");
   });
   const playerTurn=battle.actor?.type==="player";
-  const hit=arena.querySelector("#hit");if(hit)hit.disabled=!playerTurn||battle.playerSkillUsed||battle.busy||battle.paused;
-  const slots=ensureLoadout(c);
-  arena.querySelectorAll(".v2-skill-btn[data-panel-slot]").forEach(button=>{
-   const slot=Number(button.dataset.panelSlot),skill=slots[slot]||null,cd=skill?(battle.skillCooldowns?.[skill.id]||0):Infinity;
-   button.dataset.panelSkill=skill?.id||"";
-   button.disabled=!skill||!playerTurn||battle.playerSkillUsed||battle.busy||battle.paused||cd>0;
-   const name=button.querySelector(".v2-skill-name"),cost=button.querySelector(".v2-skill-cost"),icon=button.querySelector(".v2-skill-icon");
-   if(name)name.textContent=skill?.name||"Пусто";
-   if(cost)cost.textContent=skill?getSkillStats(c,skill).cost+(c.classId==="duelist"?" ед. энергии":" ед. ресурса"):"";
-   const markup=skill?skillIconMarkup(skill,c.classId):'<span class="v2-skill-icon v2-skill-icon-empty" aria-hidden="true">—</span>';
-   if(icon)icon.outerHTML=markup;else button.insertAdjacentHTML("afterbegin",markup);
-  });
+  const energy=arena.querySelector("#energyDisplay");if(energy)energy.textContent="ЭНЕРГИЯ: "+c.currentEnergy+"/"+c.energy;
+  const deckCount=arena.querySelector("#deckCount");if(deckCount)deckCount.textContent=String(c.deck.length);
+  const discardCount=arena.querySelector("#discardCount");if(discardCount)discardCount.textContent=String(c.discard.length);
+  const hand=arena.querySelector("#cardHand");if(hand)hand.innerHTML=renderHand();
   const endTurn=arena.querySelector("#endturn");
   if(endTurn){
    endTurn.hidden=false;endTurn.style.display="flex";endTurn.style.visibility="visible";endTurn.style.opacity="1";
@@ -1066,7 +1083,7 @@ return `<div class="v2-battle-wrap">
    endTurn.classList.toggle("is-player-turn",playerTurn);
   }
   const guidance=arena.querySelector(".v2-turn-guidance");
-  if(guidance)guidance.textContent=playerTurn?"Твой ход. Нажми «АТАКА» или выбери умение, затем заверши ход.":"Противники атакуют...";
+  if(guidance)guidance.textContent=playerTurn?"Твой ход. Разыграй карты за "+c.currentEnergy+" энергии или заверши ход.":"Противники атакуют...";
   const pause=arena.querySelector(".v2-pause-btn");if(pause)pause.textContent=battle.paused?"ПРОДОЛЖИТЬ":"ПАУЗА";
   const round=arena.querySelector(".v2-battle-top>span");if(round)round.textContent="ИНИЦИАТИВА · РАУНД "+battle.round;
   arena.classList.toggle("tb-shaking",!!(battle.shakeUntil>Date.now()));
@@ -1220,7 +1237,7 @@ return `<div class="v2-battle-wrap">
   catch(error){notify(error.message);}
  }
  function handleClick(event){
-  const target=event.target.closest("[data-loot-continue],[data-skill-upgrade-open],[data-skill-upgrade-type],[data-skill-upgrade-close],[data-skill-upgrade-backdrop],[data-collection-item],[data-collection-close],[data-collection-tab],[data-bag-filter],[data-item-select],[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-enchant],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-stone],[data-extract-gem],[data-inspect-stone],[data-target],[data-route],[data-panel-skill],[data-replace-skill],[data-close-skill-replace],[data-counter],[data-ultimate],[data-basic-attack]");
+  const target=event.target.closest("[data-card-play],[data-loot-continue],[data-skill-upgrade-open],[data-skill-upgrade-type],[data-skill-upgrade-close],[data-skill-upgrade-backdrop],[data-collection-item],[data-collection-close],[data-collection-tab],[data-bag-filter],[data-item-select],[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-enchant],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-stone],[data-extract-gem],[data-inspect-stone],[data-target],[data-route],[data-panel-skill],[data-replace-skill],[data-close-skill-replace],[data-counter],[data-ultimate],[data-basic-attack]");
   if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target))return;
   event.preventDefault();
   if(target.dataset.lootContinue!==undefined){postBattleSummary=null;screen="map";save();render();return;}
@@ -1241,8 +1258,8 @@ return `<div class="v2-battle-wrap">
   if(target.dataset.action==="confirm-branch"){if(!pendingBranchId)return;try{engine.chooseBranch(live().id,pendingBranchId);const chosen=pendingBranchId;pendingBranchId=null;save();render();notify("Специализация выбрана: "+((classData(live()).branches||[]).find(item=>item.id===chosen)?.name||chosen));}catch(error){notify(error.message);}return;}
   if(target.dataset.action==="cancel-branch"){pendingBranchId=null;render();return;}
   if(target.dataset.talent){try{engine.useTalentPoint(live().id,target.dataset.talent,3);save();render();}catch(error){notify(error.message);}return;}
+  if(target.dataset.cardPlay!==undefined){playCard(Number(target.dataset.cardPlay));return;}
   if(target.dataset.target!==undefined){setBattleTarget(Number(target.dataset.target));return;}
-  if(target.dataset.basicAttack!==undefined){basicAttack();return;}
   if(target.dataset.panelSkill){playerAction(target.dataset.panelSkill,Number(target.dataset.panelSlot));return;}
   if(target.dataset.counter!==undefined){useCounterSkill();return;}
   if(target.dataset.ultimate!==undefined){useUltimate();return;}
