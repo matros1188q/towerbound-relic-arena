@@ -57,10 +57,11 @@
     const title=overlay.querySelector('#tb-turn-tutorial-title'),list=overlay.querySelector('ol'),button=overlay.querySelector('[data-action="dismiss-turn-tutorial"]');
     if(!title||!list||!button)return;
     overlay.dataset.started=String(tutorialStarted);
+    overlay.style.pointerEvents=tutorialStarted?'none':'auto';
     overlay.setAttribute('aria-modal',String(!tutorialStarted));
     const step=tutorialSteps[Math.min(tutorialStep,tutorialSteps.length-1)];
     const nextTitle=tutorialStarted?step.title:'Твой первый бой';if(title.textContent!==nextTitle)title.textContent=nextTitle;
-    const html=tutorialStarted?'<li><b>'+step.text+'</b></li>':'<li><b>Карты.</b> Играй карты из руки, оплачивая их энергией.</li><li><b>Колода и сброс.</b> Сыгранные карты уходят в сброс, а пустая колода перемешивается.</li><li><b>Намерения врагов.</b> Смотри на их действия заранее и выбирай атаку или защиту.</li>';
+    const html=tutorialStarted?'<li><b>'+step.text+'</b></li>':'<li><b>Карты.</b> Играй карты из руки, оплачивая их энергией.</li><li><b>Колода и сброс.</b> Сыгранные карты уходят в сброс, а пустая колода перемешивается.</li><li><b>Намерения врагов.</b> Смотри на их действия заранее и выбирай атаку или защиту.</li><li><b>Завершить ход.</b> Передай ход противникам после розыгрыша карт.</li>';
     if(list.dataset.tbStep!==String(tutorialStarted?tutorialStep:'intro')){list.innerHTML=html;list.dataset.tbStep=String(tutorialStarted?tutorialStep:'intro');}
     const nextLabel=tutorialStarted?'ОЖИДАЕТСЯ: '+(tutorialStep===0?'КАРТА АТАКИ':tutorialStep===1||tutorialStep===3?'ЗАВЕРШИТЬ ХОД':'КАРТА ЗАЩИТЫ'):'НАЧАТЬ ОБУЧЕНИЕ';if(button.textContent.trim()!==nextLabel)button.textContent=nextLabel;
   }
