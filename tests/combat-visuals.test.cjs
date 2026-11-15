@@ -34,6 +34,7 @@ for(const [name,source,re] of [
 ['loot button is labeled Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
 ['loot action closes summary and returns to map without starting a new stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
 ['battle DOM finds the V2 arena wrapper',battleDom,/root\.querySelector\("\.v2-battle-wrap"\)/],
+['fresh battle shuffles the deck and draws five cards',ui,/resetCardBattle\(c\);drawCards\(5\);battle\.cardResume=false/],
 ['battle DOM updates the card hand',battleDom,/arena\.querySelector\("#cardHand"\)[\s\S]*renderHand\(\)/],
 ['battle DOM updates energy and deck counters',battleDom,/energyDisplay[\s\S]*deckCount[\s\S]*discardCount/],
 ['enemy intent previews the next action and its value',ui,/label:enemyIntentText\(preview\)/],
