@@ -84,7 +84,7 @@
     tutorialStep++;
     if(tutorialStep>=tutorialSteps.length){
       tutorialCompleting=true;localStorage.setItem('tb-turn-tutorial-seen-v1','1');
-      queueMicrotask(()=>{const finish=root.querySelector('[data-action="dismiss-turn-tutorial"]');if(finish)finish.click();tutorialStarted=false;tutorialCompleting=false;});
+      setTimeout(()=>{const finish=root.querySelector('[data-action="dismiss-turn-tutorial"]');if(finish)finish.click();tutorialStarted=false;tutorialCompleting=false;},0);
     }else queueMicrotask(updateTutorial);
   }
   document.addEventListener('click',tutorialClick,true);
