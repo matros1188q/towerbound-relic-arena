@@ -375,12 +375,12 @@ const {chromium}=require('playwright');
     window.saveTowerboundRework();
    });
   await page.setViewportSize({width:390,height:844});
+  await page.evaluate(()=>{Math.random=()=>.5;});
   await page.locator('[data-stage="9"]').click();
   await page.locator('[data-action="start"]').click();
   await page.waitForSelector('.v2-battle-wrap',{timeout:5000});
   // beginStage restores/clamps the carried HP; seed the interaction fixture after battle creation.
   await page.evaluate(()=>{window.TowerboundRework.state.characters[0].run.playerHp=100000;window.saveTowerboundRework();});
-  await page.evaluate(()=>{Math.random=()=>.5;});
   assert.equal(await page.locator('.v2-card').count(),5,'card battle starts with five cards in hand');
   assert.ok(await page.locator('.v2-card.attack').count()>0,'starter hand contains attack cards');
   assert.ok(await page.locator('.v2-card.defense').count()>0,'starter hand contains defense cards');
