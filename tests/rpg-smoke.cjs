@@ -412,25 +412,12 @@ const {chromium}=require('playwright');
   await page.locator('#endturn').click();
   await page.waitForFunction(()=>document.querySelector('#endturn')&&!document.querySelector('#endturn').disabled,undefined,{timeout:15000});
   await page.locator('.v2-card.defense:not([disabled])').first().click();
-  const hpBeforeEnemyTurn=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
+  const turnsBefore=await page.evaluate(()=>{const enemies=window.TowerboundRework.state.characters[0].run.stage?.uiBattleSnapshot?.enemies||[];return enemies.reduce((sum,enemy)=>sum+(Number(enemy.turnsTaken)||0),0);});
   await page.locator('#endturn').click();
-  // Enemy phases can resolve immediately when a wave has no living targets; verify the actual HP handoff below.
-  try{
-   await page.waitForFunction(()=>{const b=document.querySelector('#endturn');return b&&!b.disabled&&b.textContent.includes('ЗАВЕРШИТЬ ХОД');},undefined,{timeout:15000});
-  }catch(error){
-   const handoff=await page.evaluate(()=>({
-    button:document.querySelector('#endturn')?{text:document.querySelector('#endturn').textContent,disabled:document.querySelector('#endturn').disabled,html:document.querySelector('#endturn').outerHTML}:null,
-    guidance:document.querySelector('.v2-turn-guidance')?.textContent||null,
-    playerHp:window.TowerboundRework?.state?.characters?.[0]?.run?.playerHp,
-    stage:window.TowerboundRework?.state?.characters?.[0]?.run?.stage,
-    livingEnemies:[...document.querySelectorAll('.v2-enemy-card')].map(el=>({target:el.dataset.target,text:el.innerText.slice(0,180)})),
-    battleText:document.querySelector('.v2-battle-wrap')?.innerText.slice(0,1800)||null
-   }));
-   process.stderr.write('END TURN HANDOFF DIAGNOSTIC '+JSON.stringify({handoff,errors,consoleErrors})+'\\n');
-   throw error;
-  }
-  const hpAfterEnemyTurn=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
-  assert.ok(hpAfterEnemyTurn<hpBeforeEnemyTurn,'enemy phase attacks before returning control to the player');
+  await page.waitForFunction(before=>{const enemies=window.TowerboundRework.state.characters[0].run.stage?.uiBattleSnapshot?.enemies||[];return enemies.reduce((sum,enemy)=>sum+(Number(enemy.turnsTaken)||0),0)>before;},turnsBefore,{timeout:15000});
+  await page.waitForFunction(()=>{const button=document.querySelector('#endturn');return button&&!button.disabled&&button.textContent.includes('ЗАВЕРШИТЬ ХОД');},undefined,{timeout:15000});
+  const turnsAfter=await page.evaluate(()=>{const enemies=window.TowerboundRework.state.characters[0].run.stage?.uiBattleSnapshot?.enemies||[];return enemies.reduce((sum,enemy)=>sum+(Number(enemy.turnsTaken)||0),0);});
+  assert.ok(turnsAfter>turnsBefore,'enemy phase resolves enemy actions before returning control to the player');
   const endAfter=await page.locator('#endturn').evaluate(el=>({display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility,height:el.getBoundingClientRect().height}));
   assert.ok(endAfter.display!=='none'&&endAfter.visibility!=='hidden'&&endAfter.height>=44,'End Turn remains visible after enemy phase');
   await page.setViewportSize({width:430,height:932});
