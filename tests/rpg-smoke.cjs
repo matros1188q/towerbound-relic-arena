@@ -410,7 +410,7 @@ const {chromium}=require('playwright');
   },{targetId,hpBefore},{timeout:5000});
   assert.match(await page.locator('#energyDisplay').innerText(),/2\/3/,'playing a card spends one energy');
   await page.locator('#endturn').click();
-  await page.waitForFunction(()=>document.querySelector('#endturn')&&!document.querySelector('#endturn').disabled,undefined,{timeout:15000});
+  await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   await page.locator('.v2-card.defense:not([disabled])').first().click();
   await page.locator('#endturn').click();
   await page.waitForFunction(()=>document.querySelector('#energyDisplay')?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5,undefined,{timeout:15000});
