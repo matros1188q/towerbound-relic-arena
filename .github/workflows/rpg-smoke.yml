@@ -2,7 +2,7 @@ name: RPG smoke test
 on:
   push:
     branches: [main]
-    paths: ['rpg-mode.js','tests/rpg-smoke.cjs','.github/workflows/rpg-smoke.yml']
+    paths: ['rpg-mode.js','rpg-rework-v2.js','rpg-rework-ui.js','rpg-rework-ui.css.js','towerbound-polish.js','tests/rpg-smoke.cjs','.github/workflows/rpg-smoke.yml']
 jobs:
   smoke:
     runs-on: ubuntu-24.04
