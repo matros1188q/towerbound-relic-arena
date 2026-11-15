@@ -92,7 +92,12 @@
  function resetCardBattle(c){ensureCardDeck(c);const combined=[...(c.deck||[]),...(c.hand||[]),...(c.discard||[])],seen=new Set(),cards=[];for(const card of combined){const key=card?.instanceId||card?.id;if(!card||seen.has(key))continue;seen.add(key);cards.push(card);}c.deck=shuffleCards(cards.length?cards:makeStarterDeck());c.hand=[];c.discard=[];c.currentEnergy=c.energy;}
  function drawCards(amount){const c=live();if(!c)return 0;ensureCardDeck(c);let drawn=0;const count=Math.max(0,Math.floor(Number(amount)||0));while(drawn<count){if(!c.deck.length&&c.discard.length){c.deck=shuffleCards(c.discard);c.discard=[];}if(!c.deck.length)break;c.hand.push(c.deck.shift());drawn++;}return drawn;}
  function renderHand(){const c=live();if(!c)return "";ensureCardDeck(c);return c.hand.map((card,index)=>{const disabled=battle?.actor?.type!=="player"||battle?.busy||battle?.paused||Number(c.currentEnergy)<Number(card.cost||0),type=card.type||"skill";return '<button type="button" class="v2-card '+esc(type)+(disabled?' is-disabled':'')+'" data-card-play="'+index+'" '+(type==="attack"?'data-action="attack" ':'')+'data-card-type="'+esc(type)+'" '+(disabled?'disabled':'')+' aria-label="'+esc(card.name)+', '+Number(card.cost||0)+' энергии. '+esc(card.description||'')+'"><span class="card-cost">'+Number(card.cost||0)+'</span><span class="card-name">'+esc(card.name)+'</span><span class="card-type">'+esc(({attack:"АТАКА",defense:"ЗАЩИТА",skill:"НАВЫК",power:"СИЛА"})[type]||"НАВЫК")+'</span><span class="card-desc">'+esc(card.description||"")+'</span></button>';}).join("");}
- function enemyIntentText(target){if(!target)return "Ожидает";if(target.telegraph?.label||target.intent?.label)return target.telegraph?.label||target.intent.label;if(target.role==="healer"&&!target.provoked&&((Number(target.turnsTaken||0)+1)%2===0)){const ally=(battle?.enemies||[]).find(x=>x.alive&&x.hp>0&&x.index!==target.index&&x.hp<x.maxHp);if(ally)return "✚ ЛЕЧЕНИЕ · +"+Math.round(ally.maxHp*.2);}const stats=engine.getEnemyStats(live().id,battle.stage,target),damage=Math.max(1,Math.round(Number(stats.damage)||0));if(target.role==="poison")return "☠ ЯД + ⚔ "+damage;if(target.role==="tank"&&((Number(target.turnsTaken||0)+1)%3===0))return "🛡 ЗАЩИТА + ⚔ "+damage;return "⚔ АТАКА · "+damage;}
+
+ function cardPreviewDamage(card,target){if(!card||!target||!target.alive||target.hp<=0)return 0;const c=live(),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),base=Number(card.damage)||Number(card.damageAll)||0;if(base<=0)return 0;const bonus=Number(card.damage)>0?.18:.12,raw=Math.max(1,Math.round((base+Number(stats.attack||0)*bonus)*scale)),type=card.damageType||(Number(card.damageAll)>0?"fire":"physical");let mult=engine.damageTypeMultiplier(target,type);if(target.role==="tank"&&(target.guardCharges||0)>0)mult*=1-(balance.mobs.roles.tank.shield_fraction||.3);let damage=Math.max(0,Math.round(raw*mult*(Number(target.vulnerable)>0?1.5:1)));if(target.type==="boss")damage=engine.capBossDamage(target,damage,battle.actionDamageLedger?.[target.index]||0);return Math.max(0,Math.min(Number(target.hp)||0,damage-Math.min(Number(target.shield)||0,damage)));}
+ function showCardDamagePreview(index){if(!battle||battle.actor?.type!=="player")return;const c=live(),card=c.hand[index];if(!card)return;const targets=Number(card.damageAll)>0?(battle.enemies||[]).filter(x=>x.alive&&x.hp>0):(battle.enemies||[]).filter(x=>x.index===battle.targetIndex&&x.alive&&x.hp>0);for(const target of targets){const node=root.querySelector('.v2-enemy-card[data-target="'+target.index+'"]');if(!node)continue;let preview=node.querySelector(".v2-damage-preview");if(!preview){preview=document.createElement("div");preview.className="v2-damage-preview";node.appendChild(preview);}const damage=cardPreviewDamage(card,target);preview.textContent=damage>0?"−"+damage+" HP":"БЕЗ УРОНА";preview.classList.toggle("lethal",damage>=target.hp);}}
+ function clearCardDamagePreview(){root.querySelectorAll(".v2-damage-preview").forEach(node=>node.remove());}
+ function enemyIntentText(target){if(!target)return "Ожидает";if(target.intent?.label)return target.intent.label;if(target.telegraph?.label)return target.telegraph.label;const stats=engine.getEnemyStats(live().id,battle.stage,target),damage=Math.max(1,Math.round((Number(stats.damage)||0)*(target.weak>0?.75:1)));if(target.role==="healer"&&!target.provoked&&((Number(target.turnsTaken||0)+1)%2===0)){const ally=(battle?.enemies||[]).find(x=>x.alive&&x.hp>0&&x.index!==target.index&&x.hp<x.maxHp);if(ally)return "💚 +"+Math.round(ally.maxHp*.2)+" HP";}if(target.role==="tank"&&((Number(target.turnsTaken||0)+1)%3===0))return "🛡️ ЗАЩИТА + ⚔️ "+damage;if(target.role==="poison")return "☠️ ЯД · ⚔️ "+damage;return "⚔️ "+damage;}
+ function planEnemyIntents(){if(!battle)return;for(const enemy of battle.enemies||[]){if(!enemy.alive||enemy.hp<=0){enemy.intent=null;continue;}const stats=engine.getEnemyStats(live().id,battle.stage,enemy),damage=Math.max(1,Math.round((Number(stats.damage)||0)*(Number(enemy.weak)>0?.75:1)));let intent={type:"attack",damage,label:"⚔️ "+damage};if(enemy.role==="healer"&&!enemy.provoked&&((Number(enemy.turnsTaken||0)+1)%2===0)){const ally=(battle.enemies||[]).filter(x=>x.alive&&x.hp>0&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(ally)intent={type:"heal",targetIndex:ally.index,amount:Math.round(ally.maxHp*.2),label:"💚 +"+Math.round(ally.maxHp*.2)+" HP"};}else if(enemy.role==="tank"&&((Number(enemy.turnsTaken||0)+1)%3===0))intent={type:"defend",damage,label:"🛡️ ЗАЩИТА · ⚔️ "+damage};else if(enemy.role==="poison")intent={type:"poison",damage,label:"☠️ ЯД · ⚔️ "+damage};enemy.intent=intent;}}
 
  function esc(value){return String(value===undefined||value===null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
  const itemTypeNames={healing_potion:"Зелье исцеления",craft_material:"Материал для крафта",enhancement_stone:"Камень усиления",refine_stone:"Камень заточки",chisel:"Долото",enchant_scroll:"Свиток зачарования"};
@@ -357,13 +362,14 @@ function createDialog(){
   battle.actor={type:"player",id:"player",name:c.name};battle.busy=false;battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
   if(battle.cardResume){battle.cardResume=false;}else{battle.cardBlock=0;c.currentEnergy=c.energy;drawCards(Math.max(0,5-c.hand.length));}
   for(const id of Object.keys(battle.skillCooldowns||{}))battle.skillCooldowns[id]=Math.max(0,battle.skillCooldowns[id]-1);
+  planEnemyIntents();
   battle.counterCooldownTurns=Math.max(0,(battle.counterCooldownTurns||0)-1);battle.ultimateCooldownTurns=Math.max(0,(battle.ultimateCooldownTurns||0)-1);
   const preview=(battle.enemies||[]).find(enemy=>enemy.alive);
   battle.telegraph=preview?{type:"strong_hit",targetIndex:preview.index,label:enemyIntentText(preview),icon:"⚔",color:"#ff465e"}:null;
  }
  function addSummonedBossMobs(){
   if(battle.bossAddsSummoned)return;const c=live();battle.bossAddsSummoned=true;
-  for(let n=0;n<2;n++){const index=battle.enemies.length,role=n===0?"poison":"normal",mob={index,type:"normal",role,weakness:null,resistance:null,statMultiplier:1},stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;c.run.stage.mobs.push(mob);battle.enemies.push({...mob,id:"boss-add-"+index,hp,maxHp:hp,alive:true,shield:0,pendingAttack:false,turnsTaken:0,speed:1});}
+  for(let n=0;n<2;n++){const index=battle.enemies.length,role=n===0?"poison":"normal",mob={index,type:"normal",role,weakness:null,resistance:null,statMultiplier:1,poison:0,bleed:0,weak:0,vulnerable:0},stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;c.run.stage.mobs.push(mob);battle.enemies.push({...mob,id:"boss-add-"+index,hp,maxHp:hp,alive:true,shield:0,pendingAttack:false,turnsTaken:0,speed:1});}
   battle.count=battle.enemies.length;notify("Босс призвал двух прислужников");
  }
  function updateBossPhase(){
@@ -405,22 +411,23 @@ function createDialog(){
  function enemyTurn(enemy){
   if(!battle||!enemy||enemy.alive!==true||Number(enemy.hp)<=0){if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}return;}
   const c=live();enemy.turnsTaken=(enemy.turnsTaken||0)+1;enemy.pendingAttack=false;
+  const poison=Math.max(0,Number(enemy.poison)||0),bleed=Math.max(0,Number(enemy.bleed)||0);
+  if(poison>0||bleed>0){const dotDamage=poison+bleed;enemy.hp=Math.max(0,enemy.hp-dotDamage);enemy.poison=Math.max(0,poison-1);enemy.bleed=Math.max(0,bleed-1);showFloatingText(enemy,"-"+dotDamage,"#a8e66b");notify("Яд/кровотечение · −"+dotDamage+" HP");if(enemy.hp<=0){enemy.alive=false;enemy.dead=true;finishCurrentEnemy();return;}}
   if(enemy.type==="boss"){
    battle.bossTurns=(battle.bossTurns||0)+1;
    if(battle.bossTurns>15){c.run.playerHp=0;notify("ЯРОСТЬ БОССА · Время вышло");endFromDamage();return;}
   }
   if(battle.enemyStunned){battle.enemyStunned=false;notify("Враг оглушён · ход пропущен");return;}
-  if(enemy.role==="healer"&&enemy.provoked){enemy.provoked=false;notify("Лекарь атакует в ответ на полученный урон");}
-  else if(enemy.role==="healer"&&enemy.turnsTaken%2===0){
-   const ally=battle.enemies.filter(x=>x.alive&&x.hp>0&&x.index!==enemy.index&&x.hp<x.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];
-   if(ally){const amount=Math.round(ally.maxHp*.2);ally.hp=Math.min(ally.maxHp,ally.hp+amount);if(ally.index===battle.targetIndex)battle.enemyHp=ally.hp;notify("Лекарь восстановил "+amount+" HP союзнику");}
-  }
+  const planned=enemy.intent||null;
+  if(planned?.type==="heal"){const ally=(battle.enemies||[]).find(x=>x.index===planned.targetIndex&&x.alive&&x.hp>0);if(ally){ally.hp=Math.min(ally.maxHp,ally.hp+planned.amount);if(ally.index===battle.targetIndex)battle.enemyHp=ally.hp;notify("Лекарь восстановил "+planned.amount+" HP союзнику");}}
+  if(enemy.role==="healer"&&enemy.provoked){enemy.provoked=false;}
   if(enemy.role==="tank"&&enemy.pendingCleanseDebuff){enemy.pendingCleanseDebuff=false;enemy.debuffKind=null;battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);battle.dots.shift();battle.dot=battle.dots[0]||null;notify("Танк очищает один заряд яда/кровотечения");}
-  else if(enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=1;
-  if(enemy.role==="poison"){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}
-  const stats=engine.getEnemyStats(c.id,battle.stage,enemy);
+  else if(planned?.type==="defend"||enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=Math.max(1,Number(enemy.guardCharges)||0);
+  if(planned?.type==="poison"||enemy.role==="poison"){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}
+  const stats=engine.getEnemyStats(c.id,battle.stage,enemy),weakMultiplier=Number(enemy.weak)>0?.75:1;
   battle.telegraph=null;
-  applyEnemyHit(enemy,stats.damage);
+  applyEnemyHit(enemy,Math.max(1,Math.round(Number(stats.damage||0)*weakMultiplier)));
+  if(enemy.weak>0)enemy.weak=Math.max(0,enemy.weak-1);if(enemy.vulnerable>0)enemy.vulnerable=Math.max(0,enemy.vulnerable-1);
  }
  function clearPendingTurnTimer(){if(pendingTimer!==null){clearTimeout(pendingTimer);pendingTimer=null;}}
  function safeTimeoutMs(value,fallback=1000){
@@ -504,6 +511,9 @@ function createDialog(){
   if(c.run.playerHp<=0){endFromDamage();return;}
   if(Number(card.block)>0){const block=Math.max(0,Math.round(Number(card.block)+Number(stats.defense||0)*.1));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");}
   if(Number(card.heal)>0){const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(Number(card.heal))));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");}
+  const statusPayload={...(card.statuses||{})};for(const key of ["poison","bleed","weak","vulnerable"])if(Number(card[key])>0)statusPayload[key]=(Number(statusPayload[key])||0)+Number(card[key]);
+  const statusTargets=allDamage>0?(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0):target?[target]:[];
+  for(const enemy of statusTargets){for(const key of ["poison","bleed","weak","vulnerable"]){const stacks=Math.max(0,Math.floor(Number(statusPayload[key])||0));if(stacks)enemy[key]=Math.max(0,Number(enemy[key])||0)+stacks;}}
   if(Number(card.draw)>0)drawCards(card.draw);
   if(killed&&battle){finishCurrentEnemy();if(!battle)return;}
   save();render();
@@ -735,7 +745,7 @@ function talentBonusDescription(talent,rank){
     const stats=engine.getEnemyStats(c.id,battle.stage,mob),saved=savedEnemies.find(enemy=>enemy&&enemy.index===i);
     const maxHp=Math.max(1,Number(saved?.maxHp)||stats.hp),hp=Math.max(0,Math.min(maxHp,Number.isFinite(Number(saved?.hp))?Number(saved.hp):maxHp));
     const baseShield=mob.mechanic==="shield"?Math.round(maxHp*balance.elite_mechanics.shield.absorb_fraction):0;
-    return{...mob,...(saved||{}),index:i,id:"enemy-"+i,mobId:mob.mobId||mob.enemyId||mob.key||mob.id||mob.name||mob.role||"unknown",maxHp,hp,alive:!killed.has(i)&&saved?.alive!==false&&hp>0,dead:killed.has(i)||saved?.dead===true||hp<=0,attackIntervalMs:saved?.attackIntervalMs||stats.attackIntervalMs,nextHealAt:saved?.nextHealAt||0,nextPoisonAt:saved?.nextPoisonAt||0,slowedUntil:saved?.slowedUntil||0,pendingAttack:!!saved?.pendingAttack,turnsTaken:saved?.turnsTaken||0,speed:saved?.speed||mob.speed||1};
+    return{poison:0,bleed:0,weak:0,vulnerable:0,...mob,...(saved||{}),index:i,id:"enemy-"+i,mobId:mob.mobId||mob.enemyId||mob.key||mob.id||mob.name||mob.role||"unknown",maxHp,hp,alive:!killed.has(i)&&saved?.alive!==false&&hp>0,dead:killed.has(i)||saved?.dead===true||hp<=0,attackIntervalMs:saved?.attackIntervalMs||stats.attackIntervalMs,nextHealAt:saved?.nextHealAt||0,nextPoisonAt:saved?.nextPoisonAt||0,slowedUntil:saved?.slowedUntil||0,pendingAttack:!!saved?.pendingAttack,turnsTaken:saved?.turnsTaken||0,speed:saved?.speed||mob.speed||1};
    });
    const healer=battle.enemies.find(enemy=>enemy.role==="healer"&&enemy.alive);index=healer?healer.index:(snapshot?.targetIndex??stage.targetIndex??stage.enemyIndex??0);
   }
@@ -783,6 +793,7 @@ function talentBonusDescription(talent,rank){
     <div class="v2-enemy-name">${weaknessIcon?'<span class="v2-weakness-icon" aria-label="Уязвимость">'+weaknessIcon+'</span>':""}${target.type === "boss" ? "БОСС" : "ВРАГ " + (i + 1)}</div>
     ${countdownMarkup}
     <div class="v2-enemy-intent">${esc(intent)}</div>
+    <div class="v2-enemy-statuses">${["poison","bleed","weak","vulnerable"].filter(key=>Number(target[key])>0).map(key=>({poison:"☠️",bleed:"🩸",weak:"💨",vulnerable:"🎯"}[key])+" "+target[key]).join(" · ")}</div>
     <div class="v2-hp-bar"><div style="width:${enemyHpPct}%"></div></div>
     <div class="v2-enemy-hp-text">${Math.ceil(target.hp)} HP</div>
   </div>`;
@@ -936,7 +947,7 @@ return `<div class="v2-battle-wrap">
   const armorPenetration=Math.max(0,Math.min(1,Number(options.armorPenetration)||0));
   if(armorPenetration>0&&multiplier<1)multiplier=1-(1-multiplier)*(1-armorPenetration);
   if(!options.ignoreArmor&&target.role==="tank"&&target.alive&&(target.guardCharges||0)>0){multiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3)*(1-armorPenetration);target.guardCharges--; }
-  let damage=Math.max(0,Math.round(rawDamage*multiplier));
+  let damage=Math.max(0,Math.round(rawDamage*multiplier*(Number(target.vulnerable)>0?1.5:1)));
    if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};const used=battle.actionDamageLedger[target.index]||0;damage=engine.capBossDamage(target,damage,used,options.ultimate?"ultimate":undefined);}
   if(!options.ignoreArmor&&target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
@@ -1066,7 +1077,8 @@ return `<div class="v2-battle-wrap">
    const alive=!!target.alive&&Number(target.hp)>0,bar=card.querySelector(".v2-hp-bar>div"),hpText=card.querySelector(".v2-enemy-hp-text"),intent=card.querySelector(".v2-enemy-intent");
    if(bar)bar.style.width=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100))+"%";
    if(hpText)hpText.textContent=Math.max(0,Math.ceil(target.hp))+" HP";
-   if(intent)intent.textContent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&index===battle.targetIndex?battle.telegraph.label:enemyIntentText(target));
+   if(intent)intent.textContent=target.telegraph?.label||target.intent?.label||enemyIntentText(target);
+   let statusNode=card.querySelector(".v2-enemy-statuses");if(statusNode)statusNode.textContent=[["poison","☠️"],["bleed","🩸"],["weak","💨"],["vulnerable","🎯"]].filter(([key])=>Number(target[key])>0).map(([key,icon])=>icon+" "+target[key]).join(" · ");
    card.classList.toggle("selected",index===battle.targetIndex);card.classList.toggle("defeated",!alive);
    card.setAttribute("aria-pressed",index===battle.targetIndex?"true":"false");
   });
@@ -1074,7 +1086,7 @@ return `<div class="v2-battle-wrap">
   const energy=arena.querySelector("#energyDisplay");if(energy)energy.textContent="ЭНЕРГИЯ: "+c.currentEnergy+"/"+c.energy;
   const deckCount=arena.querySelector("#deckCount");if(deckCount)deckCount.textContent=String(c.deck.length);
   const discardCount=arena.querySelector("#discardCount");if(discardCount)discardCount.textContent=String(c.discard.length);
-  const hand=arena.querySelector("#cardHand");if(hand)hand.innerHTML=renderHand();
+  const hand=arena.querySelector("#cardHand");if(hand){const scroll=hand.scrollLeft;hand.innerHTML=renderHand();hand.scrollLeft=scroll;}
   const endTurn=arena.querySelector("#endturn");
   if(endTurn){
    endTurn.hidden=false;endTurn.style.display="flex";endTurn.style.visibility="visible";endTurn.style.opacity="1";
@@ -1386,7 +1398,9 @@ return `<div class="v2-battle-wrap">
   }
  }
  root.addEventListener("pointerup",function(event){if(event.target.closest(".tb-v2"))event.stopImmediatePropagation();},true);
- root.addEventListener("pointerover",event=>{const option=event.target.closest("[data-branch-preview]");const panel=root.querySelector("#tbBranchDescription");if(option&&panel)panel.textContent=option.dataset.branchPreview;});
+ root.addEventListener("pointerover",event=>{const option=event.target.closest("[data-branch-preview]");const panel=root.querySelector("#tbBranchDescription");if(option&&panel)panel.textContent=option.dataset.branchPreview;const card=event.target.closest("[data-card-play]");if(card)showCardDamagePreview(Number(card.dataset.cardPlay));});
+ root.addEventListener("focusin",event=>{const card=event.target.closest("[data-card-play]");if(card)showCardDamagePreview(Number(card.dataset.cardPlay));});
+ root.addEventListener("pointerout",event=>{const card=event.target.closest("[data-card-play]");if(card&&!card.contains(event.relatedTarget))clearCardDamagePreview();});
  root.addEventListener("focusin",event=>{const option=event.target.closest("[data-branch-preview]");const panel=root.querySelector("#tbBranchDescription");if(option&&panel)panel.textContent=option.dataset.branchPreview;});
  root.addEventListener("pointerout",event=>{const option=event.target.closest("[data-branch-preview]");if(!option||option.contains(event.relatedTarget))return;const panel=root.querySelector("#tbBranchDescription"),c=live();if(panel&&c){const chosen=(classData(c).branches||[]).find(item=>item.id===c.branch);panel.textContent=chosen?specializationDescription(c.classId,chosen.id):"Нажми или наведи на ветку, чтобы прочитать её механику.";}});
  document.addEventListener("click",handleClick);
