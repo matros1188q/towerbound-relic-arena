@@ -1512,9 +1512,10 @@ return `<div class="v2-battle-wrap">
    if(!value)return;
    engine=value;balance=engine.balance;
    try{const response=await fetch("./configs/skills/catalog.json?v=3");if(!response.ok)throw new Error("HTTP "+response.status+" loading ./configs/skills/catalog.json");const catalog=await response.json();if(!Array.isArray(catalog))throw new Error("Skill catalog must be an array");skills=catalog;console.info("SKILL CATALOG READY:",{count:skills.length,classes:[...new Set(skills.map(skill=>skill.class_id))]});}catch(error){skills=[];console.error("Skill catalog unavailable",error);}
+   let active=null;
    if(engine.state.characters.length){
     selectedId=engine.state.activeCharacterId||engine.state.characters[0].id;
-    const active=engine.state.characters.find(character=>character.id===selectedId);
+    active=engine.state.characters.find(character=>character.id===selectedId);
     if(active?.run?.stage){
      const repaired=engine.sanitizeActiveStage(active.id);
      if(repaired.processed?.length||repaired.completed){save();console.info("[Towerbound] repaired saved combat state",repaired);}
