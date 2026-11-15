@@ -36,6 +36,7 @@ for(const [name,source,re] of [
 ['battle DOM finds the V2 arena wrapper',battleDom,/root\.querySelector\("\.v2-battle-wrap"\)/],
 ['battle DOM updates the card hand',battleDom,/arena\.querySelector\("#cardHand"\)[\s\S]*renderHand\(\)/],
 ['battle DOM updates energy and deck counters',battleDom,/energyDisplay[\s\S]*deckCount[\s\S]*discardCount/],
+['enemy intent previews the next action and its value',ui,/label:enemyIntentText\(preview\)/],
 ['battle DOM updates V2 enemy cards',battleDom,/arena\.querySelectorAll\("\.v2-enemy-card\[data-target\]"\)/],
 ['battle DOM no longer queries legacy arena, skill or target selectors',battleDom,/^((?!\.tb-arena|\.tb-panel-skill|\.tb-target-card)[\s\S])*$/],
 ['Attack cards have a distinct high-contrast combat style',css,/\.v2-card\.attack\{border-color:#e76b5e!important;background:linear-gradient\(180deg,#633b3a,#251b22\)!important/],

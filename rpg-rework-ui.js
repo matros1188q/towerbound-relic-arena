@@ -359,7 +359,7 @@ function createDialog(){
   for(const id of Object.keys(battle.skillCooldowns||{}))battle.skillCooldowns[id]=Math.max(0,battle.skillCooldowns[id]-1);
   battle.counterCooldownTurns=Math.max(0,(battle.counterCooldownTurns||0)-1);battle.ultimateCooldownTurns=Math.max(0,(battle.ultimateCooldownTurns||0)-1);
   const preview=(battle.enemies||[]).find(enemy=>enemy.alive);
-  battle.telegraph=preview?{type:"strong_hit",targetIndex:preview.index,label:"ВРАГ ГОТОВИТ АТАКУ · ЗАВЕРШИ ХОД",icon:"⚔",color:"#ff465e"}:null;
+  battle.telegraph=preview?{type:"strong_hit",targetIndex:preview.index,label:enemyIntentText(preview),icon:"⚔",color:"#ff465e"}:null;
  }
  function addSummonedBossMobs(){
   if(battle.bossAddsSummoned)return;const c=live();battle.bossAddsSummoned=true;
