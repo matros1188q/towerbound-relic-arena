@@ -414,7 +414,7 @@ const {chromium}=require('playwright');
   await page.locator('.v2-card.defense:not([disabled])').first().click();
   const hpBeforeEnemyTurn=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   await page.locator('#endturn').click();
-  await page.waitForFunction(()=>document.querySelector('#endturn')?.disabled,undefined,{timeout:5000});
+  // Enemy phases can resolve immediately when a wave has no living targets; verify the actual HP handoff below.
   try{
    await page.waitForFunction(()=>{const b=document.querySelector('#endturn');return b&&!b.disabled&&b.textContent.includes('ЗАВЕРШИТЬ ХОД');},undefined,{timeout:15000});
   }catch(error){
