@@ -138,7 +138,7 @@ const pwaManifest=read('manifest.json');
 assert.ok(Array.isArray(pwaManifest.icons)&&pwaManifest.icons.length>=2&&pwaManifest.icons.every(icon=>icon.src==='./assets/icons/image.png'&&icon.type==='image/png'),'PWA manifest uses the Towerbound T logo for all app icon sizes');
 assert.ok(pageSource.includes('<link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/image.png">'),'iOS home-screen icon uses the Towerbound T logo');
 assert.ok(serviceWorker.includes('./assets/icons/image.png'),'service worker precaches the Towerbound T logo for offline launch');
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v315'"),'PWA shell cache matches the card combat release');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v330'"),'PWA shell cache matches the card combat release');
 assert.ok(uiSource.includes('CARD_DATABASE')&&uiSource.includes('function drawCards(amount)')&&uiSource.includes('function playCard(cardIndex)'),'card deckbuilder combat runtime is present');
 assert.ok(uiSource.includes('id="cardHand"')&&uiSource.includes('id="energyDisplay"'),'card hand and energy UI are present');
 assert.ok(uiSource.includes('function syncMusic()')&&uiSource.includes('function unlockAudioAndMusic()'),'Web Audio ambient music and iOS gesture unlock are implemented');
