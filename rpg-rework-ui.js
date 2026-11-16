@@ -851,7 +851,7 @@ function createDialog(){
   if(!freeTotem&&c.currentEnergy<cost){notify("Недостаточно энергии");return;}
   const target=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);
   const baseDamage=Number(effects.damage)||0,allDamage=Number(effects.damageAll)||0,dynamicCardDamage=target?Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+(Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0))):0;
-  if((baseDamage>0||allDamage>0||Number(effects.damagePerEnergy)>0)&&!target){notify("Нет доступной цели");return;}
+  if((baseDamage>0||allDamage>0||Number(effects.damagePerEnergy)>0||Number(effects.damagePerPoison)>0||Number(effects.damagePerBleed)>0)&&!target){notify("Нет доступной цели");return;}
   if(freeTotem){c.totem=Math.max(0,Number(c.totem)-3);battle.shamanFreeMode=false;}else c.currentEnergy-=cost;battle.cardsPlayedThisTurn=(Number(battle.cardsPlayedThisTurn)||0)+1;c.hand.splice(index,1);if(card.exhaust||card.upgradedExhaust)c.exhaustPile.push(card);else c.discard.push(card);
   battle.actionDamageLedger={};battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
   const stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),weakScale=Number(battle.playerWeakTurns)>0?.75:1;
