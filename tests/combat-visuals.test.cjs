@@ -77,6 +77,6 @@ assert.ok(ui.includes('const mapHeader=title==="Карта 250 уровней"')
 
 
 assert.match(ui,/function enemyIntentDamage\(target\)[\s\S]*engine\.mitigationMultiplier\(engine\.getCombatStats\(c\)\.defense,battle\.stage\)/,'enemy intent preview includes player defense mitigation');
-assert.match(ui,/if\(appliedEnemyStatus\)planEnemyIntents\(\)/,'enemy intent refreshes immediately when a card applies a status');
+assert.match(ui,/if\(applied\)planEnemyIntents\(\)/,'enemy intent refreshes immediately when a card applies a status');
 assert.match(ui,/root\.addEventListener\("pointerdown",event=>\{const card=event\.target\.closest\("\[data-card-play\]"\);if\(card\)showCardDamagePreview/,'damage preview also appears on touch press');
 assert.match(ui,/root\.addEventListener\("focusout",event=>\{const card=event\.target\.closest\("\[data-card-play\]"\)/,'keyboard focus leaving a card clears the old damage preview');
