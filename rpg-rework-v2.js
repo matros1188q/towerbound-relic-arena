@@ -17,7 +17,7 @@
   state.account.unlockedCards=Array.isArray(state.account.unlockedCards)?state.account.unlockedCards:[];
   state.bank=state.bank||{silver:0,transfers:{}};
   state.characters=state.characters||[];
-  state.characters.forEach(character=>{character.run=character.run||{};if(!Object.prototype.hasOwnProperty.call(character.run,"snapshot"))character.run.snapshot=null;character.run.campStopsUsed=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];});
+  state.characters.forEach(character=>{character.run=character.run||{};if(!Object.prototype.hasOwnProperty.call(character.run,"snapshot"))character.run.snapshot=null;character.run.campStopsUsed=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];character.deck=Array.isArray(character.deck)?character.deck:[];character.unlockedCards=Array.isArray(character.unlockedCards)?character.unlockedCards:[];character.relics=Array.isArray(character.relics)?character.relics:[];character.hand=Array.isArray(character.hand)?character.hand:[];character.discard=Array.isArray(character.discard)?character.discard:[];character.exhaustPile=Array.isArray(character.exhaustPile)?character.exhaustPile:[];for(const key of ["combo","rage","charges"])character[key]=Math.max(0,Number(character[key])||0);});
   state.stash=Array.isArray(state.stash)?state.stash:[];
   state.season=state.season||null;
   state.weeklyRating=state.weeklyRating||[];
@@ -675,7 +675,7 @@
   }
   function awardXp(character,amount){
    const legacyCap=character.legacyBonusUntil?Array.from({length:Math.max(0,character.legacyBonusUntil-1)},(_,i)=>requiredXp(i+1)).reduce((sum,x)=>sum+x,0):0;
-   const legacyRemaining=Math.max(0,legacyCap-character.xp),legacyAmount=Math.min(Math.max(0,amount),legacyRemaining),value=Math.max(0,Math.round(legacyAmount*(1+(character.legacyBonus||0))+Math.max(0,amount-legacyRemaining))),before=character.level;
+   const legacyRemaining=Math.max(0,legacyCap-character.xp),legacyAmount=Math.min(Math.max(0,amount),legacyRemaining),value=Math.max(0,Math.round(legacyAmount*(1+(character.legacyBonus||0))+Math.max(0,amount-legacyRemaining))),before=character.level,beforeTalentPoints=Number(character.talentPoints)||0;
    character.xp+=value;character.run.experience+=value;
    state.account.xp=Math.max(0,(state.account.xp||0)+value);
    recalcLevel(character);
@@ -686,7 +686,9 @@
     character.stats.paragon_level=paragon.level;
    }
    character.stats.account_level=accountLevel();
-   return{amount:value,total:character.xp,level:character.level,levelUp:character.level>before,accountLevel:accountLevel(),accountXp:state.account.xp,paragonLevel:paragon.level};
+   const levelUp=character.level>before,gainedTalentPoints=Math.max(0,(Number(character.talentPoints)||0)-beforeTalentPoints);
+   if(levelUp&&typeof window!=="undefined"&&typeof window.TowerboundLevelUpModal==="function")window.TowerboundLevelUpModal(character.level,gainedTalentPoints);
+   return{amount:value,total:character.xp,level:character.level,levelUp,accountLevel:accountLevel(),accountXp:state.account.xp,paragonLevel:paragon.level};
   }
   function enemyXp(enemy,stage){
    const table=balance.xp_curve.mob_xp;

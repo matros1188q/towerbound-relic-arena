@@ -11,7 +11,7 @@
         "cosmetic": []
       },
       "description": "Пройдите 1 этап Башни.",
-      "metric_label": "Завершённые этапы"
+      "metric_label": "Пройдено этапов"
     },
     {
       "id": "achievement_02",
@@ -23,7 +23,7 @@
         "cosmetic": []
       },
       "description": "Убейте 10 противников в боях Башни.",
-      "metric_label": "Побеждённые противники"
+      "metric_label": "Убито монстров"
     },
     {
       "id": "achievement_03",
@@ -35,7 +35,7 @@
         "cosmetic": []
       },
       "description": "Найдите 5 предметов в награде за бои.",
-      "metric_label": "Найденные предметы"
+      "metric_label": "Найдено предметов"
     },
     {
       "id": "achievement_04",
@@ -47,7 +47,7 @@
         "cosmetic": []
       },
       "description": "Разберите 1 предмет и получите материалы.",
-      "metric_label": "Разобранные предметы"
+      "metric_label": "Разобрано предметов"
     },
     {
       "id": "achievement_05",
@@ -59,7 +59,7 @@
         "cosmetic": []
       },
       "description": "Завершите 10 этапов Башни.",
-      "metric_label": "Завершённые этапы"
+      "metric_label": "Пройдено этапов"
     },
     {
       "id": "achievement_06",
@@ -71,7 +71,7 @@
         "cosmetic": []
       },
       "description": "Победите 10 элитных монстров.",
-      "metric_label": "Побеждённые элитные монстры"
+      "metric_label": "Побеждено элитных монстров"
     },
     {
       "id": "achievement_07",
@@ -83,7 +83,7 @@
         "cosmetic": []
       },
       "description": "Победите 1 босса Башни.",
-      "metric_label": "Побеждённые боссы"
+      "metric_label": "Побеждено боссов"
     },
     {
       "id": "achievement_08",
@@ -95,7 +95,7 @@
         "cosmetic": []
       },
       "description": "Найдите 25 предметов за прохождения.",
-      "metric_label": "Найденные предметы"
+      "metric_label": "Найдено предметов"
     },
     {
       "id": "achievement_09",
@@ -107,7 +107,7 @@
         "cosmetic": []
       },
       "description": "Потратьте 3 очка талантов на развитие специализации.",
-      "metric_label": "Изученные ранги талантов"
+      "metric_label": "Потрачено очков талантов"
     },
     {
       "id": "achievement_10",
@@ -119,7 +119,7 @@
         "cosmetic": []
       },
       "description": "Прочитайте 1 запись истории Башни.",
-      "metric_label": "Прочитанные записи"
+      "metric_label": "Прочитано записей"
     },
     {
       "id": "achievement_11",
@@ -131,7 +131,7 @@
         "cosmetic": []
       },
       "description": "Полностью завершите 3 забега.",
-      "metric_label": "Завершённые забеги"
+      "metric_label": "Завершено забегов"
     },
     {
       "id": "achievement_12",
@@ -143,7 +143,7 @@
         "cosmetic": []
       },
       "description": "Завершите 1 скоростное испытание.",
-      "metric_label": "Скоростные забеги"
+      "metric_label": "Скоростных забегов"
     },
     {
       "id": "achievement_13",
@@ -155,7 +155,7 @@
         "cosmetic": []
       },
       "description": "Победите босса, не используя зелья в этом бою.",
-      "metric_label": "Победы над боссами без зелий"
+      "metric_label": "Боссов побеждено без зелий"
     },
     {
       "id": "achievement_14",
@@ -167,7 +167,7 @@
         "cosmetic": []
       },
       "description": "Завершите 1 этап в режиме «Хардкор».",
-      "metric_label": "Этапы в режиме «Хардкор»"
+      "metric_label": "Этапов пройдено в режиме «Хардкор»"
     },
     {
       "id": "achievement_15",
@@ -181,7 +181,7 @@
         ]
       },
       "description": "Завершите Башню в героическом режиме.",
-      "metric_label": "Героические прохождения"
+      "metric_label": "Этапов пройдено в героическом режиме"
     },
     {
       "id": "achievement_16",
@@ -193,7 +193,7 @@
         "cosmetic": []
       },
       "description": "Достигните 50-го этапа Башни.",
-      "metric_label": "Наивысший этап"
+      "metric_label": "Пройдено этажей"
     },
     {
       "id": "achievement_17",
@@ -205,7 +205,7 @@
         "cosmetic": []
       },
       "description": "Достигните 100-го этапа Башни.",
-      "metric_label": "Наивысший этап"
+      "metric_label": "Пройдено этажей"
     },
     {
       "id": "achievement_18",
@@ -217,7 +217,7 @@
         "cosmetic": []
       },
       "description": "Достигните 150-го этапа Башни.",
-      "metric_label": "Наивысший этап"
+      "metric_label": "Пройдено этажей"
     },
     {
       "id": "achievement_19",
@@ -229,7 +229,7 @@
         "cosmetic": []
       },
       "description": "Достигните 200-го этапа Башни.",
-      "metric_label": "Наивысший этап"
+      "metric_label": "Пройдено этажей"
     },
     {
       "id": "achievement_20",
@@ -243,7 +243,7 @@
         ]
       },
       "description": "Достигните 250-го этапа и покорите всю Башню.",
-      "metric_label": "Наивысший этап"
+      "metric_label": "Пройдено этажей"
     },
     {
       "id": "achievement_21",
@@ -255,7 +255,7 @@
         "cosmetic": []
       },
       "description": "Создайте 1 предмет с помощью крафта.",
-      "metric_label": "Созданные предметы"
+      "metric_label": "Создано предметов"
     },
     {
       "id": "achievement_22",
@@ -267,7 +267,7 @@
         "cosmetic": []
       },
       "description": "Успешно заточите экипировку 10 раз.",
-      "metric_label": "Успешные заточки"
+      "metric_label": "Успешных заточек"
     },
     {
       "id": "achievement_23",
@@ -279,7 +279,7 @@
         "cosmetic": []
       },
       "description": "Нанесите 1 зачарование на экипировку.",
-      "metric_label": "Наложенные зачарования"
+      "metric_label": "Наложено зачарований"
     },
     {
       "id": "achievement_24",
@@ -291,7 +291,7 @@
         "cosmetic": []
       },
       "description": "Соберите 5 уникальных предметов экипировки.",
-      "metric_label": "Уникальные предметы"
+      "metric_label": "Собрано уникальных предметов"
     },
     {
       "id": "achievement_25",
@@ -305,7 +305,7 @@
         ]
       },
       "description": "Одержите 1 победу в PvP-дуэли.",
-      "metric_label": "Победы в PvP"
+      "metric_label": "Побед в PvP"
     },
     {
       "id": "achievement_26",
@@ -317,7 +317,7 @@
         "cosmetic": []
       },
       "description": "Проведите 10 PvP-дуэлей.",
-      "metric_label": "Проведённые PvP-дуэли"
+      "metric_label": "Проведено PvP-дуэлей"
     },
     {
       "id": "achievement_27",
@@ -329,7 +329,7 @@
         "cosmetic": []
       },
       "description": "Завершите 10 этапов в героическом режиме.",
-      "metric_label": "Героические этапы"
+      "metric_label": "Этапов пройдено в героическом режиме"
     },
     {
       "id": "achievement_28",
@@ -353,7 +353,7 @@
         "cosmetic": []
       },
       "description": "Завершите сезонное испытание Башни на 250 этапов.",
-      "metric_label": "Сезонные этапы"
+      "metric_label": "Сезонных этапов пройдено"
     },
     {
       "id": "achievement_30",
@@ -369,5 +369,6 @@
       "description": "Достигните 50-го уровня игрового аккаунта.",
       "metric_label": "Уровень аккаунта"
     }
-  ]
+  ],
+  "ui_language": "ru"
 }
