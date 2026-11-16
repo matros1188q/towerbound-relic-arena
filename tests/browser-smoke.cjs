@@ -50,6 +50,7 @@ async function journey(type,name,viewport,url){
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
   await page.waitForSelector('#tbRpg .tb-login-gate');
+  await page.waitForFunction(()=>window.TowerboundCloud?.configured&&window.TowerboundCloud.status?.().text==='АККАУНТ · НУЖЕН ВХОД',{timeout:10000});
   assert.equal(await page.locator('.tb-login-gate h2').innerText(),'Вход в игру',name+' starts with centered login gate');
   await page.locator('#login').fill('BrowserQA');
   await page.locator('#pass').fill('qa-password');
