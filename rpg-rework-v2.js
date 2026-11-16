@@ -133,7 +133,7 @@
   const equipmentItemLevelBonus=character=>(character.gear||[]).reduce((sum,item)=>sum+(item?Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level:0),0);
   const publishGhost=(character,reason)=>{
    const stats=pvpSnapshot(character.id),expiry=now()+balance.pvp.ghost_ttl_days*86400000;
-   const ghost={id:id(),characterId:character.id,name:character.name,classId:character.classId,branch:character.branch,level:character.level,bp:combatPower(character),tier:tierForBp(combatPower(character)).id,skillLoadout:clone(character.skillLoadout||[]),talents:clone(character.talents||{}),stats:{attack:stats.attack,defense:stats.defense,maxHp:stats.maxHp,controlDurationMultiplier:stats.controlDurationMultiplier,normalized:true},gear:clone(character.gear||[]),reason,createdAt:now(),expiresAt:expiry};
+   const ghost={id:id(),characterId:character.id,name:character.name,classId:character.classId,branch:character.branch,level:character.level,bp:combatPower(character),tier:tierForBp(combatPower(character)).id,skillLoadout:clone(character.skillLoadout||[]),talents:clone(character.talents||{}),deck:clone([...(character.deck||[]),...(character.hand||[]),...(character.discard||[]),...(character.exhaustPile||[])]),stats:{attack:stats.attack,defense:stats.defense,maxHp:stats.maxHp,controlDurationMultiplier:stats.controlDurationMultiplier,normalized:true},gear:clone(character.gear||[]),reason,createdAt:now(),expiresAt:expiry};
    state.account.ghosts=(state.account.ghosts||[]).filter(item=>item.characterId!==character.id&&item.expiresAt>now());
    state.account.ghosts.unshift(ghost);state.account.ghosts=state.account.ghosts.slice(0,100);
    return clone(ghost);
@@ -1337,15 +1337,17 @@
    if(!pending?.opponent)throw new Error("No opponent snapshot is available");
    const tier=(balance.bp.tiers||[]).find(x=>x.id===pending.tier)||balance.bp.tiers[0];
    const comboScore=(classId,loadout)=>{const selected=loadout||[];return selected.length*5+(balance.combos.combos||[]).filter(combo=>combo.class===classId&&combo.chain.every(slot=>!!selected[Number(String(slot).replace("slot",""))-1])).reduce((sum,combo)=>sum+combo.chain.length*8,0);};
+   const deckScore=(deck,gear)=>{const cards=Array.isArray(deck)?deck:[],rarity={common:1,uncommon:2,rare:4,epic:7,legendary:10,godlike:12,обычная:1,редкая:4,эпическая:7,легендарная:10,богоподобная:12};let score=Math.min(30,cards.length)*1.5,hasPoison=false,hasBleed=false;for(const card of cards){const effects=card?.effects||card?.upgradedEffects||{},tags=Array.isArray(card?.tags)?card.tags:[];score+=rarity[String(card?.rarity||"common").toLowerCase()]||1;if(Number(effects.poison)>0||Number(effects.damagePerPoison)>0||tags.some(tag=>/poison|яд/i.test(String(tag)))||/poison|яд/i.test(String(card?.name||"")))hasPoison=true;if(Number(effects.bleed)>0||Number(effects.damagePerBleed)>0||tags.some(tag=>/bleed|кров/i.test(String(tag)))||/bleed|кров/i.test(String(card?.name||"")))hasBleed=true;}if(hasPoison&&hasBleed)score+=18;for(const item of (gear||[]).filter(Boolean)){score+=Math.max(0,Number(item.refine)||0)*1.5;score+=Math.min(120,Number(item.itemLevel||item.item_level)||0)*.08;score+=({Обычная:1,Редкая:2,Эпическая:4,Легендарная:6,Богоподобная:8}[item.rarity]||0);score+=(Number(item.stats?.attack)||0)*.025+(Number(item.stats?.defense)||0)*.015;}return Math.round(score*10)/10;};
    const own=comboScore(character.classId,character.skillLoadout),enemy=comboScore(pending.opponent.classId,pending.opponent.skillLoadout);
    const ownStats=getCombatStats(character),enemyStats=pending.opponent.stats||pvpRankStats(tier?.id);
+   const ownDeck=deckScore([...(character.deck||[]),...(character.hand||[]),...(character.discard||[]),...(character.exhaustPile||[])],character.gear||[]),enemyDeck=deckScore(pending.opponent.deck||[],pending.opponent.gear||[]);
    const mitigation=defense=>1-Math.min(.75,Math.max(0,Number(defense)||0)/(Math.max(0,Number(defense)||0)+1000));
-   const ownDamage=Math.max(1,ownStats.attack*(1+own/100)),enemyDamage=Math.max(1,(Number(enemyStats.attack)||1)*(1+enemy/100));
+   const ownDamage=Math.max(1,ownStats.attack*(1+own/100)*(1+ownDeck/100)),enemyDamage=Math.max(1,(Number(enemyStats.attack)||1)*(1+enemy/100)*(1+enemyDeck/100));
    const roundsToDefeatEnemy=Math.max(1,Math.ceil((Number(enemyStats.maxHp)||1)/(ownDamage*mitigation(enemyStats.defense))));
    const roundsToDefeatPlayer=Math.max(1,Math.ceil(ownStats.maxHp/(enemyDamage*mitigation(ownStats.defense))));
    const won=roundsToDefeatEnemy<roundsToDefeatPlayer||(roundsToDefeatEnemy===roundsToDefeatPlayer&&random()>=.5);
    const result=resolvePvpDuel(characterId,won);
-   return{...result,rounds:Math.max(roundsToDefeatEnemy,roundsToDefeatPlayer),opponent:pending.opponent.name||"Соперник",normalized:!!enemyStats.normalized,tier:tier?.name||"Ранг",stats:{attack:enemyStats.attack,maxHp:enemyStats.maxHp,defense:enemyStats.defense},skillScore:own,opponentSkillScore:enemy};
+   return{...result,rounds:Math.max(roundsToDefeatEnemy,roundsToDefeatPlayer),opponent:pending.opponent.name||"Соперник",normalized:!!enemyStats.normalized,tier:tier?.name||"Ранг",stats:{attack:enemyStats.attack,maxHp:enemyStats.maxHp,defense:enemyStats.defense},skillScore:own,opponentSkillScore:enemy,deckScore:ownDeck,opponentDeckScore:enemyDeck};
   }
   function purchasePvpItem(characterId,itemId){
    const character=getChar(characterId),item=(balance.pvp_store.items||[]).find(entry=>entry.id===itemId);
