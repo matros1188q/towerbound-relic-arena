@@ -34,7 +34,7 @@ if(e.hp<=0){finishEncounter(true);return}
 const mitigation=1-Math.min(.65,(s.defense||0)/((s.defense||0)+100+10*c.level));const incoming=Math.max(1,Math.round(e.damage*mitigation));battle.playerHp=Math.max(0,battle.playerHp-incoming);battle.turn++;if(battle.playerHp<=0)finishEncounter(false);save();render()}
 function grantTowerMilestoneRewards(t,c,floor){
  const cards=window.TowerboundCards?.generateReward?.(c)||[];
- if(cards.length)window.TowerboundCards?.showReward?.(cards);
+ if(cards.length){c.pendingCardReward=cards;window.TowerboundCards?.showReward?.(cards);}
  const relicPool=Object.entries(engine?.RELICS_DATABASE||{}).filter(([id])=>!(c.relics||[]).includes(id));
  if(relicPool.length){const picked=relicPool[Math.floor(Math.random()*relicPool.length)];c.relics=c.relics||[];c.relics.push(picked[0]);notify('Реликвия Башни: '+picked[1].name);}
  t.rewards.silver=(t.rewards.silver||0)+250+floor*10;
