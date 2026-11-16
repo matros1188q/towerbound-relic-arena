@@ -744,7 +744,7 @@ function createDialog(){
   const cardNode=root.querySelector('[data-card-play="'+Number(cardIndex)+'"]');if(!live()?.hand?.[Number(cardIndex)])return;
   battle.isCardAnimating=true;if(cardNode)cardNode.classList.add("tb-card-flyout");
   const delay=battle.fastBattle?100:220;
-  setTimeout(()=>{if(!battle)return;try{resolveCardPlay(cardIndex);}finally{if(battle){battle.isCardAnimating=false;save();render();}}},delay);
+  setTimeout(()=>{if(!battle)return;try{resolveCardPlay(cardIndex);}finally{if(battle){battle.isCardAnimating=false;save();render();if((Number(battle.cardsPlayedThisTurn)||0)>=20)endPlayerTurn();}}},delay);
  }
  function resolveCardPlay(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
@@ -793,7 +793,7 @@ function createDialog(){
   if(Number(effects.draw)>0)drawCards(effects.draw);
   const generators=Array.isArray(card.generateCards)?card.generateCards:(card.generate?[{id:card.generate,count:1}]:[]);for(const spec of generators){const amount=Math.max(0,Math.floor(Number(spec?.count)||0));for(let n=0;n<amount;n++){const generated=createCardInstance(spec.id);if(!generated)continue;if(c.hand.length<10)c.hand.push(generated);else c.discard.push(generated);}}
   if(killed&&battle){finishCurrentEnemy();if(!battle)return;}
-  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);save();render();if((Number(battle?.cardsPlayedThisTurn)||0)>=20){notify("Лимит 20 карт за ход · ход завершён");endPlayerTurn();}
+  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);save();render();
  }
  function endPlayerTurn(){
   if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating)return;
