@@ -890,7 +890,7 @@
     character.progress.currentStage=checkpointStage;
     if(Array.isArray(checkpoint.relics))character.relics=clone(checkpoint.relics);
     if(Array.isArray(checkpoint.gear))character.gear=clone(checkpoint.gear);
-    character.run.playerHp=Math.max(1,Math.min(maxHp(character),Number(checkpoint.hp)||maxHp(character)));
+    character.run.playerHp=Math.max(1,Number(checkpoint.hp)||maxHp(character));
     character.silver=Math.max(0,Number(checkpoint.silver)||0);
     character.deck=Array.isArray(checkpoint.deck)?clone(checkpoint.deck):[];
     character.hand=[];character.discard=[];character.exhaustPile=[];character.cardDeckVersion=3;
