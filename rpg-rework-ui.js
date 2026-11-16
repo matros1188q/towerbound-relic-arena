@@ -117,6 +117,11 @@
  shaman_totem:{id:"shaman_totem",name:"Тотем жизни",classId:"shaman",type:"skill",rarity:"rare",cost:1,retain:true,description:"5 брони и лечит 3",upgradedDescription:"7 брони и лечит 5",effects:{block:5,heal:3},upgradedEffects:{block:7,heal:5}},
  shaman_spirit:{id:"shaman_spirit",name:"Духи предков",classId:"shaman",type:"skill",rarity:"epic",cost:1,ethereal:true,description:"3 яда и 2 кровотечения",upgradedDescription:"5 яда и 3 кровотечения",effects:{poison:3,bleed:2},upgradedEffects:{poison:5,bleed:3}},
  shaman_nature:{id:"shaman_nature",name:"Гнев природы",classId:"shaman",type:"attack",rarity:"rare",cost:2,description:"10 урона и 2 слабости всем",upgradedDescription:"14 урона и 3 слабости всем",effects:{damageAll:10,weak:2},upgradedEffects:{damageAll:14,weak:3}},
+ gear_sword_cleave:{id:"gear_sword_cleave",name:"Рассечение",classId:"common",type:"attack",rarity:"rare",cost:2,description:"Наносит 12 урона",upgradedDescription:"Наносит 16 урона",effects:{damage:12},upgradedEffects:{damage:16}},
+ gear_staff_bolt:{id:"gear_staff_bolt",name:"Магический снаряд",classId:"common",type:"attack",rarity:"rare",cost:1,description:"8 магического урона и +2 к магии до конца боя",upgradedDescription:"11 магического урона и +2 к магии до конца боя",effects:{damage:8,damageType:"arcane",spellPower:2},upgradedEffects:{damage:11,damageType:"arcane",spellPower:2}},
+ gear_iron_wall:{id:"gear_iron_wall",name:"Железная стена",classId:"common",type:"defense",rarity:"rare",cost:2,description:"Даёт 15 брони",upgradedDescription:"Даёт 20 брони",effects:{block:15},upgradedEffects:{block:20}},
+ gear_evasion:{id:"gear_evasion",name:"Уклонение",classId:"common",type:"defense",rarity:"rare",cost:1,description:"Даёт 5 брони и добирает 1 карту",upgradedDescription:"Даёт 8 брони и добирает 1 карту",effects:{block:5,draw:1},upgradedEffects:{block:8,draw:1}},
+ gear_power_surge:{id:"gear_power_surge",name:"Прилив сил",classId:"common",type:"skill",rarity:"rare",cost:0,description:"Следующая атакующая карта наносит +2 урона",upgradedDescription:"Следующая атакующая карта наносит +4 урона",effects:{nextAttackDamage:2},upgradedEffects:{nextAttackDamage:4}},
  curse_wound:{id:"curse_wound",name:"Рана",classId:"common",type:"curse",rarity:"common",cost:0,description:"Нельзя разыграть. Занимает место в руке",upgradedDescription:"Проклятие нельзя разыграть",effects:{unplayable:true},upgradedEffects:{unplayable:true}},
  curse_doubt:{id:"curse_doubt",name:"Сомнение",classId:"common",type:"curse",rarity:"rare",cost:1,description:"Накладывает 1 слабость на героя",upgradedDescription:"Накладывает слабость и истощается",effects:{playerWeak:1},upgradedEffects:{playerWeak:1},upgradedExhaust:true}
  });
@@ -126,7 +131,15 @@
  function pickRandomCardDefinition(character,used=new Set()){const roll=Math.random()*100,rarity=roll<70?"common":roll<95?"rare":roll<99.5?"epic":"legendary",order=["common","rare","epic","legendary"],start=order.indexOf(rarity);let d=null;for(let n=0;n<order.length&&!d;n++){const lo=start-n,hi=start+n;if(lo>=0)d=pickCardForRarity(character,order[lo],used);if(!d&&hi<order.length&&hi!==lo)d=pickCardForRarity(character,order[hi],used);}if(!d){const pool=Object.values(CARD_DATABASE).filter(card=>(card.classId==="common"||card.classId===cardClassFor(character))&&card.type!=="curse"&&!card.effects?.unplayable&&!used.has(card.id));if(pool.length)d=pool[Math.floor(Math.random()*pool.length)];}return d?createCardInstance(d.id):null;}
  function generateCardReward(character){if(!character)return [];const used=new Set(),cards=[];for(let i=0;i<3;i++){const card=pickRandomCardDefinition(character,used);if(!card)break;used.add(card.id);cards.push(card);}return cards;}
  function showCardRewardScreen(cards){document.querySelector(".card-reward-overlay")?.remove();const options=(Array.isArray(cards)?cards:[]).slice(0,3);if(!options.length)return;const overlay=document.createElement("div");overlay.className="card-reward-overlay";overlay.setAttribute("role","presentation");overlay.innerHTML='<section class="card-reward-modal" role="dialog" aria-modal="true" aria-label="Выбор карты"><h3>Выберите карту</h3><div class="card-reward-grid" id="rewardGrid">'+options.map((card,index)=>{const cost=card.costX?"X":Number(card.cost)||0,type=card.type||"skill",rarity=card.rarity||"common";return '<button type="button" class="v2-card '+esc(type)+' rarity-'+esc(rarity)+(card.isUpgraded?' is-upgraded':'')+'" data-card-reward-pick="'+index+'"><span class="card-cost">'+cost+'</span><span class="card-name">'+esc(card.name)+(card.isUpgraded?' <b class="tb-card-upgrade-mark">+</b>':'')+'</span><span class="card-type">'+esc(({attack:"АТАКА",defense:"ЗАЩИТА",skill:"НАВЫК",power:"СИЛА",curse:"ПРОКЛЯТИЕ"})[type]||"НАВЫК")+' · '+esc(rarity.toUpperCase())+'</span><span class="card-desc">'+esc(card.description||"")+(card.exhaust?' · Истощение':'')+(card.retain?' · Сохранение':'')+(card.ethereal?' · Эфемерная':'')+(card.innate?' · Врождённая':'')+'</span></button>';}).join("")+'</div><button type="button" class="card-reward-skip" data-card-reward-skip>ПРОПУСТИТЬ</button></section>';document.body.appendChild(overlay);}
-function unlockedCardIds(){const account=engine?.state?.account;if(!account)return[];if(!Array.isArray(account.unlockedCards))account.unlockedCards=[];return account.unlockedCards;}
+ function showRelicRewardScreen(relicIds){
+  if(document.querySelector(".tb-relic-reward-overlay"))return;
+  const db=engine?.RELICS_DATABASE||{},options=(Array.isArray(relicIds)?relicIds:[]).map(id=>db[id]).filter(Boolean);
+  if(!options.length)return;
+  const overlay=document.createElement("div");overlay.className="tb-relic-reward-overlay";overlay.setAttribute("role","presentation");
+  overlay.innerHTML='<section class="tb-relic-reward-modal" role="dialog" aria-modal="true" aria-label="Выбор реликвии"><span class="tb-eyebrow">НАГРАДА ЗА БОССА</span><h2>Выбери одну реликвию</h2><p>Выбранный артефакт навсегда останется у персонажа и будет усиливать карточные бои.</p><div class="tb-relic-reward-grid">'+options.map(relic=>'<button type="button" class="tb-relic-reward-card" data-relic-reward-pick="'+esc(relic.id)+'"><span>'+esc(relic.icon||"✦")+'</span><b>'+esc(relic.name)+'</b><small>'+esc(relic.description)+'</small><strong>ВЫБРАТЬ</strong></button>').join("")+'</div></section>';
+  document.body.appendChild(overlay);
+ }
+ function unlockedCardIds(){const account=engine?.state?.account;if(!account)return[];if(!Array.isArray(account.unlockedCards))account.unlockedCards=[];return account.unlockedCards;}
  function unlockCardPermanently(cardId){if(!CARD_DATABASE[cardId])return false;const unlocked=unlockedCardIds();if(!unlocked.includes(cardId))unlocked.push(cardId);return true;}
  function renderStarterDeckModal(){
   const c=live();if(!c)return;
@@ -159,6 +172,40 @@ function unlockedCardIds(){const account=engine?.state?.account;if(!account)retu
 
  function cardDefinition(id){return CARD_DATABASE[id]||null;}
  function createCardInstance(id){const d=cardDefinition(id);return d?{...d,effects:{...d.effects},isUpgraded:false,instanceId:id+"-"+Math.random().toString(36).slice(2)}:null;}
+ function inferredEquipmentCardId(item,character){
+  if(item?.cardId&&CARD_DATABASE[item.cardId])return item.cardId;
+  const slot=Number.isInteger(item?.slot)?(["weapon","chest","head","legs","hands","accessory"][item.slot]||""):String(item?.slot||"");
+  const label=[item?.name,item?.weaponType,item?.armorType].filter(Boolean).join(" ").toLowerCase();
+  if(slot==="weapon")return item?.weaponType==="staff"||/посох|жезл|staff|wand/.test(label)||Number(item?.stats?.spellPower)>0||(!item?.weaponType&&["bishop","elemental","shaman"].includes(character?.classId))?"gear_staff_bolt":"gear_sword_cleave";
+  if(["chest","head","legs","hands"].includes(slot))return item?.armorType==="mantle"||/мантия|robe|mantle|одеяни/.test(label)||(!item?.armorType&&["bishop","dragonkin","elemental","shaman"].includes(character?.classId))?"gear_evasion":"gear_iron_wall";
+  if(slot==="accessory")return "gear_power_surge";
+  return null;
+ }
+ function syncEquipmentCards(character){
+  if(!character)return{added:0,removed:0};
+  ensureCardDeck(character);
+  const piles=["deck","hand","discard","exhaustPile"],equipped=(character.gear||[]).filter(item=>item&&item.type!=="cosmetic"),byId=new Map();
+  for(const item of equipped){item.cardId=item.cardId||inferredEquipmentCardId(item,character);if(item.cardId&&CARD_DATABASE[item.cardId])byId.set(String(item.id),item);}
+  let removed=0,added=0;
+  for(const pile of piles){
+   const before=character[pile].length;
+   character[pile]=character[pile].filter(card=>{
+    if(card?.sourceType!=="equipment")return true;
+    const item=byId.get(String(card.sourceItemId));
+    return !!item&&card.id===item.cardId;
+   });
+   removed+=before-character[pile].length;
+  }
+  for(const item of equipped){
+   if(!item.cardId||!CARD_DATABASE[item.cardId])continue;
+   const exists=piles.some(pile=>character[pile].some(card=>card?.sourceType==="equipment"&&String(card.sourceItemId)===String(item.id)&&card.id===item.cardId));
+   if(exists)continue;
+   const card=createCardInstance(item.cardId);
+   if(!card)continue;
+   card.sourceType="equipment";card.sourceItemId=item.id;character.deck.push(card);added++;
+  }
+  return{added,removed};
+ }
  function upgradeCardInstance(card){if(!card||card.isUpgraded)return false;card.isUpgraded=true;card.effects={...(card.upgradedEffects||card.effects)};if(card.upgradedDescription)card.description=card.upgradedDescription;if(card.upgradedExhaust)card.exhaust=true;return true;}
  function addCardToDeck(c,id){if(!c)return false;ensureCardDeck(c);const card=createCardInstance(id);if(!card)return false;c.deck.push(card);return true;}
  function upgradeCardInDeck(c,instanceId){if(!c)return false;ensureCardDeck(c);const card=[...c.deck,...c.hand,...c.discard,...c.exhaustPile].find(item=>item.instanceId===instanceId);return upgradeCardInstance(card);}
@@ -171,7 +218,7 @@ function unlockedCardIds(){const account=engine?.state?.account;if(!account)retu
  function renderHand(){const c=live();if(!c)return "";ensureCardDeck(c);return c.hand.map((card,index)=>{const cost=card.costX?"X":Number(card.cost)||0,disabled=cardEffects(card).unplayable||battle?.actor?.type!=="player"||battle?.busy||battle?.paused||(!card.costX&&Number(c.currentEnergy)<Number(cost)),type=card.type||"skill",rarity=card.rarity||"common";return '<button type="button" class="v2-card '+esc(type)+' rarity-'+esc(rarity)+(disabled?' is-disabled':'')+(card.isUpgraded?' is-upgraded':'')+'" data-card-play="'+index+'" data-card-type="'+esc(type)+'" '+(disabled?'disabled':'')+' aria-label="'+esc(card.name)+', '+cost+' энергии. '+esc(card.description||'')+'"><span class="card-cost">'+cost+'</span><span class="card-name">'+esc(card.name)+(card.isUpgraded?' <b class="tb-card-upgrade-mark">+</b>':'')+'</span><span class="card-type">'+esc(({attack:"АТАКА",defense:"ЗАЩИТА",skill:"НАВЫК",power:"СИЛА",curse:"ПРОКЛЯТИЕ"})[type]||"НАВЫК")+' · '+esc(rarity.toUpperCase())+'</span><span class="card-desc">'+esc(card.description||"")+(card.exhaust?' · Истощение':'')+(card.retain?' · Сохранение':'')+(card.ethereal?' · Эфемерная':'')+(card.innate?' · Врождённая':'')+'</span></button>';}).join("");}
 
 
- function cardPreviewDamage(card,target){if(!card||!target||!target.alive||target.hp<=0)return 0;const c=live(),effects=cardEffects(card),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),base=Number(effects.damage)||Number(effects.damageAll)||0,perEnergy=card.costX?Number(effects.damagePerEnergy||0)*Math.max(0,Number(c.currentEnergy)||0):0,bonusBlock=Number(effects.bonusDamageIfBlock)>0&&(battle.cardBlock||0)>0?Number(effects.bonusDamageIfBlock):0,total=base+perEnergy+bonusBlock;if(total<=0)return 0;const bonus=Number(effects.damage)>0?.18:.12,weakScale=Number(battle.playerWeakTurns)>0?.75:1,furyScale=Number(battle.playerDamageBuffTurns)>0?1+Math.max(0,Number(battle.playerDamageBuff)||0):1,raw=Math.max(1,Math.round((total+Number(stats.attack||0)*bonus)*scale*weakScale*furyScale)),type=effects.damageType||card.damageType||(Number(effects.damageAll)>0?"fire":"physical");let mult=engine.damageTypeMultiplier(target,type);if(!effects.ignoreArmor&&target.role==="tank"&&(target.guardCharges||0)>0)mult*=1-(balance.mobs.roles.tank.shield_fraction||.3);let damage=Math.max(0,Math.round(raw*mult*(Number(target.vulnerable)>0?1.5:1)));if(target.type==="boss")damage=engine.capBossDamage(target,damage,battle.actionDamageLedger?.[target.index]||0);return Math.max(0,Math.min(Number(target.hp)||0,damage-Math.min(Number(target.shield)||0,damage)));}
+ function cardPreviewDamage(card,target){if(!card||!target||!target.alive||target.hp<=0)return 0;const c=live(),effects=cardEffects(card),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),total=getCardDamageWithTalents(card,c,card.costX?c.currentEnergy:0);if(total<=0)return 0;const bonus=Number(effects.damage)>0?.18:.12,weakScale=Number(battle.playerWeakTurns)>0?.75:1,furyScale=Number(battle.playerDamageBuffTurns)>0?1+Math.max(0,Number(battle.playerDamageBuff)||0):1,firstAttackScale=battle.firstAttackDouble?2:1,raw=Math.max(1,Math.round((total+Number(stats.attack||0)*bonus)*scale*weakScale*furyScale*firstAttackScale)),type=effects.damageType||card.damageType||(Number(effects.damageAll)>0?"fire":"physical");let mult=engine.damageTypeMultiplier(target,type);if(!effects.ignoreArmor&&target.role==="tank"&&(target.guardCharges||0)>0)mult*=1-(balance.mobs.roles.tank.shield_fraction||.3);let damage=Math.max(0,Math.round(raw*mult*(Number(target.vulnerable)>0?1.5:1)));if(target.type==="boss")damage=engine.capBossDamage(target,damage,battle.actionDamageLedger?.[target.index]||0);return Math.max(0,Math.min(Number(target.hp)||0,damage-Math.min(Number(target.shield)||0,damage)));}
  function showCardDamagePreview(index){if(!battle||battle.actor?.type!=="player")return;const c=live(),card=c.hand[index];if(!card)return;const effects=cardEffects(card),targets=Number(effects.damageAll)>0?(battle.enemies||[]).filter(x=>x.alive&&x.hp>0):(battle.enemies||[]).filter(x=>x.index===battle.targetIndex&&x.alive&&x.hp>0);for(const target of targets){const node=root.querySelector('.v2-enemy-card[data-target="'+target.index+'"]');if(!node)continue;let preview=node.querySelector(".v2-damage-preview");if(!preview){preview=document.createElement("div");preview.className="v2-damage-preview";node.appendChild(preview);}const damage=cardPreviewDamage(card,target);preview.textContent=damage>0?"−"+damage+" HP":"БЕЗ УРОНА";preview.classList.toggle("lethal",damage>=target.hp);}}
  function clearCardDamagePreview(){root.querySelectorAll(".v2-damage-preview").forEach(node=>node.remove());}
  function enemyIntentDamage(target){const c=live(),stats=engine.getEnemyStats(c.id,battle.stage,target),weakMultiplier=Number(target.weak)>0?.75:1;let incoming=Math.max(1,Math.round((Number(stats.damage)||0)*weakMultiplier));incoming=Math.max(0,Math.round(incoming*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));if((battle.enemyDamageReductionTurns||0)>0)incoming=Math.max(0,Math.round(incoming*(1-(Number(battle.enemyDamageReduction)||0))));return incoming;}
@@ -573,7 +620,26 @@ function createDialog(){
   }catch(error){recoverPlayerTurn(error);}
  }
 
- function playCard(cardIndex){
+ function getCardDamageWithTalents(card,character,energySpent){
+  if(!card||!character)return 0;
+  const effects=cardEffects(card),base=Number(effects.damage)||Number(effects.damageAll)||0;
+  const energy=Number.isFinite(Number(energySpent))?Math.max(0,Number(energySpent)):(card.costX?Math.max(0,Number(character.currentEnergy)||0):0);
+  const perEnergy=card.costX?Math.max(0,Number(effects.damagePerEnergy)||0)*energy:0;
+  if(base<=0&&perEnergy<=0)return 0;
+  const conditional=Number(effects.bonusDamageIfBlock)>0&&(battle?.cardBlock||0)>0?Number(effects.bonusDamageIfBlock):0;
+  const branches=classData(character)?.branches||[],branch=branches.find(entry=>entry.id===character.branch);
+  const powerTalent=(branch?.talents||[]).find(talent=>/сила\s*$/i.test(String(talent.name||"")));
+  const powerRank=Math.max(0,Number(character.talents?.[powerTalent?.id])||0);
+  const talentBonus=powerRank*2,damageType=effects.damageType||card.damageType||"physical";
+  const spellBonus=damageType==="arcane"?Math.max(0,Number(battle?.cardSpellPower)||0):0;
+  return Math.max(0,base+perEnergy+conditional+talentBonus+spellBonus+Math.max(0,Number(battle?.relicAttackBonus)||0)+Math.max(0,Number(battle?.nextAttackDamageBonus)||0));
+ }
+ function getCardBlockTalentBonus(character){
+  const branch=(classData(character)?.branches||[]).find(entry=>entry.id===character?.branch);
+  const talent=(branch?.talents||[]).find(item=>/стойкость\s*$/i.test(String(item.name||"")));
+  return Math.max(0,Number(character?.talents?.[talent?.id])||0)*2;
+ }
+  function playCard(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
   const c=live();ensureCardDeck(c);const index=Number(cardIndex),card=c.hand[index];
   if(!Number.isInteger(index)||!card){notify("Карта больше не в руке");return;}
@@ -586,13 +652,14 @@ function createDialog(){
   c.currentEnergy-=cost;c.hand.splice(index,1);if(card.exhaust||card.upgradedExhaust)c.exhaustPile.push(card);else c.discard.push(card);
   battle.actionDamageLedger={};battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
   const stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),weakScale=Number(battle.playerWeakTurns)>0?.75:1;
-  const furyScale=(Number(battle.playerDamageBuffTurns)>0)?1+Math.max(0,Number(battle.playerDamageBuff)||0):1;const rawFor=(base,bonus)=>Math.max(1,Math.round((base+Number(stats.attack||0)*bonus)*scale*weakScale*furyScale)),damageType=effects.damageType||card.damageType||"physical";
-  let killed=false;const singleDamage=baseDamage+((Number(effects.bonusDamageIfBlock)>0&&(battle.cardBlock||0)>0)?Number(effects.bonusDamageIfBlock):0)+(card.costX?Number(effects.damagePerEnergy||0)*cost:0);
+  const furyScale=(Number(battle.playerDamageBuffTurns)>0)?1+Math.max(0,Number(battle.playerDamageBuff)||0):1;const rawFor=(base,bonus)=>Math.max(1,Math.round((base+Number(stats.attack||0)*bonus)*scale*weakScale*furyScale*(battle.firstAttackDouble?2:1))),damageType=effects.damageType||card.damageType||"physical";
+  let killed=false;const calculatedDamage=getCardDamageWithTalents(card,c,cost),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0)?calculatedDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage,.18),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
-  if(allDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){const hit=applyTargetDamage(enemy,rawFor(allDamage,.12),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
+  if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){const hit=applyTargetDamage(enemy,rawFor(areaDamage,.12),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
   if(Number(effects.hits)>1&&singleDamage>0&&target)for(let n=1;n<Number(effects.hits);n++){const hit=applyTargetDamage(target,rawFor(singleDamage,.18),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}
+  if(singleDamage>0||areaDamage>0){if(battle.firstAttackDouble){battle.firstAttackDouble=false;if(c.run.stage)c.run.stage.relicFirstAttackConsumed=true;}battle.nextAttackDamageBonus=0;}
   battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;if(c.run.playerHp<=0){endFromDamage();return;}
-  if(Number(effects.block)>0){const block=Math.max(0,Math.round(Number(effects.block)+Number(stats.defense||0)*.1));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");}
+  if(Number(effects.block)>0){const block=Math.max(0,Math.round(Number(effects.block)+Number(stats.defense||0)*.1+getCardBlockTalentBonus(c)+Math.max(0,Number(battle.relicBlockBonus)||0)));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");}
   if(Number(effects.heal)>0){const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(Number(effects.heal))));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");}
   const statusPayload={...(effects.statuses||{})};for(const key of ["poison","bleed","weak","vulnerable"])if(Number(effects[key])>0)statusPayload[key]=(Number(statusPayload[key])||0)+Number(effects[key]);
   if(Number(effects.conditionalBleed)>0&&target&&Number(target.poison)>0)statusPayload.bleed=(Number(statusPayload.bleed)||0)+Number(effects.conditionalBleed);
@@ -601,6 +668,8 @@ function createDialog(){
   if(applied)planEnemyIntents();
   if(Number(effects.playerWeak)>0)battle.playerWeakTurns=Math.max(Number(battle.playerWeakTurns)||0,2);
   if(Number(effects.fury)>0){battle.playerDamageBuffTurns=Math.max(Number(battle.playerDamageBuffTurns)||0,2);battle.playerDamageBuff=Math.max(Number(battle.playerDamageBuff)||0,Number(effects.fury)*.1);}
+  if(Number(effects.spellPower)>0)battle.cardSpellPower=Math.max(0,Number(battle.cardSpellPower)||0)+Number(effects.spellPower);
+  if(Number(effects.nextAttackDamage)>0)battle.nextAttackDamageBonus=Math.max(0,Number(battle.nextAttackDamageBonus)||0)+Number(effects.nextAttackDamage);
   if(Number(effects.energy)>0)c.currentEnergy=Math.min(c.energy,c.currentEnergy+Number(effects.energy));
   if(Number(effects.draw)>0)drawCards(effects.draw);
   if(card.generate){const generated=createCardInstance(card.generate);if(generated)c.hand.push(generated);}
@@ -738,9 +807,11 @@ function talentBonusDescription(talent,rank){
   const label=shopTab==="silver"?"серебра":"алм.";
   const chest=engine.dailyChestSnapshot(c.id),chestLabel=chest.available?"🎁 БЕСПЛАТНЫЙ ЕЖЕДНЕВНЫЙ СУНДУК · ЗАБРАТЬ":"🎁 СЛЕДУЮЩИЙ СУНДУК · "+Math.floor(Math.ceil(chest.remainingMs/60000)/60)+"ч "+(Math.ceil(chest.remainingMs/60000)%60)+"м";
   const dailyChestMarkup='<section class="tb-daily-shop-chest"><div><b>ЕЖЕДНЕВНАЯ НАГРАДА</b><small>Бесплатный сундук обновляется раз в сутки</small></div>'+button("daily-chest",chestLabel,chest.available?"":"disabled")+'</section>';
+  const relics=Object.values(engine.RELICS_DATABASE||{}),ownedRelics=new Set(c.relics||[]);
+  const relicShopMarkup='<section class="tb-relic-shop"><div class="tb-relic-shop-head"><div><span class="tb-eyebrow">ПАССИВНЫЕ АРТЕФАКТЫ</span><h2>РЕЛИКВИИ БАШНИ</h2><p>Реликвии усиливают карточную колоду и действуют в каждом бою</p></div><strong>'+ownedRelics.size+' / '+relics.length+'</strong></div><div class="tb-relic-shop-grid">'+relics.map(relic=>'<article class="tb-relic-shop-card '+(ownedRelics.has(relic.id)?"is-owned":"")+'"><span class="tb-relic-shop-icon">'+esc(relic.icon||"✦")+'</span><b>'+esc(relic.name)+'</b><small>'+esc(relic.description)+'</small><span class="tb-relic-price">300 серебра</span><button type="button" data-relic-buy="'+esc(relic.id)+'" '+(ownedRelics.has(relic.id)||Number(c.silver)<300?"disabled":"")+'>'+(ownedRelics.has(relic.id)?"УЖЕ ЕСТЬ":"КУПИТЬ · 300")+'</button></article>').join("")+'</div></section>';
   return header("Магазин","Персонажная и аккаунтная экономика")+'<section class="tb-shop">'+dailyChestMarkup+'<div class="tb-shop-top"><h1>Магазин башни</h1></div><div class="tb-shop-balances"><span>◈ '+c.silver+' серебра персонажа</span><span>◆ '+engine.state.account.diamonds+' алмазов аккаунта</span><span>Премиум до '+(engine.state.account.premiumUntil?new Date(engine.state.account.premiumUntil).toLocaleDateString("ru-RU"):"—")+'</span></div><nav class="tb-tabs"><button data-shop-tab="silver" class="'+(shopTab==="silver"?"active":"")+'">ЗА СЕРЕБРО</button><button data-shop-tab="diamond" class="'+(shopTab==="diamond"?"active":"")+'">ЗА АЛМАЗЫ</button></nav><div class="tb-product-grid">'+products.map(item=>'<article class="tb-product"><div class="tb-product-icon">'+shopProductIconHtml(item)+'</div><b>'+esc(item.name.toUpperCase())+'</b><small>'+(item.id.startsWith("premium")?"Премиум аккаунт":item.id.startsWith("heal")?"Зелье исцеления":item.id.startsWith("xp")?"Зелье опыта":item.id.startsWith("drop")?"Зелье шанса дропа":"Улучшение экипировки")+'</small><span class="tb-product-price">'+item.price+' '+label+'</span><button data-buy="'+item.id+'" '+(shopTab==="silver"?(c.silver<item.price?"disabled":""):(engine.state.account.diamonds<item.price?"disabled":""))+'>КУПИТЬ</button></article>').join("")+'</div>'+
    (shopTab==="diamond"?'<div class="tb-packages"><h3>Пакеты алмазов</h3><div class="tb-package-grid">'+balance.economy.diamond_packages.map(pack=>'<div><b>'+pack[0]+' алмазов</b><span>'+pack[1]+' ₽</span></div>').join("")+'</div><small>1 алмаз = 1 ₽ · платежи не подключены в браузерной версии</small></div>':'')+
-   (shopTab==="diamond"?'<div class="tb-cosmetic-chests"><h2>Косметика за алмазы</h2><p>Только внешний вид · без влияния на характеристики.</p>'+(balance.cosmetics?.chests||[]).map(ch=>'<article><b>'+esc(ch.name)+'</b><small>'+ch.price+' ◆ · случайный предмет из коллекции</small><button data-cosmetic-chest="'+ch.id+'" '+(engine.state.account.diamonds<ch.price?'disabled':'')+'>ОТКРЫТЬ СУНДУК</button></article>').join("")+'</div>':'')+cardMerchantMarkup(c)+'<p class="tb-note">Алмазы и премиум принадлежат аккаунту. Платёжный провайдер в браузерной версии не подключён.</p></section>';
+   (shopTab==="diamond"?'<div class="tb-cosmetic-chests"><h2>Косметика за алмазы</h2><p>Только внешний вид · без влияния на характеристики.</p>'+(balance.cosmetics?.chests||[]).map(ch=>'<article><b>'+esc(ch.name)+'</b><small>'+ch.price+' ◆ · случайный предмет из коллекции</small><button data-cosmetic-chest="'+ch.id+'" '+(engine.state.account.diamonds<ch.price?'disabled':'')+'>ОТКРЫТЬ СУНДУК</button></article>').join("")+'</div>':'')+relicShopMarkup+cardMerchantMarkup(c)+'<p class="tb-note">Алмазы и премиум принадлежат аккаунту. Платёжный провайдер в браузерной версии не подключён.</p></section>';
  }
  function progressScreen(){
   const c=live();if(!c)return characterList();
@@ -838,6 +909,11 @@ function talentBonusDescription(talent,rank){
     const baseShield=mob.mechanic==="shield"?Math.round(maxHp*balance.elite_mechanics.shield.absorb_fraction):0;
     return{poison:0,bleed:0,weak:0,vulnerable:0,...mob,...(saved||{}),index:i,id:"enemy-"+i,mobId:mob.mobId||mob.enemyId||mob.key||mob.id||mob.name||mob.role||"unknown",maxHp,hp,alive:!killed.has(i)&&saved?.alive!==false&&hp>0,dead:killed.has(i)||saved?.dead===true||hp<=0,attackIntervalMs:saved?.attackIntervalMs||stats.attackIntervalMs,nextHealAt:saved?.nextHealAt||0,nextPoisonAt:saved?.nextPoisonAt||0,slowedUntil:saved?.slowedUntil||0,pendingAttack:!!saved?.pendingAttack,turnsTaken:saved?.turnsTaken||0,speed:saved?.speed||mob.speed||1};
    });
+   if(!stage.relicEffectsApplied){
+    const startDamage=Math.max(0,Number(stage.relicStartDamage)||0),startWeak=Math.max(0,Number(stage.relicStartWeak)||0);
+    for(const enemy of battle.enemies){if(!enemy.alive)continue;if(startDamage>0)enemy.hp=Math.max(1,enemy.hp-startDamage);if(startWeak>0)enemy.weak=Math.max(0,Number(enemy.weak)||0)+startWeak;}
+    stage.relicEffectsApplied=true;
+   }
    const healer=battle.enemies.find(enemy=>enemy.role==="healer"&&enemy.alive);index=healer?healer.index:(snapshot?.targetIndex??stage.targetIndex??stage.enemyIndex??0);
   }
   if(index===undefined||index===null||!battle.enemies[index]?.alive)index=battle.enemies.find(enemy=>enemy.alive)?.index;
@@ -891,10 +967,12 @@ function talentBonusDescription(talent,rank){
 }).join("");
 
 const handMarkup=renderHand();
+const relicMarkup=(c.relics||[]).map(relicId=>engine.RELICS_DATABASE?.[relicId]).filter(Boolean).map(relic=>'<span class="v2-battle-relic" title="'+esc(relic.name+": "+relic.description)+'" aria-label="'+esc(relic.name+": "+relic.description)+'">'+esc(relic.icon||"✦")+'</span>').join("");
 
 return `<div class="v2-battle-wrap">
   <div class="v2-battle-top">
     <span>ИНИЦИАТИВА · РАУНД ${battle.round}</span>
+    <div class="v2-battle-relics" aria-label="Активные реликвии">${relicMarkup}</div>
     <button type="button" class="v2-pause-btn" data-action="pause">${battle.paused ? "ПРОДОЛЖИТЬ" : "ПАУЗА"}</button>
   </div>
   <div class="v2-battle-middle">
@@ -930,15 +1008,15 @@ return `<div class="v2-battle-wrap">
  function beginStage(){postBattleSummary=null;
   const c=live();
   try{
-   ensureCardDeck(c);
+   ensureCardDeck(c);syncEquipmentCards(c);
    const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
    if(routeChoice==="elite"&&!plan.boss&&c.run.stage?.mobs?.length){c.run.stage.mobs[0].type="elite";c.run.stage.mobs[0].mechanic="shield";}
    if(c.run.dailyChallengeActive&&Array.isArray(c.run.stage?.mobs))c.run.stage.mobs.forEach(mob=>{if(mob.type!=="boss")mob.type="elite";});
    if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
-   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
+   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,cardBlock:Math.max(0,Number(plan.relicStartingBlock)||0),firstAttackDouble:!plan.relicFirstAttackConsumed&&Number(plan.relicFirstAttackMultiplier)>1,relicAttackBonus:Math.max(0,Number(plan.relicAttackBonus)||0),relicBlockBonus:Math.max(0,Number(plan.relicBlockBonus)||0),cardSpellPower:Math.max(0,Number(plan.relicSpellPower)||0),nextAttackDamageBonus:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
    const savedSnapshot=plan.uiBattleSnapshot;if(savedSnapshot){battle.round=Math.max(1,Number(savedSnapshot.round)||1);battle.skillCooldowns={...(savedSnapshot.skillCooldowns||{})};battle.comboStacks=savedSnapshot.comboStacks||0;battle.comboProgress={...(savedSnapshot.comboProgress||{})};}
-   if(savedSnapshot?.cardState){const state=savedSnapshot.cardState;c.deck=Array.isArray(state.deck)?state.deck:[];c.hand=Array.isArray(state.hand)?state.hand:[];c.discard=Array.isArray(state.discard)?state.discard:[];c.exhaustPile=Array.isArray(state.exhaustPile)?state.exhaustPile:[];c.currentEnergy=Math.max(0,Math.min(c.energy,Number(state.currentEnergy)||0));battle.cardBlock=Math.max(0,Number(state.cardBlock)||0);battle.cardResume=state.actorType!=="enemy";}else{resetCardBattle(c);drawCards(5);battle.cardResume=false;}
+   if(savedSnapshot?.cardState){const state=savedSnapshot.cardState;c.deck=Array.isArray(state.deck)?state.deck:[];c.hand=Array.isArray(state.hand)?state.hand:[];c.discard=Array.isArray(state.discard)?state.discard:[];c.exhaustPile=Array.isArray(state.exhaustPile)?state.exhaustPile:[];c.currentEnergy=Math.max(0,Math.min(c.energy,Number(state.currentEnergy)||0));battle.cardBlock=Math.max(0,Number(state.cardBlock)||0);battle.cardResume=state.actorType!=="enemy";}else{resetCardBattle(c);drawCards(5+Math.max(0,Number(plan.relicStartingDraw)||0));battle.cardResume=false;}
    if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}syncInitiative();showPlayerTurn();screen="battle";save();render();
   }catch(error){notify(error.message);}
  }
@@ -950,6 +1028,8 @@ return `<div class="v2-battle-wrap">
   for(const target of dead){
    if(c.run.stage?.killedIndices?.includes(target.index))continue;
    const current=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:target.index,overkillBonus:target.index===defeated.index&&!!battle.overkillBonus});
+   syncEquipmentCards(c);
+   if(current.relicChoices?.length)postBattleSummary.relicChoices=current.relicChoices;
    battle.overkillBonus=false;allLoot.push(...(current.loot||[]));result=current;
    c.stats=c.stats||{};c.stats.killsByMob=c.stats.killsByMob||{};
    const mobKey=String(target.mobId||target.enemyId||target.key||target.name||target.role||"unknown").toLowerCase().replace(/_/g,"-");
@@ -1147,7 +1227,7 @@ return `<div class="v2-battle-wrap">
   if(target.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function equipItem(itemId){
-  try{engine.equipItem(live().id,itemId);save();render();notify("Предмет надет");}catch(error){notify(error.message);}
+  try{engine.equipItem(live().id,itemId);syncEquipmentCards(live());save();render();notify("Предмет надет · карта экипировки добавлена");}catch(error){notify(error.message);}
  }
  function showScreen(name){screen=name;render();}
  function battleRenderKey(){
@@ -1293,6 +1373,7 @@ return `<div class="v2-battle-wrap">
   const maxRefine=Number(balance.equipment?.refine_max)||20;
   const detailActions=!current?.owned?'<p class="tb-collection-missing">Предмет не найден. Выпадает с боссов/элиток.</p>':!currentEquipped?'<button type="button" class="tb-collection-equip" data-equip="'+esc(currentItem.id)+'">НАДЕТЬ</button>':[
    '<strong class="tb-collection-equipped">УЖЕ НАДЕТО</strong>',
+   '<button type="button" class="tb-collection-action" data-unequip="'+esc(currentItem.slot)+'">СНЯТЬ ЭКИПИРОВКУ</button>',
    '<p class="tb-collection-item-progress">Заточка +'+Number(currentItem.refine||0)+' · Гнёзда '+currentGems.length+'/'+currentSockets+'</p>',
    currentHasRefineStone&&Number(currentItem.refine||0)<maxRefine?'<button type="button" class="tb-collection-action" data-refine="'+esc(currentItem.id)+'">ЗАТОЧИТЬ</button>':"",
    currentHasChisel&&currentSockets<maxSockets?'<button type="button" class="tb-collection-action" data-socket="'+esc(currentItem.id)+'">ДОБАВИТЬ ГНЕЗДО</button>':"",
@@ -1329,6 +1410,9 @@ return `<div class="v2-battle-wrap">
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
   ensureBottomNav();
   if(postBattleSummary?.ready===true&&!battle&&screen==="map")root.querySelector(".tb-v2")?.insertAdjacentHTML("beforeend",lootSummaryModal());
+  const pendingRelics=live()?.run?.pendingRelicChoices;
+  if(pendingRelics?.length)showRelicRewardScreen(pendingRelics);
+  else document.querySelector(".tb-relic-reward-overlay")?.remove();
  }
  function renderWithScrollSave(){
   const container=document.getElementById('tbRpg')||document.querySelector('.profile');
@@ -1345,12 +1429,13 @@ return `<div class="v2-battle-wrap">
   catch(error){notify(error.message);}
  }
  function handleClick(event){
-  const target=event.target.closest("[data-card-play],[data-card-reward-pick],[data-card-reward-skip],[data-card-reward-start],[data-card-shop-buy],[data-card-remove-open],[data-card-remove],[data-loot-continue],[data-starter-card],[data-starter-deck-confirm],[data-starter-deck-cancel],[data-skill-upgrade-open],[data-skill-upgrade-type],[data-skill-upgrade-close],[data-skill-upgrade-backdrop],[data-collection-item],[data-collection-close],[data-collection-tab],[data-bag-filter],[data-item-select],[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-enchant],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-stone],[data-extract-gem],[data-inspect-stone],[data-target],[data-route],[data-panel-skill],[data-replace-skill],[data-close-skill-replace],[data-counter],[data-ultimate],[data-basic-attack]");
-  if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target)&&!target.closest(".card-reward-overlay")&&!target.closest(".tb-starter-deck-overlay"))return;
+  const target=event.target.closest("[data-card-play],[data-card-reward-pick],[data-card-reward-skip],[data-card-reward-start],[data-card-shop-buy],[data-card-remove-open],[data-card-remove],[data-loot-continue],[data-starter-card],[data-starter-deck-confirm],[data-starter-deck-cancel],[data-relic-reward-pick],[data-relic-buy],[data-unequip],[data-skill-upgrade-open],[data-skill-upgrade-type],[data-skill-upgrade-close],[data-skill-upgrade-backdrop],[data-collection-item],[data-collection-close],[data-collection-tab],[data-bag-filter],[data-item-select],[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-select-skill],[data-daily-claim],[data-equip],[data-refine],[data-socket],[data-enchant],[data-merge],[data-use],[data-buy],[data-shop-tab],[data-belt-assign],[data-belt-use],[data-achievement],[data-lore],[data-stash-deposit],[data-stash-withdraw],[data-pvp-buy],[data-paragon-stat],[data-salvage],[data-craft-stone],[data-stone],[data-extract-gem],[data-inspect-stone],[data-target],[data-route],[data-panel-skill],[data-replace-skill],[data-close-skill-replace],[data-counter],[data-ultimate],[data-basic-attack]");
+  if(!target||!root.contains(target)&&!document.getElementById("rpgDialog")?.contains(target)&&!target.closest(".card-reward-overlay")&&!target.closest(".tb-starter-deck-overlay")&&!target.closest(".tb-relic-reward-overlay"))return;
   event.preventDefault();
   if(target.dataset.starterCard!==undefined){const id=target.dataset.starterCard;if(starterDeckSelection.includes(id))starterDeckSelection=starterDeckSelection.filter(value=>value!==id);else if(starterDeckSelection.length<3&&unlockedCardIds().includes(id))starterDeckSelection.push(id);else notify("Можно выбрать не более трёх открытых карт");renderStarterDeckModal();return;}
   if(target.dataset.starterDeckCancel!==undefined){document.querySelector(".tb-starter-deck-overlay")?.remove();starterDeckSelection=[];return;}
   if(target.dataset.starterDeckConfirm!==undefined){confirmStarterDeck();return;}
+  if(target.dataset.relicRewardPick!==undefined){const c=live(),relicId=target.dataset.relicRewardPick;try{const relic=engine.claimRelic(c.id,relicId);document.querySelector(".tb-relic-reward-overlay")?.remove();save();render();notify("Реликвия получена: "+relic.name);}catch(error){notify(error.message);}return;}
   if(target.dataset.cardRewardStart!==undefined){const c=live();if(!c)return;const cards=Array.isArray(c.pendingCardReward)&&c.pendingCardReward.length?c.pendingCardReward:generateCardReward(c);if(!cards.length){notify("Карты для награды не найдены");return;}c.pendingCardReward=cards;postBattleSummary=null;save();render();showCardRewardScreen(cards);return;}
   if(target.dataset.cardRewardSkip!==undefined){skipCardReward();return;}
   if(target.dataset.cardRewardPick!==undefined){const c=live(),overlay=document.querySelector(".card-reward-overlay"),cards=c?.pendingCardReward||[],chosen=cards[Number(target.dataset.cardRewardPick)];if(!c||!chosen)return;ensureCardDeck(c);c.deck.push(chosen);unlockCardPermanently(chosen.id);c.pendingCardReward=null;overlay?.remove();save();render();notify("Карта добавлена в колоду: "+chosen.name);return;}
@@ -1399,6 +1484,8 @@ return `<div class="v2-battle-wrap">
   if(target.dataset.salvage){if(!window.confirm("Разобрать предмет на материалы? Действие необратимо."))return;try{const result=engine.salvageItem(live().id,target.dataset.salvage);save();render();notify("Разбор: +"+result.quantity+" материалов");}catch(error){notify(error.message);}return;}
   if(target.dataset.craftStone!==undefined){try{const type=balance.equipment.stone_types.find(item=>item.class_id===live().classId&&item.branch_id===live().branch&&item.slot==="weapon");if(!type)throw new Error("Сначала выбери специализацию персонажа");const stone=engine.craftStone(live().id,type);save();render();notify("Создан камень I уровня: "+(stone.stoneType.name||stone.stoneType.id));}catch(error){notify(error.message);}return;}
   if(target.dataset.equip){equipItem(target.dataset.equip);return;}
+  if(target.dataset.unequip!==undefined){try{const item=engine.unequipItem(live().id,target.dataset.unequip);syncEquipmentCards(live());save();render();notify("Предмет снят · карта "+(CARD_DATABASE[item.cardId]?.name||"экипировки")+" удалена из колоды");}catch(error){notify(error.message);}return;}
+  if(target.dataset.relicBuy){try{const relic=engine.purchaseRelic(live().id,target.dataset.relicBuy);save();render();notify("Реликвия куплена: "+relic.name);}catch(error){notify(error.message);}return;}
   if(target.dataset.merge){try{const c=live(),stone=c.bag.find(x=>x.id===target.dataset.merge);if(!stone)throw new Error("Камень не найден");engine.mergeStones(c.id,stone.stoneType,stone.level);save();render();notify("Пять камней объединены");}catch(error){notify(error.message);}return;}
   if(target.dataset.use){try{const result=engine.activateItem(live().id,target.dataset.use);save();render();notify("Предмет активирован: "+result.activated);}catch(error){notify(error.message);}return;}
   if(target.dataset.dailyClaim){try{const result=engine.claimDailyQuest(live().id,target.dataset.dailyClaim);save();render();notify("Награда: "+result.rewardSilver+" серебра");}catch(error){notify(error.message);}return;}
@@ -1471,7 +1558,7 @@ return `<div class="v2-battle-wrap">
    case "daily-challenge":try{const c=live();if(c.run.stage)throw new Error("Сначала заверши текущий бой");c.run.dailyChallengeActive=true;c.run.dailyChallengeDate=dailyChallengeDate();selectedStage=c.progress.currentStage;if(!c.run.active){showStarterDeckModal();break;}beginStage();}catch(error){notify(error.message);}break;
    case "attack":basicAttack();break;
    case "end-turn":endTurnButton();break;
-   case "equip-best":try{const result=engine.equipBest(live().id);save();render();notify("Экипировано предметов: "+result.equipped);}catch(error){notify(error.message);}break;
+   case "equip-best":try{const result=engine.equipBest(live().id);syncEquipmentCards(live());save();render();notify("Экипировано предметов: "+result.equipped+" · карты экипировки обновлены");}catch(error){notify(error.message);}break;
    case "salvage-gray":try{const result=engine.salvageGrayItems(live().id);save();render();notify("Разобрано серых предметов: "+result.count+" · +"+result.materials+" материалов");}catch(error){notify(error.message);}break;
    case "skill":{const skill=activeSkill(live());if(skill)playerAction(skill.id,0);else notify("Нет доступного атакующего умения");break;}
    case "potion":try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано. Слот этой цели потрачен.");}catch(error){notify(error.message);}break;

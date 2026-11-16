@@ -86,5 +86,5 @@ assert.match(ui,/function showStarterDeckModal/);
 assert.match(ui,/starterDeckSelection\.length<3/);
 assert.match(ui,/data-starter-deck-confirm/);
 assert.match(ui,/starterDeckSelection=\[\];save\(\);beginStage\(\)/,'starter-deck confirmation respects the selected map stage');
-assert.match(worker,/towerbound-v332/);
+assert.match(worker,/towerbound-v335/);
 console.log('Boss checkpoints, permanent card collection, and new-run deck draft checks passed.');

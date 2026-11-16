@@ -22,6 +22,20 @@
   state.season=state.season||null;
   state.weeklyRating=state.weeklyRating||[];
   const classTable=balance.classes.classes;
+  const RELICS_DATABASE=Object.freeze({
+   bloodstone:{id:"bloodstone",name:"Кровавый камень",description:"В начале боя наносит 5 урона всем врагам.",icon:"🩸",effect:{type:"start_damage_all",value:5}},
+   steel_heart:{id:"steel_heart",name:"Стальное сердце",description:"В начале боя даёт 10 брони.",icon:"🛡️",effect:{type:"start_block",value:10}},
+   greed:{id:"greed",name:"Жадность",description:"+50% серебра за бой, но −10% здоровья при входе в бой.",icon:"🪙",effect:{type:"gold_and_hp_tradeoff",value:{goldMultiplier:1.5,hpPenalty:0.1}}},
+   assassin_blade:{id:"assassin_blade",name:"Клинок убийцы",description:"Первая атакующая карта в бою наносит двойной урон.",icon:"🗡️",effect:{type:"first_attack_multiplier",value:2}},
+   scholar_lens:{id:"scholar_lens",name:"Линза мудреца",description:"Даёт дополнительный добор карты в начале боя.",icon:"🔮",effect:{type:"start_draw",value:1}},
+   phoenix_feather:{id:"phoenix_feather",name:"Перо феникса",description:"В начале боя восстанавливает 5 здоровья.",icon:"🔥",effect:{type:"start_heal",value:5}},
+   frost_sigil:{id:"frost_sigil",name:"Морозная печать",description:"В начале боя накладывает 1 слабость на всех врагов.",icon:"❄️",effect:{type:"start_weak_all",value:1}},
+   war_drums:{id:"war_drums",name:"Боевые барабаны",description:"Все атакующие карты наносят на 2 урона больше.",icon:"🥁",effect:{type:"card_attack_bonus",value:2}},
+   mirror_shard:{id:"mirror_shard",name:"Осколок зеркала",description:"Все карты защиты дают на 2 брони больше.",icon:"🪞",effect:{type:"card_block_bonus",value:2}},
+   arcane_prism:{id:"arcane_prism",name:"Чародейская призма",description:"Усиливает магические карты на 2 урона.",icon:"💠",effect:{type:"card_spell_power",value:2}},
+   hunter_mark:{id:"hunter_mark",name:"Метка охотника",description:"За победу над элитным противником получаешь на 25% больше серебра.",icon:"🎯",effect:{type:"elite_gold_multiplier",value:1.25}},
+   lucky_coin:{id:"lucky_coin",name:"Счастливая монета",description:"В начале боя добирает 1 дополнительную карту.",icon:"🍀",effect:{type:"start_draw",value:1}}
+  });
   const interpolation=(rows,value,xKey,yKey)=>{
    if(!Array.isArray(rows)||!rows.length)return 0;
    const sorted=rows.slice().sort((a,b)=>a[xKey]-b[xKey]);
@@ -139,6 +153,9 @@
   const getChar=id=>{
    const character=state.characters.find(item=>item.id===(id||state.activeCharacterId));
    if(!character)throw new Error("Character not found");
+   character.run=character.run||{};
+   character.relics=Array.isArray(character.relics)?character.relics:[];
+   character.run.pendingRelicChoices=Array.isArray(character.run.pendingRelicChoices)?character.run.pendingRelicChoices:null;
    character.buffs=character.buffs||{};
    character.potionCapacityBonus=character.potionCapacityBonus||0;
    character.dailyChest=character.dailyChest||{lastOpenedAt:0};
@@ -399,10 +416,10 @@
     id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},skillUpgrades:{},unlockedSkills:(classData.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=1).map(skill=>skill.id),activeSkillId:(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1)?.id||null,skillLoadout:(()=>{const first=(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1);return first?[first.id]:[];})(),deck:[],hand:[],discard:[],energy:3,currentEnergy:3,cardDeckVersion:0,resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,legacyBonus:legacyEligible?0.5:0,legacyBonusUntil:legacyEligible?50:0,legacyGranted:legacyEligible,
     silver:balance.account.starter_pack.silver??balance.economy.starting_silver,
     bag:[{id:id(),type:"healing_potion",quantity:balance.economy.starting_potions??balance.account.starter_pack.healing_potions??3}],
-    gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
+    gear:[null,null,null,null,null,null],relics:[],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
     potionBelt:Array(balance.healing.potion_belt_slots).fill(null),dailyChest:{lastOpenedAt:0},achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
-    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
+    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,pendingRelicChoices:null,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
     paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
    };
    if(legacyEligible)character.gear=["weapon","chest","head","legs","hands","accessory"].map((slot,i)=>({id:"legacy-"+character.id+"-"+slot,name:"Наследие · "+slot,slot,itemLevel:50,rarity:"Эпическая",stats:{attack:i===0?18:4,defense:i===0?2:8,health:18},refine:0,sockets:[],socketsAvailable:0,bossLoot:false}));
@@ -472,6 +489,28 @@
    beginRun(character);
    const plan=stagePlan(character,stage),previousStage=character.run.stage;
    character.run.stage={...plan,enemyIndex:0,targetIndex:0,killedIndices:[],potionUsedTargets:[],potionSlotUsed:false,startedAt:now(),bossPhase:1};
+   const relics=(character.relics||[]).map(relicId=>RELICS_DATABASE[relicId]).filter(Boolean);
+   const sumEffect=type=>relics.reduce((sum,relic)=>sum+(relic.effect?.type===type?Number(relic.effect.value)||0:0),0);
+   const maxEffect=type=>relics.reduce((value,relic)=>relic.effect?.type===type?Math.max(value,Number(relic.effect.value)||0):value,0);
+   const greed=relics.find(relic=>relic.effect?.type==="gold_and_hp_tradeoff");
+   character.run.stage.relicStartingBlock=sumEffect("start_block");
+   character.run.stage.relicStartDamage=sumEffect("start_damage_all");
+   character.run.stage.relicStartWeak=sumEffect("start_weak_all");
+   character.run.stage.relicStartingDraw=sumEffect("start_draw");
+   character.run.stage.relicStartHeal=sumEffect("start_heal");
+   character.run.stage.relicFirstAttackMultiplier=maxEffect("first_attack_multiplier");
+   character.run.stage.relicAttackBonus=sumEffect("card_attack_bonus");
+   character.run.stage.relicBlockBonus=sumEffect("card_block_bonus");
+   character.run.stage.relicSpellPower=sumEffect("card_spell_power");
+   character.run.stage.relicHpPenalty=Number(greed?.effect?.value?.hpPenalty)||0;
+   if(character.run.stage.relicHpPenalty>0){
+    const hpBase=Math.min(Number(character.run.playerHp)||maxHp(character),maxHp(character));
+    character.run.playerHp=Math.max(1,Math.round(hpBase*(1-Math.min(.9,character.run.stage.relicHpPenalty))));
+   }
+   if(character.run.stage.relicStartHeal>0&&!character.run.stage.relicStartHealApplied){
+    character.run.playerHp=Math.min(maxHp(character),Math.max(0,Number(character.run.playerHp)||0)+character.run.stage.relicStartHeal);
+    character.run.stage.relicStartHealApplied=true;
+   }
    const startFraction=resourceConfig.starting_fraction??0.58;
    character.resource=Math.min(character.resourceMax,Math.max(character.resource||0,Math.round(character.resourceMax*startFraction)));
    character.run.speed2=false;
@@ -625,6 +664,14 @@
    else amount=table.normal_base+stage*table.normal_per_stage;
    return amount*(stage<=15?(balance.xp_curve.early_mob_xp_multiplier||1):1);
   }
+  function equipmentCardId(item){
+   const slot=Number.isInteger(item?.slot)?(["weapon","chest","head","legs","hands","accessory"][item.slot]||""):String(item?.slot||"");
+   const label=[item?.name,item?.weaponType,item?.armorType,item?.typeName].filter(Boolean).join(" ").toLowerCase();
+   if(slot==="weapon")return item?.weaponType==="staff"||/посох|жезл|staff|wand/.test(label)||Number(item?.stats?.spellPower)>0?"gear_staff_bolt":"gear_sword_cleave";
+   if(["chest","head","legs","hands"].includes(slot))return item?.armorType==="mantle"||/мантия|robe|mantle|одеяни/.test(label)?"gear_evasion":"gear_iron_wall";
+   if(slot==="accessory")return "gear_power_surge";
+   return null;
+  }
   function createDrop(character,rarity,options){
     options=options||{};
     const itemLevel=itemLevelForStage(options.itemLevel||character.progress.currentStage||1);
@@ -645,8 +692,12 @@
     const branchName=branch?.set?.name||branch?.theme||branch?.name||"Специализация";
     const stats={...(options.stats||statProfiles[slot]||statProfiles.accessory)};
     const setId=character.branch?character.classId+"."+character.branch+".set."+rarityKey(rarity):null;
+    const defaultWeaponType=["bishop","elemental","shaman"].includes(character.classId)?"staff":"sword";
+    const defaultArmorType=["bishop","dragonkin","elemental","shaman"].includes(character.classId)?"mantle":"heavy";
     const item={id:id(),type:"equipment",name:options.name||rarityNames[rarity]+" · "+branchName+" · "+slotNames[slot],rarity,branch:character.branch||null,branchName,setId,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
-     itemLevel,slot,stats,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
+     itemLevel,slot,weaponType:slot==="weapon"?(options.weaponType||defaultWeaponType):undefined,armorType:["chest","head","legs","hands"].includes(slot)?(options.armorType||defaultArmorType):undefined,
+     stats,cardId:options.cardId||null,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
+    item.cardId=item.cardId||equipmentCardId(item);
     const prefs=state.account.settings||{},threshold=Number(prefs.autoSalvageBelow||0),auto=!!prefs.autoSalvage&&["Обычная","Редкая"].includes(rarity)&&itemLevel<threshold&&!item.bossLoot;
     if(auto){const quantity=balance.materials.salvage[rarity]||0,stack=character.bag.find(x=>x.type==="craft_material");if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;item.autoSalvaged=true;item.type="auto_salvage";item.quantity=quantity;item.name="Авто-разбор · "+rarity;recordWeeklyProgress(character,"items_salvaged",1);}else character.bag.push(item);
     character.run.foundItemIds.push(item.id);character.stats.items_found=(character.stats.items_found||0)+1;
@@ -730,7 +781,14 @@
    if(enemy.type==="boss"){character.stats.boss_kills=(character.stats.boss_kills||0)+1;if(!potionUsed)character.stats.potionless_bosses=(character.stats.potionless_bosses||0)+1;}
    const silverBuff=activeBuff(character,"silver"),rewardMultiplier=runModifiers(character).reduce((value,modifier)=>value*(modifier.reward_silver_multiplier||1),1);
    const accountBonus=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
-   const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*rewardMultiplier);
+   const relicGoldMultiplier=(character.relics||[]).reduce((value,relicId)=>{
+    const effect=RELICS_DATABASE[relicId]?.effect;
+    if(effect?.type==="gold_and_hp_tradeoff")return value*Math.max(1,Number(effect.value?.goldMultiplier)||1);
+    if(effect?.type==="gold_multiplier")return value*Math.max(1,Number(effect.value)||1);
+    if(effect?.type==="elite_gold_multiplier"&&enemy.type==="elite")return value*Math.max(1,Number(effect.value)||1);
+    return value;
+   },1);
+   const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*rewardMultiplier*relicGoldMultiplier);
    character.silver+=silver;
    if(enemy.type==="elite"){recordDailyProgress(character.id,"elite_kills",1);recordWeeklyProgress(character,"elite_kills",1);}
    if(enemy.type==="boss")recordWeeklyProgress(character,"boss_kills",1);
@@ -779,11 +837,21 @@
      character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);character.run.runModifierId=null;character.run.offeredModifierIds=null;publishGhost(character,"stage_250_clear");
     }
    }
+   let relicChoices=[];
+   if(done&&enemy.type==="boss"){
+    const ownedRelics=new Set(character.relics||[]);
+    const availableRelics=Object.values(RELICS_DATABASE).filter(relic=>!ownedRelics.has(relic.id));
+    while(relicChoices.length<3&&availableRelics.length){
+     const choiceIndex=Math.min(availableRelics.length-1,Math.floor(random()*availableRelics.length));
+     relicChoices.push(availableRelics.splice(choiceIndex,1)[0]);
+    }
+    character.run.pendingRelicChoices=relicChoices.map(relic=>relic.id);
+   }
    const bossEvery=Math.max(1,Number(balance.map.boss_every)||10);
    if(done&&enemy.type==="boss"&&stage%bossEvery===0&&difficultyOf(character).checkpoints){
     character.run.snapshot={stage:character.progress.currentStage,hp:character.run.playerHp,silver:character.silver,deck:clone(character.deck||[]),relics:clone(character.relics||[]),gear:clone(character.gear||[]),createdAt:now()};
    }
-   return{xp:gained.amount+(done?(clearAward?.amount||0):0),loot:clone(loot.concat(materials)),silver,autoEquipped:autoResult.equipped,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
+   return{xp:gained.amount+(done?(clearAward?.amount||0):0),loot:clone(loot.concat(materials)),silver,autoEquipped:autoResult.equipped,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear,relicChoices:clone(relicChoices)};
   }
   function useHealingPotion(characterId,stackId){
    const character=getChar(characterId),stage=character.run.stage;
@@ -1381,7 +1449,8 @@
    const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
    if(!item||!item.stats||!item.rarity)throw new Error("Этот предмет нельзя надеть");
    const slot=equipmentSlotIndex(item);if(slot<0)throw new Error("Неизвестный слот экипировки");
-   bindItemOnUse(characterId,itemId);const old=character.gear[slot];character.gear[slot]=item;character.bag=character.bag.filter(entry=>entry.id!==itemId);if(old)character.bag.push(old);
+   item.cardId=item.cardId||equipmentCardId(item);
+   bindItemOnUse(characterId,itemId);const old=character.gear[slot];character.gear[slot]=item;character.bag=character.bag.filter(entry=>entry.id!==itemId);if(old){old.cardId=old.cardId||equipmentCardId(old);character.bag.push(old);}
    if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return clone(item);
   }
   function equipmentRarityScore(item){return({"Обычная":1,"Редкая":2,"Эпическая":3,"Легендарная":4,"Богоподобная":5}[item?.rarity]||0);}
@@ -1391,8 +1460,36 @@
    const candidates=[...(character.gear||[]).filter(isGear),...(character.bag||[]).filter(isGear)],chosen=new Map();
    for(let slot=0;slot<6;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
    const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:6},(_,slot)=>chosen.get(slot)||null);
+   character.gear.forEach(item=>{if(item)item.cardId=item.cardId||equipmentCardId(item);});
    character.bag=(character.bag||[]).filter(item=>!isGear(item)).concat(candidates.filter(item=>!selected.has(item.id)));
    if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return{equipped:chosen.size,gear:clone(character.gear),bag:character.bag.length};
+  }
+  function unequipItem(characterId,slotValue){
+   const character=getChar(characterId),slot=equipmentSlotIndex({slot:slotValue});
+   if(slot<0||slot>=6)throw new Error("Неизвестный слот экипировки");
+   const item=character.gear[slot];
+   if(!item)throw new Error("В этом слоте нет предмета");
+   item.cardId=item.cardId||equipmentCardId(item);
+   character.gear[slot]=null;character.bag=character.bag||[];character.bag.push(item);
+   if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));
+   return clone(item);
+  }
+  function purchaseRelic(characterId,relicId){
+   const character=getChar(characterId),relic=RELICS_DATABASE[relicId];
+   if(!relic)throw new Error("Реликвия не найдена");
+   if((character.relics||[]).includes(relicId))throw new Error("Эта реликвия уже принадлежит персонажу");
+   if(Number(character.silver)<300)throw new Error("Недостаточно серебра: нужно 300");
+   character.silver-=300;character.relics.push(relicId);
+   return clone(relic);
+  }
+  function claimRelic(characterId,relicId){
+   const character=getChar(characterId),choices=Array.isArray(character.run.pendingRelicChoices)?character.run.pendingRelicChoices:[];
+   if(!choices.includes(relicId))throw new Error("Эта реликвия не входит в награду босса");
+   if((character.relics||[]).includes(relicId))throw new Error("Эта реликвия уже принадлежит персонажу");
+   const relic=RELICS_DATABASE[relicId];if(!relic)throw new Error("Реликвия не найдена");
+   character.relics.push(relicId);character.run.pendingRelicChoices=null;
+   if(character.run.snapshot&&Array.isArray(character.run.snapshot.relics))character.run.snapshot.relics=clone(character.relics);
+   return clone(relic);
   }
   function salvageGrayItems(characterId){
    const character=getChar(characterId),gray=(character.bag||[]).filter(item=>item.stats&&item.rarity==="Обычная"&&!item.bossLoot),quantity=gray.reduce((sum,item)=>sum+(balance.materials.salvage[item.rarity]||0),0);
@@ -1421,7 +1518,7 @@
   return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,bossPhaseInfo,resolveReaction,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,sanitizeActiveStage,getEnemyStats,mitigationMultiplier,resistanceMultiplier,capBossDamage,basicAttackStats,restoreResource,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
-   rollLoot,mergeStones,craftStone,equipItem,equipBest,salvageGrayItems,salvageItem,addSocket,insertGem,socketStone,extractGem,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
+   rollLoot,mergeStones,craftStone,equipItem,equipBest,unequipItem,purchaseRelic,claimRelic,RELICS_DATABASE,salvageGrayItems,salvageItem,addSocket,insertGem,socketStone,extractGem,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,dailyChestSnapshot,claimDailyChest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
