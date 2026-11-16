@@ -769,7 +769,6 @@ function createDialog(){
   if(c.classId==="duelist"&&attackCard&&finisher&&Number(c.charges)>=3){classMultiplier*=3;c.charges=Math.max(0,Number(c.charges)-3);}
   if(magicChargeSpent){classMultiplier*=1+Math.min(10,Number(c.magicCharge)||0)*.1;c.magicCharge=0;}
   const rawFor=(base,bonus)=>Math.max(1,Math.round((base+Number(stats.attack||0)*bonus+classFlat)*scale*weakScale*furyScale*classMultiplier*(battle.firstAttackDouble?2:1))),damageType=effects.damageType||card.damageType||"physical";
-  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);
   let killed=false;const calculatedDamage=getCardDamageWithTalents(card,c,cost),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0)?calculatedDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage,.18),damageType,{ignoreArmor:!!effects.ignoreArmor});logCombatEvent("Вы сыграли «"+card.name+"» · "+hit.dealt+" урона","#e9d5a5");killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
   if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){const hit=applyTargetDamage(enemy,rawFor(areaDamage,.12),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
@@ -794,7 +793,7 @@ function createDialog(){
   if(Number(effects.draw)>0)drawCards(effects.draw);
   const generators=Array.isArray(card.generateCards)?card.generateCards:(card.generate?[{id:card.generate,count:1}]:[]);for(const spec of generators){const amount=Math.max(0,Math.floor(Number(spec?.count)||0));for(let n=0;n<amount;n++){const generated=createCardInstance(spec.id);if(!generated)continue;if(c.hand.length<10)c.hand.push(generated);else c.discard.push(generated);}}
   if(killed&&battle){finishCurrentEnemy();if(!battle)return;}
-  save();render();if((Number(battle?.cardsPlayedThisTurn)||0)>=20){notify("Лимит 20 карт за ход · ход завершён");endPlayerTurn();}
+  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);save();render();if((Number(battle?.cardsPlayedThisTurn)||0)>=20){notify("Лимит 20 карт за ход · ход завершён");endPlayerTurn();}
  }
  function endPlayerTurn(){
   if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating)return;
