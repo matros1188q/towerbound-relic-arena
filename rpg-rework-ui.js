@@ -509,12 +509,13 @@ function createDialog(){
   try{const rows=JSON.parse(localStorage.getItem("tb-daily-challenge-leaderboard-v1")||"[]");return Array.isArray(rows)?rows:[];}catch(_){return [];}
  }
  function saveDailyChallengeResult(c){
-  const date=c.run.dailyChallengeDate||dailyChallengeDate(),rows=dailyChallengeLeaderboard();
-  rows.push({date,seed:Number(c.run.dailyChallengeSeed)||0,modifier:String(c.run.dailyChallengeModifier||""),name:c.name,className:clsName(c),stage:Number(postBattleSummary?.stage)||0,xp:Number(postBattleSummary?.xp)||0,at:Date.now()});
+  const date=c.run.dailyChallengeDate||dailyChallengeDate(),rows=dailyChallengeLeaderboard(),className=clsName(c);
+  const result={date,seed:Number(c.run.dailyChallengeSeed)||0,modifier:String(c.run.dailyChallengeModifier||""),name:c.name,className,stage:Number(c.progress?.highestEver)||Number(postBattleSummary?.stage)||0,xp:Number(postBattleSummary?.xp)||0,at:Date.now()};
+  const old=rows.findIndex(row=>row.date===date&&row.name===c.name&&row.className===className);
+  if(old>=0){if(result.stage>=Number(rows[old].stage||0))rows[old]=result;}else rows.push(result);
   rows.sort((a,b)=>b.stage-a.stage||b.xp-a.xp||a.at-b.at);
   try{localStorage.setItem("tb-daily-challenge-leaderboard-v1",JSON.stringify(rows.slice(0,50)));}catch(error){console.warn("Daily challenge leaderboard storage failed",error);}
-  c.run.dailyChallengeActive=false;c.run.dailyChallengeCompletedDate=date;
-  notify("Ежедневный вызов завершён · результат добавлен в локальный рейтинг");
+  notify("Этап ежедневного вызова записан в локальный рейтинг · забег продолжается");
  }
  function dailyChallengeLeaderboardMarkup(){
   const rows=dailyChallengeLeaderboard().slice(0,5);
@@ -1245,7 +1246,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
     if(c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="rage")c.run.stage.mobs.forEach(mob=>{mob.dailyDamageMultiplier=1.2;});
    if(routeChoice==="elite"&&!plan.boss&&c.run.stage?.mobs?.length){c.run.stage.mobs[0].type="elite";c.run.stage.mobs[0].mechanic="shield";}
-   if(c.run.dailyChallengeActive&&Array.isArray(c.run.stage?.mobs))c.run.stage.mobs.forEach(mob=>{if(mob.type!=="boss")mob.type="elite";});
+   
    if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
    battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,cardBlock:Math.max(0,Number(plan.relicStartingBlock)||0),firstAttackDouble:!plan.relicFirstAttackConsumed&&Number(plan.relicFirstAttackMultiplier)>1,relicAttackBonus:Math.max(0,Number(plan.relicAttackBonus)||0),relicBlockBonus:Math.max(0,Number(plan.relicBlockBonus)||0),cardSpellPower:Math.max(0,Number(plan.relicSpellPower)||0),nextAttackDamageBonus:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,combatLog:[],fastBattle:false,isCardAnimating:false,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
@@ -1831,7 +1832,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    case "delete-character":{const c=live();if(!window.confirm("Удалить персонажа без возможности восстановления?")||!window.confirm("Подтверди удаление: все вещи и прогресс будут утрачены."))return;const typed=window.prompt("Введи имя персонажа:");try{engine.deleteCharacter(c.id,typed,true);selectedId=engine.state.characters[0]?.id||null;screen="characters";battle=null;save();render();notify("Персонаж удалён");}catch(error){notify(error.message);}break;}
    case "shop":screen="shop";render();break;
    case "start":{const c=live();if(c&&!c.run.active&&!c.run.stage){showStarterDeckModal();break;}if(c&&eventTypeForStage(c,selectedStage)&&!c.run.completedMapEvents?.includes(Number(selectedStage))){showMapEventOverlay();break;}beginStage();break;}
-   case "daily-challenge":try{const c=live();if(c.run.stage)throw new Error("Сначала заверши текущий бой");const daily=dailyChallengeInfo();c.run.dailyChallengeActive=true;c.run.dailyChallengeDate=dailyChallengeDate();c.run.dailyChallengeSeed=daily.seed;c.run.dailyChallengeSeedState=daily.seed;c.run.dailyChallengeModifier=daily.modifier.id;c.run.dailyChallengeCompletedDate=null;selectedStage=c.progress.currentStage;if(daily.modifier.id==="rage")c.rage=Math.max(5,Number(c.rage)||0);if(!c.run.active){showStarterDeckModal();break;}beginStage();notify("Вызов дня: "+daily.modifier.name+" · seed "+daily.seed);}catch(error){notify(error.message);}break;
+   case "daily-challenge":try{const c=live();if(c.run.stage)throw new Error("Сначала заверши текущий бой");const daily=dailyChallengeInfo(),today=dailyChallengeDate();if(c.run.dailyChallengeCompletedDate===today)throw new Error("Ежедневный вызов уже завершён сегодня");if(c.run.dailyChallengeActive&&c.run.dailyChallengeDate===today){selectedStage=c.progress.currentStage;notify("Продолжаем сегодняшний забег · seed "+c.run.dailyChallengeSeed);beginStage();break;}c.run.dailyChallengeActive=true;c.run.dailyChallengeDate=today;c.run.dailyChallengeSeed=daily.seed;c.run.dailyChallengeSeedState=daily.seed;c.run.dailyChallengeModifier=daily.modifier.id;c.run.dailyChallengeCompletedDate=null;selectedStage=c.progress.currentStage;if(daily.modifier.id==="rage")c.rage=5;if(!c.run.active){showStarterDeckModal();break;}beginStage();notify("Вызов дня: "+daily.modifier.name+" · seed "+daily.seed);}catch(error){notify(error.message);}break;
    case "attack":basicAttack();break;
    case "end-turn":endTurnButton();break;
    case "equip-best":try{const result=engine.equipBest(live().id);syncEquipmentCards(live());save();render();notify("Экипировано предметов: "+result.equipped+" · карты экипировки обновлены");}catch(error){notify(error.message);}break;
