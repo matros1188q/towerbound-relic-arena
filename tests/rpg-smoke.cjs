@@ -371,7 +371,7 @@ const {chromium}=require('playwright');
   }
   await page.evaluate(()=>{
     const engine=window.TowerboundRework,c=engine.state.characters[0];
-    c.level=1;c.branch=null;c.gear=[{id:"smoke-hp-gear",type:"equipment",name:"Smoke Test Vitality",slot:"accessory",rarity:"Обычная",itemLevel:1,stats:{health:6000,attack:1}} ,null,null,null,null,null];c.run.stage=null;
+    c.level=1;c.branch=null;c.gear=[null,null,null,null,null,null];c.progression={...(c.progression||{}),bonusHp:30};c.run.stage=null;
     const base=(engine.balance.classes.classes[c.classId]?.base_skills||[]).find(skill=>Number(skill.unlock_level||1)<=c.level);
     c.activeSkills=base?[base.id]:[];c.skillLoadout=[...c.activeSkills];
     window.saveTowerboundRework();
