@@ -62,6 +62,10 @@ assert.match(ui, /status_slime:\{id:"status_slime"[^\n]*type:"status"[^\n]*cost:
 assert.match(ui, /card\.id!=="status_slime"/, 'wound and other statuses cannot be played, slime can be discarded for energy');
 assert.match(ui, /endTurnPlayerWeak/, 'Doubt weakens the player at turn end');
 assert.match(ui, /role==="saboteur"/);
+assert.ok(ui.includes('if(target.dataset.action==="open-camp"){if(engine.canUseCampStop(live().id,selectedStage))renderCampStopOverlay(selectedStage,"home");else notify("Привал на этом этапе уже использован или недоступен");return;}'), 'the dedicated camp button opens the camp overlay');
+assert.ok(ui.includes('if(target.dataset.stage){const stage=Number(target.dataset.stage);if(stage<=live().progress.highestEver&&engine.canUseCampStop(live().id,stage)){selectedStage=stage;renderCampStopOverlay(stage,"home");return;}'), 'clicking a cleared checkpoint opens the camp overlay');
+assert.match(ui, /function renderCampStopOverlay\(stage,view\)/);
+assert.match(ui, /card\.isUpgraded\?' <b class="tb-card-upgrade-mark">\+<\/b>'/);
 assert.match(ui, /data-camp-upgrade/);
 assert.match(ui, /engine\.useCampRest/);
 assert.match(ui, /engine\.claimCampForge/);
