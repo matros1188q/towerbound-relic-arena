@@ -385,7 +385,8 @@ const {chromium}=require('playwright');
   await starterDeckConfirmForSmoke.click();
   await page.waitForSelector('.v2-battle-wrap',{timeout:5000});
   // beginStage restores/clamps the carried HP; seed the interaction fixture after battle creation.
-  await page.evaluate(()=>{window.TowerboundRework.state.characters[0].run.playerHp=100000;window.saveTowerboundRework();});
+  const seededHp=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=100000;window.saveTowerboundRework();return c.run.playerHp;});
+  assert.equal(seededHp,100000,'smoke fixture retains the high-HP test seed');
   assert.equal(await page.locator('.v2-card').count(),5,'card battle starts with five cards in hand');
   assert.ok(await page.locator('.v2-card.attack').count()>0,'starter hand contains attack cards');
   assert.ok(await page.locator('.v2-card.defense').count()>0,'starter hand contains defense cards');
@@ -419,7 +420,7 @@ const {chromium}=require('playwright');
   try{
    await page.waitForFunction(()=>document.querySelector('#energyDisplay')?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5,undefined,{timeout:15000});
   }catch(error){
-   const diagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0],snapshot=c?.run?.stage?.uiBattleSnapshot;return{button:document.querySelector('#endturn')?.outerHTML||null,energy:document.querySelector('#energyDisplay')?.textContent||null,hand:document.querySelector('#cardHand')?.innerText||null,stage:c?.run?.stage||null,cardState:snapshot?.cardState||null,enemies:snapshot?.enemies?.map(enemy=>({index:enemy.index,alive:enemy.alive,hp:enemy.hp,turnsTaken:enemy.turnsTaken,role:enemy.role}))||null,guidance:document.querySelector('.v2-turn-guidance')?.textContent||null};});
+   const diagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0],snapshot=c?.run?.stage?.uiBattleSnapshot;return{playerHp:c?.run?.playerHp??null,maxHp:c?window.TowerboundRework.maxHp(c):null,lastDeath:c?.lastDeath||null,deathVisible:!!document.querySelector('.tb-death'),screenText:document.querySelector('#tbRpg .tb-v2')?.innerText?.slice(0,180)||null,button:document.querySelector('#endturn')?.outerHTML||null,energy:document.querySelector('#energyDisplay')?.textContent||null,hand:document.querySelector('#cardHand')?.innerText||null,stage:c?.run?.stage||null,cardState:snapshot?.cardState||null,enemies:snapshot?.enemies?.map(enemy=>({index:enemy.index,alive:enemy.alive,hp:enemy.hp,turnsTaken:enemy.turnsTaken,role:enemy.role}))||null,guidance:document.querySelector('.v2-turn-guidance')?.textContent||null};});
    process.stderr.write('CARD TURN DIAGNOSTIC '+JSON.stringify({diagnostic,errors,consoleErrors})+'\\n');
    throw error;
   }
