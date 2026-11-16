@@ -10,7 +10,7 @@
  function createEngine(balance,options){
   options=options||{};
   if(!balance||!balance.combat||!balance.xp_curve||!balance.map||!balance.classes)throw new Error("Incomplete balance configuration");
-  const random=options.random||Math.random;
+  const random=options.random||(typeof window!=="undefined"&&window.TowerboundDailyRandom)||Math.random;
   const now=options.now||Date.now;
   const state=options.state||{account:{diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[]},bank:{silver:0,transfers:{}},characters:[],activeCharacterId:null};
   state.account={diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[],unlockedCards:[],xp:0,pvpPoints:0,ghosts:[],pvpDaily:null,starterPackClaimed:false,...(state.account||{})};
