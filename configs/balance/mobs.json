@@ -114,7 +114,14 @@
       "icon": "♛",
       "name": "Босс",
       "speed": 1.1
-    }
+    },
+    "saboteur": {
+      "icon": "🃏",
+      "name": "Саботажник",
+      "speed": 0.95,
+      "damage_reduction": 0
+    },
+    "saboteur_chance": 0.24
   },
   "damage_types": [
     "fire",

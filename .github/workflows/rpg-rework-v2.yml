@@ -55,6 +55,7 @@ jobs:
       - run: node tests/loot-combat-update.test.cjs
       - run: node tests/combat-runtime.test.cjs
       - run: node tests/card-meta-progression.test.cjs
+      - run: node tests/campfire-curse-saboteur.test.cjs
       - run: node tests/balance-sim.cjs
       - name: Check specialization balance simulator syntax
         run: |

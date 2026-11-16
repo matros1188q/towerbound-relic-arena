@@ -41,6 +41,8 @@ jobs:
         run: npm run test:polish
       - name: Run checkpoint and card meta-progression assertions
         run: node tests/card-meta-progression.test.cjs
+      - name: Run campfire, card-curse and saboteur assertions
+        run: node tests/campfire-curse-saboteur.test.cjs
       - name: Verify BP, talent and skill upgrade math
         run: node tests/progression-math.test.cjs
       - name: Run Towerbound regression assertions

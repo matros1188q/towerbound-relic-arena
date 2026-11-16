@@ -17,7 +17,7 @@
   state.account.unlockedCards=Array.isArray(state.account.unlockedCards)?state.account.unlockedCards:[];
   state.bank=state.bank||{silver:0,transfers:{}};
   state.characters=state.characters||[];
-  state.characters.forEach(character=>{character.run=character.run||{};if(!Object.prototype.hasOwnProperty.call(character.run,"snapshot"))character.run.snapshot=null;});
+  state.characters.forEach(character=>{character.run=character.run||{};if(!Object.prototype.hasOwnProperty.call(character.run,"snapshot"))character.run.snapshot=null;character.run.campStopsUsed=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];});
   state.stash=Array.isArray(state.stash)?state.stash:[];
   state.season=state.season||null;
   state.weeklyRating=state.weeklyRating||[];
@@ -419,7 +419,7 @@
     gear:[null,null,null,null,null,null],relics:[],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
     potionBelt:Array(balance.healing.potion_belt_slots).fill(null),dailyChest:{lastOpenedAt:0},achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
-    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,pendingRelicChoices:null,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
+    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,pendingRelicChoices:null,campStopsUsed:[],checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
     paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
    };
    if(legacyEligible)character.gear=["weapon","chest","head","legs","hands","accessory"].map((slot,i)=>({id:"legacy-"+character.id+"-"+slot,name:"Наследие · "+slot,slot,itemLevel:50,rarity:"Эпическая",stats:{attack:i===0?18:4,defense:i===0?2:8,health:18},refine:0,sockets:[],socketsAvailable:0,bossLoot:false}));
@@ -453,7 +453,14 @@
    const eliteIndex=!boss&&random()<eliteChance?Math.floor(random()*count):-1;
    const roleConfig=balance.mobs.roles||{},roleOrder=roleConfig.guaranteed_order||["healer","poison","tank"],chapter=chapterForStage(stage),chapterMobs=chapter?.mob_pool||chapter?.mobs||[];
    return{stage,boss,count,mobs:Array.from({length:count},(_,index)=>{
-    const role=boss?"boss":roleOrder[index]||roleConfig.normal_remainder||"normal";
+    const baseRole=boss?"boss":roleOrder[index]||roleConfig.normal_remainder||"normal";
+    let role=baseRole;
+    if(!boss&&baseRole==="normal"){
+     let roleSeed=0;
+     for(const character of String(character.id)+":"+stage+":"+index+":saboteur")roleSeed=(Math.imul(roleSeed,31)+character.charCodeAt(0))>>>0;
+     const saboteurChance=Math.max(0,Math.min(1,Number(roleConfig.saboteur_chance??.22)));
+     if(roleSeed/4294967296<saboteurChance)role="saboteur";
+    }
     const weakness=damageTypes[(stage+index)%damageTypes.length],resistance=damageTypes[(stage+index+(roleConfig.assignment_resistance_offset||2))%damageTypes.length];
     return{
      index,type:boss?"boss":index===eliteIndex?"elite":"normal",
@@ -465,11 +472,36 @@
     };
    })};
   }
+  function campStopEligible(character,stageValue){
+   const stage=Number(stageValue),bossEvery=Math.max(1,Number(balance.map.boss_every)||10);
+   return Number.isInteger(stage)&&stage>0&&stage<=character.progress.highestEver&&!character.run.stage&&(stage%bossEvery===0||stage%50===0);
+  }
+  function canUseCampStop(characterId,stage){
+   const character=getChar(characterId),used=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];
+   return campStopEligible(character,stage)&&!used.includes(Number(stage));
+  }
+  function useCampRest(characterId,stage){
+   const character=getChar(characterId),stageNumber=Number(stage);
+   if(!canUseCampStop(characterId,stageNumber))throw new Error("Привал на этом этапе недоступен или уже использован");
+   const maximum=maxHp(character),before=Math.max(0,Math.min(maximum,Number(character.run.playerHp)||0));
+   const after=Math.min(maximum,before+Math.round(maximum*.3));
+   character.run.playerHp=after;
+   character.run.campStopsUsed=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];
+   character.run.campStopsUsed.push(stageNumber);
+   return{stage:stageNumber,restored:after-before,hp:after,maxHp:maximum};
+  }
+  function claimCampForge(characterId,stage){
+   const character=getChar(characterId),stageNumber=Number(stage);
+   if(!canUseCampStop(characterId,stageNumber))throw new Error("Привал на этом этапе недоступен или уже использован");
+   character.run.campStopsUsed=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];
+   character.run.campStopsUsed.push(stageNumber);
+   return{stage:stageNumber,used:true};
+  }
   function beginRun(character){
    if(character.run.active)return;
    if(!character.run.runModifierId){const offered=runModifierOptions(character.id);if(offered.length)character.run.runModifierId=offered[0].id;}
    const season=ensureSeason(),difficulty=difficultyOf(character);
-   character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,rescueUsed:false,weeklyCompletionCounted:false,
+   character.run={...character.run,active:true,id:id(),experience:0,foundItemIds:[],stage:null,rescueUsed:false,weeklyCompletionCounted:false,campStopsUsed:[],
     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
     difficulty:character.difficulty||balance.difficulty.default,season:clone(season),dailyModifier:dailyModifierForNow(),startedAt:now()};
   }
@@ -816,7 +848,6 @@
     if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
     if(stage>character.progress.currentStage-1)character.progress.currentStage=stage+1;
     character.run.stage=null;
-    character.run.playerHp=maxHp(character);
     if(stage>=balance.seasons.reward_first_clear_stage&&!character.run.seasonRewardClaimed&&firstClear){
      character.stats.season_clear=Math.max(character.stats.season_clear||0,stage);
      const reward=balance.seasons.season_reward_cosmetic;
@@ -988,7 +1019,7 @@
    const difficulty=difficultyOf(character);
    if(character.run.active){character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);}
    character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];character.run.snapshot=null;character.run.starterCardChoices=[];character.run.runModifierId=null;character.run.offeredModifierIds=null;
-   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;character.run.lives=difficulty.lives;
+   character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.campStopsUsed=[];character.run.speed2=false;character.run.lives=difficulty.lives;
    character.progress.currentStage=balance.death.new_run_stage;character.run.playerHp=maxHp(character);
    return clone(character.progress);
   }
@@ -1522,7 +1553,7 @@
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,sanitizeActiveStage,getEnemyStats,mitigationMultiplier,resistanceMultiplier,capBossDamage,basicAttackStats,restoreResource,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
    rollLoot,mergeStones,craftStone,equipItem,equipBest,unequipItem,purchaseRelic,claimRelic,RELICS_DATABASE,salvageGrayItems,salvageItem,addSocket,insertGem,socketStone,extractGem,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
-   chooseBranch,resetTalents,useTalentPoint,leaderboard,saveSnapshot,activateItem,
+   chooseBranch,resetTalents,useTalentPoint,canUseCampStop,useCampRest,claimCampForge,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,dailyChestSnapshot,claimDailyChest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
    tutorialStep,claimTutorialReward,claimAchievement,readLore,logCombatEvent,saveSettings,assignParagon,resetParagon,
