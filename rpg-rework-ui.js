@@ -153,7 +153,7 @@ function unlockedCardIds(){const account=engine?.state?.account;if(!account)retu
   const c=live();if(!c)return;
   prepareStarterDeck(c,starterDeckSelection);
   document.querySelector(".tb-starter-deck-overlay")?.remove();
-  starterDeckSelection=[];selectedStage=c.progress.currentStage;save();beginStage();
+  starterDeckSelection=[];save();beginStage();
  }
   function skipCardReward(){document.querySelector(".card-reward-overlay")?.remove();const c=live();if(c){c.pendingCardReward=null;save();}render();}
 
