@@ -107,7 +107,8 @@ async function journey(type,name,viewport,url){
   await page.evaluate(()=>{Math.random=()=>.5;});
   await page.locator('[data-action="start"]').click();
   const starterDeckConfirm=page.locator('[data-starter-deck-confirm]');
-  if(await starterDeckConfirm.isVisible())await starterDeckConfirm.click();
+  await starterDeckConfirm.waitFor({state:'visible',timeout:5000});
+  await starterDeckConfirm.click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
   // The first battle must show the turn-based tutorial outside the clipped arena.

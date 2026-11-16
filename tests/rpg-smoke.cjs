@@ -380,6 +380,9 @@ const {chromium}=require('playwright');
   await page.evaluate(()=>{Math.random=()=>.5;});
   await page.locator('[data-stage="9"]').click();
   await page.locator('[data-action="start"]').click();
+  const starterDeckConfirmForSmoke=page.locator('[data-starter-deck-confirm]');
+  await starterDeckConfirmForSmoke.waitFor({state:'visible',timeout:5000});
+  await starterDeckConfirmForSmoke.click();
   await page.waitForSelector('.v2-battle-wrap',{timeout:5000});
   // beginStage restores/clamps the carried HP; seed the interaction fixture after battle creation.
   await page.evaluate(()=>{window.TowerboundRework.state.characters[0].run.playerHp=100000;window.saveTowerboundRework();});
