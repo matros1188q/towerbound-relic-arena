@@ -841,8 +841,11 @@
    if(done&&enemy.type==="boss"){
     const ownedRelics=new Set(character.relics||[]);
     const availableRelics=Object.values(RELICS_DATABASE).filter(relic=>!ownedRelics.has(relic.id));
+    let relicSeed=0;
+    for(const char of String(character.id)+":"+stage)relicSeed=(Math.imul(relicSeed,31)+char.charCodeAt(0))>>>0;
     while(relicChoices.length<3&&availableRelics.length){
-     const choiceIndex=Math.min(availableRelics.length-1,Math.floor(random()*availableRelics.length));
+     relicSeed=(Math.imul(relicSeed,1664525)+1013904223)>>>0;
+     const choiceIndex=relicSeed%availableRelics.length;
      relicChoices.push(availableRelics.splice(choiceIndex,1)[0]);
     }
     character.run.pendingRelicChoices=relicChoices.map(relic=>relic.id);
