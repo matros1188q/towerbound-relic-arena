@@ -457,7 +457,7 @@
     let role=baseRole;
     if(!boss&&baseRole==="normal"){
      let roleSeed=0;
-     for(const character of String(character.id)+":"+stage+":"+index+":saboteur")roleSeed=(Math.imul(roleSeed,31)+character.charCodeAt(0))>>>0;
+     for(const seedChar of String(character.id)+":"+stage+":"+index+":saboteur")roleSeed=(Math.imul(roleSeed,31)+seedChar.charCodeAt(0))>>>0;
      const saboteurChance=Math.max(0,Math.min(1,Number(roleConfig.saboteur_chance??.22)));
      if(roleSeed/4294967296<saboteurChance)role="saboteur";
     }
