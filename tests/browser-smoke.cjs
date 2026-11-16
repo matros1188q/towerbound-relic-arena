@@ -124,6 +124,22 @@ async function journey(type,name,viewport,url){
   assert.equal(await page.locator('.v2-card').count(),5,name+' draws five cards at the start of the turn');
   await page.locator('.v2-card.attack:not([disabled])').first().click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
+  // Keep the tutorial's second step deterministic: put a real defense card on top of the next draw pile.
+  await page.evaluate(()=>{
+   const character=window.TowerboundRework?.state?.characters?.[0];
+   if(!character)throw new Error('QA character was not found before the defense tutorial step');
+   character.deck=Array.isArray(character.deck)?character.deck:[];
+   for(const pileName of ['hand','deck','discard']){
+    const pile=Array.isArray(character[pileName])?character[pileName]:[];
+    const index=pile.findIndex(card=>card?.type==='defense');
+    if(index>=0){
+     const [defenseCard]=pile.splice(index,1);
+     character.deck.unshift(defenseCard);
+     return;
+    }
+   }
+   throw new Error('QA deck has no defense card for the forced tutorial step');
+  });
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: КАРТА ЗАЩИТЫ'),{timeout:10000});
   await page.waitForSelector('[data-card-type="defense"]:not([disabled])',{timeout:10000});
