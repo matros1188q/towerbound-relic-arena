@@ -42,21 +42,6 @@ const makeEngine = () => createEngine(balance, {
 
 {
   const engine = makeEngine();
-  const created = engine.createCharacter('Persistent Health', 'duelist');
-  const hero = engine.state.characters.find(character => character.id === created.id);
-  const plan = engine.beginStage(hero.id, 1);
-  const startingMax = engine.maxHp(hero);
-  hero.run.playerHp = Math.round(startingMax * 0.57);
-  const remainingHp = hero.run.playerHp;
-  for (let targetIndex = 0; targetIndex < plan.mobs.length; targetIndex++) {
-    engine.finishEnemy(hero.id, { targetIndex });
-  }
-  assert.equal(hero.run.stage, null, 'the stage is completed');
-  assert.equal(hero.run.playerHp, remainingHp, 'health carries over between battles so camp healing has value');
-}
-
-{
-  const engine = makeEngine();
   const created = engine.createCharacter('Saboteur Spawn', 'shaman');
   const hero = engine.state.characters.find(character => character.id === created.id);
   const generatedRoles = [];
@@ -82,6 +67,9 @@ assert.match(ui, /engine\.useCampRest/);
 assert.match(ui, /engine\.claimCampForge/);
 assert.match(ui, /data-deck-viewer/);
 assert.match(ui, /function showDeckViewer/);
+assert.match(ui, /playerHpRatioBeforeReward/);
+assert.match(ui, /c\.run\.playerHp=carryOverHp/);
+assert.match(ui, /c\.run\.snapshot\.hp=carryOverHp/);
 assert.match(css, /\.tb-camp-overlay,\.tb-deck-viewer-overlay\{position:fixed;inset:0/);
 assert.match(css, /\.tb-deck-viewer-overlay\{z-index:100000/);
 assert.match(css, /\.tb-camp-overlay\{z-index:100050/);

@@ -1086,7 +1086,7 @@ return `<div class="v2-battle-wrap">
  }
  function finishCurrentEnemy(){
   clearTimeout(pendingTimer);pendingTimer=null;
-  const c=live(),defeated=battle.enemy,dead=(battle.enemies||[]).filter(enemy=>!enemy.alive||enemy.hp<=0).sort((x,y)=>x.index-y.index);
+  const c=live(),defeated=battle.enemy,playerHpRatioBeforeReward=Math.max(0,Math.min(1,(Number(c.run.playerHp)||0)/Math.max(1,engine.maxHp(c)))),dead=(battle.enemies||[]).filter(enemy=>!enemy.alive||enemy.hp<=0).sort((x,y)=>x.index-y.index);
   let result=null;const allLoot=[];
   if(!postBattleSummary)postBattleSummary={stage:battle.stage,xp:0,silver:0,loot:[],autoEquipped:0,nextStage:false};
   for(const target of dead){
@@ -1104,6 +1104,9 @@ return `<div class="v2-battle-wrap">
   if(!result)return;
   if(allLoot.length)notify("Добыча: "+allLoot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
+   const carryOverHp=Math.max(1,Math.min(engine.maxHp(c),Math.round(engine.maxHp(c)*playerHpRatioBeforeReward)));
+   c.run.playerHp=carryOverHp;
+   if(c.run.snapshot&&Number(c.run.snapshot.stage)===Number(c.progress.currentStage))c.run.snapshot.hp=carryOverHp;
    stopBattleStatusLoop();clearTimeout(pendingTimer);pendingTimer=null;const speedrun=c.run.speedrun;
    if(speedrun?.active){speedrun.remaining=Math.max(0,(speedrun.remaining||10)-1);if(speedrun.remaining>0&&c.progress.currentStage<=balance.map.total_stages){postBattleSummary.nextStage=true;postBattleSummary.speedrunRemaining=speedrun.remaining;}else{c.stats.speedrun_completions=(c.stats.speedrun_completions||0)+1;c.run.speedrun=null;}}
    if(c.run.active&&c.progress.currentStage>postBattleSummary.stage&&c.progress.currentStage<=balance.map.total_stages)postBattleSummary.nextStage=true;
