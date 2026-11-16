@@ -13,9 +13,11 @@
   const random=options.random||Math.random;
   const now=options.now||Date.now;
   const state=options.state||{account:{diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[]},bank:{silver:0,transfers:{}},characters:[],activeCharacterId:null};
-  state.account={diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[],xp:0,pvpPoints:0,ghosts:[],pvpDaily:null,starterPackClaimed:false,...(state.account||{})};
+  state.account={diamonds:0,premiumUntil:0,unlocks:[],cosmetics:[],unlockedCards:[],xp:0,pvpPoints:0,ghosts:[],pvpDaily:null,starterPackClaimed:false,...(state.account||{})};
+  state.account.unlockedCards=Array.isArray(state.account.unlockedCards)?state.account.unlockedCards:[];
   state.bank=state.bank||{silver:0,transfers:{}};
   state.characters=state.characters||[];
+  state.characters.forEach(character=>{character.run=character.run||{};if(!Object.prototype.hasOwnProperty.call(character.run,"snapshot"))character.run.snapshot=null;});
   state.stash=Array.isArray(state.stash)?state.stash:[];
   state.season=state.season||null;
   state.weeklyRating=state.weeklyRating||[];
@@ -400,7 +402,7 @@
     gear:[null,null,null,null,null,null],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
     potionBelt:Array(balance.healing.potion_belt_slots).fill(null),dailyChest:{lastOpenedAt:0},achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
-    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
+    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
     paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
    };
    if(legacyEligible)character.gear=["weapon","chest","head","legs","hands","accessory"].map((slot,i)=>({id:"legacy-"+character.id+"-"+slot,name:"Наследие · "+slot,slot,itemLevel:50,rarity:"Эпическая",stats:{attack:i===0?18:4,defense:i===0?2:8,health:18},refine:0,sockets:[],socketsAvailable:0,bossLoot:false}));
@@ -777,6 +779,10 @@
      character.run.active=false;character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);character.run.runModifierId=null;character.run.offeredModifierIds=null;publishGhost(character,"stage_250_clear");
     }
    }
+   const bossEvery=Math.max(1,Number(balance.map.boss_every)||10);
+   if(done&&enemy.type==="boss"&&stage%bossEvery===0&&difficultyOf(character).checkpoints){
+    character.run.snapshot={stage:character.progress.currentStage,hp:character.run.playerHp,silver:character.silver,deck:clone(character.deck||[]),relics:clone(character.relics||[]),gear:clone(character.gear||[]),createdAt:now()};
+   }
    return{xp:gained.amount+(done?(clearAward?.amount||0):0),loot:clone(loot.concat(materials)),silver,autoEquipped:autoResult.equipped,stageComplete:done,killedIndex:targetIndex,nextTargetIndex:done?null:stageData.targetIndex,progress:clone(character.progress),playerHp:character.run.playerHp,firstClear};
   }
   function useHealingPotion(characterId,stackId){
@@ -858,6 +864,8 @@
   }
   function confirmDeath(characterId){
    const character=getChar(characterId),preview=deathPreview(characterId),difficulty=difficultyOf(character);
+   const checkpoint=character.run.snapshot&&typeof character.run.snapshot==="object"?clone(character.run.snapshot):null;
+   const wasActive=!!character.run.active;
    const ghost=publishGhost(character,"death");
    character.xp=Math.max(0,character.xp-preview.experienceLoss);recalcLevel(character);
    const lossWeights=balance.difficulty.item_loss_by_rarity||[];
@@ -873,13 +881,33 @@
     }
    }
    const livesBefore=Math.max(1,Math.min(difficulty.lives,character.run.lives||difficulty.lives));
-   const livesRemaining=livesBefore-1,runEnded=livesRemaining<=0;
-   character.lastDeath={...preview,itemLossChance:lossChance,lostItem:lost?lost.name:null,livesLost:1,livesRemaining:runEnded?difficulty.lives:livesRemaining,runEnded,ghostId:ghost.id};
+   const livesRemaining=livesBefore-1;
+   character.lastDeath={...preview,itemLossChance:lossChance,lostItem:lost?lost.name:null,livesLost:1,livesRemaining,runEnded:false,ghostId:ghost.id};
    character.run.stage=null;character.run.experience=0;character.run.foundItemIds=[];
    character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;
-   character.run.lives=runEnded?difficulty.lives:livesRemaining;character.run.active=!runEnded;
-   if(runEnded){character.progress.currentStage=balance.death.new_run_stage;character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);character.run.runModifierId=null;character.run.offeredModifierIds=null;}
+   if(checkpoint){
+    const checkpointStage=Math.max(1,Math.min(balance.map.total_stages,Number(checkpoint.stage)||1));
+    character.progress.currentStage=checkpointStage;
+    character.run.playerHp=Math.max(1,Math.min(maxHp(character),Number(checkpoint.hp)||maxHp(character)));
+    character.silver=Math.max(0,Number(checkpoint.silver)||0);
+    character.deck=Array.isArray(checkpoint.deck)?clone(checkpoint.deck):[];
+    character.hand=[];character.discard=[];character.exhaustPile=[];character.cardDeckVersion=3;
+    if(Array.isArray(checkpoint.relics))character.relics=clone(checkpoint.relics);
+    if(Array.isArray(checkpoint.gear))character.gear=clone(checkpoint.gear);
+    character.run.snapshot=null;
+    character.run.lives=livesRemaining>0?livesRemaining:difficulty.lives;
+    character.run.active=true;
+    character.lastDeath={...character.lastDeath,livesRemaining:character.run.lives,runEnded:false,checkpointRestored:true,checkpointStage};
+    return clone(character.lastDeath);
+   }
+   if(wasActive){character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);}
+   character.run.snapshot=null;character.run.active=false;character.run.lives=difficulty.lives;
+   character.run.runModifierId=null;character.run.offeredModifierIds=null;character.run.starterCardChoices=[];
+   character.run.dailyChallengeActive=false;character.run.dailyChallengeDate=null;
+   character.progress.currentStage=1;
+   character.deck=[];character.hand=[];character.discard=[];character.exhaustPile=[];character.cardDeckVersion=0;
    character.run.playerHp=maxHp(character);
+   character.lastDeath={...character.lastDeath,livesRemaining:difficulty.lives,runEnded:true,checkpointRestored:false,checkpointStage:null};
    return clone(character.lastDeath);
   }
   function voluntaryRestart(characterId){
@@ -888,7 +916,7 @@
    publishGhost(character,"restart");
    const difficulty=difficultyOf(character);
    if(character.run.active){character.stats.runs_completed=(character.stats.runs_completed||0)+1;recordWeeklyRun(character);}
-   character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];character.run.runModifierId=null;character.run.offeredModifierIds=null;
+   character.run.active=false;character.run.experience=0;character.run.foundItemIds=[];character.run.snapshot=null;character.run.starterCardChoices=[];character.run.runModifierId=null;character.run.offeredModifierIds=null;
    character.run.healingPenaltyFrom=0;character.run.healingPenaltyUntil=0;character.run.checkpointHeals=0;character.run.speed2=false;character.run.lives=difficulty.lives;
    character.progress.currentStage=balance.death.new_run_stage;character.run.playerHp=maxHp(character);
    return clone(character.progress);

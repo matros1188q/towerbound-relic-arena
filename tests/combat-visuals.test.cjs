@@ -52,7 +52,7 @@ for(const [name,source,re] of [
 ['vulnerable increases incoming enemy damage by fifty percent',ui,/target\.vulnerable\)>0\?1\.5:1/],
 ['weak reduces enemy outgoing damage by twenty-five percent',ui,/Number\(enemy\.weak\)>0\?\.75:1/],
 ['enemy intents are planned before player action',ui,/function planEnemyIntents\([\s\S]*enemy\.intent=intent[\s\S]*planEnemyIntents\(\)/],
-['card definitions apply poison bleed weak and vulnerable stacks',ui,/for\(const key of \["poison","bleed","weak","vulnerable"\]\)if\(Number\(card\[key\]\)>0\)/],
+['card definitions apply poison bleed weak and vulnerable stacks',ui,/for\(const key of \["poison","bleed","weak","vulnerable"\]\)if\(Number\(effects\[key\]\)>0\)/],
 ['card damage preview accounts for vulnerable targets',ui,/function cardPreviewDamage[\s\S]*target\.vulnerable\)>0\?1\.5:1/],
 ['card preview appears on hover and keyboard focus',ui,/showCardDamagePreview\(Number\(card\.dataset\.cardPlay\)\)/],
 ['enemy cards show visible status stacks above HP',ui,/class="v2-enemy-statuses"/],

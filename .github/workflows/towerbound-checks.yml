@@ -39,6 +39,8 @@ jobs:
         run: npm run art:check
       - name: Run polish and onboarding regression assertions
         run: npm run test:polish
+      - name: Run checkpoint and card meta-progression assertions
+        run: node tests/card-meta-progression.test.cjs
       - name: Verify BP, talent and skill upgrade math
         run: node tests/progression-math.test.cjs
       - name: Run Towerbound regression assertions
