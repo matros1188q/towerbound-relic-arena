@@ -85,5 +85,5 @@ assert.match(ui,/data-collection-tab="cards"/);
 assert.match(ui,/function showStarterDeckModal/);
 assert.match(ui,/starterDeckSelection\.length<3/);
 assert.match(ui,/data-starter-deck-confirm/);
-assert.match(worker,/towerbound-v331/);
+assert.match(worker,/towerbound-v332/);
 console.log('Boss checkpoints, permanent card collection, and new-run deck draft checks passed.');

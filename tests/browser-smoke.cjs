@@ -106,12 +106,6 @@ async function journey(type,name,viewport,url){
   await page.waitForSelector('.tb-stage-toolbar');
   await page.evaluate(()=>{Math.random=()=>.5;});
   await page.locator('[data-action="start"]').click();
-  const starterDeckDiagnostic=await page.evaluate(()=>{
-   const box=el=>{if(!el)return null;const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{display:s.display,visibility:s.visibility,opacity:s.opacity,zIndex:s.zIndex,position:s.position,rect:{left:r.left,top:r.top,width:r.width,height:r.height},hidden:el.hidden,inlineStyle:el.getAttribute('style')};};
-   const overlay=document.querySelector('.tb-starter-deck-overlay'),button=document.querySelector('[data-starter-deck-confirm]'),style=document.querySelector('#tb-rework-v2-style');
-   return{overlay:box(overlay),button:box(button),buttonParent:box(button?.closest('.tb-starter-deck-overlay')),styleExists:!!style,styleHasSelector:!!style?.textContent.includes('.tb-starter-deck-overlay'),styleRule:style?.textContent.match(/\\.tb-starter-deck-overlay[^}]*}/)?.[0]||null,body:box(document.body),root:box(document.querySelector('#tbRpg'))};
-  });
-  console.log('STARTER DECK DIAGNOSTIC '+JSON.stringify(starterDeckDiagnostic));
   const starterDeckConfirm=page.locator('[data-starter-deck-confirm]');
   await starterDeckConfirm.waitFor({state:'visible',timeout:5000});
   await starterDeckConfirm.click();

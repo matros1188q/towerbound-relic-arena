@@ -138,7 +138,7 @@ const pwaManifest=read('manifest.json');
 assert.ok(Array.isArray(pwaManifest.icons)&&pwaManifest.icons.length>=2&&pwaManifest.icons.every(icon=>icon.src==='./assets/icons/image.png'&&icon.type==='image/png'),'PWA manifest uses the Towerbound T logo for all app icon sizes');
 assert.ok(pageSource.includes('<link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/image.png">'),'iOS home-screen icon uses the Towerbound T logo');
 assert.ok(serviceWorker.includes('./assets/icons/image.png'),'service worker precaches the Towerbound T logo for offline launch');
-assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v331'"),'PWA shell cache matches the card combat release');
+assert.ok(serviceWorker.includes("const CACHE = 'towerbound-v332'"),'PWA shell cache matches the card combat release');
 assert.ok(uiCssSource.includes('.tb-starter-deck-overlay')&&uiCssSource.includes('.tb-starter-deck-modal')&&uiCssSource.includes('z-index:100001'),'starter deck setup modal is styled above the game shell');
 assert.ok(uiSource.includes('CARD_DATABASE')&&uiSource.includes('function drawCards(amount)')&&uiSource.includes('function playCard(cardIndex)'),'card deckbuilder combat runtime is present');
 assert.ok(uiSource.includes('id="cardHand"')&&uiSource.includes('id="energyDisplay"'),'card hand and energy UI are present');
@@ -198,3 +198,5 @@ assert.ok(nativeCss.includes('display:flex!important;align-items:center;justify-
 assert.ok(uiSource.includes('</div>${battle.showTutorial ? `<div class="tb-turn-tutorial"')&&uiSource.includes('data-action="dismiss-turn-tutorial"'),'battle tutorial overlay is a dismissible sibling of the overflow-clipped arena');
 
 assert.ok(uiSource.includes('if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}'),'global navigation never overlays active combat controls');
+
+assert.ok(uiSource.includes('overlay.className="tb-starter-deck-overlay"')&&uiSource.includes('root.appendChild(overlay)'),'starter deck modal is mounted inside the visible RPG root, outside the body isolation selector');

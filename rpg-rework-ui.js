@@ -140,7 +140,7 @@ function unlockedCardIds(){const account=engine?.state?.account;if(!account)retu
   }).join(""):'<p class="tb-starter-empty">Пока нет открытых карт. Выбирай новые карты в наградах после боя.</p>';
   const overlay=document.createElement("div");overlay.className="tb-starter-deck-overlay";overlay.setAttribute("role","presentation");
   overlay.innerHTML='<section class="tb-starter-deck-modal" role="dialog" aria-modal="true" aria-label="Сбор колоды"><div class="tb-eyebrow">ПОДГОТОВКА К ЗАБЕГУ</div><h2>Сбор колоды</h2><p class="tb-starter-intro">Базовые карты войдут в колоду автоматически. Добавь до трёх карт из своей постоянной коллекции.</p><div class="tb-starter-base-grid"><article><b>Удар ×5</b><small>1 энергия · 6 урона</small></article><article><b>Защита ×4</b><small>1 энергия · 5 брони</small></article><article><b>Рывок ×1</b><small>0 энергии · 3 брони и добор</small></article></div><div class="tb-starter-choice-head"><b>ОТКРЫТЫЕ КАРТЫ</b><strong>'+starterDeckSelection.length+' / 3</strong></div><div class="tb-starter-choice-grid">'+options+'</div><div class="tb-starter-deck-actions"><button type="button" data-starter-deck-cancel>ОТМЕНА</button><button type="button" class="tb-primary" data-starter-deck-confirm>НАЧАТЬ ЗАБЕГ</button></div></section>';
-  document.body.appendChild(overlay);
+  root.appendChild(overlay);
  }
  function showStarterDeckModal(){starterDeckSelection=[];renderStarterDeckModal();}
  function prepareStarterDeck(c,cardIds){
