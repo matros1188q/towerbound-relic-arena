@@ -453,9 +453,13 @@ const {chromium}=require('playwright');
   }
   assert.ok(defenseReady,'a defense card appears after cycling the shuffled deck');
   assert.match(await page.locator('#energyDisplay').innerText(),/2\/3/,'playing a defense card spends one energy');
+  const cardBlockAfterDefense=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.stage.uiBattleSnapshot?.cardState?.cardBlock||0);
+  assert.ok(cardBlockAfterDefense>0,'playing a defense card creates a saved block value');
   await page.locator('#endturn').click();
   await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   assert.equal(await page.locator('.v2-card').count(),5,'next player turn draws a fresh five-card hand');
+  const completedRounds=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.stage.uiBattleSnapshot?.round||0);
+  assert.ok(completedRounds>=3,'multiple complete enemy/player round handoffs advance the battle round counter');
   const endAfter=await page.locator('#endturn').evaluate(el=>({display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility,height:el.getBoundingClientRect().height}));
   assert.ok(endAfter.display!=='none'&&endAfter.visibility!=='hidden'&&endAfter.height>=44,'End Turn remains visible after enemy phase');
   await page.setViewportSize({width:430,height:932});
