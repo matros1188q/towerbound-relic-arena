@@ -484,7 +484,13 @@ const {chromium}=require('playwright');
    }
    if(!won){
     await page.locator('#endturn').click();
-    await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
+    try{
+     await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
+    }catch(error){
+     const turnDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0],snapshot=c?.run?.stage?.uiBattleSnapshot,card=snapshot?.cardState;return{actorType:snapshot?.actorType,round:snapshot?.round,energy:card?.currentEnergy,hand:card?.hand?.map(x=>x.id),deck:card?.deck?.length,discard:card?.discard?.length,block:card?.cardBlock,enemies:snapshot?.enemies?.map(x=>({hp:x.hp,alive:x.alive,dead:x.dead})),endTurnDisabled:document.querySelector('#endturn')?.disabled,energyText:document.querySelector('#energyDisplay')?.textContent,handCount:document.querySelectorAll('#cardHand .v2-card').length,tutorial:document.querySelector('.tb-turn-tutorial')?.innerText};});
+     process.stderr.write('TURN HANDOFF DIAGNOSTIC '+JSON.stringify({turnDiagnostic,consoleErrors,errors})+'\\n');
+     throw error;
+    }
    }
   }
   assert.ok(won,'the player can defeat the final enemy and complete the stage');
