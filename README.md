@@ -13,7 +13,7 @@ Mobile-first fantasy RPG / roguelite. The active seven-class implementation is p
 - Character levels, specialization talent trees (including card-draw talents), equipment, item level 120, sockets, stones, refinement, enchantment and heroic mode.
 - Easy / Normal / Hardcore difficulty rules, potion belt, checkpoints, weighted death item loss and account progression.
 - Daily quests and boss, seasonal modifiers, account PvP points, local ghost matchmaking, shared browser stash, achievements, lore, tutorial and paragon.
-- Balance is data-driven in `configs/balance/`; specializations and active skills are in `configs/skills/catalog.json`.
+- Balance is data-driven in `configs/balance/`. The 420-entry active-skill catalogue is legacy-only: card combat does not fetch it or use it for the active loadout UI; old save fields remain readable for backward compatibility.
 
 ## Run the active build
 
@@ -62,6 +62,9 @@ These phases are plans, not claims that the functionality is already implemented
 
 ### 2026-11-17 — Card-first interface cleanup
 
+- Stopped fetching the legacy 420-skill catalogue at startup; it remains only for old-save compatibility. Removed the obsolete skill-point badge from the card-library tab.
+- Replaced the obsolete attack-speed talent description with the card-draw effect; compacted the header and event-choice/info controls.
+
 - Replaced the profile skill list with a class-filtered card library showing artwork, type, rarity, unlock state and descriptions; renamed the tab to **Библиотека карт**.
 - Replaced specialization attack-speed talent effects with card-draw talents: every three ranks add one card to the opening hand at the start of each player turn.
 - Tightened profile stats, avatar, specialization buttons, event modal, card collection and inventory grids; improved mobile word wrapping.
@@ -73,7 +76,7 @@ These phases are plans, not claims that the functionality is already implemented
 - Integrated the complete 126-image card artwork set into the active card database and battle hand renderer. Each card resolves its own image by card ID; unknown/missing images fall back to `assets/cards/strike.png`.
 - Added the canonical version-2 card art manifest at `configs/cards/art_manifest.json`: 126 unique card IDs mapped to 126 filenames using the `<card_id>.png` convention. The existing `assets/cards/art-manifest.json` remains the source catalogue from the original asset-renaming pass.
 - Battle cards now render their artwork, energy cost, name, live effect/description and rarity styling. The layout is constrained for the mobile hand; card buttons retain the existing disabled/target/play behavior and click delegation.
-- Added card image styles to `rpg-rework-ui.css.js` and precached all 126 card PNGs plus the canonical manifest in the service worker. Current service-worker cache key: `towerbound-v446`.
+- Added card image styles to `rpg-rework-ui.css.js` and precached all 126 card PNGs plus the canonical manifest in the service worker. Current service-worker cache key: `towerbound-v447`.
 - Updated the Active RPG build summary above to include deckbuilder combat, card progression, camp stops, curses/status cards, saboteurs and equipment/relic card synergies.
 - Files: `README.md`, `configs/cards/art_manifest.json`, `rpg-rework-ui.js`, `rpg-rework-ui.css.js`, `service-worker.js`; card assets live in `assets/cards/`.
 - Implementation commits: `bf70713570f77a19f54b573aee9832ff13f5a3fd` (ID-based art filenames and original manifest), `9266eb36be6a85e73d596ce681f515aadbedac6f` (canonical manifest, database mapping, battle rendering, styles and cache v435).
