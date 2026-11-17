@@ -20,6 +20,7 @@ const {chromium}=require('playwright');
  assert.equal(skillConfig.panel.attack_slots+2,skillConfig.panel.slot_count,"four attack skills plus counter and ultimate fill the six-slot panel");
  const mobileCss=fs.readFileSync(path.join(root,"native-pwa.css"),"utf8");
  assert.match(mobileCss,/\.tb-end-turn\{[^}]*z-index:30!important/s,"mobile End Turn button is layered above the potion belt");
+ assert.match(mobileCss,/\.tb-fixed-battle \.tb-turn-tutorial\{z-index:99999!important\}/,"first-battle tutorial overlays the battle header and its CTA remains clickable");
  const cunning=classConfig.classes.assassin.base_skills.find(skill=>skill.name==="Коварный выпад");
  assert.equal(cunning.damage_multiplier,2,"Коварный выпад defines 200% damage");
  assert.equal(cunning.resource_cost,18,"Коварный выпад defines its resource cost");

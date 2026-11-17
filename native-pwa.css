@@ -779,7 +779,7 @@ html,body,#tbRpg,.tb-v2 {
 .tb-potion-belt button{min-width:0;flex:1;min-height:32px;padding:5px;font-size:9px}
 .tb-combat-note{flex:none;font-size:8px;line-height:1.1;text-align:center;color:#c7c4b5}
 .tb-fx-layer{pointer-events:none}
-.tb-fixed-battle .tb-turn-tutorial{z-index:100}
+.tb-fixed-battle .tb-turn-tutorial{z-index:99999!important}
 @media(max-width:560px){
  .tb-fixed-battle{height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px);padding:7px;gap:6px}
  .tb-combat-layout{grid-template-columns:minmax(0,29%) minmax(0,71%);gap:6px}
