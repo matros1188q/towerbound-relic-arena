@@ -383,6 +383,8 @@ const {chromium}=require('playwright');
   const starterDeckConfirmForSmoke=page.locator('[data-starter-deck-confirm]');
   await starterDeckConfirmForSmoke.waitFor({state:'visible',timeout:5000});
   await starterDeckConfirmForSmoke.click();
+  const battleStartDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0];return{runActive:c?.run?.active,stage:c?.run?.stage?.stage,stageMobs:c?.run?.stage?.mobs?.length,mapEvents:c?.run?.mapEvents,completedMapEvents:c?.run?.completedMapEvents,overlays:[...document.querySelectorAll('.tb-starter-deck-overlay,.tb-map-event-overlay,.card-reward-overlay,.tb-turn-tutorial')].map(node=>node.className),battleWrap:!!document.querySelector('.v2-battle-wrap'),text:document.querySelector('#tbRpg')?.innerText.slice(0,900)};});
+  console.log('BATTLE START DIAGNOSTIC',JSON.stringify(battleStartDiagnostic));
   await page.waitForSelector('.v2-battle-wrap',{timeout:5000});
   // beginStage restores/clamps the carried HP; seed the interaction fixture after battle creation.
   const seededHp=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=100000;window.saveTowerboundRework();return c.run.playerHp;});
