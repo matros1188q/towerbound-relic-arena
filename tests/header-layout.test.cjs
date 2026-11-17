@@ -21,8 +21,8 @@ assert.match(css,/width:38px!important;height:38px!important/,'logo display size
 assert.match(css,/:has\(\.tb-arena\)>\.tb-header\{display:flex!important\}/,'header remains visible during combat');
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
 assert.match(html,/rpg-rework-ui\.css\.js\?v=24/,'CSS cache version is updated');
-assert.match(html,/rpg-rework-ui\.js\?v=50/,'UI cache version is updated');
-assert.match(sw,/towerbound-v451/,'service worker cache is updated');
+assert.match(html,/rpg-rework-ui\.js\?v=51/,'UI cache version is updated');
+assert.match(sw,/towerbound-v452/,'service worker cache is updated');
 const progression=read('progression-24.js');
 assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
 assert.ok(progression.includes("const bar=$('.tb-map-actions',r);"),'secret-room action is limited to the map action area');
