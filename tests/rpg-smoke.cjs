@@ -438,8 +438,11 @@ const {chromium}=require('playwright');
   await page.locator('.v2-card.attack:not([disabled])').first().click();
   await page.waitForFunction(({targetId,hpBefore})=>{const node=document.querySelector('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text');return node&&node.textContent!==hpBefore;},{targetId,hpBefore},{timeout:5000});
   assert.match(await page.locator('#energyDisplay').innerText(),/2\/3/,'playing an attack card spends one energy');
+  const hpBeforeEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   await page.locator('#endturn').click();
   await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
+  const hpAfterEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
+  assert.ok(hpAfterEnemyPhase<hpBeforeEnemyPhase,'enemy performs its attack during the handoff before the next player turn');
   let defenseReady=false;
   for(let attempt=0;attempt<4&&!defenseReady;attempt++){
    const defenseCard=page.locator('.v2-card.defense:not([disabled])').first();
