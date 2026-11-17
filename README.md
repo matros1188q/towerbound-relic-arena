@@ -65,7 +65,7 @@ These phases are plans, not claims that the functionality is already implemented
 - Replaced the profile skill list with a class-filtered card library showing artwork, type, rarity, unlock state and descriptions; renamed the tab to **Библиотека карт**.
 - Replaced specialization attack-speed talent effects with card-draw talents: every three ranks add one card to the opening hand at the start of each player turn.
 - Tightened profile stats, avatar, specialization buttons, event modal, card collection and inventory grids; improved mobile word wrapping.
-- Legacy skill definitions and save fields remain for backward compatibility. Automated suite, iPhone-width visual pass and cloud/local save regression remain to be run.
+- Legacy skill definitions and save fields remain for backward compatibility; the old skill-upgrade modal is no longer rendered. Automated suite, iPhone-width visual pass and cloud/local save regression remain to be run.
 
 
 ## 2026-11-17 — 126 card artworks and illustrated deckbuilder battle UI
