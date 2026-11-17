@@ -21,14 +21,14 @@ assert.match(css,/flex-direction:row!important;align-items:center!important;just
 assert.match(css,/width:38px!important;height:38px!important/,'logo display size is fixed rather than allowing intrinsic image dimensions');
 assert.match(css,/:has\(\.tb-arena\)>\.tb-header\{display:flex!important\}/,'header remains visible during combat');
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
-assert.match(html,/rpg-rework-ui\.css\.js\?v=25/,'CSS cache version is updated');
-assert.match(html,/rpg-rework-ui\.js\?v=52/,'UI cache version is updated');
+assert.match(html,/rpg-rework-ui\.css\.js\?v=26/,'CSS cache version is updated');
+assert.match(html,/rpg-rework-ui\.js\?v=53/,'UI cache version is updated');
 assert.match(sw,/towerbound-v455/,'service worker cache is updated');
 const progression=read('progression-24.js');
 assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
 assert.ok(progression.includes("const bar=$('.tb-map-actions',r);"),'secret-room action is limited to the map action area');
-assert.match(ui,/root\.innerHTML='<div class="tb-v2">'\+header\(\)\+battleScreen\(\)/,'battle screen receives the shared header');
-assert.doesNotMatch(ui,/root\.innerHTML='<div class="tb-v2">'\+header\(\)\+characterList\(\)/,'character selection does not render a duplicate header');
+assert.match(ui,/function battleScreen\(\)[\s\S]*?return header\(\)\+`<div class="v2-battle-wrap/,'battle screen receives the shared header');
+assert.match(ui,/function characterList\(\)[\s\S]*?return header\(/,'character selection uses the shared header');
 assert.ok(ui.includes('return header()+`<div class="v2-battle-wrap'),'battle combat screen includes the shared brand header');
 assert.equal((ui.match(/return header\(/g)||[]).length,10,'all ten game screens render the same compact header');
 console.log('Towerbound compact header and navigation checks passed.');
