@@ -1,14 +1,16 @@
 {
-  "version": 1,
+  "version": 2,
   "sourceArchive": "images_126_cropped.zip",
   "total": 126,
   "filenameConvention": "<card_id>.png",
+  "matchingBasis": "visual subject compared with CARD_DATABASE name, class, branch and effect",
   "cards": [
     {
       "id": "strike",
       "name": "Удар",
       "classId": "common",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_001.png",
       "file": "strike.png"
     },
@@ -17,7 +19,8 @@
       "name": "Защита",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_002.png",
+      "type": "defense",
+      "sourceImage": "image_004.png",
       "file": "defend.png"
     },
     {
@@ -25,7 +28,8 @@
       "name": "Рывок",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_003.png",
+      "type": "skill",
+      "sourceImage": "image_006.png",
       "file": "dash.png"
     },
     {
@@ -33,7 +37,8 @@
       "name": "Точный выстрел",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_004.png",
+      "type": "attack",
+      "sourceImage": "image_007.png",
       "file": "precise_shot.png"
     },
     {
@@ -41,7 +46,8 @@
       "name": "Железная кожа",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_005.png",
+      "type": "defense",
+      "sourceImage": "image_015.png",
       "file": "iron_skin.png"
     },
     {
@@ -49,7 +55,8 @@
       "name": "Удар в спину",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_006.png",
+      "type": "attack",
+      "sourceImage": "image_003.png",
       "file": "backstab.png"
     },
     {
@@ -57,7 +64,8 @@
       "name": "Тяжёлый выпад",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_007.png",
+      "type": "attack",
+      "sourceImage": "image_002.png",
       "file": "heavy_blow.png"
     },
     {
@@ -65,7 +73,8 @@
       "name": "Сосредоточение",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_008.png",
+      "type": "skill",
+      "sourceImage": "image_012.png",
       "file": "focus.png"
     },
     {
@@ -73,7 +82,8 @@
       "name": "Призрачный шаг",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_009.png",
+      "type": "defense",
+      "sourceImage": "image_021.png",
       "file": "ghost_step.png"
     },
     {
@@ -81,7 +91,8 @@
       "name": "Шквал",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_010.png",
+      "type": "attack",
+      "sourceImage": "image_013.png",
       "file": "x_barrage.png"
     },
     {
@@ -89,7 +100,8 @@
       "name": "Удар возмездия",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_011.png",
+      "type": "attack",
+      "sourceImage": "image_005.png",
       "file": "vengeance_x.png"
     },
     {
@@ -97,7 +109,8 @@
       "name": "Кинжал",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_012.png",
+      "type": "attack",
+      "sourceImage": "image_025.png",
       "file": "dagger.png"
     },
     {
@@ -105,7 +118,8 @@
       "name": "Призыв кинжалов",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_013.png",
+      "type": "skill",
+      "sourceImage": "image_024.png",
       "file": "summon_daggers.png"
     },
     {
@@ -113,7 +127,8 @@
       "name": "Вдохновение",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_014.png",
+      "type": "skill",
+      "sourceImage": "image_010.png",
       "file": "inspiration.png"
     },
     {
@@ -121,7 +136,8 @@
       "name": "Нарастающий гнев",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_015.png",
+      "type": "attack",
+      "sourceImage": "image_033.png",
       "file": "rampage.png"
     },
     {
@@ -129,7 +145,8 @@
       "name": "Рассечение",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_016.png",
+      "type": "attack",
+      "sourceImage": "image_045.png",
       "file": "gear_sword_cleave.png"
     },
     {
@@ -137,7 +154,8 @@
       "name": "Магический снаряд",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_017.png",
+      "type": "attack",
+      "sourceImage": "image_008.png",
       "file": "gear_staff_bolt.png"
     },
     {
@@ -145,7 +163,8 @@
       "name": "Железная стена",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_018.png",
+      "type": "defense",
+      "sourceImage": "image_014.png",
       "file": "gear_iron_wall.png"
     },
     {
@@ -153,7 +172,8 @@
       "name": "Уклонение",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_019.png",
+      "type": "defense",
+      "sourceImage": "image_027.png",
       "file": "gear_evasion.png"
     },
     {
@@ -161,7 +181,8 @@
       "name": "Прилив сил",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_020.png",
+      "type": "skill",
+      "sourceImage": "image_011.png",
       "file": "gear_power_surge.png"
     },
     {
@@ -169,7 +190,8 @@
       "name": "Рана",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_021.png",
+      "type": "curse",
+      "sourceImage": "image_020.png",
       "file": "curse_wound.png"
     },
     {
@@ -177,6 +199,7 @@
       "name": "Сомнение",
       "classId": "common",
       "branchId": "",
+      "type": "curse",
       "sourceImage": "image_022.png",
       "file": "curse_doubt.png"
     },
@@ -185,7 +208,8 @@
       "name": "Слизь",
       "classId": "common",
       "branchId": "",
-      "sourceImage": "image_023.png",
+      "type": "status",
+      "sourceImage": "image_030.png",
       "file": "status_slime.png"
     },
     {
@@ -193,7 +217,8 @@
       "name": "Отравленный клинок",
       "classId": "assassin",
       "branchId": "",
-      "sourceImage": "image_024.png",
+      "type": "attack",
+      "sourceImage": "image_023.png",
       "file": "assassin_poison_blade.png"
     },
     {
@@ -201,7 +226,8 @@
       "name": "Кровопускание",
       "classId": "assassin",
       "branchId": "",
-      "sourceImage": "image_025.png",
+      "type": "attack",
+      "sourceImage": "image_026.png",
       "file": "assassin_bleed.png"
     },
     {
@@ -209,7 +235,8 @@
       "name": "Шаг из тени",
       "classId": "assassin",
       "branchId": "",
-      "sourceImage": "image_026.png",
+      "type": "skill",
+      "sourceImage": "image_028.png",
       "file": "assassin_shadow.png"
     },
     {
@@ -217,7 +244,8 @@
       "name": "Кровавый росчерк",
       "classId": "assassin",
       "branchId": "bleed",
-      "sourceImage": "image_027.png",
+      "type": "attack",
+      "sourceImage": "image_029.png",
       "file": "assassin_bleed_edge.png"
     },
     {
@@ -225,7 +253,8 @@
       "name": "Ритуал алой жатвы",
       "classId": "assassin",
       "branchId": "bleed",
-      "sourceImage": "image_028.png",
+      "type": "skill",
+      "sourceImage": "image_031.png",
       "file": "assassin_bleed_mastery.png"
     },
     {
@@ -233,7 +262,8 @@
       "name": "Отравленный клинок",
       "classId": "assassin",
       "branchId": "poison",
-      "sourceImage": "image_029.png",
+      "type": "attack",
+      "sourceImage": "image_032.png",
       "file": "assassin_poison_edge.png"
     },
     {
@@ -241,7 +271,8 @@
       "name": "Смертельная эссенция",
       "classId": "assassin",
       "branchId": "poison",
-      "sourceImage": "image_030.png",
+      "type": "skill",
+      "sourceImage": "image_034.png",
       "file": "assassin_poison_mastery.png"
     },
     {
@@ -249,7 +280,8 @@
       "name": "Приговор палача",
       "classId": "assassin",
       "branchId": "execution",
-      "sourceImage": "image_031.png",
+      "type": "attack",
+      "sourceImage": "image_035.png",
       "file": "assassin_execution_edge.png"
     },
     {
@@ -257,7 +289,8 @@
       "name": "Обезглавливающий выпад",
       "classId": "assassin",
       "branchId": "execution",
-      "sourceImage": "image_032.png",
+      "type": "skill",
+      "sourceImage": "image_036.png",
       "file": "assassin_execution_mastery.png"
     },
     {
@@ -265,7 +298,8 @@
       "name": "Кровавый порез",
       "classId": "assassin",
       "branchId": "bleed",
-      "sourceImage": "image_033.png",
+      "type": "skill",
+      "sourceImage": "image_037.png",
       "file": "assassin_bleed_core.png"
     },
     {
@@ -273,7 +307,8 @@
       "name": "Жажда крови",
       "classId": "assassin",
       "branchId": "bleed",
-      "sourceImage": "image_034.png",
+      "type": "attack",
+      "sourceImage": "image_038.png",
       "file": "assassin_bleed_utility.png"
     },
     {
@@ -281,7 +316,8 @@
       "name": "Токсичный удар",
       "classId": "assassin",
       "branchId": "poison",
-      "sourceImage": "image_035.png",
+      "type": "skill",
+      "sourceImage": "image_040.png",
       "file": "assassin_poison_core.png"
     },
     {
@@ -289,7 +325,8 @@
       "name": "Взрыв токсинов",
       "classId": "assassin",
       "branchId": "poison",
-      "sourceImage": "image_036.png",
+      "type": "attack",
+      "sourceImage": "image_041.png",
       "file": "assassin_poison_utility.png"
     },
     {
@@ -297,7 +334,8 @@
       "name": "Метка обречённого",
       "classId": "assassin",
       "branchId": "execution",
-      "sourceImage": "image_037.png",
+      "type": "skill",
+      "sourceImage": "image_042.png",
       "file": "assassin_execution_core.png"
     },
     {
@@ -305,7 +343,8 @@
       "name": "Казнь",
       "classId": "assassin",
       "branchId": "execution",
-      "sourceImage": "image_038.png",
+      "type": "attack",
+      "sourceImage": "image_113.png",
       "file": "assassin_execution_utility.png"
     },
     {
@@ -313,7 +352,8 @@
       "name": "Сокрушение",
       "classId": "destroyer",
       "branchId": "",
-      "sourceImage": "image_043.png",
+      "type": "attack",
+      "sourceImage": "image_039.png",
       "file": "destroyer_crush.png"
     },
     {
@@ -321,7 +361,8 @@
       "name": "Боевой клич",
       "classId": "destroyer",
       "branchId": "",
-      "sourceImage": "image_044.png",
+      "type": "skill",
+      "sourceImage": "image_043.png",
       "file": "destroyer_warcry.png"
     },
     {
@@ -329,7 +370,8 @@
       "name": "Град кулаков",
       "classId": "destroyer",
       "branchId": "fists",
-      "sourceImage": "image_045.png",
+      "type": "attack",
+      "sourceImage": "image_044.png",
       "file": "destroyer_fists_edge.png"
     },
     {
@@ -337,6 +379,7 @@
       "name": "Несокрушимая стойка",
       "classId": "destroyer",
       "branchId": "fists",
+      "type": "skill",
       "sourceImage": "image_046.png",
       "file": "destroyer_fists_mastery.png"
     },
@@ -345,6 +388,7 @@
       "name": "Рассекающий разлом",
       "classId": "destroyer",
       "branchId": "greatsword",
+      "type": "attack",
       "sourceImage": "image_047.png",
       "file": "destroyer_greatsword_edge.png"
     },
@@ -353,6 +397,7 @@
       "name": "Гнев титана",
       "classId": "destroyer",
       "branchId": "greatsword",
+      "type": "skill",
       "sourceImage": "image_048.png",
       "file": "destroyer_greatsword_mastery.png"
     },
@@ -361,6 +406,7 @@
       "name": "Чародейский заслон",
       "classId": "destroyer",
       "branchId": "wand_shield",
+      "type": "attack",
       "sourceImage": "image_049.png",
       "file": "destroyer_wand_shield_edge.png"
     },
@@ -369,6 +415,7 @@
       "name": "Контрудар бастиона",
       "classId": "destroyer",
       "branchId": "wand_shield",
+      "type": "skill",
       "sourceImage": "image_050.png",
       "file": "destroyer_wand_shield_mastery.png"
     },
@@ -377,6 +424,7 @@
       "name": "Шквал ударов",
       "classId": "destroyer",
       "branchId": "fists",
+      "type": "skill",
       "sourceImage": "image_051.png",
       "file": "destroyer_fists_core.png"
     },
@@ -385,6 +433,7 @@
       "name": "Стойка бойца",
       "classId": "destroyer",
       "branchId": "fists",
+      "type": "attack",
       "sourceImage": "image_089.png",
       "file": "destroyer_fists_utility.png"
     },
@@ -393,7 +442,8 @@
       "name": "Широкий размах",
       "classId": "destroyer",
       "branchId": "greatsword",
-      "sourceImage": "image_104.png",
+      "type": "skill",
+      "sourceImage": "image_109.png",
       "file": "destroyer_greatsword_core.png"
     },
     {
@@ -401,7 +451,8 @@
       "name": "Раскол брони",
       "classId": "destroyer",
       "branchId": "greatsword",
-      "sourceImage": "image_109.png",
+      "type": "attack",
+      "sourceImage": "image_110.png",
       "file": "destroyer_greatsword_utility.png"
     },
     {
@@ -409,7 +460,8 @@
       "name": "Чародейский заслон",
       "classId": "destroyer",
       "branchId": "wand_shield",
-      "sourceImage": "image_110.png",
+      "type": "skill",
+      "sourceImage": "image_115.png",
       "file": "destroyer_wand_shield_core.png"
     },
     {
@@ -417,7 +469,8 @@
       "name": "Ответный разряд",
       "classId": "destroyer",
       "branchId": "wand_shield",
-      "sourceImage": "image_115.png",
+      "type": "attack",
+      "sourceImage": "image_119.png",
       "file": "destroyer_wand_shield_utility.png"
     },
     {
@@ -425,6 +478,7 @@
       "name": "Молитва",
       "classId": "bishop",
       "branchId": "",
+      "type": "skill",
       "sourceImage": "image_052.png",
       "file": "bishop_prayer.png"
     },
@@ -433,6 +487,7 @@
       "name": "Божественный щит",
       "classId": "bishop",
       "branchId": "",
+      "type": "defense",
       "sourceImage": "image_053.png",
       "file": "bishop_divine_shield.png"
     },
@@ -441,6 +496,7 @@
       "name": "Кара небес",
       "classId": "bishop",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_054.png",
       "file": "bishop_smite.png"
     },
@@ -449,6 +505,7 @@
       "name": "Изгнание скверны",
       "classId": "bishop",
       "branchId": "exorcism",
+      "type": "attack",
       "sourceImage": "image_055.png",
       "file": "bishop_exorcism_edge.png"
     },
@@ -457,6 +514,7 @@
       "name": "Печать очищения",
       "classId": "bishop",
       "branchId": "exorcism",
+      "type": "skill",
       "sourceImage": "image_056.png",
       "file": "bishop_exorcism_mastery.png"
     },
@@ -465,6 +523,7 @@
       "name": "Благословение жизни",
       "classId": "bishop",
       "branchId": "healing",
+      "type": "attack",
       "sourceImage": "image_057.png",
       "file": "bishop_healing_edge.png"
     },
@@ -473,6 +532,7 @@
       "name": "Священное восстановление",
       "classId": "bishop",
       "branchId": "healing",
+      "type": "skill",
       "sourceImage": "image_058.png",
       "file": "bishop_healing_mastery.png"
     },
@@ -481,6 +541,7 @@
       "name": "Боевой псалом",
       "classId": "bishop",
       "branchId": "buffs",
+      "type": "attack",
       "sourceImage": "image_059.png",
       "file": "bishop_buffs_edge.png"
     },
@@ -489,6 +550,7 @@
       "name": "Вознесение духа",
       "classId": "bishop",
       "branchId": "buffs",
+      "type": "skill",
       "sourceImage": "image_060.png",
       "file": "bishop_buffs_mastery.png"
     },
@@ -497,6 +559,7 @@
       "name": "Святой приговор",
       "classId": "bishop",
       "branchId": "exorcism",
+      "type": "skill",
       "sourceImage": "image_061.png",
       "file": "bishop_exorcism_core.png"
     },
@@ -505,6 +568,7 @@
       "name": "Очищающий свет",
       "classId": "bishop",
       "branchId": "exorcism",
+      "type": "attack",
       "sourceImage": "image_062.png",
       "file": "bishop_exorcism_utility.png"
     },
@@ -513,6 +577,7 @@
       "name": "Благодать",
       "classId": "bishop",
       "branchId": "healing",
+      "type": "skill",
       "sourceImage": "image_063.png",
       "file": "bishop_healing_core.png"
     },
@@ -521,6 +586,7 @@
       "name": "Кара",
       "classId": "bishop",
       "branchId": "healing",
+      "type": "attack",
       "sourceImage": "image_064.png",
       "file": "bishop_healing_utility.png"
     },
@@ -529,6 +595,7 @@
       "name": "Боевой псалом",
       "classId": "bishop",
       "branchId": "buffs",
+      "type": "skill",
       "sourceImage": "image_065.png",
       "file": "bishop_buffs_core.png"
     },
@@ -537,6 +604,7 @@
       "name": "Вдохновляющая молитва",
       "classId": "bishop",
       "branchId": "buffs",
+      "type": "attack",
       "sourceImage": "image_066.png",
       "file": "bishop_buffs_utility.png"
     },
@@ -545,6 +613,7 @@
       "name": "Пламя дракона",
       "classId": "dragonkin",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_067.png",
       "file": "dragonkin_flame.png"
     },
@@ -553,6 +622,7 @@
       "name": "Ледяная чешуя",
       "classId": "dragonkin",
       "branchId": "",
+      "type": "defense",
       "sourceImage": "image_068.png",
       "file": "dragonkin_frost.png"
     },
@@ -561,6 +631,7 @@
       "name": "Метеор",
       "classId": "dragonkin",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_069.png",
       "file": "dragonkin_meteor.png"
     },
@@ -569,6 +640,7 @@
       "name": "Пламенный укус",
       "classId": "dragonkin",
       "branchId": "fire_dragon",
+      "type": "attack",
       "sourceImage": "image_070.png",
       "file": "dragonkin_fire_dragon_edge.png"
     },
@@ -577,6 +649,7 @@
       "name": "Дыхание дракона",
       "classId": "dragonkin",
       "branchId": "fire_dragon",
+      "type": "skill",
       "sourceImage": "image_071.png",
       "file": "dragonkin_fire_dragon_mastery.png"
     },
@@ -585,6 +658,7 @@
       "name": "Ледяное копьё",
       "classId": "dragonkin",
       "branchId": "ice_dragon",
+      "type": "attack",
       "sourceImage": "image_072.png",
       "file": "dragonkin_ice_dragon_edge.png"
     },
@@ -593,6 +667,7 @@
       "name": "Панцирь вечной мерзлоты",
       "classId": "dragonkin",
       "branchId": "ice_dragon",
+      "type": "skill",
       "sourceImage": "image_073.png",
       "file": "dragonkin_ice_dragon_mastery.png"
     },
@@ -601,6 +676,7 @@
       "name": "Теневая пасть",
       "classId": "dragonkin",
       "branchId": "black_dragon",
+      "type": "attack",
       "sourceImage": "image_074.png",
       "file": "dragonkin_black_dragon_edge.png"
     },
@@ -609,6 +685,7 @@
       "name": "Поглощение пустоты",
       "classId": "dragonkin",
       "branchId": "black_dragon",
+      "type": "skill",
       "sourceImage": "image_075.png",
       "file": "dragonkin_black_dragon_mastery.png"
     },
@@ -617,6 +694,7 @@
       "name": "Огненный плевок",
       "classId": "dragonkin",
       "branchId": "fire_dragon",
+      "type": "skill",
       "sourceImage": "image_076.png",
       "file": "dragonkin_fire_dragon_core.png"
     },
@@ -625,6 +703,7 @@
       "name": "Пылающая чешуя",
       "classId": "dragonkin",
       "branchId": "fire_dragon",
+      "type": "attack",
       "sourceImage": "image_077.png",
       "file": "dragonkin_fire_dragon_utility.png"
     },
@@ -633,6 +712,7 @@
       "name": "Ледяной панцирь",
       "classId": "dragonkin",
       "branchId": "ice_dragon",
+      "type": "skill",
       "sourceImage": "image_078.png",
       "file": "dragonkin_ice_dragon_core.png"
     },
@@ -641,6 +721,7 @@
       "name": "Морозное копьё",
       "classId": "dragonkin",
       "branchId": "ice_dragon",
+      "type": "attack",
       "sourceImage": "image_079.png",
       "file": "dragonkin_ice_dragon_utility.png"
     },
@@ -649,6 +730,7 @@
       "name": "Укус пустоты",
       "classId": "dragonkin",
       "branchId": "black_dragon",
+      "type": "skill",
       "sourceImage": "image_080.png",
       "file": "dragonkin_black_dragon_core.png"
     },
@@ -657,6 +739,7 @@
       "name": "Поглощение души",
       "classId": "dragonkin",
       "branchId": "black_dragon",
+      "type": "attack",
       "sourceImage": "image_107.png",
       "file": "dragonkin_black_dragon_utility.png"
     },
@@ -665,6 +748,7 @@
       "name": "Цепь стихий",
       "classId": "elemental",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_081.png",
       "file": "elemental_chain.png"
     },
@@ -673,6 +757,7 @@
       "name": "Грозовой фронт",
       "classId": "elemental",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_082.png",
       "file": "elemental_storm.png"
     },
@@ -681,6 +766,7 @@
       "name": "Медитация",
       "classId": "elemental",
       "branchId": "",
+      "type": "skill",
       "sourceImage": "image_083.png",
       "file": "elemental_meditation.png"
     },
@@ -689,6 +775,7 @@
       "name": "Поглощение мрака",
       "classId": "elemental",
       "branchId": "darkness",
+      "type": "attack",
       "sourceImage": "image_084.png",
       "file": "elemental_darkness_edge.png"
     },
@@ -697,6 +784,7 @@
       "name": "Проклятие бездны",
       "classId": "elemental",
       "branchId": "darkness",
+      "type": "skill",
       "sourceImage": "image_085.png",
       "file": "elemental_darkness_mastery.png"
     },
@@ -705,6 +793,7 @@
       "name": "Водяной серп",
       "classId": "elemental",
       "branchId": "water",
+      "type": "attack",
       "sourceImage": "image_086.png",
       "file": "elemental_water_edge.png"
     },
@@ -713,6 +802,7 @@
       "name": "Приливная волна",
       "classId": "elemental",
       "branchId": "water",
+      "type": "skill",
       "sourceImage": "image_087.png",
       "file": "elemental_water_mastery.png"
     },
@@ -721,6 +811,7 @@
       "name": "Каменный шип",
       "classId": "elemental",
       "branchId": "earth",
+      "type": "attack",
       "sourceImage": "image_088.png",
       "file": "elemental_earth_edge.png"
     },
@@ -729,6 +820,7 @@
       "name": "Оплот земли",
       "classId": "elemental",
       "branchId": "earth",
+      "type": "skill",
       "sourceImage": "image_090.png",
       "file": "elemental_earth_mastery.png"
     },
@@ -737,6 +829,7 @@
       "name": "Теневое клеймо",
       "classId": "elemental",
       "branchId": "darkness",
+      "type": "skill",
       "sourceImage": "image_101.png",
       "file": "elemental_darkness_core.png"
     },
@@ -745,6 +838,7 @@
       "name": "Пожиратель света",
       "classId": "elemental",
       "branchId": "darkness",
+      "type": "attack",
       "sourceImage": "image_105.png",
       "file": "elemental_darkness_utility.png"
     },
@@ -753,6 +847,7 @@
       "name": "Водяной серп",
       "classId": "elemental",
       "branchId": "water",
+      "type": "skill",
       "sourceImage": "image_108.png",
       "file": "elemental_water_core.png"
     },
@@ -761,6 +856,7 @@
       "name": "Целительный прилив",
       "classId": "elemental",
       "branchId": "water",
+      "type": "attack",
       "sourceImage": "image_111.png",
       "file": "elemental_water_utility.png"
     },
@@ -769,6 +865,7 @@
       "name": "Каменный шип",
       "classId": "elemental",
       "branchId": "earth",
+      "type": "skill",
       "sourceImage": "image_121.png",
       "file": "elemental_earth_core.png"
     },
@@ -777,6 +874,7 @@
       "name": "Оплот земли",
       "classId": "elemental",
       "branchId": "earth",
+      "type": "attack",
       "sourceImage": "image_126.png",
       "file": "elemental_earth_utility.png"
     },
@@ -785,6 +883,7 @@
       "name": "Идеальное парирование",
       "classId": "duelist",
       "branchId": "",
+      "type": "defense",
       "sourceImage": "image_091.png",
       "file": "duelist_parry.png"
     },
@@ -793,6 +892,7 @@
       "name": "Ответный выпад",
       "classId": "duelist",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_092.png",
       "file": "duelist_riposte.png"
     },
@@ -801,6 +901,7 @@
       "name": "Двойной разрез",
       "classId": "duelist",
       "branchId": "dual_swords",
+      "type": "attack",
       "sourceImage": "image_093.png",
       "file": "duelist_dual_swords_edge.png"
     },
@@ -809,6 +910,7 @@
       "name": "Танец клинков",
       "classId": "duelist",
       "branchId": "dual_swords",
+      "type": "skill",
       "sourceImage": "image_094.png",
       "file": "duelist_dual_swords_mastery.png"
     },
@@ -817,6 +919,7 @@
       "name": "Стальная контратака",
       "classId": "duelist",
       "branchId": "sword_shield",
+      "type": "attack",
       "sourceImage": "image_095.png",
       "file": "duelist_sword_shield_edge.png"
     },
@@ -825,6 +928,7 @@
       "name": "Стена клинков",
       "classId": "duelist",
       "branchId": "sword_shield",
+      "type": "skill",
       "sourceImage": "image_096.png",
       "file": "duelist_sword_shield_mastery.png"
     },
@@ -833,6 +937,7 @@
       "name": "Укол в уязвимость",
       "classId": "duelist",
       "branchId": "rapier",
+      "type": "attack",
       "sourceImage": "image_097.png",
       "file": "duelist_rapier_edge.png"
     },
@@ -841,6 +946,7 @@
       "name": "Идеальное парирование",
       "classId": "duelist",
       "branchId": "rapier",
+      "type": "skill",
       "sourceImage": "image_098.png",
       "file": "duelist_rapier_mastery.png"
     },
@@ -849,7 +955,8 @@
       "name": "Парный выпад",
       "classId": "duelist",
       "branchId": "dual_swords",
-      "sourceImage": "image_113.png",
+      "type": "skill",
+      "sourceImage": "image_114.png",
       "file": "duelist_dual_swords_core.png"
     },
     {
@@ -857,7 +964,8 @@
       "name": "Танец клинков",
       "classId": "duelist",
       "branchId": "dual_swords",
-      "sourceImage": "image_114.png",
+      "type": "attack",
+      "sourceImage": "image_116.png",
       "file": "duelist_dual_swords_utility.png"
     },
     {
@@ -865,7 +973,8 @@
       "name": "Удар щитом",
       "classId": "duelist",
       "branchId": "sword_shield",
-      "sourceImage": "image_116.png",
+      "type": "skill",
+      "sourceImage": "image_117.png",
       "file": "duelist_sword_shield_core.png"
     },
     {
@@ -873,6 +982,7 @@
       "name": "Стена клинков",
       "classId": "duelist",
       "branchId": "sword_shield",
+      "type": "attack",
       "sourceImage": "image_118.png",
       "file": "duelist_sword_shield_utility.png"
     },
@@ -881,6 +991,7 @@
       "name": "Точный укол",
       "classId": "duelist",
       "branchId": "rapier",
+      "type": "skill",
       "sourceImage": "image_123.png",
       "file": "duelist_rapier_core.png"
     },
@@ -889,6 +1000,7 @@
       "name": "Идеальное парирование",
       "classId": "duelist",
       "branchId": "rapier",
+      "type": "attack",
       "sourceImage": "image_124.png",
       "file": "duelist_rapier_utility.png"
     },
@@ -897,6 +1009,7 @@
       "name": "Тотем жизни",
       "classId": "shaman",
       "branchId": "",
+      "type": "skill",
       "sourceImage": "image_099.png",
       "file": "shaman_totem.png"
     },
@@ -905,6 +1018,7 @@
       "name": "Духи предков",
       "classId": "shaman",
       "branchId": "",
+      "type": "skill",
       "sourceImage": "image_100.png",
       "file": "shaman_spirit.png"
     },
@@ -913,6 +1027,7 @@
       "name": "Гнев природы",
       "classId": "shaman",
       "branchId": "",
+      "type": "attack",
       "sourceImage": "image_102.png",
       "file": "shaman_nature.png"
     },
@@ -921,6 +1036,7 @@
       "name": "Зов предков",
       "classId": "shaman",
       "branchId": "spirits",
+      "type": "attack",
       "sourceImage": "image_103.png",
       "file": "shaman_spirits_edge.png"
     },
@@ -929,7 +1045,8 @@
       "name": "Духовный резонанс",
       "classId": "shaman",
       "branchId": "spirits",
-      "sourceImage": "image_106.png",
+      "type": "skill",
+      "sourceImage": "image_104.png",
       "file": "shaman_spirits_mastery.png"
     },
     {
@@ -937,7 +1054,8 @@
       "name": "Шёпот древних",
       "classId": "shaman",
       "branchId": "dark_gods",
-      "sourceImage": "image_112.png",
+      "type": "attack",
+      "sourceImage": "image_106.png",
       "file": "shaman_dark_gods_edge.png"
     },
     {
@@ -945,7 +1063,8 @@
       "name": "Жертва во имя бога",
       "classId": "shaman",
       "branchId": "dark_gods",
-      "sourceImage": "image_117.png",
+      "type": "skill",
+      "sourceImage": "image_112.png",
       "file": "shaman_dark_gods_mastery.png"
     },
     {
@@ -953,7 +1072,8 @@
       "name": "Корни-ловушки",
       "classId": "shaman",
       "branchId": "nature",
-      "sourceImage": "image_119.png",
+      "type": "attack",
+      "sourceImage": "image_120.png",
       "file": "shaman_nature_edge.png"
     },
     {
@@ -961,7 +1081,8 @@
       "name": "Живительный тотем",
       "classId": "shaman",
       "branchId": "nature",
-      "sourceImage": "image_120.png",
+      "type": "skill",
+      "sourceImage": "image_122.png",
       "file": "shaman_nature_mastery.png"
     },
     {
@@ -969,7 +1090,8 @@
       "name": "Удар предков",
       "classId": "shaman",
       "branchId": "spirits",
-      "sourceImage": "image_122.png",
+      "type": "skill",
+      "sourceImage": "image_125.png",
       "file": "shaman_spirits_core.png"
     },
     {
@@ -977,7 +1099,8 @@
       "name": "Духовный покров",
       "classId": "shaman",
       "branchId": "spirits",
-      "sourceImage": "image_125.png",
+      "type": "attack",
+      "sourceImage": "image_009.png",
       "file": "shaman_spirits_utility.png"
     },
     {
@@ -985,7 +1108,8 @@
       "name": "Шёпот древних",
       "classId": "shaman",
       "branchId": "dark_gods",
-      "sourceImage": "image_039.png",
+      "type": "skill",
+      "sourceImage": "image_016.png",
       "file": "shaman_dark_gods_core.png"
     },
     {
@@ -993,7 +1117,8 @@
       "name": "Жертвенный обряд",
       "classId": "shaman",
       "branchId": "dark_gods",
-      "sourceImage": "image_040.png",
+      "type": "attack",
+      "sourceImage": "image_017.png",
       "file": "shaman_dark_gods_utility.png"
     },
     {
@@ -1001,7 +1126,8 @@
       "name": "Корни-ловушки",
       "classId": "shaman",
       "branchId": "nature",
-      "sourceImage": "image_041.png",
+      "type": "skill",
+      "sourceImage": "image_018.png",
       "file": "shaman_nature_core.png"
     },
     {
@@ -1009,7 +1135,8 @@
       "name": "Живой тотем",
       "classId": "shaman",
       "branchId": "nature",
-      "sourceImage": "image_042.png",
+      "type": "attack",
+      "sourceImage": "image_019.png",
       "file": "shaman_nature_utility.png"
     }
   ]
