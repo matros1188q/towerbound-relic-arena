@@ -445,16 +445,17 @@ const {chromium}=require('playwright');
   await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   const hpAfterEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   assert.ok(hpAfterEnemyPhase<hpBeforeEnemyPhase,'enemy performs its attack during the handoff before the next player turn');
-  let defenseReady=false;
+  let defenseReady=false,defenseCost=0;
   for(let attempt=0;attempt<4&&!defenseReady;attempt++){
-   const defenseCard=page.locator('.v2-card.defense:not([disabled])').first();
-   defenseReady=(await defenseCard.count())>0;
-   if(defenseReady){await defenseCard.click();break;}
+   const defenseCards=page.locator('.v2-card.defense:not([disabled])');
+   const defenseIndex=await defenseCards.evaluateAll(cards=>cards.findIndex(card=>{const value=Number(card.querySelector('.card-cost')?.textContent?.trim());return Number.isFinite(value)&&value>0;}));
+   defenseReady=defenseIndex>=0;
+   if(defenseReady){const defenseCard=defenseCards.nth(defenseIndex);defenseCost=Number(await defenseCard.locator('.card-cost').innerText());await defenseCard.click();break;}
    await page.locator('#endturn').click();
    await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   }
-  assert.ok(defenseReady,'a defense card appears after cycling the shuffled deck');
-  assert.match(await page.locator('#energyDisplay').innerText(),/2\/3/,'playing a defense card spends one energy');
+  assert.ok(defenseReady,'a positive-cost defense card appears after cycling the shuffled deck');
+  assert.match(await page.locator('#energyDisplay').innerText(),new RegExp((3-defenseCost)+'\\/3'),'playing a defense card spends its displayed energy cost');
   const cardBlockAfterDefense=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.stage.uiBattleSnapshot?.cardState?.cardBlock||0);
   assert.ok(cardBlockAfterDefense>0,'playing a defense card creates a saved block value');
   await page.locator('#endturn').click();
