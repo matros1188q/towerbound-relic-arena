@@ -491,6 +491,8 @@ const {chromium}=require('playwright');
   assert.match(await page.locator('.tb-loot-overlay').innerText(),/БОЙ ЗАВЕРШЕН/,'victory opens the post-battle reward summary');
   const rewardDeckSize=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];return(c.deck||[]).length;});
   await page.locator('[data-card-reward-start]').click();
+  const rewardOverlayDiagnostic=await page.evaluate(()=>({pending:window.TowerboundRework?.state?.characters?.[0]?.pendingCardReward?.length||0,nodes:[...document.querySelectorAll('.card-reward-overlay')].map(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{parent:el.parentElement?.tagName,parentClass:el.parentElement?.className,display:s.display,visibility:s.visibility,opacity:s.opacity,z:s.zIndex,width:r.width,height:r.height,html:el.outerHTML.slice(0,220)}})}));
+  console.log('CARD REWARD OVERLAY DIAGNOSTIC',JSON.stringify(rewardOverlayDiagnostic));
   await page.waitForSelector('.card-reward-overlay',{timeout:5000});
   assert.ok(await page.locator('[data-card-reward-pick]').count()>0,'victory offers at least one card reward');
   await page.locator('[data-card-reward-pick]').first().click();
