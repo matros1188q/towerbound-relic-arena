@@ -418,6 +418,8 @@ const {chromium}=require('playwright');
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial')?.dataset.started==='true',{timeout:3000});
   const enemy=page.locator('.v2-enemy-card:not(.selected)').first(),targetId=await enemy.getAttribute('data-target');
+  const enemyHitDiag=await page.evaluate(targetId=>{const card=document.querySelector('.v2-enemy-card[data-target="'+targetId+'"]'),r=card?.getBoundingClientRect();if(!card||!r)return{missing:true};const x=r.left+r.width/2,y=r.top+r.height/2;return{rect:{x:r.x,y:r.y,w:r.width,h:r.height},viewport:{w:innerWidth,h:innerHeight},stack:document.elementsFromPoint(x,y).slice(0,8).map(el=>{const q=el.getBoundingClientRect();return{tag:el.tagName,cls:typeof el.className==='string'?el.className:'',id:el.id,pointer:getComputedStyle(el).pointerEvents,z:getComputedStyle(el).zIndex,rect:{x:q.x,y:q.y,w:q.width,h:q.height}}}),parents:(()=>{const a=[];let n=card;while(n&&a.length<8){const q=n.getBoundingClientRect();a.push({tag:n.tagName,cls:typeof n.className==='string'?n.className:'',pointer:getComputedStyle(n).pointerEvents,z:getComputedStyle(n).zIndex,overflow:getComputedStyle(n).overflow,rect:{x:q.x,y:q.y,w:q.width,h:q.height}});n=n.parentElement;}return a;})()};},targetId);
+  console.log('ENEMY HIT TEST DIAGNOSTIC',JSON.stringify(enemyHitDiag));
   await enemy.click();
   assert.ok(await page.locator('.v2-enemy-card[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'a real tap selects a different enemy target');
   const hpBefore=await page.locator('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text').innerText();
