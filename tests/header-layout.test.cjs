@@ -12,8 +12,8 @@ assert.match(ui,/function header\(\)\{return '<header class="tb-header"/,'global
 assert.match(ui,/class="game-logo" src="\.\/assets\/icons\/image\.png" alt="T" width="38" height="38"/,'existing T logo remains first and retains its compact display size');
 assert.match(ui,/class="tb-brand-title">TowerBound Relic Arena</,'brand title follows the T logo');
 assert.doesNotMatch(ui,/data-nav-tab="progress"/,'progression button is removed from global navigation');
-assert.match(ui,/data-action="open-progress"/,'progression page remains accessible from account');
-assert.match(ui,/data-action="open-meta-progression"/,'extended progression systems remain accessible from account');
+assert.match(ui,/button\("open-progress"/,'progression page remains accessible from account');
+assert.match(ui,/button\("open-meta-progression"/,'extended progression systems remain accessible from account');
 assert.match(ui,/case "open-meta-progression"/,'extended progression account action is wired');
 assert.match(ui,/case "bottom-progress":case "open-progress"/,'legacy progression action remains compatible');
 assert.match(css,/height:43px!important;min-height:43px!important;max-height:43px!important/,'header is constrained to logo height plus five pixels');
