@@ -1643,16 +1643,16 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    if(existing&&existing.dataset.renderKey===key){updateBattleDOM();ensureBottomNav();return;}
    root.innerHTML='<div class="tb-v2">'+header()+battleScreen()+'</div>';
    const arena=root.querySelector(".v2-battle-wrap");if(arena)arena.dataset.renderKey=key;
-  }else if(screen==="characters")root.innerHTML='<div class="tb-v2">'+header()+characterList()+'</div>';
-  else if(screen==="map")root.innerHTML='<div class="tb-v2">'+header()+mapScreen()+'</div>';
-  else if(screen==="profile")root.innerHTML='<div class="tb-v2">'+header()+profileScreen()+'</div>';
-  else if(screen==="shop")root.innerHTML='<div class="tb-v2">'+header()+shopScreen()+'</div>';
-  else if(screen==="systems")root.innerHTML='<div class="tb-v2">'+header()+systemsScreen()+'</div>';
-  else if(screen==="account")root.innerHTML='<div class="tb-v2">'+header()+accountScreen()+'</div>';
-  else if(screen==="progress")root.innerHTML='<div class="tb-v2">'+header()+progressScreen()+'</div>';
-  else if(screen==="leaderboard")root.innerHTML='<div class="tb-v2">'+header()+leaderboardScreen()+'</div>';
-  else if(screen==="death")root.innerHTML='<div class="tb-v2">'+header()+deathScreen()+'</div>';
-  else root.innerHTML='<div class="tb-v2">'+header()+characterList()+'</div>';
+  }else if(screen==="characters")root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
+  else if(screen==="map")root.innerHTML='<div class="tb-v2">'+mapScreen()+'</div>';
+  else if(screen==="profile")root.innerHTML='<div class="tb-v2">'+profileScreen()+'</div>';
+  else if(screen==="shop")root.innerHTML='<div class="tb-v2">'+shopScreen()+'</div>';
+  else if(screen==="systems")root.innerHTML='<div class="tb-v2">'+systemsScreen()+'</div>';
+  else if(screen==="account")root.innerHTML='<div class="tb-v2">'+accountScreen()+'</div>';
+  else if(screen==="progress")root.innerHTML='<div class="tb-v2">'+progressScreen()+'</div>';
+  else if(screen==="leaderboard")root.innerHTML='<div class="tb-v2">'+leaderboardScreen()+'</div>';
+  else if(screen==="death")root.innerHTML='<div class="tb-v2">'+deathScreen()+'</div>';
+  else root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
   let toast=root.querySelector(".tb-toast");
   if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2").appendChild(toast);}
   if(toastMessage){toast.textContent=toastMessage;}
