@@ -465,7 +465,7 @@
  }catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
- function header(title,sub){const mapHeader=title==="Карта 250 уровней";return '<header class="tb-header"><div class="tb-brand"><img class="game-logo" src="./assets/icons/image.png" alt="TowerBound" decoding="async"></div>'+(mapHeader?'':'<div class="tb-header-side">'+(live()?'<span class="tb-mini-avatar" aria-hidden="true"><img src="'+portrait(live().classId)+'" alt=""></span>':'')+'<span class="tb-subline">'+esc(sub||"")+'</span></div>')+'</header>';}
+ function header(){return '<header class="tb-header" aria-label="TowerBound Relic Arena"><div class="tb-brand"><img class="game-logo" src="./assets/icons/image.png" alt="T" width="38" height="38" decoding="async"><strong class="tb-brand-title">TowerBound Relic Arena</strong></div></header>';}
 
  function characterList(){
   const chars=engine.state.characters;
@@ -1057,7 +1057,7 @@ function talentBonusDescription(talent,rank){
   const c=live();if(!c)return characterList();
   const prefs={sound_enabled:true,music_enabled:true,volume_master:.8,volume_music:.7,volume_effects:.8,...(engine.state.account.settings||{})};
   const settings='<div class="tb-system-settings"><label>Звуковые эффекты <input type="checkbox" data-setting="sound_enabled" '+(prefs.sound_enabled!==false?'checked':'')+'></label><label>Фоновая музыка <input type="checkbox" data-setting="music_enabled" '+(prefs.music_enabled!==false?'checked':'')+'></label><label>Громкость <input type="range" min="0" max="1" step=".01" data-setting="volume_master" value="'+prefs.volume_master+'"></label><label>Музыка <input type="range" min="0" max="1" step=".01" data-setting="volume_music" value="'+prefs.volume_music+'"></label><label>Эффекты <input type="range" min="0" max="1" step=".01" data-setting="volume_effects" value="'+prefs.volume_effects+'"></label></div>';
-  return header("Аккаунт","Вход · облачное сохранение · настройки")+'<section class="tb-systems"><h1>АККАУНТ</h1>'+accountAuthPanel()+'<section class="tb-system-card"><h2>Настройки звука</h2>'+settings+'</section><section class="tb-system-card"><h2>Облачное сохранение</h2><div class="tb-system-actions">'+button("cloud-account","ВОЙТИ / РЕГИСТРАЦИЯ")+button("cloud-sync","СОХРАНИТЬ В ОБЛАКО")+'</div></section><section class="tb-system-card"><h2>Сброс прогресса</h2><p>Полный сброс удалит персонажа, предметы и достижения.</p>'+button("reset-character","СБРОСИТЬ ПРОГРЕСС")+'</section></section>';
+  return header("Аккаунт","Вход · облачное сохранение · настройки")+'<section class="tb-systems"><h1>АККАУНТ</h1>'+accountAuthPanel()+'<section class="tb-system-card"><h2>Достижения и задания</h2><p>Награды за прохождение, еженедельные цели и рейтинг игроков.</p><div class="tb-system-actions">'+button("open-progress","ОТКРЫТЬ ПРОГРЕСС")+'</div></section><section class="tb-system-card"><h2>Настройки звука</h2>'+settings+'</section><section class="tb-system-card"><h2>Облачное сохранение</h2><div class="tb-system-actions">'+button("cloud-account","ВОЙТИ / РЕГИСТРАЦИЯ")+button("cloud-sync","СОХРАНИТЬ В ОБЛАКО")+'</div></section><section class="tb-system-card"><h2>Сброс прогресса</h2><p>Полный сброс удалит персонажа, предметы и достижения.</p>'+button("reset-character","СБРОСИТЬ ПРОГРЕСС")+'</section></section>';
  }
   function systemsScreen(){
   const c=live();if(!c)return characterList();
@@ -1529,7 +1529,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
   if(!nav){nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");host.appendChild(nav);}
-  nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-progress" data-nav-tab="progress"><span>✦</span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
+  nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
   const c=live(),skillPool=[...(classData(c).base_skills||[]),...skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch)],chosenSkills=new Set(Array.isArray(c.activeSkills)?c.activeSkills:(c.skillLoadout||[])),skillBadge=skillPool.filter((skill,index,pool)=>pool.findIndex(other=>other.id===skill.id)===index&&skill.type!=="passive"&&c.level>=(Number(skill.unlock_level)||1)&&!chosenSkills.has(skill.id)).length;
   const statSum=item=>Object.values(item?.stats||{}).reduce((n,v)=>n+(Number(v)||0),0);
   const slotIndex={weapon:0,chest:1,head:2,legs:3,hands:4,accessory:5};
@@ -1542,8 +1542,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   const achievement=(balance.achievements?.achievements||[]).some(a=>!claimed.includes(a.id)&&(derived[a.metric]??c.stats?.[a.metric]??c.progress?.[a.metric]??0)>=a.target);
   const chest=!!engine.dailyChestSnapshot(c.id).available;
   const addBadge=(button,value)=>{if(!button||!value)return;const badge=document.createElement("i");badge.className="badge";badge.textContent=String(value===true?"!":value);button.appendChild(badge);};
-  addBadge(nav.querySelector('[data-nav-tab="profile"]'),skillBadge+(upgrade?1:0));
-  addBadge(nav.querySelector('[data-nav-tab="progress"]'),achievement);
+  addBadge(nav.querySelector('[data-nav-tab="profile"]'),skillBadge+(upgrade?1:0)+(achievement?1:0));
   addBadge(nav.querySelector('[data-nav-tab="shop"]'),chest?1:0);
   const skillsTab=root.querySelector('[data-tab="skills"]');if(skillsTab)skillsTab.removeAttribute("data-skill-badge");
   const bagTab=root.querySelector('[data-tab="bag"]');addBadge(bagTab,upgrade?1:0);
@@ -1551,7 +1550,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   root.querySelectorAll('[data-craft-stone]').forEach(button=>addBadge(button,craftMaterials>=20?1:0));
   root.querySelectorAll('[data-merge]').forEach(button=>{const item=craftStones.find(stone=>stone.id===button.dataset.merge),typeId=item?.stoneType?.id||item?.stoneType||"unknown",key=String(item?.level||1)+":"+typeId;addBadge(button,(craftLevels[key]||0)>=5?1:0);});
 
-  const active=screen==="map"?"map":screen==="profile"?"profile":screen==="progress"?"progress":screen==="shop"?"shop":"account";
+  const active=screen==="map"?"map":screen==="profile"||screen==="progress"?"profile":screen==="shop"?"shop":"account";
   nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
  function lootSummaryModal(){
@@ -1802,7 +1801,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    case "bottom-map":stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="map";render();save();break;
    case "bottom-profile":profileTab="stats";screen="profile";render();break;
    case "bottom-shop":screen="shop";render();break;
-   case "bottom-progress":screen="progress";render();break;
+   case "bottom-progress":case "open-progress":screen="progress";render();break;
    case "bottom-account":screen="account";render();break;
    case "reset-current-battle":{const c=live(),stage=c?.run?.stage?.stage||c?.progress?.currentStage||selectedStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(c?.run){c.run.stage=null;c.run.active=true;}battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
    case "profile":profileTab="stats";screen="profile";render();break;
