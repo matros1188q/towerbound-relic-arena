@@ -129,8 +129,9 @@ async function journey(type,name,viewport,url){
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
   // Keep the tutorial's second step deterministic: put a real defense card on top of the next draw pile.
   await page.evaluate(()=>{
-   const character=window.TowerboundRework?.state?.characters?.[0];
-   if(!character)throw new Error('QA character was not found before the defense tutorial step');
+   const state=window.TowerboundRework?.state;
+   const character=state?.characters?.find(item=>item.id===state.activeCharacterId);
+   if(!character)throw new Error('Active QA character was not found before the defense tutorial step');
    character.deck=Array.isArray(character.deck)?character.deck:[];
    for(const pileName of ['hand','deck','discard']){
     const pile=Array.isArray(character[pileName])?character[pileName]:[];
@@ -145,7 +146,7 @@ async function journey(type,name,viewport,url){
   });
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: КАРТА ЗАЩИТЫ'),{timeout:10000});
-  const defenseDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0];return{energy:c?.currentEnergy,maxEnergy:c?.energy,cards:[...document.querySelectorAll('#cardHand .v2-card')].map(el=>({type:el.dataset.cardType,disabled:el.disabled,classes:el.className,text:el.innerText,rect:(()=>{const r=el.getBoundingClientRect();return{width:r.width,height:r.height,top:r.top,bottom:r.bottom};})()})),endTurn:(()=>{const el=document.querySelector('[data-action="end-turn"]');return el?{disabled:el.disabled,text:el.innerText}:null;})(),tutorial:document.querySelector('.tb-turn-tutorial-card')?.innerText,toast:document.querySelector('.tb-toast')?.innerText};});
+  const defenseDiagnostic=await page.evaluate(()=>{const state=window.TowerboundRework?.state,c=state?.characters?.find(item=>item.id===state.activeCharacterId);return{energy:c?.currentEnergy,maxEnergy:c?.energy,cards:[...document.querySelectorAll('#cardHand .v2-card')].map(el=>({type:el.dataset.cardType,disabled:el.disabled,classes:el.className,text:el.innerText,rect:(()=>{const r=el.getBoundingClientRect();return{width:r.width,height:r.height,top:r.top,bottom:r.bottom};})()})),endTurn:(()=>{const el=document.querySelector('[data-action="end-turn"]');return el?{disabled:el.disabled,text:el.innerText}:null;})(),tutorial:document.querySelector('.tb-turn-tutorial-card')?.innerText,toast:document.querySelector('.tb-toast')?.innerText};});
   process.stdout.write('DEFENSE CARD DIAGNOSTIC '+name+' '+JSON.stringify({...defenseDiagnostic,consoleErrors})+'\\n');
   await page.waitForSelector('[data-card-type="defense"]:not([disabled])',{timeout:10000});
   await page.locator('[data-card-type="defense"]:not([disabled])').first().click();
