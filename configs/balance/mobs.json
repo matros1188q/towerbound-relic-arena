@@ -2,42 +2,42 @@
   "curves": [
     {
       "stage": 1,
-      "hp": 25,
-      "damage": 6
+      "hp": 17,
+      "damage": 4.5
     },
     {
       "stage": 10,
       "hp": 35,
-      "damage": 6
+      "damage": 9
     },
     {
       "stage": 50,
-      "hp": 70,
-      "damage": 7
+      "hp": 115,
+      "damage": 29
     },
     {
       "stage": 100,
-      "hp": 175,
-      "damage": 8
+      "hp": 215,
+      "damage": 54
     },
     {
       "stage": 150,
-      "hp": 280,
-      "damage": 8.5
+      "hp": 315,
+      "damage": 79
     },
     {
       "stage": 200,
-      "hp": 420,
-      "damage": 9
+      "hp": 415,
+      "damage": 104
     },
     {
       "stage": 250,
-      "hp": 600,
-      "damage": 9
+      "hp": 515,
+      "damage": 129
     }
   ],
   "elite": {
-    "hp_multiplier": 2,
+    "hp_multiplier": 2.5,
     "damage_multiplier": 1.25,
     "role_damage_multipliers": {
       "healer": 1.25,

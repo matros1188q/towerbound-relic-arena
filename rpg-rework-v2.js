@@ -595,8 +595,8 @@
    return{active:true,completed:false,targetIndex,processed};
   }
   function getEnemyStats(characterId,stage,enemy){
-   const character=getChar(characterId),curve=balance.mobs.curves;
-   let hp=interpolation(curve,stage,"stage","hp"),damage=interpolation(curve,stage,"stage","damage");
+   const character=getChar(characterId),floor=Math.max(1,Number(stage)||1);
+   let hp=15+(floor*2),damage=4+(floor*.5);
    if(enemy?.type==="elite"){
     hp*=balance.mobs.elite.hp_multiplier;
     const role=String(enemy.role||"normal");
@@ -605,7 +605,7 @@
    }
    if(enemy?.type==="boss"){
     hp*=balance.bosses.hp_multiplier;damage*=balance.bosses.damage_multiplier;
-    if(stage<=balance.bosses.newbie_exception.max_stage)damage*=balance.bosses.newbie_exception.damage_multiplier;
+    if(stage<=balance.bosses.newbie_exception.max_stage)damage*=Math.max(1,Number(balance.bosses.newbie_exception.damage_multiplier)||1);
    }
    const heroic=character.heroic?balance.heroic.mob_stat_multiplier:1;
    const modifiers=runModifiers(character);
