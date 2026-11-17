@@ -39,7 +39,7 @@ assert.ok(online.includes(".from('leaderboard').upsert"),'player leaderboard pub
 assert.ok(online.includes(".from('pvp_ghosts').upsert"),'player ghost publication missing');
 assert.ok(ui.includes('function leaderboardScreen()'),'leaderboard screen missing');
 assert.ok(ui.includes('button("open-progress"'),'progress screen remains accessible from account');
-assert.ok(!ui.includes('data-nav-tab="progress"'),'progression is removed from fixed bottom navigation');
+assert.ok(!ui.slice(ui.indexOf('function header(){'),ui.indexOf('function characterList()')).includes('ПРОГРЕССИЯ'),'progression is removed from the compact brand header');
 assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action missing');
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');

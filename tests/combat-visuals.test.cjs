@@ -73,7 +73,7 @@ assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-colum
 assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map has no extra top padding after the header');
 assert.ok(css.includes('.tb-map-top img{max-height:80px!important'),'map header character art is capped at 80px');
-assert.ok(ui.includes('function header(){')&&!ui.includes('data-nav-tab="progress"'),'global header has no redundant Progression button or avatar panel');
+assert.ok(ui.includes('function header(){')&&!ui.slice(ui.indexOf('function header(){'),ui.indexOf('function characterList()')).includes('ПРОГРЕССИЯ'),'global header has no redundant Progression button or avatar panel');
 
 
 assert.match(ui,/function enemyIntentDamage\(target\)[\s\S]*engine\.mitigationMultiplier\(engine\.getCombatStats\(c\)\.defense,battle\.stage\)/,'enemy intent preview includes player defense mitigation');

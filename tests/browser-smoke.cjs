@@ -87,7 +87,7 @@ async function journey(type,name,viewport,url){
     navPointer:getComputedStyle(nav||document.body).pointerEvents,width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
   });
   assert.equal(mapLayout.toolbarBeforeGrid,true,name+' places the compact selected-stage panel before the map grid');
-  assert.equal(mapLayout.navButtons,4,name+' exposes the four primary bottom navigation tabs: map, profile, shop and account');
+  assert.equal(mapLayout.navButtons,5,name+' exposes the five primary bottom navigation tabs: map, profile, progress, shop and account');
   assert.equal(mapLayout.navPointer,'auto',name+' keeps bottom navigation clickable');
   await page.locator('[data-action="bottom-profile"]').click();
   assert.equal(await page.locator('.tb-tabs button').count(),8,name+' renders all eight profile tabs');
