@@ -33,6 +33,7 @@ assert.ok(uiScript.includes('return "image 15.png"')&&uiScript.includes('functio
 assert.ok(uiScript.includes('relicIconHtml(item,item?.slot)'),'Equipment/store render must pass item slot');
 assert.ok(uiScript.includes('chapterBackgrounds=["image 2.jpeg","image 3.jpeg","image 4.jpeg","image 5.jpeg","image.jpeg"]'),'Chapter JPEG backgrounds must be preserved');
 const mode=source['rpg-mode.js'];
+const sw=source['service-worker.js'];
 assert.ok(mode.includes("./assets/characters/heroes/image-Photoroom.png"),'Legacy RPG hero map uses uploaded PNG portrait');
 assert.ok(mode.includes("./assets/characters/bosses/mirror-executioner.png"),'Legacy RPG boss map uses existing named PNG');
 assert.ok(mode.includes("'grave-archer':'./assets/characters/enemies/grave-archer.png'"),'Legacy RPG uses the dedicated Grave Archer portrait, not a reused enemy image');
@@ -41,7 +42,6 @@ assert.ok(sw.includes('./assets/characters/enemies/grave-archer.png'),'Dedicated
 const css=source['assets/ui/art-sprites.css'];
 assert.ok(css.includes('.sprite-icon{')&&css.includes('../skills/image 17.png'),'Talent atlas uses the dedicated skills PNG');
 for(const name of ['talent-atk','talent-hp','talent-def','talent-agi','talent-crit','shop-potion','shop-premium','shop-refine'])assert.ok(css.includes('.'+name),'Missing sprite crop '+name);
-const sw=source['service-worker.js'];
 assert.ok(/const CACHE = 'towerbound-v\d+'/.test(sw),'PWA cache must use a versioned towerbound-vN release key');
 assert.ok(sw.includes('./assets/chapters/image 2.jpeg'),'Service worker must preserve chapter JPEG backgrounds');
 assert.ok(relics.assets.some(x=>x.id==='craft-material'&&x.path==='assets/relics/image 15.png'),'Craft material PNG must be registered');
