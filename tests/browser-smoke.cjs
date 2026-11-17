@@ -27,9 +27,10 @@ async function journey(type,name,viewport,url){
  try{
   const mobileEmulation=type===firefox?{}:{isMobile:viewport.width<500,hasTouch:viewport.width<500};
   context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',...mobileEmulation});
-  const page=await context.newPage(),errors=[],failed=[];
+  const page=await context.newPage(),errors=[],failed=[],consoleErrors=[];
  page.on('dialog',dialog=>dialog.accept());
  page.on('pageerror',error=>errors.push(error.message));
+ page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});
  page.on('requestfailed',request=>{const url=request.url(),reason=request.failure()?.errorText;if(reason!=='net::ERR_ABORTED'&&reason!=='NS_BINDING_ABORTED'&&!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+reason);});
  await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
  await page.route('https://fonts.googleapis.com/**',route=>route.abort());
@@ -144,6 +145,8 @@ async function journey(type,name,viewport,url){
   });
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: КАРТА ЗАЩИТЫ'),{timeout:10000});
+  const defenseDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0];return{energy:c?.currentEnergy,maxEnergy:c?.energy,cards:[...document.querySelectorAll('#cardHand .v2-card')].map(el=>({type:el.dataset.cardType,disabled:el.disabled,classes:el.className,text:el.innerText,rect:(()=>{const r=el.getBoundingClientRect();return{width:r.width,height:r.height,top:r.top,bottom:r.bottom};})()})),endTurn:(()=>{const el=document.querySelector('[data-action="end-turn"]');return el?{disabled:el.disabled,text:el.innerText}:null;})(),tutorial:document.querySelector('.tb-turn-tutorial-card')?.innerText,toast:document.querySelector('.tb-toast')?.innerText};});
+  process.stdout.write('DEFENSE CARD DIAGNOSTIC '+name+' '+JSON.stringify({...defenseDiagnostic,consoleErrors})+'\\n');
   await page.waitForSelector('[data-card-type="defense"]:not([disabled])',{timeout:10000});
   await page.locator('[data-card-type="defense"]:not([disabled])').first().click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
