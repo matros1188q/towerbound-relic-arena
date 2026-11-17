@@ -79,5 +79,5 @@ assert.match(css, /\.tb-deck-viewer-overlay\{z-index:100000/);
 assert.match(css, /\.tb-camp-overlay\{z-index:100050/);
 assert.equal(mobConfig.roles.saboteur.icon, '🃏');
 assert.equal(mobConfig.roles.saboteur_chance, 0.24);
-assert.match(worker, /towerbound-v340/);
+assert.match(worker, /^const CACHE = 'towerbound-v\\d+';$/m, 'service-worker cache key is versioned');
 console.log('Campfire rest/forge, card curses/statuses, saboteur enemy and deck viewer checks passed.');
