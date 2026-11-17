@@ -17,7 +17,7 @@ for(const [name,source,re] of [
 ['post-battle summary button says Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
 ['post-battle summary returns to map without starting a stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
 ['map nodes show rising recommended battle power',ui,/tb-map-power[^\n]*Рек\. Мощь/],
-['skills are filtered to the chosen specialization and base skills',ui,/skills\.filter\(x=>x\.class_id===c\.classId&&x\.branch_id===c\.branch\)/],
+['skills are filtered to the chosen specialization and base skills',ui,/function branchSkills\(c\)\{return skills\.filter\(skill=>skill\.class_id===c\.classId&&skill\.branch_id===c\.branch\)/],
 ['skill cards expose type, damage, cost and cooldown details',ui,/function profileSkillDetails[\s\S]*Тип:[\s\S]*Стоимость:[\s\S]*Откат:/],
 ['talent cards explain stat gains and current rank',ui,/function talentBonusDescription[\s\S]*Каждый ранг даёт/],
 ['weekly tasks have localized heading',ui,/ЕЖЕНЕДЕЛЬНЫЕ ЗАДАНИЯ/],
@@ -27,9 +27,9 @@ for(const [name,source,re] of [
 ['achievement rewards include silver and diamonds in localized text',ui,/Награда:.*rewardLabel/],
 ['talent cards identify the improved stat and current rank',ui,/Повышает.*Ранг.*maxRank/],
 ['talent descriptions explain per-rank and accumulated stat bonuses',ui,/function talentBonusDescription[\s\S]*Увеличивает силу базовых ударов[\s\S]*Каждый ранг даёт[\s\S]*Текущий бонус:/],
-['branch skills preserve passive/active type and are restricted to current branch',ui,/skills\.filter\(x=>x\.class_id===c\.classId&&x\.branch_id===c\.branch\)[\s\S]*type:x\.type\|\|\(x\.is_active===false\?"passive":"active"\)/],
+['branch skills preserve passive/active type and are restricted to current branch',ui,/function branchSkills\(c\)[\s\S]*const passive=skill\.type==="passive"\|\|skill\.is_active===false/],
 ['all seven classes have detailed specialization descriptions',ui,/const specializationDescriptions=\{[\s\S]*assassin:\{[\s\S]*bishop:\{[\s\S]*dragonkin:\{[\s\S]*destroyer:\{[\s\S]*elemental:\{[\s\S]*duelist:\{[\s\S]*shaman:\{/],
-['map header removes portrait/progression header content',ui,/function header\(title,sub\)\{const mapHeader=title===\"Карта 250 уровней\"/],
+['map header removes portrait/progression header content',ui,/function header\(\)\{return '<header class="tb-header"[\s\S]*?tb-brand-title/],
 ['Duelist dual blade specialization has detailed combat description',ui,/dual_swords:\"Фокус на высоком темпе атак/],
 ['loot button is labeled Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
 ['loot action closes summary and returns to map without starting a new stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
@@ -42,8 +42,8 @@ for(const [name,source,re] of [
 ['battle DOM no longer queries legacy arena, skill or target selectors',battleDom,/^((?!\.tb-arena|\.tb-panel-skill|\.tb-target-card)[\s\S])*$/],
 ['Attack cards have a distinct high-contrast combat style',css,/\.v2-card\.attack\{border-color:#e76b5e!important;background:linear-gradient\(180deg,#633b3a,#251b22\)!important/],
 ['End Turn remains displayed with at least 48px height',css,/\.v2-btn-end\{display:flex!important[\s\S]*?min-height:48px!important[\s\S]*?visibility:visible!important/],
-['map top padding and compact header image cap',css,/\.tb-map-screen\{padding-top:10px!important\}[\s\S]*?\.tb-map-top img\{max-height:80px!important/],
-['enemies use a fixed two-column grid with wrapped intents',css,/\.v2-enemies-side\{display:grid!important;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important;gap:8px!important;align-content:start!important;width:100%!important[\s\S]*?\.v2-enemy-intent\{white-space:normal!important;word-break:break-word!important;font-size:9px!important;line-height:1\.2!important;text-align:center!important/],
+['map top padding is zero below the compact global header',css,/\.tb-map-screen\{padding-top:0!important\}/],
+['enemies use a fixed three-column grid',css,/\.v2-enemies-side\{order:0!important;display:grid!important;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)!important/],
 ['bag grid and readable square item tiles',css,/\.tb-item-grid\{display:grid!important;grid-template-columns:repeat\(4,1fr\)!important;gap:6px!important\}[\s\S]*?\.tb-bag-item\{min-height:80px!important;max-height:100px!important;aspect-ratio:1\/1!important;padding:4px!important[\s\S]*?\.tb-item-tile-open span,#tbRpg \.tb-v2 \.tb-item-tile-open small\{display:block!important;font-size:9px!important;white-space:normal!important/],
 ['collection cards use compact five-column square grid',css,/\.tb-collection-grid\{display:grid!important;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)!important;gap:4px!important;width:100%!important[\s\S]*?\.tb-collection-item\{aspect-ratio:1\/1!important;min-height:60px!important;max-height:70px!important;padding:2px!important;overflow:hidden!important[\s\S]*?\.tb-collection-item b,#tbRpg \.tb-v2 \.tb-collection-item small,#tbRpg \.tb-v2 \.tb-collection-item span\{font-size:8px!important/],
 ['checkpoint heal gating preserved',ui,/healReady=balance\.map\.checkpoints\.includes\(cp\)&&c\.run\.healingPenaltyUntil/],
@@ -73,7 +73,7 @@ assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-colum
 assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map has no extra top padding after the header');
 assert.ok(css.includes('.tb-map-top img{max-height:80px!important'),'map header character art is capped at 80px');
-assert.ok(ui.includes('const mapHeader=title==="Карта 250 уровней"')&&!ui.includes('ПРОГРЕССИЯ'),'map header has no redundant Progression button or avatar panel');
+assert.ok(ui.includes('function header(){')&&!ui.includes('data-nav-tab="progress"'),'global header has no redundant Progression button or avatar panel');
 
 
 assert.match(ui,/function enemyIntentDamage\(target\)[\s\S]*engine\.mitigationMultiplier\(engine\.getCombatStats\(c\)\.defense,battle\.stage\)/,'enemy intent preview includes player defense mitigation');
