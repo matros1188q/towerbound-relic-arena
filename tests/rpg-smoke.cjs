@@ -418,10 +418,10 @@ const {chromium}=require('playwright');
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial')?.dataset.started==='true',{timeout:3000});
   const enemy=page.locator('.v2-enemy-card').first(),targetId=await enemy.getAttribute('data-target');
-  await enemy.evaluate(el=>el.click());
-  assert.ok(await page.locator('.v2-enemy-card[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'tap selects an enemy in the V2 battle');
   const hpBefore=await page.locator('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text').innerText();
   await page.locator('.v2-card.attack:not([disabled])').first().click();
+  await enemy.click();
+  assert.ok(await page.locator('.v2-enemy-card[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'tap selects an enemy after choosing an attack card');
   await page.waitForFunction(({targetId,hpBefore})=>{
    const node=document.querySelector('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text');
    return node&&node.textContent!==hpBefore;
