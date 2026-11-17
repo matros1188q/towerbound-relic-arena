@@ -69,6 +69,7 @@ console.log('Combat visual/tactical static checks passed.');
 
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map screen has no extra top padding');
 assert.ok(css.includes('.v2-enemies-side{order:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important'),'enemy target cards use a stable three-column arena grid');
+assert.ok(css.includes('.v2-battle-wrap .v2-enemies-side{position:relative!important;z-index:4!important;align-content:start!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;pointer-events:auto!important'),'enemy grid stays inside a scrollable viewport and is not clipped above the tap area');
 assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}'),'bag uses a four-column grid');
 assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map has no extra top padding after the header');
