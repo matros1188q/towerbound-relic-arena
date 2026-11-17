@@ -68,7 +68,8 @@
   function tutorialClick(event){
     const dismiss=event.target.closest('[data-action="dismiss-turn-tutorial"]');
     if(dismiss){
-      if(tutorialCompleting)return;
+      // The final synthetic click must reach the RPG UI's dismiss handler after step four.
+      if(tutorialCompleting){tutorialStarted=false;tutorialCompleting=false;return;}
       event.preventDefault();event.stopImmediatePropagation();
       if(!tutorialStarted){tutorialStarted=true;tutorialStep=0;updateTutorial();}
       return;
