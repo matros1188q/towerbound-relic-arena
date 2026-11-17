@@ -109,6 +109,7 @@ async function journey(type,name,viewport,url){
   await page.locator('[data-action="start"]').click();
   const starterDeckConfirm=page.locator('[data-starter-deck-confirm]');
   await starterDeckConfirm.waitFor({state:'visible',timeout:5000});
+  await page.evaluate(()=>{const character=window.TowerboundRework?.state?.characters?.[0];if(!character?.run)throw new Error('QA character run was not found before starter deck confirmation');character.run.mapEvents={};});
   await starterDeckConfirm.click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
