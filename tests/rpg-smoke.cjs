@@ -402,7 +402,7 @@ const {chromium}=require('playwright');
   assert.equal(seededHp,100000,'smoke fixture retains the high-HP test seed');
   assert.equal(await page.locator('.v2-card').count(),5,'card battle starts with five cards in hand');
   assert.ok(await page.locator('.v2-card.attack').count()>0,'starter hand contains attack cards');
-  assert.ok(await page.locator('.v2-card.defense').count()>0,'starter hand contains defense cards');
+  assert.ok(await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];return [...(c.deck||[]),...(c.hand||[]),...(c.discard||[])].some(card=>card.type==='defense');}),'starter deck contains defense cards even when the shuffled opening hand does not draw one');
   assert.ok(await page.locator('.v2-enemy-card').count()>0,'V2 battle displays enemy target cards');
   assert.equal(await page.locator('.v2-turn-guidance').count(),1,'V2 battle displays turn guidance');
   assert.equal(await page.locator('#energyDisplay').count(),1,'V2 battle displays current energy');
