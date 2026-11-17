@@ -192,7 +192,7 @@ assert.ok(uiCssSource.includes('.tb-collection-item.rarity-epic.is-owned')&&uiCs
 assert.ok(uiCssSource.includes('.tb-collection-item.rarity-legendary.is-owned')&&uiCssSource.includes('border-color:#e6a53e'),'legendary collection entries use orange rarity styling');
 
 assert.ok(!uiSource.includes('data-action="map"')&&!uiSource.includes('data-action="systems"')&&!uiSource.includes('data-action="profile"'),'global navigation shortcuts are not duplicated outside the bottom tab bar');
-assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-nav-tab="map"')&&!uiSource.includes('data-nav-tab="progress"')&&uiSource.includes('data-nav-tab="shop"')&&uiSource.includes('data-nav-tab="account"'),'all four global tabs use isolated attributes without a Progression tab');
+assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-nav-tab="map"')&&uiSource.includes('data-nav-tab="progress"')&&uiSource.includes('data-nav-tab="shop"')&&uiSource.includes('data-nav-tab="account"'),'all five global tabs use isolated attributes; Progression remains in bottom navigation only');
 
 assert.ok(uiSource.includes('function systemsScreen(){')&&uiSource.includes('chest=engine.dailyChestSnapshot(c.id)'),'account hub computes its own daily chest availability');
 
