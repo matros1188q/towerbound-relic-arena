@@ -391,7 +391,7 @@ const {chromium}=require('playwright');
    const state=window.TowerboundRework.state;
    const character=state.characters.find(item=>item.id===state.activeCharacterId);
    if(!character)throw new Error('Active QA character missing before battle start');
-   character.run.mapEvents={...(character.run.mapEvents||{}),9:null};
+   character.run.mapEvents={...(character.run.mapEvents||{}),2:null};
    window.saveTowerboundRework();
   });
   await starterDeckConfirmForSmoke.click();
