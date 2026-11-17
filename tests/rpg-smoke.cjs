@@ -4,7 +4,6 @@ const http=require('node:http');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const battleCss=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8');
-assert.ok(battleCss.includes(".tb-turn-tutorial[data-started='true']{pointer-events:none!important}"),'guided card tutorial lets clicks pass through to the card hand and End Turn');
 const {chromium}=require('playwright');
 (async()=>{
  const root=process.cwd();
@@ -417,7 +416,7 @@ const {chromium}=require('playwright');
   assert.ok(firstLayout.end&&firstLayout.end.height>=44&&firstLayout.end.visibility!=='hidden'&&firstLayout.end.display!=='none','End Turn is visible in the initial player turn');
   assert.ok(firstLayout.scrollWidth<=firstLayout.width,'V2 battle has no horizontal page overflow on 390px mobile');
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
-  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial')?.dataset.started==='true',{timeout:3000});
+  await page.waitForSelector('.tb-turn-tutorial',{state:'detached',timeout:3000});
   const enemy=page.locator('.v2-enemy-card').first(),targetId=await enemy.getAttribute('data-target');
   await enemy.click();
   assert.ok(await page.locator('.v2-enemy-card[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'tap selects an enemy in the V2 battle');
