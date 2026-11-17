@@ -18,6 +18,7 @@ assert.ok(shellMatch,'service worker precache shell must exist');
 const shellUrls=[...shellMatch[1].matchAll(/['"]([^'"]+)['"]/g)].map(match=>match[1]);
 assert.ok(shellUrls.length>0,'service worker precache shell must not be empty');
 assert.equal(shellUrls.length,new Set(shellUrls).size,'service worker Cache.addAll shell must not contain duplicate URLs');
+for(const asset of ['./towerbound-engine.js','./combat-visuals.js','./progression-24.js','./social-endgame.js','./supabase-config.js','./towerbound-cloud.js','./towerbound-online.js','./rpg-2000h.css'])assert.ok(shellUrls.includes(asset),'offline shell is missing runtime asset '+asset);
 assert.ok(serviceWorker.includes('self.skipWaiting()'),'new service worker must skip the waiting phase');
 assert.ok(serviceWorker.includes('self.clients.claim()'),'new service worker must claim open pages');
 assert.ok(serviceWorker.includes("request.mode === 'navigate'")&&serviceWorker.includes("url.pathname.endsWith('/index.html')"),'HTML documents must use the network-first branch');
@@ -45,8 +46,8 @@ assert.ok(ui.includes('Серверный рейтинг пока не начи�
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=16'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=16'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=52'),'profile and inventory UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=25'),'mobile profile stylesheet cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=53'),'profile and inventory UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=26'),'mobile profile stylesheet cache is refreshed');
 assert.ok(cloud.includes("'tb-endgame-v1'")&&cloud.includes("'tb-social-v1'"),'cloud allowlist persists endgame and social local data');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
@@ -153,8 +154,8 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
-assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:44px!important')&&css.includes('flex-direction:row!important'),'iPhone header stays compact without a progression button');
-assert.ok(html.includes('progression-24.js?v=4')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=25'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:43px!important')&&css.includes('flex-direction:row!important'),'iPhone header stays compact without a progression button');
+assert.ok(html.includes('progression-24.js?v=4')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=26'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
