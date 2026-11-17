@@ -60,11 +60,13 @@ async function journey(type,name,viewport,url){
   try {
    await page.waitForFunction(()=>window.TowerboundCloud?.signedIn || !!document.querySelector('.tb-login-message.is-error'),{timeout:12000});
   } catch(error) {
-   const authDiagnostic=await page.evaluate(()=>({configured:window.TowerboundCloud?.configured,signedIn:window.TowerboundCloud?.signedIn,status:window.TowerboundCloud?.status?.(),message:document.querySelector('.tb-login-message')?.textContent,buttonDisabled:document.querySelector('[data-action="empty-login"]')?.disabled,lastAuth:window.__tbLastAuth,cloudError:document.querySelector('#tbCloudMessage')?.textContent}));
-   process.stderr.write('AUTH DIAGNOSTIC '+name+' '+JSON.stringify(authDiagnostic)+'\\n');
+   const authDiagnostic=await page.evaluate(()=>({ready:document.readyState,configured:window.TowerboundCloud?.configured,signedIn:window.TowerboundCloud?.signedIn,status:window.TowerboundCloud?.status?.(),message:document.querySelector('.tb-login-message')?.textContent,buttonDisabled:document.querySelector('[data-action="empty-login"]')?.disabled,lastAuth:window.__tbLastAuth,cloudError:document.querySelector('#tbCloudMessage')?.textContent,loginValue:document.querySelector('#login')?.value,loginVisible:!!document.querySelector('.tb-login-gate'),rpgReady:!!window.TowerboundReworkReady}));
+   process.stderr.write('AUTH DIAGNOSTIC '+name+' '+JSON.stringify({authDiagnostic,errors,consoleErrors,failed})+'\\n');
    throw error;
   }
-  assert.equal(await page.evaluate(()=>!!window.TowerboundCloud?.signedIn),true,name+' signs in through the browser auth adapter');
+  const authState=await page.evaluate(()=>({configured:window.TowerboundCloud?.configured,signedIn:window.TowerboundCloud?.signedIn,status:window.TowerboundCloud?.status?.(),message:document.querySelector('.tb-login-message')?.textContent,loginValue:document.querySelector('#login')?.value,lastAuth:window.__tbLastAuth,cloudError:document.querySelector('#tbCloudMessage')?.textContent}));
+  if(!authState.signedIn){process.stderr.write('AUTH ERROR '+name+' '+JSON.stringify({authState,errors,consoleErrors,failed})+'\\n');throw new Error(name+' login adapter did not establish a session: '+(authState.message||authState.status?.text||'unknown error'));}
+  assert.equal(authState.signedIn,true,name+' signs in through the browser auth adapter');
   await page.waitForSelector('[data-action="new"]');
   assert.equal(await page.locator('.tb-header .tb-account-button').count(),0,name+' has no redundant account button');
   const logo=page.locator('.tb-brand img.game-logo');
