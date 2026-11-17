@@ -78,6 +78,7 @@ const {chromium}=require('playwright');
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+ page.on('dialog',dialog=>dialog.accept());
  const errors=[],consoleErrors=[],skillDebugLogs=[];
  page.on('pageerror',error=>errors.push(error.stack||error.message));
   page.on('console',message=>{if(message.type()==='error'&&!message.text().includes('Failed to load resource'))consoleErrors.push(message.text());});
