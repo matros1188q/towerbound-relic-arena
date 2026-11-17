@@ -417,6 +417,7 @@ const {chromium}=require('playwright');
   assert.ok(firstLayout.hand&&firstLayout.hand.height>=120,'card hand is large enough for touch input');
   assert.ok(firstLayout.end&&firstLayout.end.height>=44&&firstLayout.end.visibility!=='hidden'&&firstLayout.end.display!=='none','End Turn is visible in the initial player turn');
   assert.ok(firstLayout.scrollWidth<=firstLayout.width,'V2 battle has no horizontal page overflow on 390px mobile');
+  const clickEndTurn=async()=>{page.once('dialog',dialog=>dialog.accept());await page.locator('#endturn').click();};
   await page.locator('[data-action="dismiss-turn-tutorial"]').click();
   const enemy=page.locator('.v2-enemy-card').first(),targetId=await enemy.getAttribute('data-target');
   await enemy.click();
@@ -428,18 +429,18 @@ const {chromium}=require('playwright');
    return node&&node.textContent!==hpBefore;
   },{targetId,hpBefore},{timeout:5000});
   assert.match(await page.locator('#energyDisplay').innerText(),/2\/3/,'playing a card spends one energy');
-  await page.locator('#endturn').click();
+  await clickEndTurn();
   await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   let defenseReady=false;
   for(let attempt=0;attempt<4&&!defenseReady;attempt++){
    const defenseCard=page.locator('.v2-card.defense:not([disabled])').first();
    defenseReady=(await defenseCard.count())>0;
    if(defenseReady){await defenseCard.click();break;}
-   await page.locator('#endturn').click();
+   await clickEndTurn();
    await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   }
   assert.ok(defenseReady,'a defense card appears after cycling the shuffled deck');
-  await page.locator('#endturn').click();
+  await clickEndTurn();
   try{
    await page.waitForFunction(()=>document.querySelector('#energyDisplay')?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5,undefined,{timeout:15000});
   }catch(error){
@@ -457,7 +458,7 @@ const {chromium}=require('playwright');
   assert.ok(wide.end&&wide.end.height>=44,'End Turn remains reachable on 430px mobile');
   await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=1;window.saveTowerboundRework();});
   await page.setViewportSize({width:390,height:844});
-  await page.locator('#endturn').click();
+  await clickEndTurn();
   await page.waitForSelector('[data-action="confirm-death"]',{timeout:10000});
   assert.match(await page.locator('.tb-death-overlay').innerText(),/Персонаж погиб/,'lethal enemy damage opens the death overlay');
   assert.deepEqual(errors,[],'browser runtime must not throw uncaught errors');
