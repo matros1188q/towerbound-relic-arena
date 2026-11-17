@@ -27,7 +27,7 @@ assert.doesNotMatch(read('native-pwa.css'),/\.tb-header \.game-logo\{[^}]*width:
 assert.match(html,/native-pwa\.css\?v=16/,'native stylesheet cache is updated');
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
 assert.match(html,/rpg-rework-ui\.css\.js\?v=30/,'CSS cache version is updated');
-assert.match(html,/rpg-rework-ui\.js\?v=56/,'UI cache version is updated');
+assert.match(html,/rpg-rework-ui\.js\?v=57/,'UI cache version is updated');
 assert.match(sw,/towerbound-v465/,'service worker cache is updated');
 const progression=read('progression-24.js');
 assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
