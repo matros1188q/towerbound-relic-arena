@@ -1202,7 +1202,7 @@ function talentBonusDescription(talent,rank){
 const handMarkup=renderHand();
 const relicMarkup=(c.relics||[]).map(relicId=>engine.RELICS_DATABASE?.[relicId]).filter(Boolean).map(relic=>'<span class="v2-battle-relic" title="'+esc(relic.name+": "+relic.description)+'" aria-label="'+esc(relic.name+": "+relic.description)+'">'+esc(relic.icon||"✦")+'</span>').join("");
 
-return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
+return header()+`<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   <div class="v2-battle-top">
     <span>ИНИЦИАТИВА · РАУНД ${battle.round}</span>
     <div class="v2-battle-relics" aria-label="Активные реликвии">${relicMarkup}</div>
