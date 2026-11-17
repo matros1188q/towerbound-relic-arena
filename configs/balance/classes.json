@@ -45,9 +45,9 @@
             },
             {
               "id": "bleed.talent.5",
-              "name": "Кровотечение · Темп",
+              "name": "Кровотечение · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "bleed.talent.6",
@@ -77,7 +77,7 @@
               "id": "bleed.talent.10",
               "name": "Кровотечение · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -135,9 +135,9 @@
             },
             {
               "id": "poison.talent.5",
-              "name": "Яды · Темп",
+              "name": "Яды · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "poison.talent.6",
@@ -167,7 +167,7 @@
               "id": "poison.talent.10",
               "name": "Яды · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -225,9 +225,9 @@
             },
             {
               "id": "execution.talent.5",
-              "name": "Уничтожение · Темп",
+              "name": "Уничтожение · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "execution.talent.6",
@@ -257,7 +257,7 @@
               "id": "execution.talent.10",
               "name": "Уничтожение · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -435,9 +435,9 @@
             },
             {
               "id": "exorcism.talent.5",
-              "name": "Изгнание · Темп",
+              "name": "Изгнание · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "exorcism.talent.6",
@@ -467,7 +467,7 @@
               "id": "exorcism.talent.10",
               "name": "Изгнание · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -525,9 +525,9 @@
             },
             {
               "id": "healing.talent.5",
-              "name": "Лечение · Темп",
+              "name": "Лечение · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "healing.talent.6",
@@ -557,7 +557,7 @@
               "id": "healing.talent.10",
               "name": "Лечение · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -615,9 +615,9 @@
             },
             {
               "id": "buffs.talent.5",
-              "name": "Усиления · Темп",
+              "name": "Усиления · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "buffs.talent.6",
@@ -647,7 +647,7 @@
               "id": "buffs.talent.10",
               "name": "Усиления · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -854,7 +854,7 @@
               "id": "fire_dragon.talent.10",
               "name": "Огненный дракон · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -944,7 +944,7 @@
               "id": "ice_dragon.talent.10",
               "name": "Ледяной дракон · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1034,7 +1034,7 @@
               "id": "black_dragon.talent.10",
               "name": "Чёрный дракон · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1210,9 +1210,9 @@
             },
             {
               "id": "fists.talent.5",
-              "name": "Кастеты · Темп",
+              "name": "Кастеты · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "fists.talent.6",
@@ -1242,7 +1242,7 @@
               "id": "fists.talent.10",
               "name": "Кастеты · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1300,9 +1300,9 @@
             },
             {
               "id": "greatsword.talent.5",
-              "name": "Двуручный меч · Темп",
+              "name": "Двуручный меч · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "greatsword.talent.6",
@@ -1332,7 +1332,7 @@
               "id": "greatsword.talent.10",
               "name": "Двуручный меч · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1390,9 +1390,9 @@
             },
             {
               "id": "wand_shield.talent.5",
-              "name": "Жезл и щит · Темп",
+              "name": "Жезл и щит · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "wand_shield.talent.6",
@@ -1422,7 +1422,7 @@
               "id": "wand_shield.talent.10",
               "name": "Жезл и щит · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1630,7 +1630,7 @@
               "id": "darkness.talent.10",
               "name": "Тьма · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1720,7 +1720,7 @@
               "id": "water.talent.10",
               "name": "Вода · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1778,9 +1778,9 @@
             },
             {
               "id": "earth.talent.5",
-              "name": "Земля · Темп",
+              "name": "Земля · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "earth.talent.6",
@@ -1810,7 +1810,7 @@
               "id": "earth.talent.10",
               "name": "Земля · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -1986,9 +1986,9 @@
             },
             {
               "id": "dual_swords.talent.5",
-              "name": "Парные мечи · Темп",
+              "name": "Парные мечи · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "dual_swords.talent.6",
@@ -2018,7 +2018,7 @@
               "id": "dual_swords.talent.10",
               "name": "Парные мечи · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -2076,9 +2076,9 @@
             },
             {
               "id": "sword_shield.talent.5",
-              "name": "Меч и щит · Темп",
+              "name": "Меч и щит · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "sword_shield.talent.6",
@@ -2108,7 +2108,7 @@
               "id": "sword_shield.talent.10",
               "name": "Меч и щит · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -2166,9 +2166,9 @@
             },
             {
               "id": "rapier.talent.5",
-              "name": "Шпага · Темп",
+              "name": "Шпага · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "rapier.talent.6",
@@ -2198,7 +2198,7 @@
               "id": "rapier.talent.10",
               "name": "Шпага · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -2406,7 +2406,7 @@
               "id": "spirits.talent.10",
               "name": "Сила духов · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -2496,7 +2496,7 @@
               "id": "dark_gods.talent.10",
               "name": "Тёмные боги · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -2554,9 +2554,9 @@
             },
             {
               "id": "nature.talent.5",
-              "name": "Сила природы · Темп",
+              "name": "Сила природы · Добор карт",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             },
             {
               "id": "nature.talent.6",
@@ -2586,7 +2586,7 @@
               "id": "nature.talent.10",
               "name": "Сила природы · Совершенство",
               "max_rank": 3,
-              "effect_template": "attack_speed"
+              "effect_template": "card_draw"
             }
           ],
           "set": {
@@ -2732,8 +2732,8 @@
     "health_per_rank": 0.025,
     "crit_chance_per_rank": 0.005,
     "defense_per_rank": 0.02,
-    "attack_speed_per_rank": 0.01,
-    "skill_power_per_rank": 0.01
+    "skill_power_per_rank": 0.01,
+    "card_draw_per_rank": 0.3333333333333333
   },
   "branch_stat_bonuses": {
     "assassin.bleed": {

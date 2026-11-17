@@ -321,7 +321,7 @@
   }
     function getSetBonuses(characterId){return clone(setBonusTotals(getChar(characterId)));}
   function talentBonusTotals(character){
-   const result={attack:0,health:0,crit:0,defense:0,attackSpeed:0,skillPower:0};
+   const result={attack:0,health:0,crit:0,defense:0,attackSpeed:0,cardDraw:0,skillPower:0};
    const values=balance.classes.talent_bonuses||{},branch=(classTable[character.classId].branches||[]).find(entry=>entry.id===character.branch);
    for(const talent of branch?.talents||[]){
     const ranks=character.talents?.[talent.id]||0,key=talent.effect_template;
@@ -329,7 +329,7 @@
     if(key==="health")result.health+=ranks*(values.health_per_rank||0);
     if(key==="critical")result.crit+=ranks*(values.crit_chance_per_rank||0);
     if(key==="defense")result.defense+=ranks*(values.defense_per_rank||0);
-    if(key==="attack_speed")result.attackSpeed+=ranks*(values.attack_speed_per_rank||0);
+    if(key==="card_draw")result.cardDraw+=ranks*(values.card_draw_per_rank||0);
     if(key==="skill_power")result.skillPower+=ranks*(values.skill_power_per_rank||0);
    }
    return result;
