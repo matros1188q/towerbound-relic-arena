@@ -26,4 +26,5 @@ assert.match(sw,/towerbound-v451/,'service worker cache is updated');
 const progression=read('progression-24.js');
 assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
 assert.ok(progression.includes("const bar=$('.tb-map-actions',r);"),'secret-room action is limited to the map action area');
+assert.equal((ui.match(/root\.innerHTML='<div class="tb-v2">'\+header\(\)\+/g)||[]).length,11,'same compact brand header is rendered on every screen including combat and fallback');
 console.log('Towerbound compact header and navigation checks passed.');
