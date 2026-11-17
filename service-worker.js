@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v465';
+const CACHE = 'towerbound-v466';
 /* Battle arena and post-battle loot mobile layout hotfix */
 const SHELL = [
   './',
@@ -236,7 +236,6 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE)
       .then(cache => cache.addAll(SHELL.map(path => new Request(path, { cache: 'reload' })).map(request => request)))
-      .catch(error => console.warn('Towerbound shell cache:', error))
       .then(() => self.skipWaiting())
   );
 });
@@ -291,7 +290,7 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE).then(cache => cache.put(request, copy));
         }
         return response;
-      }).catch(() => caches.match('./index.html'));
+      }).catch(() => Response.error());
     })
   );
 });
