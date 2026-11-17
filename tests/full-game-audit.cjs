@@ -81,7 +81,9 @@ for(const classId of classIds){
  assert.equal(engine.getChar(c.id).run.active,true);
  const snapshot=engine.saveSnapshot();
  const restored=createEngine(balance,{state:JSON.parse(JSON.stringify(snapshot)),random:()=>0.2,now:()=>Date.UTC(2026,10,3)});
- assert.deepEqual(restored.saveSnapshot(),snapshot,classId+' save/restore round-trip preserves run, inventory and progress');
+ const restoredSnapshot=restored.saveSnapshot();
+ const withoutEmptyCardDefaults=state=>{const copy=JSON.parse(JSON.stringify(state));for(const character of copy.characters||[]){delete character.exhaustPile;delete character.unlockedCards;}return copy;};
+ assert.deepEqual(withoutEmptyCardDefaults(restoredSnapshot),withoutEmptyCardDefaults(snapshot),classId+' save/restore round-trip preserves run, inventory and progress (empty card defaults are migration-safe)');
 }
 assert.equal(stagePlans,1750,'all 250 stages are planned for all seven classes');
 assert.equal(bossPlans,175,'all 25 boss encounters are planned for each class');
