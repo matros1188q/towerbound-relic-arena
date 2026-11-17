@@ -9,7 +9,7 @@ const css=read('rpg-rework-ui.css.js');
 const html=read('index.html');
 const sw=read('service-worker.js');
 assert.match(ui,/function header\(\)\{return '<header class="tb-header"/,'global header is centralized');
-assert.match(ui,/class="game-logo" src="\.\/assets\/icons\/image\.png" alt="T" width="38" height="38"/,'existing T logo remains first and retains its compact display size');
+assert.match(ui,/class="game-logo" src="\.\/assets\/ui\/logo\.jpeg" alt="T"/,'existing T logo remains first and retains its compact display size');
 assert.match(ui,/class="tb-brand-title">TowerBound Relic Arena</,'brand title follows the T logo');
 assert.doesNotMatch(ui,/data-nav-tab="progress"/,'progression button is removed from global navigation');
 assert.match(ui,/button\("open-progress"/,'progression page remains accessible from account');
