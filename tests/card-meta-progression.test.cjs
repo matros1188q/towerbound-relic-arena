@@ -85,6 +85,6 @@ assert.match(ui,/data-collection-tab="cards"/);
 assert.match(ui,/function showStarterDeckModal/);
 assert.match(ui,/starterDeckSelection\.length<3/);
 assert.match(ui,/data-starter-deck-confirm/);
-assert.match(ui,/starterDeckSelection=\[\];save\(\);beginStage\(\)/,'starter-deck confirmation respects the selected map stage');
-assert.match(worker,/towerbound-v340/);
+assert.match(ui,/starterDeckSelection=\[\];save\(\);if\(eventTypeForStage\(c,selectedStage\)[\s\S]*?showMapEventOverlay\(\);else beginStage\(\)/,'starter-deck confirmation preserves map events before starting the selected stage');
+assert.match(worker,/^const CACHE = 'towerbound-v\d+';$/m,'service-worker cache key is versioned');
 console.log('Boss checkpoints, permanent card collection, and new-run deck draft checks passed.');
