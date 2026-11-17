@@ -150,9 +150,9 @@ async function journey(type,name,viewport,url){
   for(let attempt=0;attempt<8&&!defenseReady;attempt++){
    const defenseCard=page.locator('[data-card-block="true"]:not([disabled])').first();
    defenseReady=(await defenseCard.count())>0;
-   if(defenseReady){await defenseCard.click();break;}
+   if(defenseReady){await page.waitForFunction(()=>!document.documentElement.classList.contains('tb-battle-lock'),undefined,{timeout:8000});await defenseCard.click();break;}
    await page.locator('[data-action="end-turn"]').click();
-   await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length>=5;},{timeout:15000});
+   await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length>=5&&!document.documentElement.classList.contains('tb-battle-lock');},{timeout:15000});
   }
   assert.ok(defenseReady,name+' draws a playable defense card while tutorial awaits it');
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
