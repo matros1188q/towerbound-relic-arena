@@ -34,11 +34,11 @@ assert.ok(uiScript.includes('relicIconHtml(item,item?.slot)'),'Equipment/store r
 assert.ok(uiScript.includes('chapterBackgrounds=["image 2.jpeg","image 3.jpeg","image 4.jpeg","image 5.jpeg","image.jpeg"]'),'Chapter JPEG backgrounds must be preserved');
 const mode=source['rpg-mode.js'];
 const sw=source['service-worker.js'];
+assert.ok(sw.includes('./assets/characters/enemies/grave-archer.png'),'Dedicated Grave Archer portrait is cached for offline play');
 assert.ok(mode.includes("./assets/characters/heroes/image-Photoroom.png"),'Legacy RPG hero map uses uploaded PNG portrait');
 assert.ok(mode.includes("./assets/characters/bosses/mirror-executioner.png"),'Legacy RPG boss map uses existing named PNG');
 assert.ok(mode.includes("'grave-archer':'./assets/characters/enemies/grave-archer.png'"),'Legacy RPG uses the dedicated Grave Archer portrait, not a reused enemy image');
 assert.ok(uiScript.includes('"grave-archer":"enemies/grave-archer.png"'),'Card RPG uses the dedicated Grave Archer portrait');
-assert.ok(sw.includes('./assets/characters/enemies/grave-archer.png'),'Dedicated Grave Archer portrait is cached for offline play');
 const css=source['assets/ui/art-sprites.css'];
 assert.ok(css.includes('.sprite-icon{')&&css.includes('../skills/image 17.png'),'Talent atlas uses the dedicated skills PNG');
 for(const name of ['talent-atk','talent-hp','talent-def','talent-agi','talent-crit','shop-potion','shop-premium','shop-refine'])assert.ok(css.includes('.'+name),'Missing sprite crop '+name);
