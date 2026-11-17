@@ -490,6 +490,11 @@ const {chromium}=require('playwright');
   assert.notEqual(await page.locator('.v2-battle-wrap').count(),1,'winning the fight exits the battle screen');
   assert.match(await page.locator('.tb-loot-overlay').innerText(),/БОЙ ЗАВЕРШЕН/,'victory opens the post-battle reward summary');
   const rewardDeckSize=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];return(c.deck||[]).length;});
+  const levelUpContinue=page.locator('.tb-level-up-overlay [data-level-up-continue]');
+  if(await levelUpContinue.isVisible().catch(()=>false)){
+   await levelUpContinue.click();
+   await page.waitForSelector('.tb-level-up-overlay',{state:'detached',timeout:3000});
+  }
   await page.locator('[data-card-reward-start]').click();
   const rewardOverlayDiagnostic=await page.evaluate(()=>({pending:window.TowerboundRework?.state?.characters?.[0]?.pendingCardReward?.length||0,nodes:[...document.querySelectorAll('.card-reward-overlay')].map(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{parent:el.parentElement?.tagName,parentClass:el.parentElement?.className,display:s.display,visibility:s.visibility,opacity:s.opacity,z:s.zIndex,width:r.width,height:r.height,html:el.outerHTML.slice(0,220)}})}));
   console.log('CARD REWARD OVERLAY DIAGNOSTIC',JSON.stringify(rewardOverlayDiagnostic));
