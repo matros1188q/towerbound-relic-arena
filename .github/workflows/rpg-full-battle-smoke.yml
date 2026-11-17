@@ -1,0 +1,40 @@
+name: RPG Full Battle Smoke
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'rpg-rework-*.js'
+      - 'native-pwa.css'
+      - 'configs/**'
+      - 'tests/rpg-smoke.cjs'
+      - '.github/workflows/rpg-full-battle-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rpg-full-battle-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-battle:
+    name: Character to victory and next stage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install browser test dependency
+        run: npm install --no-save --package-lock=false playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run full RPG battle smoke test
+        run: node tests/rpg-smoke.cjs
