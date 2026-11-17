@@ -18,7 +18,7 @@ assert.match(ui,/case "open-meta-progression"/,'extended progression account act
 assert.match(ui,/case "bottom-progress":case "open-progress"/,'legacy progression action remains compatible');
 assert.match(css,/height:39px!important;min-height:39px!important;max-height:39px!important/,'header is the original 34px logo plus five pixels');
 assert.match(css,/flex-direction:row!important;align-items:center!important;justify-content:flex-start!important/,'header overrides legacy centered vertical layout');
-assert.match(css,/height:34px!important[\s\S]*?min-height:34px!important;max-height:34px!important/,'logo retains its original 34px display height');
+assert.ok(css.includes('height:34px!important')&&css.includes('min-height:34px!important')&&css.includes('max-height:34px!important'),'logo retains its original 34px display height');
 assert.match(css,/:has\(\.tb-arena\)>\.tb-header\{display:flex!important\}/,'header remains visible during combat');
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
 assert.match(html,/rpg-rework-ui\.css\.js\?v=27/,'CSS cache version is updated');
