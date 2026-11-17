@@ -7,6 +7,9 @@ Mobile-first fantasy RPG / roguelite. The active seven-class implementation is p
 - 7 playable classes: Assassin, Bishop, Dragonkin, Destroyer, Elemental, Duelist and Shaman.
 - 21 specializations and 420 active skill definitions (20 skills per specialization).
 - 250-stage tower map, solo boss stage every 10 levels, and 3/5/7 enemy gauntlets in the configured ranges.
+- Turn-based deckbuilder combat: draw pile, hand, discard and exhaust piles, energy costs, card targeting, enemy turns, statuses and class-specific card effects. The active card database contains 126 card definitions: 23 common cards and 103 class/specialization cards across all seven classes.
+- Card progression: starter-deck selection, permanent card unlocks and collection, card upgrades at camps, boss checkpoints that preserve deck/equipment/relic state, and card effects linked to equipped gear and relic passives.
+- Tower events: one-use checkpoint camp stops for healing or forging, upgradeable cards, wound/doubt curses, slime status cards and saboteur enemies; bosses are protected from saboteur replacement.
 - Character levels, talent trees, skill selection, equipment, item level 120, sockets, stones, refinement, enchantment and heroic mode.
 - Easy / Normal / Hardcore difficulty rules, potion belt, checkpoints, weighted death item loss and account progression.
 - Daily quests and boss, seasonal modifiers, account PvP points, local ghost matchmaking, shared browser stash, achievements, lore, tutorial and paragon.
@@ -56,6 +59,18 @@ This phase provides account identity and cloud persistence, not server-authorita
 These phases are plans, not claims that the functionality is already implemented.
 
 ## Project change log
+
+## 2026-11-17 — 126 card artworks and illustrated deckbuilder battle UI
+
+- Integrated the complete 126-image card artwork set into the active card database and battle hand renderer. Each card resolves its own image by card ID; unknown/missing images fall back to `assets/cards/strike.png`.
+- Added the canonical version-2 card art manifest at `configs/cards/art_manifest.json`: 126 unique card IDs mapped to 126 filenames using the `<card_id>.png` convention. The existing `assets/cards/art-manifest.json` remains the source catalogue from the original asset-renaming pass.
+- Battle cards now render their artwork, energy cost, name, live effect/description and rarity styling. The layout is constrained for the mobile hand; card buttons retain the existing disabled/target/play behavior and click delegation.
+- Added card image styles to `rpg-rework-ui.css.js` and precached all 126 card PNGs plus the canonical manifest in the service worker. Current service-worker cache key: `towerbound-v435`.
+- Updated the Active RPG build summary above to include deckbuilder combat, card progression, camp stops, curses/status cards, saboteurs and equipment/relic card synergies.
+- Files: `README.md`, `configs/cards/art_manifest.json`, `rpg-rework-ui.js`, `rpg-rework-ui.css.js`, `service-worker.js`; card assets live in `assets/cards/`.
+- Implementation commits: `bf70713570f77a19f54b573aee9832ff13f5a3fd` (ID-based art filenames and original manifest), `9266eb36be6a85e73d596ce681f515aadbedac6f` (canonical manifest, database mapping, battle rendering, styles and cache v435).
+- Verification recorded for the integration commit: 126 database IDs matched 126 manifest IDs with no missing/extra IDs; 126 PNGs are listed in the service-worker shell; the battle renderer contains the image wrapper and fallback; CSS includes card and rarity rules. A live visual pass in iPhone Safari and a fresh GitHub Actions run for this exact release are not claimed here.
+
 
 ### 2026-11-11 — README / JPG manifest / sprite-map synchronization
 
@@ -696,6 +711,6 @@ All commits below are on `main` and form the account / gem / localization / mobi
 - Enemy portraits use the numbered PNG files in `assets/characters/enemies/`; named boss portraits use the matching named PNG assets where available.
 - Relic item art: weapon `image 10.png`, helmet `image 2.png`, chest `image 3.png`, gloves `image 12.png`, ring `image 4.png`, amulet `image 6.png`, potion `image 5.png`, craft material `image 15.png`.
 - Talent attribute crops use `assets/skills/image 17.png`; CSS sprite positions remain in `assets/ui/art-sprites.css`. Store products use relic PNG art for gear, potions and materials, and existing atlas crops for premium/upgrade products.
-- `service-worker.js` uses cache key `towerbound-v33`; it precaches the migrated PNG assets while retaining the chapter JPEG backgrounds.
+- At the time of this 2026-11-11 catalogue snapshot, `service-worker.js` used cache key `towerbound-v33`; that historical value was superseded by the 2026-11-17 card-art release cache `towerbound-v435` documented above.
 - `assets/*/manifest.json` files record the active formats and source paths. The UI logo remains `assets/ui/logo.jpeg`, outside the migrated art folders.
 
