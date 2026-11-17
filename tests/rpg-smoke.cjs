@@ -384,6 +384,13 @@ const {chromium}=require('playwright');
   await page.locator('[data-action="start"]').click();
   const starterDeckConfirmForSmoke=page.locator('[data-starter-deck-confirm]');
   await starterDeckConfirmForSmoke.waitFor({state:'visible',timeout:5000});
+  await page.evaluate(()=>{
+   const state=window.TowerboundRework.state;
+   const character=state.characters.find(item=>item.id===state.activeCharacterId);
+   if(!character)throw new Error('Active QA character missing before battle start');
+   character.run.mapEvents={...(character.run.mapEvents||{}),9:null};
+   window.saveTowerboundRework();
+  });
   await starterDeckConfirmForSmoke.click();
   const battleStartDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0];return{runActive:c?.run?.active,stage:c?.run?.stage?.stage,stageMobs:c?.run?.stage?.mobs?.length,mapEvents:c?.run?.mapEvents,completedMapEvents:c?.run?.completedMapEvents,overlays:[...document.querySelectorAll('.tb-starter-deck-overlay,.tb-map-event-overlay,.card-reward-overlay,.tb-turn-tutorial')].map(node=>node.className),battleWrap:!!document.querySelector('.v2-battle-wrap'),text:document.querySelector('#tbRpg')?.innerText.slice(0,900)};});
   console.log('BATTLE START DIAGNOSTIC',JSON.stringify(battleStartDiagnostic));

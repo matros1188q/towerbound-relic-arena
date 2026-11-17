@@ -127,29 +127,18 @@ async function journey(type,name,viewport,url){
   assert.equal(await page.locator('.v2-card').count(),5,name+' draws five cards at the start of the turn');
   await page.locator('.v2-card.attack:not([disabled])').first().click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
-  // Keep the tutorial's second step deterministic: put a real defense card on top of the next draw pile.
-  await page.evaluate(()=>{
-   const state=window.TowerboundRework?.state;
-   const character=state?.characters?.find(item=>item.id===state.activeCharacterId);
-   if(!character)throw new Error('Active QA character was not found before the defense tutorial step');
-   character.deck=Array.isArray(character.deck)?character.deck:[];
-   for(const pileName of ['hand','deck','discard']){
-    const pile=Array.isArray(character[pileName])?character[pileName]:[];
-    const index=pile.findIndex(card=>card?.type==='defense');
-    if(index>=0){
-     const [defenseCard]=pile.splice(index,1);
-     character.deck.unshift(defenseCard);
-     return;
-    }
-   }
-   throw new Error('QA deck has no defense card for the forced tutorial step');
-  });
+  // Let the real shuffled deck advance until a defense card reaches the hand.
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: КАРТА ЗАЩИТЫ'),{timeout:10000});
-  const defenseDiagnostic=await page.evaluate(()=>{const state=window.TowerboundRework?.state,c=state?.characters?.find(item=>item.id===state.activeCharacterId);return{energy:c?.currentEnergy,maxEnergy:c?.energy,cards:[...document.querySelectorAll('#cardHand .v2-card')].map(el=>({type:el.dataset.cardType,disabled:el.disabled,classes:el.className,text:el.innerText,rect:(()=>{const r=el.getBoundingClientRect();return{width:r.width,height:r.height,top:r.top,bottom:r.bottom};})()})),endTurn:(()=>{const el=document.querySelector('[data-action="end-turn"]');return el?{disabled:el.disabled,text:el.innerText}:null;})(),tutorial:document.querySelector('.tb-turn-tutorial-card')?.innerText,toast:document.querySelector('.tb-toast')?.innerText};});
-  process.stdout.write('DEFENSE CARD DIAGNOSTIC '+name+' '+JSON.stringify({...defenseDiagnostic,consoleErrors})+'\\n');
-  await page.waitForSelector('[data-card-type="defense"]:not([disabled])',{timeout:10000});
-  await page.locator('[data-card-type="defense"]:not([disabled])').first().click();
+  let defenseReady=false;
+  for(let attempt=0;attempt<8&&!defenseReady;attempt++){
+   const defenseCard=page.locator('[data-card-type="defense"]:not([disabled])').first();
+   defenseReady=(await defenseCard.count())>0;
+   if(defenseReady){await defenseCard.click();break;}
+   await page.locator('[data-action="end-turn"]').click();
+   await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn]'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},{timeout:15000});
+  }
+  assert.ok(defenseReady,name+' draws a playable defense card while tutorial awaits it');
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForSelector('.tb-turn-tutorial',{state:'detached',timeout:10000});
