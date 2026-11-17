@@ -154,7 +154,7 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
 assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:43px!important'),'iPhone header stays compact without a progression button');
-assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=23'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(html.includes('progression-24.js?v=4')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=24'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');

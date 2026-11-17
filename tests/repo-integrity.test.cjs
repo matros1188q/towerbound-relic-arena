@@ -39,5 +39,6 @@ const styles=new Set([...html.matchAll(/<link[^>]+href=["']([^"']+\.css)(?:\?[^"
 for(const file of all.filter(file=>path.dirname(file)===root&&file.endsWith('.css'))){
  assert.ok(styles.has(path.basename(file)),'Root runtime stylesheet is not linked by index.html: '+relative(file));
 }
-assert.match(html,/service-worker\.js/,'service worker registration reference exists');
+const pwa=fs.readFileSync(path.join(root,'juice-pwa.js'),'utf8');
+assert.match(pwa,/service-worker\.js/,'service worker registration reference exists in the PWA bootstrap');
 console.log('Towerbound repository integrity passed: '+all.length+' files, '+jsonFiles.length+' JSON files, '+codeFiles.length+' JavaScript files, '+localRefs.length+' local HTML references and '+shellRefs.length+' service-worker assets.');
