@@ -450,7 +450,7 @@ const {chromium}=require('playwright');
    const defenseCards=page.locator('.v2-card.defense:not([disabled])');
    const defenseIndex=await defenseCards.evaluateAll(cards=>cards.findIndex(card=>{const value=Number(card.querySelector('.card-cost')?.textContent?.trim());return Number.isFinite(value)&&value>0;}));
    defenseReady=defenseIndex>=0;
-   if(defenseReady){const defenseCard=defenseCards.nth(defenseIndex);defenseCost=Number(await defenseCard.locator('.card-cost').innerText());await defenseCard.click();break;}
+   if(defenseReady){const defenseCard=defenseCards.nth(defenseIndex);defenseCost=Number(await defenseCard.locator('.card-cost').innerText());await defenseCard.click();const expectedEnergy=(3-defenseCost)+'/3';await page.waitForFunction(expected=>document.querySelector('#energyDisplay')?.textContent.includes(expected),expectedEnergy,{timeout:3000});break;}
    await page.locator('#endturn').click();
    await page.waitForFunction(()=>{const button=document.querySelector('#endturn'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length===5;},undefined,{timeout:15000});
   }
