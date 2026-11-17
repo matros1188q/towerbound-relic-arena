@@ -178,6 +178,8 @@ async function journey(type,name,viewport,url){
   });
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
+  // Startup may regenerate stage-one map events. Mark this fixture stage as already resolved so the recovery test reaches combat deterministically.
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.mapEvents={};c.run.completedMapEvents=[1];localStorage.setItem('tb-rpg-v2',JSON.stringify(window.TowerboundRework.state));});
   await page.locator('[data-action="play"]').click();
   await page.locator('[data-action="start"]').click();
   const recoveryDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0],stage=c?.run?.stage;return{runActive:c?.run?.active,stage:stage?.stage,mobCount:stage?.mobs?.length,killed:stage?.killedIndices,target:stage?.targetIndex,enemy:stage?.enemyIndex,snapshotTarget:stage?.uiBattleSnapshot?.targetIndex,snapshotEnemies:stage?.uiBattleSnapshot?.enemies?.map(enemy=>({index:enemy.index,hp:enemy.hp,alive:enemy.alive,dead:enemy.dead})),overlays:[...document.querySelectorAll('.tb-starter-deck-overlay,.tb-map-event-overlay,.tb-turn-tutorial')].map(node=>node.className),endTurn:document.querySelector('[data-action="end-turn"]')?.outerHTML,actions:[...document.querySelectorAll('#tbRpg [data-action]')].map(node=>node.dataset.action).slice(0,40),text:document.querySelector('#tbRpg')?.innerText.slice(0,800)};});
