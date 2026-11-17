@@ -21,10 +21,14 @@ assert.match(css,/height:39px!important;min-height:39px!important;max-height:39p
 assert.match(css,/flex-direction:row!important;align-items:center!important;justify-content:flex-start!important/,'header overrides legacy centered vertical layout');
 assert.ok(css.includes('height:34px!important')&&css.includes('min-height:34px!important')&&css.includes('max-height:34px!important'),'logo retains its original 34px display height');
 assert.match(css,/:has\(\.tb-arena\)>\.tb-header\{display:flex!important\}/,'header remains visible during combat');
+assert.match(css,/padding:0 0 4px!important/,'only four pixels plus divider remain below the logo');
+assert.doesNotMatch(css,/tb-v2:has\(\.tb-arena\)>\.tb-header\{display:none!important\}/,'obsolete combat header hiding rule is removed');
+assert.doesNotMatch(read('native-pwa.css'),/\.tb-header \.game-logo\{[^}]*width:min\(280px/,'obsolete oversized logo rule is removed');
+assert.match(html,/native-pwa\.css\?v=15/,'native stylesheet cache is updated');
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
-assert.match(html,/rpg-rework-ui\.css\.js\?v=27/,'CSS cache version is updated');
+assert.match(html,/rpg-rework-ui\.css\.js\?v=28/,'CSS cache version is updated');
 assert.match(html,/rpg-rework-ui\.js\?v=54/,'UI cache version is updated');
-assert.match(sw,/towerbound-v456/,'service worker cache is updated');
+assert.match(sw,/towerbound-v457/,'service worker cache is updated');
 const progression=read('progression-24.js');
 assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
 assert.ok(progression.includes("const bar=$('.tb-map-actions',r);"),'secret-room action is limited to the map action area');
