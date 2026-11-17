@@ -14,6 +14,7 @@ assert.match(ui,/tb-profile-card-cost/,'card library displays energy cost');
 assert.match(ui,/tb-profile-card-effects/,'card library displays combat values');
 assert.match(ui,/object-fit:contain/,'card library artwork preserves image proportions');
 assert.match(ui,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'card library uses a compact two-column mobile grid');
+assert.match(ui,/@media\(max-width:420px\)\{#tbRpg \.tb-profile-card-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'small iPhone screens retain two card columns');
 assert.match(ui,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/,'card library expands to three columns on wider screens');
-assert.match(sw,/towerbound-v448/,'service worker cache is bumped for the fix');
+assert.match(sw,/towerbound-v449/,'service worker cache is bumped for the fix');
 console.log('Towerbound card onboarding and library regressions passed.');
