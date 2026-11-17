@@ -37,7 +37,8 @@ assert.ok(online.includes(".limit(100)"),'leaderboard must cap at 100');
 assert.ok(online.includes(".from('leaderboard').upsert"),'player leaderboard publication missing');
 assert.ok(online.includes(".from('pvp_ghosts').upsert"),'player ghost publication missing');
 assert.ok(ui.includes('function leaderboardScreen()'),'leaderboard screen missing');
-assert.ok(ui.includes('data-action="bottom-progress" data-nav-tab="progress"'),'fixed bottom navigation leaderboard tab missing');
+assert.ok(ui.includes('data-action="open-progress"'),'progress screen remains accessible from account');
+assert.ok(!ui.includes('data-nav-tab="progress"'),'progression is removed from fixed bottom navigation');
 assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action missing');
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
@@ -130,7 +131,7 @@ console.log('Online services static and gem runtime checks: OK');
 // iPhone UI regression coverage: scroll restoration, translations, skill bar and account auth.
 assert.ok(ui.includes('function renderWithScrollSave()'),'render must preserve scroll position');
 assert.ok(ui.includes('renderView();')&&ui.includes('requestAnimationFrame(restore)'),'scroll restored after DOM replacement');
-for(const [id,label] of Object.entries({attack:'Атака',health:'Здоровье',critical:'Крит',defense:'Защита',attack_speed:'Скорость'}))assert.ok(ui.includes(id+":'"+label+"'"),'talent label missing: '+id);
+assert.ok(ui.includes("Card-first combat: legacy skill catalogue is not loaded into the active UI."),'active battle uses card-first combat rather than obsolete attack-speed skill labels');
 assert.ok(ui.includes('c.activeSkills=chosen')&&ui.includes('slice(0,6)'),'active skills capped at six');
 assert.ok(ui.includes('data-replace-skill')&&ui.includes('Все 6 слотов заняты'),'skill replacement dialog missing');
 assert.ok(ui.includes('humanSkillDescription')&&ui.includes('особенность класса'),'technical skill tags translated');
@@ -151,8 +152,8 @@ assert.ok(ui.includes('towerbound-auth-change')&&ui.includes('cloud.signIn(login
 assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new Event('towerbound-auth-change')"),'Supabase sign-in awaits cloud restore and emits auth state changes');
 
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
-assert.ok(progression.includes("if(bar&&c&&!bar.querySelector('[data-tbp-open]'))")&&progression.includes("b.className='tb-progression-button'"),'progression control is only added when a character exists');
-assert.ok(css.includes('white-space:nowrap')&&css.includes('tb-progression-button::before')&&css.includes('@media(max-width:400px)'),'iPhone header and progression control stay on one line and collapse to an icon');
+assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
+assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:43px!important'),'iPhone header stays compact without a progression button');
 assert.ok(html.includes('progression-24.js?v=3')&&html.includes('towerbound-cloud.js?v=16')&&html.includes('rpg-rework-ui.css.js?v=23'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');

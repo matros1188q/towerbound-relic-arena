@@ -13,6 +13,8 @@ assert.match(ui,/class="game-logo" src="\.\/assets\/icons\/image\.png" alt="T" w
 assert.match(ui,/class="tb-brand-title">TowerBound Relic Arena</,'brand title follows the T logo');
 assert.doesNotMatch(ui,/data-nav-tab="progress"/,'progression button is removed from global navigation');
 assert.match(ui,/data-action="open-progress"/,'progression page remains accessible from account');
+assert.match(ui,/data-action="open-meta-progression"/,'extended progression systems remain accessible from account');
+assert.match(ui,/case "open-meta-progression"/,'extended progression account action is wired');
 assert.match(ui,/case "bottom-progress":case "open-progress"/,'legacy progression action remains compatible');
 assert.match(css,/height:43px!important;min-height:43px!important;max-height:43px!important/,'header is constrained to logo height plus five pixels');
 assert.match(css,/width:38px!important;height:38px!important/,'logo display size is fixed rather than allowing intrinsic image dimensions');
@@ -20,5 +22,8 @@ assert.match(css,/:has\(\.tb-arena\)>\.tb-header\{display:flex!important\}/,'hea
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
 assert.match(html,/rpg-rework-ui\.css\.js\?v=24/,'CSS cache version is updated');
 assert.match(html,/rpg-rework-ui\.js\?v=50/,'UI cache version is updated');
-assert.match(sw,/towerbound-v450/,'service worker cache is updated');
+assert.match(sw,/towerbound-v451/,'service worker cache is updated');
+const progression=read('progression-24.js');
+assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
+assert.ok(progression.includes("const bar=$('.tb-map-actions',r);"),'secret-room action is limited to the map action area');
 console.log('Towerbound compact header and navigation checks passed.');
