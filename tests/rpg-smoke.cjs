@@ -84,6 +84,8 @@ const {chromium}=require('playwright');
  page.on('console',message=>{if(message.text().startsWith('SKILL DEBUG:')){const args=message.args();if(args[1])args[1].jsonValue().then(value=>skillDebugLogs.push(value)).catch(()=>{});}});
  await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',route=>route.abort());
  await page.addInitScript(()=>{
+  let qaSeed=0x6d2b79f5;
+  Math.random=()=>{qaSeed^=qaSeed<<13;qaSeed^=qaSeed>>>17;qaSeed^=qaSeed<<5;return(qaSeed>>>0)/4294967296;};
   window.supabase={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
    return{auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
     signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};if(email.startsWith('test123@')&&password!=='123456')return{data:{session:null},error:{message:'Invalid login credentials'}};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
@@ -379,7 +381,6 @@ const {chromium}=require('playwright');
    });
   await page.setViewportSize({width:390,height:844});
   await page.evaluate(()=>{
-   Math.random=()=>.5;
    const engine=window.TowerboundRework;
    const beginStage=engine.beginStage.bind(engine);
    engine.beginStage=(...args)=>{
