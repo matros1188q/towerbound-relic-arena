@@ -166,7 +166,7 @@ async function journey(type,name,viewport,url){
   assert.ok(diagnostics.scrollWidth<=diagnostics.width+1,name+' has no horizontal page overflow at '+viewport.width+'px');
   // Reproduce a persisted dead-target state, then reload and resume the same stage.
   await page.evaluate(()=>{
-   const engine=window.TowerboundRework,character=engine.state.characters[0],stage=character.run.stage,snapshot=stage.uiBattleSnapshot;
+   const engine=window.TowerboundRework,character=engine.state.characters[0];character.run.mapEvents={};character.run.completedMapEvents=[];const stage=character.run.stage,snapshot=stage.uiBattleSnapshot;
    if(!snapshot||!Array.isArray(snapshot.enemies)||snapshot.enemies.length<2)throw new Error('Combat snapshot was not persisted before reload');
    snapshot.enemies[0].hp=0;snapshot.enemies[0].alive=false;snapshot.enemies[0].dead=true;
    snapshot.targetIndex=0;stage.targetIndex=0;stage.enemyIndex=0;
