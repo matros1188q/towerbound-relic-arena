@@ -1542,7 +1542,8 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   const achievement=(balance.achievements?.achievements||[]).some(a=>!claimed.includes(a.id)&&(derived[a.metric]??c.stats?.[a.metric]??c.progress?.[a.metric]??0)>=a.target);
   const chest=!!engine.dailyChestSnapshot(c.id).available;
   const addBadge=(button,value)=>{if(!button||!value)return;const badge=document.createElement("i");badge.className="badge";badge.textContent=String(value===true?"!":value);button.appendChild(badge);};
-  addBadge(nav.querySelector('[data-nav-tab="profile"]'),skillBadge+(upgrade?1:0)+(achievement?1:0));
+  addBadge(nav.querySelector('[data-nav-tab="profile"]'),skillBadge+(upgrade?1:0));
+  addBadge(nav.querySelector('[data-nav-tab="progress"]'),achievement);
   addBadge(nav.querySelector('[data-nav-tab="shop"]'),chest?1:0);
   const skillsTab=root.querySelector('[data-tab="skills"]');if(skillsTab)skillsTab.removeAttribute("data-skill-badge");
   const bagTab=root.querySelector('[data-tab="bag"]');addBadge(bagTab,upgrade?1:0);
@@ -1550,7 +1551,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   root.querySelectorAll('[data-craft-stone]').forEach(button=>addBadge(button,craftMaterials>=20?1:0));
   root.querySelectorAll('[data-merge]').forEach(button=>{const item=craftStones.find(stone=>stone.id===button.dataset.merge),typeId=item?.stoneType?.id||item?.stoneType||"unknown",key=String(item?.level||1)+":"+typeId;addBadge(button,(craftLevels[key]||0)>=5?1:0);});
 
-  const active=screen==="map"?"map":screen==="profile"||screen==="progress"?"profile":screen==="shop"?"shop":"account";
+  const active=screen==="map"?"map":screen==="profile"?"profile":screen==="progress"?"progress":screen==="shop"?"shop":"account";
   nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
  function lootSummaryModal(){
