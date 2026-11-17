@@ -465,7 +465,7 @@
  }catch(e){notify("Не удалось сохранить: "+e.message);}}
  function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
- function header(){return '<header class="tb-header" aria-label="TowerBound Relic Arena"><div class="tb-brand"><img class="game-logo" src="./assets/icons/image.png" alt="T" width="38" height="38" decoding="async"><strong class="tb-brand-title">TowerBound Relic Arena</strong></div></header>';}
+ function header(){return '<header class="tb-header" aria-label="TowerBound Relic Arena"><div class="tb-brand"><img class="game-logo" src="./assets/ui/logo.jpeg" alt="T" decoding="async"><strong class="tb-brand-title">TowerBound Relic Arena</strong></div></header>';}
 
  function characterList(){
   const chars=engine.state.characters;
