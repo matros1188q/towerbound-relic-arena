@@ -49,7 +49,7 @@
   const tutorialSteps=[
     {title:'Шаг 1 из 4 · Карта атаки',text:'Разыграй карту атаки из руки. Она наносит урон выбранному врагу.'},
     {title:'Шаг 2 из 4 · Заверши ход',text:'Нажми «ЗАВЕРШИТЬ ХОД», чтобы противники выполнили показанные действия.'},
-    {title:'Шаг 3 из 4 · Карта защиты',text:'Твой ход снова начался. Разыграй карту защиты, чтобы получить временный щит.'},
+    {title:'Шаг 3 из 4 · Карта защиты',text:'Твой ход снова начался. Разыграй карту, которая даёт броню: «Защита» или «Рывок».'},
     {title:'Шаг 4 из 4 · Заверши ход',text:'Нажми «ЗАВЕРШИТЬ ХОД», чтобы закончить обучение и продолжить бой.'}
   ];
   function updateTutorial(){
@@ -79,7 +79,7 @@
     if(!target||target.disabled)return;
     const action=tutorialStep===0?target.matches('[data-card-type="attack"],[data-action="attack"],[data-basic-attack],.tb-basic-attack'):
       tutorialStep===1||tutorialStep===3?target.matches('[data-action="end-turn"],.tb-end-turn,#endturn'):
-      target.matches('[data-card-type="defense"],[data-action="skill"],[data-panel-skill],.v2-skill-btn');
+      target.matches('[data-card-type="defense"],[data-card-block="true"],[data-action="skill"],[data-panel-skill],.v2-skill-btn');
     if(!action)return;
     if(tutorialStep===0)window.TB_TUTORIAL_FREE_SKILL=false;
     tutorialStep++;

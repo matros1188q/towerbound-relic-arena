@@ -141,7 +141,7 @@ async function journey(type,name,viewport,url){
   await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: КАРТА ЗАЩИТЫ'),{timeout:10000});
   let defenseReady=false;
   for(let attempt=0;attempt<8&&!defenseReady;attempt++){
-   const defenseCard=page.locator('[data-card-type="defense"]:not([disabled])').first();
+   const defenseCard=page.locator('[data-card-block="true"]:not([disabled])').first();
    defenseReady=(await defenseCard.count())>0;
    if(defenseReady){await defenseCard.click();break;}
    await page.locator('[data-action="end-turn"]').click();
