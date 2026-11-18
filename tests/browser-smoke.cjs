@@ -122,6 +122,17 @@ async function journey(type,name,viewport,url){
   await starterDeckConfirm.click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
+  // Keep the tutorial fixture alive across all three browsers: no lethal enemy damage or early poison victory.
+  await page.evaluate(()=>{
+   const character=window.TowerboundRework?.state?.characters?.find(item=>item.id===window.TowerboundRework.state.activeCharacterId),stage=character?.run?.stage,snapshot=stage?.uiBattleSnapshot;
+   if(!snapshot||!Array.isArray(snapshot.enemies)||snapshot.enemies.length<2)throw new Error('Tutorial fixture did not expose at least two live enemies');
+   for(const enemy of snapshot.enemies){
+    enemy.hp=100000;enemy.maxHp=Math.max(100000,Number(enemy.maxHp)||0);enemy.alive=true;enemy.dead=false;
+    for(const key of Object.keys(enemy))if(/^(damage|attackDamage|damagePerHit|power|dmg)$/i.test(key)&&Number.isFinite(Number(enemy[key])))enemy[key]=0;
+    if(enemy.intent&&typeof enemy.intent==='object')for(const key of Object.keys(enemy.intent))if(/damage|attack|power|dmg/i.test(key)&&Number.isFinite(Number(enemy.intent[key])))enemy.intent[key]=0;
+   }
+   for(const mob of stage.mobs||[]){mob.hp=100000;mob.maxHp=Math.max(100000,Number(mob.maxHp)||0);mob.alive=true;mob.dead=false;for(const key of Object.keys(mob))if(/^(damage|attackDamage|damagePerHit|power|dmg)$/i.test(key)&&Number.isFinite(Number(mob[key])))mob[key]=0;}
+  });
   // The first battle must show the turn-based tutorial outside the clipped arena.
   assert.equal(await page.locator('.tb-turn-tutorial').count(),1,name+' shows the first-run turn-based tutorial');
   const tutorial=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),b=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{bottom:r.bottom,buttonBottom:b.bottom,viewport:innerHeight,maxHeight:parseFloat(getComputedStyle(el).maxHeight)};});
