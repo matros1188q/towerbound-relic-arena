@@ -33,11 +33,12 @@ async function journey(type,name,viewport,url){
  page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});
  page.on('requestfailed',request=>{const url=request.url(),reason=request.failure()?.errorText;if(reason!=='net::ERR_ABORTED'&&reason!=='NS_BINDING_ABORTED'&&!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+reason);});
  await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
+  await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2*',route=>route.fulfill({status:200,contentType:'application/javascript',body:'/* Browser QA auth adapter is installed by addInitScript. */'}));
  await page.route('https://fonts.googleapis.com/**',route=>route.abort());
  await page.route('https://fonts.gstatic.com/**',route=>route.abort());
   await page.addInitScript(()=>{
    window.supabase={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
-    return{auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
+    return{__tbQaStub:true,auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
      signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
      signUp:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
      signOut:async()=>{localStorage.removeItem('__tb_qa_auth_session');if(listener)listener('SIGNED_OUT',null);return{error:null};}},
@@ -53,6 +54,7 @@ async function journey(type,name,viewport,url){
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
   await page.waitForSelector('#tbRpg .tb-login-gate');
   await page.waitForFunction(()=>window.TowerboundCloud?.configured&&window.TowerboundCloud.status?.().text==='АККАУНТ · НУЖЕН ВХОД',{timeout:10000});
+  assert.equal(await page.evaluate(()=>window.TowerboundCloud?.client?.__tbQaStub===true),true,name+' uses the isolated browser auth adapter rather than the live Supabase CDN');
   assert.equal(await page.locator('.tb-login-gate h2').innerText(),'Вход в игру',name+' starts with centered login gate');
   await page.locator('#login').fill('BrowserQA');
   await page.locator('#pass').fill('qa-password');
