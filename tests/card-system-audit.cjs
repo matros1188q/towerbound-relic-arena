@@ -79,7 +79,7 @@ const starterDeckSource=ui.slice(ui.indexOf('function makeStarterDeck('),ui.inde
 for(const classId of Object.keys(classes))assert.ok(starterDeckSource.includes(classId+':['),classId+' has a dedicated starter deck');
 for(const name of ['function cardEffects(card)','function drawCards(amount)','function playCard(cardIndex)','function resolveCardPlay(cardIndex)','function endPlayerTurn()','function enemyTurn(enemy)','function planEnemyIntents()','function applyTargetDamage(','function finishCurrentEnemy()','function runEnemyTurnQueue('])assert.ok(ui.includes(name),'card combat runtime path exists: '+name);
 assert.match(ui,/for\(const key of \["poison","bleed","burn","weak","vulnerable"\]\)/,'poison, bleed, burn, weak and vulnerable have a shared application path');
-assert.match(ui,/function enemyTurn\(enemy\)[\s\S]*?const poison=[\s\S]*?const bleed=/,'poison and bleed are processed during enemy turns');
+assert.match(ui,/function enemyTurn\(enemy\)[\s\S]*?const poison=[\s\S]*?bleed=/,'poison and bleed are processed during enemy turns');
 assert.match(ui,/function endPlayerTurn\(\)[\s\S]*?const burnTargets=/,'burn damage is processed at end of player turn');
 assert.match(ui,/cardEffects\(card\)\.endTurnPlayerWeak/,'curse weakness is processed when the player ends a turn');
 assert.match(ui,/if\(Number\(effects\.draw\)>0\)drawCards\(effects\.draw\)/,'draw effects call the deck draw routine');
