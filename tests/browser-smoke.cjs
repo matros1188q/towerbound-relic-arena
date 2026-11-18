@@ -64,7 +64,8 @@ async function journey(type,name,viewport,url){
    process.stderr.write('AUTH DIAGNOSTIC '+name+' '+JSON.stringify(authDiagnostic)+'\\n');
    throw error;
   }
-  assert.equal(await page.evaluate(()=>!!window.TowerboundCloud?.signedIn),true,name+' signs in through the browser auth adapter');
+  const authState=await page.evaluate(()=>({signedIn:!!window.TowerboundCloud?.signedIn,configured:window.TowerboundCloud?.configured,status:window.TowerboundCloud?.status?.(),message:document.querySelector('.tb-login-message')?.textContent,lastAuth:window.__tbLastAuth,sessionStorage:localStorage.getItem('__tb_qa_auth_session'),cloudMessage:document.querySelector('#tbCloudMessage')?.textContent}));
+  assert.equal(authState.signedIn,true,name+' signs in through the browser auth adapter: '+JSON.stringify(authState));
   await page.waitForSelector('[data-action="new"]');
   assert.equal(await page.locator('.tb-header .tb-account-button').count(),0,name+' has no redundant account button');
   const logo=page.locator('.tb-brand img.game-logo');
