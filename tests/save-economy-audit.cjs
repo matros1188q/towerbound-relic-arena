@@ -5,7 +5,7 @@ const path=require('node:path');
 const {createEngine}=require('../rpg-rework-v2.js');
 const root=path.join(__dirname,'..');
 const balanceDir=path.join(root,'configs/balance');
-const balance=Object.fromEntries(fs.readdirSync(balanceDir).filter(name=>name.endsWith('.json')).map(name=>[name.slice(0,-5],JSON.parse(fs.readFileSync(path.join(balanceDir,name),'utf8'))]));
+const balance=Object.fromEntries(fs.readdirSync(balanceDir).filter(name=>name.endsWith('.json')).map(name=>[name.slice(0,-5),JSON.parse(fs.readFileSync(path.join(balanceDir,name),'utf8'))]));
 let now=Date.UTC(2026,10,18,12);
 const engine=createEngine(balance,{now:()=>now,random:()=>0.25});
 const first=engine.createCharacter('Reward QA','assassin');
