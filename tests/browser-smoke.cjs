@@ -32,8 +32,7 @@ async function journey(type,name,viewport,url){
  page.on('pageerror',error=>errors.push(error.message));
  page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});
  page.on('requestfailed',request=>{const url=request.url(),reason=request.failure()?.errorText;if(reason!=='net::ERR_ABORTED'&&reason!=='NS_BINDING_ABORTED'&&!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+reason);});
- await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
-  await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2*',route=>route.fulfill({status:200,contentType:'application/javascript',body:'/* Browser QA auth adapter is installed by addInitScript. */'}));
+ await page.route('https://cdn.jsdelivr.net/**',route=>route.request().url().includes('/npm/@supabase/supabase-js@2')?route.fulfill({status:200,contentType:'application/javascript',body:'/* Browser QA auth adapter is installed by addInitScript. */'}):route.abort());
  await page.route('https://fonts.googleapis.com/**',route=>route.abort());
  await page.route('https://fonts.gstatic.com/**',route=>route.abort());
   await page.addInitScript(()=>{
