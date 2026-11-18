@@ -60,20 +60,41 @@ for (const classId of classIds) {
   }
 }
 const summary = {
-  audit: 'targeted-balance-progression',
-  targetStage: 200,
+  audit: 'full-250-build-progression',
+  targetStage: 250,
+  seedsPerBuild: 3,
   totalBuilds: builds.length,
-  passed: builds.filter(build => build.cleared >= 200).length,
-  failed: builds.filter(build => build.cleared < 200).length,
-  builds: builds.map(({ className, branchName, cleared, deathStage, deathLevel, deathReason }) =>
-    ({ className, branchName, cleared, deathStage, deathLevel, deathReason }))
+  totalSeedRuns: builds.reduce((sum, build) => sum + build.seedRuns.length, 0),
+  passed: builds.filter(build => build.worstSeedClear >= 250).length,
+  failed: builds.filter(build => build.worstSeedClear < 250).length,
+  passedSeedRuns: builds.reduce((sum, build) => sum + build.seedRuns.filter(run => run.cleared >= 250).length, 0),
+  builds: builds.map(({ className, branchName, worstSeedClear, medianSeedClear, bestSeedClear, failedSeedRuns, seedRuns }) => ({
+    className,
+    branchName,
+    worstSeedClear,
+    medianSeedClear,
+    bestSeedClear,
+    failedSeedRuns,
+    seedRuns: seedRuns.map(({ seedOffset, cleared, deathStage, deathLevel, deathReason }) =>
+      ({ seedOffset, cleared, deathStage, deathLevel, deathReason }))
+  }))
 };
 console.log(JSON.stringify(summary));
 assert.equal(builds.length, 21, 'must simulate all 21 class specializations');
+assert.equal(summary.totalSeedRuns, 63, 'must run three deterministic seeds for every specialization');
 assert.ok(builds.every(build => build.damageTaken > 0), 'every build must take incoming damage in simulation');
-const failures = builds.filter(build => build.cleared < 200);
+const failures = builds.flatMap(build => build.seedRuns
+  .filter(run => run.cleared < 250)
+  .map(run => ({
+    class: build.classId,
+    branch: build.branchId,
+    seedOffset: run.seedOffset,
+    cleared: run.cleared,
+    deathStage: run.deathStage,
+    deathReason: run.deathReason
+  })));
 assert.deepEqual(
-  failures.map(build => ({ class: build.classId, branch: build.branchId, cleared: build.cleared, deathStage: build.deathStage })),
+  failures,
   [],
-  'every class specialization must clear at least 200 stages; results: ' + builds.map(build => build.className + '/' + build.branchName + '=' + build.cleared + '/250 (death ' + build.deathStage + ')').join('; ')
+  'every one of the 63 specialization seed runs must clear all 250 stages; failures: ' + JSON.stringify(failures)
 );
