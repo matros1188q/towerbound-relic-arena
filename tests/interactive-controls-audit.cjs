@@ -10,16 +10,16 @@ const end=ui.indexOf('root.addEventListener("pointerup"',start);
 assert.ok(start>=0&&end>start,'RPG UI has one delegated click handler');
 
 const handler=ui.slice(start,end);
-const match=handler.match(/event\\.target\\.closest\\("([^"]+)"\\)/);
+const match=handler.match(/event\.target\.closest\("([^"]+)"\)/);
 assert.ok(match,'delegated click handler resolves actionable elements with closest()');
 const selector=match[1];
-const delegated=new Set([...selector.matchAll(/\\[data-([a-z0-9-]+)\\]/g)].map(item=>item[1]));
+const delegated=new Set([...selector.matchAll(/\[data-([a-z0-9-]+)\]/g)].map(item=>item[1]));
 const toKebab=value=>value.replace(/[A-Z]/g,char=>'-'+char.toLowerCase());
 
 // These are companion values read from the same clickable control as its primary
 // action attribute, rather than independent click targets.
 const companionFields=new Set(['statusValue','panelSlot','gemIndex']);
-const targetFields=[...new Set([...handler.matchAll(/target\\.dataset\\.([A-Za-z_$][\\w$]*)/g)].map(item=>item[1]))];
+const targetFields=[...new Set([...handler.matchAll(/target\.dataset\.([A-Za-z_$][\w$]*)/g)].map(item=>item[1]))];
 const missingFields=targetFields
  .filter(field=>!companionFields.has(field)&&!delegated.has(toKebab(field)))
  .map(toKebab)
@@ -27,10 +27,10 @@ const missingFields=targetFields
 assert.deepEqual(missingFields,[],
  'every data-* field read by handleClick must be reachable through its delegated selector');
 
-const createdActions=new Set([...ui.matchAll(/data-action=\\?["']([a-z][a-z0-9-]*)\\?["']/g)].map(item=>item[1]));
+const createdActions=new Set([...ui.matchAll(/data-action=\?["']([a-z][a-z0-9-]*)\?["']/g)].map(item=>item[1]));
 const handledActions=new Set([
- ...[...handler.matchAll(/target\\.dataset\\.action\\s*===\\s*"([^"]+)"/g)].map(item=>item[1]),
- ...[...handler.matchAll(/case\\s+"([^"]+)"/g)].map(item=>item[1])
+ ...[...handler.matchAll(/target\.dataset\.action\s*===\s*"([^"]+)"/g)].map(item=>item[1]),
+ ...[...handler.matchAll(/case\s+"([^"]+)"/g)].map(item=>item[1])
 ]);
 const unhandledActions=[...createdActions].filter(action=>!handledActions.has(action)).sort();
 assert.deepEqual(unhandledActions,[],
