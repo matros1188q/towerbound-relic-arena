@@ -36,4 +36,14 @@ const unhandledActions=[...createdActions].filter(action=>!handledActions.has(ac
 assert.deepEqual(unhandledActions,[],
  'every literal data-action rendered by the RPG UI must have a click-handler branch');
 
+
+const social=fs.readFileSync(path.join(root,'social-endgame.js'),'utf8');
+assert.ok(social.includes("e.target.closest('#socPanel [data-soc],#socPanel [data-tab]')"),
+ 'social click delegation is scoped to the social panel and cannot capture unrelated game tabs');
+const progression=fs.readFileSync(path.join(root,'progression-24.js'),'utf8');
+assert.ok(progression.includes("closest('[data-progress-tab]')")&&progression.includes('t.dataset.progressTab'),
+ 'progression tabs use their own delegated attribute instead of the game-wide profile data-tab');
+assert.equal((progression.match(/data-tab=/g)||[]).length,0,
+ 'progression markup does not publish generic data-tab controls into the RPG root');
+
 console.log('Towerbound interactive controls audit passed: '+delegated.size+' delegated data-* selectors, '+targetFields.length+' handler data fields and '+createdActions.size+' rendered actions.');

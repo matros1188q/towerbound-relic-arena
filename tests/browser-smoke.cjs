@@ -26,7 +26,7 @@ async function journey(type,name,viewport,url){
  let context;
  try{
   const mobileEmulation=type===firefox?{}:{isMobile:viewport.width<500,hasTouch:viewport.width<500};
-  context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',...mobileEmulation});
+  context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block',...mobileEmulation});
   const page=await context.newPage(),errors=[],failed=[],consoleErrors=[];
  page.on('dialog',dialog=>dialog.accept());
  page.on('pageerror',error=>errors.push(error.message));
@@ -36,7 +36,7 @@ async function journey(type,name,viewport,url){
  await page.route('https://fonts.googleapis.com/**',route=>route.abort());
  await page.route('https://fonts.gstatic.com/**',route=>route.abort());
   await page.addInitScript(()=>{
-   window.supabase={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
+   const qaAdapter={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
     return{__tbQaStub:true,auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
      signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
      signUp:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
@@ -44,6 +44,9 @@ async function journey(type,name,viewport,url){
      from:()=>{const query={select(){return this;},eq(){return this;},neq(){return this;},gte(){return this;},lte(){return this;},gt(){return this;},order(){return this;},limit:async()=>({data:[],error:null}),maybeSingle:async()=>({data:null,error:null}),upsert:async()=>({data:null,error:null})};return query;},
      rpc:async()=>({data:{revision:1},error:null})};
    }};
+   Object.freeze(qaAdapter);
+   Object.defineProperty(window,'supabase',{configurable:false,enumerable:true,writable:false,value:qaAdapter});
+   window.__tbQaSupabaseStub=true;
   });
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework,{timeout:20000});
@@ -100,11 +103,22 @@ async function journey(type,name,viewport,url){
   assert.equal(mapLayout.navPointer,'auto',name+' keeps bottom navigation clickable');
   await page.locator('[data-action="bottom-profile"]').click();
   assert.equal(await page.locator('.tb-tabs button').count(),8,name+' renders all eight profile tabs');
-  await page.locator('[data-tab="account"]').click();
-  assert.equal(await page.locator('.tb-profile-account').count(),1,name+' opens the account panel');
-  await page.locator('[data-tab="speedrun"]').click();
-  assert.equal(await page.locator('.speedrun-container').count(),1,name+' opens the speedrun panel');
+  for(const tab of ['stats','talents','skills','gear','bag','craft','account','speedrun']){
+   const tabButton=page.locator('.tb-tabs [data-tab="'+tab+'"]');
+   await tabButton.click();
+   assert.equal(await tabButton.evaluate(el=>el.classList.contains('active')),true,name+' activates the '+tab+' profile tab');
+   assert.equal(await page.locator('#socPanel').count(),0,name+' keeps the '+tab+' profile tab isolated from the social click handler');
+  }
   await page.locator('[data-tab="gear"]').click();
+  await page.waitForFunction(()=>!!window.TowerboundProgression&&!!document.querySelector('#tbProgressionOverlay'),{timeout:10000});
+  await page.evaluate(()=>window.TowerboundProgression.open());
+  await page.waitForFunction(()=>{const panel=document.querySelector('#tbProgressionOverlay');return panel&&!panel.hidden;});
+  await page.locator('#tbProgressionOverlay [data-progress-tab="economy"]').click();
+  assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Чёрный рынок/,name+' opens the progression economy tab without leaving the overlay');
+  await page.locator('#tbProgressionOverlay [data-progress-tab="ux"]').click();
+  assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Лучшая экипировка/,name+' opens the progression convenience tab');
+  await page.locator('#tbProgressionOverlay [data-tbp="close"]').first().click();
+  await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.hidden===true);
   const collectionItems=page.locator('.tb-collection-item');
   assert.ok(await collectionItems.count()>=30,name+' renders at least 30 class collection entries across equipment slots and rarities');
   const collectionEntry=await collectionItems.first().evaluate(el=>({slot:el.querySelector('b')?.textContent?.trim(),rarity:el.querySelector('small')?.textContent?.trim()}));
@@ -114,6 +128,13 @@ async function journey(type,name,viewport,url){
   await collectionItems.first().click();
   assert.equal(await page.locator('.tb-collection-detail').count(),1,name+' opens the selected collection item detail');
   await page.locator('[data-collection-close]').click();
+  await page.locator('[data-action="bottom-progress"]').click();
+  assert.equal(await page.locator('.tb-systems').count(),1,name+' opens the progress destination from bottom navigation');
+  assert.equal(await page.locator('#socPanel').count(),0,name+' progress navigation does not open the social overlay');
+  await page.locator('[data-action="bottom-shop"]').click();
+  assert.equal(await page.locator('.tb-shop').count(),1,name+' opens the shop destination from bottom navigation');
+  await page.locator('[data-action="bottom-account"]').click();
+  assert.equal(await page.locator('.tb-systems').count(),1,name+' opens the account destination from bottom navigation');
   await page.locator('[data-action="bottom-map"]').click();
   await page.waitForSelector('.tb-stage-toolbar');
   await page.evaluate(()=>{Math.random=()=>.5;});
