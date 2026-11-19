@@ -27,7 +27,7 @@ const missingFields=targetFields
 assert.deepEqual(missingFields,[],
  'every data-* field read by handleClick must be reachable through its delegated selector');
 
-const createdActions=new Set([...ui.matchAll(/data-action=\?["']([a-z][a-z0-9-]*)\?["']/g)].map(item=>item[1]));
+const createdActions=new Set([...ui.matchAll(/data-action=(?:\\)?["']([a-z][a-z0-9-]*)["']/g)].map(item=>item[1]));
 const handledActions=new Set([
  ...[...handler.matchAll(/target\.dataset\.action\s*===\s*"([^"]+)"/g)].map(item=>item[1]),
  ...[...handler.matchAll(/case\s+"([^"]+)"/g)].map(item=>item[1])
