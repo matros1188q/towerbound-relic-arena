@@ -109,16 +109,17 @@ async function journey(type,name,viewport,url){
    assert.equal(await tabButton.evaluate(el=>el.classList.contains('active')),true,name+' activates the '+tab+' profile tab');
    assert.equal(await page.locator('#socPanel').count(),0,name+' keeps the '+tab+' profile tab isolated from the social click handler');
   }
-  await page.locator('[data-tab="gear"]').click();
-  await page.waitForFunction(()=>!!window.TowerboundProgression&&!!document.querySelector('#tbProgressionOverlay'),{timeout:10000});
-  await page.evaluate(()=>window.TowerboundProgression.open());
-  await page.waitForFunction(()=>{const panel=document.querySelector('#tbProgressionOverlay');return panel&&!panel.hidden;});
+  await page.locator('[data-action="bottom-account"]').click();
+  await page.locator('[data-action="open-meta-progression"]').click();
+  await page.waitForFunction(()=>{const panel=document.querySelector('#tbProgressionOverlay');return !!panel&&!panel.hidden;},{timeout:10000});
   await page.locator('#tbProgressionOverlay [data-progress-tab="economy"]').click();
   assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Чёрный рынок/,name+' opens the progression economy tab without leaving the overlay');
   await page.locator('#tbProgressionOverlay [data-progress-tab="ux"]').click();
   assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Лучшая экипировка/,name+' opens the progression convenience tab');
   await page.locator('#tbProgressionOverlay [data-tbp="close"]').first().click();
   await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.hidden===true);
+  await page.locator('[data-action="bottom-profile"]').click();
+  await page.locator('[data-tab="gear"]').click();
   const collectionItems=page.locator('.tb-collection-item');
   assert.ok(await collectionItems.count()>=30,name+' renders at least 30 class collection entries across equipment slots and rarities');
   const collectionEntry=await collectionItems.first().evaluate(el=>({slot:el.querySelector('b')?.textContent?.trim(),rarity:el.querySelector('small')?.textContent?.trim()}));

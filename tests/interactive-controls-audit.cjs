@@ -46,4 +46,10 @@ assert.ok(progression.includes("closest('[data-progress-tab]')")&&progression.in
 assert.equal((progression.match(/data-tab=/g)||[]).length,0,
  'progression markup does not publish generic data-tab controls into the RPG root');
 
+
+assert.ok(progression.includes("if(!overlay||!overlay.isConnected)")&&progression.includes("document.body.append(overlay)"),
+ 'progression overlay is mounted outside the replaceable RPG render root and recreated after removal');
+assert.ok(progression.includes("if(!overlay?.isConnected)inject();"),
+ 'the progression entry point recreates a missing overlay before opening it');
+
 console.log('Towerbound interactive controls audit passed: '+delegated.size+' delegated data-* selectors, '+targetFields.length+' handler data fields and '+createdActions.size+' rendered actions.');
