@@ -52,4 +52,5 @@ assert.match(ui,/for\(const enemy of battle\.enemies\.filter\(x=>x\.alive\)\)\{i
 assert.match(ui,/target\.mutation==="vampirism"&&target\.hp>0/,'vampirism mutation cannot resurrect a defeated enemy');
 assert.match(ui,/applyTargetDamage\(enemy,burn,"fire"\);(?:if\(!battle\)return;)?enemy\.burn=0;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal burn retaliation ends the run immediately');
 assert.match(ui,/applyTargetDamage\(target,dot\.damage,"dark"\);(?:if\(!battle\)return;)?dot\.ticks--;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal dark DoT retaliation ends the run immediately');
+assert.match(ui,/battle\.isPlayerTurn=false;clearPendingTurnTimer\(\);battle\.busy=false;battle\.actionDamageLedger=\{\};battle\.actionIsPrimaryHit=false;battle\.actionIsSkill=false;[\s\S]*?const burnTargets=/,'end-turn status ticks start a fresh damage action and cannot trigger card procs');
 console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
