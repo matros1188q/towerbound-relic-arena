@@ -874,7 +874,7 @@ function createDialog(){
   const powerTalent=(branch?.talents||[]).find(talent=>/сила\s*$/i.test(String(talent.name||"")));
   const powerRank=Math.max(0,Number(character.talents?.[powerTalent?.id])||0);
   const talentBonus=powerRank*2,damageType=effects.damageType||card.damageType||"physical";
-  const spellBonus=damageType==="arcane"?Math.max(0,Number(battle?.cardSpellPower)||0):0;
+  const spellBonus=isMagicCard(card,effects)?Math.max(0,Number(battle?.cardSpellPower)||0):0;
   return Math.max(0,base+perEnergy+conditional+talentBonus+spellBonus+Math.max(0,Number(battle?.relicAttackBonus)||0)+Math.max(0,Number(battle?.nextAttackDamageBonus)||0));
  }
  function classResourceMarkup(c){
