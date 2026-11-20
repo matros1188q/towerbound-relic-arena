@@ -395,23 +395,24 @@
 
  function cardPreviewDamage(card,target){
   if(!card||!target||!target.alive||target.hp<=0)return 0;
-  const c=live(),effects=cardEffects(card),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1);
-  const total=getCardDamageWithTalents(card,c,card.costX?c.currentEnergy:0)+Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0));
+  const c=live(),effects=cardEffects(card),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),isXCost=!!(card.isXCost||card.costX);
+  const total=getCardDamageWithTalents(card,c,isXCost?c.currentEnergy:0)+Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0));
   if(total<=0)return 0;
   const attackCard=isAttackCard(card,effects),magicCard=isMagicCard(card,effects),finisher=!!(card.finisher||effects.finisher||(Array.isArray(card.tags)&&card.tags.includes("finisher")));
+  const weaponRefine=Math.max(0,Number((c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0))?.refine)||0),refineBonus=attackCard?weaponRefine*2:0;
+  const weakScale=Number(battle.playerWeakTurns)>0?.75:1,furyScale=Number(battle.playerDamageBuffTurns)>0?1+Math.max(0,Number(battle.playerDamageBuff)||0):1,firstAttackScale=battle.firstAttackDouble?2:1;
   let classMultiplier=1,classFlat=0;
   if(c.classId==="destroyer")classFlat=Math.max(0,Number(c.rage)||0);
   if(c.classId==="bishop"&&attackCard)classFlat+=Math.max(0,Number(c.faith)||0)*3;
   if(c.classId==="assassin"&&attackCard&&Number(c.combo)>0)classMultiplier*=1+Math.min(3,Number(c.combo)||0)*.5;
   if(c.classId==="duelist"&&attackCard&&finisher&&Number(c.charges)>=3)classMultiplier*=3;
   if(c.classId==="elemental"&&magicCard&&Number(c.magicCharge)>0)classMultiplier*=1+Math.min(10,Number(c.magicCharge)||0)*.1;
-  const weaponRefine=Math.max(0,Number((c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0))?.refine)||0),refineBonus=attackCard?weaponRefine*2:0;
-  const weakScale=Number(battle.playerWeakTurns)>0?.75:1,furyScale=Number(battle.playerDamageBuffTurns)>0?1+Math.max(0,Number(battle.playerDamageBuff)||0):1,firstAttackScale=battle.firstAttackDouble?2:1;
   const raw=Math.max(1,Math.round((total+refineBonus+classFlat)*(1+Math.max(0,Number(stats.attack)||0)/100)*scale*weakScale*furyScale*classMultiplier*firstAttackScale)),type=effects.damageType||card.damageType||"physical";
-  const multiplier=engine.damageTypeMultiplier(target,type);let remainingHp=Math.max(0,Number(target.hp)||0),remainingShield=Math.max(0,Number(target.shield)||0),guardCharges=Math.max(0,Number(target.guardCharges)||0),used=0,totalDamage=0;
+  const mult=engine.damageTypeMultiplier(target,type);
+  let remainingHp=Math.max(0,Number(target.hp)||0),remainingShield=Math.max(0,Number(target.shield)||0),guardCharges=Math.max(0,Number(target.guardCharges)||0),used=Number(battle.actionDamageLedger?.[target.index])||0,totalDamage=0;
   const hits=Math.max(1,Math.floor(Number(effects.hits)||1));
   for(let hit=0;hit<hits&&remainingHp>0;hit++){
-   let hitMultiplier=multiplier;
+   let hitMultiplier=mult;
    if(!effects.ignoreArmor&&target.role==="tank"&&guardCharges>0){hitMultiplier*=1-(balance.mobs.roles.tank.shield_fraction||.3);guardCharges--;}
    let hitDamage=Math.max(0,Math.round(raw*hitMultiplier*(Number(target.vulnerable)>0?1.5:1)));
    if(target.type==="boss")hitDamage=engine.capBossDamage(target,hitDamage,used);
@@ -766,7 +767,6 @@ function createDialog(){
   if(enemy.role==="saboteur"||planned?.type==="sabotage"){
    const cardId=planned?.cardId||(gameRandom()<.5?"curse_wound":"status_slime"),jammed=createCardInstance(cardId);
    if(jammed){jammed.sabotageSource=enemy.id;if(c.hand.length<10){c.hand.push(jammed);notify("🃏 Саботажник засорил руку картой «"+jammed.name+"»");}else{c.discard.push(jammed);notify("🃏 Саботажник добавил «"+jammed.name+"» в сброс");}}
-   if(enemy.weak>0)enemy.weak=Math.max(0,enemy.weak-1);if(enemy.vulnerable>0)enemy.vulnerable=Math.max(0,enemy.vulnerable-1);
    decayEnemyDebuffs(enemy);save();render();return;
   }
   if(planned?.type==="heal"){const ally=(battle.enemies||[]).find(x=>x.index===planned.targetIndex&&x.alive&&x.hp>0);if(ally){ally.hp=Math.min(ally.maxHp,ally.hp+planned.amount);if(ally.index===battle.targetIndex)battle.enemyHp=ally.hp;notify("Лекарь восстановил "+planned.amount+" HP союзнику");}decayEnemyDebuffs(enemy);return;}
@@ -866,8 +866,8 @@ function createDialog(){
  function getCardDamageWithTalents(card,character,energySpent){
   if(!card||!character)return 0;
   const effects=cardEffects(card),base=Number(effects.damage)||Number(effects.damageAll)||0;
-  const energy=Number.isFinite(Number(energySpent))?Math.max(0,Number(energySpent)):(card.costX?Math.max(0,Number(character.currentEnergy)||0):0);
-  const perEnergy=card.costX?Math.max(0,Number(effects.damagePerEnergy)||0)*energy:0;
+  const isXCost=!!(card.isXCost||card.costX),energy=Number.isFinite(Number(energySpent))?Math.max(0,Number(energySpent)):(isXCost?Math.max(0,Number(character.currentEnergy)||0):0);
+  const perEnergy=isXCost?Math.max(0,Number(effects.damagePerEnergy)||0)*energy:0;
   if(base<=0&&perEnergy<=0)return 0;
   const conditional=Number(effects.bonusDamageIfBlock)>0&&(battle?.cardBlock||0)>0?Number(effects.bonusDamageIfBlock):0;
   const branches=classData(character)?.branches||[],branch=branches.find(entry=>entry.id===character.branch);

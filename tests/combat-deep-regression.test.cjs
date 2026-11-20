@@ -22,7 +22,7 @@ assert.match(ui,/burn:"Горение: в конце хода игрока на�
 assert.match(ui,/\["burn","🔥"\]/,'burn is visible in live status');
 assert.ok(ui.includes('stateBefore=JSON.parse(JSON.stringify(engine.state))'),'card action captures a rollback snapshot');
 assert.match(ui,/Object\.assign\(engine\.state,stateBefore\)/,'card effect errors restore engine state');
-assert.match(sw,/towerbound-v471/,'offline cache is invalidated');
+assert.match(sw,/towerbound-v472/,'offline cache is invalidated');
 assert.ok(ui.includes('if(target.shield>0){const absorbed='),'ignore armor still respects shields');
 assert.ok(!ui.includes('if(!options.ignoreArmor&&target.shield>0'),'ignore armor does not bypass shields');
 assert.ok(ui.includes('hits=Math.max(1,Math.floor(Number(effects.hits)||1))'),'multi-hit preview includes every hit');
@@ -30,6 +30,9 @@ assert.match(ui,/function cardPreviewDamage[\s\S]*?classMultiplier=1,classFlat=0
 assert.match(ui,/function cardPreviewDamage[\s\S]*?used=0,totalDamage=0/,'multi-hit boss preview starts with a fresh per-action damage cap');
 
 assert.ok(ui.includes('type=effects.damageType||card.damageType||"physical"'),'preview and runtime share default damage type');
+assert.ok(ui.includes('const isXCost=!!(card.isXCost||card.costX),energy='),'X-cost card damage uses both supported flags');
+assert.ok(ui.includes('if(c.classId==="assassin"&&attackCard&&Number(c.combo)>0)classMultiplier*='),'preview includes class damage modifiers');
+assert.ok(ui.includes('decayEnemyDebuffs(enemy);save();render();return;')&&!ui.includes('if(enemy.weak>0)enemy.weak=Math.max(0,enemy.weak-1);if(enemy.vulnerable>0)enemy.vulnerable=Math.max(0,enemy.vulnerable-1);\n   decayEnemyDebuffs(enemy);'),'sabotage does not decrement debuffs twice');
 assert.ok(ui.includes('playerTurnCount>=Number(battle.bossDeadlineTurns)'),'boss deadline uses the configured turn boundary');
-assert.match(sw,/towerbound-v471/);
+assert.match(sw,/towerbound-v472/);
 console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
