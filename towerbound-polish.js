@@ -42,11 +42,10 @@
     const gained=Math.max(0,to-from),points=gained;
     const unlocks=[];for(const level of [10,20,30,40,50,60,70,80,90,100])if(level>from&&level<=to)unlocks.push(level===10?'Открыт выбор специализации': 'Открыт новый рубеж развития · '+level+' уровень');
     const body='<div class="tb-levelup-number">'+to+'</div><p><b>Новый уровень!</b></p><p>Доступно очков талантов: <b>'+points+'</b></p>'+(unlocks.length?'<ul>'+unlocks.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'<p>Твои характеристики стали выше. Загляни в таланты и проверь новые возможности.</p>');
-    modal('level','Уровень повышен',body,'ПРОДОЛЖИТЬ',()=>{});
+    modal('level','Уровень повышен',body,'ПРОДОЛЖИТЬ');
     try{lootTone('level')}catch(_){}
   }
 
-  function updateTutorial(){}
   function addHelpButtons(){
     const definitions=[
       ['БОЕВАЯ МОЩЬ','Мощь (BP) — сводная оценка силы персонажа. На неё влияют уровень, характеристики экипировки, редкость предметов и таланты.'],
@@ -98,7 +97,7 @@
     if(/Легендарная|Богоподобная|Эпическая/.test(text)){lootTone('loot');try{if(/Легендарная|Богоподобная/.test(text)&&navigator.vibrate)navigator.vibrate([35,35,70]);}catch(_){}}
   }
   function decorate(){
-    addHelpButtons();highlightUpgrades();decorateLoot();updateTutorial();checkState();
+    addHelpButtons();highlightUpgrades();decorateLoot();checkState();
   }
   root.addEventListener('click',event=>{const b=event.target.closest('[data-tb-help]');if(b){event.preventDefault();event.stopPropagation();showHelp(b);}});
   document.addEventListener('pointerdown',()=>{try{const C=window.AudioContext||window.webkitAudioContext;if(C&&!audio)audio=new C();if(audio?.state==='suspended')audio.resume().catch(()=>{});}catch(_){}},{once:true,capture:true});
