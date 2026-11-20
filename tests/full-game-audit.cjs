@@ -117,7 +117,7 @@ for(const [classId,fileName] of Object.entries({assassin:'image-Photoroom.png',b
 }
 assert.ok(uiSource.includes('"crimson-regent":"bosses/image 11.png"'),'Crimson Regent uses a dedicated boss JPG portrait');
 assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
-assert.ok(uiSource.includes('host.querySelector(".tb-turn-tutorial")'),'bottom navigation yields to the first-run battle tutorial');
+assert.ok(uiSource.includes('if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}'),'bottom navigation stays out of the battle screen');
 for(const action of ['bottom-map','bottom-profile','bottom-progress','bottom-shop','bottom-account'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
 assert.ok(uiSource.includes('data-nav-tab="progress"'),'progression remains available in the bottom navigation, outside the brand header');
 assert.ok(uiSource.includes('button("open-progress"'),'progression remains accessible from the account screen');
@@ -186,7 +186,7 @@ assert.ok(nativeCss.includes('.tb-stage-toolbar .tb-stage-start')&&nativeCss.inc
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
 assert.ok(uiSource.includes('slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",accessory:"Аксессуар"}'),'equipment collection uses localized names for all six slots');
 assert.ok(uiSource.includes('is-locked')&&uiSource.includes('is-owned')&&uiSource.includes('data-collection-item='),'equipment collection distinguishes locked and owned entries');
-assert.ok(nativeCss.includes('.tb-turn-tutorial-card{box-sizing:border-box;display:grid!important;grid-template-rows:auto auto minmax(0,1fr) auto')&&nativeCss.includes('max-height:80dvh!important'),'battle tutorial uses a bounded scrollable card with a fixed action row');
+
 assert.ok(nativeCss.includes('padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))'),'modal panels reserve space for the iPhone home indicator');
 assert.ok(uiCssSource.includes('.tb-collection-item.rarity-epic.is-owned')&&uiCssSource.includes('border-color:#a66be0'),'epic collection entries use purple rarity styling');
 assert.ok(uiCssSource.includes('.tb-collection-item.rarity-legendary.is-owned')&&uiCssSource.includes('border-color:#e6a53e'),'legendary collection entries use orange rarity styling');
@@ -196,10 +196,10 @@ assert.ok(uiSource.includes('data-nav-tab="profile"')&&uiSource.includes('data-n
 
 assert.ok(uiSource.includes('function systemsScreen(){')&&uiSource.includes('chest=engine.dailyChestSnapshot(c.id)'),'account hub computes its own daily chest availability');
 
-assert.ok(nativeCss.includes('[role=dialog]:not(.tb-turn-tutorial)'),'dialog height constraints do not shrink the full-screen tutorial overlay');
-assert.ok(nativeCss.includes('display:flex!important;align-items:center;justify-content:center')&&nativeCss.includes('grid-template-rows:auto auto minmax(0,1fr) auto'),'tutorial uses a bounded layout with a permanently visible action row');
 
-assert.ok(uiSource.includes('</div>${battle.showTutorial ? `<div class="tb-turn-tutorial"')&&uiSource.includes('data-action="dismiss-turn-tutorial"'),'battle tutorial overlay is a dismissible sibling of the overflow-clipped arena');
+
+
+assert.ok(uiSource.includes('showTutorial:false')&&!uiSource.includes('class="tb-turn-tutorial"'),'full-screen battle tutorial is disabled and absent from combat markup');
 
 assert.ok(uiSource.includes('if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}'),'global navigation never overlays active combat controls');
 
