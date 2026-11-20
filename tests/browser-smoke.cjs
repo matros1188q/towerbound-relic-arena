@@ -146,10 +146,10 @@ async function journey(type,name,viewport,url){
   await starterDeckConfirm.click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
-  // Keep the tutorial fixture alive across all three browsers: no lethal enemy damage or early poison victory.
+  // Keep the combat fixture alive across all three browsers: no lethal enemy damage or early poison victory.
   await page.evaluate(()=>{
    const character=window.TowerboundRework?.state?.characters?.find(item=>item.id===window.TowerboundRework.state.activeCharacterId),stage=character?.run?.stage,snapshot=stage?.uiBattleSnapshot;
-   if(!snapshot||!Array.isArray(snapshot.enemies)||snapshot.enemies.length<2)throw new Error('Tutorial fixture did not expose at least two live enemies');
+   if(!snapshot||!Array.isArray(snapshot.enemies)||snapshot.enemies.length<2)throw new Error('Combat fixture did not expose at least two live enemies');
    for(const enemy of snapshot.enemies){
     enemy.hp=100000;enemy.maxHp=Math.max(100000,Number(enemy.maxHp)||0);enemy.alive=true;enemy.dead=false;
     for(const key of Object.keys(enemy))if(/^(damage|attackDamage|damagePerHit|power|dmg)$/i.test(key)&&Number.isFinite(Number(enemy[key])))enemy[key]=0;
@@ -157,48 +157,29 @@ async function journey(type,name,viewport,url){
    }
    for(const mob of stage.mobs||[]){mob.hp=100000;mob.maxHp=Math.max(100000,Number(mob.maxHp)||0);mob.alive=true;mob.dead=false;for(const key of Object.keys(mob))if(/^(damage|attackDamage|damagePerHit|power|dmg)$/i.test(key)&&Number.isFinite(Number(mob[key])))mob[key]=0;}
   });
-  // The first battle must show the turn-based tutorial outside the clipped arena.
-  assert.equal(await page.locator('.tb-turn-tutorial').count(),1,name+' shows the first-run turn-based tutorial');
-  const tutorial=await page.locator('.tb-turn-tutorial-card').evaluate(el=>{const r=el.getBoundingClientRect(),b=el.querySelector('[data-action="dismiss-turn-tutorial"]').getBoundingClientRect();return{bottom:r.bottom,buttonBottom:b.bottom,viewport:innerHeight,maxHeight:parseFloat(getComputedStyle(el).maxHeight)};});
-  assert.ok(tutorial.bottom<=tutorial.viewport+1&&tutorial.buttonBottom<=tutorial.viewport+1,name+' tutorial and CTA fit inside the viewport');
-  assert.ok(tutorial.maxHeight<=tutorial.viewport*.81,name+' tutorial card respects the 80dvh maximum');
-  const tutorialText=(await page.locator('.tb-turn-tutorial-card').innerText()).toLocaleLowerCase();
-  for(const phrase of ['твой первый бой','карты','колода и сброс','намерения врагов','завершить ход'])assert.ok(tutorialText.includes(phrase),name+' tutorial covers '+phrase);
-  await page.locator('[data-action="dismiss-turn-tutorial"]').click();
-  assert.equal(await page.locator('.tb-turn-tutorial').count(),1,name+' starts rather than skips the forced tutorial');
+  // Full-screen onboarding is intentionally disabled; it must never intercept combat input.
+  assert.equal(await page.locator('.tb-turn-tutorial').count(),0,name+' does not show a blocking battle tutorial');
   assert.equal(await page.locator('.v2-card').count(),5,name+' draws five cards at the start of the turn');
-  await page.locator('.v2-card.attack:not([disabled])').first().click();
-  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
-  // Put a real defense card first in the draw pile so the tutorial test is deterministic in every browser.
-  await page.evaluate(()=>{
-   const state=window.TowerboundRework?.state,character=state?.characters?.find(item=>item.id===state.activeCharacterId);
-   if(!character)throw new Error('Active QA character was not found before the defense tutorial step');
-   for(const pileName of ['hand','deck','discard']){
-    const pile=Array.isArray(character[pileName])?character[pileName]:[],index=pile.findIndex(card=>card?.type==='defense');
-    if(index>=0){const [card]=pile.splice(index,1);character.deck=Array.isArray(character.deck)?character.deck:[];character.deck.unshift(card);return;}
-   }
-   throw new Error('QA deck has no defense card for the forced tutorial step');
-  });
+  const attack=page.locator('#cardHand .v2-card.attack:not([disabled])').first();
+  assert.ok(await attack.count(),name+' has a playable attack card');
+  await attack.click();
+  await page.waitForFunction(()=>document.querySelectorAll('#cardHand .v2-card').length===4,{timeout:10000});
   await page.locator('[data-action="end-turn"]').click();
-  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: КАРТА ЗАЩИТЫ'),{timeout:10000});
-  let defenseReady=false;
-   for(let attempt=0;attempt<8&&!defenseReady;attempt++){
-    await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]'),energy=document.querySelector('#energyDisplay');return button&&!button.disabled&&energy?.textContent.includes('3/3')&&document.querySelectorAll('#cardHand .v2-card').length>=5;},undefined,{timeout:15000});
-    const defenseCard=page.locator('#cardHand [data-card-block="true"]:not([disabled])').first();
-    defenseReady=(await defenseCard.count())>0;
-    if(defenseReady){
-     const before=await page.evaluate(()=>{const card=document.querySelector('#cardHand [data-card-block="true"]:not([disabled])');if(!card)return{card:null};const rect=card.getBoundingClientRect(),x=rect.left+rect.width/2,y=rect.top+rect.height/2,hit=document.elementFromPoint(x,y);return{rect:{left:rect.left,top:rect.top,width:rect.width,height:rect.height},center:{x,y},hit:hit?.outerHTML?.slice(0,400),pointer:getComputedStyle(card).pointerEvents};});
-     process.stdout.write('CARD PRECLICK DIAGNOSTIC '+name+' '+JSON.stringify(before)+'\\n');
-     await defenseCard.click({timeout:8000});
-     break;
-    }
-    await page.locator('[data-action="end-turn"]').click();
-   }
-   assert.ok(defenseReady,name+' draws a playable defense card while tutorial awaits it');
-  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial-card')?.innerText.includes('ОЖИДАЕТСЯ: ЗАВЕРШИТЬ ХОД'),{timeout:10000});
-  await page.locator('[data-action="end-turn"]').click();
-  await page.waitForSelector('.tb-turn-tutorial',{state:'detached',timeout:10000});
-  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&!button.disabled;},{timeout:15000});
+  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&button.disabled&&button.textContent.includes('ХОД ПРОТИВНИКА');},{timeout:10000});
+  // Pause during the enemy queue, keep it paused, then resume the exact pending enemy.
+  const pause=page.locator('.v2-pause-btn');
+  await pause.click();
+  await page.waitForFunction(()=>document.querySelector('.v2-pause-btn')?.textContent.includes('ПРОДОЛЖИТЬ'),{timeout:5000});
+  const pausedQueue=await page.evaluate(()=>{const state=window.TowerboundRework?.state,c=state?.characters?.find(x=>x.id===state.activeCharacterId);return c?.run?.stage?.uiBattleSnapshot?.enemyQueueState||null;});
+  assert.ok(pausedQueue&&Array.isArray(pausedQueue.indices),name+' persists the enemy queue while paused');
+  await page.waitForTimeout(650);
+  assert.ok((await pause.innerText()).includes('ПРОДОЛЖИТЬ'),name+' remains paused without consuming the enemy queue');
+  await pause.click();
+  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&!button.disabled&&button.textContent.includes('ЗАВЕРШИТЬ ХОД');},{timeout:15000});
+  const combatBounds=await page.locator('.v2-battle-wrap').evaluate(el=>{const r=el.getBoundingClientRect();return{bottom:r.bottom,height:r.height,viewport:innerHeight};});
+  assert.ok(combatBounds.height>0&&combatBounds.bottom<=combatBounds.viewport+2,name+' combat arena fits the viewport');
+  fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
+  await page.screenshot({path:path.join(root,'card-combat-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
   fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
   await page.screenshot({path:path.join(root,'artifacts','turn-based-end-turn-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
   const diagnostics=await page.evaluate(()=>({
