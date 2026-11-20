@@ -46,6 +46,7 @@ const economy=JSON.parse(fs.readFileSync(path.join(root,'configs/balance/economy
 const antidote=economy.silver_store.extra.find(item=>item.id==='antidote');
 assert.deepEqual(antidote&&{price:antidote.price,effect:antidote.effect},{price:15,effect:'antidote'},
  'the map trap antidote action must resolve to a real silver-store consumable');
+assert.ok(ui.includes('antidote:"Противоядие"'),'antidote inventory items must use a localized display name');
 
 
 
