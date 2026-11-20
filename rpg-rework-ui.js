@@ -1916,6 +1916,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
     }
     save();render();
    }break;
+   case "buy-antidote":try{const c=live();if(!c?.run?.active)throw new Error("Противоядие можно купить только во время активного забега");if(selectedStage%13!==0)throw new Error("Противоядие здесь не требуется");engine.purchase(c.id,"silver","antidote");save();render();notify("Противоядие куплено · −15 серебра");}catch(error){notify(error.message);}break;
    case "heal-checkpoint":try{const result=engine.checkpointHeal(live().id);save();render();notify("HP восстановлено · −20% XP до этапа "+result.penaltyUntil);}catch(error){notify(error.message);}break;
    case "auto":try{if(!live().run.runModifierId)throw new Error("Сначала выбери модификатор забега");const result=engine.autoBattle(live().id);selectedStage=live().progress.currentStage;save();render();notify("Авто-бой: "+result.cleared+" этапов · "+result.xp+" опыта · "+result.stopped);}catch(error){notify(error.message);}break;
    case "restart":try{engine.voluntaryRestart(live().id);selectedStage=1;screen="characters";battle=null;save();render();notify("Забег завершён добровольно · весь опыт сохранён");}catch(error){notify(error.message);}break;

@@ -36,6 +36,18 @@ const unhandledActions=[...createdActions].filter(action=>!handledActions.has(ac
 assert.deepEqual(unhandledActions,[],
  'every literal data-action rendered by the RPG UI must have a click-handler branch');
 
+// button(action, ...) is the shared renderer for dynamic controls; literal
+// data-action scanning alone misses actions assembled through this helper.
+const helperActions=new Set([...ui.matchAll(/\bbutton\(\s*["']([^"']+)["']/g)].map(item=>item[1]));
+const unhandledHelperActions=[...helperActions].filter(action=>!handledActions.has(action)).sort();
+assert.deepEqual(unhandledHelperActions,[],
+ 'every action passed to the shared button() renderer must have a click-handler branch');
+const economy=JSON.parse(fs.readFileSync(path.join(root,'configs/balance/economy.json'),'utf8'));
+const antidote=economy.silver_store.extra.find(item=>item.id==='antidote');
+assert.deepEqual(antidote&&{price:antidote.price,effect:antidote.effect},{price:15,effect:'antidote'},
+ 'the map trap antidote action must resolve to a real silver-store consumable');
+
+
 
 const social=fs.readFileSync(path.join(root,'social-endgame.js'),'utf8');
 assert.ok(social.includes("e.target.closest('#socPanel [data-soc],#socPanel [data-tab]')"),
