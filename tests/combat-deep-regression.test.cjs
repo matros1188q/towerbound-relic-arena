@@ -27,6 +27,8 @@ assert.match(ui,/burn:"Горение: в конце хода игрока на�
 assert.match(ui,/\["burn","🔥"\]/,'burn is visible in live status');
 assert.ok(ui.includes('stateBefore=JSON.parse(JSON.stringify(engine.state))'),'card action captures a rollback snapshot');
 assert.match(ui,/Object\.assign\(engine\.state,stateBefore\)/,'card effect errors restore engine state');
+assert.match(ui,/battle=battleBefore;battle\.enemies=Array\.isArray\(battle\.enemies\)\?battle\.enemies:\[\];battle\.enemy=battle\.enemies\.find\(enemy=>Number\(enemy\.index\)===Number\(battle\.targetIndex\)\)\|\|battle\.enemy/,'card rollback rebinds the selected enemy to the restored enemy list');
+
 assert.match(sw,/towerbound-v475/,'offline cache is invalidated');
 assert.ok(ui.includes('if(target.shield>0){const absorbed='),'ignore armor still respects shields');
 assert.ok(!ui.includes('if(!options.ignoreArmor&&target.shield>0'),'ignore armor does not bypass shields');
