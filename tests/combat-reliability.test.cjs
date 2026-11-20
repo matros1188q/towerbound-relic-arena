@@ -15,7 +15,7 @@ assert.match(ui,/recoverBattleControl\(error,"Не удалось разыгра
 assert.match(ui,/function pauseForFocusLoss\(\).*clearPendingTurnTimer\(\)/,'app focus loss pauses without discarding the saved queue');
 assert.match(css,/safe-area-inset-bottom/,'combat controls account for iPhone safe areas');
 assert.match(css,/height:100dvh/,'combat arena uses dynamic viewport height');
-assert.match(visuals,/rootObserver\.observe\(observedRoot,\{childList:true,subtree:true\}\)/,'combat VFX observer is scoped to the game root');
+assert.match(visuals,/rootObserver\.observe\((?:initialRoot|mountedRoot),\{childList:true,subtree:true\}\)/,'combat VFX observer is scoped to the game root');
 assert.doesNotMatch(visuals,/observer\.observe\(document\.documentElement,\{childList:true,subtree:true,attributes:true/,'combat VFX no longer observes every document attribute mutation');
 assert.match(browser,/does not show a blocking battle tutorial/,'browser smoke verifies no blocking tutorial');
 assert.match(browser,/persists the enemy queue while paused/,'browser smoke verifies queue persistence while paused');
