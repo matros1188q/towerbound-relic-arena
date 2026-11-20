@@ -14,7 +14,7 @@ assert.match(ui,/makeStarterDeck\(c\.classId,c\.run\?\.starterCardChoices\|\|\[\
 assert.match(ui,/tb-card-pill cost/,'redesigned card library displays energy cost');
 assert.match(ui,/tb-card-effect/,'redesigned card library displays combat values');
 assert.match(codexCss,/object-fit:cover/,'rebuilt card art fills the premium card frame');
-assert.match(ui,/tb-library-grid[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'card library uses a polished two-column grid');
+assert.match(codexCss,/tb-codex-grid[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)/,'card library uses a polished two-column grid');
 assert.match(codexCss,/@media\(max-width:380px\)[\s\S]*?tb-codex-grid/,'small iPhone screens receive dedicated compact card spacing');
 assert.match(codexCss,/@media\(min-width:560px\)[\s\S]*?tb-codex-grid[\s\S]*?grid-template-columns:repeat\(3,minmax\(0,1fr\)/,'card library expands to three columns on wider screens');
 assert.match(sw,/^const CACHE = 'towerbound-v\d+';$/m,'service worker cache is bumped for the fix');
