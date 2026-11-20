@@ -16,6 +16,6 @@ assert.match(ui,/object-fit:contain/,'card library artwork preserves image propo
 assert.match(ui,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'card library uses a compact two-column mobile grid');
 assert.match(ui,/@media\(max-width:420px\)\{#tbRpg \.tb-profile-card-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'small iPhone screens retain two card columns');
 assert.match(ui,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/,'card library expands to three columns on wider screens');
-assert.match(sw,/towerbound-v468/,'service worker cache is bumped for the fix');
+assert.match(sw,/^const CACHE = 'towerbound-v\d+';$/m,'service worker cache is bumped for the fix');
 assert.doesNotMatch(ui,/undefined dark/,'dark-damage starter cards never expose undefined text');
 console.log('Towerbound card onboarding and library regressions passed.');
