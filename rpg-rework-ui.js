@@ -395,8 +395,8 @@
 
  function cardPreviewDamage(card,target){
   if(!card||!target||!target.alive||target.hp<=0)return 0;
-  const c=live(),effects=cardEffects(card),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),isXCost=!!(card.isXCost||card.costX);
-  const total=getCardDamageWithTalents(card,c,isXCost?c.currentEnergy:0)+Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0));
+  const c=live(),effects=cardEffects(card),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),isXCost=!!(card.isXCost||card.costX),energy=c.classId==="shaman"&&battle.shamanFreeMode&&Number(c.totem)>=3?0:c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"?Math.max(0,(isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0))-1):(isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0));
+  const total=getCardDamageWithTalents(card,c,energy)+Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0));
   if(total<=0)return 0;
   const attackCard=isAttackCard(card,effects),magicCard=isMagicCard(card,effects),finisher=!!(card.finisher||effects.finisher||(Array.isArray(card.tags)&&card.tags.includes("finisher")));
   const weaponRefine=Math.max(0,Number((c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0))?.refine)||0),refineBonus=attackCard?weaponRefine*2:0;
