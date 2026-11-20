@@ -53,6 +53,10 @@ jobs:
       - run: node tests/rpg-rework-v2.test.cjs
       - run: node tests/ui-polish-regression.test.cjs
       - run: node tests/loot-combat-update.test.cjs
+      - run: node tests/card-system-audit.cjs
+      - run: node tests/combat-deep-regression.test.cjs
+      - run: node tests/equipment-relic-card-synergy.test.cjs
+      - run: node tests/deckbuilder-balance.test.cjs
       - run: node tests/combat-runtime.test.cjs
       - run: node tests/card-meta-progression.test.cjs
       - run: node tests/campfire-curse-saboteur.test.cjs
