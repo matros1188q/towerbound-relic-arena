@@ -168,7 +168,7 @@ async function journey(type,name,viewport,url){
    const c=window.TowerboundRework.state.characters[0];
    c.run.active=false;c.run.stage=null;c.run.campStopsUsed=[];c.silver=100;c.bag=c.bag.filter(item=>item.type!=="antidote");
    window.TowerboundReworkUI.showMap();
-   Math.random=.5;
+   Math.random=()=>.5;
   });
   await page.locator('[data-action="start"]').click();
   const starterDeckConfirm=page.locator('[data-starter-deck-confirm]');
