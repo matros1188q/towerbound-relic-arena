@@ -116,6 +116,14 @@ async function journey(type,name,viewport,url){
   assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Чёрный рынок/,name+' opens the progression economy tab without leaving the overlay');
   await page.locator('#tbProgressionOverlay [data-progress-tab="ux"]').click();
   assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Лучшая экипировка/,name+' opens the progression convenience tab');
+  await page.locator('#tbProgressionOverlay [data-tbp="language"]').click();
+  await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.innerText.includes('Convenience'));
+  assert.match(await page.locator('#tbProgressionOverlay nav').innerText(),/Economy/,name+' translates progression navigation to English');
+  await page.locator('#tbProgressionOverlay [data-progress-tab="economy"]').click();
+  assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Black Market/,name+' translates economy content to English');
+  await page.locator('#tbProgressionOverlay [data-progress-tab="ux"]').click();
+  await page.locator('#tbProgressionOverlay [data-tbp="language"]').click();
+  await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.innerText.includes('Удобство'));
   await page.locator('#tbProgressionOverlay [data-tbp="close"]').first().click({position:{x:10,y:10}});
   await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.hidden===true);
   await page.locator('[data-action="bottom-profile"]').click();
