@@ -26,11 +26,15 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+          name: towerbound-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 1
       - name: Wait for Pages artifact indexing
-        run: sleep 8
+        run: sleep 20
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: towerbound-pages-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Verify published site and critical assets
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
