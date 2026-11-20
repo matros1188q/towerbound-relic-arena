@@ -46,6 +46,6 @@ assert.match(ui,/for\(let hit=0;hit<3&&target\.hp>0&&c\.run\.playerHp>0;hit\+\+\
 assert.match(ui,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}if\(battle\.enemy\.hp<=0\)/,'ultimate thorns death resolves the run immediately');
 assert.match(ui,/for\(const enemy of battle\.enemies\.filter\(x=>x\.alive\)\)\{if\(c\.run\.playerHp<=0\)break;/,'area skills stop after lethal thorns');
 assert.match(ui,/target\.mutation==="vampirism"&&target\.hp>0/,'vampirism mutation cannot resurrect a defeated enemy');
-assert.match(ui,/applyTargetDamage\(enemy,burn,"fire"\);enemy\.burn=0;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal burn retaliation ends the run immediately');
-assert.match(ui,/applyTargetDamage\(target,dot\.damage,"dark"\);dot\.ticks--;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal dark DoT retaliation ends the run immediately');
+assert.match(ui,/applyTargetDamage\(enemy,burn,"fire"\);(?:if\(!battle\)return;)?enemy\.burn=0;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal burn retaliation ends the run immediately');
+assert.match(ui,/applyTargetDamage\(target,dot\.damage,"dark"\);(?:if\(!battle\)return;)?dot\.ticks--;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal dark DoT retaliation ends the run immediately');
 console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
