@@ -27,7 +27,7 @@
   const read=()=>{try{return JSON.parse(localStorage.getItem(STORE)||'{}')}catch(_){return {}}};
   const active=state=>{const id=state?.activeCharacterId;return (state?.characters||[]).find(c=>c.id===id)||(state?.characters||[])[0]||null};
   let state=read(),char=active(state),lastLevel=Number(char?.level)||0,lastCount=(state.characters||[]).length;
-  let helpPop=null,audio=null,lootObserverQueued=false,tutorialStep=0,tutorialStarted=false,tutorialCompleting=false;
+  let helpPop=null,audio=null,lootObserverQueued=false;
   function modal(kind,title,body,buttonLabel,done){
     const node=document.createElement('div');node.className='tb-polish-backdrop'+(kind==='level'?' tb-levelup-burst':'');node.setAttribute('role','dialog');node.setAttribute('aria-modal','true');
     node.innerHTML='<section class="tb-polish-card"><div class="tb-polish-kicker">TOWERBOUND · '+(kind==='level'?'ПРОГРЕСС':'НАЧАЛО ПУТИ')+'</div>'+body+'</section>';
@@ -46,49 +46,7 @@
     try{lootTone('level')}catch(_){}
   }
 
-  const tutorialSteps=[
-    {title:'Шаг 1 из 4 · Карта атаки',text:'Разыграй карту атаки из руки. Она наносит урон выбранному врагу.'},
-    {title:'Шаг 2 из 4 · Заверши ход',text:'Нажми «ЗАВЕРШИТЬ ХОД», чтобы противники выполнили показанные действия.'},
-    {title:'Шаг 3 из 4 · Карта защиты',text:'Твой ход снова начался. Разыграй карту, которая даёт броню: «Защита» или «Рывок».'},
-    {title:'Шаг 4 из 4 · Заверши ход',text:'Нажми «ЗАВЕРШИТЬ ХОД», чтобы закончить обучение и продолжить бой.'}
-  ];
-  function updateTutorial(){
-    const overlay=root.querySelector('.tb-turn-tutorial');if(!overlay)return;
-    const title=overlay.querySelector('#tb-turn-tutorial-title'),list=overlay.querySelector('ol'),button=overlay.querySelector('[data-action="dismiss-turn-tutorial"]');
-    if(!title||!list||!button)return;
-    overlay.dataset.started=String(tutorialStarted);
-    overlay.style.pointerEvents=tutorialStarted?'none':'auto';
-    overlay.setAttribute('aria-modal',String(!tutorialStarted));
-    const step=tutorialSteps[Math.min(tutorialStep,tutorialSteps.length-1)];
-    const nextTitle=tutorialStarted?step.title:'Твой первый бой';if(title.textContent!==nextTitle)title.textContent=nextTitle;
-    const html=tutorialStarted?'<li><b>'+step.text+'</b></li>':'<li><b>Карты.</b> Играй карты из руки, оплачивая их энергией.</li><li><b>Колода и сброс.</b> Сыгранные карты уходят в сброс, а пустая колода перемешивается.</li><li><b>Намерения врагов.</b> Смотри на их действия заранее и выбирай атаку или защиту.</li><li><b>Завершить ход.</b> Передай ход противникам после розыгрыша карт.</li>';
-    if(list.dataset.tbStep!==String(tutorialStarted?tutorialStep:'intro')){list.innerHTML=html;list.dataset.tbStep=String(tutorialStarted?tutorialStep:'intro');}
-    const nextLabel=tutorialStarted?'ОЖИДАЕТСЯ: '+(tutorialStep===0?'КАРТА АТАКИ':tutorialStep===1||tutorialStep===3?'ЗАВЕРШИТЬ ХОД':'КАРТА ЗАЩИТЫ'):'НАЧАТЬ ОБУЧЕНИЕ';if(button.textContent.trim()!==nextLabel)button.textContent=nextLabel;
-  }
-  function tutorialClick(event){
-    const dismiss=event.target.closest('[data-action="dismiss-turn-tutorial"]');
-    if(dismiss){
-      // The final synthetic click must reach the RPG UI's dismiss handler after step four.
-      if(tutorialCompleting){tutorialStarted=false;tutorialCompleting=false;return;}
-      event.preventDefault();event.stopImmediatePropagation();
-      if(!tutorialStarted){tutorialStarted=true;tutorialStep=0;updateTutorial();}
-      return;
-    }
-    if(!tutorialStarted||tutorialCompleting||!root.querySelector('.tb-turn-tutorial'))return;
-    const target=event.target.closest('[data-card-play],[data-action="attack"],[data-action="end-turn"],[data-action="skill"],[data-panel-skill],[data-basic-attack],.tb-basic-attack,.tb-end-turn,#endturn,.v2-skill-btn');
-    if(!target||target.disabled)return;
-    const action=tutorialStep===0?target.matches('[data-card-type="attack"],[data-action="attack"],[data-basic-attack],.tb-basic-attack'):
-      tutorialStep===1||tutorialStep===3?target.matches('[data-action="end-turn"],.tb-end-turn,#endturn'):
-      target.matches('[data-card-type="defense"],[data-card-block="true"],[data-action="skill"],[data-panel-skill],.v2-skill-btn');
-    if(!action)return;
-    if(tutorialStep===0)window.TB_TUTORIAL_FREE_SKILL=false;
-    tutorialStep++;
-    if(tutorialStep>=tutorialSteps.length){
-      tutorialCompleting=true;localStorage.setItem('tb-turn-tutorial-seen-v1','1');
-      setTimeout(()=>{const finish=root.querySelector('[data-action="dismiss-turn-tutorial"]');if(finish)finish.click();tutorialStarted=false;tutorialCompleting=false;},0);
-    }else queueMicrotask(updateTutorial);
-  }
-  document.addEventListener('click',tutorialClick,true);
+  function updateTutorial(){}
   function addHelpButtons(){
     const definitions=[
       ['БОЕВАЯ МОЩЬ','Мощь (BP) — сводная оценка силы персонажа. На неё влияют уровень, характеристики экипировки, редкость предметов и таланты.'],
