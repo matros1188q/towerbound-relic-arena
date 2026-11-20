@@ -10,12 +10,12 @@ assert.match(ui,/\["strike","defend","dash"\]\.forEach/,'base cards are permanen
 assert.match(ui,/character\.unlockedCards\.forEach/,'legacy character unlocks migrate into account collection');
 assert.match(ui,/НАЧАТЬ С БАЗОВОЙ КОЛОДОЙ/,'starter deck can be confirmed without bonus selections');
 assert.match(ui,/makeStarterDeck\(c\.classId,c\.run\?\.starterCardChoices\|\|\[\]\)/,'empty saved decks recover to a valid class starter deck');
-assert.match(ui,/tb-profile-card-cost/,'card library displays energy cost');
-assert.match(ui,/tb-profile-card-effects/,'card library displays combat values');
+assert.match(ui,/tb-card-pill cost/,'redesigned card library displays energy cost');
+assert.match(ui,/tb-card-effect/,'redesigned card library displays combat values');
 assert.match(ui,/object-fit:contain/,'card library artwork preserves image proportions');
-assert.match(ui,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'card library uses a compact two-column mobile grid');
-assert.match(ui,/@media\(max-width:420px\)\{#tbRpg \.tb-profile-card-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'small iPhone screens retain two card columns');
-assert.match(ui,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/,'card library expands to three columns on wider screens');
+assert.match(ui,/tb-library-grid[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'card library uses a polished two-column grid');
+assert.match(ui,/@media\(max-width:380px\)[\s\S]*?tb-library-grid[\s\S]*?grid-template-columns:repeat\(2,minmax\(0,1fr\)/,'small iPhone screens retain two card columns');
+assert.match(ui,/@media\(min-width:700px\)[\s\S]*?tb-library-grid[\s\S]*?grid-template-columns:repeat\(3,minmax\(0,1fr\)/,'card library expands to three columns on wider screens');
 assert.match(sw,/^const CACHE = 'towerbound-v\d+';$/m,'service worker cache is bumped for the fix');
 assert.doesNotMatch(ui,/undefined dark/,'dark-damage starter cards never expose undefined text');
 console.log('Towerbound card onboarding and library regressions passed.');
