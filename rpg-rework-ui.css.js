@@ -337,7 +337,7 @@ css += "\n.tb-camp-overlay,.tb-deck-viewer-overlay{position:fixed;inset:0;displa
  /* Stable card-combat viewport, compact combat log and readable card-library tiles. */
  css += "\n/* TowerBound card UI hotfix: fixed battle log and responsive collection cards. */\n"+
  "#tbRpg .tb-v2:has(.v2-battle-wrap){display:flex!important;flex-direction:column!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important;overflow:hidden!important;box-sizing:border-box!important}\n"+
- "#tbRpg .tb-v2 .v2-battle-wrap{display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;max-height:100%!important;overflow:hidden!important;flex:1 1 auto!important;box-sizing:border-box!important}\n"+
+ "#tbRpg .tb-v2 .v2-battle-wrap{display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important;max-height:100%!important;overflow:hidden!important;flex:1 1 auto!important;align-self:stretch!important;width:100%!important;box-sizing:border-box!important}\n"+
  "#tbRpg .tb-v2 .v2-battle-wrap .tb-combat-log{display:flex!important;flex-direction:column!important;flex:0 0 80px!important;height:80px!important;min-height:80px!important;max-height:80px!important;overflow-y:auto!important;overflow-x:hidden!important;flex-shrink:0!important;margin-bottom:10px!important;box-sizing:border-box!important}\n"+
  "#tbRpg .tb-v2 .v2-battle-wrap .tb-combat-log summary{flex:0 0 auto!important;min-height:28px!important;padding:5px 0!important}\n"+
  "#tbRpg .tb-v2 .v2-battle-wrap .tb-combat-log-list{flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain!important}\n"+
