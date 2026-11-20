@@ -20,7 +20,13 @@ assert.match(ui,/decayEnemyDebuffs\(enemy\);notify\("Враг оглушён/,'s
 assert.match(ui,/decayEnemyDebuffs\(enemy\);save\(\);render\(\);return;/,'sabotage advances debuff durations');
 assert.match(ui,/burn:"Горение: в конце хода игрока наносит урон, затем снимается\."/,'burn timing is explained');
 assert.match(ui,/\["burn","🔥"\]/,'burn is visible in live status');
-assert.match(ui,/stateBefore=JSON\.parse\(JSON\.stringify\(engine\.state\))/,'card action captures a rollback snapshot');
+assert.ok(ui.includes('stateBefore=JSON.parse(JSON.stringify(engine.state))'),'card action captures a rollback snapshot');
 assert.match(ui,/Object\.assign\(engine\.state,stateBefore\)/,'card effect errors restore engine state');
-assert.match(sw,/towerbound-v469/,'offline cache is invalidated');
-console.log('Deep combat regression passed: boss phases, exact turn restoration, Shaman resource, debuff expiry, burn visibility and card rollback.');
+assert.match(sw,/towerbound-v470/,'offline cache is invalidated');
+assert.ok(ui.includes('if(target.shield>0){const absorbed='),'ignore armor still respects shields');
+assert.ok(!ui.includes('if(!options.ignoreArmor&&target.shield>0'),'ignore armor does not bypass shields');
+assert.ok(ui.includes('hits=Math.max(1,Math.floor(Number(effects.hits)||1))'),'multi-hit preview includes every hit');
+assert.ok(ui.includes('type=effects.damageType||card.damageType||"physical"'),'preview and runtime share default damage type');
+assert.ok(ui.includes('playerTurnCount>=Number(battle.bossDeadlineTurns)'),'boss deadline uses the configured turn boundary');
+assert.match(sw,/towerbound-v470/);
+console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
