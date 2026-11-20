@@ -34,7 +34,7 @@
 "#tbRpg .tb-card-effects{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:4px!important;margin-top:7px!important}"+
 "#tbRpg .tb-card-effect{padding:4px 6px!important;border:1px solid rgba(111,174,151,.3)!important;border-radius:6px!important;background:rgba(23,64,53,.3)!important;color:#bde4cf!important;font:700 8px/1.2 system-ui!important}"+
 "#tbRpg .tb-card-unlocked-mark{display:block!important;margin-top:auto!important;padding-top:8px!important;color:#d8b875!important;font:800 8px/1 system-ui!important;letter-spacing:.1em!important;text-align:center!important}"+
-"#tbRpg .tb-collection-subtabs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin:0 0 14px!important}"+
+"#tbRpg .tb-collection-subtabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:0 0 14px!important}"+
 "#tbRpg .tb-collection-subtabs button{min-width:0!important;min-height:42px!important;padding:8px 6px!important;border:1px solid rgba(188,157,105,.48)!important;border-radius:10px!important;background:linear-gradient(145deg,#252d39,#171d27)!important;color:#d9c9a9!important;font:800 10px/1.2 system-ui!important;letter-spacing:.04em!important}"+
 "#tbRpg .tb-collection-subtabs button.active{border-color:#e4bd70!important;background:linear-gradient(145deg,#74532e,#34271c)!important;color:#ffe5ad!important;box-shadow:0 0 14px #c18b3c2b!important}"+
 "#tbRpg .tb-collection-hero{margin-top:0}"+
