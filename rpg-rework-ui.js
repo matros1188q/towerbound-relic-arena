@@ -933,8 +933,8 @@ function createDialog(){
   const rawFor=base=>Math.max(1,Math.round((base+(attackCard?weaponRefine*2:0)+classFlat)*(1+Math.max(0,Number(stats.attack)||0)/100)*scale*weakScale*furyScale*classMultiplier*(battle.firstAttackDouble?2:1))),damageType=effects.damageType||card.damageType||"physical";
   let killed=false;const calculatedDamage=getCardDamageWithTalents(card,c,cost),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0||dynamicCardDamage>0)?calculatedDamage+dynamicCardDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});logCombatEvent("Вы сыграли «"+card.name+"» · "+hit.dealt+" урона","#e9d5a5");killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
-  if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
-  if(Number(effects.hits)>1&&singleDamage>0&&target)for(let n=1;n<Number(effects.hits);n++){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}
+  if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
+  if(Number(effects.hits)>1&&singleDamage>0&&target)for(let n=1;n<Number(effects.hits)&&c.run.playerHp>0;n++){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});killed=killed||!!hit.killed;}
   if(singleDamage>0||areaDamage>0){if(battle.firstAttackDouble){battle.firstAttackDouble=false;if(c.run.stage)c.run.stage.relicFirstAttackConsumed=true;}battle.nextAttackDamageBonus=0;}
   battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;if(c.run.playerHp<=0){endFromDamage();return;}
   if(Number(effects.block)>0){const block=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)+armorRefine*3+getCardBlockTalentBonus(c)+Math.max(0,Number(battle.relicBlockBonus)||0)));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");pulseCombatActor("player","armor");}
@@ -1461,9 +1461,9 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*(Number(balance.classes.branch_stat_bonuses?.["destroyer.wand_shield"]?.defense_damage_fraction)||.5):0);battle.actionDamageLedger={};
   if(ultimate.effect==="heal_shield"||ultimate.effect==="heal_aoe")c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*ultimate.heal_fraction));
   if(ultimate.effect==="heal_shield")battle.nextDamageShield=Math.round(engine.maxHp(c)*ultimate.shield_fraction);
-  if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0;hit++)applyTargetDamage(target,damage,ultimate.damage_type,{ultimate:true});}}
-  else if(ultimate.effect==="single_burst"){const hitDamage=battle.enemy.type==="boss"?Math.min(damage,battle.enemy.maxHp*.8/3):damage;for(let hit=0;hit<3&&battle.enemy.hp>0;hit++)applyTargetDamage(battle.enemy,hitDamage,ultimate.damage_type,{ultimate:true});}
-  triggerVfx("ultimate",ultimate.damage_type,false);if(battle.enemy.hp<=0){finishCurrentEnemy();return;}save();render();
+  if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0&&c.run.playerHp>0;hit++)applyTargetDamage(target,damage,ultimate.damage_type,{ultimate:true});if(c.run.playerHp<=0)break;}}
+  else if(ultimate.effect==="single_burst"){const hitDamage=battle.enemy.type==="boss"?Math.min(damage,battle.enemy.maxHp*.8/3):damage;for(let hit=0;hit<3&&battle.enemy.hp>0&&c.run.playerHp>0;hit++)applyTargetDamage(battle.enemy,hitDamage,ultimate.damage_type,{ultimate:true});}
+  triggerVfx("ultimate",ultimate.damage_type,false);if(c.run.playerHp<=0){endFromDamage();return;}if(battle.enemy.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function enemyCounter(){resolveEnemyTelegraph();}
  function playerAction(skillId,slotIndex){
@@ -1499,7 +1499,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   let result={killed:false,dealt:0};
   battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
   const evolutionHitOptions={...(evolvedSkill?.id==="pierce"?{armorPenetration:.5}:{}),critical};
-  if(effect.type==="aoe"||evolvedSkill?.id==="burst"){for(const enemy of battle.enemies.filter(x=>x.alive)){const hit=applyTargetDamage(enemy,damage,damageType,evolutionHitOptions);if(enemy===target)result=hit;}}
+  if(effect.type==="aoe"||evolvedSkill?.id==="burst"){for(const enemy of battle.enemies.filter(x=>x.alive)){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,damage,damageType,evolutionHitOptions);if(enemy===target)result=hit;}}
   else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType,evolutionHitOptions);
   battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
   if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));const interrupted=applyTargetDamage(target,interrupt,"physical");battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupted.dealt+" HP");}
@@ -1509,7 +1509,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    else if((previous==="lightning"&&current==="water")||(previous==="water"&&current==="lightning")){const shock=applyTargetDamage(target,Math.round(result.dealt),"lightning");showFloatingText(target,"ЭЛЕКТРОШОК -"+shock.dealt,"#ffe45c");notify("ЭЛЕКТРОШОК");}
    battle.lastElement=current;
   }
-  if(target.hp>0&&result.dealt>0){const companion=Math.max(1,Math.round(stats.attack*.5));const pet=applyTargetDamage(target,companion,"physical");if(pet.dealt)showFloatingText(target,"СПУТНИК -"+pet.dealt,"#a8d8ff");}
+  if(c.run.playerHp>0&&target.hp>0&&result.dealt>0){const companion=Math.max(1,Math.round(stats.attack*.5));const pet=applyTargetDamage(target,companion,"physical");if(pet.dealt)showFloatingText(target,"СПУТНИК -"+pet.dealt,"#a8d8ff");}
   battle.attacksThisFight=(battle.attacksThisFight||0)+1;
   if(c.classId==="assassin"&&critical){battle.assassinNextHit=true;battle.proc={...balance.procs.assassin};}
   if(c.classId==="duelist"&&battle.attacksThisFight>=balance.procs.duelist.attacks_required&&!battle.freeSkillCharges){battle.freeSkillCharges=1;battle.proc={...balance.procs.duelist};}

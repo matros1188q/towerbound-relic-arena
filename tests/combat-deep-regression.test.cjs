@@ -22,7 +22,7 @@ assert.match(ui,/burn:"Горение: в конце хода игрока на�
 assert.match(ui,/\["burn","🔥"\]/,'burn is visible in live status');
 assert.ok(ui.includes('stateBefore=JSON.parse(JSON.stringify(engine.state))'),'card action captures a rollback snapshot');
 assert.match(ui,/Object\.assign\(engine\.state,stateBefore\)/,'card effect errors restore engine state');
-assert.match(sw,/towerbound-v472/,'offline cache is invalidated');
+assert.match(sw,/towerbound-v473/,'offline cache is invalidated');
 assert.ok(ui.includes('if(target.shield>0){const absorbed='),'ignore armor still respects shields');
 assert.ok(!ui.includes('if(!options.ignoreArmor&&target.shield>0'),'ignore armor does not bypass shields');
 assert.ok(ui.includes('hits=Math.max(1,Math.floor(Number(effects.hits)||1))'),'multi-hit preview includes every hit');
@@ -34,5 +34,10 @@ assert.ok(ui.includes('const isXCost=!!(card.isXCost||card.costX),energy='),'X-c
 assert.ok(ui.includes('if(c.classId==="assassin"&&attackCard&&Number(c.combo)>0)classMultiplier*='),'preview includes class damage modifiers');
 assert.ok(ui.includes('decayEnemyDebuffs(enemy);save();render();return;')&&!ui.includes('if(enemy.weak>0)enemy.weak=Math.max(0,enemy.weak-1);if(enemy.vulnerable>0)enemy.vulnerable=Math.max(0,enemy.vulnerable-1);\n   decayEnemyDebuffs(enemy);'),'sabotage does not decrement debuffs twice');
 assert.ok(ui.includes('playerTurnCount>=Number(battle.bossDeadlineTurns)'),'boss deadline uses the configured turn boundary');
-assert.match(sw,/towerbound-v472/);
+assert.match(sw,/towerbound-v473/);
+assert.match(ui,/for\(const enemy of targets\)\{if\(c\.run\.playerHp<=0\)break;const hit=applyTargetDamage/,'card area attacks stop after thorns kill the player');
+assert.match(ui,/for\(let n=1;n<Number\(effects\.hits\)&&c\.run\.playerHp>0;n\+\+\)/,'multi-hit cards stop after lethal thorns');
+assert.match(ui,/for\(let hit=0;hit<3&&target\.hp>0&&c\.run\.playerHp>0;hit\+\+\)/,'multi-hit ultimates stop after lethal thorns');
+assert.match(ui,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}if\(battle\.enemy\.hp<=0\)/,'ultimate thorns death resolves the run immediately');
+assert.match(ui,/for\(const enemy of battle\.enemies\.filter\(x=>x\.alive\)\)\{if\(c\.run\.playerHp<=0\)break;/,'area skills stop after lethal thorns');
 console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
