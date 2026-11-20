@@ -116,7 +116,7 @@ async function journey(type,name,viewport,url){
   assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Чёрный рынок/,name+' opens the progression economy tab without leaving the overlay');
   await page.locator('#tbProgressionOverlay [data-progress-tab="ux"]').click();
   assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Лучшая экипировка/,name+' opens the progression convenience tab');
-  await page.locator('#tbProgressionOverlay [data-tbp="close"]').first().click();
+  await page.locator('#tbProgressionOverlay [data-tbp="close"]').first().click({position:{x:10,y:10}});
   await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.hidden===true);
   await page.locator('[data-action="bottom-profile"]').click();
   await page.locator('[data-tab="gear"]').click();

@@ -8,7 +8,7 @@ for(const marker of ['createChallenge:challenge','attackGuildBoss:hit','sendGift
 assert.match(source,/type==='healing_potion'/,'gift must consume a real healing potion');
 assert.match(source,/season\(\)/,'seasonal shop must rotate on a 30-day cadence');
 assert.match(source,/function top\(\)/,'offline top-100 must exist');
-assert.ok(html.includes('<script src="./social-endgame.js?v=1"></script>'),'social UI must be loaded by index.html');
+assert.ok(html.includes('<script src="./social-endgame.js?v=2"></script>'),'social UI must be loaded by index.html');
 assert.ok(source.includes("p.id='socPanel'")&&source.includes('document.body.append(p)'),'community panel is rendered as a direct body child');
 assert.ok(mode.includes(':not(#socPanel)'),'rpg-open body isolation must keep the community panel visible');
 console.log('social endgame static checks: OK');
