@@ -352,5 +352,7 @@ css += "\n.tb-camp-overlay,.tb-deck-viewer-overlay{position:fixed;inset:0;displa
  "#tbRpg .tb-v2 .tb-card-collection-item .card-img-wrapper img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}\n"+
  "#tbRpg .tb-v2 .tb-card-collection-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:4px!important}\n"+
  "@media(max-width:420px){#tbRpg .tb-v2 .tb-profile-card-grid,#tbRpg .tb-v2 .tb-card-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:5px!important}}\n";
+ /* Keep enemy hit targets above the clipped arena middle on touch devices. */
+ css += "\n#tbRpg .tb-v2 .v2-battle-wrap .v2-battle-middle{position:relative!important;pointer-events:auto!important}\n#tbRpg .tb-v2 .v2-battle-wrap .v2-enemies-side{position:relative!important;z-index:20!important;pointer-events:auto!important}\n#tbRpg .tb-v2 .v2-battle-wrap .v2-enemies-side .v2-enemy-card{position:relative!important;z-index:21!important;pointer-events:auto!important;touch-action:manipulation!important}\n";
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
 })()
