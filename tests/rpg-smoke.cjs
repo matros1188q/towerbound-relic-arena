@@ -19,7 +19,7 @@ const {chromium}=require('playwright');
  assert.equal(skillConfig.panel.attack_slots+2,skillConfig.panel.slot_count,"four attack skills plus counter and ultimate fill the six-slot panel");
  const mobileCss=fs.readFileSync(path.join(root,"native-pwa.css"),"utf8");
  assert.match(mobileCss,/\.tb-end-turn\{[^}]*z-index:30!important/s,"mobile End Turn button is layered above the potion belt");
- assert.match(mobileCss,/\.tb-fixed-battle \.tb-turn-tutorial\{z-index:99999!important\}/,"first-battle tutorial overlays the battle header and its CTA remains clickable");
+
  const cunning=classConfig.classes.assassin.base_skills.find(skill=>skill.name==="Коварный выпад");
  assert.equal(cunning.damage_multiplier,2,"Коварный выпад defines 200% damage");
  assert.equal(cunning.resource_cost,18,"Коварный выпад defines its resource cost");
@@ -428,9 +428,7 @@ const {chromium}=require('playwright');
   assert.ok(firstLayout.hand&&firstLayout.hand.height>=120,'card hand is large enough for touch input');
   assert.ok(firstLayout.end&&firstLayout.end.height>=44&&firstLayout.end.visibility!=='hidden'&&firstLayout.end.display!=='none','End Turn is visible in the initial player turn');
   assert.ok(firstLayout.scrollWidth<=firstLayout.width,'V2 battle has no horizontal page overflow on 390px mobile');
-  await page.locator('[data-action="dismiss-turn-tutorial"]').click();
-  await page.waitForFunction(()=>document.querySelector('.tb-turn-tutorial')?.dataset.started==='true',{timeout:3000});
-  assert.equal(await page.locator('.tb-turn-tutorial').count(),1,'interactive tutorial remains visible while releasing pointer input after it starts');
+  assert.equal(await page.locator('.tb-turn-tutorial').count(),0,'no full-screen tutorial blocks combat input');
   const enemy=page.locator('.v2-enemy-card').first();
   const targetId=await enemy.getAttribute('data-target');
   const enemyHitTest=await enemy.evaluate(el=>{const r=el.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return hit?.closest('.v2-enemy-card')===el;});
@@ -513,7 +511,7 @@ const {chromium}=require('playwright');
   assert.equal(afterReward.currentStage,2,'winning the first tower stage advances progression to stage two');
   assert.equal(afterReward.runActive,true,'victory preserves the active run');
   assert.deepEqual(errors,[],'browser runtime must not throw uncaught errors');
-  console.log('V2 RPG smoke passed: character creation, tower stage one, tutorial dismissal, enemy targeting, attack and defense cards, energy, enemy turn handoff, mobile layout, complete victory, reward selection and stage progression.');
+  console.log('V2 RPG smoke passed: character creation, tower stage one, non-blocking guidance, enemy targeting, attack and defense cards, energy, enemy turn handoff, mobile layout, complete victory, reward selection and stage progression.');
 }finally{await browser.close();server.close();}
 })().catch(error=>{console.error(error);process.exit(1);});
 
