@@ -1226,19 +1226,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
     ${combatLogMarkup()}
     <button type="button" class="v2-btn-end" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>${battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА..."}</button>
   </div>
-</div>${battle.showTutorial ? `<div class="tb-turn-tutorial" role="dialog" aria-modal="true" aria-labelledby="tb-turn-tutorial-title">
-  <section class="tb-turn-tutorial-card">
-    <div class="tb-eyebrow">ПОШАГОВЫЙ БОЙ</div>
-    <h2 id="tb-turn-tutorial-title">Твой первый бой</h2>
-    <ol>
-      <li><b>Карты.</b> Разыгрывай карты из руки, оплачивая их энергией.</li>
-      <li><b>Колода и сброс.</b> Сыгранные карты уходят в сброс. Когда колода закончится, сброс перемешается.</li>
-      <li><b>Намерения врагов.</b> Смотри, кто атакует или лечит, и используй защиту до завершения хода.</li>
-      <li><b>Выживание.</b> Применяй зелья и защиту до завершения своего хода.</li>
-    </ol>
-    <button type="button" class="tb-primary tb-wide" data-action="dismiss-turn-tutorial">ПОНЯТНО, В БОЙ</button>
-  </section>
-</div>` : ""}`;
+</div>`;
  }
  function eventTypeForStage(character,stage){return character&&character.run&&character.run.mapEvents?character.run.mapEvents[stage]:null;}
  function showMapEventOverlay(){const c=live();if(!c)return;const stage=Number(selectedStage),type=eventTypeForStage(c,stage);if(!type)return beginStage();const data={altar:["✦","Древний алтарь","Под пеплом мерцают древние руны. Алтарь предлагает силу в обмен на жертву.",[["pray","Помолиться · −10 HP, получить редкую карту"],["defile","Осквернить · +100 серебра и проклятие: Рана"],["leave","Уйти"]]],chest:["▣","Забытый сундук","Сундук оплетён корнями. Внутри может быть золото или реликвия.",[["open","Открыть"],["leave","Оставить"]]],wanderer:["♙","Странник","Из тумана выходит путник и предлагает помощь… или проверяет твою решимость.",[["pay","Заплатить 50 серебра · лечение 20% HP"],["attack","Атаковать · обычный бой"]]]}[type];if(!data)return beginStage();document.querySelector(".tb-map-event-overlay")?.remove();const o=document.createElement("div");o.className="tb-map-event-overlay";o.dataset.eventStage=String(stage);o.dataset.eventType=type;o.innerHTML='<section class="tb-map-event-modal" role="dialog" aria-modal="true"><div class="tb-eyebrow">СЛУЧАЙНОЕ СОБЫТИЕ · ЭТАП '+stage+'</div><div style="font-size:36px">'+data[0]+'</div><h2>'+esc(data[1])+'</h2><p>'+esc(data[2])+'</p>'+data[3].map(x=>'<button type="button" class="tb-event-choice" data-map-event-choice="'+x[0]+'">'+esc(x[1])+'</button>').join('')+'</section>';document.body.appendChild(o);}
@@ -1254,7 +1242,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    
    if(selectedStage%13===0){const stack=c.bag.find(x=>x.type==="antidote"&&(x.quantity||1)>0);if(stack){stack.quantity=(stack.quantity||1)-1;c.bag=c.bag.filter(x=>x.quantity!==0);notify("Ловушка обезврежена противоядием");}else{const trapDamage=Math.round(engine.maxHp(c)*.08);c.run.playerHp=Math.max(1,c.run.playerHp-trapDamage);notify("Ловушка! −"+trapDamage+" HP · купи противоядие");}}
    selectedStage=plan.stage;
-   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,cardBlock:Math.max(0,Number(plan.relicStartingBlock)||0),firstAttackDouble:!plan.relicFirstAttackConsumed&&Number(plan.relicFirstAttackMultiplier)>1,relicAttackBonus:Math.max(0,Number(plan.relicAttackBonus)||0),relicBlockBonus:Math.max(0,Number(plan.relicBlockBonus)||0),cardSpellPower:Math.max(0,Number(plan.relicSpellPower)||0),nextAttackDamageBonus:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,combatLog:[],fastBattle:false,isCardAnimating:false,showTutorial:localStorage.getItem("tb-turn-tutorial-seen-v1")!=="1"};
+   battle={stage:plan.stage,count:plan.count,enemy:null,enemyHp:0,enemyMax:0,shield:0,cardBlock:Math.max(0,Number(plan.relicStartingBlock)||0),firstAttackDouble:!plan.relicFirstAttackConsumed&&Number(plan.relicFirstAttackMultiplier)>1,relicAttackBonus:Math.max(0,Number(plan.relicAttackBonus)||0),relicBlockBonus:Math.max(0,Number(plan.relicBlockBonus)||0),cardSpellPower:Math.max(0,Number(plan.relicSpellPower)||0),nextAttackDamageBonus:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,combatLog:[],fastBattle:false,isCardAnimating:false,showTutorial:false};
    if(c.classId==="shaman")c.totem=Math.min(3,(Number(c.totem)||0)+1);
    const savedSnapshot=plan.uiBattleSnapshot;if(savedSnapshot){battle.round=Math.max(1,Number(savedSnapshot.round)||1);battle.skillCooldowns={...(savedSnapshot.skillCooldowns||{})};battle.comboStacks=savedSnapshot.comboStacks||0;battle.comboProgress={...(savedSnapshot.comboProgress||{})};}
    if(savedSnapshot?.cardState){const state=savedSnapshot.cardState;c.deck=Array.isArray(state.deck)?state.deck:[];c.hand=Array.isArray(state.hand)?state.hand:[];c.discard=Array.isArray(state.discard)?state.discard:[];c.exhaustPile=Array.isArray(state.exhaustPile)?state.exhaustPile:[];c.currentEnergy=Math.max(0,Math.min(c.energy,Number(state.currentEnergy)||0));battle.cardBlock=Math.max(0,Number(state.cardBlock)||0);battle.cardResume=state.actorType!=="enemy";}else{resetCardBattle(c);drawCards(5+Math.max(0,Number(plan.relicStartingDraw)||0));battle.cardResume=false;}
@@ -1388,7 +1376,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   const c=live(),profile=engine.basicAttackStats(c.id),target=battle.enemy;if(!target||!target.alive||target.hp<=0){notify("Нет активной цели");return;}
   battle.playerSkillUsed=true;battle.actionDamageLedger={};battle.actionIsSkill=false;battle.actionIsPrimaryHit=true;
   const result=applyTargetDamage(target,profile.damage*(engine.getCombatStats(c).damageMultiplier||1),"physical");battle.actionIsPrimaryHit=false;
-  if(result.dealt>0){const restored=engine.restoreResource(c.id,profile.resourceGain);if(restored.gained>0)showFloatingText("player","+"+restored.gained,"#58e38b");if(battle.showTutorial&&window.TB_TUTORIAL_FREE_SKILL){battle.freeSkillCharges=Math.max(1,Number(battle.freeSkillCharges)||0);window.TB_TUTORIAL_FREE_SKILL=false;}battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Базовая атака");}
+  if(result.dealt>0){const restored=engine.restoreResource(c.id,profile.resourceGain);if(restored.gained>0)showFloatingText("player","+"+restored.gained,"#58e38b");battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Базовая атака");}
   triggerVfx("attack","physical",false);if(c.run.playerHp<=0){endFromDamage();return;}if(target.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function useCounterSkill(){
@@ -1481,7 +1469,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
  function showScreen(name){screen=name;render();}
  function battleRenderKey(){
   if(!battle)return "";
-  const c=live();return [battle.stage,battle.round,battle.actor?.type||"",battle.potionUsedThisTurn?1:0,battle.showTutorial?1:0,Math.round(c.run.playerHp),Math.round(c.currentEnergy),c.combo||0,c.rage||0,c.charges||0,c.faith||0,c.element||"fire",c.magicCharge||0,c.totem||0,c.hand.map(card=>card.instanceId||card.id).join(","),c.deck.length,c.discard.length,battle.cardBlock||0,battle.targetIndex,battle.bossPhase||0,battle.telegraph?.targetIndex??"",battle.telegraph?.label||"",(battle.enemies||[]).map(x=>x.index+":"+x.role+":"+(x.alive?1:0)+":"+Math.round(x.hp)).join(",")].join("|");
+  const c=live();return [battle.stage,battle.round,battle.actor?.type||"",battle.potionUsedThisTurn?1:0,Math.round(c.run.playerHp),Math.round(c.currentEnergy),c.combo||0,c.rage||0,c.charges||0,c.faith||0,c.element||"fire",c.magicCharge||0,c.totem||0,c.hand.map(card=>card.instanceId||card.id).join(","),c.deck.length,c.discard.length,battle.cardBlock||0,battle.targetIndex,battle.bossPhase||0,battle.telegraph?.targetIndex??"",battle.telegraph?.label||"",(battle.enemies||[]).map(x=>x.index+":"+x.role+":"+(x.alive?1:0)+":"+Math.round(x.hp)).join(",")].join("|");
  }
  function updateBattleDOM(){
   if(!battle)return;
@@ -1792,7 +1780,6 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   if(target.dataset.enchant){try{const c=live(),choices=engine.rollEnchantScroll(c.id,target.dataset.enchant),choice=Number(window.prompt("Выбери зачарование (1–4):\n"+choices.map((x,i)=>(i+1)+". "+x).join("\n")))-1;if(Number.isInteger(choice)&&choice>=0&&choice<4){engine.applyEnchant(c.id,target.dataset.enchant,choice,choices);save();render();notify("Зачарование применено");}else notify("Зачарование отменено");}catch(error){notify(error.message);}return;}
   if(target.dataset.buy){try{engine.purchase(live().id,shopTab,target.dataset.buy);save();render();notify("Покупка совершена");}catch(error){notify(error.message);}return;}
   switch(target.dataset.action){
-   case "dismiss-turn-tutorial":if(battle){battle.showTutorial=false;localStorage.setItem("tb-turn-tutorial-seen-v1","1");render();}break;
    case "new":if(!window.TowerboundCloud?.signedIn){notify("Сначала войди в игровой аккаунт");return;}if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей: "+balance.account.max_characters);return;}dialogOpen=true;selectedClass="assassin";render();break;
    case "close":dialogOpen=false;render();break;
    case "confirm-create":createCharacter();break;
