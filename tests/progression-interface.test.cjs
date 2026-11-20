@@ -21,4 +21,14 @@ assert.doesNotMatch(progression,/tb-progression-cloud-draft|Google\/Apple OAuth 
 assert.match(progression,/Сохранение Towerbound через игровой аккаунт/,'cloud-save card describes the actual account-based service');
 assert.match(html,/progression-24\.js\?v=6/,'progression UI asset cache version is bumped');
 assert.match(sw,/towerbound-v480/,'service worker cache is bumped to prevent stale UI on iOS');
+const actionStart=progression.indexOf('async function act(a){');
+const actionEnd=progression.indexOf('function inject(){',actionStart);
+assert.ok(actionStart>=0&&actionEnd>actionStart,'progression action dispatcher exists');
+const actionHandler=progression.slice(actionStart,actionEnd);
+const renderedActions=new Set([...progression.matchAll(/data-tbp="([a-z-]+)"/g)].map(match=>match[1]));
+for(const match of progression.matchAll(/dataset\.tbp='([a-z-]+)'/g))renderedActions.add(match[1]);
+const handledActions=new Set([...actionHandler.matchAll(/case'([^']+)'/g)].map(match=>match[1]));
+for(const action of renderedActions)assert.ok(handledActions.has(action),'rendered progression action '+action+' has a handler');
+assert.match(progression,/settings\.disable_telegraphs\?'Включить':'Отключить'/,'telegraph toggle reflects the global setting');
+assert.match(progression,/settings\.disable_particles\?'Включить частицы':'Отключить частицы'/,'particle toggle reflects the global setting');
 console.log('Towerbound progression interface checks passed: 4 tabs, mobile modal, real cloud sync action.');
