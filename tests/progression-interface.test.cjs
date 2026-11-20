@@ -20,8 +20,8 @@ assert.match(progression,/cloud\.open\(\)/,'cloud save action opens account logi
 assert.doesNotMatch(progression,/secret\.addEventListener\('click'/,'secret-room reward is handled once by the overlay delegated click handler');
 assert.doesNotMatch(progression,/tb-progression-cloud-draft|Google\/Apple OAuth не подключён/,'obsolete local-only cloud-save placeholder is removed');
 assert.match(progression,/Сохранение Towerbound через игровой аккаунт/,'cloud-save card describes the actual account-based service');
-assert.match(html,/progression-24\.js\?v=8/,'progression UI asset cache version is bumped');
-assert.match(sw,/towerbound-v482/,'service worker cache is bumped to prevent stale UI on iOS');
+assert.match(html,/progression-24\.js\?v=9/,'progression UI asset cache version is bumped');
+assert.match(sw,/towerbound-v483/,'service worker cache is bumped to prevent stale UI on iOS');
 const actionStart=progression.indexOf('async function act(a){');
 const actionEnd=progression.indexOf('function inject(){',actionStart);
 assert.ok(actionStart>=0&&actionEnd>actionStart,'progression action dispatcher exists');
