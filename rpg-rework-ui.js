@@ -822,8 +822,9 @@ function createDialog(){
    if(enemy&&enemy.alive===true&&Number(enemy.hp)>0)enemyTurn(enemy);
    else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}
    if(!battle)return;
-   save();render();
    const nextIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
+   battle.enemyQueueState={indices:nextIndex<0?[]:queue.map(candidate=>Number(candidate.index)).filter(Number.isFinite),cursor:nextIndex<0?0:nextIndex};
+   save();render();
    scheduleEnemyTurnQueue(nextIndex<0?[]:queue,nextIndex<0?0:nextIndex,token,500);
   }catch(error){recoverPlayerTurn(error);}
  }
