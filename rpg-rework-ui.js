@@ -685,7 +685,7 @@ function createDialog(){
  }
  function updateBossPhase(target=battle?.enemy){
   if(!battle||target?.type!=="boss")return 1;
-  target.maxPhases=4;
+  target.maxPhases=Math.max(2,(balance.bosses.phases||[]).length||4);
   const phase=Math.max(1,Number(engine.bossPhaseInfo(target.hp,target.maxHp).phase)||1),previous=Math.max(1,Number(target.phase)||1);
   if(phase>previous){
    for(let nextPhase=previous+1;nextPhase<=phase;nextPhase++){
@@ -697,7 +697,7 @@ function createDialog(){
    }
    const armorRestore=Math.max(8,Math.round(target.maxHp*.12));target.shield=Math.max(0,Number(target.shield)||0)+armorRestore;logCombatEvent("Броня босса восстановлена · +"+armorRestore,"#ff765e");
   }
-  target.phase=phase;target.maxPhases=4;
+  target.phase=phase;target.maxPhases=Math.max(2,(balance.bosses.phases||[]).length||4);
   if(target.index===battle.targetIndex){battle.bossPhase=phase;battle.enemy=target;battle.enemyHp=target.hp;battle.enemyMax=target.maxHp;battle.shield=target.shield||0;}
   return phase;
  }
@@ -706,11 +706,12 @@ function createDialog(){
   const c=live(),phase=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp).phase:0;
   if(battle.counterPrimed&&!battle.counterConsumed&&(battle.counterTargetIndex===undefined||battle.counterTargetIndex===attacker.index)){
    battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=battle.telegraph?.targetIndex;
-   const reflected=applyTargetDamage(attacker,raw,"physical");notify("100% отражение · "+reflected.dealt+" урона");
+   battle.actionDamageLedger={};const reflected=applyTargetDamage(attacker,raw,"physical");notify("100% отражение · "+reflected.dealt+" урона");
+   if(c.run.playerHp<=0){endFromDamage();return;}
    if(reflected.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();}
    return;
   }
-  const branchStats=balance.classes.branch_stat_bonuses?.[c.classId+"."+c.branch]||{},branchCounterChance=Number(branchStats.counterattack_chance)||0,parryChance=Math.max(branchCounterChance,Number(battle.parryChance)||0);battle.parryChance=0;if(parryChance>0&&gameRandom()<parryChance){const iceCounter=c.classId==="dragonkin",riposte=Math.max(1,Math.round(engine.getCombatStats(c).dps*(Number(branchStats.counterattack_damage_multiplier)||(iceCounter?.75:1.2)))),counter=applyTargetDamage(attacker,riposte,iceCounter?"ice":"physical");notify((iceCounter?"ЛЕДЯНАЯ ЗАЩИТА":"ПАРИРОВАНИЕ")+" · КОНТРАТАКА −"+counter.dealt+" HP");if(counter.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();return;}return;}
+  const branchStats=balance.classes.branch_stat_bonuses?.[c.classId+"."+c.branch]||{},branchCounterChance=Number(branchStats.counterattack_chance)||0,parryChance=Math.max(branchCounterChance,Number(battle.parryChance)||0);battle.parryChance=0;if(parryChance>0&&gameRandom()<parryChance){const iceCounter=c.classId==="dragonkin",riposte=Math.max(1,Math.round(engine.getCombatStats(c).dps*(Number(branchStats.counterattack_damage_multiplier)||(iceCounter?.75:1.2))));battle.actionDamageLedger={};const counter=applyTargetDamage(attacker,riposte,iceCounter?"ice":"physical");notify((iceCounter?"ЛЕДЯНАЯ ЗАЩИТА":"ПАРИРОВАНИЕ")+" · КОНТРАТАКА −"+counter.dealt+" HP");if(c.run.playerHp<=0){endFromDamage();return;}if(counter.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();return;}return;}
   let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));
   if((battle.enemyDamageReductionTurns||0)>0)incoming=Math.round(incoming*(1-(battle.enemyDamageReduction||0)));
   const blockedByCards=Math.min(Math.max(0,Number(battle.cardBlock)||0),incoming);incoming=Math.max(0,incoming-blockedByCards);battle.cardBlock=Math.max(0,(Number(battle.cardBlock)||0)-blockedByCards);
@@ -728,7 +729,7 @@ function createDialog(){
   if(!battle||!enemy||enemy.alive!==true||Number(enemy.hp)<=0){if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}return;}
   const c=live();enemy.turnsTaken=(enemy.turnsTaken||0)+1;enemy.pendingAttack=false;if(enemy.type==="boss")logCombatEvent("Босс готовит атаку · фаза "+(enemy.phase||1),"#ffb36b");
   const poison=Math.max(0,Number(enemy.poison)||0),bleed=Math.max(0,Number(enemy.bleed)||0);
-  if(poison>0||bleed>0){const dotDamage=poison+bleed;enemy.hp=Math.max(0,enemy.hp-dotDamage);enemy.poison=Math.max(0,poison-1);enemy.bleed=Math.max(0,bleed-1);showFloatingText(enemy,"-"+dotDamage,"#a8e66b");notify("Яд/кровотечение · −"+dotDamage+" HP");if(enemy.hp<=0){enemy.alive=false;enemy.dead=true;finishCurrentEnemy();return;}}
+  if(poison>0||bleed>0){const dotDamage=poison+bleed;enemy.hp=Math.max(0,enemy.hp-dotDamage);enemy.poison=Math.max(0,poison-1);enemy.bleed=Math.max(0,bleed-1);showFloatingText(enemy,"-"+dotDamage,"#a8e66b");notify("Яд/кровотечение · −"+dotDamage+" HP");if(enemy.type==="boss"){updateBossPhase(enemy);if(!battle)return;}if(enemy.hp<=0){enemy.alive=false;enemy.dead=true;finishCurrentEnemy();return;}}
   if(enemy.type==="boss"){
    battle.bossTurns=(battle.bossTurns||0)+1;
    if(battle.bossTurns>15){c.run.playerHp=0;notify("ЯРОСТЬ БОССА · Время вышло");endFromDamage();return;}
