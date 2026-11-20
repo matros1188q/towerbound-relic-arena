@@ -49,6 +49,10 @@ assert.equal((progression.match(/data-tab=/g)||[]).length,0,
 
 assert.ok(progression.includes("if(!overlay||!overlay.isConnected)")&&progression.includes("document.body.append(overlay)"),
  'progression overlay is mounted outside the replaceable RPG render root and recreated after removal');
+const legacyRpg=fs.readFileSync(path.join(root,'rpg-mode.js'),'utf8');
+assert.ok(legacyRpg.includes('body.rpg-open>*:not(#tbRpg):not(#tbProgressionOverlay)'),
+ 'legacy body isolation keeps the body-mounted meta progression overlay visible');
+
 assert.ok(progression.includes("if(!overlay?.isConnected)inject();"),
  'the progression entry point recreates a missing overlay before opening it');
 
