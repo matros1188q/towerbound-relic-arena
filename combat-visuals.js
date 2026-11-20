@@ -39,9 +39,20 @@ root.querySelectorAll('.tb-target-card.defeated:not(.tb-death-dissolve)').forEac
 const title=root.querySelector('.tb-enemy-title');if(title&&/босс|хранитель/i.test(title.textContent)){const key=title.textContent+':'+stage;if(key!==bossSeen){bossSeen=key;const intro=document.createElement('div');intro.className='tb-boss-intro';intro.innerHTML='<small>ПРИБЛИЖАЕТСЯ БОСС</small><b></b>';intro.querySelector('b').textContent=title.textContent;root.appendChild(intro);setTimeout(()=>intro.remove(),2100);}}
 const focus=root.querySelector('.tb-enemy-focus'),width=focus?.querySelector('.tb-healthbar.enemy span')?.style.width||'';if(focus&&width!==lastHp){lastHp=width;focus.classList.remove('tb-hit-spark');void focus.offsetWidth;focus.classList.add('tb-hit-spark');setTimeout(()=>focus.classList.remove('tb-hit-spark'),220);}
 }
-const observer=new MutationObserver(()=>{const root=getRoot();if(root&&!root.__tbCombatVisualObserver){root.__tbCombatVisualObserver=true;observer.observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});}update();});
-observer.observe(document.documentElement,{childList:true,subtree:true});
+let observedRoot=null,updateQueued=false;
+const scheduleUpdate=()=>{if(updateQueued)return;updateQueued=true;const run=()=>{updateQueued=false;update();};if(typeof requestAnimationFrame==="function")requestAnimationFrame(run);else setTimeout(run,32);};
+const rootObserver=new MutationObserver(scheduleUpdate);
+const mountObserver=new MutationObserver(()=>{
+ const root=getRoot();
+ if(root!==observedRoot){
+  rootObserver.disconnect();observedRoot=root;
+  if(root)rootObserver.observe(root,{childList:true,subtree:true});
+  scheduleUpdate();
+ }
+});
+mountObserver.observe(document.documentElement,{childList:true,subtree:true});
+if(getRoot()){observedRoot=getRoot();rootObserver.observe(observedRoot,{childList:true,subtree:true});scheduleUpdate();}
 document.addEventListener('tb:combat-status',e=>{const arena=getRoot()?.querySelector('.tb-arena');if(!arena)return;const node=document.createElement('b');node.className='tb-combat-status';node.textContent=e.detail?.text||'☠';arena.appendChild(node);setTimeout(()=>node.remove(),1150);});
-window.TowerboundCombatVisuals={status:text=>document.dispatchEvent(new CustomEvent('tb:combat-status',{detail:{text}})),refresh:update};
-update();
+window.TowerboundCombatVisuals={status:text=>document.dispatchEvent(new CustomEvent('tb:combat-status',{detail:{text}})),refresh:scheduleUpdate};
+scheduleUpdate();
 })();
