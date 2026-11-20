@@ -334,5 +334,24 @@ css += "\n.tb-camp-overlay,.tb-deck-viewer-overlay{position:fixed;inset:0;displa
  "#tbRpg .tb-v2 .v2-pause-btn,#tbRpg .tb-v2 .tb-fast-battle-btn{min-height:40px!important;touch-action:manipulation!important}\n"+
  "#tbRpg .tb-v2 .v2-battle-wrap button:focus-visible,#tbRpg .tb-v2 .v2-card:focus-visible{outline:2px solid #f2cf83!important;outline-offset:2px!important}\n"+
  "@media(max-height:700px){#tbRpg .tb-v2 .v2-battle-middle{gap:2px!important}#tbRpg .tb-v2 .v2-hero-img{height:56px!important;max-height:56px!important}#tbRpg .tb-v2 .v2-enemy-img{width:40px!important;height:40px!important}#tbRpg .tb-v2 .v2-card-hand{height:104px!important;min-height:104px!important;flex-basis:104px!important}#tbRpg .tb-v2 .v2-card{height:88px!important;min-height:88px!important}}\n";
+ /* Stable card-combat viewport, compact combat log and readable card-library tiles. */
+ css += "\n/* TowerBound card UI hotfix: fixed battle log and responsive collection cards. */\n"+
+ "#tbRpg .tb-v2:has(.v2-battle-wrap){display:flex!important;flex-direction:column!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important;overflow:hidden!important;box-sizing:border-box!important}\n"+
+ "#tbRpg .tb-v2 .v2-battle-wrap{display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;max-height:100%!important;overflow:hidden!important;flex:1 1 auto!important;box-sizing:border-box!important}\n"+
+ "#tbRpg .tb-v2 .v2-battle-wrap .tb-combat-log{display:flex!important;flex-direction:column!important;flex:0 0 80px!important;height:80px!important;min-height:80px!important;max-height:80px!important;overflow-y:auto!important;overflow-x:hidden!important;flex-shrink:0!important;margin-bottom:10px!important;box-sizing:border-box!important}\n"+
+ "#tbRpg .tb-v2 .v2-battle-wrap .tb-combat-log summary{flex:0 0 auto!important;min-height:28px!important;padding:5px 0!important}\n"+
+ "#tbRpg .tb-v2 .v2-battle-wrap .tb-combat-log-list{flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-library,#tbRpg .tb-v2 .tb-profile-card-grid{width:100%!important;min-width:0!important;box-sizing:border-box!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-grid,#tbRpg .tb-v2 .tb-card-collection-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;padding:5px!important;min-width:0!important;box-sizing:border-box!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-tile,#tbRpg .tb-v2 .tb-card-collection-item{display:flex!important;flex-direction:column!important;align-items:stretch!important;min-width:0!important;width:100%!important;aspect-ratio:3/4!important;min-height:0!important;height:auto!important;padding:6px!important;overflow:hidden!important;box-sizing:border-box!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-art{width:100%!important;height:36%!important;min-height:0!important;flex:0 0 36%!important;padding:2px!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-art img{width:100%!important;height:100%!important;min-height:0!important;object-fit:contain!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-copy{min-width:0!important;min-height:0!important;flex:1 1 auto!important;padding:5px 2px 2px!important;gap:3px!important;overflow:hidden!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-tile * ,#tbRpg .tb-v2 .tb-card-collection-item *{white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important;text-align:center!important;font-size:9px!important;line-height:1.2!important;letter-spacing:normal!important}\n"+
+ "#tbRpg .tb-v2 .tb-profile-card-tile h4,#tbRpg .tb-v2 .tb-card-collection-item>b{font-size:10px!important;line-height:1.2!important;margin:3px 0!important}\n"+
+ "#tbRpg .tb-v2 .tb-card-collection-item .card-img-wrapper{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 60px!important;width:100%!important;height:60px!important;min-height:60px!important;overflow:hidden!important}\n"+
+ "#tbRpg .tb-v2 .tb-card-collection-item .card-img-wrapper img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}\n"+
+ "#tbRpg .tb-v2 .tb-card-collection-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:4px!important}\n"+
+ "@media(max-width:420px){#tbRpg .tb-v2 .tb-profile-card-grid,#tbRpg .tb-v2 .tb-card-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:5px!important}}\n";
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
 })()
