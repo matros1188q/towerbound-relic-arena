@@ -150,7 +150,14 @@ async function saveLoop(){
   saved=false;
   console.error('[Towerbound cloud] save failed',e);
   if(String(e.message||e).includes('SAVE_CONFLICT')||String(e.code||'')==='40001'){
-   conflict=true;setStatus('ОБЛАКО · КОНФЛИКТ','error');say('Сохранение изменилось на другом устройстве. Обнови облачную версию или выбери источник вручную; автоматическая перезапись остановлена.');
+   try{
+    const remote=await readRemote();
+    await chooseSource(remote);
+    if(!conflict){setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');say('Облачная версия уже совпадает с этим устройством.');}
+   }catch(recoveryError){
+    conflict=true;setStatus('ОБЛАКО · КОНФЛИКТ','error');
+    say('Сохранение изменилось на другом устройстве, а облачную версию пока не удалось загрузить: '+(recoveryError.message||'ошибка сети'),'error');
+   }
   }else{setStatus('ОБЛАКО · ОЖИДАЕТ СЕТИ','error');say('Не удалось синхронизировать. Локальный прогресс сохранён, повторим при следующем изменении.');}
  }finally{syncing=false;}
  return saved;
