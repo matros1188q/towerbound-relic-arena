@@ -762,7 +762,7 @@ function createDialog(){
    battle.bossTurns=(battle.bossTurns||0)+1;
    if(battle.bossTurns>15){c.run.playerHp=0;notify("ЯРОСТЬ БОССА · Время вышло");endFromDamage();return;}
   }
-  if(battle.enemyStunned){battle.enemyStunned=false;decayEnemyDebuffs(enemy);notify("Враг оглушён · ход пропущен");return;}
+  if(enemy.stunned){enemy.stunned=false;decayEnemyDebuffs(enemy);notify("Враг оглушён · ход пропущен");return;}
   const planned=enemy.role==="healer"&&enemy.provoked?{type:"attack"}:(enemy.intent||null);
   if(enemy.role==="saboteur"||planned?.type==="sabotage"){
    const cardId=planned?.cardId||(gameRandom()<.5?"curse_wound":"status_slime"),jammed=createCardInstance(cardId);
@@ -1205,7 +1205,7 @@ function talentBonusDescription(talent,rank){
   if(!selected){index=battle.enemies.find(enemy=>enemy.alive)?.index;if(index===undefined)return false;engine.selectTarget(c.id,index);}
   battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);
   battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;if(c.heroic&&!battle.enemy.mutation&&battle.enemy.type!=="boss")battle.enemy.mutation=gameRandom()<.5?"vampirism":"thorns";
-  battle.counterAction=null;battle.pendingKill=false;battle.enemyStunned=false;battle.dot=null;battle.dots=[];battle.hot=null;battle.parryChance=0;battle.nextDamageShield=0;battle.teleportUsed=false;
+  battle.counterAction=null;battle.pendingKill=false;const legacyStunTarget=battle.enemies.find(enemy=>Number(enemy.index)===Number(snapshot?.targetIndex??stage.targetIndex??stage.enemyIndex??0));if(battle.enemyStunned&&legacyStunTarget?.alive&&Number(legacyStunTarget.hp)>0)legacyStunTarget.stunned=true;battle.enemyStunned=false;battle.dot=null;battle.dots=[];battle.hot=null;battle.parryChance=0;battle.nextDamageShield=0;battle.teleportUsed=false;
   battle.playerDamageBuff=0;battle.playerBuffUntil=0;battle.enemyDamageReduction=0;battle.enemyDamageReductionUntil=0;
   battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase():0;
   return true;
@@ -1485,7 +1485,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   if(effect.type==="dot"&&effect.damage_multiplier){const dotAmplifier=c.classId==="assassin"&&c.branch==="poison"?(Number(balance.classes.branch_stat_bonuses?.["assassin.poison"]?.dot_damage_multiplier)||1.15):1;const dotDamage=Math.max(1,Math.round(damage*dotAmplifier));battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);if(battle.dots.length<20)battle.dots.push({damage:dotDamage,ticks:effect.ticks||3});else battle.dots[battle.dots.length-1]={damage:dotDamage,ticks:effect.ticks||3};battle.dot=battle.dots[0]||null;if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="dot";}}
   if(effect.type==="buff"){battle.playerDamageBuff=effect.power_multiplier||0;battle.playerDamageBuffTurns=Math.max(1,effect.duration_turns||effect.duration||3);battle.buffsUsed=(battle.buffsUsed||0)+1;}
   if(effect.type==="debuff"){battle.enemyDamageReduction=effect.power_multiplier||0;battle.enemyDamageReductionTurns=Math.max(1,effect.duration_turns||effect.duration||3);if(c.classId==="shaman"&&c.branch==="dark_gods"){const curseDamage=Math.max(1,Math.round(stats.dps*(effect.damage_multiplier||skill.damage_multiplier||.45)*.45*(Number(balance.classes.branch_stat_bonuses?.["shaman.dark_gods"]?.dot_damage_multiplier)||1.15)));battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);if(battle.dots.length<20)battle.dots.push({damage:curseDamage,ticks:effect.duration||3});else battle.dots[battle.dots.length-1]={damage:curseDamage,ticks:effect.duration||3};battle.dot=battle.dots[0]||null;}if(battle.enemy?.role==="tank"){battle.enemy.pendingCleanseDebuff=true;battle.enemy.debuffKind="debuff";}}
-  if(effect.type==="control")battle.enemyStunned=true;
+  if(effect.type==="control"&&battle.enemy?.alive&&Number(battle.enemy.hp)>0)battle.enemy.stunned=true;
   if(effect.type==="parry")battle.parryChance=effect.parry_chance||0;
   const combo=processCombo(slotIndex);if(combo){damage*=combo.bonus.damage_mult||1;guaranteedCrit=!!combo.bonus.guaranteed_crit;}
   if(c.classId==="assassin"&&battle.assassinNextHit){damage*=balance.procs.assassin.value;battle.assassinNextHit=false;battle.proc=null;}
@@ -1505,7 +1505,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));const interrupted=applyTargetDamage(target,interrupt,"physical");battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupted.dealt+" HP");}
   if(skill&&target.hp>0){
    const current=String(damageType).toLowerCase(),previous=battle.lastElement;
-   if((previous==="fire"&&current==="water")||(previous==="water"&&current==="fire")){battle.enemyStunned=true;showFloatingText(target,"ПАР · ОГЛУШЕНИЕ","#73cfff");notify("ПАР · ОГЛУШЕНИЕ");}
+   if((previous==="fire"&&current==="water")||(previous==="water"&&current==="fire")){target.stunned=true;showFloatingText(target,"ПАР · ОГЛУШЕНИЕ","#73cfff");notify("ПАР · ОГЛУШЕНИЕ");}
    else if((previous==="lightning"&&current==="water")||(previous==="water"&&current==="lightning")){const shock=applyTargetDamage(target,Math.round(result.dealt),"lightning");showFloatingText(target,"ЭЛЕКТРОШОК -"+shock.dealt,"#ffe45c");notify("ЭЛЕКТРОШОК");}
    battle.lastElement=current;
   }

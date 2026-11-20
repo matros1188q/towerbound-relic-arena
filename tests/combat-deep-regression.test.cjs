@@ -21,6 +21,14 @@ assert.match(ui,/combatState:Object\.fromEntries\(PERSISTED_BATTLE_FIELDS/,'batt
 assert.match(ui,/for\(const key of PERSISTED_BATTLE_FIELDS\)if\(Object\.prototype\.hasOwnProperty\.call\(savedCombat,key\)\)/,'battle snapshot restores combat state');
 assert.match(ui,/savedSnapshot\?\.cardState\?\.actorType==="player"[\s\S]*?battle\.actor=\{type:"player"/,'reload preserves the current player turn');
 assert.match(ui,/function decayEnemyDebuffs\(enemy\)/,'enemy debuffs use shared duration handling');
+assert.match(ui,/if\(enemy\.stunned\)\{enemy\.stunned=false;decayEnemyDebuffs\(enemy\);notify\("Враг оглушён · ход пропущен"\);return;\}/,'stun is consumed by the exact enemy whose turn is active');
+const enemyTurnStart=ui.indexOf("function enemyTurn(enemy){");
+const enemyTurnEnd=ui.indexOf("function ",enemyTurnStart+20);
+assert.ok(enemyTurnStart>=0&&enemyTurnEnd>enemyTurnStart,'enemy turn function is present');
+assert.doesNotMatch(ui.slice(enemyTurnStart,enemyTurnEnd),/battle\.enemyStunned/,'enemy queue never consumes a global stun flag');
+assert.match(ui,/if\(effect\.type==="control"&&battle\.enemy\?\.alive&&Number\(battle\.enemy\.hp\)>0\)battle\.enemy\.stunned=true;/,'control skills stun their selected target');
+assert.match(ui,/target\.stunned=true;showFloatingText\(target,"ПАР · ОГЛУШЕНИЕ"/,'elemental reactions stun their actual target');
+assert.match(ui,/legacyStunTarget=battle\.enemies\.find[\s\S]*?legacyStunTarget\.stunned=true/,'old global stun saves migrate to the saved target');
 assert.match(ui,/decayEnemyDebuffs\(enemy\);notify\("Враг оглушён/,'stun advances debuff durations');
 assert.match(ui,/decayEnemyDebuffs\(enemy\);save\(\);render\(\);return;/,'sabotage advances debuff durations');
 assert.match(ui,/burn:"Горение: в конце хода игрока наносит урон, затем снимается\."/,'burn timing is explained');
