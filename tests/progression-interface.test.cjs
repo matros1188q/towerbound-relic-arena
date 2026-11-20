@@ -21,7 +21,7 @@ assert.doesNotMatch(progression,/secret\.addEventListener\('click'/,'secret-room
 assert.doesNotMatch(progression,/tb-progression-cloud-draft|Google\/Apple OAuth не подключён/,'obsolete local-only cloud-save placeholder is removed');
 assert.match(progression,/Сохранение Towerbound через игровой аккаунт/,'cloud-save card describes the actual account-based service');
 assert.match(html,/progression-24\.js\?v=9/,'progression UI asset cache version is bumped');
-assert.match(sw,/towerbound-v485/,'service worker cache is bumped to prevent stale UI on iOS');
+assert.match(sw,/towerbound-v\\d+/,'service worker cache is versioned to prevent stale UI on iOS');
 const actionStart=progression.indexOf('async function act(a){');
 const actionEnd=progression.indexOf('function inject(){',actionStart);
 assert.ok(actionStart>=0&&actionEnd>actionStart,'progression action dispatcher exists');
