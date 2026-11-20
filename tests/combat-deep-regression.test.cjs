@@ -37,7 +37,7 @@ assert.ok(ui.includes('stateBefore=JSON.parse(JSON.stringify(engine.state))'),'c
 assert.match(ui,/Object\.assign\(engine\.state,stateBefore\)/,'card effect errors restore engine state');
 assert.match(ui,/battle=battleBefore;battle\.enemies=Array\.isArray\(battle\.enemies\)\?battle\.enemies:\[\];battle\.enemy=battle\.enemies\.find\(enemy=>Number\(enemy\.index\)===Number\(battle\.targetIndex\)\)\|\|battle\.enemy/,'card rollback rebinds the selected enemy to the restored enemy list');
 
-assert.match(sw,/towerbound-v482/,'offline cache is invalidated');
+assert.match(sw,/towerbound-v483/,'offline cache is invalidated');
 assert.ok(ui.includes('if(target.shield>0){const absorbed='),'ignore armor still respects shields');
 assert.ok(!ui.includes('if(!options.ignoreArmor&&target.shield>0'),'ignore armor does not bypass shields');
 assert.ok(ui.includes('hits=Math.max(1,Math.floor(Number(effects.hits)||1))'),'multi-hit preview includes every hit');
@@ -51,7 +51,7 @@ assert.match(ui,/energy=c\.classId==="shaman"&&battle\.shamanFreeMode&&Number\(c
 assert.ok(ui.includes('if(c.classId==="assassin"&&attackCard&&Number(c.combo)>0)classMultiplier*='),'preview includes class damage modifiers');
 assert.ok(ui.includes('decayEnemyDebuffs(enemy);save();render();return;')&&!ui.includes('if(enemy.weak>0)enemy.weak=Math.max(0,enemy.weak-1);if(enemy.vulnerable>0)enemy.vulnerable=Math.max(0,enemy.vulnerable-1);\n   decayEnemyDebuffs(enemy);'),'sabotage does not decrement debuffs twice');
 assert.ok(ui.includes('playerTurnCount>=Number(battle.bossDeadlineTurns)'),'boss deadline uses the configured turn boundary');
-assert.match(sw,/towerbound-v482/);
+assert.match(sw,/towerbound-v483/);
 assert.match(ui,/for\(const enemy of targets\)\{if\(c\.run\.playerHp<=0\)break;const hit=applyTargetDamage/,'card area attacks stop after thorns kill the player');
 assert.match(ui,/for\(let n=1;n<Number\(effects\.hits\)&&c\.run\.playerHp>0;n\+\+\)/,'multi-hit cards stop after lethal thorns');
 assert.match(ui,/for\(let hit=0;hit<3&&target\.hp>0&&c\.run\.playerHp>0;hit\+\+\)/,'multi-hit ultimates stop after lethal thorns');
