@@ -89,8 +89,8 @@ assert.match(ui,/if\(card\.retain\)retained\.push\(card\)/,'retain cards stay in
 assert.match(ui,/function scheduleEnemyTurnQueue\(/,'enemy turns use a scheduled queue rather than overlapping timers');
 assert.match(ui,/function recoverPlayerTurn\(/,'battle runtime has a recovery path after a turn error');
 
-assert.match(ui,/Number\\(effects\\.damageMissingHp\\)>0\\)\\&\\&!target/,'dynamic missing-health damage cannot be spent without a live target');
-assert.match(ui,/Number\\(effects\\.damagePerEnergy\\)>0\\|\\|Number\\(effects\\.damageMissingHp\\)>0/,'X-cost and missing-health cards show calculated damage in inspection');
-assert.match(ui,/status_slime:\\{id:"status_slime"[^\\n]*effects:\\{selfDiscard:true\\}/,'self-discard status is a one-energy card');
-assert.match(ui,/c\\.hand\\.splice\\(index,1\\);[\\s\\S]*?if\\(card\\.exhaust\\|\\|card\\.upgradedExhaust\\)c\\.exhaustPile\\.push\\(card\\);else c\\.discard\\.push\\(card\\)/,'playing a self-discard card consumes it into the discard pile');
+assert.match(ui,/Number\(effects\.damageMissingHp\)>0\)&&!target/,'dynamic missing-health damage cannot be spent without a live target');
+assert.match(ui,/Number\(effects\.damagePerEnergy\)>0\|\|Number\(effects\.damageMissingHp\)>0/,'X-cost and missing-health cards show calculated damage in inspection');
+assert.match(ui,/status_slime:\{id:"status_slime"[^\n]*effects:\{selfDiscard:true\}/,'self-discard status is a one-energy card');
+assert.match(ui,/c\.hand\.splice\(index,1\);[\s\S]*?if\(card\.exhaust\|\|card\.upgradedExhaust\)c\.exhaustPile\.push\(card\);else c\.discard\.push\(card\)/,'playing a self-discard card consumes it into the discard pile');
 console.log('CARD SYSTEM AUDIT PASS: 126 unique cards, 126 matching art files, 7 class rosters, 21 specialization routing, supported effects/statuses, draw/discard/exhaust/retain and enemy turn queue.');
