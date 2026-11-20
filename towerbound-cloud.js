@@ -61,8 +61,8 @@ const authEmail=login=>String(login||'').trim().toLowerCase()+'@'+AUTH_EMAIL_DOM
 function localizedAuthError(error,fallback='Ошибка авторизации'){const message=String(error?.message||error||'');if(/Invalid login credentials/i.test(message))return 'Неверный логин или пароль';if(/Email address.*is invalid|invalid email/i.test(message))return 'Ошибка регистрации. Попробуйте другой логин';if(/User already registered|already registered/i.test(message))return 'Этот логин уже занят';if(/Password should be at least 6 characters|password.{0,30}at least 6 characters/i.test(message))return 'Пароль должен быть не менее 6 символов';return message||fallback;}
 const setStatus=(textValue,kind)=>{status.text=textValue;status.kind=kind;button.textContent=textValue;button.dataset.state=kind;document.querySelectorAll('.tb-account-button').forEach(node=>{const login=session?.user?.email?String(session.user.email).split('@')[0]:'',label=login||((kind==='online')?'В СЕТИ':'АККАУНТ');node.textContent=label.toUpperCase();});};
 const open=()=>{overlay.classList.add('open');overlay.style.display='grid';overlay.style.visibility='visible';},close=()=>{if(!overlay.classList.contains('login-required')){overlay.classList.remove('open');overlay.style.display='none';overlay.style.visibility='hidden';}};
-const rememberKey='tb-remember-me',remembered=()=>{try{return localStorage.getItem(rememberKey)==='true';}catch(e){return false;}};
-const setRemember=value=>{try{if(value)localStorage.setItem(rememberKey,'true');else localStorage.removeItem(rememberKey);}catch(e){}};
+const rememberKey='tb-remember-me',remembered=()=>{try{return localStorage.getItem(rememberKey)!=='false';}catch(e){return true;}};
+const setRemember=value=>{try{localStorage.setItem(rememberKey,value?'true':'false');}catch(e){}};
 const showLoginGate=(force=false)=>{overlay.classList.remove('login-required');$('#tbCloudTitle').textContent='Вход в игру';$('#tbCloudIntro').textContent='Войди в игровой аккаунт, чтобы открыть выбор персонажа.';$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudClose').hidden=!force;$('#tbCloudRememberMe').checked=remembered();if(force){overlay.classList.add('open');overlay.style.display='grid';overlay.style.visibility='visible';}else{overlay.classList.remove('open');overlay.style.display='none';overlay.style.visibility='hidden';}};
 const hideLoginGate=()=>{overlay.classList.remove('login-required','open');overlay.style.display='none';overlay.style.visibility='hidden';$('#tbCloudClose').hidden=false;};
 button.addEventListener('click',open);$('#tbCloudClose').addEventListener('click',close);
@@ -107,6 +107,12 @@ async function chooseSource(remote){
  const knownRevision=Number(localStorage.getItem('tb-cloud-revision')||0);
  revision=remote?Number(remote.revision):0;
  if(!remote){const hasCharacters=snapshotHasCharacters(local);say('В облаке пока нет сохранения.');await writeRemote(local,0);$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say(hasCharacters?'Прогресс привязан к аккаунту. Локальная копия сохранена.':'Успешный вход. Создайте персонажа');return;}
+ const localHasCharacters=snapshotHasCharacters(local),remoteHasCharacters=snapshotHasCharacters(remote.save_data);
+ if(remoteHasCharacters&&!localHasCharacters){
+  say('В облаке найден персонаж. Восстанавливаем прогресс…');
+  restoreLocal(remote.save_data);
+  return;
+ }
  if(!localExists){say('Загружаем облачный прогресс…');restoreLocal(remote.save_data);}
  if(sameSave(local,remote.save_data)||(sameUser&&knownRevision===revision&&sameSave(local,remote.save_data))){
   try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
