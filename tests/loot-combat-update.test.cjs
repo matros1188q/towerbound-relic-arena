@@ -90,7 +90,7 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.match(ui,/data-card-play/,'battle UI renders and routes cards from the hand');
  assert.match(ui,/CARD_DATABASE[\s\S]*function drawCards\(amount\)[\s\S]*function playCard\(cardIndex\)/,'battle UI uses a draw pile, hand, discard pile and energy-costed card actions');
  assert.match(ui,/engine\.restoreResource\(c\.id,profile\.resourceGain\)/,'basic attack restores resource on a successful hit');
- assert.match(ui,/for\(let hit=0;hit<3&&battle\.enemy\.hp>0;hit\+\+\)/,'single-target ultimate is resolved as three hits');
+ assert.match(ui,/for\(let hit=0;hit<3&&battle\.enemy\.hp>0&&c\.run\.playerHp>0;hit\+\+\)applyTargetDamage\(battle\.enemy,hitDamage,ultimate\.damage_type,\{ultimate:true\}\)/,'single-target ultimate resolves three capped hits and stops if the player dies');
  assert.match(ui,/engine\.capBossDamage\(target,damage,used,options\.ultimate\?"ultimate":undefined\)/,'ordinary and ultimate boss hits use their separate per-hit caps');
  assert.match(ui,/data-action="equip-best"/,'inventory exposes equip best');
  assert.match(ui,/data-action="salvage-gray"/,'inventory exposes bulk gray salvage');
