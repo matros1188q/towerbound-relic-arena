@@ -26,8 +26,8 @@ assert.match(combatUi,/target\.maxPhases=Math\.max\(2,\(balance\.bosses\.phases\
 assert.match(combatUi,/if\(enemy\.type==="boss"\)\{updateBossPhase\(enemy\);if\(!battle\)return;\}/,'boss phase transitions are evaluated after poison and bleed ticks');
 assert.match(combatUi,/battle\.actionDamageLedger=\{\};const reflected=applyTargetDamage/,'counter reflection starts a fresh boss damage action');
 assert.match(combatUi,/battle\.actionDamageLedger=\{\};const counter=applyTargetDamage/,'parry starts a fresh boss damage action');
-assert.match(combatUi,/if\\(c\\.run\\.playerHp<=0\\)\\{endFromDamage\\(\\);return;\\}\\s*if\\(reflected\\.killed\\)/,'lethal thorns damage during a counter ends the run immediately');
-assert.match(combatUi,/if\\(c\\.run\\.playerHp<=0\\)\\{endFromDamage\\(\\);return;\\}\\s*if\\(counter\\.killed\\)/,'lethal thorns damage during a parry ends the run immediately');
+assert.match(combatUi,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}\s*if\(reflected\.killed\)/,'lethal thorns damage during a counter ends the run immediately');
+assert.match(combatUi,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}\s*if\(counter\.killed\)/,'lethal thorns damage during a parry ends the run immediately');
 
 if(balance.combat.turn_based?.enabled){
  assert.equal(balance.combat.telegraphs.default_window_ms,0,'turn-based combat has no real-time telegraph timer');
