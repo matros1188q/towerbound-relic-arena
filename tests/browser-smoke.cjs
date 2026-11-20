@@ -146,7 +146,30 @@ async function journey(type,name,viewport,url){
   assert.equal(await page.locator('.tb-systems').count(),1,name+' opens the account destination from bottom navigation');
   await page.locator('[data-action="bottom-map"]').click();
   await page.waitForSelector('.tb-stage-toolbar');
-  await page.evaluate(()=>{Math.random=()=>.5;});
+  // Exercise the map's dynamic antidote purchase button, not just its static handler.
+  await page.evaluate(()=>{
+   const c=window.TowerboundRework?.state?.characters?.[0];
+   if(!c)throw new Error('Antidote QA character is missing');
+   c.progress.highestEver=13;c.progress.currentStage=1;c.run.active=true;c.run.stage=null;c.run.campStopsUsed=[13];
+   c.silver=100;c.bag=(c.bag||[]).filter(item=>item.type!=="antidote");
+   window.TowerboundReworkUI.showMap();
+  });
+  await page.locator('[data-stage="13"]').click();
+  await page.locator('.tb-stage-more summary').click();
+  await page.locator('[data-action="buy-antidote"]').click();
+  await page.waitForFunction(()=>{
+   const c=window.TowerboundRework?.state?.characters?.[0];
+   return c?.silver===85&&(c.bag||[]).some(item=>item.type==="antidote"&&item.quantity===1);
+  },{timeout:5000});
+  const antidotePurchase=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];return{silver:c.silver,quantity:c.bag.filter(item=>item.type==="antidote").reduce((sum,item)=>sum+Number(item.quantity||0),0)};});
+  assert.deepEqual(antidotePurchase,{silver:85,quantity:1},name+' buys one antidote for exactly 15 silver');
+  await page.locator('[data-stage="1"]').click();
+  await page.evaluate(()=>{
+   const c=window.TowerboundRework.state.characters[0];
+   c.run.active=false;c.run.stage=null;c.run.campStopsUsed=[];c.silver=100;c.bag=c.bag.filter(item=>item.type!=="antidote");
+   window.TowerboundReworkUI.showMap();
+   Math.random=.5;
+  });
   await page.locator('[data-action="start"]').click();
   const starterDeckConfirm=page.locator('[data-starter-deck-confirm]');
   await starterDeckConfirm.waitFor({state:'visible',timeout:5000});
