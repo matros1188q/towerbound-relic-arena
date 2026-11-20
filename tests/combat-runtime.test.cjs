@@ -129,7 +129,7 @@ for(const classId of classes){
   assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
   assert.match(ui,/const dotAmplifier=c\.classId==="assassin"&&c\.branch==="poison"\?[\s\S]*?const dotDamage=Math\.max\(1,Math\.round\(damage\*dotAmplifier\)\)/,'damage-over-time uses the catalog skill multiplier and full turn-based action scaling');
   assert.match(ui,/battle\.busy=false;[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'enemy phase begins with a clean busy flag and 500ms stagger');
-  assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?scheduleEnemyTurnQueue\(queue,nextIndex,token,500\)/,'enemy turn queue skips dead enemies and schedules the next living enemy after 500ms');
+  assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?battle\.enemyQueueState=\{indices:nextIndex<0\?\[\]:queue\.map\(candidate=>Number\(candidate\.index\)\)\.filter\(Number\.isFinite\),cursor:nextIndex<0\?0:nextIndex\};[\s\S]*?save\(\);render\(\);[\s\S]*?scheduleEnemyTurnQueue\(nextIndex<0\?\[\]:queue,nextIndex<0\?0:nextIndex,token,500\)/,'enemy turn queue persists the next living enemy before saving and scheduling it');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
   assert.match(ui,/data-action="end-turn"/,'End Turn control is present');
   assert.match(ui,/tb-telegraph/,"enemy telegraph content remains visible");
