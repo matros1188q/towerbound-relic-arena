@@ -92,5 +92,5 @@ assert.match(ui, /data-relic-buy/);
 assert.match(ui, /data-relic-reward-pick/);
 assert.match(ui, /data-unequip/);
 assert.match(ui, /v2-battle-relics/);
-assert.match(worker, /towerbound-v335/);
+assert.match(worker, /^const CACHE = 'towerbound-v\d+';$/m);
 console.log('Equipment-to-card links, relic passives/rewards/shop, and talent-scaled card combat passed.');
