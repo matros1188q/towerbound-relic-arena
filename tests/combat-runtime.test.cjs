@@ -21,6 +21,14 @@ assert.deepEqual(Object.keys(balance.procs).sort(),classes.slice().sort(),'all s
 assert.deepEqual(Object.keys(balance.skills.counter_abilities).sort(),classes.slice().sort(),'all seven class counters are configured');
 
 assert.equal(balance.bosses.phases.length,4,'four boss phases are configured');
+const combatUi=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
+assert.match(combatUi,/target\.maxPhases=Math\.max\(2,\(balance\.bosses\.phases\|\|\[\]\)\.length\|\|4\)/,'runtime boss phase count follows the four configured phases');
+assert.match(combatUi,/if\(enemy\.type==="boss"\)\{updateBossPhase\(enemy\);if\(!battle\)return;\}/,'boss phase transitions are evaluated after poison and bleed ticks');
+assert.match(combatUi,/battle\.actionDamageLedger=\{\};const reflected=applyTargetDamage/,'counter reflection starts a fresh boss damage action');
+assert.match(combatUi,/battle\.actionDamageLedger=\{\};const counter=applyTargetDamage/,'parry starts a fresh boss damage action');
+assert.match(combatUi,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}if\(reflected\.killed\)/,'lethal thorns damage during a counter ends the run immediately');
+assert.match(combatUi,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}if\(counter\.killed\)/,'lethal thorns damage during a parry ends the run immediately');
+
 if(balance.combat.turn_based?.enabled){
  assert.equal(balance.combat.telegraphs.default_window_ms,0,'turn-based combat has no real-time telegraph timer');
  assert.equal(balance.combat.turn_based.cooldown_unit,'turns','cooldowns are measured in turns');
