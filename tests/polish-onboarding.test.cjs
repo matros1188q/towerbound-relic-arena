@@ -11,7 +11,7 @@ const sw=read('service-worker.js');
 const tutorial=JSON.parse(read('configs/balance/tutorial.json'));
 const seasons=JSON.parse(read('configs/balance/seasons.json'));
 const endgame=read('endgame-systems.js');
-assert.match(index,/towerbound-polish\\.js\\?v=\\d+/,'polish module is loaded with a versioned cache key');
+assert.match(index,/towerbound-polish\.js\?v=\d+/,'polish module is loaded with a versioned cache key');
 assert.ok(sw.includes('./towerbound-polish.js'),'polish module is included in offline shell cache');
 assert.match(sw,/^const CACHE = 'towerbound-v\d+';$/m,'offline shell cache uses a versioned release key');
 assert.ok(ui.includes('CARD_DATABASE')&&ui.includes('function drawCards(amount)')&&ui.includes('function playCard(cardIndex)'),'card deckbuilder runtime is wired into the battle UI');
