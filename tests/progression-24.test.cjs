@@ -11,11 +11,12 @@ for(const [name,re] of [
  ['bestiary',/v\.kills>=100/],['reincarnation',/Реинкарнация/],['stone exchange',/function exchange\(c\)/],
  ['best gear',/function equip\(c\)/],['inventory sorting',/function sort\(c\)/],['grey salvage',/function salvage\(c\)/],
  ['bulk potions',/for\(let i=0;i<10;i\+\+\)/],['configured potion SKU',/heal_25/],['x3 farm',/farmSpeed=live\(\)\.progression\?\.speed3\?3:1/],
- ['offline silver',/h\*100/],['cloud placeholder',/tb-progression-cloud-draft/],
+ ['offline silver',/h\*100/],['authenticated cloud sync',/await cloud\.syncNow\(\)/],
  ['push permission',/Notification\.requestPermission/],['hardcore telegraphs',/disable_telegraphs/],
  ['language',/tb-progression-lang/],['energy saving',/tbp-low-effects/],
  ['elite notes',/enemy\.type==='elite'/],['chapter palette',/palettes=\[/],['secret room chance',/Math\.random\(\)<\.01/]
 ])assert.match(name==='x3 farm'||name==='cooldown reduction'?ui:fx,re,name);
 assert.match(fx,/engine\.purchase\(c\.id,'silver','heal_25'\)/);assert.doesNotMatch(fx,/heal_40/);
 assert.ok(html.includes('./progression-24.js?v=6'));assert.match(fx,/localStorage\.setItem\('tb-rpg-v2'/);assert.match(fx,/slot:slot==='weapon'\?0:2/);assert.match(fx,/engine\.purchase\(c\.id,'silver','heal_25'\)/);assert.match(ui,/c\.progression\.skillMastery\[skill\.id\]=mastery/);
+assert.doesNotMatch(fx,/tb-progression-cloud-draft/);assert.match(fx,/if\(lang==='en'\)for\(const \[ru,en\] of translations\)overlay\.innerHTML=/,'English translations run after the active tab markup is rendered');
 const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');assert.match(core,/progression\.runewords.*word\.health/);assert.match(core,/permanentXpBonus/);console.log('Progression systems static checks passed.');
