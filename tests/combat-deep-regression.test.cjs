@@ -8,6 +8,11 @@ const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
 assert.match(ui,/maxPhases:4/,'bosses use four phases');
 assert.match(ui,/function updateBossPhase\(target=battle\?\.enemy\)/,'boss phase transitions are centralized');
 assert.match(ui,/engine\.bossPhaseInfo\(target\.hp,target\.maxHp\)/,'boss phases use engine thresholds');
+assert.match(ui,/if\(enemy\.type==="boss"\)\{updateBossPhase\(enemy\);if\(!battle\)return;\}/,'boss phases update after enemy poison and bleed ticks');
+assert.match(ui,/turnOffset=battle\.actor\?\.type==="enemy"\?1:0/,'boss final-phase deadline accounts for an enemy-turn transition');
+assert.match(ui,/battle\.actor=\{type:state\.actorType==="enemy"\?"enemy":"player"/,'restored actor is known before boss phase recovery');
+assert.match(ui,/spellBonus=isMagicCard\(card,effects\)\?Math\.max\(0,Number\(battle\?\.cardSpellPower\)\|\|0\):0/,'spell power applies to fire, ice, dark and other magical cards');
+
 assert.match(ui,/if\(nextPhase===2\)addSummonedBossMobs\(\)/,'phase two summons are connected');
 assert.match(ui,/phaseConfig\.immediate_attack/,'phase three immediate attack is connected');
 assert.match(ui,/player_turn_deadline/,'phase four deadline is configured');
