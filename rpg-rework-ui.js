@@ -459,7 +459,7 @@
   for(const character of engine.state.characters||[]){character.deck=Array.isArray(character.deck)?character.deck:[];character.unlockedCards=Array.isArray(character.unlockedCards)?character.unlockedCards:[];character.relics=Array.isArray(character.relics)?character.relics:[];character.hand=Array.isArray(character.hand)?character.hand:[];character.discard=Array.isArray(character.discard)?character.discard:[];character.exhaustPile=Array.isArray(character.exhaustPile)?character.exhaustPile:[];character.combo=Math.max(0,Number(character.combo)||0);character.rage=Math.max(0,Number(character.rage)||0);character.charges=Math.max(0,Number(character.charges)||0);}
   const c=live();
   if(c?.run?.stage&&battle){
-   c.run.stage.uiBattleSnapshot={enemies:JSON.parse(JSON.stringify(battle.enemies||[])),targetIndex:battle.targetIndex,round:battle.round||1,comboStacks:battle.comboStacks||0,skillCooldowns:JSON.parse(JSON.stringify(battle.skillCooldowns||{})),comboProgress:JSON.parse(JSON.stringify(battle.comboProgress||{})),cardState:{deck:JSON.parse(JSON.stringify(c.deck||[])),hand:JSON.parse(JSON.stringify(c.hand||[])),discard:JSON.parse(JSON.stringify(c.discard||[])),exhaustPile:JSON.parse(JSON.stringify(c.exhaustPile||[])),currentEnergy:Number(c.currentEnergy)||0,cardBlock:Number(battle.cardBlock)||0,actorType:battle.actor?.type||"player"}};
+   c.run.stage.uiBattleSnapshot={enemies:JSON.parse(JSON.stringify(battle.enemies||[])),targetIndex:battle.targetIndex,round:battle.round||1,comboStacks:battle.comboStacks||0,skillCooldowns:JSON.parse(JSON.stringify(battle.skillCooldowns||{})),comboProgress:JSON.parse(JSON.stringify(battle.comboProgress||{})),cardState:{deck:JSON.parse(JSON.stringify(c.deck||[])),hand:JSON.parse(JSON.stringify(c.hand||[])),discard:JSON.parse(JSON.stringify(c.discard||[])),exhaustPile:JSON.parse(JSON.stringify(c.exhaustPile||[])),currentEnergy:Number(c.currentEnergy)||0,cardBlock:Number(battle.cardBlock)||0,actorType:battle.actor?.type||"player"},enemyQueueState:battle.enemyQueueState?{indices:[...(battle.enemyQueueState.indices||[])],cursor:Math.max(0,Number(battle.enemyQueueState.cursor)||0)}:null};
   }
   localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));window.TowerboundCloud?.queueSave?.();window.TowerboundOnline?.queuePublish();
  }catch(e){notify("Не удалось сохранить: "+e.message);}}
@@ -754,6 +754,8 @@ function createDialog(){
   return Number.isFinite(parsed)?Math.max(0,Math.min(60000,Math.round(parsed))):fallback;
  }
  function scheduleEnemyTurnQueue(queue,index,token,delay){
+  if(!battle||token!==battle.enemyQueueToken)return;
+  battle.enemyQueueState={indices:(queue||[]).map(enemy=>Number(enemy.index)).filter(Number.isFinite),cursor:Math.max(0,Number(index)||0)};
   clearPendingTurnTimer();
   const safeDelay=Math.max(16,safeTimeoutMs(delay,1000));
   if(battle){battle.timerRemainingMs=safeDelay;battle.timerStartedAt=Date.now();}
@@ -763,28 +765,42 @@ function createDialog(){
    runEnemyTurnQueue(queue,index,token);
   },safeDelay);
  }
- function recoverPlayerTurn(error){
-  console.error("Towerbound battle recovered after turn error",error);
+ function recoverBattleControl(error,message,clearQueue=true){
+  console.error("Towerbound battle recovered after action error",error);
   if(!battle)return;
   clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
+  if(clearQueue)battle.enemyQueueState=null;
   battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
-  battle.busy=false;battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
+  battle.busy=false;battle.isCardAnimating=false;
   battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};battle.telegraph=null;
-  notify("Ошибка хода противника · управление возвращено игроку");
+  notify(message||"Ошибка действия · управление возвращено игроку");
   try{save();render();}catch(renderError){console.error("Battle recovery render failed",renderError);}
+ }
+ function recoverPlayerTurn(error){recoverBattleControl(error,"Ошибка хода противника · управление возвращено игроку",true);}
+ function resumeEnemyTurnQueue(delay=180){
+  if(!battle||!battle.enemyQueueState)return false;
+  const indices=Array.isArray(battle.enemyQueueState.indices)?battle.enemyQueueState.indices:[];
+  const queue=indices.map(index=>(battle.enemies||[]).find(enemy=>Number(enemy.index)===Number(index))).filter(Boolean);
+  const cursor=Math.max(0,Math.min(queue.length,Number(battle.enemyQueueState.cursor)||0));
+  battle.paused=false;battle.busy=true;battle.isPlayerTurn=false;
+  battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
+  scheduleEnemyTurnQueue(queue,cursor,battle.enemyQueueToken||0,delay);
+  return true;
  }
  function advanceToPlayerTurn(){
   if(!battle)return;
-  clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
+  clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.enemyQueueState=null;
   battle.busy=false;battle.actor={type:"player",id:"player",name:live().name};battle.telegraph=null;
   showPlayerTurn();save();render();
  }
  function runEnemyTurnQueue(queue,index,token){
-  if(!battle||screen!=="battle"||token!==battle.enemyQueueToken)return;
+  if(!battle||token!==battle.enemyQueueToken)return;
+  if(screen!=="battle"){scheduleEnemyTurnQueue(queue,index,token,250);return;}
   battle.isPlayerTurn=false;
   try{
    if(battle.paused){scheduleEnemyTurnQueue(queue,index,token,250);return;}
    if(index>=queue.length){
+    battle.enemyQueueState=null;
     battle.playerTurnCount=(battle.playerTurnCount||0)+1;battle.round=(battle.round||1)+1;if((battle.playerWeakTurns||0)>0)battle.playerWeakTurns--;
     const deadlineBoss=(battle.enemies||[]).find(enemy=>enemy.type==="boss"&&enemy.alive&&Number(enemy.hp)>0);
     if(deadlineBoss&&battle.bossDeadlineTurns!==null&&battle.bossDeadlineTurns!==undefined&&battle.playerTurnCount>Number(battle.bossDeadlineTurns)&&engine.bossPhaseInfo(deadlineBoss.hp,deadlineBoss.maxHp).phase===4){
@@ -808,8 +824,7 @@ function createDialog(){
    if(!battle)return;
    save();render();
    const nextIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
-   if(nextIndex<0){scheduleEnemyTurnQueue([],0,token,500);return;}
-   scheduleEnemyTurnQueue(queue,nextIndex,token,500);
+   scheduleEnemyTurnQueue(nextIndex<0?[]:queue,nextIndex<0?0:nextIndex,token,500);
   }catch(error){recoverPlayerTurn(error);}
  }
 
@@ -853,7 +868,7 @@ function createDialog(){
   const cardNode=root.querySelector('[data-card-play="'+Number(cardIndex)+'"]');if(!live()?.hand?.[Number(cardIndex)])return;
   battle.isCardAnimating=true;if(cardNode)cardNode.classList.add("tb-card-flyout");
   const delay=battle.fastBattle?100:220;
-  setTimeout(()=>{if(!battle)return;try{resolveCardPlay(cardIndex);}finally{if(battle){battle.isCardAnimating=false;save();render();if((Number(battle.cardsPlayedThisTurn)||0)>=20)endPlayerTurn();}}},delay);
+  setTimeout(()=>{if(!battle)return;try{resolveCardPlay(cardIndex);}catch(error){recoverBattleControl(error,"Не удалось разыграть карту · ход восстановлен",false);}finally{if(battle){battle.isCardAnimating=false;save();render();if((Number(battle.cardsPlayedThisTurn)||0)>=20)endPlayerTurn();}}},delay);
  }
  function resolveCardPlay(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
@@ -920,6 +935,7 @@ function createDialog(){
   if(!queue.length){advanceToPlayerTurn();return;}
   battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;const queueToken=battle.enemyQueueToken;
   battle.busy=true;battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
+  battle.enemyQueueState={indices:queue.map(enemy=>Number(enemy.index)).filter(Number.isFinite),cursor:0};
   battle.telegraph=null;notify("Противники атакуют...");save();render();
   scheduleEnemyTurnQueue(queue,0,queueToken,500);
   }catch(error){recoverPlayerTurn(error);}
@@ -1246,7 +1262,15 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    if(c.classId==="shaman")c.totem=Math.min(3,(Number(c.totem)||0)+1);
    const savedSnapshot=plan.uiBattleSnapshot;if(savedSnapshot){battle.round=Math.max(1,Number(savedSnapshot.round)||1);battle.skillCooldowns={...(savedSnapshot.skillCooldowns||{})};battle.comboStacks=savedSnapshot.comboStacks||0;battle.comboProgress={...(savedSnapshot.comboProgress||{})};}
    if(savedSnapshot?.cardState){const state=savedSnapshot.cardState;c.deck=Array.isArray(state.deck)?state.deck:[];c.hand=Array.isArray(state.hand)?state.hand:[];c.discard=Array.isArray(state.discard)?state.discard:[];c.exhaustPile=Array.isArray(state.exhaustPile)?state.exhaustPile:[];c.currentEnergy=Math.max(0,Math.min(c.energy,Number(state.currentEnergy)||0));battle.cardBlock=Math.max(0,Number(state.cardBlock)||0);battle.cardResume=state.actorType!=="enemy";}else{resetCardBattle(c);drawCards(5+Math.max(0,Number(plan.relicStartingDraw)||0));battle.cardResume=false;}
-   if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}syncInitiative();showPlayerTurn();screen="battle";save();render();
+   if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}
+   syncInitiative();screen="battle";
+   const savedQueue=savedSnapshot?.enemyQueueState;
+   if(savedSnapshot?.cardState?.actorType==="enemy"&&savedQueue&&Array.isArray(savedQueue.indices)){
+    battle.enemyQueueState={indices:savedQueue.indices.map(Number).filter(Number.isFinite),cursor:Math.max(0,Number(savedQueue.cursor)||0)};
+    battle.paused=false;battle.busy=true;battle.isPlayerTurn=false;battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
+    if(!resumeEnemyTurnQueue(350))showPlayerTurn();
+   }else{battle.enemyQueueState=null;showPlayerTurn();}
+   save();render();
   }catch(error){notify(error.message);}
  }
  function finishCurrentEnemy(){
@@ -1836,18 +1860,24 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    case "pause":if(battle){
     if(!battle.paused){
      battle.paused=true;
-     if(pendingTimer){clearTimeout(pendingTimer);pendingTimer=null;}
+     clearPendingTurnTimer();
      const until=Number(battle.telegraph?.until),remaining=Number(battle.remainingResponseMs);
      battle.remainingResponseMs=Number.isFinite(remaining)&&remaining>0?remaining:(Number.isFinite(until)&&until>0?Math.max(0,until-Date.now()):0);
     }else{
      battle.paused=false;
-     if(battle.telegraph){
+     if(battle.enemyQueueState&&battle.actor?.type==="enemy"){
+      resumeEnemyTurnQueue(180);
+     }else if(battle.telegraph){
       const remaining=Number(battle.remainingResponseMs),until=Number(battle.telegraph.until);
       const delay=Number.isFinite(remaining)&&remaining>0?remaining:(Number.isFinite(until)&&until>0?Math.max(0,until-Date.now()):0);
       const safeDelay=safeTimeoutMs(delay,0);
       battle.telegraph.until=Date.now()+safeDelay;battle.remainingResponseMs=0;
-      clearTimeout(pendingTimer);pendingTimer=setTimeout(()=>{pendingTimer=null;resolveEnemyTelegraph();},safeDelay);
-     }else scheduleEnemyTelegraph();
+      clearPendingTurnTimer();pendingTimer=setTimeout(()=>{pendingTimer=null;resolveEnemyTelegraph();},safeDelay);
+     }else if(battle.actor?.type==="enemy"){
+      const queue=(battle.enemies||[]).filter(enemy=>enemy.alive===true&&Number(enemy.hp)>0);
+      battle.enemyQueueState={indices:queue.map(enemy=>Number(enemy.index)).filter(Number.isFinite),cursor:0};
+      battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;resumeEnemyTurnQueue(180);
+     }
     }
     save();render();
    }break;
@@ -1902,7 +1932,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
    save();render();
   }catch(error){notify(error.message);render();}
  });
- function pauseForFocusLoss(){if((engine.state.account.settings||{}).auto_pause_on_blur===false)return;if(screen==="battle"&&battle&&!battle.paused){battle.paused=true;if(pendingTimer){clearTimeout(pendingTimer);pendingTimer=null;battle.remainingResponseMs=Math.max(0,(battle.telegraph?.until||Date.now())-Date.now());}save();render();}}
+ function pauseForFocusLoss(){if((engine.state.account.settings||{}).auto_pause_on_blur===false)return;if(screen==="battle"&&battle&&!battle.paused){battle.paused=true;clearPendingTurnTimer();if(battle.telegraph)battle.remainingResponseMs=Math.max(0,(battle.telegraph.until||Date.now())-Date.now());save();render();}}
  document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseForFocusLoss();});window.addEventListener("blur",pauseForFocusLoss);
  window.addEventListener("pagehide",()=>{try{if(engine&&live()){engine.publishGhostSnapshot(live().id,"exit");save();}}catch(error){console.warn("Ghost snapshot on exit failed",error);}});
  function boot(){
