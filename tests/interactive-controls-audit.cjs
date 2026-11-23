@@ -51,7 +51,7 @@ assert.ok(ui.includes('antidote:"Противоядие"'),'antidote inventory i
 
 
 const social=fs.readFileSync(path.join(root,'social-endgame.js'),'utf8');
-assert.ok(social.includes("e.target.closest('#socPanel [data-soc],#socPanel [data-tab]')"),
+assert.ok(social.includes("e.target.closest('#socPanel [data-soc],#socPanel [data-tab],#socPanel [data-eg]')"),
  'social click delegation is scoped to the social panel and cannot capture unrelated game tabs');
 const progression=fs.readFileSync(path.join(root,'progression-24.js'),'utf8');
 assert.ok(progression.includes("closest('[data-progress-tab]')")&&progression.includes('t.dataset.progressTab'),
