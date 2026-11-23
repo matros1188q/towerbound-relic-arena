@@ -30,3 +30,44 @@
  if(!style){style=document.createElement("style");style.id="towerbound-new-arena-css";document.head.appendChild(style);}
  style.textContent=cssText;
 })();
+
+/* Map screen width recovery — scoped away from the new battle arena. */
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)),
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card{
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:100%!important;
+ max-width:100%!important;
+}
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel{
+ display:flex!important;
+ flex-direction:column!important;
+ padding:15px!important;
+}
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card .tb-eyebrow,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card h2,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card p,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen .tb-eyebrow,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen h2,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen p,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel .tb-eyebrow,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel h2,
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel p{
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:100%!important;
+ white-space:normal!important;
+ word-break:normal!important;
+ writing-mode:horizontal-tb!important;
+ text-align:left!important;
+ overflow-wrap:normal!important;
+}
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)){
+ width:100%!important;
+ min-width:0!important;
+ max-width:100%!important;
+}
