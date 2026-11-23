@@ -726,7 +726,7 @@ function createDialog(){
   const c=live();ensureCardDeck(c);if(c.classId==="shaman")c.totem=Math.min(3,(Number(c.totem)||0)+1);battle.shamanFreeMode=false;battle.assassinAttacksThisTurn=0;
   battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
   battle.actor={type:"player",id:"player",name:c.name};battle.cardsPlayedThisTurn=0;battle.busy=false;battle.playerSkillUsed=false;battle.potionUsedThisTurn=false;battle.counterPrimed=false;battle.counterConsumed=false;battle.counterAction=null;
-  if(battle.cardResume){battle.cardResume=false;}else{battle.cardBlock=0;c.currentEnergy=3;const innate=c.deck.filter(card=>card.innate);for(const card of innate){c.deck.splice(c.deck.indexOf(card),1);c.hand.push(card);}drawCards(Math.max(0,5-c.hand.length));}
+  if(battle.cardResume){battle.cardResume=false;}else{battle.cardBlock=0;c.currentEnergy=3;const innate=c.deck.filter(card=>card.innate);for(const card of innate){c.deck.splice(c.deck.indexOf(card),1);c.hand.push(card);}drawCards(Math.max(0,5-c.hand.length)+cardDrawBonus(c));}
   for(const id of Object.keys(battle.skillCooldowns||{}))battle.skillCooldowns[id]=Math.max(0,battle.skillCooldowns[id]-1);
   planEnemyIntents();
   battle.counterCooldownTurns=Math.max(0,(battle.counterCooldownTurns||0)-1);battle.ultimateCooldownTurns=Math.max(0,(battle.ultimateCooldownTurns||0)-1);
