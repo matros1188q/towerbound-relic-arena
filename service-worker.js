@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v630';
+const CACHE = 'towerbound-v631';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './',
