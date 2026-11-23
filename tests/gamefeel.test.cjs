@@ -16,7 +16,8 @@ assert.equal(created.level,1);
 assert.equal(created.silver,100,'new character starts with 100 silver');
 assert.equal(character.bag.find(item=>item.type==='healing_potion').quantity,3,'starter has three healing potions');
 assert.equal(balance.account.starter_pack.silver,100);
-assert.equal(balance.economy.silver_store.heal_25,20,'25% healing potion costs 20 silver');
+assert.equal(balance.economy.silver_store.heal_10,20,'10% healing potion costs 20 silver');
+assert.equal(balance.economy.silver_store.heal_25,60,'25% healing potion costs 60 silver');
 assert.equal(balance.drop_tables.guaranteed_boss_rare_epic_from_stage,3);
 for(const [id,definition] of Object.entries(balance.classes.classes)){
   assert.ok((definition.base_skills||[]).some(skill=>skill.unlock_level<=1),id+' has an active level-one base skill');
