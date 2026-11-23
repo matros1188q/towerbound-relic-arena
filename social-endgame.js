@@ -93,6 +93,27 @@ css += `
 @media(max-width:340px){#socPanel .soc-section-heading{align-items:flex-start}#socPanel .soc-pass-milestone{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr)}#socPanel .soc-pass-reward>button{font-size:6px}}
 `;
 let st=document.createElement('style');st.textContent=css;document.head.append(st);
+let towerSt=document.createElement('style');towerSt.textContent=`
+#socPanel .soc-tower-art{display:flex;align-items:center;gap:16px;min-height:132px;margin:12px 0;padding:18px;border:1px solid #d9b66b66;border-radius:16px;background:radial-gradient(circle at 18% 50%,#c18a3d35,transparent 44%),linear-gradient(135deg,#302b43,#111827 72%);box-shadow:inset 0 1px #ffffff12,0 12px 28px #0003}
+#socPanel .soc-tower-art>span{display:grid;place-items:center;flex:0 0 78px;height:88px;border:1px solid #e7c77a66;border-radius:18px;background:linear-gradient(145deg,#71542e66,#1b2035);color:#f3d18a;font-size:52px;text-shadow:0 0 24px #e6b65c77}
+#socPanel .soc-tower-art>div{display:grid;gap:4px;min-width:0}
+#socPanel .soc-tower-art small,#socPanel .soc-tower-season small{font-size:8px!important;letter-spacing:.14em;color:#c8b88e!important;font-weight:900}
+#socPanel .soc-tower-art strong{font-size:32px;line-height:1;color:#ffe3a1}
+#socPanel .soc-tower-art strong i{font-size:9px;font-style:normal;letter-spacing:.1em}
+#socPanel .soc-tower-art em{font-size:10px;color:#bfc9dd;font-style:normal}
+#socPanel .soc-tower-season{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:12px;border:1px solid #d9b66b33;border-radius:12px;background:#d9b66b0b}
+#socPanel .soc-tower-season>div{display:grid;gap:4px;min-width:0}
+#socPanel .soc-tower-season b{font-size:12px;color:#f4dfb1}
+#socPanel .soc-tower-season>span{color:#f1d28d;font-size:22px}
+#socPanel .soc-tower-wallet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+#socPanel .soc-tower-wallet>div{display:grid;justify-items:center;gap:4px;min-width:0;padding:12px 5px;border:1px solid #ffffff19;border-radius:12px;background:#ffffff08}
+#socPanel .soc-tower-wallet>div>span{font-size:19px;color:#f1d28d}
+#socPanel .soc-tower-wallet small{font-size:7px!important;letter-spacing:.1em;color:#aeb8cd!important}
+#socPanel .soc-tower-wallet b{font-size:13px;color:#f4e4c1;overflow-wrap:anywhere}
+#socPanel .soc-tower-battle .soc-boss-card{margin-top:12px}
+@media(max-width:380px){#socPanel .soc-tower-art{gap:10px;padding:12px}#socPanel .soc-tower-art>span{flex-basis:60px;height:68px;font-size:40px}#socPanel .soc-tower-art strong{font-size:27px}#socPanel .soc-tower-wallet{gap:4px}#socPanel .soc-tower-wallet>div{padding:10px 2px}}
+`;
+document.head.append(towerSt);
 function boot(){if(!window.TowerboundReworkReady)return;window.TowerboundReworkReady.then(e=>{engine=e;let m=location.hash.match(/(?:^#|&)tbduel=([^&]+)/);if(m){try{let ch=dec(m[1]);if(ch.kind==='tbduel'&&Date.now()-ch.createdAt<30*D&&confirm('Принять дуэль от '+ch.challenger.name+'?')){let r=accept(ch);toast((r.won?'Победа':'Поражение')+' · '+r.turns[2])}history.replaceState(null,'',location.pathname+location.search)}catch(x){toast(x.message)}}}).catch(e=>console.error('[social]',e))}
 window.TowerboundSocial={refresh:()=>{if($('#socPanel'))render()},openTab:(next)=>{replay=null;tab=['duels','guild','pass','leaderboard','endgame','tower'].includes(next)?next:'endgame';if(engine){render();return}const ready=window.TowerboundReworkReady;if(ready&&typeof ready.then==='function'){render();ready.then(value=>{if(value){engine=value;render()}else toast('Игровой модуль пока недоступен')}).catch(error=>{console.error('[social] open failed',error);toast('Не удалось загрузить сообщество')})}else toast('Игровой модуль ещё загружается')},open:()=>{replay=null;if(engine){render();return}const ready=window.TowerboundReworkReady;if(ready&&typeof ready.then==='function'){render();ready.then(value=>{if(value){engine=value;render()}else toast('Игровой модуль пока недоступен')}).catch(error=>{console.error('[social] open failed',error);toast('Не удалось загрузить сообщество')})}else toast('Игровой модуль ещё загружается')},close:()=>$('#socPanel')?.remove(),createChallenge:challenge,attackGuildBoss:hit,sendGift:gift,leaderboard:top};boot();
 })();

@@ -63,5 +63,7 @@ console.log('Endgame systems static checks: OK');
 ['soc-boss-card', 'Guild uses the redesigned shared community boss card'],
 ['soc-pass-milestone', 'Battle Pass uses the redesigned shared community reward milestones'],
 ['soc-endgame-link', 'Endgame uses the redesigned shared community activity list'],
-['soc-metric-grid', 'Endgame sections share the community metrics card system'],\n['soc-tower-wallet', 'Tower rewards use the shared community wallet design'],\n['soc-tower-battle', 'Tower battle uses the shared community combat design']
+['soc-metric-grid', 'Endgame sections share the community metrics card system'],
+['soc-tower-wallet', 'Tower rewards use the shared community wallet design'],
+['soc-tower-battle', 'Tower battle uses the shared community combat design']
 ].forEach(([needle,label]) => has(source,needle,label));
