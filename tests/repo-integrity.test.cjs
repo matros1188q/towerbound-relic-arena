@@ -32,8 +32,14 @@ const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
 const shellRefs=[...sw.matchAll(/["']\.\/([^"']+)["']/g)].map(match=>match[1]);
 for(const file of shellRefs)assert.ok(treePaths.has(file),'Missing service-worker shell asset: '+file);
 const scripts=new Set([...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)].map(match=>match[1].split('?')[0].replace(/^\.\//,'')));
+const intentionallyUnloadedScripts=new Set(['rpg-rework-ui.css.js']);
 for(const file of all.filter(file=>path.dirname(file)===root&&file.endsWith('.js')&&!file.endsWith('service-worker.js'))){
- assert.ok(scripts.has(path.basename(file)),'Root runtime JavaScript is not loaded by index.html: '+relative(file));
+ const name=path.basename(file);
+ if(intentionallyUnloadedScripts.has(name)){
+  assert.match(fs.readFileSync(file,'utf8'),/Legacy compatibility stub/,'The CSS compatibility file must remain an inert stub');
+  continue;
+ }
+ assert.ok(scripts.has(name),'Root runtime JavaScript is not loaded by index.html: '+relative(file));
 }
 const styles=new Set([...html.matchAll(/<link[^>]+href=["']([^"']+\.css)(?:\?[^"']*)?["']/g)].map(match=>match[1].replace(/^\.\//,'')));
 for(const file of all.filter(file=>path.dirname(file)===root&&file.endsWith('.css'))){
