@@ -24,6 +24,9 @@ assert.match(css,/:has\(\.tb-arena\)>\.tb-header\{display:flex!important\}/,'leg
 assert.match(css,/#tbRpg \.tb-v2>section\.tb-shop[\s\S]*?display:block!important/,'shop screen escapes the legacy global flex-row section rule');
 assert.match(css,/#tbRpg \.tb-v2>section\.tb-systems[\s\S]*?display:block!important/,'progress screen escapes the legacy global flex-row section rule');
 assert.match(css,/#tbRpg \.tb-v2>section\.tb-death\.tb-death-overlay\{[\s\S]*?position:relative!important/,'death panel stays in document flow and can be scrolled on mobile');
+assert.match(ui,/typeof engine\.dailyChestSnapshot==="function"\?engine\.dailyChestSnapshot\(c\.id\):null/,'navigation badges tolerate missing daily chest snapshots');
+assert.match(ui,/typeof engine\.accountLevel==="function"\?Number\(engine\.accountLevel\(\)\)\|\|0:0/,'navigation badges tolerate missing account-level helper');
+assert.match(ui,/Array\.isArray\(c\.achievements\)\?c\.achievements:\[\]/,'navigation badge handles old achievement saves');
 assert.match(css,/#tbRpg\{overflow:hidden!important/,'RPG shell has one scroll owner');
 assert.match(css,/padding:0 0 4px!important/,'only four pixels plus divider remain below the logo');
 assert.doesNotMatch(css,/tb-v2:has\(\.tb-arena\)>\.tb-header\{display:none!important\}/,'obsolete combat header hiding rule is removed');
