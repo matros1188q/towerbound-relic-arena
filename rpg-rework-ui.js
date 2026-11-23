@@ -447,9 +447,10 @@
   const equipment=item.type==="equipment"&&item.stats&&item.rarity;
   const slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",accessory:"Аксессуар"};
   const rarity=String(item.rarity||"Обычная"),kind=equipment?(slotNames[item.slot]||"Экипировка"):(item.type==="enhancement_stone"?"Камень":itemTypeName(item.type));
-  let name=itemDisplayName(item);
+  let name=item.name||item.title?itemDisplayName(item):"Неизвестный предмет";
   for(const prefix of [rarity,kind])if(name.toLocaleLowerCase("ru").startsWith((prefix+" · ").toLocaleLowerCase("ru")))name=name.slice(prefix.length+3).trim();
   name=name.replace(/\s*[·•]\s*(камень|камень усиления)$/i,"").trim()||"Неизвестный предмет";
+  if(name.toLocaleLowerCase("ru")===kind.toLocaleLowerCase("ru"))name="Неизвестный предмет";
   return [rarity,kind,name].join(" · ");
  }
  function effectiveEquipmentStats(item){
