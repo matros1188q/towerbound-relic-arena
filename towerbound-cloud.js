@@ -79,9 +79,10 @@ function snapshotHasCharacters(snapshot){for(const [key,value] of Object.entries
 function sameSave(a,b){if(!a?.keys||!b?.keys)return false;const ak=Object.keys(a.keys).sort(),bk=Object.keys(b.keys).sort();return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&a.keys[k]===b.keys[k]);}
 function walletComparable(snapshot){
  if(!snapshot?.keys)return null;const result={};
+ const stable=value=>Array.isArray(value)?value.map(stable):(value&&typeof value==='object'?Object.keys(value).sort().reduce((out,key)=>(out[key]=stable(value[key]),out),{}):value);
  for(const key of Object.keys(snapshot.keys).sort()){
   const value=snapshot.keys[key];if(!isSaveKey(key)||typeof value!=='string'){result[key]=value;continue;}
-  try{const game=JSON.parse(value);if(game.account&&typeof game.account==='object')delete game.account.diamonds;if(Array.isArray(game.characters))for(const c of game.characters)if(c&&typeof c==='object')delete c.silver;result[key]=JSON.stringify(game);}catch(_){return null;}
+  try{const game=JSON.parse(value);if(game.account&&typeof game.account==='object')delete game.account.diamonds;if(Array.isArray(game.characters))for(const c of game.characters)if(c&&typeof c==='object')delete c.silver;result[key]=JSON.stringify(stable(game));}catch(_){return null;}
  }
  return JSON.stringify(result);
 }
