@@ -177,6 +177,7 @@ async function onSession(next){
 }
 async function saveLoop(){
  if(!session||!client||conflict)return false;
+ if(!dirty)return true;
  if(syncing){dirty=true;return false;}
  syncing=true;let saved=false;
  try{
@@ -207,8 +208,16 @@ async function syncNow(){
  if(!saved)throw new Error(status.text||'Не удалось синхронизировать сохранение');
  return{revision,status:{...status}};
 }
-function queueSave(){if(!session||conflict||restoring)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,1300);}
+function queueSave(){if(!session||conflict||restoring)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,350);}
+async function flushSave(){
+ if(!session||!client||conflict||restoring)return false;
+ dirty=true;clearTimeout(timer);
+ return await saveLoop();
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&session&&!conflict){clearTimeout(timer);saveLoop();}});
+window.addEventListener('pagehide',()=>{if(session&&!conflict){clearTimeout(timer);flushSave();}});
 window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});
+setInterval(()=>{if(session&&!conflict&&dirty)saveLoop();},5000);
 $('#tbCloudSignIn').addEventListener('click',async()=>{try{say('Входим в игру…');await signIn($('#loginInput').value,$('#passInput').value,$('#tbCloudRememberMe').checked);}catch(e){say(localizedAuthError(e,'Не удалось войти'),'error');}});
 $('#tbCloudSignUp').addEventListener('click',async()=>{try{say('Создаём игровой аккаунт…');await signUp($('#loginInput').value,$('#passInput').value,$('#tbCloudRememberMe').checked);}catch(e){say(localizedAuthError(e,'Не удалось зарегистрироваться'),'error');}});
 $('#tbCloudGoogle').addEventListener('click',async()=>{try{say('Открываем Google…');const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});if(error)throw error;}catch(e){say(e.message||'Вход через Google не настроен');}});
@@ -234,5 +243,5 @@ function init(){
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
-window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,saveGame,queueSave,syncNow,signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
+window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,saveGame,queueSave,flushSave,syncNow,signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
 })();
