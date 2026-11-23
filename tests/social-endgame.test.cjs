@@ -12,3 +12,9 @@ assert.ok(html.includes('<script src="./social-endgame.js?v=2"></script>'),'soci
 assert.ok(source.includes("p.id='socPanel'")&&source.includes('document.body.append(p)'),'community panel is rendered as a direct body child');
 assert.ok(mode.includes(':not(#socPanel)'),'rpg-open body isolation must keep the community panel visible');
 console.log('social endgame static checks: OK');
+
+assert.match(fs.readFileSync('rpg-rework-ui.js','utf8'),/bottom-progress[\s\S]*?bottom-community[\s\S]*?bottom-shop/,'community belongs between progress and shop in the primary floating navigation');
+assert.match(fs.readFileSync('rpg-rework-ui.js','utf8'),/case \"bottom-community\":window\.TowerboundSocial\?\.open\?\./,'community navigation action opens the community panel');
+assert.match(source,/writing-mode:horizontal-tb!important/,'community panel normalizes inherited vertical text layout');
+assert.match(source,/TowerboundSocial=\{open:/,'community panel exposes an open method for primary navigation');
+assert.ok(!source.includes("launcher.id='socLauncher'"),'standalone floating community launcher is removed');

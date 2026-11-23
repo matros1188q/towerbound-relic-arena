@@ -889,3 +889,13 @@ html,body,#tbRpg,.tb-v2 {
 #tbRpg .tb-v2 .tb-shop-xp-icon{display:block!important;width:64px!important;height:64px!important;max-width:100%!important;object-fit:contain!important;margin:auto!important;background:transparent!important}
 @media(max-width:600px){#tbRpg .tb-v2 .tb-battle-rebuild{padding:5px!important;gap:5px!important}#tbRpg .tb-v2 .tb-battle-middle{gap:5px!important}#tbRpg .tb-v2 .tb-battle-hero{padding:5px 3px!important;gap:5px!important}#tbRpg .tb-v2 .tb-battle-hero-art{height:min(26dvh,150px)!important}#tbRpg .tb-v2 .tb-battle-enemy-grid{gap:5px!important;grid-auto-rows:minmax(100px,1fr)!important}#tbRpg .tb-v2 .tb-battle-bottom{flex-basis:250px!important;padding:5px!important;gap:5px!important}#tbRpg .tb-v2 .tb-battle-skills{gap:4px!important}#tbRpg .tb-v2 .tb-battle-footer{gap:4px!important}#tbRpg .tb-v2 .tb-battle-footer .tb-potion-belt{gap:2px!important}}
 @media(max-height:720px){#tbRpg .tb-v2 .tb-battle-hero-art{height:min(22dvh,115px)!important}#tbRpg .tb-v2 .tb-battle-enemy-grid{grid-auto-rows:minmax(90px,1fr)!important}}
+
+
+/* Six-item primary navigation: preserve readable horizontal labels on narrow iPhones. */
+.tb-bottom-nav{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px!important;padding-left:max(5px,env(safe-area-inset-left,0px))!important;padding-right:max(5px,env(safe-area-inset-right,0px))!important}
+.tb-bottom-nav button{width:100%!important;min-width:0!important;flex:none!important;padding:4px 1px!important;white-space:normal!important;writing-mode:horizontal-tb!important;text-orientation:mixed!important}
+.tb-bottom-nav button>span{font-size:19px!important;line-height:1.05!important}
+.tb-bottom-nav button>small{display:block!important;max-width:100%!important;font-size:clamp(7px,1.9vw,9px)!important;line-height:1.15!important;letter-spacing:0!important;text-align:center!important;white-space:normal!important;overflow-wrap:normal!important;word-break:keep-all!important}
+.tb-bottom-nav [data-nav-tab="community"]{color:#e7d2a2}
+.tb-bottom-nav [data-nav-tab="community"].active{color:#ffe29a}
+@media(min-width:800px){.tb-bottom-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}}
