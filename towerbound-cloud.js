@@ -7,7 +7,7 @@ const cfg=window.TOWERBOUND_SUPABASE_CONFIG||{};
 const SAVE_KEYS=new Set(['tb-rpg-v2','tb-rpg-v1','towerbound-save-v1','towerbound-profiles-v1','towerbound-active-profile-v1','tb-endgame-v1','tb-social-v1']);
 const isSaveKey=k=>SAVE_KEYS.has(String(k))||String(k).startsWith('towerbound-profile-save-');
 const $=s=>document.querySelector(s);
-let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false;
+let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false,savesReady=false;
 let sessionTask=Promise.resolve();
 const status={text:'Локальное сохранение',kind:'local'};
 const style=document.createElement('style');style.id='tb-cloud-styles';style.textContent=`
@@ -164,19 +164,22 @@ async function onSession(next){
  if(sessionKey===handledSessionKey)return sessionTask;
  handledSessionKey=sessionKey;
  sessionTask=(async()=>{
-  conflict=false;session=next;
-  if(!session){setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';showLoginGate();window.dispatchEvent(new Event('towerbound-auth-change'));return;}
+  conflict=false;session=next;savesReady=false;
+  if(!session){dirty=false;setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';showLoginGate();window.dispatchEvent(new Event('towerbound-auth-change'));return;}
   hideLoginGate();$('#tbCloudTitle').textContent='Облачный аккаунт Towerbound';$('#tbCloudIntro').textContent='Игровой аккаунт подключён. Прогресс синхронизируется с облаком.';
   $('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent=session.user.email||session.user.id;
   setStatus('ОБЛАКО · ПОДКЛЮЧЕНИЕ…','online');say('Проверяем облачное сохранение…');
-  try{const remote=await loadGame();await chooseSource(remote);}
-  catch(e){console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');say('Не удалось загрузить сохранение: '+(e.message||'ошибка сети')+'. Локальные данные не изменены.');}
+  try{
+   const remote=await loadGame();
+   await chooseSource(remote);
+   if(!conflict){savesReady=true;$('#tbCloudIntro').textContent='Облако подключено. Прогресс готов к синхронизации.';if(dirty)queueSave();}
+  }catch(e){savesReady=false;console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');$('#tbCloudIntro').textContent='Не удалось подключить облачное сохранение.';say('Не удалось загрузить сохранение: '+(e.message||'ошибка сети')+'. Локальные данные не изменены.');}
   window.dispatchEvent(new Event('towerbound-auth-change'));
  })();
  return sessionTask;
 }
 async function saveLoop(){
- if(!session||!client||conflict)return false;
+ if(!session||!client||!savesReady||conflict)return false;
  if(!dirty)return true;
  if(syncing){dirty=true;return false;}
  syncing=true;let saved=false;
@@ -208,10 +211,11 @@ async function syncNow(){
  if(!saved)throw new Error(status.text||'Не удалось синхронизировать сохранение');
  return{revision,status:{...status}};
 }
-function queueSave(){if(!session||conflict||restoring)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,350);}
+function queueSave(){if(restoring)return;dirty=true;if(!session||!savesReady||conflict)return;clearTimeout(timer);timer=setTimeout(saveLoop,350);}
 async function flushSave(){
- if(!session||!client||conflict||restoring)return false;
- dirty=true;clearTimeout(timer);
+ if(restoring)return false;
+ dirty=true;if(!session||!client||!savesReady||conflict)return false;
+ clearTimeout(timer);
  return await saveLoop();
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&session&&!conflict){clearTimeout(timer);saveLoop();}});
