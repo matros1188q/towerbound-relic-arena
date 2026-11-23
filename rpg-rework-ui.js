@@ -2249,7 +2249,7 @@ function talentBonusDescription(talent,rank){
  });
  function pauseForFocusLoss(){if(battle?.guildRaid)return;if((engine.state.account.settings||{}).auto_pause_on_blur===false)return;if(screen==="battle"&&battle&&!battle.paused){battle.paused=true;clearPendingTurnTimer();battle.timerRemainingMs=0;battle.timerStartedAt=0;if(battle.telegraph)battle.remainingResponseMs=Math.max(0,(battle.telegraph.until||Date.now())-Date.now());save();render();}}
  document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseForFocusLoss();});window.addEventListener("blur",pauseForFocusLoss);
- window.addEventListener("pagehide",()=>{try{if(engine&&live()){engine.publishGhostSnapshot(live().id,"exit");save();}}catch(error){console.warn("Ghost snapshot on exit failed",error);}});
+ window.addEventListener("pagehide",()=>{try{if(engine&&live()){engine.publishGhostSnapshot(live().id,"exit");save();window.TowerboundCloud?.flushSave?.();}}catch(error){console.warn("Ghost snapshot on exit failed",error);}});
  function boot(){
   if(!window.TowerboundReworkReady)return;
   window.TowerboundReworkReady.then(async value=>{
