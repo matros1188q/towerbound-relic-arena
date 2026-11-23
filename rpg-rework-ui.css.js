@@ -73,3 +73,22 @@
   ].join(" ");
  })();
  })();
+
+
+/* Run modifier picker: keep all three choices inside the iPhone viewport. */
+(function(){
+ "use strict";
+ var id="towerbound-run-modifier-fit-css";
+ var style=document.getElementById(id);
+ if(!style){style=document.createElement("style");style.id=id;document.head.appendChild(style);}
+ style.textContent=[
+  "#tbRpg .tb-v2 .tb-run-modifier-panel{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;column-gap:7px!important;row-gap:9px!important;align-items:stretch!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;padding:clamp(10px,2.5vw,16px)!important;margin:12px 0!important;}",
+  "#tbRpg .tb-v2 .tb-run-modifier-panel>.tb-daily-heading,#tbRpg .tb-v2 .tb-run-modifier-panel>p{grid-column:1/-1!important;}",
+  "#tbRpg .tb-v2 .tb-run-modifier-panel .tb-daily-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;flex-wrap:wrap!important;width:100%!important;min-width:0!important;margin-bottom:4px!important;}",
+  "#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier]{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:6px!important;box-sizing:border-box!important;grid-column:auto!important;float:none!important;width:100%!important;min-width:0!important;max-width:100%!important;min-height:108px!important;height:100%!important;margin:0!important;padding:10px 8px!important;white-space:normal!important;text-align:left!important;overflow-wrap:anywhere!important;}",
+  "#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier] b{display:block!important;width:100%!important;min-width:0!important;font-size:clamp(10px,2.8vw,13px)!important;line-height:1.2!important;white-space:normal!important;overflow-wrap:anywhere!important;}",
+  "#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier] small{display:block!important;width:100%!important;min-width:0!important;font-size:clamp(8px,2.35vw,10px)!important;line-height:1.3!important;white-space:normal!important;overflow-wrap:anywhere!important;}",
+  "#tbRpg .tb-v2 .tb-run-modifier-panel .tb-daily-heading h3{font-size:clamp(14px,4vw,19px)!important;line-height:1.2!important;}",
+  "@media(max-width:380px){#tbRpg .tb-v2 .tb-run-modifier-panel{column-gap:5px!important;padding:8px!important;}#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier]{padding:8px 5px!important;min-height:116px!important;}#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier] b{font-size:10px!important;}#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier] small{font-size:8px!important;line-height:1.25!important;}}"
+ ].join("\n");
+})();
