@@ -49,13 +49,6 @@ function has(text, needle, label) {
   ['grid-template-columns:repeat(3,minmax(0,1fr))', 'mobile menu grid'],
   ['max-width:330px', 'narrow phone layout']
 ].forEach(([needle,label]) => has(source,needle,label));
-[
-  ['evolvedSkill?.id==="burst"', 'AoE skill evolution'],
-  ['damage*=1.2', '20% AoE damage bonus'],
-  ['armorPenetration:.5', '50% armor penetration'],
-  ['armorPenetration=Math.max', 'armor penetration mitigation'],
-  ['evolved?evolved.icon', 'evolved skill icon']
-].forEach(([needle,label]) => has(combat,needle,label));
 assert.match(html, /<script src="\.\/endgame-systems\.js\?v=220"><\/script>/, 'endgame script cache version');
 assert.ok(!source.includes('Эволюция')&&!source.includes('open-evolution')&&!source.includes('evolveSkill('),'skill evolution removed');
 assert.ok(!combat.includes('evolvedSkill')&&!combat.includes('armorPenetration'),'combat evolution effects removed');

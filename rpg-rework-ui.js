@@ -1710,9 +1710,9 @@ function talentBonusDescription(talent,rank){
   const target=battle.enemy,hadBossCast=!!(battle.telegraph&&battle.enemy?.type==="boss");
   let result={killed:false,dealt:0};
   battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
-  const evolutionHitOptions={critical};
-  if(effect.type==="aoe"){for(const enemy of battle.enemies.filter(x=>x.alive)){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,damage,damageType,evolutionHitOptions);if(enemy===target)result=hit;}}
-  else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType,evolutionHitOptions);
+  const skillHitOptions={critical};
+  if(effect.type==="aoe"){for(const enemy of battle.enemies.filter(x=>x.alive)){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,damage,damageType,skillHitOptions);if(enemy===target)result=hit;}}
+  else if(!["heal","hot","buff","shield","debuff"].includes(effect.type))result=applyTargetDamage(target,damage,damageType,skillHitOptions);
   battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
   if(skill&&hadBossCast&&target.hp>0){const interrupt=Math.max(1,Math.round(target.maxHp*.1));const interrupted=applyTargetDamage(target,interrupt,"physical");battle.telegraph=null;notify("ПРЕРВАНО · −"+interrupted.dealt+" HP");}
   if(skill&&target.hp>0){
