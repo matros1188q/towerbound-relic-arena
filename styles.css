@@ -869,3 +869,6 @@
   #tbRpg .tb-v2 .tb-death-overlay .tb-death-losses>div{padding:8px 3px!important}
   #tbRpg .tb-v2 .tb-death-overlay .tb-death-losses small{font-size:7px!important}
 }
+
+/* Keep enemy intent telegraphs in normal card flow, not floating badge positioning. */
+#tbRpg .tb-v2 .tb-enemy-focus .tb-telegraph{position:relative!important;inset:auto!important;transform:none!important;max-width:100%;white-space:normal;}
