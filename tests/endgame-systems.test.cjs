@@ -59,14 +59,9 @@ assert.match(html, /<script src="\.\/rpg-rework-ui\.js\?v=[^"]+"><\/script>/, 'c
 console.log('Endgame systems static checks: OK');
 
 [
-['#tbEndgame,#tbEndgame *{writing-mode:horizontal-tb!important;text-orientation:mixed!important;}', 'endgame modal text forced horizontal'],
-['#tbEndgame .eg-window nav button{display:flex!important;flex-direction:row!important;', 'endgame modal tabs stay horizontal'],
-['#tbEndgameMenu,#tbEndgameMenu *{writing-mode:horizontal-tb!important;text-orientation:mixed!important;}', 'floating endgame launch menu text forced horizontal'],
-['#tbRpg #tbEndgame .eg-window nav button{writing-mode:horizontal-tb!important;', 'high-specificity modal override defeats inherited vertical button styles'],
-['#tbRpg .tb-v2 #tbEndgameMenu button{writing-mode:horizontal-tb!important;', 'high-specificity launch menu override defeats inherited vertical button styles'],
-['class="eg-primary-nav"', 'rebuilt Endgame navigation uses dedicated semantic tab layout'],
-['white-space:nowrap!important;word-break:keep-all!important;', 'Guild and Pass labels cannot break vertically'],
-['body #tbEndgameMenu button,body #tbEndgameMenu button *{writing-mode:horizontal-tb!important;', 'launcher labels reset outside the RPG mount'],
-['body #tbEndgame .eg-window nav button,body #tbEndgame .eg-window nav button *{writing-mode:horizontal-tb!important;', 'modal navigation labels reset at document scope'],
-['font-size:clamp(9px,2.7vw,11px)!important;', 'endgame launch menu labels scale on narrow phones']
+['class="eg-primary-nav"', 'endgame modal has a compact three-section navigation'],
+['eg-guild-hero', 'Guild uses the redesigned boss-focused layout'],
+['eg-pass-hero', 'Battle Pass uses the redesigned seasonal progression layout'],
+['eg-endgame-grid', 'Endgame uses a feature-card dashboard'],
+['grid-template-columns:repeat(3,minmax(0,1fr))!important', 'Endgame navigation is a three-column row']
 ].forEach(([needle,label]) => has(source,needle,label));
