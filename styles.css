@@ -1210,9 +1210,9 @@
 /* TB deck controls centered layout v2 */
 #tbRpg .tb-v2 .v2-energy-bar{
   display:grid!important;
-  grid-template-columns:max-content minmax(0,1fr) max-content!important;
+  grid-template-columns:max-content max-content max-content!important;
   align-items:center!important;
-  justify-content:stretch!important;
+  justify-content:space-between!important;
   column-gap:6px!important;
   overflow:hidden!important;
   padding:2px 5px!important;
@@ -1260,7 +1260,7 @@
 #tbRpg .tb-v2 .v2-energy-bar .tb-deck-controls .deck-info{
   text-align:left!important;
   font-size:8px!important;
-  transform:translateX(-2px)!important;
+  transform:none!important;
 }
 #tbRpg .tb-v2 .v2-energy-bar>.v2-end-turn{
   grid-column:3!important;
