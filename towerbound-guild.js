@@ -91,7 +91,7 @@ async function deposit(currency){
  const id=currency==='silver'?'#tbgSilverAmount':'#tbgDiamondAmount',amount=Math.floor(Number($(id)?.value)||0);
  await rpc('tb_guild_deposit',{p_currency:currency,p_amount:amount});
  notify('Взнос принят. Обновляем облачный баланс…');
- if(cloud()?.refreshFromServer){await cloud().refreshFromServer();return;}
+ if(cloud()?.refreshFromServer)await cloud().refreshFromServer();
  await load();renderSocial();
 }
 async function buyBuff(key){await rpc('tb_guild_buy_buff',{p_buff_key:key});await load();notify('Гильдейский баф улучшен');renderSocial();}
