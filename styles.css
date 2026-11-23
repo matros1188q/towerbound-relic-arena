@@ -880,3 +880,75 @@
 #tbRpg .tb-v2 .tb-bottom-nav button>span{display:block!important;font-size:17px!important;line-height:1!important;flex:none!important;}
 #tbRpg .tb-v2 .tb-bottom-nav button>small{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;font-size:clamp(6px,1.65vw,8px)!important;font-weight:800!important;line-height:1.12!important;letter-spacing:0!important;text-align:center!important;white-space:normal!important;overflow:hidden!important;overflow-wrap:normal!important;word-break:keep-all!important;writing-mode:horizontal-tb!important;text-orientation:mixed!important;}
 @media(max-width:390px){#tbRpg .tb-v2 .tb-bottom-nav{gap:1px!important;padding-left:3px!important;padding-right:3px!important}#tbRpg .tb-v2 .tb-bottom-nav button>small{font-size:6px!important;letter-spacing:-.15px!important}}
+
+
+/* Card text fit: preserve artwork area and keep every text block inside the card face. */
+#tbRpg .tb-v2 .new-hand-row .v2-card,
+#tbRpg .tb-v2 .v2-card[data-card-play]{
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  justify-content:flex-start!important;
+  align-items:stretch!important;
+  min-height:0!important;
+}
+#tbRpg .tb-v2 .new-hand-row .v2-card .card-img-wrapper,
+#tbRpg .tb-v2 .v2-card[data-card-play] .card-img-wrapper{
+  box-sizing:border-box!important;
+  flex:0 0 43px!important;
+  width:100%!important;
+  height:43px!important;
+  min-height:43px!important;
+  max-height:43px!important;
+  margin:8px 0 3px!important;
+  overflow:hidden!important;
+}
+#tbRpg .tb-v2 .new-hand-row .v2-card .card-name,
+#tbRpg .tb-v2 .v2-card[data-card-play] .card-name{
+  box-sizing:border-box!important;
+  display:-webkit-box!important;
+  flex:0 0 auto!important;
+  min-height:0!important;
+  max-height:22px!important;
+  margin:0!important;
+  padding:0 2px!important;
+  overflow:hidden!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  white-space:normal!important;
+  font:800 8px/1.12 system-ui,sans-serif!important;
+}
+#tbRpg .tb-v2 .new-hand-row .v2-card .card-desc,
+#tbRpg .tb-v2 .v2-card[data-card-play] .card-desc{
+  box-sizing:border-box!important;
+  display:block!important;
+  flex:1 1 0!important;
+  min-height:0!important;
+  max-height:none!important;
+  width:100%!important;
+  margin:3px 0 0!important;
+  padding:0 2px 2px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  white-space:normal!important;
+  font:600 6.8px/1.16 system-ui,sans-serif!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(225,205,164,.5) transparent!important;
+}
+#tbRpg .tb-v2 .new-hand-row .v2-card .card-desc::-webkit-scrollbar,
+#tbRpg .tb-v2 .v2-card[data-card-play] .card-desc::-webkit-scrollbar{width:2px!important}
+#tbRpg .tb-v2 .new-hand-row .v2-card .card-desc::-webkit-scrollbar-thumb,
+#tbRpg .tb-v2 .v2-card[data-card-play] .card-desc::-webkit-scrollbar-thumb{background:rgba(225,205,164,.5)!important;border-radius:3px!important}
+#tbRpg .tb-v2 .new-hand-row .v2-card .card-cost,
+#tbRpg .tb-v2 .v2-card[data-card-play] .card-cost{z-index:5!important}
+@media(max-height:700px){
+ #tbRpg .tb-v2 .new-hand-row .v2-card .card-img-wrapper,
+ #tbRpg .tb-v2 .v2-card[data-card-play] .card-img-wrapper{flex-basis:34px!important;height:34px!important;min-height:34px!important;max-height:34px!important;margin-top:7px!important}
+ #tbRpg .tb-v2 .new-hand-row .v2-card .card-desc,
+ #tbRpg .tb-v2 .v2-card[data-card-play] .card-desc{font-size:6.2px!important;line-height:1.1!important}
+}
