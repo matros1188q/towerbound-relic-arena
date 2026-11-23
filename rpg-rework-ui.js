@@ -834,7 +834,7 @@ function createDialog(){
   if(enemy.role==="healer"&&enemy.provoked){enemy.provoked=false;}
   if(enemy.role==="tank"&&enemy.pendingCleanseDebuff){enemy.pendingCleanseDebuff=false;enemy.debuffKind=null;battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);battle.dots.shift();battle.dot=battle.dots[0]||null;notify("Танк очищает один заряд яда/кровотечения");}
   else if(planned?.type==="defend"||enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=Math.max(1,Number(enemy.guardCharges)||0);
-  if(planned?.type==="poison"||enemy.role==="poison"){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}
+  if(planned?.type==="poison"||enemy.role==="poison"){const guildResist=Math.min(.9,Math.max(0,Number(c.guildBuffs?.poison_resist)||0)*.05);if(gameRandom()>=guildResist){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}else notify("Гильдейская защита нейтрализовала яд");}
   const stats=engine.getEnemyStats(c.id,battle.stage,enemy),weakMultiplier=Number(enemy.weak)>0?.75:1,bossPhase=enemy.type==="boss"?Math.max(1,Number(enemy.phase)||1):1;
   battle.telegraph=null;
   const dailyMultiplier=c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="rage"?1.2:1;const strike=Math.max(1,Math.round(Number(stats.damage||0)*weakMultiplier*dailyMultiplier*(bossPhase>=3?1.15:1)));
@@ -1503,6 +1503,8 @@ function talentBonusDescription(talent,rank){
   if(!guildRaid||!battle?.guildRaid||guildRaid.finishing)return;
   if(guildRaid.cards.length!==3){notify("Нужно разыграть ровно 3 карты");return;}
   guildRaid.finishing=true;const session=guildRaid,c=live();
+  const raidTarget=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);
+  if(raidTarget){for(const [key,type] of [['poison','dark'],['bleed','physical'],['burn','fire']]){const tick=Math.max(0,Number(raidTarget[key])||0);if(tick>0){applyTargetDamage(raidTarget,tick,type);if(!battle)return;raidTarget[key]=0;}}}
   const payload={damage:Math.max(0,Math.floor(Number(session.damage)||0)),cardIds:session.cards.slice(0,3)};
   stopBattleStatusLoop();clearPendingTurnTimer();clearTimeout(pendingTimer);pendingTimer=null;
   battle=null;guildRaid=null;
