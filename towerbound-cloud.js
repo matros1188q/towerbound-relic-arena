@@ -77,6 +77,31 @@ function localSnapshot(){
 function hasLocal(snapshot){return !!(snapshot&&snapshot.keys&&Object.keys(snapshot.keys).length);}
 function snapshotHasCharacters(snapshot){for(const [key,value] of Object.entries(snapshot?.keys||{})){if(!isSaveKey(key)||typeof value!=='string')continue;try{const parsed=JSON.parse(value);if(Array.isArray(parsed?.characters)&&parsed.characters.length>0)return true;}catch(e){}}return false;}
 function sameSave(a,b){if(!a?.keys||!b?.keys)return false;const ak=Object.keys(a.keys).sort(),bk=Object.keys(b.keys).sort();return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&a.keys[k]===b.keys[k]);}
+function walletComparable(snapshot){
+ if(!snapshot?.keys)return null;const result={};
+ for(const key of Object.keys(snapshot.keys).sort()){
+  const value=snapshot.keys[key];if(!isSaveKey(key)||typeof value!=='string'){result[key]=value;continue;}
+  try{const game=JSON.parse(value);if(game.account&&typeof game.account==='object')delete game.account.diamonds;if(Array.isArray(game.characters))for(const c of game.characters)if(c&&typeof c==='object')delete c.silver;result[key]=JSON.stringify(game);}catch(_){return null;}
+ }
+ return JSON.stringify(result);
+}
+function onlyWalletDiff(local,remote){const a=walletComparable(local),b=walletComparable(remote);return a!==null&&b!==null&&a===b;}
+function mergeWalletSnapshot(local,remote){
+ const merged={...local,keys:{...(local?.keys||{})}};
+ for(const [key,value] of Object.entries(merged.keys)){
+  if(!isSaveKey(key)||typeof value!=='string'||typeof remote?.keys?.[key]!=='string')continue;
+  try{
+   const localGame=JSON.parse(value),remoteGame=JSON.parse(remote.keys[key]);
+   if(localGame.account&&remoteGame.account)localGame.account.diamonds=Number(remoteGame.account.diamonds)||0;
+   if(Array.isArray(localGame.characters)&&Array.isArray(remoteGame.characters)){
+    const remoteChars=new Map(remoteGame.characters.filter(Boolean).map(c=>[String(c.id),c]));
+    for(const character of localGame.characters){const serverCharacter=remoteChars.get(String(character?.id));if(character&&serverCharacter)character.silver=Number(serverCharacter.silver)||0;}
+   }
+   merged.keys[key]=JSON.stringify(localGame);
+  }catch(_){}
+ }
+ return merged;
+}
 function restoreLocal(snapshot){
  if(!snapshot||!snapshot.keys||typeof snapshot.keys!=='object')throw new Error('Облачное сохранение повреждено');
  restoring=true;
@@ -100,7 +125,15 @@ async function writeRemote(snapshot,expected){
  return row;
 }
 async function loadGame(){return await readRemote();}
-async function refreshFromServer(){const remote=await readRemote();if(!remote?.save_data)throw new Error("Облачное сохранение не найдено");revision=Number(remote.revision)||revision;restoreLocal(remote.save_data);}
+async function refreshFromServer(){
+ const remote=await readRemote();if(!remote?.save_data)throw new Error("Облачное сохранение не найдено");
+ const local=localSnapshot();
+ if(!hasLocal(local)){revision=Number(remote.revision)||revision;restoreLocal(remote.save_data);return;}
+ if(sameSave(local,remote.save_data)){revision=Number(remote.revision)||revision;try{localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}return;}
+ if(!onlyWalletDiff(local,remote.save_data))throw new Error("SAVE_CONFLICT · Облачная версия содержит другие изменения. Сначала синхронизируй сохранение.");
+ const merged=mergeWalletSnapshot(local,remote.save_data);revision=Number(remote.revision)||revision;
+ await writeRemote(merged,revision);restoreLocal(merged);
+}
 async function saveGame(snapshot=localSnapshot(),expected=revision){return await writeRemote(snapshot,expected);}
 
 async function chooseSource(remote){
@@ -109,7 +142,7 @@ async function chooseSource(remote){
  revision=remote?Number(remote.revision):0;
  if(!remote){const hasCharacters=snapshotHasCharacters(local);say('В облаке пока нет сохранения.');await writeRemote(local,0);$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say(hasCharacters?'Прогресс привязан к аккаунту. Локальная копия сохранена.':'Успешный вход. Создайте персонажа');return;}
  const localHasCharacters=snapshotHasCharacters(local),remoteHasCharacters=snapshotHasCharacters(remote.save_data);
- if(sameUser&&knownRevision<revision){say("Облачное сохранение обновилось на сервере. Загружаем актуальные данные…");restoreLocal(remote.save_data);return;}
+ if(sameUser&&knownRevision<revision&&onlyWalletDiff(local,remote.save_data)){say("Облачный баланс обновился. Объединяем валюту с локальным прогрессом…");const merged=mergeWalletSnapshot(local,remote.save_data);await writeRemote(merged,revision);restoreLocal(merged);return;}
  if(remoteHasCharacters&&!localHasCharacters){
   say('В облаке найден персонаж. Восстанавливаем прогресс…');
   restoreLocal(remote.save_data);
