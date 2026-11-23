@@ -329,8 +329,8 @@
     {
       "id": "assassin.crit.11",
       "classId": "assassin",
-      "name": "Криты · Мастерство",
-      "description": "Усиливает направление «Криты».",
+      "name": "Криты вскрывают раны",
+      "description": "Критические удары накладывают 1 стак кровотечения.",
       "branch": "crit",
       "x": 259,
       "y": 424,
@@ -338,7 +338,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "critCausesBleed": 1
       },
       "connections": [
         "assassin.crit.10",
@@ -973,8 +974,8 @@
     {
       "id": "assassin.bleed.23",
       "classId": "assassin",
-      "name": "Вершина пути",
-      "description": "Кровопускание: лечитесь на 2 HP за стак кровотечения, но зелья лечат на 50% меньше.",
+      "name": "Кровопускание",
+      "description": "Восстанавливает 2 HP за каждый стак кровотечения. Зелья лечат на 50% меньше.",
       "branch": "bleed",
       "x": 539,
       "y": 153,
