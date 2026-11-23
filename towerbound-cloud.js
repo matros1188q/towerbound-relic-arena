@@ -184,7 +184,7 @@ async function saveLoop(){
   do{dirty=false;await saveGame(localSnapshot(),revision);setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');saved=true;}
   while(dirty&&session&&!conflict);
  }catch(e){
-  saved=false;
+  saved=false;dirty=true;
   console.error('[Towerbound cloud] save failed',e);
   if(String(e.message||e).includes('SAVE_CONFLICT')||String(e.code||'')==='40001'){
    try{
