@@ -38,11 +38,12 @@ assert.ok(result.loot.some(item=>['Редкая','Эпическая'].includes(
 
 const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
+const nativeCss=fs.readFileSync(path.join(__dirname,'../native-pwa.css'),'utf8');
 assert.match(ui,/function showFloatingText\(/);
 assert.match(ui,/AudioContext\|\|window\.webkitAudioContext/);
 assert.match(ui,/data-setting="sound_enabled"/);
-assert.match(css,/\.tb-battle-enemy-grid \.tb-target-card\.selected/,'selected enemy targets use the active battle-card highlight');
-assert.match(css,/\.tb-battle-enemy-grid \.tb-target-hp/,'enemy target cards expose a visible HP bar');
+assert.match(nativeCss,/\.tb-battle-enemy-grid \.tb-target-card\.selected/,'selected enemy targets use the active battle-card highlight');
+assert.match(nativeCss,/\.tb-battle-enemy-grid \.tb-target-hp/,'enemy target cards expose a visible HP bar');
 assert.doesNotMatch(ui,/tb-telegraph tb-target-warning/,"enemy telegraph must not inherit the absolutely positioned target badge class");
 assert.match(ui,/base_skills/);
 assert.match(css,/tb-player-turn-glow/);
