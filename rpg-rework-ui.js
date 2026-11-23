@@ -1512,7 +1512,7 @@ function talentBonusDescription(talent,rank){
   stopBattleStatusLoop();clearPendingTurnTimer();clearTimeout(pendingTimer);pendingTimer=null;
   battle=null;guildRaid=null;
   if(c){
-   c.run=session.originalRun;c.deck=session.originalDeck;c.hand=session.originalHand;c.discard=session.originalDiscard;c.exhaustPile=session.originalExhaust;c.currentEnergy=session.originalEnergy;
+   c.run=session.originalRun;c.deck=session.originalDeck;c.hand=session.originalHand;c.discard=session.originalDiscard;c.exhaustPile=session.originalExhaust;c.currentEnergy=session.originalEnergy;c.resource=session.originalResource;
    for(const [key,value] of Object.entries(session.originalResources||{}))c[key]=value;
   }
   screen="map";save();render();
@@ -1523,7 +1523,7 @@ function talentBonusDescription(talent,rank){
   if(battle||c.run?.stage)throw new Error("Сначала заверши текущий бой");
   if(!info?.attempt_id||!Number(info.boss_hp)||!Number(info.boss_max_hp))throw new Error("Сервер не вернул данные рейда");
   ensureCardDeck(c);syncEquipmentCards(c);
-  const originalRun=JSON.parse(JSON.stringify(c.run||{})),originalDeck=JSON.parse(JSON.stringify(c.deck||[])),originalHand=JSON.parse(JSON.stringify(c.hand||[])),originalDiscard=JSON.parse(JSON.stringify(c.discard||[])),originalExhaust=JSON.parse(JSON.stringify(c.exhaustPile||[])),originalEnergy=c.currentEnergy;
+  const originalRun=c.run?JSON.parse(JSON.stringify(c.run)):null,originalDeck=JSON.parse(JSON.stringify(c.deck||[])),originalHand=JSON.parse(JSON.stringify(c.hand||[])),originalDiscard=JSON.parse(JSON.stringify(c.discard||[])),originalExhaust=JSON.parse(JSON.stringify(c.exhaustPile||[])),originalEnergy=c.currentEnergy,originalResource=c.resource;
   const resourceKeys=["combo","rage","charges","faith","element","magicCharge","totem"],originalResources=Object.fromEntries(resourceKeys.filter(key=>c[key]!==undefined).map(key=>[key,c[key]]));
   try{
    const stageNumber=Math.max(1,Math.min(250,Number(selectedStage)||Number(c.progress?.currentStage)||1)),plan=engine.beginStage(c.id,stageNumber);
@@ -1535,10 +1535,10 @@ function talentBonusDescription(talent,rank){
    const boss=battle.enemy;boss.name=String(info.boss_name||"Древний Пожиратель");boss.type="normal";boss.role="boss";boss.mobId="guild-ancient-devourer";boss.icon="☠";boss.hp=Number(info.boss_hp);boss.maxHp=Number(info.boss_max_hp);boss.alive=true;boss.dead=false;boss.mutation=null;boss.shield=0;boss.pendingAttack=false;boss.pendingAction=null;
    battle.enemyHp=boss.hp;battle.enemyMax=boss.maxHp;battle.shield=0;battle.targetIndex=0;battle.actor={type:"player",id:"player",name:c.name};battle.isPlayerTurn=true;battle.busy=false;battle.paused=false;battle.telegraph=null;battle.cardsPlayedThisTurn=0;
    resetCardBattle(c);const raidDraw=Math.max(0,Number(battle.relicStartingDraw)||0);battle.relicStartingDraw=0;drawCards(Math.max(0,5-c.hand.length)+cardDrawBonus(c)+raidDraw);battle.actor={type:"player",id:"player",name:c.name};battle.cardsPlayedThisTurn=0;
-   guildRaid={attemptId:info.attempt_id,cards:[],damage:0,originalRun,originalDeck,originalHand,originalDiscard,originalExhaust,originalEnergy,originalResources,onFinish};
+   guildRaid={attemptId:info.attempt_id,cards:[],damage:0,originalRun,originalDeck,originalHand,originalDiscard,originalExhaust,originalEnergy,originalResource,originalResources,onFinish};
    screen="battle";render();save();return true;
   }catch(error){
-   battle=null;guildRaid=null;c.run=originalRun;c.deck=originalDeck;c.hand=originalHand;c.discard=originalDiscard;c.exhaustPile=originalExhaust;c.currentEnergy=originalEnergy;
+   battle=null;guildRaid=null;c.run=originalRun;c.deck=originalDeck;c.hand=originalHand;c.discard=originalDiscard;c.exhaustPile=originalExhaust;c.currentEnergy=originalEnergy;c.resource=originalResource;
    for(const [key,value] of Object.entries(originalResources))c[key]=value;
    screen="map";save();render();throw error;
   }
