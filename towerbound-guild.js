@@ -29,7 +29,7 @@ async function syncServerRevision(){
 async function load(){
  if(!cloud()?.signedIn){snapshot=null;syncShortcut();setRuntimeBuffs();return null;}
  snapshot=await rpc('tb_guild_snapshot');
- syncGuildShortcut();
+ syncShortcut();
  if(snapshot?.member)await syncServerRevision();setRuntimeBuffs();
  return snapshot;
 }
