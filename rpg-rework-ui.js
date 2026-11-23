@@ -1023,7 +1023,7 @@ function talentBonusDescription(talent,rank){
  function availableSkillForUpgrade(c,id){const def=classData(c),base=(def.base_skills||[]).find(skill=>skill.id===id),branch=skills.find(skill=>skill.id===id&&skill.class_id===c.classId&&(!skill.branch_id||skill.branch_id===c.branch));return base||branch||null;}
 
  const TREE_COLORS={crit:"#e65b64",bleed:"#d94d58",poison:"#5dbb78",exorcism:"#d9c16e",healing:"#65cfa0",blessing:"#78a9e8",fire:"#ed754b",ice:"#76c9ed",void:"#a58be8",fists:"#e47752",greatsword:"#d8b46a",arcane:"#7d9be8",darkness:"#a58be8",water:"#65bfe0",earth:"#b5a16b",dual:"#e4bb64",shield:"#72a9d9",rapier:"#c47de1",spirits:"#75c9a0",gods:"#a78be2",nature:"#83b86a",core:"#f0d18a"};
- let talentTreeConfig=null,treeCamera={scale:1.2,x:0,y:0},treePointers=new Map(),treePinch=null,treeDrag=null,treeDrawn=[];
+ let talentTreeConfig=null,treeCamera={scale:1.2,x:0,y:0},treePointers=new Map(),treePinch=null,treeDrag=null,treeTouchPoints=new Map(),treeTouchPinch=null,treeTouchDrag=null,treeDrawn=[];
   const treeIconCache=new Map();
  fetch("./configs/talents_tree.json").then(r=>r.json()).then(d=>{talentTreeConfig=d;if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);}).catch(e=>console.warn("Talent tree config",e));
  function treePointsEarned(level){const n=Math.max(1,Number(level)||1);return n<10?0:Math.min(101,n-9)+Math.max(0,Math.floor((n-110)/10));}
@@ -1074,7 +1074,8 @@ function talentBonusDescription(talent,rank){
      };
     };
     canvas.addEventListener("pointerdown",e=>{
-     if(e.pointerType==="mouse"&&e.button!==0)return;
+     if(e.pointerType==="touch")return;
+      if(e.pointerType==="mouse"&&e.button!==0)return;
      e.preventDefault();
      try{canvas.setPointerCapture(e.pointerId);}catch(_){}
      treePointers.set(e.pointerId,point(e));
@@ -1084,7 +1085,8 @@ function talentBonusDescription(talent,rank){
      else if(treePointers.size===1)treeDrag={x:e.clientX,y:e.clientY,cx:treeCamera.x,cy:treeCamera.y,moved:false};
     },{passive:false});
     canvas.addEventListener("pointermove",e=>{
-     if(!treePointers.has(e.pointerId)){
+     if(e.pointerType==="touch")return;
+      if(!treePointers.has(e.pointerId)){
       if(treePointers.size===0){
        const p=point(e),n=hitTreeNode(canvas,p.lx,p.ly),tip=root.querySelector("#talentTreeTooltip");
        if(tip){
@@ -1150,7 +1152,14 @@ function talentBonusDescription(talent,rank){
       if(tip)tip.classList.remove("is-visible");
      }
     });
-    canvas.addEventListener("wheel",e=>{
+    const touchLocal=t=>{const rect=canvas.getBoundingClientRect();return{x:t.clientX,y:t.clientY,lx:t.clientX-rect.left,ly:t.clientY-rect.top};};
+     const syncTouchPoints=touches=>{for(const touch of touches)treeTouchPoints.set(touch.identifier,touchLocal(touch));};
+     const beginTouchPinch=()=>{if(treeTouchPoints.size!==2)return;const p=[...treeTouchPoints.values()];treeTouchDrag=null;treeTouchPinch={d:Math.max(1,Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)),mx:(p[0].lx+p[1].lx)/2,my:(p[0].ly+p[1].ly)/2};};
+     canvas.addEventListener("touchstart",e=>{e.preventDefault();syncTouchPoints(e.changedTouches);if(treeTouchPoints.size>=2)beginTouchPinch();else if(treeTouchPoints.size===1){const p=[...treeTouchPoints.values()][0];treeTouchDrag={x:p.x,y:p.y,cx:treeCamera.x,cy:treeCamera.y,moved:false};}const tip=root.querySelector("#talentTreeTooltip");if(tip)tip.classList.remove("is-visible");},{passive:false});
+     canvas.addEventListener("touchmove",e=>{if(!treeTouchPoints.size)return;e.preventDefault();syncTouchPoints(e.changedTouches);if(treeTouchPoints.size>=2&&treeTouchPinch){const p=[...treeTouchPoints.values()],d=Math.max(1,Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)),mx=(p[0].lx+p[1].lx)/2,my=(p[0].ly+p[1].ly)/2,t=treeTransform(canvas),oldK=t.base*treeCamera.scale,wx=(treeTouchPinch.mx-t.ox)/oldK+1125,wy=(treeTouchPinch.my-t.oy)/oldK+1125;treeCamera.scale=Math.max(.55,Math.min(3.8,treeCamera.scale*d/treeTouchPinch.d));const k=t.base*treeCamera.scale;treeCamera.x=mx-t.w/2-(wx-1125)*k;treeCamera.y=my-t.h/2-(wy-1125)*k;treeTouchPinch={d,mx,my};drawTalentTree();}else if(treeTouchPoints.size===1&&treeTouchDrag){const p=[...treeTouchPoints.values()][0],dx=p.x-treeTouchDrag.x,dy=p.y-treeTouchDrag.y;if(Math.abs(dx)+Math.abs(dy)>4)treeTouchDrag.moved=true;treeCamera.x=treeTouchDrag.cx+dx;treeCamera.y=treeTouchDrag.cy+dy;drawTalentTree();}},{passive:false});
+     const endTouch=e=>{e.preventDefault();for(const touch of e.changedTouches)treeTouchPoints.delete(touch.identifier);if(treeTouchPoints.size===1){const p=[...treeTouchPoints.values()][0];treeTouchPinch=null;treeTouchDrag={x:p.x,y:p.y,cx:treeCamera.x,cy:treeCamera.y,moved:true};}else if(treeTouchPoints.size===0){treeTouchPinch=null;treeTouchDrag=null;}};
+     canvas.addEventListener("touchend",endTouch,{passive:false});canvas.addEventListener("touchcancel",endTouch,{passive:false});
+     canvas.addEventListener("wheel",e=>{
      e.preventDefault();
      const p=point(e),t=treeTransform(canvas),oldK=t.base*treeCamera.scale;
      const wx=(p.lx-t.ox)/oldK+1125,wy=(p.ly-t.oy)/oldK+1125;
