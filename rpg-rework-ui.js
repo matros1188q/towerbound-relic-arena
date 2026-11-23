@@ -1489,7 +1489,7 @@ function talentBonusDescription(talent,rank){
    '<div class="new-hero-hp-text">'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</div><div class="new-hero-resource-text">'+esc(classData(c).resource)+' · '+Math.round(c.resource)+' / '+Math.round(c.resourceMax)+'</div>'+
    '<div class="new-hero-potions"><span class="tb-potion-cooldown">'+(potionCooldown>0?'Через '+potionCooldown+' этажей':'Готово')+'</span>'+potionMarkup+'</div></div>'+
    '<div class="new-enemies-side">'+enemyMarkup+'</div></div>'+
-   '<div class="new-battle-bottom"><div class="new-turn-guidance" aria-live="polite">'+(battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют...")+'</div>'+
+   '<div class="new-battle-bottom"><div class="new-turn-guidance" aria-live="polite">'+(battle.guildRaid?"РЕЙД · РАЗЫГРАЙ 3 КАРТЫ · "+Number(battle.cardsPlayedThisTurn||0)+"/3":(battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют..."))+'</div>'+
    '<div class="new-stats-row"><div class="new-energy-summary"><span id="energyDisplay">'+(battle.guildRaid?'КАРТЫ: '+Number(battle.cardsPlayedThisTurn||0)+'/3':'ЭНЕРГИЯ: '+c.currentEnergy+'/'+c.energy)+'</span>'+classResourceMarkup(c)+'</div>'+
    '<div class="new-deck-controls"><button type="button" class="tb-deck-viewer-trigger" data-deck-viewer>▤ КОЛОДА <b id="deckViewerCount">'+collectDeckCards(c).length+'</b></button>'+
    '<span class="new-deck-counts">ДОБОР: <b id="deckCount">'+c.deck.length+'</b> · СБРОС: <b id="discardCount">'+c.discard.length+'</b></span></div></div>'+
