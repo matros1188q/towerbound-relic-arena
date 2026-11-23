@@ -49,19 +49,19 @@ function has(text, needle, label) {
   ['grid-template-columns:repeat(3,minmax(0,1fr))', 'mobile menu grid'],
   ['max-width:330px', 'narrow phone layout']
 ].forEach(([needle,label]) => has(source,needle,label));
-assert.match(html, /<script src="\.\/endgame-systems\.js\?v=222"><\/script>/, 'endgame script cache version');
+assert.match(html, /<script src="\.\/endgame-systems\.js\?v=223"><\/script>/, 'endgame script cache version');
 assert.ok(!source.includes('Эволюция')&&!source.includes('open-evolution')&&!source.includes('evolveSkill('),'skill evolution removed');
 assert.ok(!combat.includes('evolvedSkill')&&!combat.includes('getSkillEvolution')&&!combat.includes('armorPenetration')&&!combat.includes('evolved?evolved.icon'),'combat evolution effects removed');
 assert.ok(source.includes('delete data.evolution'),'legacy evolution save data is discarded');
-assert.ok(source.includes('</button></nav><main>'),'Endgame modal navigation closes before content');
-assert.ok(source.includes("view=battle&&tab==='guild'"),'guild fight stays visible in community panel');
+assert.ok(!source.includes('eg-primary-nav'),'legacy standalone Endgame navigation is removed');
+assert.ok(source.includes("battle.mode==='tower'"),'Tower combat stays visible in the shared community panel');
 assert.match(html, /<script src="\.\/rpg-rework-ui\.js\?v=[^"]+"><\/script>/, 'combat UI must be loaded with a cache-busted URL');
 console.log('Endgame systems static checks: OK');
 
 [
-['class="eg-primary-nav"', 'endgame modal has a compact three-section navigation'],
+['soc-tower-hero', 'Tower uses the shared community feature-card design'],
 ['soc-boss-card', 'Guild uses the redesigned shared community boss card'],
 ['soc-pass-milestone', 'Battle Pass uses the redesigned shared community reward milestones'],
 ['soc-endgame-link', 'Endgame uses the redesigned shared community activity list'],
-['soc-metric-grid', 'Endgame sections share the community metrics card system']
+['soc-metric-grid', 'Endgame sections share the community metrics card system'],\n['soc-tower-wallet', 'Tower rewards use the shared community wallet design'],\n['soc-tower-battle', 'Tower battle uses the shared community combat design']
 ].forEach(([needle,label]) => has(source,needle,label));
