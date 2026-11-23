@@ -39,7 +39,7 @@ const {chromium}=require('playwright');
  }
  const battleUiSource=fs.readFileSync(path.join(root,"rpg-rework-ui.js"),"utf8");
  const battleCssSource=fs.readFileSync(path.join(root,"styles.css"),"utf8");
- assert.ok(battleCssSource.includes("#tbRpg .tb-v2")&&battleCssSource.includes("TowerBound three-zone battle arena v496"),"V2 battle styles are served from the consolidated static stylesheet");
+ assert.ok(battleCssSource.includes("#tbRpg .tb-v2")&&battleCssSource.includes(".tb-battle-rebuild")&&battleCssSource.includes(".tb-battle-bottom")&&battleCssSource.includes(".tb-end-turn"),"active turn-based battle layout is served from the consolidated static stylesheet");
  assert.match(battleUiSource,/presets=\{click:\{wave:/,"Web Audio click effect is configured");
  assert.match(battleUiSource,/hit:\{wave:/,"Web Audio mob hit effect is configured");
  assert.match(battleUiSource,/crit:\{wave:/,"Web Audio critical effect is configured");
