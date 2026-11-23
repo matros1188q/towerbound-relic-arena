@@ -906,5 +906,6 @@ css += "\n.tb-camp-overlay,.tb-deck-viewer-overlay{position:fixed;inset:0;displa
   #tbRpg .tb-v2 .v2-end-turn{height:36px!important;min-height:36px!important;max-height:36px!important;font-size:9px!important}
   #tbRpg .tb-v2 .tb-battle-potions{min-height:36px!important}
  }
+ css += "\n#tbRpg .tb-v2 .tb-header .tb-brand{display:flex!important;align-items:center!important;flex:0 1 auto!important;min-width:0!important;max-width:100%!important;gap:9px!important;overflow:visible!important}\n#tbRpg .tb-v2 .tb-header .tb-brand .game-logo{display:block!important;flex:0 0 34px!important;width:34px!important;min-width:34px!important;max-width:34px!important;height:34px!important;min-height:34px!important;max-height:34px!important;object-fit:contain!important;object-position:center!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;margin:0!important}\n#tbRpg .tb-v2 .tb-header .tb-brand-title{min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}\n";
  const style=document.createElement("style");style.id="tb-rework-v2-style";style.textContent=css;document.head.appendChild(style);
 })()
