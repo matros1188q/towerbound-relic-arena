@@ -1391,7 +1391,7 @@ function talentBonusDescription(talent,rank){
   
   return `<div class="v2-enemy-card${targetIndex===battle.targetIndex?" selected":""}" data-target="${targetIndex}" aria-pressed="${targetIndex===battle.targetIndex?"true":"false"}">
     <img src="${esc(enemyPortrait(target))}" class="v2-enemy-img" alt="">
-    <div class="v2-enemy-name">${weaknessIcon?'<span class="v2-weakness-icon" aria-label="Уязвимость">'+weaknessIcon+'</span>':""}${esc(target.name || balance?.mobs?.roles?.[target.role]?.name || ({healer:"Целитель",poison:"Отравитель",tank:"Страж",saboteur:"Диверсант",normal:"Противник",boss:"Босс"}[target.role] || (target.type === "boss" ? "Босс" : "Противник")))}</div>
+    <div class="v2-enemy-name">${weaknessIcon?'<span class="v2-weakness-icon" aria-label="Уязвимость">'+weaknessIcon+'</span>':""}${esc(target.name || balance.mobs.roles[target.role]?.name || "Враг")}</div>
     ${countdownMarkup}${phaseMarkup}
     <div class="v2-enemy-intent">${esc(intent)}</div>
     <div class="v2-enemy-statuses">${["poison","bleed","burn","weak","vulnerable"].filter(key=>Number(target[key])>0).map(key=>'<button type="button" class="tb-status-chip" data-status="'+key+'" data-status-value="'+Number(target[key])+'">'+({poison:"☠️ Яд",bleed:"🩸 Кровь",burn:"🔥 Горение",weak:"💨 Слабость",vulnerable:"🎯 Уязвимость"}[key])+' '+target[key]+'</button>').join("")}</div>
