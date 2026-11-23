@@ -1915,6 +1915,7 @@ function talentBonusDescription(talent,rank){
   else if(screen==="leaderboard")root.innerHTML='<div class="tb-v2">'+leaderboardScreen()+'</div>';
   else if(screen==="death")root.innerHTML='<div class="tb-v2">'+deathScreen()+'</div>';
   else root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
+  const screenHost=root.querySelector(".tb-v2");if(screenHost)screenHost.dataset.screen=isBattle?"battle":screen;
   let toast=root.querySelector(".tb-toast");
   if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2").appendChild(toast);}
   if(toastMessage){toast.textContent=toastMessage;}
