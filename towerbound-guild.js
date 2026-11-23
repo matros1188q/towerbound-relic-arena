@@ -97,6 +97,7 @@ async function sendMessage(){
  await rpc('tb_guild_send_message',{p_body:body});field.value='';await load();renderSocial();
 }
 async function startRaid(){
+ if(window.TowerboundReworkUI?.canStartGuildRaid&&!window.TowerboundReworkUI.canStartGuildRaid())throw new Error("Сначала заверши текущий бой или вернись с активной арены.");
  const info=await rpc('tb_guild_begin_raid');
  if(!window.TowerboundReworkUI?.startGuildRaid)throw new Error('Карточная арена ещё загружается. Попробуй через несколько секунд.');
  window.TowerboundSocial?.close?.();
