@@ -1670,7 +1670,7 @@ function talentBonusDescription(talent,rank){
   const hp=engine.maxHp(c),playerHp=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
   const heroBar=arena.querySelector(".new-hero-side .new-hp-bar>div");if(heroBar)heroBar.style.width=playerHp+"%";
   const heroHpText=arena.querySelector(".new-hero-hp-text");if(heroHpText)heroHpText.textContent=Math.ceil(c.run.playerHp)+" / "+hp+" HP";
-  const heroResource=arena.querySelector(".v2-hero-resource-text");if(heroResource){heroResource.textContent=classData(c).resource+" · "+Math.round(c.resource)+" / "+Math.round(c.resourceMax);heroResource.style.setProperty("--resource-pct",Math.max(0,Math.min(100,(Number(c.resource)||0)/Math.max(1,Number(c.resourceMax)||1)*100))+"%");}updateClassResourceDOM();
+  const heroResource=arena.querySelector(".new-hero-resource-text");if(heroResource){heroResource.textContent=classData(c).resource+" · "+Math.round(c.resource)+" / "+Math.round(c.resourceMax);heroResource.style.setProperty("--resource-pct",Math.max(0,Math.min(100,(Number(c.resource)||0)/Math.max(1,Number(c.resourceMax)||1)*100))+"%");}updateClassResourceDOM();
   const heroName=arena.querySelector(".new-hero-name");if(heroName)heroName.textContent=c.name;
   arena.querySelectorAll(".new-enemy-item[data-target]").forEach(card=>{
    const index=Number(card.dataset.target),target=(battle.enemies||[]).find(enemy=>enemy.index===index);
