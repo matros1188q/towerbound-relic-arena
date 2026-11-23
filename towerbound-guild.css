@@ -62,3 +62,4 @@
 @media(max-width:520px){#socPanel .tbg-shell .tbg-nav{grid-template-columns:repeat(3,minmax(0,1fr))}#socPanel .tbg-shell .tbg-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}#socPanel .tbg-shell .tbg-head h3{font-size:15px}}
 
 #tbMyGuildShortcut{position:fixed;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:2147483000;padding:12px 16px;border:1px solid #d9b975;border-radius:999px;background:linear-gradient(135deg,#85663e,#3d3025);color:#fff1d3;font-weight:900;font-size:12px;box-shadow:0 8px 28px #0009;letter-spacing:.02em}#tbMyGuildShortcut:active{transform:scale(.97)}
+#tbMyGuildShortcut{position:fixed;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:2147483000;padding:12px 16px;border:1px solid #d9b975;border-radius:999px;background:linear-gradient(135deg,#85663e,#3d3025);color:#fff1d3;font-weight:900;font-size:12px;box-shadow:0 8px 28px #0009;letter-spacing:.02em}#tbMyGuildShortcut:active{transform:scale(.97)}
