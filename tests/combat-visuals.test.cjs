@@ -60,7 +60,7 @@ for(const [name,source,re] of [
 ['card definitions apply poison bleed weak and vulnerable stacks',ui,/for\(const key of \["poison","bleed","burn","weak","vulnerable"\]\)if\(Number\(effects\[key\]\)>0\)/],
 ['card damage preview accounts for vulnerable targets',ui,/function cardPreviewDamage[\s\S]*target\.vulnerable\)>0\?1\.5:1/],
 ['card preview appears on hover and keyboard focus',ui,/showCardDamagePreview\(Number\(card\.dataset\.cardPlay\)\)/],
-['enemy cards show visible status stacks above HP',ui,/class="v2-enemy-statuses"/],
+['enemy cards show visible status stacks above HP',ui,/class="new-enemy-statuses"/],
 ['card hand remains horizontally scrollable without shrinking',battleCss,/\.new-hand-row\{[\s\S]*?overflow-x:auto[\s\S]*?\.new-hand-row \.v2-card\{flex:0 0 76px!important/],
 ['damage preview has a distinct lethal state',css,/\.v2-damage-preview\.lethal/],
 ['poison status',ui,/ОТРАВЛЕН/],
