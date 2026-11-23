@@ -1526,7 +1526,7 @@ function talentBonusDescription(talent,rank){
   const originalRun=JSON.parse(JSON.stringify(c.run||{})),originalDeck=JSON.parse(JSON.stringify(c.deck||[])),originalHand=JSON.parse(JSON.stringify(c.hand||[])),originalDiscard=JSON.parse(JSON.stringify(c.discard||[])),originalExhaust=JSON.parse(JSON.stringify(c.exhaustPile||[])),originalEnergy=c.currentEnergy;
   const resourceKeys=["combo","rage","charges","faith","element","magicCharge","totem"],originalResources=Object.fromEntries(resourceKeys.filter(key=>c[key]!==undefined).map(key=>[key,c[key]]));
   try{
-   const stageNumber=Math.max(1,Math.min(250,Number(c.progress?.currentStage)||1)),plan=engine.beginStage(c.id,stageNumber);
+   const stageNumber=Math.max(1,Math.min(250,Number(selectedStage)||Number(c.progress?.currentStage)||1)),plan=engine.beginStage(c.id,stageNumber);
    if(!c.run?.stage)throw new Error("Не удалось подготовить рейдовую арену");
    c.run.stage.mobs=[{id:"guild-ancient-devourer",mobId:"guild-ancient-devourer",name:"Древний Пожиратель",type:"normal",role:"boss",statMultiplier:1,weakness:null,resistance:null,speed:1}];
    c.run.stage.killedIndices=[];c.run.stage.uiBattleSnapshot=null;c.run.stage.targetIndex=0;c.run.stage.enemyIndex=0;
