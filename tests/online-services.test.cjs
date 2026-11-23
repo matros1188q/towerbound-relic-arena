@@ -48,7 +48,7 @@ assert.ok(html.includes('./towerbound-cloud.js?v=18'),'cloud module cache is ref
 assert.ok(html.includes('./rpg-rework-v2.js?v=18'),'engine cache is refreshed for gem socket support');
 assert.ok(/\.\/rpg-rework-ui\.js\?v=\d+/.test(html),'battle, profile and transparent logo UI cache is versioned');
 assert.ok(/\.\/styles\.css\?v=\d+/.test(html),'battle, profile and start screen styles load from one versioned static stylesheet');
-assert.ok(!html.includes('rpg-rework-ui.css.js'),'legacy runtime CSS loader is no longer loaded by the page');
+assert.ok(/rpg-rework-ui\.css\.js\?v=\d+/.test(html)&&shellUrls.includes('./rpg-rework-ui.css.js'),'battle arena runtime stylesheet remains explicitly versioned and offline-cached');
 assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123'),'mobile start-screen viewport regression is guarded');
 assert.ok(html.includes('<img class="title-illustration" src="./assets/icons/image.png" alt="T" width="96" height="96" decoding="async" fetchpriority="high">')&&!html.includes('./assets/towerbound-title-v2.webp'),'start screen reuses the current transparent T logo instead of the legacy title illustration');
 assert.ok(html.includes('grid-template-columns:minmax(0,1fr)!important;')&&html.includes('width:100%!important;max-width:100%!important;min-width:0!important;')&&html.includes('@media(max-width:900px)'),'start screen is locked to a single responsive column on iPhone and small tablets');
