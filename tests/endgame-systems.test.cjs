@@ -34,7 +34,7 @@ function has(text, needle, label) {
   ['function passState()', 'Battle Pass lifecycle'],
   ['30*DAY', '30-day pass duration'],
   ['Math.min(5000', '50-level BP cap'],
-  ['Array.from({length:50}', '50 Battle Pass levels'],
+  ['Array.from({length:10},(_,i)=>(i+1)*5)', 'ten five-level Battle Pass reward milestones'],
   ['if(result?.stageComplete)addBP(10)', 'BP for regular stages'],
   ['addBP(15)', 'BP for Tower floors'],
   ["const freeRewards={5:['silver']", 'free reward track'],
