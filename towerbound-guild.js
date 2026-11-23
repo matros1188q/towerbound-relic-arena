@@ -71,11 +71,14 @@ function directory(){
  return '<section class="tbg-shell"><div class="tbg-head"><div><small>СООБЩЕСТВО · ГИЛЬДИИ</small><h3>Гильдии Башни</h3><p>Создай свою гильдию бесплатно или вступи в уже существующую.</p></div></div><article class="tbg-card"><h4>Создать гильдию</h4><form data-guild-form="create"><label>Название · 3–24 символа</label><input id="tbgCreateName" maxlength="24" minlength="3" placeholder="Например, Стражи Башни" required><label>Тег · 2–5 символов</label><input id="tbgCreateTag" maxlength="5" minlength="2" placeholder="TWR" required><button type="submit" class="tbg-primary">Создать бесплатно</button></form><small>На время тестирования создание не требует серебра или алмазов.</small></article><article class="tbg-card"><div class="tbg-card-title"><h4>Найти гильдию</h4><button data-guild="search">Найти</button></div><input id="tbgGuildSearch" maxlength="24" placeholder="Название или тег" value="'+esc(searchText)+'">'+(gs.length?gs.map(g=>'<div class="tbg-guild-list-row"><div><b>'+esc(g.name)+' ['+esc(g.tag)+']</b><small>Участников: '+Number(g.members||0)+'</small></div><button data-guild="join" data-id="'+esc(g.id)+'">Вступить</button></div>').join(''):'<p class="tbg-muted">Пока нет открытых гильдий. Создай первую.</p>')+'</article></section>';
 }
 function render(){
- if(!cloud()?.signedIn){return '<section class="tbg-shell"><article class="tbg-card"><h3>Нужен игровой аккаунт</h3><p>Для создания гильдии, казны, чата и рейдов войди в облачный аккаунт.</p><button class="tbg-primary" data-guild="login">Войти в аккаунт</button></article></section>';}
- if(!snapshot){load().then(()=>renderSocial()).catch(e=>{lastError=errorText(e);renderSocial()});return '<section class="tbg-shell"><article class="tbg-card"><h3>Загружаем гильдии…</h3></article></section>';}
- if(lastError)return '<section class="tbg-shell"><article class="tbg-card"><h3>Не удалось загрузить гильдии</h3><p>'+esc(lastError)+'</p><button data-guild="refresh">Повторить</button></article></section>';
- if(snapshot.member){if(!inside)return '<section class="tbg-shell"><article class="tbg-card tbg-hero"><small>ТЫ УЖЕ В ГИЛЬДИИ</small><h3>'+esc(snapshot.guild.name)+' ['+esc(snapshot.guild.tag)+']</h3><p>Участников: '+snapshot.members.length+' · Казна: '+fmt(snapshot.treasury?.silver)+' серебра и '+fmt(snapshot.treasury?.diamonds)+' 💎</p><button class="tbg-primary" data-guild="enter">Открыть «Моя Гильдия»</button></article></section>';return myGuild();}
- return directory();
+ let output='';
+ if(!cloud()?.signedIn){output='<section class="tbg-shell"><article class="tbg-card"><h3>Нужен игровой аккаунт</h3><p>Для создания гильдии, казны, чата и рейдов войди в облачный аккаунт.</p><button class="tbg-primary" data-guild="login">Войти в аккаунт</button></article></section>';}
+ else if(!snapshot){load().then(()=>renderSocial()).catch(e=>{lastError=errorText(e);renderSocial()});output='<section class="tbg-shell"><article class="tbg-card"><h3>Загружаем гильдии…</h3></article></section>';}
+ else if(lastError)output='<section class="tbg-shell"><article class="tbg-card"><h3>Не удалось загрузить гильдии</h3><p>'+esc(lastError)+'</p><button data-guild="refresh">Повторить</button></article></section>';
+ else if(snapshot.member){if(!inside)output='<section class="tbg-shell"><article class="tbg-card tbg-hero"><small>ТЫ УЖЕ В ГИЛЬДИИ</small><h3>'+esc(snapshot.guild.name)+' ['+esc(snapshot.guild.tag)+']</h3><p>Участников: '+snapshot.members.length+' · Казна: '+fmt(snapshot.treasury?.silver)+' серебра и '+fmt(snapshot.treasury?.diamonds)+' 💎</p><button class="tbg-primary" data-guild="enter">Открыть «Моя Гильдия»</button></article></section>';else output=myGuild();}
+ else output=directory();
+ Promise.resolve().then(()=>{const label=$('#socPanel .soc-primary-nav [data-soc="open-guild"] span');if(label)label.textContent=snapshot?.member?'Моя Гильдия':'Гильдия';});
+ return output;
 }
 function renderSocial(){const panel=$('#socPanel');if(panel&&window.TowerboundSocial?.refresh){window.TowerboundSocial.refresh();return;}if(panel){const main=panel.querySelector('main');if(main)main.innerHTML=render();}}
 async function refresh(){lastError='';await load();return render();}
@@ -125,6 +128,7 @@ async function action(name,b){
  if(name==='leave'){if(!confirm('Покинуть гильдию?'))return;await rpc('tb_guild_leave');inside=false;view='directory';await load();notify('Ты покинул гильдию');renderSocial();return;}
  if(name==='disband'){if(!confirm('Распустить гильдию? Все данные, казна и рейтинг этой гильдии будут удалены.'))return;await rpc('tb_guild_disband');inside=false;view='directory';await load();notify('Гильдия распущена');renderSocial();return;}
 }
+document.addEventListener('click',e=>{const b=e.target.closest('#socPanel .soc-primary-nav [data-soc="open-guild"]');if(b&&snapshot?.member){inside=true;view='overview';}},true);
 document.addEventListener('click',async e=>{
  const b=e.target.closest('#socPanel [data-guild]');if(!b)return;e.preventDefault();e.stopPropagation();if(b.dataset.guild==='tab')b.dataset.tab=b.dataset.tab||'overview';
  if(busy)return;busy=true;try{await action(b.dataset.guild,b);}catch(err){notify(errorText(err));}finally{busy=false;}
