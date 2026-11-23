@@ -1205,3 +1205,80 @@
 }
 #tbRpg .tb-v2 .v2-energy-bar{overflow:visible!important}
 #tbRpg .tb-v2 .v2-battle-bottom{overflow:visible!important}
+
+
+/* TB deck controls centered layout v2 */
+#tbRpg .tb-v2 .v2-energy-bar{
+  display:grid!important;
+  grid-template-columns:max-content minmax(0,1fr) max-content!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  column-gap:6px!important;
+  overflow:hidden!important;
+  padding:2px 5px!important;
+}
+#tbRpg .tb-v2 .v2-energy-bar>.tb-energy-summary{
+  grid-column:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+}
+#tbRpg .tb-v2 .v2-energy-bar #energyDisplay{
+  display:block!important;
+  grid-column:1!important;
+  position:static!important;
+  left:auto!important;
+  transform:none!important;
+  margin:0!important;
+  white-space:nowrap!important;
+}
+#tbRpg .tb-v2 .v2-energy-bar .tb-energy-summary .tb-class-resource{display:none!important}
+#tbRpg .tb-v2 .v2-energy-bar>.tb-deck-controls{
+  grid-column:2!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-width:0!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  white-space:nowrap!important;
+}
+#tbRpg .tb-v2 .v2-energy-bar .tb-deck-controls .tb-deck-viewer-trigger,
+#tbRpg .tb-v2 .v2-energy-bar .tb-deck-controls .deck-info{
+  position:static!important;
+  left:auto!important;
+  transform:none!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+}
+#tbRpg .tb-v2 .v2-energy-bar .tb-deck-controls .deck-info{
+  text-align:left!important;
+  font-size:8px!important;
+}
+#tbRpg .tb-v2 .v2-energy-bar>.v2-end-turn{
+  grid-column:3!important;
+  position:static!important;
+  left:auto!important;
+  transform:none!important;
+  justify-self:end!important;
+  flex:none!important;
+  min-width:68px!important;
+  width:auto!important;
+  height:25px!important;
+  min-height:25px!important;
+  margin:0!important;
+  padding:2px 5px!important;
+  white-space:nowrap!important;
+}
+@media(max-width:380px){
+ #tbRpg .tb-v2 .v2-energy-bar{column-gap:3px!important;padding-right:3px!important;padding-left:3px!important}
+ #tbRpg .tb-v2 .v2-energy-bar .tb-deck-controls{gap:3px!important}
+ #tbRpg .tb-v2 .v2-energy-bar .tb-deck-controls .deck-info{font-size:7px!important;letter-spacing:-.04em!important}
+ #tbRpg .tb-v2 .v2-energy-bar>.v2-end-turn{min-width:62px!important;font-size:7px!important}
+}
