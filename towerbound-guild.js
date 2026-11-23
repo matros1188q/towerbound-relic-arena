@@ -15,6 +15,7 @@ function errorText(e){
 }
 async function rpc(name,args={}){const c=client();if(!cloud()?.signedIn||!c)throw new Error('AUTH_REQUIRED');const {data,error}=await c.rpc(name,args);if(error)throw error;return data;}
 function activeCharacter(){const e=game||window.TowerboundRework;return e?.state?.characters?.find(c=>c.id===e.state.activeCharacterId)||e?.state?.characters?.[0]||null;}
+function syncShortcut(){let b=$('#tbMyGuildShortcut');if(snapshot?.member){if(!b){b=document.createElement('button');b.id='tbMyGuildShortcut';b.type='button';b.textContent='⚜ Моя Гильдия';b.addEventListener('click',()=>{window.TowerboundSocial?.open?.();window.TowerboundSocial?.openTab?.('guild');});document.body.append(b);}}else if(b)b.remove();}
 function setRuntimeBuffs(){
  const c=activeCharacter();if(!c)return;
  const buffs=snapshot?.member?(snapshot.buffs||{}):{},daily=snapshot?.member?(snapshot.daily_bonus||{}):{};
@@ -132,10 +133,10 @@ document.addEventListener('submit',async e=>{
  try{if(f.dataset.guildForm==='create')await createGuild();if(f.dataset.guildForm==='chat')await sendMessage();}catch(err){notify(errorText(err));}finally{busy=false;}
 },true);
 function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(async()=>{if(!$('#socPanel'))return;try{await load();const main=$('#socPanel main');if(main&&!main.querySelector('input:focus,textarea:focus')){const content=render();if(main)main.innerHTML=content;}}catch(e){console.warn('[guild] refresh failed',e)}},12000);}
-window.addEventListener('towerbound-auth-change',()=>{snapshot=null;inside=false;load().then(()=>renderSocial()).catch(()=>{});});
+window.addEventListener('towerbound-auth-change',()=>{snapshot=null;inside=false;load().then(()=>renderSocial()).catch(()=>syncShortcut());});
 window.TowerboundGuild={render,refresh,load,get snapshot(){return snapshot;}};
 const old=window.TowerboundEndgame?.renderCommunity;
 if(window.TowerboundEndgame&&typeof old==='function')window.TowerboundEndgame.renderCommunity=(tab='home')=>tab==='guild'?render():old(tab);
-if(window.TowerboundReworkReady&&typeof window.TowerboundReworkReady.then==='function')window.TowerboundReworkReady.then(e=>{game=e;setRuntimeBuffs();}).catch(()=>{});
+if(window.TowerboundReworkReady&&typeof window.TowerboundReworkReady.then==='function')window.TowerboundReworkReady.then(e=>{game=e;setRuntimeBuffs();if(cloud()?.signedIn)load().then(()=>renderSocial()).catch(()=>{});}).catch(()=>{});
 startPolling();
 })();
