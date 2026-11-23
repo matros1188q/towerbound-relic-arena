@@ -938,8 +938,8 @@ function createDialog(){
   const powerTalent=(branch?.talents||[]).find(talent=>/сила\s*$/i.test(String(talent.name||"")));
   const powerRank=Math.max(0,Number(character.talents?.[powerTalent?.id])||0);
   const talentBonus=powerRank*2,damageType=effects.damageType||card.damageType||"physical";
-  const spellBonus=isMagicCard(card,effects)?Math.max(0,Number(battle?.cardSpellPower)||0):0;
-  return Math.max(0,Math.round((base+perEnergy+conditional+talentBonus+spellBonus+treeDamageFlat)*(1+treeDamagePercent))+Math.max(0,Number(battle?.relicAttackBonus)||0)+Math.max(0,Number(battle?.nextAttackDamageBonus)||0));
+  const isMagic=isMagicCard(card,effects),spellBonus=isMagic?Math.max(0,Number(battle?.cardSpellPower)||0):0,guildMagicBonus=isMagic?Math.round((base+perEnergy)*Math.max(0,Number(character.guildBuffs?.magic_attack)||0)*.02):0;
+  return Math.max(0,Math.round((base+perEnergy+conditional+talentBonus+spellBonus+guildMagicBonus+treeDamageFlat)*(1+treeDamagePercent))+Math.max(0,Number(battle?.relicAttackBonus)||0)+Math.max(0,Number(battle?.nextAttackDamageBonus)||0));
  }
  function classResourceMarkup(c){
   if(c){for(const [key,value] of Object.entries({combo:0,rage:0,charges:0,faith:0,element:"fire",magicCharge:0,totem:0}))if(c[key]===undefined||c[key]===null)c[key]=value;}
