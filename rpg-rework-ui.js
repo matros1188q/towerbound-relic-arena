@@ -868,7 +868,7 @@ function createDialog(){
   clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
   if(clearQueue)battle.enemyQueueState=null;
   battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
-  battle.busy=false;battle.isCardAnimating=false;
+  battle.busy=false;battle.isCardAnimating=false;battle.finishingEnemy=false;
   battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};battle.telegraph=null;
   const detail=error?.message?String(error.message).slice(0,180):"";
   notify((message||"Ошибка действия · управление возвращено игроку")+(detail?" · "+detail:""));
@@ -1610,12 +1610,17 @@ function talentBonusDescription(talent,rank){
   return true;
  }
  function finishCurrentEnemy(){
+  if(!battle||battle.finishingEnemy)return;
+  const c=live();
+  if(!c?.run?.stage){stopBattleStatusLoop();clearPendingTurnTimer();battle=null;screen="map";selectedStage=c?.progress?.currentStage||selectedStage;save();render();return;}
+  battle.finishingEnemy=true;
   clearTimeout(pendingTimer);pendingTimer=null;
-  const c=live(),defeated=battle.enemy,playerHpRatioBeforeReward=Math.max(0,Math.min(1,(Number(c.run.playerHp)||0)/Math.max(1,engine.maxHp(c)))),dead=(battle.enemies||[]).filter(enemy=>!enemy.alive||enemy.hp<=0).sort((x,y)=>x.index-y.index);
+  const defeated=battle.enemy,playerHpRatioBeforeReward=Math.max(0,Math.min(1,(Number(c.run.playerHp)||0)/Math.max(1,engine.maxHp(c)))),dead=(battle.enemies||[]).filter(enemy=>!enemy.alive||enemy.hp<=0).sort((x,y)=>x.index-y.index);
   let result=null;const allLoot=[];
   if(!postBattleSummary)postBattleSummary={stage:battle.stage,xp:0,silver:0,loot:[],autoEquipped:0,nextStage:false};
   for(const target of dead){
-   if(c.run.stage?.killedIndices?.includes(target.index))continue;
+   if(!c.run?.stage)break;
+   if(c.run.stage.killedIndices?.includes(target.index))continue;
    const current=engine.finishEnemy(c.id,{speed2:c.run.speed2,targetIndex:target.index,overkillBonus:target.index===defeated.index&&!!battle.overkillBonus});
    syncEquipmentCards(c);
    if(current.relicChoices?.length)postBattleSummary.relicChoices=current.relicChoices;
@@ -1625,8 +1630,9 @@ function talentBonusDescription(talent,rank){
    c.stats.killsByMob[mobKey]=(c.stats.killsByMob[mobKey]||0)+1;c.stats.kills=(c.stats.kills||0)+1;
    postBattleSummary.xp+=Number(current.xp)||0;postBattleSummary.silver+=Number(current.silver)||0;postBattleSummary.autoEquipped+=Number(current.autoEquipped)||0;postBattleSummary.loot.push(...(current.loot||[]));
    target.hp=0;target.alive=false;target.dead=true;
+   if(current.stageComplete)break;
   }
-  if(!result)return;
+  if(!result){if(battle)battle.finishingEnemy=false;return;}
   if(allLoot.length)notify("Добыча: "+allLoot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
    if(c.classId==="destroyer")c.rage=0;
@@ -1650,6 +1656,7 @@ function talentBonusDescription(talent,rank){
     battle.playerBuffUntil=until;
     battle.proc={...balance.procs.destroyer,expiresAt:until};
    }
+   battle.finishingEnemy=false;
    save();render();
   }
  }
