@@ -1023,7 +1023,7 @@ function talentBonusDescription(talent,rank){
  function availableSkillForUpgrade(c,id){const def=classData(c),base=(def.base_skills||[]).find(skill=>skill.id===id),branch=skills.find(skill=>skill.id===id&&skill.class_id===c.classId&&(!skill.branch_id||skill.branch_id===c.branch));return base||branch||null;}
 
  const TREE_COLORS={crit:"#e65b64",bleed:"#d94d58",poison:"#5dbb78",exorcism:"#d9c16e",healing:"#65cfa0",blessing:"#78a9e8",fire:"#ed754b",ice:"#76c9ed",void:"#a58be8",fists:"#e47752",greatsword:"#d8b46a",arcane:"#7d9be8",darkness:"#a58be8",water:"#65bfe0",earth:"#b5a16b",dual:"#e4bb64",shield:"#72a9d9",rapier:"#c47de1",spirits:"#75c9a0",gods:"#a78be2",nature:"#83b86a",core:"#f0d18a"};
- let talentTreeConfig=null,treeCamera={scale:1.2,x:0,y:0},treePointers=new Map(),treePinch=null,treeDrag=null,treeTouchPoints=new Map(),treeTouchPinch=null,treeTouchDrag=null,treeTouchTap=null,treeDrawn=[];
+ let talentTreeConfig=null,treeCamera={scale:1.56,x:0,y:0},treePointers=new Map(),treePinch=null,treeDrag=null,treeTouchPoints=new Map(),treeTouchPinch=null,treeTouchDrag=null,treeTouchTap=null,treeDrawn=[];
   const treeIconCache=new Map();
  fetch("./configs/talents_tree.json").then(r=>r.json()).then(d=>{talentTreeConfig=d;if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);}).catch(e=>console.warn("Talent tree config",e));
  function treePointsEarned(level){const n=Math.max(1,Number(level)||1);return n<10?0:Math.min(101,n-9)+Math.max(0,Math.floor((n-110)/10));}
@@ -1937,7 +1937,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   if(target.dataset.action==="cancel-branch"){pendingBranchId=null;render();return;}
   if(target.dataset.treeNode){purchaseTreeNode(target.dataset.treeNode);return;}
   if(target.dataset.action==="reset-tree"){resetTalentTree();return;}
-  if(target.dataset.action==="tree-center"){treeCamera={scale:1.2,x:0,y:0};drawTalentTree();return;}
+  if(target.dataset.action==="tree-center"){treeCamera={scale:1.56,x:0,y:0};drawTalentTree();return;}
   if(target.dataset.talent){try{engine.useTalentPoint(live().id,target.dataset.talent,3);save();render();}catch(error){notify(error.message);}return;}
   if(target.dataset.shamanFreeMode!==undefined){const c=live();if(c.classId==="shaman"&&Number(c.totem)>=3){battle.shamanFreeMode=!battle.shamanFreeMode;save();render();}return;}
   if(target.dataset.cardPlay!==undefined){playCard(Number(target.dataset.cardPlay));return;}
