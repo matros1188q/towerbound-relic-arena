@@ -1900,7 +1900,7 @@ function talentBonusDescription(talent,rank){
   document.documentElement.classList.toggle("tb-battle-lock",isBattle);
   if(isBattle){
    const existing=root.querySelector(".new-battle-wrap"),key=battleRenderKey();
-   if(existing&&existing.dataset.renderKey===key){updateBattleDOM();ensureBottomNav();return;}
+   if(existing&&existing.dataset.renderKey===key){updateBattleDOM();try{ensureBottomNav();}catch(error){console.warn("[Towerbound] battle navigation badges unavailable",error);}return;}
    root.innerHTML='<div class="tb-v2">'+battleScreen()+'</div>';
    const arena=root.querySelector(".new-battle-wrap");if(arena)arena.dataset.renderKey=key;
   }else if(screen==="characters")root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
@@ -1917,7 +1917,7 @@ function talentBonusDescription(talent,rank){
   if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2").appendChild(toast);}
   if(toastMessage){toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
-  ensureBottomNav();
+  try{ensureBottomNav();}catch(error){console.warn("[Towerbound] navigation badges unavailable; keeping rendered screen",error);}
   if(postBattleSummary?.ready===true&&!battle&&screen==="map")root.querySelector(".tb-v2")?.insertAdjacentHTML("beforeend",lootSummaryModal());
   const pendingRelics=live()?.run?.pendingRelicChoices;
   if(pendingRelics?.length)showRelicRewardScreen(pendingRelics);
