@@ -210,7 +210,7 @@ async function onSession(next){
   if(!session){dirty=false;setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';showLoginGate();window.dispatchEvent(new Event('towerbound-auth-change'));return;}
   hideLoginGate();$('#tbCloudTitle').textContent='Облачный аккаунт Towerbound';$('#tbCloudIntro').textContent='Игровой аккаунт подключён. Прогресс синхронизируется с облаком.';
   $('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent=session.user.email||session.user.id;
-  setStatus('ОБЛАКО · ПОДКЛЮЧЕНИЕ…','online');say('Проверяем облачное сохранение…');
+  setStatus('ОБЛАКО · ПОДКЛЮЧЕНИЕ…','pending');say('Проверяем облачное сохранение…');
   try{
    const remote=await loadGame();
    await chooseSource(remote);
@@ -224,23 +224,58 @@ async function saveLoop(){
  if(!session||!client||!savesReady||conflict)return false;
  if(!dirty)return true;
  if(syncing){dirty=true;return false;}
- syncing=true;let saved=false;
+ syncing=true;let saved=false,attempts=0;
  try{
-  do{dirty=false;await saveGame(localSnapshot(),revision);setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');saved=true;}
-  while(dirty&&session&&!conflict);
- }catch(e){
-  saved=false;dirty=true;
-  console.error('[Towerbound cloud] save failed',e);
-  if(String(e.message||e).includes('SAVE_CONFLICT')||String(e.code||'')==='40001'){
+  while(dirty&&session&&!conflict&&attempts<4){
+   attempts++;dirty=false;
+   const snapshot=localSnapshot();
    try{
+    await saveGame(snapshot,revision);
+    saved=true;
+    setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');
+    say('Прогресс сохранён в облаке · версия '+revision+'.');
+   }catch(error){
+    const isConflict=String(error?.message||error).includes('SAVE_CONFLICT')||String(error?.code||'')==='40001';
+    if(!isConflict)throw error;
     const remote=await readRemote();
+    if(!remote?.save_data)throw new Error('Сервер сообщил о конфликте, но актуальное сохранение не найдено');
+    revision=Number(remote.revision)||0;
+    const latestLocal=localSnapshot();
+    const order=compareProgress(latestLocal,remote.save_data);
+    if(sameSave(latestLocal,remote.save_data)){
+     try{localStorage.setItem('tb-cloud-revision',String(revision));localStorage.setItem('tb-cloud-user-id',session.user.id);}catch(_){}
+     dirty=false;saved=true;
+     setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');
+     say('Облако уже содержит актуальную копию прогресса · версия '+revision+'.');
+     break;
+    }
+    if(order>0){
+     dirty=true;
+     say('Обнаружена более свежая локальная версия. Повторяем сохранение с актуальной версией облака…');
+     continue;
+    }
+    if(order<0){
+     say('В облаке найден более новый прогресс. Восстанавливаем его на устройстве…');
+     restoreLocal(remote.save_data);
+     saved=false;
+     break;
+    }
     await chooseSource(remote);
-    if(!conflict){setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');say('Облачная версия уже совпадает с этим устройством.');}
-   }catch(recoveryError){
-    conflict=true;setStatus('ОБЛАКО · КОНФЛИКТ','error');
-    say('Сохранение изменилось на другом устройстве, а облачную версию пока не удалось загрузить: '+(recoveryError.message||'ошибка сети'),'error');
+    if(conflict){saved=false;dirty=false;break;}
+    saved=true;dirty=false;
+    setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');
    }
-  }else{setStatus('ОБЛАКО · ОЖИДАЕТ СЕТИ','error');say('Не удалось синхронизировать. Локальный прогресс сохранён, повторим при следующем изменении.');}
+  }
+  if(dirty&&attempts>=4){
+   saved=false;
+   setStatus('ОБЛАКО · ПОВТОР СИНХРОНИЗАЦИИ','error');
+   say('Не удалось завершить синхронизацию после нескольких попыток. Локальный прогресс оставлен на устройстве. Нажми «Синхронизировать сейчас».','error');
+  }
+ }catch(error){
+  saved=false;dirty=true;
+  console.error('[Towerbound cloud] save failed',error);
+  setStatus('ОБЛАКО · ОШИБКА СОХРАНЕНИЯ','error');
+  say('Не удалось сохранить прогресс в облако: '+(error?.message||'ошибка сети')+'. Локальная копия сохранена.','error');
  }finally{syncing=false;}
  return saved;
 }
