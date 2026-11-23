@@ -60,6 +60,16 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-23 — iPhone start-screen viewport and logo repair
+
+- Replaced the legacy title-screen artwork `assets/towerbound-title-v2.webp` with the same current T logo asset used by the active RPG header and PWA icon: `assets/icons/image.png`.
+- Removed the old artwork panel background, orbit/vignette treatment and title-art label so the mark renders without its former background. The logo is constrained to 82×82 CSS pixels on phone layouts and 112×112 on desktop layouts.
+- Rebuilt the title-screen responsive grid: phones and small tablets use one bounded column, the screen uses the real dynamic viewport, and all title-screen children are constrained to the available width to prevent a clipped right half.
+- Preserved the title text, feature list, instructions toggle and **ВОЙТИ НА АРЕНУ** action.
+- Files: `index.html`, `service-worker.js`, `tests/online-services.test.cjs`, `README.md`. PWA shell cache: `towerbound-v499`; the current logo was already in the precache.
+- Verification boundary: the exact source and regression assertions were updated on `main`. A physical iPhone 16 Pro Max Safari/PWA visual pass remains unverified.
+
+
 ### 2026-11-23 — Start screen viewport and transparent logo repair
 
 - Replaced the active RPG header's old `assets/ui/logo.jpeg` source (a JPEG containing a visible checkerboard pattern) with the transparent `assets/icons/image.png` mark.
