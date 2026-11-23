@@ -18,3 +18,7 @@ assert.match(fs.readFileSync('rpg-rework-ui.js','utf8'),/case \"bottom-community
 assert.match(source,/writing-mode:horizontal-tb!important/,'community panel normalizes inherited vertical text layout');
 assert.match(source,/TowerboundSocial=\{open:/,'community panel exposes an open method for primary navigation');
 assert.ok(!source.includes("launcher.id='socLauncher'"),'standalone floating community launcher is removed');
+
+assert.match(source,/if\(!engine\)[\s\S]*?Подключаем сообщество/,'community panel waits for the game engine before rendering live content');
+assert.match(source,/ready\.then\(value=>\{if\(value\)\{engine=value;render\(\)\}/,'community open retries rendering after the game engine becomes ready');
+assert.match(fs.readFileSync('styles.css','utf8'),/tb-bottom-nav button>small\{[\s\S]*?font-size:clamp\(6px,1\.65vw,8px\)!important/,'floating navigation labels use compact responsive typography');

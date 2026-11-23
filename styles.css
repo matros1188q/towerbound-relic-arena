@@ -872,3 +872,11 @@
   #tbRpg .tb-v2 .tb-death-overlay .tb-death-losses{margin:6px 0!important}
   #tbRpg .tb-v2 .tb-death-overlay button{min-height:40px!important;margin-top:5px!important}
 }
+
+
+/* Primary floating navigation: compact labels stay inside all six tiles. */
+#tbRpg .tb-v2 .tb-bottom-nav{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;padding-left:max(4px,env(safe-area-inset-left,0px))!important;padding-right:max(4px,env(safe-area-inset-right,0px))!important;}
+#tbRpg .tb-v2 .tb-bottom-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;width:100%!important;min-width:0!important;max-width:100%!important;min-height:50px!important;height:auto!important;flex:none!important;overflow:hidden!important;padding:4px 1px!important;box-sizing:border-box!important;white-space:normal!important;writing-mode:horizontal-tb!important;text-orientation:mixed!important;}
+#tbRpg .tb-v2 .tb-bottom-nav button>span{display:block!important;font-size:17px!important;line-height:1!important;flex:none!important;}
+#tbRpg .tb-v2 .tb-bottom-nav button>small{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;font-size:clamp(6px,1.65vw,8px)!important;font-weight:800!important;line-height:1.12!important;letter-spacing:0!important;text-align:center!important;white-space:normal!important;overflow:hidden!important;overflow-wrap:normal!important;word-break:keep-all!important;writing-mode:horizontal-tb!important;text-orientation:mixed!important;}
+@media(max-width:390px){#tbRpg .tb-v2 .tb-bottom-nav{gap:1px!important;padding-left:3px!important;padding-right:3px!important}#tbRpg .tb-v2 .tb-bottom-nav button>small{font-size:6px!important;letter-spacing:-.15px!important}}

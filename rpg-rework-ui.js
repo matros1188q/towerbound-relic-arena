@@ -2069,7 +2069,7 @@ function talentBonusDescription(talent,rank){
    case "bottom-profile":profileTab="stats";screen="profile";render();break;
    case "bottom-shop":screen="shop";render();break;
    case "bottom-progress":case "open-progress":screen="progress";render();break;
-   case "bottom-community":window.TowerboundSocial?.open?.();break;
+   case "bottom-community":{const social=window.TowerboundSocial;if(typeof social?.open==="function")social.open();else notify("Сообщество ещё загружается. Попробуй ещё раз через секунду.");break;}
    case "open-meta-progression":if(window.TowerboundProgression?.open)window.TowerboundProgression.open();else notify("Модуль прогрессии ещё загружается");break;
    case "bottom-account":screen="account";render();break;
    case "reset-current-battle":{const c=live(),stage=c?.run?.stage?.stage||c?.progress?.currentStage||selectedStage;stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(c?.run){c.run.stage=null;c.run.active=true;}battle=null;selectedStage=Math.max(1,Math.min(balance.map.total_stages,stage));screen="map";save();render();notify("Бой сброшен · этап "+selectedStage+" можно начать заново");break;}
