@@ -852,7 +852,6 @@
     if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
     if(stage>character.progress.currentStage-1)character.progress.currentStage=stage+1;
     character.run.stage=null;
-    character.run.playerHp=maxHp(character);
     if(stage>=balance.seasons.reward_first_clear_stage&&!character.run.seasonRewardClaimed&&firstClear){
      character.stats.season_clear=Math.max(character.stats.season_clear||0,stage);
      const reward=balance.seasons.season_reward_cosmetic;
@@ -1033,6 +1032,7 @@
    return clone(character.progress);
   }
   function autoBattle(characterId,options){
+   // TODO: AutoBattle does not use card synergies, only base DPS.
    options=options||{};
    const character=getChar(characterId),limit=Math.min(options.maxStages||balance.auto_battle.default_max_stages,balance.auto_battle.default_max_stages);
    if(character.run.stage)throw new Error("Auto-battle cannot run during manual combat");

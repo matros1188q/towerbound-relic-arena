@@ -173,8 +173,6 @@ async function syncNow(){
 }
 function queueSave(){if(!session||conflict||restoring)return;dirty=true;clearTimeout(timer);timer=setTimeout(saveLoop,1300);}
 window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});
-const originalSet=Storage.prototype.setItem;
-Storage.prototype.setItem=function(key,value){const result=originalSet.call(this,key,value);if(this===localStorage&&isSaveKey(key))queueSave();return result;};
 $('#tbCloudSignIn').addEventListener('click',async()=>{try{say('Входим в игру…');await signIn($('#loginInput').value,$('#passInput').value,$('#tbCloudRememberMe').checked);}catch(e){say(localizedAuthError(e,'Не удалось войти'),'error');}});
 $('#tbCloudSignUp').addEventListener('click',async()=>{try{say('Создаём игровой аккаунт…');await signUp($('#loginInput').value,$('#passInput').value,$('#tbCloudRememberMe').checked);}catch(e){say(localizedAuthError(e,'Не удалось зарегистрироваться'),'error');}});
 $('#tbCloudGoogle').addEventListener('click',async()=>{try{say('Открываем Google…');const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});if(error)throw error;}catch(e){say(e.message||'Вход через Google не настроен');}});

@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.join(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const ui=read('rpg-rework-ui.js'),visuals=read('combat-visuals.js'),css=read('rpg-rework-ui.css.js'),browser=read('tests/browser-smoke.cjs');
+const ui=read('rpg-rework-ui.js'),visuals=read('combat-visuals.js'),css=read('styles.css'),browser=read('tests/browser-smoke.cjs');
 assert.match(ui,/enemyQueueState=\{indices:/,'enemy queue cursor is persisted before scheduling');
 assert.match(ui,/enemyQueueState:battle\.enemyQueueState\?/,'queue state is included in battle snapshot');
 assert.match(ui,/function resumeEnemyTurnQueue\(/,'paused enemy queue has a dedicated resume path');

@@ -105,6 +105,6 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.match(ui,/ПОДТВЕРДИТЬ ВЫБОР/,'specialization selection requires explicit confirmation');
  assert.match(ui,/data-action="confirm-branch"/,'specialization confirmation has a dedicated action');
  assert.doesNotMatch(fs.readFileSync(path.join(__dirname,'../rpg-mode.js'),'utf8'),/id="tbExtraBar"/,'legacy duplicate top navigation is removed');
- assert.match(fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8'),/tb-chapter-card\{display:block!important;width:100%;min-width:0/,'chapter lore card uses a stable full-width layout');
+ assert.match(fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8'),/tb-chapter-card\{display:block!important;width:100%;min-width:0/,'chapter lore card uses a stable full-width layout');
 }
 console.log('Loot/combat update: all assertions passed.');

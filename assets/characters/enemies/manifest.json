@@ -6,8 +6,8 @@
     {
       "id": "swamp-reaper",
       "name": "Болотный жнец",
-      "filename": "image 2.png",
-      "relative_path": "assets/characters/enemies/image 2.png",
+      "filename": "image_2.png",
+      "relative_path": "assets/characters/enemies/image_2.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.swamp-reaper"
@@ -15,8 +15,8 @@
     {
       "id": "cursed-knight",
       "name": "Проклятый рыцарь",
-      "filename": "image 3.png",
-      "relative_path": "assets/characters/enemies/image 3.png",
+      "filename": "image_3.png",
+      "relative_path": "assets/characters/enemies/image_3.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.cursed-knight"
@@ -24,8 +24,8 @@
     {
       "id": "shadow-goblin",
       "name": "Теневой гоблин",
-      "filename": "image 4.png",
-      "relative_path": "assets/characters/enemies/image 4.png",
+      "filename": "image_4.png",
+      "relative_path": "assets/characters/enemies/image_4.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.shadow-goblin"
@@ -33,8 +33,8 @@
     {
       "id": "phantom-duelist",
       "name": "Призрачный дуэлянт",
-      "filename": "image 5.png",
-      "relative_path": "assets/characters/enemies/image 5.png",
+      "filename": "image_5.png",
+      "relative_path": "assets/characters/enemies/image_5.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.phantom-duelist"
@@ -42,8 +42,8 @@
     {
       "id": "abyss-knight",
       "name": "Рыцарь бездны",
-      "filename": "image 6.png",
-      "relative_path": "assets/characters/enemies/image 6.png",
+      "filename": "image_6.png",
+      "relative_path": "assets/characters/enemies/image_6.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.abyss-knight"
@@ -51,8 +51,8 @@
     {
       "id": "ash-wolf",
       "name": "Пепельный волк",
-      "filename": "image 7.png",
-      "relative_path": "assets/characters/enemies/image 7.png",
+      "filename": "image_7.png",
+      "relative_path": "assets/characters/enemies/image_7.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.ash-wolf"
@@ -60,8 +60,8 @@
     {
       "id": "rune-golem",
       "name": "Рунный голем",
-      "filename": "image 8.png",
-      "relative_path": "assets/characters/enemies/image 8.png",
+      "filename": "image_8.png",
+      "relative_path": "assets/characters/enemies/image_8.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.rune-golem"
@@ -69,8 +69,8 @@
     {
       "id": "crimson-executioner",
       "name": "Багровый палач",
-      "filename": "image 9.png",
-      "relative_path": "assets/characters/enemies/image 9.png",
+      "filename": "image_9.png",
+      "relative_path": "assets/characters/enemies/image_9.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.crimson-executioner"
@@ -78,8 +78,8 @@
     {
       "id": "plague-witch",
       "name": "Чумная ведьма",
-      "filename": "image 10.png",
-      "relative_path": "assets/characters/enemies/image 10.png",
+      "filename": "image_10.png",
+      "relative_path": "assets/characters/enemies/image_10.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.plague-witch"
@@ -87,8 +87,8 @@
     {
       "id": "ash-imp",
       "name": "Пепельный бес",
-      "filename": "image 11.png",
-      "relative_path": "assets/characters/enemies/image 11.png",
+      "filename": "image_11.png",
+      "relative_path": "assets/characters/enemies/image_11.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.ash-imp"
@@ -96,8 +96,8 @@
     {
       "id": "forest-horror",
       "name": "Лесной ужас",
-      "filename": "image 12.png",
-      "relative_path": "assets/characters/enemies/image 12.png",
+      "filename": "image_12.png",
+      "relative_path": "assets/characters/enemies/image_12.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.forest-horror"
@@ -105,8 +105,8 @@
     {
       "id": "bone-warden",
       "name": "Костяной страж",
-      "filename": "image 13.png",
-      "relative_path": "assets/characters/enemies/image 13.png",
+      "filename": "image_13.png",
+      "relative_path": "assets/characters/enemies/image_13.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.bone-warden"
@@ -114,8 +114,8 @@
     {
       "id": "spider-matron",
       "name": "Паучья матрона",
-      "filename": "image 14.png",
-      "relative_path": "assets/characters/enemies/image 14.png",
+      "filename": "image_14.png",
+      "relative_path": "assets/characters/enemies/image_14.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.spider-matron"
@@ -123,8 +123,8 @@
     {
       "id": "soul-harvester",
       "name": "Собиратель душ",
-      "filename": "image 15.png",
-      "relative_path": "assets/characters/enemies/image 15.png",
+      "filename": "image_15.png",
+      "relative_path": "assets/characters/enemies/image_15.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.soul-harvester"
@@ -132,8 +132,8 @@
     {
       "id": "void-hunter",
       "name": "Пустотный охотник",
-      "filename": "image 16.png",
-      "relative_path": "assets/characters/enemies/image 16.png",
+      "filename": "image_16.png",
+      "relative_path": "assets/characters/enemies/image_16.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.void-hunter"
@@ -141,8 +141,8 @@
     {
       "id": "blind-monk",
       "name": "Слепой монах",
-      "filename": "image 17.png",
-      "relative_path": "assets/characters/enemies/image 17.png",
+      "filename": "image_17.png",
+      "relative_path": "assets/characters/enemies/image_17.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.blind-monk"
@@ -150,8 +150,8 @@
     {
       "id": "stone-minotaur",
       "name": "Каменный минотавр",
-      "filename": "image 18.png",
-      "relative_path": "assets/characters/enemies/image 18.png",
+      "filename": "image_18.png",
+      "relative_path": "assets/characters/enemies/image_18.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.stone-minotaur"
@@ -159,8 +159,8 @@
     {
       "id": "cursed-alchemist",
       "name": "Проклятый алхимик",
-      "filename": "image 20.png",
-      "relative_path": "assets/characters/enemies/image 20.png",
+      "filename": "image_20.png",
+      "relative_path": "assets/characters/enemies/image_20.png",
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.cursed-alchemist"

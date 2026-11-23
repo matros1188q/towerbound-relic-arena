@@ -37,7 +37,7 @@ const result=engine.finishEnemy(character.id,{targetIndex:0});
 assert.ok(result.loot.some(item=>['Редкая','Эпическая'].includes(item.rarity)),'boss on a replayed stage >=3 guarantees rare or epic loot');
 
 const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
-const css=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8');
+const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
 assert.match(ui,/function showFloatingText\(/);
 assert.match(ui,/AudioContext\|\|window\.webkitAudioContext/);
 assert.match(ui,/data-setting="sound_enabled"/);

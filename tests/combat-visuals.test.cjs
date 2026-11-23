@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');
 const fx=fs.readFileSync(path.join(__dirname,'../combat-visuals.js'),'utf8');
-const css=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8');
+const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
 const battleDom=ui.slice(ui.indexOf('function updateBattleDOM'),ui.indexOf('function ensureBottomNav'));
 for(const [name,source,re] of [
 ['two-layer parallax',fx,/tb-back-parallax[\s\S]*tb-front-parallax/],

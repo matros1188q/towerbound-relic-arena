@@ -476,3 +476,13 @@ console.log('RPG balance/content checks passed: 30 configs, combat cadence, curv
  assert.equal(live.stats.kills,beforeKills+plan.mobs.length,'all unrecorded kills and rewards are processed');
  assert.ok(live.silver>beforeSilver,'recovery victory grants silver rewards');
 }
+
+// Regression guards for card-combat HP carry-over and auto-battle transparency.
+{
+ const source=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');
+ const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
+ assert.ok(source.includes('function finishEnemy(characterId,flags)'),'finishEnemy implementation remains present');
+ assert.ok(!source.includes('character.run.stage=null;\n    character.run.playerHp=maxHp(character);'),'manual stage clear must preserve the remaining player HP');
+ assert.ok(source.includes('// TODO: AutoBattle does not use card synergies, only base DPS.'),'auto battle limitations are documented next to the simulation');
+ assert.ok(ui.includes('title="Авто-бой не учитывает синергии карт и яды"'),'auto battle button explains the limitations of the simplified simulation');
+}

@@ -6,7 +6,7 @@ const online=fs.readFileSync('towerbound-online.js','utf8');
 const ui=fs.readFileSync('rpg-rework-ui.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
 const cloud=fs.readFileSync('towerbound-cloud.js','utf8');
-const css=fs.readFileSync('rpg-rework-ui.css.js','utf8');
+const css=fs.readFileSync('styles.css','utf8');
 const progression=fs.readFileSync('progression-24.js','utf8');
 const engine=fs.readFileSync('rpg-rework-v2.js','utf8');
 const serviceWorker=fs.readFileSync('service-worker.js','utf8');
@@ -47,7 +47,8 @@ assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded'
 assert.ok(html.includes('./towerbound-cloud.js?v=18'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=17'),'engine cache is refreshed for gem socket support');
 assert.ok(html.includes('./rpg-rework-ui.js?v=67'),'battle, profile and transparent logo UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=36'),'battle, profile and start screen stylesheet cache is refreshed');
+assert.ok(html.includes('./styles.css?v=1'),'battle, profile and start screen styles load from one static stylesheet');
+assert.ok(!html.includes('styles.css?v=1'),'legacy runtime CSS loader is no longer loaded by the page');
 assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123'),'mobile start-screen viewport regression is guarded');
 assert.ok(html.includes('<img class="title-illustration" src="./assets/icons/image.png" alt="T" width="96" height="96" decoding="async" fetchpriority="high">')&&!html.includes('./assets/towerbound-title-v2.webp'),'start screen reuses the current transparent T logo instead of the legacy title illustration');
 assert.ok(html.includes('grid-template-columns:minmax(0,1fr)!important;')&&html.includes('width:100%!important;max-width:100%!important;min-width:0!important;')&&html.includes('@media(max-width:900px)'),'start screen is locked to a single responsive column on iPhone and small tablets');
@@ -66,6 +67,9 @@ assert.ok(cloud.includes("$('#tbCloudSyncNow').addEventListener('click',async()=
 assert.ok(!cloud.includes("$('#tbCloudSyncNow').addEventListener('click',()=>{conflict=false;queueSave();"),'manual sync must not clear an unresolved conflict or claim background success');
 assert.ok(cloud.includes("window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});"),'offline saves are retried after connectivity returns');
 assert.ok(cloud.includes('loadGame,saveGame,queueSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
+assert.ok(!cloud.includes('Storage.prototype.setItem')&&!cloud.includes('const originalSet=Storage.prototype.setItem'),'cloud module does not patch the global Storage prototype');
+assert.ok(ui.includes('window.TowerboundCloud?.queueSave?.()'),'game save explicitly queues cloud synchronization');
+assert.ok(ui.includes('title="Авто-бой не учитывает синергии карт и яды"'),'auto battle button explains the limitations of the simplified simulation');
 assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="cloud-account"'),'settings screen exposes cloud account and manual sync controls');
 assert.ok(cloud.includes("const AUTH_EMAIL_DOMAIN='towerbound.com'")&&cloud.includes("const authEmail=login=>String(login||'').trim().toLowerCase()+'@'+AUTH_EMAIL_DOMAIN"),'new game logins map to a valid .com synthetic Supabase email');
 assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("legacy=await client.auth.signInWithPassword({email:clean+'@towerbound.game'"),'sign-in uses the new email and preserves legacy .game accounts as fallback');
@@ -165,7 +169,7 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
 assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:39px!important')&&css.includes('height:34px!important'),'iPhone header preserves the original logo size and removes the progression button');
-assert.ok(html.includes('progression-24.js?v=9')&&html.includes('towerbound-cloud.js?v=18')&&html.includes('rpg-rework-ui.css.js?v=36'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(html.includes('progression-24.js?v=9')&&html.includes('towerbound-cloud.js?v=18')&&html.includes('styles.css?v=1'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');

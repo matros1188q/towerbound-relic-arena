@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const http=require('node:http');
 const path=require('node:path');
 const assert=require('node:assert/strict');
-const battleCss=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8');
+const battleCss=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
 const {chromium}=require('playwright');
 (async()=>{
  const root=process.cwd();
@@ -38,7 +38,7 @@ const {chromium}=require('playwright');
   assert.equal(catalog.filter(skill=>skill.class_id===classId).length,60,classId+" has 60 branch skills");
  }
  const battleUiSource=fs.readFileSync(path.join(root,"rpg-rework-ui.js"),"utf8");
- const battleCssSource=fs.readFileSync(path.join(root,"rpg-rework-ui.css.js"),"utf8");
+ const battleCssSource=fs.readFileSync(path.join(root,"styles.css"),"utf8");
  assert.match(battleCssSource,/let css=\[/,"V2 battle stylesheet builder remains mutable for appended battle overrides");
  assert.match(battleUiSource,/presets=\{click:\{wave:/,"Web Audio click effect is configured");
  assert.match(battleUiSource,/hit:\{wave:/,"Web Audio mob hit effect is configured");

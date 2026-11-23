@@ -53,7 +53,7 @@ const makeEngine = () => createEngine(balance, {
 }
 
 const ui = fs.readFileSync(path.join(__dirname, '../rpg-rework-ui.js'), 'utf8');
-const css = fs.readFileSync(path.join(__dirname, '../rpg-rework-ui.css.js'), 'utf8');
+const css = fs.readFileSync(path.join(__dirname, '../styles.css'), 'utf8');
 const worker = fs.readFileSync(path.join(__dirname, '../service-worker.js'), 'utf8');
 const mobConfig = JSON.parse(fs.readFileSync(path.join(configDir, 'mobs.json'), 'utf8'));
 assert.match(ui, /curse_wound:\{id:"curse_wound"[^\n]*type:"curse"/);

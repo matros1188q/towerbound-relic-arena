@@ -101,8 +101,9 @@
   }
   root.addEventListener('click',event=>{const b=event.target.closest('[data-tb-help]');if(b){event.preventDefault();event.stopPropagation();showHelp(b);}});
   document.addEventListener('pointerdown',()=>{try{const C=window.AudioContext||window.webkitAudioContext;if(C&&!audio)audio=new C();if(audio?.state==='suspended')audio.resume().catch(()=>{});}catch(_){}},{once:true,capture:true});
-  const observer=new MutationObserver(()=>{if(lootObserverQueued)return;lootObserverQueued=true;queueMicrotask(()=>{lootObserverQueued=false;decorate();});});
-  observer.observe(root,{childList:true,subtree:true,characterData:true});
+  let decorateTimer=null;
+  const observer=new MutationObserver(()=>{if(decorateTimer!==null)return;decorateTimer=setTimeout(()=>{decorateTimer=null;decorate();},50);});
+  observer.observe(root,{childList:true,subtree:true});
   decorate();
   window.addEventListener('storage',event=>{if(event.key===STORE)checkState();});
 })();

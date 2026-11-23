@@ -60,6 +60,19 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-23 — Combat carry-over, static styles and asset path cleanup
+
+- Removed the full-health reset after a manual stage clear so remaining HP carries into the next stage. Kept the separate auto-battle simulation explicitly documented as a simplified base-DPS estimate.
+- Removed the global `Storage.prototype.setItem` override. The UI's normal save path already calls `TowerboundCloud.queueSave()` explicitly after persisting local state.
+- Added an auto-battle tooltip explaining that the simulation does not account for card synergies or poison.
+- Moved the RPG UI stylesheet builder and 12 UI-injected static style blocks into one `styles.css` file; the page links it once at the former runtime-loader position and the service worker precaches it. The old JS stylesheet file is retained as a syntax-safe compatibility stub.
+- Debounced the polish MutationObserver decoration pass by 50 ms and removed `characterData` from its observer options.
+- Renamed all enemy image files containing spaces and chapter background files containing spaces to underscore names; updated runtime mappings, manifests, chapter config, PWA precache and art-path tests.
+- Card-play energy deduction, discard/exhaust handling, enemy status persistence, enemy turn scheduling and temporary buff expiry were already implemented; added regression assertions rather than replacing those mechanics. The `progression-24.js` engine guard was already present and needed no change.
+- PWA shell cache: `towerbound-v501`. Static CSS: `styles.css?v=1`.
+- Verification boundary: source-level assertions are included in this commit; GitHub Actions and live browser/iPhone verification must still be checked after publication.
+
+
 ### 2026-11-23 — Final iPhone title-screen sizing guard
 
 - Added a final title-screen CSS guard after the legacy title styling so phone widths use a single column bounded to the viewport; removed the old art-panel background, orbit/vignette and label treatment from the active title mark.

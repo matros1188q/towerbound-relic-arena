@@ -5,7 +5,7 @@ const mount=document.getElementById('phaser-arena');
 const PALETTE={night:0x101326,stone:0x282b48,stone2:0x393858,edge:0x686184,cyan:0x78e7ef,gold:0xf8ce72,red:0xe85e78,purple:0x9b78ed};
 let arenaScene=null;
 const scene={key:'IllustratedArena',
-preload:function(){this.load.image('tb-arena-background','./assets/chapters/image 2.jpeg');this.load.image('tb-hero','./assets/characters/heroes/image-Photoroom.png');this.load.image('tb-foe','./assets/characters/enemies/image 2.png');this.load.image('tb-skeleton','./assets/characters/enemies/image 13.png');this.load.image('tb-brute','./assets/characters/enemies/image 18.png');},
+preload:function(){this.load.image('tb-arena-background','./assets/chapters/image_2.jpeg');this.load.image('tb-hero','./assets/characters/heroes/image-Photoroom.png');this.load.image('tb-foe','./assets/characters/enemies/image_2.png');this.load.image('tb-skeleton','./assets/characters/enemies/image_13.png');this.load.image('tb-brute','./assets/characters/enemies/image_18.png');},
 create:function(){
  arenaScene=this;
  this.phase='prep';this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');this.actorSprites=[];this.fx=[];
@@ -110,7 +110,7 @@ setWave:function(wave,boss){
   domEnemy.style.left=boss?'68%':'68%';domEnemy.style.top='49%';
   domEnemy.style.filter=boss?'drop-shadow(0 0 18px #ff687f) drop-shadow(0 10px 10px #000d)':'drop-shadow(0 10px 10px #000d) drop-shadow(0 0 12px #e7caff55)';
   domEnemy.style.animation='tbEnemyIdle 2.8s ease-in-out infinite';
-  domEnemy.onerror=()=>{domEnemy.onerror=null;domEnemy.src='./assets/characters/enemies/image 3.png';};
+  domEnemy.onerror=()=>{domEnemy.onerror=null;domEnemy.src='./assets/characters/enemies/image_3.png';};
  }
  this.enemy.setTint(0xffffff);
  this.enemy.setScale(boss?1.02:.76);
@@ -274,8 +274,8 @@ function ensureVisibleActors(){
   document.head.appendChild(style);
  }
  addActor('tb-visible-hero','./assets/characters/heroes/image-Photoroom.png','Герой башни',{left:'34%',top:'49%',width:'clamp(116px,28vw,184px)',height:'72%',animation:'tbHeroIdle 2.2s ease-in-out infinite'});
- const enemy=addActor('tb-visible-enemy','./assets/characters/enemies/image 3.png','Страж Бездны',{left:'68%',top:'49%',width:'clamp(118px,30vw,202px)',height:'72%',animation:'tbEnemyIdle 2.8s ease-in-out infinite'});
- enemy.onerror=()=>{enemy.onerror=null;enemy.src='./assets/characters/enemies/image 4.png';};
+ const enemy=addActor('tb-visible-enemy','./assets/characters/enemies/image_3.png','Страж Бездны',{left:'68%',top:'49%',width:'clamp(118px,30vw,202px)',height:'72%',animation:'tbEnemyIdle 2.8s ease-in-out infinite'});
+ enemy.onerror=()=>{enemy.onerror=null;enemy.src='./assets/characters/enemies/image_4.png';};
  return layer;
 }
 ensureVisibleActors();

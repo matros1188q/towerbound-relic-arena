@@ -11,7 +11,7 @@ const pvp = readJson('configs/balance/pvp_store.json');
 const catalog = readJson('configs/skills/catalog.json');
 const skills = Array.isArray(catalog) ? catalog : catalog.skills;
 const ui = fs.readFileSync(path.join(root, 'rpg-rework-ui.js'), 'utf8');
-const css = fs.readFileSync(path.join(root, 'rpg-rework-ui.css.js'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
 assert.equal(resources.max_resource_by_class.duelist, 100);

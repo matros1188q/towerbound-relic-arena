@@ -5,7 +5,7 @@ const path=require('node:path');
 const root=path.join(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const ui=read('rpg-rework-ui.js');
-const css=read('rpg-rework-ui.css.js');
+const css=read('styles.css');
 const html=read('index.html');
 const sw=read('service-worker.js');
 assert.match(ui,/function header\(\)\{return '<header class="tb-header"/,'global header is centralized');

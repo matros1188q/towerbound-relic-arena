@@ -128,7 +128,7 @@ assert.ok(cloudSource.includes('redirectTo:window.location.origin+window.locatio
 // Native PWA phase-3 release checks: background music, independent SFX switch and combat recovery controls.
 const pageSource=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const nativeCss=fs.readFileSync(path.join(root,'native-pwa.css'),'utf8');
-const uiCssSource=fs.readFileSync(path.join(root,'rpg-rework-ui.css.js'),'utf8');
+const uiCssSource=fs.readFileSync(path.join(root,'styles.css'),'utf8');
 const serviceWorker=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
 const engineSource=fs.readFileSync(path.join(root,'rpg-rework-v2.js'),'utf8');
 const viewportMeta=pageSource.match(/<meta name="viewport"[^>]*>/)?.[0]||"";

@@ -8,7 +8,7 @@
         1,
         50
       ],
-      "background": "assets/chapters/image 2.jpeg",
+      "background": "assets/chapters/image_2.jpeg",
       "mobs": [
         "shadow-goblin",
         "grave-archer",
@@ -23,7 +23,7 @@
         51,
         100
       ],
-      "background": "assets/chapters/image 3.jpeg",
+      "background": "assets/chapters/image_3.jpeg",
       "mobs": [
         "ash-wolf",
         "cursed-alchemist",
@@ -38,7 +38,7 @@
         101,
         150
       ],
-      "background": "assets/chapters/image 4.jpeg",
+      "background": "assets/chapters/image_4.jpeg",
       "mobs": [
         "swamp-reaper",
         "spider-matron",
@@ -53,7 +53,7 @@
         151,
         200
       ],
-      "background": "assets/chapters/image 5.jpeg",
+      "background": "assets/chapters/image_5.jpeg",
       "mobs": [
         "rune-golem",
         "stone-minotaur",
