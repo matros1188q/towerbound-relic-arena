@@ -66,6 +66,8 @@ console.log('Endgame systems static checks: OK');
 ['#tbEndgameMenu,#tbEndgameMenu *{writing-mode:horizontal-tb!important;text-orientation:mixed!important;}', 'floating endgame launch menu text forced horizontal'],
 ['#tbRpg #tbEndgame .eg-window nav button{writing-mode:horizontal-tb!important;', 'high-specificity modal override defeats inherited vertical button styles'],
 ['#tbRpg .tb-v2 #tbEndgameMenu button{writing-mode:horizontal-tb!important;', 'high-specificity launch menu override defeats inherited vertical button styles'],
+['class="eg-primary-nav"', 'rebuilt Endgame navigation uses dedicated semantic tab layout'],
+['white-space:nowrap!important;word-break:keep-all!important;', 'Guild and Pass labels cannot break vertically'],
 ['body #tbEndgameMenu button,body #tbEndgameMenu button *{writing-mode:horizontal-tb!important;', 'launcher labels reset outside the RPG mount'],
 ['body #tbEndgame .eg-window nav button,body #tbEndgame .eg-window nav button *{writing-mode:horizontal-tb!important;', 'modal navigation labels reset at document scope'],
 ['font-size:clamp(9px,2.7vw,11px)!important;', 'endgame launch menu labels scale on narrow phones']
