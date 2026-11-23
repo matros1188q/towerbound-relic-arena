@@ -1487,7 +1487,7 @@ function talentBonusDescription(talent,rank){
    '<div class="new-hero-potions"><span class="tb-potion-cooldown">'+(potionCooldown>0?'Через '+potionCooldown+' этажей':'Готово')+'</span>'+potionMarkup+'</div></div>'+
    '<div class="new-enemies-side">'+enemyMarkup+'</div></div>'+
    '<div class="new-battle-bottom"><div class="new-turn-guidance" aria-live="polite">'+(battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют...")+'</div>'+
-   '<div class="new-stats-row"><div class="new-energy-summary"><span id="energyDisplay">ЭНЕРГИЯ: '+c.currentEnergy+'/'+c.energy+'</span>'+classResourceMarkup(c)+'</div>'+
+   '<div class="new-stats-row"><div class="new-energy-summary"><span id="energyDisplay">'+(battle.guildRaid?'КАРТЫ: '+Number(battle.cardsPlayedThisTurn||0)+'/3':'ЭНЕРГИЯ: '+c.currentEnergy+'/'+c.energy)+'</span>'+classResourceMarkup(c)+'</div>'+
    '<div class="new-deck-controls"><button type="button" class="tb-deck-viewer-trigger" data-deck-viewer>▤ КОЛОДА <b id="deckViewerCount">'+collectDeckCards(c).length+'</b></button>'+
    '<span class="new-deck-counts">ДОБОР: <b id="deckCount">'+c.deck.length+'</b> · СБРОС: <b id="discardCount">'+c.discard.length+'</b></span></div></div>'+
    '<div class="new-hand-row" id="cardHand">'+handMarkup+'</div><div class="new-log-row">'+combatLogMarkup()+'</div>'+
@@ -2230,7 +2230,7 @@ function talentBonusDescription(talent,rank){
    save();render();
   }catch(error){notify(error.message);render();}
  });
- function pauseForFocusLoss(){if((engine.state.account.settings||{}).auto_pause_on_blur===false)return;if(screen==="battle"&&battle&&!battle.paused){battle.paused=true;clearPendingTurnTimer();battle.timerRemainingMs=0;battle.timerStartedAt=0;if(battle.telegraph)battle.remainingResponseMs=Math.max(0,(battle.telegraph.until||Date.now())-Date.now());save();render();}}
+ function pauseForFocusLoss(){if(battle?.guildRaid)return;if((engine.state.account.settings||{}).auto_pause_on_blur===false)return;if(screen==="battle"&&battle&&!battle.paused){battle.paused=true;clearPendingTurnTimer();battle.timerRemainingMs=0;battle.timerStartedAt=0;if(battle.telegraph)battle.remainingResponseMs=Math.max(0,(battle.telegraph.until||Date.now())-Date.now());save();render();}}
  document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseForFocusLoss();});window.addEventListener("blur",pauseForFocusLoss);
  window.addEventListener("pagehide",()=>{try{if(engine&&live()){engine.publishGhostSnapshot(live().id,"exit");save();}}catch(error){console.warn("Ghost snapshot on exit failed",error);}});
  function boot(){
