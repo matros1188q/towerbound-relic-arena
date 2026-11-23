@@ -46,8 +46,13 @@ assert.ok(ui.includes('Серверный рейтинг пока не начи�
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=18'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=17'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=65'),'profile and inventory UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=33'),'mobile profile stylesheet cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=66'),'battle and profile UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=34'),'battle and profile stylesheet cache is refreshed');
+assert.ok(css.includes('TowerBound three-zone battle arena v496'),'battle uses the three-zone layout');
+assert.ok(css.includes('grid-template-columns:minmax(0,2fr) minmax(0,3fr)'),'hero and enemy field use the 40/60 split');
+assert.ok(css.includes('calc((100% - 16px) / 5)'),'five cards fit the hand before horizontal scrolling');
+assert.ok(css.includes('grid-template-areas: "energy energy" "hand hand" "log log" "endturn potions"'),'energy, hand, log and turn controls occupy the intended rows');
+assert.ok(ui.includes('⚡ ×2')&&ui.includes('box.scrollLeft=box.scrollWidth'),'compact speed controls and one-line scrolling combat log remain wired');
 assert.ok(cloud.includes("'tb-endgame-v1'")&&cloud.includes("'tb-social-v1'"),'cloud allowlist persists endgame and social local data');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
 assert.ok(cloud.includes('async function saveGame('),'cloud module exposes a versioned saveGame path');
