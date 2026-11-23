@@ -49,9 +49,12 @@ function has(text, needle, label) {
   ['grid-template-columns:repeat(3,minmax(0,1fr))', 'mobile menu grid'],
   ['max-width:330px', 'narrow phone layout']
 ].forEach(([needle,label]) => has(source,needle,label));
-assert.match(html, /<script src="\.\/endgame-systems\.js\?v=220"><\/script>/, 'endgame script cache version');
+assert.match(html, /<script src="\.\/endgame-systems\.js\?v=221"><\/script>/, 'endgame script cache version');
 assert.ok(!source.includes('Эволюция')&&!source.includes('open-evolution')&&!source.includes('evolveSkill('),'skill evolution removed');
-assert.ok(!combat.includes('evolvedSkill')&&!combat.includes('armorPenetration'),'combat evolution effects removed');
+assert.ok(!combat.includes('evolvedSkill')&&!combat.includes('getSkillEvolution')&&!combat.includes('armorPenetration')&&!combat.includes('evolved?evolved.icon'),'combat evolution effects removed');
+assert.ok(source.includes('delete data.evolution'),'legacy evolution save data is discarded');
+assert.ok(source.includes('</button></nav><main>'),'Endgame modal navigation closes before content');
+assert.ok(source.includes("view=battle&&tab==='guild'"),'guild fight stays visible in community panel');
 assert.match(html, /<script src="\.\/rpg-rework-ui\.js\?v=[^"]+"><\/script>/, 'combat UI must be loaded with a cache-busted URL');
 console.log('Endgame systems static checks: OK');
 

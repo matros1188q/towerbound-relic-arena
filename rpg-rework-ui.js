@@ -1440,8 +1440,7 @@ function talentBonusDescription(talent,rank){
   return true;
  }
  function skillIconMarkup(skill,classId){
-  const evolved=skill?window.TowerboundEndgame?.getSkillEvolution(skill.id):null;
-  const icon=evolved?evolved.icon:skill?.icon;
+  const icon=skill?.icon;
   if(typeof icon==="string"&&icon.trim()){
    const value=icon.trim(),alias={fire:"skill-fire",ice:"skill-ice",water:"skill-ice",arcane:"skill-arcane",dark:"skill-arcane",nature:"skill-arcane",poison:"skill-poison",physical:"skill-phys",phys:"skill-phys"};
    if(alias[value.toLowerCase()]||/^skill-(?:fire|ice|arcane|poison|phys)$/.test(value.toLowerCase()))return '<span class="v2-skill-icon '+(alias[value.toLowerCase()]||value.toLowerCase())+'" aria-hidden="true"></span>';
