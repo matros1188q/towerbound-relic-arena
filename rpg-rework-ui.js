@@ -544,7 +544,7 @@
   const role=target?.role||"normal";
   return CHARACTER_ART_ROOT+(rolePortraits[role]||rolePortraits.normal);
  }
- const PERSISTED_BATTLE_FIELDS=["playerTurnCount","bossDeadlineTurns","bossTurns","bossAddsSummoned","poisonStacks","playerWeakTurns","playerDamageBuffTurns","playerDamageBuff","enemyDamageReductionTurns","enemyDamageReduction","potionUsedThisTurn","firstAttackDouble","bossPhase","assassinAttacksThisTurn","shamanFreeMode","counterCooldownTurns","ultimateCooldownTurns","counterPrimed","counterConsumed","counterTargetIndex","counterAction","nextDamageShield","nextAttackDamageBonus","cardSpellPower","cardsPlayedThisTurn","playerSkillUsed","enemyStunned","parryChance","dots","dot","hot","teleportUsed","comboStacks","overkillBonus"];
+ const PERSISTED_BATTLE_FIELDS=["playerTurnCount","bossDeadlineTurns","bossTurns","bossAddsSummoned","poisonStacks","playerWeakTurns","playerDamageBuffTurns","playerDamageBuff","enemyDamageReductionTurns","enemyDamageReduction","potionUsedThisTurn","firstAttackDouble","bossPhase","assassinAttacksThisTurn","shamanFreeMode","playerBleed","counterCooldownTurns","ultimateCooldownTurns","counterPrimed","counterConsumed","counterTargetIndex","counterAction","nextDamageShield","nextAttackDamageBonus","cardSpellPower","cardsPlayedThisTurn","playerSkillUsed","enemyStunned","parryChance","dots","dot","hot","teleportUsed","comboStacks","overkillBonus"];
  function save(){try{
   for(const character of engine.state.characters||[]){character.deck=Array.isArray(character.deck)?character.deck:[];character.unlockedCards=Array.isArray(character.unlockedCards)?character.unlockedCards:[];character.relics=Array.isArray(character.relics)?character.relics:[];character.hand=Array.isArray(character.hand)?character.hand:[];character.discard=Array.isArray(character.discard)?character.discard:[];character.exhaustPile=Array.isArray(character.exhaustPile)?character.exhaustPile:[];character.combo=Math.max(0,Number(character.combo)||0);character.rage=Math.max(0,Number(character.rage)||0);character.charges=Math.max(0,Number(character.charges)||0);}
   const c=live();
@@ -836,6 +836,7 @@ function createDialog(){
   if(enemy.role==="tank"&&enemy.pendingCleanseDebuff){enemy.pendingCleanseDebuff=false;enemy.debuffKind=null;battle.dots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);battle.dots.shift();battle.dot=battle.dots[0]||null;notify("Танк очищает один заряд яда/кровотечения");}
   else if(planned?.type==="defend"||enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=Math.max(1,Number(enemy.guardCharges)||0);
   if(planned?.type==="poison"||enemy.role==="poison"){const guildResist=Math.min(.9,Math.max(0,Number(c.guildBuffs?.poison_resist)||0)*.05);if(gameRandom()>=guildResist){battle.poisonStacks=(battle.poisonStacks||0)+1;notify("ОТРАВЛЕН · Яд: "+battle.poisonStacks+" стак.");}else notify("Гильдейская защита нейтрализовала яд");}
+  if(planned?.type==="bleed"||enemy.role==="bleed"){const guildResist=Math.min(.9,Math.max(0,Number(c.guildBuffs?.bleed_resist)||0)*.05);if(gameRandom()>=guildResist){battle.playerBleed=(battle.playerBleed||0)+1;notify("Кровотечение · "+battle.playerBleed+" стак.");}else notify("Гильдейская защита остановила кровотечение");}
   const stats=engine.getEnemyStats(c.id,battle.stage,enemy),weakMultiplier=Number(enemy.weak)>0?.75:1,bossPhase=enemy.type==="boss"?Math.max(1,Number(enemy.phase)||1):1;
   battle.telegraph=null;
   const dailyMultiplier=c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="rage"?1.2:1;const strike=Math.max(1,Math.round(Number(stats.damage||0)*weakMultiplier*dailyMultiplier*(bossPhase>=3?1.15:1)));
@@ -910,6 +911,7 @@ function createDialog(){
      c.run.playerHp=Math.max(0,c.run.playerHp-tick);if(tick>0&&c.classId==="destroyer")c.rage=Math.min(10,(Number(c.rage)||0)+1);
      if(c.run.playerHp<=0){endFromDamage();return;}
     }
+    if((battle.playerBleed||0)>0){const c=live(),tick=Math.round(engine.maxHp(c)*.03*battle.playerBleed);c.run.playerHp=Math.max(0,c.run.playerHp-tick);battle.playerBleed=Math.max(0,battle.playerBleed-1);if(c.run.playerHp<=0){endFromDamage();return;}}
     if((battle.playerDamageBuffTurns||0)>0)battle.playerDamageBuffTurns--;
     if((battle.enemyDamageReductionTurns||0)>0)battle.enemyDamageReductionTurns--;
     advanceToPlayerTurn();return;
