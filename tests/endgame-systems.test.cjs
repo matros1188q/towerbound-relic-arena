@@ -45,7 +45,7 @@ function has(text, needle, label) {
   ['100000+Math.random()*400000', 'daily help damage range'],
   ['function helpGuild()', 'guild help action'],
   ['function awardGuildChest()', 'guild boss chest'],
-  ['data-eg="back-map"', 'back to map control'],
+  ['function renderCommunity(tab=\'home\')', 'Tower content is rendered by the shared community panel'],
   ['grid-template-columns:repeat(3,minmax(0,1fr))', 'mobile menu grid'],
   ['max-width:330px', 'narrow phone layout']
 ].forEach(([needle,label]) => has(source,needle,label));
