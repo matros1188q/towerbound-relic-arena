@@ -46,8 +46,10 @@ assert.ok(ui.includes('Серверный рейтинг пока не начи�
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=18'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=17'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=66'),'battle and profile UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=34'),'battle and profile stylesheet cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.js?v=67'),'battle, profile and transparent logo UI cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=35'),'battle, profile and start screen stylesheet cache is refreshed');
+assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123'),'mobile start-screen viewport regression is guarded');
+assert.ok(ui.includes('./assets/icons/image.png')&&!ui.includes('./assets/ui/logo.jpeg'),'active RPG header uses the transparent logo source');
 assert.ok(css.includes('TowerBound three-zone battle arena v496'),'battle uses the three-zone layout');
 assert.ok(css.includes('grid-template-columns:minmax(0,2fr) minmax(0,3fr)'),'hero and enemy field use the 40/60 split');
 assert.ok(css.includes('calc((100% - 16px) / 5)'),'five cards fit the hand before horizontal scrolling');
@@ -160,7 +162,7 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
 assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:39px!important')&&css.includes('height:34px!important'),'iPhone header preserves the original logo size and removes the progression button');
-assert.ok(html.includes('progression-24.js?v=9')&&html.includes('towerbound-cloud.js?v=18')&&html.includes('rpg-rework-ui.css.js?v=33'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(html.includes('progression-24.js?v=9')&&html.includes('towerbound-cloud.js?v=18')&&html.includes('rpg-rework-ui.css.js?v=35'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
