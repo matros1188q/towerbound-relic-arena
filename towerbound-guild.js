@@ -108,7 +108,7 @@ async function startRaid(){
  window.TowerboundReworkUI.startGuildRaid(info,async result=>{
   try{
    const outcome=await rpc('tb_guild_finish_raid',{p_attempt_id:info.attempt_id,p_damage:result.damage,p_card_ids:result.cardIds});
-   if(outcome?.killed){notify('Босс гильдии повержен! Награды начислены.');if(cloud()?.refreshFromServer)await cloud().refreshFromServer();}
+   if(outcome?.killed){notify('Ваша попытка засчитана. Вы нанесли '+fmt(outcome?.damage||result.damage)+' урона. Босс гильдии повержен! Награды начислены.');if(cloud()?.refreshFromServer)await cloud().refreshFromServer();}
    else notify('Ваша попытка засчитана. Вы нанесли '+fmt(outcome?.damage||result.damage)+' урона. Следующая попытка через 60 минут.');
    inside=true;view='boss';await load();window.TowerboundSocial?.openTab?.('guild');
   }catch(e){notify(errorText(e));inside=true;view='boss';await load().catch(()=>{});window.TowerboundSocial?.openTab?.('guild');}
