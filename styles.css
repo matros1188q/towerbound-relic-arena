@@ -872,3 +872,6 @@
 
 /* Keep enemy intent telegraphs in normal card flow, not floating badge positioning. */
 #tbRpg .tb-v2 .tb-enemy-focus .tb-telegraph{position:relative!important;inset:auto!important;transform:none!important;max-width:100%;white-space:normal;}
+
+/* High-contrast combat damage numbers. */
+#tbRpg .tb-v2 .tb-floating-damage.is-damage{color:#fff!important;text-shadow:0 2px 5px #000,0 0 10px #000!important;font-weight:900!important;}
