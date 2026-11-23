@@ -172,7 +172,7 @@ async function onSession(next){
   try{
    const remote=await loadGame();
    await chooseSource(remote);
-   if(!conflict){savesReady=true;$('#tbCloudIntro').textContent='Облако подключено. Прогресс готов к синхронизации.';queueSave();}
+   if(!conflict){savesReady=true;$('#tbCloudIntro').textContent='Облако подключено. Прогресс готов к синхронизации.';say('Облако подключено. Сохранение готово к синхронизации.');queueSave();}
   }catch(e){savesReady=false;console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');$('#tbCloudIntro').textContent='Не удалось подключить облачное сохранение.';say('Не удалось загрузить сохранение: '+(e.message||'ошибка сети')+'. Локальные данные не изменены.');}
   window.dispatchEvent(new Event('towerbound-auth-change'));
  })();
@@ -204,6 +204,7 @@ async function saveLoop(){
 }
 async function syncNow(){
  if(!session||!client)throw new Error('Сначала войди в облачный аккаунт');
+ if(!savesReady)throw new Error('Облачное сохранение ещё загружается. Подожди завершения подключения.');
  if(conflict)throw new Error('Есть конфликт сохранений: выбери версию в окне облачного аккаунта');
  clearTimeout(timer);dirty=true;
  while(syncing)await new Promise(resolve=>setTimeout(resolve,40));
