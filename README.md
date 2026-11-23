@@ -60,6 +60,17 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-23 — Three-zone card battle arena
+
+- Rebuilt the active card-combat viewport into a compact top control strip, a 40/60 hero-versus-enemies field, and a dedicated bottom action zone.
+- Moved the hero into a clear left-side panel, enlarged the class portrait, kept player HP green, and added a live class-resource meter below it. Enemy cards remain selectable in a non-overlapping two-column grid with red HP and visible intent labels.
+- Reorganized energy and deck counts, the horizontally swipeable hand, the single-line horizontally scrollable combat log, the end-turn button and potion icons. Five cards are sized to fit across the hand; additional cards remain swipe-scrollable.
+- Shortened pause and speed controls without changing their existing delegated actions. Card targeting, card play, deck viewer, potion use and end-turn action selectors are preserved.
+- Files: `rpg-rework-ui.css.js`, `rpg-rework-ui.js`, `index.html`, `service-worker.js`, `tests/online-services.test.cjs`.
+- Implementation commits: 5973b59a5b2e, 6a0f9f4ec2eb, 6db83b0a46ac, d818ae5af9e7, 565bd0333312. Frontend cache: UI `v66`, stylesheet `v34`, service worker `towerbound-v496`.
+- Verification boundary: source regression assertions were updated; GitHub Actions for this exact release and a live visual pass in desktop/iPhone Safari remain to be confirmed.
+
+
 ### 2026-11-17 — Card-first interface cleanup
 
 - Stopped fetching the legacy 420-skill catalogue at startup; it remains only for old-save compatibility. Removed the obsolete skill-point badge from the card-library tab.
