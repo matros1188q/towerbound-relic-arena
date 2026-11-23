@@ -611,7 +611,7 @@ function createDialog(){
     dailyChallengeLeaderboardMarkup()+
     '<div class="tb-bottom-strip"><span>Персонаж сохраняет уровень, таланты, экипировку и серебро</span><span>'+(c.heroic?"ГЕРОИЧЕСКИЙ РЕЖИМ":"Обычный режим")+'</span></div></section>';
  }
- function branchSkills(c){return skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch).slice(0,balance.skills.skills_per_branch||10);}
+ function branchSkills(c){return skills.filter(skill=>skill.class_id===c.classId).slice(0,(balance.skills.skills_per_branch||10)*3);}
  function resolveSkill(c,skillId){
   const base=(classData(c).base_skills||[]).find(skill=>skill.id===skillId);
   const catalog=skills.find(skill=>skill.id===skillId&&skill.class_id===c.classId);
@@ -1850,7 +1850,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   if(target.dataset.selectSkill){
    const c=live(),def=classData(c),base=(def.base_skills||[]).find(skill=>skill.id===target.dataset.selectSkill);
    const selected=base||skills.find(skill=>skill.id===target.dataset.selectSkill);
-   if(!selected||selected.unlock_level>c.level||(selected.branch_id&&selected.branch_id!==c.branch)){notify("Умение недоступно для текущего уровня или ветки");return;}
+   if(!selected||selected.unlock_level>c.level){notify("Умение недоступно для текущего уровня или ветки");return;}
    const chosen=Array.isArray(c.activeSkills)?c.activeSkills:ensureLoadout(c).filter(Boolean).map(skill=>skill.id);if(chosen.includes(selected.id)){notify('Это умение уже выбрано');return;}if(chosen.length<6){chosen.push(selected.id);c.activeSkills=chosen;c.skillLoadout=chosen;save();render();notify('Умение добавлено на панель: '+selected.name);return;}const overlay=document.createElement('div');overlay.className='tb-skill-replace-overlay';overlay.dataset.pendingSkill=selected.id;overlay.innerHTML='<section role="dialog" aria-modal="true" class="tb-skill-replace-dialog"><h3>Все 6 слотов заняты</h3><p>Выбери умение, которое заменить на «'+esc(selected.name)+'».</p>'+chosen.map((id,index)=>{const current=resolveSkill(c,id);return '<button type="button" data-replace-skill="'+index+'">'+(index+1)+'. '+esc(current?.name||id)+'</button>';}).join('')+'<button type="button" data-close-skill-replace="1">ОТМЕНА</button></section>';root.querySelector('.tb-v2')?.appendChild(overlay);return;
   }
   if(target.dataset.beltAssign){const slot=Number(window.prompt("Назначить в слот пояса (1–5):"))-1;try{engine.assignPotionBelt(live().id,slot,target.dataset.beltAssign);save();render();notify("Зелье назначено в слот "+(slot+1));}catch(error){notify(error.message);}return;}
