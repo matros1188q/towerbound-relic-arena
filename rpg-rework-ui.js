@@ -922,7 +922,7 @@ function createDialog(){
  function getCardBlockTalentBonus(character){
   const branch=(classData(character)?.branches||[]).find(entry=>entry.id===character?.branch);
   const talent=(branch?.talents||[]).find(item=>/стойкость\s*$/i.test(String(item.name||"")));
-  return Math.max(0,Number(character?.talents?.[talent?.id])||0)*2;
+  return Math.max(0,Number(character?.talents?.[talent?.id])||0)*2+treeEffect(character,"blockFlat");
  }
   function playCard(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.isCardAnimating)return;
@@ -964,7 +964,7 @@ function createDialog(){
   if(singleDamage>0||areaDamage>0){if(battle.firstAttackDouble){battle.firstAttackDouble=false;if(c.run.stage)c.run.stage.relicFirstAttackConsumed=true;}battle.nextAttackDamageBonus=0;}
   battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;if(c.run.playerHp<=0){endFromDamage();return;}
   if(Number(effects.block)>0){const block=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)+armorRefine*3+getCardBlockTalentBonus(c)+Math.max(0,Number(battle.relicBlockBonus)||0)));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");pulseCombatActor("player","armor");}
-  if(Number(effects.heal)>0||Number(effects.healPerBleed)>0){const before=c.run.playerHp,bleedStacks=target?Math.max(0,Number(target.bleed)||0):0,healing=Math.max(0,Number(effects.heal)||0)+bleedStacks*Math.max(0,Number(effects.healPerBleed)||0);c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(healing)));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");pulseCombatActor("player","heal");if(c.classId==="bishop")c.faith=Math.min(5,(Number(c.faith)||0)+1);}
+  if(Number(effects.heal)>0||Number(effects.healPerBleed)>0||treeEffect(c,"bleedHealPerStack")>0){const before=c.run.playerHp,bleedStacks=target?Math.max(0,Number(target.bleed)||0):0,healing=(Math.max(0,Number(effects.heal)||0)+bleedStacks*(Math.max(0,Number(effects.healPerBleed)||0)+treeEffect(c,"bleedHealPerStack")))*(1+treeEffect(c,"healPercent"));c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(healing)));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");pulseCombatActor("player","heal");if(c.classId==="bishop")c.faith=Math.min(5,(Number(c.faith)||0)+1);}
   if(attackCard){if(c.classId==="assassin"){battle.assassinAttacksThisTurn=(battle.assassinAttacksThisTurn||0)+1;if(battle.assassinAttacksThisTurn>=3){c.combo=Math.min(3,(Number(c.combo)||0)+1);battle.assassinAttacksThisTurn=0;}}if(c.classId==="duelist")c.charges=Math.min(5,(Number(c.charges)||0)+1);}
   if(c.classId==="dragonkin"&&element&&element!==String(c.element||"fire")){c.element=element;battle.cardBlock=(Number(battle.cardBlock)||0)+5;showFloatingText("player","СТИХИЯ · ЩИТ +5","#78c9ff");}
   if(c.classId==="elemental"&&magicCard&&!magicChargeSpent)c.magicCharge=Math.min(10,(Number(c.magicCharge)||0)+1);
