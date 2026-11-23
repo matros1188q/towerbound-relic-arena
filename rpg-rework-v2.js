@@ -342,7 +342,7 @@
    const base=curve?.length?interpolation(curve,character.level,"level","hp")/(balance.character_curves.base_divisor||1.5):
     stats.base_health+Math.max(0,character.level-1)*stats.health_per_level;
    const progression=character.progression||{},runeHealth=(progression.runewords||[]).reduce((value,word)=>value*(1+(word.health||0)),1);
-   const sets=setBonusTotals(character),branchKey=character.classId+"."+(character.branch||""),branchHp=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.max_hp_multiplier||1);return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+sets.health)*(1+(progression.bonusHp||0))*runeHealth*branchHp*(balance.combat.turn_based?.player_hp_multiplier??1)));
+   const sets=setBonusTotals(character),branchKey=character.classId+"."+(character.branch||""),branchHp=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.max_hp_multiplier||1);return Math.max(1,Math.round((base*(1+gear.itemLevelBonus)+gear.health)*(1+talent.health)*(1+sets.health)*(1+(progression.bonusHp||0))*runeHealth*branchHp*(1+Math.max(0,Number(character.guildBuffs?.hp)||0)*.03)*(balance.combat.turn_based?.player_hp_multiplier??1)));
   }
   function getCombatStats(characterOrId){
    const character=typeof characterOrId==="string"?getChar(characterOrId):characterOrId;
@@ -351,10 +351,10 @@
    const baseDps=anchors?.length?interpolation(anchors,character.level,"level","dps")/(balance.character_curves.base_divisor||1.5):
     stats.base_attack+(character.level-1)*stats.attack_per_level;
    const dps=Math.max(1,(baseDps*(1+gear.itemLevelBonus)+gear.attack)*(1+talent.attack));
-   const attack=Math.max(1,Math.round(dps*balance.combat.attack_interval*(1+sets.attack)));
-   const branchStats=balance.classes.branch_stat_bonuses?.[character.classId+"."+(character.branch||"")]||{},defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)*(1+sets.defense)*Number(branchStats.defense_multiplier||1));
-   const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit+sets.crit,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
-   const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage);
+   const attack=Math.max(1,Math.round(dps*balance.combat.attack_interval*(1+sets.attack)*(1+Math.max(0,Number(character.guildBuffs?.attack)||0)*.02)));
+   const branchStats=balance.classes.branch_stat_bonuses?.[character.classId+"."+(character.branch||"")]||{},defense=Math.round((stats.base_defense+(character.level-1)*stats.defense_per_level+gear.defense)*(1+talent.defense)*(1+sets.defense)*Number(branchStats.defense_multiplier||1)*(1+Math.max(0,Number(character.guildBuffs?.defense)||0)*.02));
+   const critChance=clamp((balance.combat.player_damage.crit_chance||0)+gear.crit+talent.crit+sets.crit+Math.max(0,Number(character.guildBuffs?.crit_chance)||0)*.01,0,0.05+(balance.combat.player_damage.gear_crit_chance_bonus_cap||0.25));
+   const critMultiplier=(balance.combat.player_damage.crit_multiplier||1.5)+Math.min(balance.combat.player_damage.crit_damage_bonus_cap||0.5,gear.critDamage)+Math.max(0,Number(character.guildBuffs?.crit_damage)||0)*.05;
    const earlyBonus=balance.combat.early_branch_bonuses||{},earlyTargets=earlyBonus.targets?.[character.classId]||[],bonusBranch=character.branch||character.simBranch,isEarlyBonusTarget=character.level<=Number(earlyBonus.max_level||0)&&(earlyTargets.includes(bonusBranch)||(!character.branch&&(earlyBonus.pre_branch_classes||[]).includes(character.classId)));
    const branchOverride=earlyBonus.branch_overrides?.[character.classId]?.[bonusBranch]||{},branchDamageBonus=isEarlyBonusTarget?Number(branchOverride.skill_damage_multiplier??earlyBonus.skill_damage_multiplier??1):1,basicAttackDamageMultiplier=isEarlyBonusTarget?Number(branchOverride.basic_attack_multiplier??earlyBonus.basic_attack_multiplier??1):1,branchKey=character.classId+"."+(character.branch||""),branchDamageMultiplier=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.damage_multiplier||1);
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),healingMultiplier:Number(branchStats.healing_multiplier||1),critChance,critMultiplier,
@@ -669,6 +669,8 @@
    const penaltyFrom=character.run.healingPenaltyFrom||0;
    if(penaltyFrom>0&&stage>=penaltyFrom&&stage<=character.run.healingPenaltyUntil)multiplier*=balance.xp_curve.healing_penalty_multiplier;
    const buff=activeBuff(character,"xp");if(buff)multiplier*=buff.multiplier;
+   multiplier*=1+Math.max(0,Number(character.guildDailyBonus?.exp_bonus_percent)||0)/100;
+   multiplier*=1+Math.max(0,Number(character.guildBuffs?.experience)||0)*.02;
    multiplier*=1+Math.max(0,accountLevel()-1)*balance.account.xp_silver_bonus_per_level;
    multiplier*=1+(character.progression?.permanentXpBonus||0);
    for(const modifier of runModifiers(character))if(modifier.reward_xp_multiplier)multiplier*=modifier.reward_xp_multiplier;
@@ -742,7 +744,7 @@
    }
   function rollLoot(character,enemy,stage,firstClear,automatic){
    if(automatic||character.level<10||!character.branch)return[];
-   const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
+   const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*(1+Math.max(0,Number(character.guildDailyBonus?.drop_bonus_percent)||0)/100)*(1+Math.max(0,Number(character.guildBuffs?.drop)||0)*.02)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
    const uniqueBossDrop=rarity=>{
     const configured=classTable[character.classId].unique_items||[];
     const owned=new Set([...(character.bag||[]),...(character.gear||[]).filter(Boolean)].map(item=>item.uniqueId).filter(Boolean));
@@ -790,7 +792,7 @@
    const multiplier=xpMultiplier(character,stage,{speed2:use2x});
    const gained=awardXp(character,enemyXp(enemy,stage)*multiplier*(flags.overkillBonus?1.1:1));
    const loot=rollLoot(character,enemy,stage,firstClear,false);
-   const materials=[],dropBuff=activeBuff(character,"drop"),dropMultiplier=dropBuff?dropBuff.multiplier:1,eligibility=dropEligibility(enemy,stage,character.heroic);
+   const materials=[],dropBuff=activeBuff(character,"drop"),dropMultiplier=(dropBuff?dropBuff.multiplier:1)*(1+Math.max(0,Number(character.guildDailyBonus?.drop_bonus_percent)||0)/100)*(1+Math.max(0,Number(character.guildBuffs?.drop)||0)*.02),eligibility=dropEligibility(enemy,stage,character.heroic);
    const addMaterial=item=>{character.bag.push(item);character.run.foundItemIds.push(item.id);materials.push(item);character.stats.items_found=(character.stats.items_found||0)+1;};
    if(eligibility.chisel&&random()<Math.min(1,balance.equipment.chisel_drop_chance*dropMultiplier))
     addMaterial({id:id(),type:"chisel",quantity:1,foundRunId:character.run.id,bossLoot:enemy.type==="boss"});
