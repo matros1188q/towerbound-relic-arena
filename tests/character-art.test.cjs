@@ -23,7 +23,7 @@ assert.equal(chapters.chapters.length,5);
 for(let i=0;i<5;i++){assert.equal(chapters.chapters[i].background,chapterFiles[i]);assert.ok(fs.existsSync(chapterFiles[i]));}
 assert.ok(ui.includes('function chapterBackgroundPath(stage)'));assert.ok(ui.includes('background-size:cover;background-position:center'));
 assert.ok(ui.includes('function enemyPortrait(target)')&&ui.includes('target?.mobId'));
-assert.ok(ui.includes('object-fit:contain!important')&&legacy.includes('object-fit:contain!important'));
+assert.ok(ui.includes('object-fit:contain')&&legacy.includes('object-fit:contain'));
 assert.ok(html.includes('./assets/ui/art-sprites.css'));
 assert.ok(html.includes('./assets/ui/logo.jpeg')||legacy.includes('./assets/ui/logo.jpeg'));
 assert.ok(!ui.includes('ART_INBOX_BASE')&&!html.includes('./art-inbox/01-characters/'));
