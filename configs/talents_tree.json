@@ -1032,7 +1032,7 @@
         "bleedStacks": 1,
         "damagePercent": 0.04,
         "bleedHealPerStack": 2,
-        "potionHealingMultiplier": 0.5
+        "potionHealingMultiplier": -0.5
       },
       "connections": [
         "assassin.bleed.22"
