@@ -991,7 +991,7 @@ function createDialog(){
     }
     recoverBattleControl(error,"Не удалось разыграть карту · управление восстановлено",false);
    }finally{
-    if(battle){battle.isCardAnimating=false;save();render();if((Number(battle.cardsPlayedThisTurn)||0)>=20)endPlayerTurn();}
+    if(battle){battle.isCardAnimating=false;save();try{render();}catch(renderError){console.error('Card action completed but battle render failed',renderError);notify('Действие сохранено, но интерфейс не обновился · '+String(renderError?.message||renderError).slice(0,120));}if((Number(battle.cardsPlayedThisTurn)||0)>=20)endPlayerTurn();}
    }
   },delay);
  }
