@@ -124,7 +124,7 @@
  const SKILL_UPGRADE_LEVELS=Object.freeze({1:1,2:20,3:50});
  let pendingSkillUpgradeId=null;
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver",lastRenderedScreen=null;
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null,guildRaid=null;
 
  const CARD_DATABASE=Object.freeze({
  strike:{id:"strike",name:"Удар",classId:"common",type:"attack",rarity:"common",cost:1,description:"Наносит 6 урона",upgradedDescription:"Наносит 9 урона",effects:{damage:6},upgradedEffects:{damage:9}},
@@ -971,15 +971,15 @@ function createDialog(){
   if((Number(battle.cardsPlayedThisTurn)||0)>=20){notify("Лимит 20 карт за ход достигнут · ход завершён");endPlayerTurn();return;}
   const c=live();ensureCardDeck(c);const index=Number(cardIndex),card=c.hand[index];
   if(!Number.isInteger(index)||!card){notify("Карта больше не в руке");return;}
-  const effects=cardEffects(card),treePoison=treeEffect(c,"poisonStacks"),treeBleed=treeEffect(c,"bleedStacks"),freeTotem=c.classId==="shaman"&&battle.shamanFreeMode&&Number(c.totem)>=3,isXCost=!!(card.isXCost||card.costX),baseCost=isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0),treeCostReduction=treeEffect(c,"cardCostReduction"),cost=freeTotem?0:(c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"?Math.max(0,baseCost-1):Math.max(0,baseCost-treeCostReduction));
+  const effects=cardEffects(card),treePoison=treeEffect(c,"poisonStacks"),treeBleed=treeEffect(c,"bleedStacks"),freeTotem=c.classId==="shaman"&&battle.shamanFreeMode&&Number(c.totem)>=3,isXCost=!!(card.isXCost||card.costX),baseCost=isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0),treeCostReduction=treeEffect(c,"cardCostReduction"),cost=battle.guildRaid?0:(freeTotem?0:(c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"?Math.max(0,baseCost-1):Math.max(0,baseCost-treeCostReduction)));
   if(effects.unplayable||((card.type==="curse"||card.type==="status")&&card.id!=="status_slime")){notify("Эту карту нельзя разыграть");return;}
-  if(!freeTotem&&c.currentEnergy<cost){notify("Недостаточно энергии");return;}
+  if(!battle.guildRaid&&!freeTotem&&c.currentEnergy<cost){notify("Недостаточно энергии");return;}
   const isDuelistFinisher=c.classId==="duelist"&&!!(card.finisher||effects.finisher||(Array.isArray(card.tags)&&card.tags.includes("finisher")));if(isDuelistFinisher&&Number(c.charges)<3){notify("Для Смертельного выпада нужно 3 заряда");return;}
   const target=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);
   if(/poison|яд|отрав/i.test([card.id,card.name,card.description].join(" "))&&treePoison>0)effects.poison=(Number(effects.poison)||0)+treePoison;if(/bleed|кров|рана/i.test([card.id,card.name,card.description].join(" "))&&treeBleed>0)effects.bleed=(Number(effects.bleed)||0)+treeBleed;const baseDamage=Number(effects.damage)||0,allDamage=Number(effects.damageAll)||0,dynamicCardDamage=target?Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+(Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0))):0;
   if((baseDamage>0||allDamage>0||Number(effects.damagePerEnergy)>0||Number(effects.damagePerPoison)>0||Number(effects.damagePerBleed)>0||Number(effects.damageMissingHp)>0)&&!target){notify("Нет доступной цели");return;}
-  if(freeTotem){c.totem=Math.max(0,Number(c.totem)-3);battle.shamanFreeMode=false;}else c.currentEnergy-=cost;battle.cardsPlayedThisTurn=(Number(battle.cardsPlayedThisTurn)||0)+1;c.hand.splice(index,1);
-   if(c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"){c.run.playerHp=Math.max(0,Number(c.run.playerHp||0)-2);if(c.run.playerHp<=0){endFromDamage();return;}}if(card.exhaust||card.upgradedExhaust)c.exhaustPile.push(card);else c.discard.push(card);
+  if(freeTotem){c.totem=Math.max(0,Number(c.totem)-3);battle.shamanFreeMode=false;}else if(!battle.guildRaid)c.currentEnergy-=cost;battle.cardsPlayedThisTurn=(Number(battle.cardsPlayedThisTurn)||0)+1;if(battle.guildRaid&&guildRaid)guildRaid.cards.push(String(card.id||card.instanceId||"card"));c.hand.splice(index,1);
+   if(!battle.guildRaid&&c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"){c.run.playerHp=Math.max(0,Number(c.run.playerHp||0)-2);if(c.run.playerHp<=0){endFromDamage();return;}}if(card.exhaust||card.upgradedExhaust)c.exhaustPile.push(card);else c.discard.push(card);
   battle.actionDamageLedger={};battle.actionIsSkill=true;battle.actionIsPrimaryHit=true;
   const stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),weakScale=Number(battle.playerWeakTurns)>0?.75:1;
   const furyScale=(Number(battle.playerDamageBuffTurns)>0)?1+Math.max(0,Number(battle.playerDamageBuff)||0):1;
@@ -991,7 +991,7 @@ function createDialog(){
   if(c.classId==="duelist"&&attackCard&&finisher&&Number(c.charges)>=3){classMultiplier*=3;c.charges=Math.max(0,Number(c.charges)-3);}
   if(magicChargeSpent){classMultiplier*=1+Math.min(10,Number(c.magicCharge)||0)*.1;c.magicCharge=0;}
   const refineWeapon=(c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0)),weaponRefine=Math.max(0,Number(refineWeapon?.refine)||0),armorRefine=(c.gear||[]).filter(item=>item&&["chest","head","legs","hands",1,2,3,4].includes(item.slot)).reduce((sum,item)=>sum+Math.max(0,Number(item.refine)||0),0);
-  const treeCritChance=treeEffect(c,"critChance"),treeCritBleed=treeEffect(c,"critCausesBleed"),rawFor=base=>{const critical=attackCard&&Math.random()<Math.min(.8,Math.max(0,Number(stats.critChance)||0)+treeCritChance);if(critical&&treeCritBleed>0&&target)target.bleed=Math.max(0,Number(target.bleed)||0)+treeCritBleed;return Math.max(1,Math.round((base+(attackCard?weaponRefine*2:0)+classFlat)*(1+Math.max(0,Number(stats.attack)||0)/100)*scale*weakScale*furyScale*classMultiplier*(battle.firstAttackDouble?2:1)*(critical?1.75:1)));},damageType=effects.damageType||card.damageType||"physical";
+  const guildCrit=1+Math.max(0,Number(c.guildBuffs?.crit_damage)||0)*.05,guildMagic=magicCard?1+Math.max(0,Number(c.guildBuffs?.magic_attack)||0)*.02:1,treeCritChance=treeEffect(c,"critChance"),treeCritBleed=treeEffect(c,"critCausesBleed"),rawFor=base=>{const critical=attackCard&&Math.random()<Math.min(.8,Math.max(0,Number(stats.critChance)||0)+treeCritChance);if(critical&&treeCritBleed>0&&target)target.bleed=Math.max(0,Number(target.bleed)||0)+treeCritBleed;return Math.max(1,Math.round((base+(attackCard?weaponRefine*2:0)+classFlat)*(1+Math.max(0,Number(stats.attack)||0)/100)*scale*weakScale*furyScale*classMultiplier*guildMagic*(battle.firstAttackDouble?2:1)*(critical?1.75*guildCrit:1)));},damageType=effects.damageType||card.damageType||"physical";
   let killed=false;const calculatedDamage=getCardDamageWithTalents(card,c,cost),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0||dynamicCardDamage>0)?calculatedDamage+dynamicCardDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;logCombatEvent("Вы сыграли «"+card.name+"» · "+hit.dealt+" урона","#e9d5a5");killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
   if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
@@ -1008,7 +1008,7 @@ function createDialog(){
   const statusTargets=allDamage>0?(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0):target?[target]:[];let applied=false;
   for(const enemy of statusTargets)for(const key of ["poison","bleed","burn","weak","vulnerable"]){const stacks=Math.max(0,Math.floor(Number(statusPayload[key])||0));if(stacks){enemy[key]=Math.max(0,Number(enemy[key])||0)+stacks;applied=true;}}
    if(c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="fire")for(const enemy of statusTargets)enemy.burn=Math.max(0,Number(enemy.burn)||0)+1;
-  if(applied)planEnemyIntents();
+  if(applied&&!battle.guildRaid)planEnemyIntents();
   if(Number(effects.playerWeak)>0)battle.playerWeakTurns=Math.max(Number(battle.playerWeakTurns)||0,2);
   if(Number(effects.fury)>0){battle.playerDamageBuffTurns=Math.max(Number(battle.playerDamageBuffTurns)||0,2);battle.playerDamageBuff=Math.max(Number(battle.playerDamageBuff)||0,Number(effects.fury)*.1);}
   if(Number(effects.spellPower)>0)battle.cardSpellPower=Math.max(0,Number(battle.cardSpellPower)||0)+Number(effects.spellPower);
@@ -1016,10 +1016,11 @@ function createDialog(){
   if(Number(effects.energy)>0)c.currentEnergy=Math.min(5,c.currentEnergy+Number(effects.energy));
   if(Number(effects.draw)>0)drawCards(effects.draw);
   const generators=Array.isArray(card.generateCards)?card.generateCards:(card.generate?[{id:card.generate,count:1}]:[]);for(const spec of generators){const amount=Math.max(0,Math.floor(Number(spec?.count)||0));for(let n=0;n<amount;n++){const generated=createCardInstance(spec.id);if(!generated)continue;if(c.hand.length<10)c.hand.push(generated);else c.discard.push(generated);}}
-  if(killed&&battle){finishCurrentEnemy();if(!battle)return;}
-  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);save();render();
+  if(killed&&battle){if(battle.guildRaid){finishGuildRaid();return;}finishCurrentEnemy();if(!battle)return;}
+  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);save();render();if(battle?.guildRaid&&Number(battle.cardsPlayedThisTurn)>=3)finishGuildRaid();
  }
  function endPlayerTurn(){
+  if(battle?.guildRaid){notify("В рейде нужно разыграть ровно 3 карты");return;}
   if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating)return;
   try{
   const c=live();ensureCardDeck(c);if(Number(c.currentEnergy)>0&&!window.confirm("У вас осталась энергия ("+Math.round(c.currentEnergy)+"/"+Math.round(c.energy)+"). Точно завершить ход?"))return;const doubtWeak=c.hand.reduce((sum,card)=>sum+Math.max(0,Number(cardEffects(card).endTurnPlayerWeak)||0),0);if(doubtWeak){battle.playerWeakTurns=Math.max(Number(battle.playerWeakTurns)||0,doubtWeak);notify("Сомнение ослабляет героя: "+doubtWeak+" слабость");}const retained=[],discarded=[];for(const card of c.hand){if(card.retain)retained.push(card);else if(card.ethereal)c.exhaustPile.push(card);else discarded.push(card);}c.discard.push(...discarded);c.hand=retained;c.currentEnergy=0;
@@ -1490,13 +1491,54 @@ function talentBonusDescription(talent,rank){
    '<div class="new-deck-controls"><button type="button" class="tb-deck-viewer-trigger" data-deck-viewer>▤ КОЛОДА <b id="deckViewerCount">'+collectDeckCards(c).length+'</b></button>'+
    '<span class="new-deck-counts">ДОБОР: <b id="deckCount">'+c.deck.length+'</b> · СБРОС: <b id="discardCount">'+c.discard.length+'</b></span></div></div>'+
    '<div class="new-hand-row" id="cardHand">'+handMarkup+'</div><div class="new-log-row">'+combatLogMarkup()+'</div>'+
-   '<button type="button" class="new-end-turn" id="endturn" data-action="end-turn" '+(battle.actor?.type!=="player"||battle.paused?"disabled":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА…")+'</button></div>'+
+   (battle.guildRaid?'<div class="new-end-turn" aria-live="polite">КАРТЫ РЕЙДА · '+Number(battle.cardsPlayedThisTurn||0)+' / 3</div>':'<button type="button" class="new-end-turn" id="endturn" data-action="end-turn" '+(battle.actor?.type!=="player"||battle.paused?"disabled":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА…")+'</button>')+'</div>'+
    '<div class="tb-fx-layer" aria-hidden="true"></div></div>';
  }
  function eventTypeForStage(character,stage){return character&&character.run&&character.run.mapEvents?character.run.mapEvents[stage]:null;}
  function showMapEventOverlay(){const c=live();if(!c)return;const stage=Number(selectedStage),type=eventTypeForStage(c,stage);if(!type)return beginStage();const data={altar:["✦","Древний алтарь","Под пеплом мерцают древние руны. Алтарь предлагает силу в обмен на жертву.",[["pray","Помолиться · −10 HP, получить редкую карту"],["defile","Осквернить · +100 серебра и проклятие: Рана"],["leave","Уйти"]]],chest:["▣","Забытый сундук","Сундук оплетён корнями. Внутри может быть золото или реликвия.",[["open","Открыть"],["leave","Оставить"]]],wanderer:["♙","Странник","Из тумана выходит путник и предлагает помощь… или проверяет твою решимость.",[["pay","Заплатить 50 серебра · лечение 20% HP"],["attack","Атаковать · обычный бой"]]]}[type];if(!data)return beginStage();document.querySelector(".tb-map-event-overlay")?.remove();const o=document.createElement("div");o.className="tb-map-event-overlay";o.dataset.eventStage=String(stage);o.dataset.eventType=type;o.innerHTML='<section class="tb-map-event-modal" role="dialog" aria-modal="true"><div class="tb-eyebrow">СЛУЧАЙНОЕ СОБЫТИЕ · ЭТАП '+stage+'</div><div style="font-size:36px">'+data[0]+'</div><h2>'+esc(data[1])+'</h2><p>'+esc(data[2])+'</p>'+data[3].map(x=>'<button type="button" class="tb-event-choice" data-map-event-choice="'+x[0]+'">'+esc(x[1])+'</button>').join('')+'</section>';document.body.appendChild(o);}
  function completeMapEventStage(){const c=live(),stage=Number(selectedStage);if(!c||c.run.stage)throw new Error("Сначала заверши текущий этап");const plan=engine.beginStage(c.id,stage);for(let i=0;i<(plan.mobs||[]).length;i++)engine.finishEnemy(c.id,{targetIndex:i,speed2:false});c.run.completedMapEvents=c.run.completedMapEvents||[];if(!c.run.completedMapEvents.includes(stage))c.run.completedMapEvents.push(stage);return c;}
  function resolveMapEventChoice(choice){const o=document.querySelector(".tb-map-event-overlay"),c=live();if(!o||!c)return;const type=o.dataset.eventType;if(type==="wanderer"&&choice==="attack"){o.remove();beginStage();return;}if(choice==="leave"){completeMapEventStage();o.remove();save();render();notify("Ты покинул место события · этап пройден");return;}try{if(type==="altar"&&choice==="pray"){completeMapEventStage();c.run.playerHp=Math.max(1,c.run.playerHp-10);const classPool=Object.values(CARD_DATABASE).filter(x=>x&&x.rarity==="rare"&&(!x.classId||x.classId===c.classId)),pool=classPool.length?classPool:Object.values(CARD_DATABASE).filter(x=>x&&x.rarity==="rare");const card=pool[Math.floor(gameRandom()*pool.length)];if(card)c.deck.push({...JSON.parse(JSON.stringify(card)),instanceId:"event-"+Date.now()});o.remove();save();render();notify("−10 HP · редкая карта получена");return;}if(type==="altar"&&choice==="defile"){completeMapEventStage();c.silver=(Number(c.silver)||0)+100;const w=CARD_DATABASE.curse_wound||{id:"curse_wound",name:"Проклятие: Рана",type:"curse",cost:0,description:"Проклятие. Нельзя разыграть.",effects:{unplayable:true}};c.deck.push({...JSON.parse(JSON.stringify(w)),instanceId:"event-curse-"+Date.now()});o.remove();save();render();notify("+100 серебра · проклятие добавлено");return;}if(type==="chest"&&choice==="open"){completeMapEventStage();const relics=Object.entries(engine.RELICS_DATABASE||{}).filter(x=>!(c.relics||[]).includes(x[0]));if(relics.length&&gameRandom()<.35){const r=relics[Math.floor(gameRandom()*relics.length)];c.relics.push(r[0]);notify("Найдена реликвия: "+r[1].name);}else{const gold=50+Math.floor(gameRandom()*51);c.silver=(Number(c.silver)||0)+gold;notify("Найдено "+gold+" серебра");}o.remove();save();render();return;}if(type==="wanderer"&&choice==="pay"){if(Number(c.silver)<50)throw new Error("Недостаточно серебра · нужно 50");completeMapEventStage();c.silver-=50;const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),before+Math.round(engine.maxHp(c)*.2));o.remove();save();render();notify("Странник исцелил на "+(c.run.playerHp-before)+" HP");return;}}catch(e){notify(e.message);}}
+
+ function finishGuildRaid(){
+  if(!guildRaid||!battle?.guildRaid||guildRaid.finishing)return;
+  if(guildRaid.cards.length!==3){notify("Нужно разыграть ровно 3 карты");return;}
+  guildRaid.finishing=true;const session=guildRaid,c=live();
+  const payload={damage:Math.max(0,Math.floor(Number(session.damage)||0)),cardIds:session.cards.slice(0,3)};
+  stopBattleStatusLoop();clearPendingTurnTimer();clearTimeout(pendingTimer);pendingTimer=null;
+  battle=null;guildRaid=null;
+  if(c){
+   c.run=session.originalRun;c.deck=session.originalDeck;c.hand=session.originalHand;c.discard=session.originalDiscard;c.exhaustPile=session.originalExhaust;c.currentEnergy=session.originalEnergy;
+   for(const [key,value] of Object.entries(session.originalResources||{}))c[key]=value;
+  }
+  screen="map";save();render();
+  Promise.resolve().then(()=>session.onFinish?.(payload)).catch(error=>notify(error?.message||"Не удалось отправить результат рейда"));
+ }
+ function startGuildRaid(info,onFinish){
+  const c=live();if(!c||!engine)throw new Error("Персонаж не найден");
+  if(battle||c.run?.stage)throw new Error("Сначала заверши текущий бой");
+  if(!info?.attempt_id||!Number(info.boss_hp)||!Number(info.boss_max_hp))throw new Error("Сервер не вернул данные рейда");
+  ensureCardDeck(c);syncEquipmentCards(c);
+  const originalRun=JSON.parse(JSON.stringify(c.run||{})),originalDeck=JSON.parse(JSON.stringify(c.deck||[])),originalHand=JSON.parse(JSON.stringify(c.hand||[])),originalDiscard=JSON.parse(JSON.stringify(c.discard||[])),originalExhaust=JSON.parse(JSON.stringify(c.exhaustPile||[])),originalEnergy=c.currentEnergy;
+  const resourceKeys=["combo","rage","charges","faith","element","magicCharge","totem"],originalResources=Object.fromEntries(resourceKeys.filter(key=>c[key]!==undefined).map(key=>[key,c[key]]));
+  try{
+   const stageNumber=Math.max(1,Math.min(250,Number(c.progress?.currentStage)||1)),plan=engine.beginStage(c.id,stageNumber);
+   if(!c.run?.stage)throw new Error("Не удалось подготовить рейдовую арену");
+   c.run.stage.mobs=[{id:"guild-ancient-devourer",mobId:"guild-ancient-devourer",name:"Древний Пожиратель",type:"normal",role:"boss",statMultiplier:1,weakness:null,resistance:null,speed:1}];
+   c.run.stage.killedIndices=[];c.run.stage.uiBattleSnapshot=null;c.run.stage.targetIndex=0;c.run.stage.enemyIndex=0;
+   battle={stage:plan.stage||stageNumber,count:1,enemy:null,enemyHp:0,enemyMax:Number(info.boss_max_hp),shield:0,cardBlock:0,relicStartingDraw:0,firstAttackDouble:false,relicAttackBonus:0,relicBlockBonus:0,cardSpellPower:0,nextAttackDamageBonus:0,round:1,turnIndex:0,turnOrder:[],actor:null,turns:0,busy:false,isPlayerTurn:true,timerRemainingMs:0,timerStartedAt:0,remainingResponseMs:0,enemies:null,targetIndex:0,skillCooldowns:{},counterCooldownTurns:0,ultimateCooldownTurns:0,playerSkillUsed:false,potionUsedThisTurn:false,counterPrimed:false,counterConsumed:false,playerTurnCount:0,bossDeadlineTurns:null,bossAddsSummoned:false,poisonStacks:0,comboProgress:{},attacksThisFight:0,distinctElements:[],buffsUsed:0,telegraph:null,paused:false,proc:null,fx:null,enemyQueueToken:0,combatLog:[],fastBattle:false,isCardAnimating:false,showTutorial:false,guildRaid:true,cardsPlayedThisTurn:0,actionDamageLedger:{}};
+   if(!loadBattleEnemy(0))throw new Error("Не удалось создать босса гильдии");
+   const boss=battle.enemy;boss.name=String(info.boss_name||"Древний Пожиратель");boss.type="normal";boss.role="boss";boss.mobId="guild-ancient-devourer";boss.icon="☠";boss.hp=Number(info.boss_hp);boss.maxHp=Number(info.boss_max_hp);boss.alive=true;boss.dead=false;boss.mutation=null;boss.shield=0;boss.pendingAttack=false;boss.pendingAction=null;
+   battle.enemyHp=boss.hp;battle.enemyMax=boss.maxHp;battle.shield=0;battle.targetIndex=0;battle.actor={type:"player",id:"player",name:c.name};battle.isPlayerTurn=true;battle.busy=false;battle.paused=false;battle.telegraph=null;battle.cardsPlayedThisTurn=0;
+   resetCardBattle(c);drawCards(Math.max(5,5+cardDrawBonus(c)));battle.actor={type:"player",id:"player",name:c.name};battle.cardsPlayedThisTurn=0;
+   guildRaid={attemptId:info.attempt_id,cards:[],damage:0,originalRun,originalDeck,originalHand,originalDiscard,originalExhaust,originalEnergy,originalResources,onFinish};
+   screen="battle";render();save();return true;
+  }catch(error){
+   battle=null;guildRaid=null;c.run=originalRun;c.deck=originalDeck;c.hand=originalHand;c.discard=originalDiscard;c.exhaustPile=originalExhaust;c.currentEnergy=originalEnergy;
+   for(const [key,value] of Object.entries(originalResources))c[key]=value;
+   screen="map";save();render();throw error;
+  }
+ }
+
  function beginStage(){postBattleSummary=null;
   const c=live();
   try{
@@ -1626,7 +1668,7 @@ function talentBonusDescription(talent,rank){
   let damage=Math.max(0,Math.round(rawDamage*multiplier*(Number(target.vulnerable)>0?1.5:1)));
    if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};const used=battle.actionDamageLedger[target.index]||0;damage=engine.capBossDamage(target,damage,used,options.ultimate?"ultimate":undefined);}
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
-  const hpBeforeHit=target.hp;const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
+  const hpBeforeHit=target.hp;const dealt=battle?.guildRaid?damage:Math.min(target.hp,damage);target.hp=battle?.guildRaid?Math.max(1,target.hp-damage):Math.max(0,target.hp-damage);if(battle?.guildRaid&&guildRaid)guildRaid.damage+=dealt;
   if(target.type==="boss"){updateBossPhase(target);if(!battle)return{damage,dealt,multiplier,killed:false,revived};}
   if(target.hp<=0){target.hp=0;target.alive=false;target.dead=true;target.pendingAttack=false;target.pendingAction=null;}
   if(dealt>0){target.lastDamagedByPlayer=true;if(target.role==="healer")target.provoked=true;}
@@ -2212,7 +2254,7 @@ function talentBonusDescription(talent,rank){
   }).catch(error=>console.error("Towerbound rework UI failed",error));
  }
  boot();
- window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="map";render();save();}};
+ window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;guildRaid=null;screen="map";render();save();},startGuildRaid};
  window.skipCardReward=skipCardReward;
  window.TowerboundCards={database:CARD_DATABASE,generateReward:generateCardReward,showReward:showCardRewardScreen,addToDeck:(id)=>addCardToDeck(live(),id),upgrade:(instanceId)=>{const ok=upgradeCardInDeck(live(),instanceId);if(ok){save();render();}return ok;},guildSnapshot:()=>{const c=live();if(!c)return null;ensureCardDeck(c);return {character:{id:c.id,name:c.name,classId:c.classId,level:c.level,branch:c.branch, specialization:c.specialization,deck:JSON.parse(JSON.stringify(c.deck||[])),hand:JSON.parse(JSON.stringify(c.hand||[])),discard:JSON.parse(JSON.stringify(c.discard||[])),gear:JSON.parse(JSON.stringify(c.gear||[])),relics:JSON.parse(JSON.stringify(c.relics||[])),talents:JSON.parse(JSON.stringify(c.talents||{})),silver:c.silver},stats:JSON.parse(JSON.stringify(engine.getCombatStats(c)||{}))};}};
 })();
