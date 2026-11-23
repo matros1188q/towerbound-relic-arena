@@ -16,7 +16,7 @@ function errorText(e){
 }
 async function rpc(name,args={}){const c=client();if(!cloud()?.signedIn||!c)throw new Error('AUTH_REQUIRED');const {data,error}=await c.rpc(name,args);if(error)throw error;return data;}
 function activeCharacter(){const e=game||window.TowerboundRework;return e?.state?.characters?.find(c=>c.id===e.state.activeCharacterId)||e?.state?.characters?.[0]||null;}
-function syncShortcut(){let b=$('#tbMyGuildShortcut');if(snapshot?.member){if(!b){b=document.createElement('button');b.id='tbMyGuildShortcut';b.type='button';b.textContent='⚜ Моя Гильдия';b.addEventListener('click',()=>{window.TowerboundSocial?.open?.();window.TowerboundSocial?.openTab?.('guild');});document.body.append(b);}}else if(b)b.remove();}
+function syncShortcut(){let b=$('#tbMyGuildShortcut');if(snapshot?.member){if(!b){b=document.createElement('button');b.id='tbMyGuildShortcut';b.type='button';b.textContent='⚜ Моя Гильдия';b.addEventListener('click',()=>{inside=true;view='overview';window.TowerboundSocial?.open?.();window.TowerboundSocial?.openTab?.('guild');});document.body.append(b);}}else if(b)b.remove();}
 function setRuntimeBuffs(){
  const e=game||window.TowerboundRework,characters=Array.isArray(e?.state?.characters)?e.state.characters:[activeCharacter()].filter(Boolean);
  const buffs=snapshot?.member?(snapshot.buffs||{}):{},daily=snapshot?.member?(snapshot.daily_bonus||{}):{};
@@ -24,7 +24,7 @@ function setRuntimeBuffs(){
 }
 async function syncServerRevision(){
  const cl=cloud();if(!cl?.signedIn||!cl.loadGame)return;
- try{const remote=await cl.loadGame();if(remote?.revision&&Number(remote.revision)>Number(cl.revision||0)&&cl.refreshFromServer)await cl.refreshFromServer();}catch(e){console.warn('[guild] save revision check failed',e)}
+ try{const knownRevision=Number(cl.revision||0);const remote=await cl.loadGame();if(remote?.revision&&Number(remote.revision)>knownRevision&&cl.refreshFromServer)await cl.refreshFromServer();}catch(e){console.warn('[guild] save revision check failed',e)}
 }
 async function load(){
  if(!cloud()?.signedIn){snapshot=null;syncShortcut();setRuntimeBuffs();return null;}
@@ -100,14 +100,14 @@ async function sendMessage(){
  await rpc('tb_guild_send_message',{p_body:body});field.value='';await load();renderSocial();
 }
 async function startRaid(){
+ if(!window.TowerboundReworkUI?.startGuildRaid)throw new Error('Карточная арена ещё загружается. Попробуй через несколько секунд.');
  if(window.TowerboundReworkUI?.canStartGuildRaid&&!window.TowerboundReworkUI.canStartGuildRaid())throw new Error("Сначала заверши текущий бой или вернись с активной арены.");
  const info=await rpc('tb_guild_begin_raid');
- if(!window.TowerboundReworkUI?.startGuildRaid)throw new Error('Карточная арена ещё загружается. Попробуй через несколько секунд.');
  window.TowerboundSocial?.close?.();
  window.TowerboundReworkUI.startGuildRaid(info,async result=>{
   try{
    const outcome=await rpc('tb_guild_finish_raid',{p_attempt_id:info.attempt_id,p_damage:result.damage,p_card_ids:result.cardIds});
-   if(outcome?.killed){notify('Босс гильдии повержен! Награды начислены.');if(cloud()?.refreshFromServer){await cloud().refreshFromServer();return;}}
+   if(outcome?.killed){notify('Босс гильдии повержен! Награды начислены.');if(cloud()?.refreshFromServer)await cloud().refreshFromServer();}
    else notify('Ваша попытка засчитана. Вы нанесли '+fmt(outcome?.damage||result.damage)+' урона. Следующая попытка через 60 минут.');
    inside=true;view='boss';await load();window.TowerboundSocial?.openTab?.('guild');
   }catch(e){notify(errorText(e));inside=true;view='boss';await load().catch(()=>{});window.TowerboundSocial?.openTab?.('guild');}
@@ -139,7 +139,6 @@ document.addEventListener('submit',async e=>{
 },true);
 function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(async()=>{if(!cloud()?.signedIn)return;try{await load();if(!$('#socPanel'))return;const main=$('#socPanel main');if(main&&!main.querySelector('input:focus,textarea:focus')){const content=render();if(main)main.innerHTML=content;}}catch(e){console.warn('[guild] refresh failed',e)}},60000);}
 window.addEventListener('towerbound-auth-change',()=>{snapshot=null;inside=false;load().then(()=>renderSocial()).catch(()=>syncShortcut());});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloud()?.signedIn&&snapshot?.member)load().catch(()=>{});});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloud()?.signedIn&&snapshot?.member)load().catch(()=>{});});
 window.TowerboundGuild={render,refresh,load,get snapshot(){return snapshot;}};
 const old=window.TowerboundEndgame?.renderCommunity;
 if(window.TowerboundEndgame&&typeof old==='function')window.TowerboundEndgame.renderCommunity=(tab='home')=>tab==='guild'?render():old(tab);
