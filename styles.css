@@ -1260,6 +1260,7 @@
 #tbRpg .tb-v2 .v2-energy-bar .tb-deck-controls .deck-info{
   text-align:left!important;
   font-size:8px!important;
+  transform:translateX(-2px)!important;
 }
 #tbRpg .tb-v2 .v2-energy-bar>.v2-end-turn{
   grid-column:3!important;
