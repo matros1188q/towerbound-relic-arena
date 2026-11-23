@@ -18,9 +18,9 @@ async function rpc(name,args={}){const c=client();if(!cloud()?.signedIn||!c)thro
 function activeCharacter(){const e=game||window.TowerboundRework;return e?.state?.characters?.find(c=>c.id===e.state.activeCharacterId)||e?.state?.characters?.[0]||null;}
 function syncShortcut(){let b=$('#tbMyGuildShortcut');if(snapshot?.member){if(!b){b=document.createElement('button');b.id='tbMyGuildShortcut';b.type='button';b.textContent='⚜ Моя Гильдия';b.addEventListener('click',()=>{window.TowerboundSocial?.open?.();window.TowerboundSocial?.openTab?.('guild');});document.body.append(b);}}else if(b)b.remove();}
 function setRuntimeBuffs(){
- const c=activeCharacter();if(!c)return;
+ const e=game||window.TowerboundRework,characters=Array.isArray(e?.state?.characters)?e.state.characters:[activeCharacter()].filter(Boolean);
  const buffs=snapshot?.member?(snapshot.buffs||{}):{},daily=snapshot?.member?(snapshot.daily_bonus||{}):{};
- try{Object.defineProperty(c,'guildBuffs',{value:{...buffs},writable:true,configurable:true,enumerable:false});Object.defineProperty(c,'guildDailyBonus',{value:{exp_bonus_percent:Number(daily.exp_bonus_percent)||0,drop_bonus_percent:Number(daily.drop_bonus_percent)||0},writable:true,configurable:true,enumerable:false});}catch(_){c.guildBuffs={...buffs};c.guildDailyBonus={...daily};}
+ for(const c of characters){if(!c)continue;try{Object.defineProperty(c,'guildBuffs',{value:{...buffs},writable:true,configurable:true,enumerable:false});Object.defineProperty(c,'guildDailyBonus',{value:{exp_bonus_percent:Number(daily.exp_bonus_percent)||0,drop_bonus_percent:Number(daily.drop_bonus_percent)||0},writable:true,configurable:true,enumerable:false});}catch(_){c.guildBuffs={...buffs};c.guildDailyBonus={...daily};}}
 }
 async function syncServerRevision(){
  const cl=cloud();if(!cl?.signedIn||!cl.loadGame)return;
