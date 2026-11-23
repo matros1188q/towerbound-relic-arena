@@ -1888,6 +1888,7 @@ function talentBonusDescription(talent,rank){
  }
  function renderView(){
   if(!engine)return;
+  try{
   syncMusic();
   const isBattle=screen==="battle"&&!!battle;
   document.body.classList.toggle("tb-battle-lock",isBattle);
@@ -1916,6 +1917,11 @@ function talentBonusDescription(talent,rank){
   const pendingRelics=live()?.run?.pendingRelicChoices;
   if(pendingRelics?.length)showRelicRewardScreen(pendingRelics);
   else document.querySelector(".tb-relic-reward-overlay")?.remove();
+  }catch(error){
+   console.error("[Towerbound] screen render failed",screen,error);
+   const message=String(error?.message||error||"Неизвестная ошибка");
+   root.innerHTML='<div class="tb-v2"><header class="tb-header"><strong>TowerBound</strong></header><section class="tb-screen-error" role="alert"><h2>Не удалось открыть экран</h2><p>'+esc(message)+'</p><button type="button" data-action="bottom-map">ВЕРНУТЬСЯ НА КАРТУ</button></section></div>';
+  }
  }
  function renderWithScrollSave(){
   const container=document.getElementById('tbRpg')||document.querySelector('.profile');
