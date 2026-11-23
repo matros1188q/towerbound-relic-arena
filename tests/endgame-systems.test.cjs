@@ -15,7 +15,7 @@ function has(text, needle, label) {
   ['boss_no_potion', 'seasonal boss potion restriction'],
   ['reward_xp_multiplier', 'seasonal tower XP rewards'],
   ['reward_silver_multiplier', 'seasonal tower silver rewards'],
-  ['БЕСКОНЕЧНОЕ ИСПЫТАНИЕ · СЕЗОН '+(season.id+1), 'season displayed in Tower UI'],
+  ["БЕСКОНЕЧНОЕ ИСПЫТАНИЕ · СЕЗОН '+(season.id+1)", "season displayed in Tower UI"],
   ['function startTower()', 'Endless Tower entry'],
   ['(c.level||0)<50', 'Tower unlock at character level 50'],
   ['engine.stagePlan(s.character,10)', 'stage 10 base enemy stats'],
