@@ -48,7 +48,7 @@ assert.match(sw,/^const CACHE = 'towerbound-v\d+';$/m,'service worker cache is u
 const progression=read('progression-24.js');
 assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
 assert.ok(progression.includes("const bar=$('.tb-map-actions',r);"),'secret-room action is limited to the map action area');
-assert.match(ui,/root\.innerHTML='<div class="tb-v2">'\+header\(\)\+battleScreen\(\)/,'battle screen receives the shared header');
+assert.match(ui,/root\.innerHTML='<div class="tb-v2">'\+battleScreen\(\)/,'battle screen uses its dedicated full-screen header and layout');
 assert.doesNotMatch(ui,/root\.innerHTML='<div class="tb-v2">'\+header\(\)\+characterList\(\)/,'character selection does not render a duplicate header');
 assert.doesNotMatch(ui,/return header\(\)\+\x60<div class="v2-battle-wrap/,'battle screen relies on the single outer header, not a duplicate');
 assert.equal((ui.match(/return header\(/g)||[]).length,9,'all nine non-battle screens render the same compact header');
