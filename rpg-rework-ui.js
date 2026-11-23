@@ -1791,17 +1791,20 @@ function talentBonusDescription(talent,rank){
   if(!live()||["characters","death"].includes(screen)){nav?.remove();return;}
   if(!nav){nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");host.appendChild(nav);}
   nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map"><span>⚔</span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile"><span>♙</span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-progress" data-nav-tab="progress"><span>✦</span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop"><span>◇</span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account"><span>☷</span><small>АККАУНТ</small></button>';
-  const c=live(),skillPool=[...(classData(c).base_skills||[]),...skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch)],chosenSkills=new Set(Array.isArray(c.activeSkills)?c.activeSkills:(c.skillLoadout||[])),skillBadge=skillPool.filter((skill,index,pool)=>pool.findIndex(other=>other.id===skill.id)===index&&skill.type!=="passive"&&c.level>=(Number(skill.unlock_level)||1)&&!chosenSkills.has(skill.id)).length;
-  const statSum=item=>Object.values(item?.stats||{}).reduce((n,v)=>n+(Number(v)||0),0);
+  const c=live(),cls=classData(c)||{},baseSkills=Array.isArray(cls.base_skills)?cls.base_skills:[],skillList=Array.isArray(skills)?skills:[],skillPool=[...baseSkills,...skillList.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch)],chosenSkills=new Set(Array.isArray(c.activeSkills)?c.activeSkills:(Array.isArray(c.skillLoadout)?c.skillLoadout:[])),skillBadge=skillPool.filter((skill,index,pool)=>pool.findIndex(other=>other.id===skill.id)===index&&skill.type!=="passive"&&Number(c.level)>=(Number(skill.unlock_level)||1)&&!chosenSkills.has(skill.id)).length;
+  const bag=Array.isArray(c.bag)?c.bag:[],gear=Array.isArray(c.gear)?c.gear:[],statSum=item=>Object.values(item?.stats||{}).reduce((n,v)=>n+(Number(v)||0),0);
   const slotIndex={weapon:0,chest:1,head:2,legs:3,hands:4,accessory:5};
-  const upgrade=(c.bag||[]).some(item=>{const index=slotIndex[item?.slot];return Number.isInteger(index)&&statSum(item)>statSum((c.gear||[])[index]);});
-  const craftMaterials=(c.bag||[]).filter(item=>item.type==="craft_material").reduce((n,item)=>n+(Number(item.quantity)||1),0);
-  const craftStones=(c.bag||[]).filter(item=>item.type==="enhancement_stone"),craftLevels={};
+  const upgrade=bag.some(item=>{const index=slotIndex[item?.slot];return Number.isInteger(index)&&statSum(item)>statSum(gear[index]);});
+  const craftMaterials=bag.filter(item=>item?.type==="craft_material").reduce((n,item)=>n+(Number(item.quantity)||1),0);
+  const craftStones=bag.filter(item=>item?.type==="enhancement_stone"),craftLevels={};
   craftStones.forEach(item=>{const typeId=item.stoneType?.id||item.stoneType||"unknown",key=String(item.level||1)+":"+typeId;craftLevels[key]=(craftLevels[key]||0)+(Number(item.quantity)||1);});
   const mergeReady=Object.values(craftLevels).some(n=>n>=5),craft=mergeReady||craftMaterials>=20;
-  const claimed=c.achievements||[],derived={highest_stage:c.progress?.highestEver||0,lore_read:(c.loreRead||[]).length,paragon_level:c.paragon?.level||0,account_level:engine.accountLevel(),season_clear:c.stats?.season_clear||0};
-  const achievement=(balance.achievements?.achievements||[]).some(a=>!claimed.includes(a.id)&&(derived[a.metric]??c.stats?.[a.metric]??c.progress?.[a.metric]??0)>=a.target);
-  const chest=!!engine.dailyChestSnapshot(c.id).available;
+  const claimed=new Set(Array.isArray(c.achievements)?c.achievements:[]),progress=c.progress&&typeof c.progress==="object"?c.progress:{},stats=c.stats&&typeof c.stats==="object"?c.stats:{};
+  let accountLevel=0;try{accountLevel=typeof engine.accountLevel==="function"?Number(engine.accountLevel())||0:0;}catch(error){console.warn("[Towerbound] account level badge unavailable",error);}
+  const derived={highest_stage:Number(progress.highestEver)||0,lore_read:Array.isArray(c.loreRead)?c.loreRead.length:0,paragon_level:Number(c.paragon?.level)||0,account_level:accountLevel,season_clear:Number(stats.season_clear)||0};
+  const achievementList=Array.isArray(balance.achievements?.achievements)?balance.achievements.achievements:[];
+  const achievement=achievementList.some(a=>a&&!claimed.has(a.id)&&(derived[a.metric]??stats[a.metric]??progress[a.metric]??0)>=Number(a.target||0));
+  let chest=false;try{const snapshot=typeof engine.dailyChestSnapshot==="function"?engine.dailyChestSnapshot(c.id):null;chest=!!snapshot?.available;}catch(error){console.warn("[Towerbound] daily chest badge unavailable",error);}
   const addBadge=(button,value)=>{if(!button||!value)return;const badge=document.createElement("i");badge.className="badge";badge.textContent=String(value===true?"!":value);button.appendChild(badge);};
   addBadge(nav.querySelector('[data-nav-tab="profile"]'),skillBadge+(upgrade?1:0));
   addBadge(nav.querySelector('[data-nav-tab="progress"]'),achievement);
@@ -1811,7 +1814,6 @@ function talentBonusDescription(talent,rank){
   const craftTab=root.querySelector('[data-tab="craft"]');addBadge(craftTab,craft?1:0);
   root.querySelectorAll('[data-craft-stone]').forEach(button=>addBadge(button,craftMaterials>=20?1:0));
   root.querySelectorAll('[data-merge]').forEach(button=>{const item=craftStones.find(stone=>stone.id===button.dataset.merge),typeId=item?.stoneType?.id||item?.stoneType||"unknown",key=String(item?.level||1)+":"+typeId;addBadge(button,(craftLevels[key]||0)>=5?1:0);});
-
   const active=screen==="map"?"map":screen==="profile"?"profile":screen==="progress"?"progress":screen==="shop"?"shop":"account";
   nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
  }
