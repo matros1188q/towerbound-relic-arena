@@ -1299,8 +1299,14 @@ function talentBonusDescription(talent,rank){
 
  function shopScreen(){
   const c=live();if(!c)return characterList();
-  const store=balance.economy[shopTab+"_store"];
-  const products=Object.entries(store).filter(([key,value])=>typeof value==="number").map(([id,price])=>({id,price,name:id.replace(/_/g," ")})).concat((store.extra||[]).map(item=>({id:item.id,price:item.price,name:item.name})));
+  const account=engine.state.account||(engine.state.account={});
+  c.bag=Array.isArray(c.bag)?c.bag:[];
+  c.relics=Array.isArray(c.relics)?c.relics:[];
+  c.run=c.run&&typeof c.run==="object"?c.run:{};
+  c.progress=c.progress&&typeof c.progress==="object"?c.progress:{};
+  c.stats=c.stats&&typeof c.stats==="object"?c.stats:{};
+  const store=balance.economy?.[shopTab+"_store"]||{};
+  const products=Object.entries(store).filter(([key,value])=>typeof value==="number").map(([id,price])=>({id,price,name:id.replace(/_/g," ")})).concat((Array.isArray(store.extra)?store.extra:[]).map(item=>({id:item.id,price:item.price,name:item.name})));
   const label=shopTab==="silver"?"серебра":"алм.";
   const chest=engine.dailyChestSnapshot(c.id),chestLabel=chest.available?"🎁 БЕСПЛАТНЫЙ ЕЖЕДНЕВНЫЙ СУНДУК · ЗАБРАТЬ":"🎁 СЛЕДУЮЩИЙ СУНДУК · "+Math.floor(Math.ceil(chest.remainingMs/60000)/60)+"ч "+(Math.ceil(chest.remainingMs/60000)%60)+"м";
   const dailyChestMarkup='<section class="tb-daily-shop-chest"><div><b>ЕЖЕДНЕВНАЯ НАГРАДА</b><small>Бесплатный сундук обновляется раз в сутки</small></div>'+button("daily-chest",chestLabel,chest.available?"":"disabled")+'</section>';
@@ -1312,11 +1318,15 @@ function talentBonusDescription(talent,rank){
  }
  function progressScreen(){
   const c=live();if(!c)return characterList();
-  const weekly=engine.weeklySnapshot(c.id),claimed=c.achievements||[];
+  c.progress=c.progress&&typeof c.progress==="object"?c.progress:{highestEver:0,currentStage:1};
+  c.stats=c.stats&&typeof c.stats==="object"?c.stats:{};
+  c.achievements=Array.isArray(c.achievements)?c.achievements:[];
+  let weekly=[];try{weekly=engine.weeklySnapshot(c.id)||[];}catch(error){console.warn("[Towerbound] weekly progress unavailable",error);}
+  const claimed=c.achievements,achievementList=Array.isArray(balance.achievements?.achievements)?balance.achievements.achievements:[];
   const derived={highest_stage:c.progress.highestEver||0,lore_read:(c.loreRead||[]).length,paragon_level:c.paragon?.level||0,account_level:engine.accountLevel(),season_clear:c.stats.season_clear||0};
-  const achievements=balance.achievements.achievements.map(a=>{const value=derived[a.metric]??c.stats[a.metric]??c.progress[a.metric]??0,done=value>=a.target,owned=claimed.includes(a.id),progress=Math.min(a.target,Math.max(0,Number(value)||0)),rewardParts=[];if(a.reward.silver)rewardParts.push(a.reward.silver+" серебра");if(a.reward.diamonds)rewardParts.push(a.reward.diamonds+" алмазов");if(a.reward.cosmetic?.length)rewardParts.push("косметика");const rewardLabel=rewardParts.join(" + ")||"без дополнительной награды";return '<article class="tb-system-row"><div><b>'+esc(a.name)+'</b><small>'+esc(a.description||"Условие достижения.")+' Прогресс: '+progress+'/'+a.target+' · '+esc(a.metric_label||"Показатель")+' · Награда: '+esc(rewardLabel)+'</small></div><button data-achievement="'+a.id+'" '+(!done||owned?'disabled':'')+'>'+(owned?'ПОЛУЧЕНО':done?'ЗАБРАТЬ':'ЗАКРЫТО')+'</button></article>';}).join("");
+  const achievements=achievementList.map(a=>{const value=derived[a.metric]??c.stats[a.metric]??c.progress[a.metric]??0,done=value>=a.target,owned=claimed.includes(a.id),progress=Math.min(a.target,Math.max(0,Number(value)||0)),rewardParts=[];if(a.reward.silver)rewardParts.push(a.reward.silver+" серебра");if(a.reward.diamonds)rewardParts.push(a.reward.diamonds+" алмазов");if(a.reward.cosmetic?.length)rewardParts.push("косметика");const rewardLabel=rewardParts.join(" + ")||"без дополнительной награды";return '<article class="tb-system-row"><div><b>'+esc(a.name)+'</b><small>'+esc(a.description||"Условие достижения.")+' Прогресс: '+progress+'/'+a.target+' · '+esc(a.metric_label||"Показатель")+' · Награда: '+esc(rewardLabel)+'</small></div><button data-achievement="'+a.id+'" '+(!done||owned?'disabled':'')+'>'+(owned?'ПОЛУЧЕНО':done?'ЗАБРАТЬ':'ЗАКРЫТО')+'</button></article>';}).join("");
   const tasks=weekly.map(q=>'<div class="weekly-task-row"><div class="weekly-task-copy"><b>'+esc(q.name)+'</b><small>'+esc(q.description||"Выполните условие задания.")+'</small><small>Прогресс: '+q.progress+'/'+q.target+'</small></div><button class="weekly-task-status" data-weekly-claim="'+q.id+'" '+(!q.complete||q.claimed?'disabled':'')+'>'+(q.claimed?'ПОЛУЧЕНО':q.complete?'ЗАБРАТЬ':'В ПРОЦЕССЕ')+'</button></div>').join("");
-  return header("Прогресс","Достижения · еженедельные задания · спидран")+'<section class="tb-systems"><h1>ПРОГРЕСС</h1><section class="tb-system-card"><div class="tb-system-actions"><button type="button" data-action="leaderboard">РЕЙТИНГ ИГРОКОВ</button></div></section><section class="tb-system-card"><h2>Достижения · '+claimed.length+'/'+balance.achievements.achievements.length+'</h2>'+achievements+'</section><section class="weekly-tasks-container"><h2>ЕЖЕНЕДЕЛЬНЫЕ ЗАДАНИЯ · '+esc(weekly[0]?.week||"ТЕКУЩАЯ НЕДЕЛЯ")+'</h2><div class="weekly-tasks-list">'+tasks+'</div><small class="weekly-tasks-note">Сброс каждый понедельник в 00:00 UTC.</small></section><section class="speedrun-container"><div class="tb-eyebrow">ИСПЫТАНИЕ СКОРОСТИ</div><h2>Спидран Башни</h2><b>ЛУЧШИЙ ЭТАП · '+(c.progress.highestEver||0)+' / 250</b><p>Завершено спидранов: '+(c.stats.speedrun_completions||0)+'</p></section></section>';
+  return header("Прогресс","Достижения · еженедельные задания · спидран")+'<section class="tb-systems"><h1>ПРОГРЕСС</h1><section class="tb-system-card"><div class="tb-system-actions"><button type="button" data-action="leaderboard">РЕЙТИНГ ИГРОКОВ</button></div></section><section class="tb-system-card"><h2>Достижения · '+claimed.length+'/'+achievementList.length+'</h2>'+achievements+'</section><section class="weekly-tasks-container"><h2>ЕЖЕНЕДЕЛЬНЫЕ ЗАДАНИЯ · '+esc(weekly[0]?.week||"ТЕКУЩАЯ НЕДЕЛЯ")+'</h2><div class="weekly-tasks-list">'+tasks+'</div><small class="weekly-tasks-note">Сброс каждый понедельник в 00:00 UTC.</small></section><section class="speedrun-container"><div class="tb-eyebrow">ИСПЫТАНИЕ СКОРОСТИ</div><h2>Спидран Башни</h2><b>ЛУЧШИЙ ЭТАП · '+(c.progress.highestEver||0)+' / 250</b><p>Завершено спидранов: '+(c.stats.speedrun_completions||0)+'</p></section></section>';
  }
  function accountScreen(){
   const c=live();if(!c)return characterList();
