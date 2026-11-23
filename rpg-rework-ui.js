@@ -1416,16 +1416,15 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
       <div class="v2-hp-bar v2-hero-hp-bar"><div style="width:${hpPct}%"></div></div>
       <div class="v2-hero-hp-text">${Math.ceil(c.run.playerHp)} / ${hp} HP</div>
       <div class="v2-hero-resource-text" style="--resource-pct:${Math.max(0,Math.min(100,(Number(c.resource)||0)/Math.max(1,Number(c.resourceMax)||1)*100))}%">${esc(classData(c).resource)} · ${Math.round(c.resource)} / ${Math.round(c.resourceMax)}</div>
+      <div class="tb-battle-potions" aria-label="Зелья в бою"><span class="tb-potion-cooldown">${potionCooldown>0?'Через '+potionCooldown+' этажей':'Готово'}</span>${(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · +'+Math.round((balance.healing.potion_heal_fraction||.3)*100)+'% HP · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span>🧪</span><b>'+Number(item.quantity)+'</b></button>').join('')}</div>
     </div>
     <div class="v2-enemies-side">${enemyMarkup}</div>
   </div>
   <div class="v2-battle-bottom">
     <div class="v2-turn-guidance" aria-live="polite">${battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют..."}</div>
-    <div class="v2-energy-bar"><span id="energyDisplay">ЭНЕРГИЯ: ${c.currentEnergy}/${c.energy}</span>${classResourceMarkup(c)}<button type="button" class="tb-deck-viewer-trigger" data-deck-viewer>▤ КОЛОДА <b id="deckViewerCount">${collectDeckCards(c).length}</b></button><span class="deck-info">ДОБОР: <b id="deckCount">${c.deck.length}</b> · СБРОС: <b id="discardCount">${c.discard.length}</b></span></div>
-    <div class="tb-battle-potions" aria-label="Зелья в бою"><span class="tb-potion-cooldown">${potionCooldown>0?'Готово через '+potionCooldown+' этажей':'Готово'}</span>${(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · +'+Math.round((balance.healing.potion_heal_fraction||.3)*100)+'% HP · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span>🧪</span><b>'+Number(item.quantity)+'</b></button>').join("")}</div>
-    ${combatLogMarkup()}
+    <div class="v2-energy-bar"><span id="energyDisplay">ЭНЕРГИЯ: ${c.currentEnergy}/${c.energy}</span>${classResourceMarkup(c)}<button type="button" class="tb-deck-viewer-trigger" data-deck-viewer>▤ КОЛОДА <b id="deckViewerCount">${collectDeckCards(c).length}</b></button><span class="deck-info">ДОБОР: <b id="deckCount">${c.deck.length}</b> · СБРОС: <b id="discardCount">${c.discard.length}</b></span><button type="button" class="v2-btn-end v2-end-turn" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>${battle.actor?.type==="player"?"КОНЕЦ ХОДА":"ХОД ВРАГА…"}</button></div>
     <div class="v2-card-hand" id="cardHand">${handMarkup}</div>
-    <button type="button" class="v2-btn-end v2-end-turn" id="endturn" data-action="end-turn" ${battle.actor?.type !== "player" || battle.paused ? "disabled" : ""}>${battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА..."}</button>
+    ${combatLogMarkup()}
   </div>
 </div>`;
  }
