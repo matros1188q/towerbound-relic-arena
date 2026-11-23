@@ -28,6 +28,9 @@ assert.match(ui,/typeof engine\.dailyChestSnapshot==="function"\?engine\.dailyCh
 assert.match(ui,/typeof engine\.accountLevel==="function"\?Number\(engine\.accountLevel\(\)\)\|\|0:0/,'navigation badges tolerate missing account-level helper');
 assert.match(ui,/Array\.isArray\(c\.achievements\)\?c\.achievements:\[\]/,'navigation badge handles old achievement saves');
 assert.match(css,/#tbRpg\{overflow:hidden!important/,'RPG shell has one scroll owner');
+assert.match(ui,/navigation badges unavailable; keeping rendered screen/,'optional bottom navigation badges cannot replace a successfully rendered screen with an error view');
+assert.match(css,/#tbRpg \.tb-v2:has\(>section\.tb-death-overlay\)[\s\S]*?overflow-y:auto!important/,'death screen uses a scrollable full-height viewport container');
+assert.match(css,/#tbRpg \.tb-v2>section\.tb-death\.tb-death-overlay\{[\s\S]*?position:relative!important/,'death panel stays in document flow instead of fixed positioning');
 assert.match(css,/padding:0 0 4px!important/,'only four pixels plus divider remain below the logo');
 assert.doesNotMatch(css,/tb-v2:has\(\.tb-arena\)>\.tb-header\{display:none!important\}/,'obsolete combat header hiding rule is removed');
 assert.doesNotMatch(read('native-pwa.css'),/\.tb-header \.game-logo\{[^}]*width:min\(280px/,'obsolete oversized logo rule is removed');
