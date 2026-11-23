@@ -202,20 +202,20 @@ async function journey(type,name,viewport,url){
   const attack=page.locator('#cardHand .v2-card.attack:not([disabled])').first();
   assert.ok(await attack.count(),name+' has a playable attack card');
   await attack.click();
-  await page.waitForFunction(()=>document.querySelectorAll('#cardHand .v2-card').length===4,{timeout:10000});
+  await page.waitForFunction(()=>document.querySelectorAll('.new-hand-row .v2-card').length===4,{timeout:10000});
   await page.locator('[data-action="end-turn"]').click();
   await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&button.disabled&&button.textContent.includes('ХОД ПРОТИВНИКА');},{timeout:10000});
   // Pause during the enemy queue, keep it paused, then resume the exact pending enemy.
-  const pause=page.locator('.v2-pause-btn');
+  const pause=page.locator('.new-pause-btn');
   await pause.click();
-  await page.waitForFunction(()=>document.querySelector('.v2-pause-btn')?.textContent.includes('ПРОДОЛЖИТЬ'),{timeout:5000});
+  await page.waitForFunction(()=>document.querySelector('.new-pause-btn')?.textContent.includes('ПРОДОЛЖИТЬ'),{timeout:5000});
   const pausedQueue=await page.evaluate(()=>{const state=window.TowerboundRework?.state,c=state?.characters?.find(x=>x.id===state.activeCharacterId);return c?.run?.stage?.uiBattleSnapshot?.enemyQueueState||null;});
   assert.ok(pausedQueue&&Array.isArray(pausedQueue.indices),name+' persists the enemy queue while paused');
   await page.waitForTimeout(650);
   assert.ok((await pause.innerText()).includes('ПРОДОЛЖИТЬ'),name+' remains paused without consuming the enemy queue');
   await pause.click();
   await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&!button.disabled&&button.textContent.includes('ЗАВЕРШИТЬ ХОД');},{timeout:15000});
-  const combatBounds=await page.locator('.v2-battle-wrap').evaluate(el=>{const r=el.getBoundingClientRect();return{bottom:r.bottom,height:r.height,viewport:innerHeight};});
+  const combatBounds=await page.locator('.new-battle-wrap').evaluate(el=>{const r=el.getBoundingClientRect();return{bottom:r.bottom,height:r.height,viewport:innerHeight};});
   assert.ok(combatBounds.height>0&&combatBounds.bottom<=combatBounds.viewport+2,name+' combat arena fits the viewport');
   fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
   await page.screenshot({path:path.join(root,'card-combat-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
@@ -256,7 +256,7 @@ async function journey(type,name,viewport,url){
   process.stdout.write('RECOVERY DIAGNOSTIC '+name+' '+JSON.stringify(recoveryDiagnostic)+'\\n');
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   const recovered=await page.evaluate(()=>({
-   target:document.querySelector('.v2-enemy-card.selected')?.dataset.target,
+   target:document.querySelector('.new-enemy-item.selected')?.dataset.target,
    killed:window.TowerboundRework.state.characters[0].run.stage?.killedIndices||[],
    current:window.TowerboundRework.state.characters[0].run.stage?.targetIndex
   }));
