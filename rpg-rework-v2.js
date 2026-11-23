@@ -782,7 +782,9 @@
   }
   function finishEnemy(characterId,flags){
    flags=flags||{};
-   const character=getChar(characterId),stageData=character.run.stage,targetIndex=Number.isInteger(flags.targetIndex)?flags.targetIndex:(stageData.targetIndex??stageData.enemyIndex),enemy=stageData.mobs[targetIndex],stage=stageData.stage;
+   const character=getChar(characterId),stageData=character.run?.stage;
+   if(!stageData||!Array.isArray(stageData.mobs))throw new Error("No active stage to finish");
+   const targetIndex=Number.isInteger(flags.targetIndex)?flags.targetIndex:(stageData.targetIndex??stageData.enemyIndex),enemy=stageData.mobs[targetIndex],stage=stageData.stage;
    if(!enemy)throw new Error("Target is not active");
    stageData.killedIndices=stageData.killedIndices||[];
    if(stageData.killedIndices.includes(targetIndex))throw new Error("Target is already defeated");
