@@ -27,6 +27,10 @@ function has(text, needle, label) {
   ['t.rewards.silver+=Math.round((100+b.floor*25)*(Number(modifier.reward_silver_multiplier)||1))', 'season-scaled Tower silver rewards'],
   ['t.rewards.diamonds+=1', 'one diamond every ten floors'],
   ['engine.awardXp(c,xp)', 'Tower XP payout on exit'],
+  ['function renderCommunity(tab=\'home\')', 'shared community renderer'],
+  ['function renderGuild()', 'rebuilt Guild view'],
+  ['function renderPass()', 'rebuilt Pass view'],
+  ['eg-endgame-grid', 'rebuilt Endgame dashboard'],
   ['function passState()', 'Battle Pass lifecycle'],
   ['30*DAY', '30-day pass duration'],
   ['Math.min(5000', '50-level BP cap'],
@@ -41,10 +45,6 @@ function has(text, needle, label) {
   ['100000+Math.random()*400000', 'daily help damage range'],
   ['function helpGuild()', 'guild help action'],
   ['function awardGuildChest()', 'guild boss chest'],
-  ['function evolveSkill(', 'skill evolution'],
-  ['skillCatalog=[...baseSkills,...catalog]', 'base class skills are included in the evolution catalog'],
-  ['c.level<50', 'level 50 evolution gate'],
-  ['c.ext.evolvedSkills', 'evolution saved to character ext'],
   ['data-eg="back-map"', 'back to map control'],
   ['grid-template-columns:repeat(3,minmax(0,1fr))', 'mobile menu grid'],
   ['max-width:330px', 'narrow phone layout']
@@ -56,7 +56,9 @@ function has(text, needle, label) {
   ['armorPenetration=Math.max', 'armor penetration mitigation'],
   ['evolved?evolved.icon', 'evolved skill icon']
 ].forEach(([needle,label]) => has(combat,needle,label));
-assert.match(html, /<script src="\.\/endgame-systems\.js\?v=[^"]+"><\/script>/, 'endgame script must be loaded with a cache-busted URL');
+assert.match(html, /<script src="\.\/endgame-systems\.js\?v=220"><\/script>/, 'endgame script cache version');
+assert.ok(!source.includes('Эволюция')&&!source.includes('open-evolution')&&!source.includes('evolveSkill('),'skill evolution removed');
+assert.ok(!combat.includes('evolvedSkill')&&!combat.includes('armorPenetration'),'combat evolution effects removed');
 assert.match(html, /<script src="\.\/rpg-rework-ui\.js\?v=[^"]+"><\/script>/, 'combat UI must be loaded with a cache-busted URL');
 console.log('Endgame systems static checks: OK');
 
