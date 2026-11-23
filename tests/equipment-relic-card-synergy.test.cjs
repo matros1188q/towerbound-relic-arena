@@ -91,6 +91,6 @@ assert.match(ui, /getCardDamageWithTalents\(card,c,cost\)/);
 assert.match(ui, /data-relic-buy/);
 assert.match(ui, /data-relic-reward-pick/);
 assert.match(ui, /data-unequip/);
-assert.match(ui, /v2-battle-relics/);
+assert.match(ui, /new-battle-relics/);
 assert.match(worker, /^const CACHE = 'towerbound-v\d+';$/m);
 console.log('Equipment-to-card links, relic passives/rewards/shop, and talent-scaled card combat passed.');
