@@ -76,6 +76,37 @@ function localSnapshot(){
 }
 function hasLocal(snapshot){return !!(snapshot&&snapshot.keys&&Object.keys(snapshot.keys).length);}
 function snapshotHasCharacters(snapshot){for(const [key,value] of Object.entries(snapshot?.keys||{})){if(!isSaveKey(key)||typeof value!=='string')continue;try{const parsed=JSON.parse(value);if(Array.isArray(parsed?.characters)&&parsed.characters.length>0)return true;}catch(e){}}return false;}
+function snapshotProgress(snapshot){
+ const raw=snapshot?.keys?.['tb-rpg-v2'];if(typeof raw!=='string')return[0,0,0,0,0];
+ try{
+  const game=JSON.parse(raw),chars=Array.isArray(game.characters)?game.characters:[];
+  let level=0,highest=0,stage=0,xp=0,kills=0;
+  for(const c of chars){
+   level=Math.max(level,Number(c?.level)||0);
+   highest=Math.max(highest,Number(c?.progress?.highestEver)||0);
+   stage=Math.max(stage,Number(c?.progress?.currentStage)||0);
+   xp=Math.max(xp,Number(c?.xp)||0);
+   kills=Math.max(kills,Number(c?.stats?.kills)||0);
+   const runStage=c?.run?.stage;
+   if(runStage&&typeof runStage==='object')stage=Math.max(stage,Number(runStage.stage)||Number(runStage.floor)||Number(runStage.index)||0);
+   else if(Number.isFinite(Number(runStage)))stage=Math.max(stage,Number(runStage)||0);
+  }
+  return[level,highest,stage,xp,kills];
+ }catch(_){return[0,0,0,0,0];}
+}
+function compareProgress(a,b){
+ const av=snapshotProgress(a),bv=snapshotProgress(b);
+ for(let i=0;i<av.length;i++){if(av[i]!==bv[i])return av[i]>bv[i]?1:-1;}
+ return 0;
+}
+function isFreshStarterSnapshot(snapshot){
+ const raw=snapshot?.keys?.['tb-rpg-v2'];if(typeof raw!=='string')return false;
+ try{
+  const game=JSON.parse(raw),chars=Array.isArray(game.characters)?game.characters:[];
+  if(!chars.length)return false;
+  return chars.every(c=>(Number(c?.level)||1)<=1&&(Number(c?.xp)||0)===0&&(Number(c?.progress?.highestEver)||0)<=0&&(Number(c?.progress?.currentStage)||1)<=1&&!(c?.run?.active)&&!c?.run?.stage&&(Number(c?.stats?.kills)||0)===0);
+ }catch(_){return false;}
+}
 function sameSave(a,b){if(!a?.keys||!b?.keys)return false;const ak=Object.keys(a.keys).sort(),bk=Object.keys(b.keys).sort();return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&a.keys[k]===b.keys[k]);}
 function walletComparable(snapshot){
  if(!snapshot?.keys)return null;const result={};
@@ -143,19 +174,30 @@ async function chooseSource(remote){
  revision=remote?Number(remote.revision):0;
  if(!remote){const hasCharacters=snapshotHasCharacters(local);say('В облаке пока нет сохранения.');await writeRemote(local,0);$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say(hasCharacters?'Прогресс привязан к аккаунту. Локальная копия сохранена.':'Успешный вход. Создайте персонажа');return;}
  const localHasCharacters=snapshotHasCharacters(local),remoteHasCharacters=snapshotHasCharacters(remote.save_data);
- if(sameUser&&knownRevision<revision&&onlyWalletDiff(local,remote.save_data)){say("Облачный баланс обновился. Объединяем валюту с локальным прогрессом…");const merged=mergeWalletSnapshot(local,remote.save_data);await writeRemote(merged,revision);restoreLocal(merged);return;}
- if(remoteHasCharacters&&!localHasCharacters){
-  say('В облаке найден персонаж. Восстанавливаем прогресс…');
+ const progressOrder=compareProgress(local,remote.save_data);
+ const freshLocal=isFreshStarterSnapshot(local);
+ if(remoteHasCharacters&&(!localHasCharacters||freshLocal||progressOrder<0)){
+  say(freshLocal?'Обнаружен новый стартовый профиль. Восстанавливаем сохранение аккаунта…':'В облаке найден более продвинутый прогресс. Восстанавливаем его…');
   restoreLocal(remote.save_data);
   return;
  }
+ if(localHasCharacters&&remoteHasCharacters&&progressOrder>0){
+  say('На этом устройстве найден более продвинутый прогресс. Сохраняем его в облако…');
+  await writeRemote(local,revision);
+  conflict=false;
+  try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
+  $('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;
+  setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Более высокий игровой прогресс сохранён в облаке.');
+  return;
+ }
+ if(sameUser&&knownRevision<revision&&onlyWalletDiff(local,remote.save_data)){say("Облачный баланс обновился. Объединяем валюту с локальным прогрессом…");const merged=mergeWalletSnapshot(local,remote.save_data);await writeRemote(merged,revision);restoreLocal(merged);return;}
  if(!localExists){say('Загружаем облачный прогресс…');restoreLocal(remote.save_data);}
  if(sameSave(local,remote.save_data)||(sameUser&&knownRevision===revision&&sameSave(local,remote.save_data))){
   try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
   $('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · '+(session.user.email||'ПОДКЛЮЧЕНО'),'online');say('Аккаунт подключён. Облачная версия актуальна.');return;
  }
- conflict=true;overlay.classList.add('open');overlay.style.display='grid';overlay.style.visibility='visible';$('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=false;$('#tbCloudSignedIn').hidden=true;
- $('#tbCloudIntro').textContent='Найдены две версии прогресса. Автоматически ничего не перезаписываем.';
+ conflict=true;savesReady=false;setStatus('ОБЛАКО · КОНФЛИКТ СОХРАНЕНИЙ','error');overlay.classList.add('open');overlay.style.display='grid';overlay.style.visibility='visible';$('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=false;$('#tbCloudSignedIn').hidden=true;
+ $('#tbCloudIntro').textContent='Найдены разные версии прогресса с одинаковым уровнем. Выбери, какую версию сохранить.';
  $('#tbCloudAccount').textContent=session.user.email+' · облачная версия №'+revision;
  say('Выбери источник прогресса.');window.__TB_CLOUD_PENDING_REMOTE=remote;window.__TB_CLOUD_PENDING_LOCAL=local;
 }
