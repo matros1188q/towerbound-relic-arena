@@ -56,7 +56,7 @@ assert.ok(ui.includes('./assets/icons/image.png')&&!ui.includes('./assets/ui/log
 assert.ok(css.includes('TowerBound three-zone battle arena v496'),'battle uses the three-zone layout');
 assert.ok(css.includes('grid-template-columns:minmax(0,2fr) minmax(0,3fr)'),'hero and enemy field use the 40/60 split');
 assert.ok(css.includes('calc((100% - 16px) / 5)'),'five cards fit the hand before horizontal scrolling');
-assert.ok(css.includes('grid-template-areas: "energy energy" "hand hand" "log log" "endturn potions"'),'energy, hand, log and turn controls occupy the intended rows');
+assert.ok(css.includes('grid-template-areas: \\"energy energy\\" \\"hand hand\\" \\"log log\\" \\"endturn potions\\"'),'energy, hand, log and turn controls occupy the intended rows');
 assert.ok(ui.includes('⚡ ×2')&&ui.includes('box.scrollLeft=box.scrollWidth'),'compact speed controls and one-line scrolling combat log remain wired');
 assert.ok(cloud.includes("'tb-endgame-v1'")&&cloud.includes("'tb-social-v1'"),'cloud allowlist persists endgame and social local data');
 assert.ok(cloud.includes('async function loadGame()'),'cloud module exposes a remote loadGame path');
