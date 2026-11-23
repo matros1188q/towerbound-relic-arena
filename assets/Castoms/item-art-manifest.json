@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "source": "assets/Castoms",
+  "shop": {
+    "xp": "image.jpeg",
+    "healing": "image 2.jpeg",
+    "luck": "image 3.jpeg",
+    "antidote": "image 4.jpeg",
+    "compass": "image 5.jpeg",
+    "talisman": "image 7.jpeg",
+    "hourglass": "image 13.jpeg",
+    "repairKit": "image 22.jpeg",
+    "healerKit": "image 21.jpeg",
+    "rescueSeal": "image 16.jpeg",
+    "extraSocket": "image 19.jpeg",
+    "pityToken": "image 3.jpeg",
+    "refineGuard": "image 15.jpeg",
+    "refineTools": "image 22.jpeg"
+  },
+  "relics": {
+    "coin": "image 13.jpeg",
+    "dagger": "image 14.jpeg",
+    "shield": "image 15.jpeg",
+    "skull": "image 16.jpeg",
+    "eye": "image 17.jpeg",
+    "feather": "image 18.jpeg",
+    "ring": "image 19.jpeg",
+    "crown": "image 20.jpeg",
+    "cup": "image 21.jpeg",
+    "hammer": "image 22.jpeg",
+    "stoneFallback": "../relics/rune.png",
+    "heartFallback": "../relics/heart.png"
+  },
+  "premiumAccount": {
+    "image": null,
+    "keepExistingArtwork": true
+  },
+  "notes": [
+    "Premium-account products intentionally retain their existing icon.",
+    "No standalone card-bundle image or dedicated equipment-slot silhouette is present in this folder; those are not guessed."
+  ]
+}

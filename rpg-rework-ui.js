@@ -14,6 +14,67 @@
  const bossPortraits=Object.values(bossPortraitsById);
  const chapterBackgrounds=["image_2.jpeg","image_3.jpeg","image_4.jpeg","image_5.jpeg","image.jpeg"];
  function chapterBackgroundPath(stage){const floor=Math.max(1,Math.min(250,Number(stage)||1));return "./assets/chapters/"+chapterBackgrounds[Math.floor((floor-1)/50)];}
+
+ const CUSTOM_ITEM_ART_ROOT="./assets/Castoms/";
+ const CUSTOM_ITEM_ART=Object.freeze({
+  xp:"image.jpeg",heal:"image%202.jpeg",drop:"image%203.jpeg",antidote:"image%204.jpeg",
+  compass:"image%205.jpeg",talisman:"image%207.jpeg",hourglass:"image%2013.jpeg",
+  coin:"image%2013.jpeg",dagger:"image%2014.jpeg",shield:"image%2015.jpeg",skull:"image%2016.jpeg",
+  eye:"image%2017.jpeg",feather:"image%2018.jpeg",ring:"image%2019.jpeg",crown:"image%2020.jpeg",
+  cup:"image%2021.jpeg",hammer:"image%2022.jpeg"
+ });
+ function customItemArtPath(item){
+  const id=String(item?.id||item?.type||"").toLowerCase();
+  const value=[item?.type,item?.id,item?.name,item?.effect,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
+  if(id.startsWith("premium")||value.includes("премиум")||value.includes("premium account"))return "";
+  if(value.includes("hourglass")||value.includes("песоч"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hourglass;
+  if(value.includes("potion case")||value.includes("healer kit")||value.includes("футляр целителя")||value.includes("набор целителя"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup;
+  if(value.includes("antidote")||value.includes("противояд"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.antidote;
+  if(value.includes("compass")||value.includes("компас"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass;
+  if(value.includes("talisman")||value.includes("charm")||value.includes("талисман"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman;
+  if(value.includes("rescue")||value.includes("спасен")||value.includes("печать спасения"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull;
+  if(value.includes("extra socket")||value.includes("гнезд")||value.includes("socket"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring;
+  if(value.includes("pity")||value.includes("удач")||value.includes("fortune")||value.includes("luck"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop;
+  if(value.includes("refine guard")||value.includes("защитный оберег"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.shield;
+  if(value.includes("repair")||value.includes("ремонт")||value.includes("refine")||value.includes("заточ")||value.includes("усилен")||value.includes("камень усиления")||value.includes("craft material"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer;
+  if(value.includes("stone cache")||value.includes("сундук камней"))return "./assets/relics/rune.png";
+  if(value.includes("drop")||value.includes("зелье шанса")||value.includes("шанс дропа"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop;
+  if(value.includes("xp")||value.includes("experience")||value.includes("опыт")||value.includes("зелье опыта"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp;
+  if(value.includes("heal")||value.includes("healing potion")||value.includes("potion")||value.includes("зель")||value.includes("исцел"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal;
+  if(value.includes("coin")||value.includes("монет")||value.includes("серебр"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.coin;
+  if(value.includes("dagger")||value.includes("кинжал"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.dagger;
+  if(value.includes("shield")||value.includes("щит"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.shield;
+  if(value.includes("skull")||value.includes("череп"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull;
+  if(value.includes("eye")||value.includes("глаз"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye;
+  if(value.includes("feather")||value.includes("перо"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.feather;
+  if(value.includes("ring")||value.includes("кольц"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring;
+  if(value.includes("crown")||value.includes("корон"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.crown;
+  if(value.includes("cup")||value.includes("chalice")||value.includes("чаш"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup;
+  if(value.includes("hammer")||value.includes("молот"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer;
+  return "";
+ }
+ function customRelicArtPath(item){
+  const value=[item?.id,item?.name,item?.type,item?.slot].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
+  if(value.includes("heart")||value.includes("сердц"))return "./assets/relics/heart.png";
+  if(value.includes("stone")||value.includes("камень")||value.includes("rune")||value.includes("руна"))return "./assets/relics/rune.png";
+  if(value.includes("coin")||value.includes("монет"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.coin;
+  if(value.includes("dagger")||value.includes("кинжал"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.dagger;
+  if(value.includes("shield")||value.includes("щит"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.shield;
+  if(value.includes("skull")||value.includes("череп"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull;
+  if(value.includes("eye")||value.includes("глаз"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye;
+  if(value.includes("feather")||value.includes("перо"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.feather;
+  if(value.includes("ring")||value.includes("кольц"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring;
+  if(value.includes("crown")||value.includes("корон"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.crown;
+  if(value.includes("cup")||value.includes("chalice")||value.includes("чаш"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup;
+  if(value.includes("hammer")||value.includes("молот"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer;
+  if(value.includes("compass")||value.includes("компас"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass;
+  if(value.includes("talisman")||value.includes("amulet")||value.includes("талисман")||value.includes("амул"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman;
+  return "";
+ }
+ function customItemImageHtml(path,classes){
+  return '<img class="tb-custom-item-art '+(classes||'')+'" src="'+path+'" alt="" loading="lazy" decoding="async">';
+ }
+
  const relicArtFiles={head:"image_2.png",chest:"image_3.png",ring:"image_4.png",accessory:"image_4.png",amulet:"image_6.png",weapon:"image_10.png",hands:"image_12.png",potion:"image_5.png",scroll:"image_9.png",redGem:"image_7.png",blueGem:"image_8.png",potionStack:"image_14.png",bundle:"image_18.png"};
  function relicArtPath(item,slot){
   const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
@@ -32,7 +93,7 @@
   if(slot==="accessory")return relicArtFiles.accessory;
   return relicArtFiles.potionStack;
  }
- function relicIconHtml(item,slot,extraClass){return '<img class="tb-relic-icon '+(extraClass||"")+'" src="./assets/relics/'+relicArtPath(item,slot)+'" alt="" loading="lazy" decoding="async">';}
+ function relicIconHtml(item,slot,extraClass){const custom=customRelicArtPath(item);if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async">';return '<img class="tb-relic-icon '+(extraClass||"")+'" src="./assets/relics/'+relicArtPath(item,slot)+'" alt="" loading="lazy" decoding="async">';}
  function skillSpriteClass(skill){const value=String(skill?.damage_type||skill?.element||skill?.effect_template||skill?.name||"").toLowerCase();if(value.includes("fire")||value.includes("огн"))return "skill-fire";if(value.includes("ice")||value.includes("лед")||value.includes("лёд"))return "skill-ice";if(value.includes("poison")||value.includes("яд"))return "skill-poison";if(value.includes("physical")||value.includes("strike")||value.includes("удар"))return "skill-phys";return "skill-arcane";}
  function talentSpriteClass(effect){const key=String(effect||"").toLowerCase();if(key.includes("health")||key.includes("hp")||key.includes("здоров"))return "talent-hp";if(key.includes("crit")||key.includes("critical")||key.includes("крит"))return "talent-crit";if(key.includes("defense")||key.includes("armor")||key.includes("защит"))return "talent-def";if(key.includes("speed")||key.includes("evasion")||key.includes("ловк")||key.includes("скор"))return "talent-agi";return "talent-atk";}
  function achievementSpriteClass(achievement){
@@ -46,6 +107,8 @@
  }
  function inventoryIconHtml(item,equipment){
   if(equipment)return relicIconHtml(item,item?.slot);
+  const custom=customItemArtPath(item);
+  if(custom)return customItemImageHtml(custom,"tb-bag-item-art-img");
   const value=String(item?.type||item?.id||item?.name||"").toLowerCase();
   let icon="";
   if(value.includes("craft_material")||value.includes("craft material")||value.includes("материал")||value.includes("enhancement_stone")||value.includes("enhancement stone")||value.includes("камень усиления"))icon="support-orb";
@@ -206,7 +269,7 @@
   const db=engine?.RELICS_DATABASE||{},options=(Array.isArray(relicIds)?relicIds:[]).map(id=>db[id]).filter(Boolean);
   if(!options.length)return;
   const overlay=document.createElement("div");overlay.className="tb-relic-reward-overlay";overlay.setAttribute("role","presentation");
-  overlay.innerHTML='<section class="tb-relic-reward-modal" role="dialog" aria-modal="true" aria-label="Выбор реликвии"><span class="tb-eyebrow">НАГРАДА ЗА БОССА</span><h2>Выбери одну реликвию</h2><p>Выбранный артефакт навсегда останется у персонажа и будет усиливать карточные бои.</p><div class="tb-relic-reward-grid">'+options.map(relic=>'<button type="button" class="tb-relic-reward-card" data-relic-reward-pick="'+esc(relic.id)+'"><span>'+esc(relic.icon||"✦")+'</span><b>'+esc(relic.name)+'</b><small>'+esc(relic.description)+'</small><strong>ВЫБРАТЬ</strong></button>').join("")+'</div></section>';
+  overlay.innerHTML='<section class="tb-relic-reward-modal" role="dialog" aria-modal="true" aria-label="Выбор реликвии"><span class="tb-eyebrow">НАГРАДА ЗА БОССА</span><h2>Выбери одну реликвию</h2><p>Выбранный артефакт навсегда останется у персонажа и будет усиливать карточные бои.</p><div class="tb-relic-reward-grid">'+options.map(relic=>'<button type="button" class="tb-relic-reward-card" data-relic-reward-pick="'+esc(relic.id)+'"><span>'+relicIconHtml(relic)+'</span><b>'+esc(relic.name)+'</b><small>'+esc(relic.description)+'</small><strong>ВЫБРАТЬ</strong></button>').join("")+'</div></section>';
   document.body.appendChild(overlay);
  }
  function unlockedCardIds(){const account=engine?.state?.account;if(!account)return[];if(!Array.isArray(account.unlockedCards))account.unlockedCards=[];["strike","defend","dash"].forEach(id=>{if(CARD_DATABASE[id]&&!account.unlockedCards.includes(id))account.unlockedCards.push(id);});(engine?.state?.characters||[]).forEach(character=>{if(!Array.isArray(character.unlockedCards))character.unlockedCards=[];character.unlockedCards.forEach(id=>{if(CARD_DATABASE[id]&&!account.unlockedCards.includes(id))account.unlockedCards.push(id);});});return account.unlockedCards;}
@@ -1226,9 +1289,12 @@ function talentBonusDescription(talent,rank){
   return header("Профиль героя",c.name+" · "+clsName(c))+'<section class="tb-profile"><div class="tb-profile-top"><div class="tb-profile-avatar '+(engine.getRefinementGlow(c)||"")+' '+rarityFrame+' '+(engine.state.account.activeCosmetics?.frame||"")+'"><img src="'+portrait(c.classId)+'" alt=""></div><div><div class="tb-eyebrow">ПЕРСОНАЖ</div><h1>'+esc(c.name)+'</h1><p>'+esc(clsName(c))+' · Уровень '+c.level+' · Мощь '+engine.combatPower(c)+'</p></div></div><nav class="tb-tabs">'+tabs.map(t=>'<button data-tab="'+t[0]+'" class="'+(profileTab===t[0]?"active":"")+'">'+t[1]+'</button>').join("")+'</nav><div class="tb-profile-content">'+body+'</div></section>';
  }
  function shopProductSprite(item){const id=String(item?.id||"").toLowerCase();if(id.startsWith("heal")||id.includes("potion"))return "shop-potion";if(id.startsWith("premium")||id.includes("rescue"))return "shop-premium";if(id.includes("refine")||id.includes("chisel")||id.includes("socket"))return "shop-refine";if(id.startsWith("xp"))return "shop-xp";if(id.startsWith("drop"))return "shop-drop";return "shop-item";}
- function shopProductIconHtml(item){const id=String(item?.id||"").toLowerCase(),value=[item?.type,item?.name,id].filter(Boolean).join(" ").toLowerCase();if(id.startsWith("xp"))return '<img class="tb-shop-xp-icon" src="assets/icons/image_5.png" alt="Зелье опыта" loading="eager" onerror="this.style.display=\'none\'">';if(value.includes("craft")||value.includes("material")||value.includes("материал")||value.includes("enhancement_stone")||value.includes("камень усиления"))return '<span class="tb-support-icon support-orb" aria-hidden="true"></span>';if(value.includes("potion")||value.includes("heal")||value.includes("зель")||value.includes("weapon")||value.includes("sword")||value.includes("меч")||value.includes("helmet")||value.includes("шлем")||value.includes("armor")||value.includes("нагруд")||value.includes("glove")||value.includes("перчат")||value.includes("amulet")||value.includes("ring")||value.includes("амул")||value.includes("кольц"))return relicIconHtml(item,item?.slot);return '<span class="sprite-icon '+shopProductSprite(item)+'" aria-hidden="true"></span>';}
-
-
+ function shopProductIconHtml(item){
+  const custom=customItemArtPath(item);
+  if(custom)return customItemImageHtml(custom,"tb-shop-item-art");
+  return '<span class="sprite-icon '+shopProductSprite(item)+'" aria-hidden="true"></span>';
+ }
+ 
  function cardMerchantMarkup(character){ensureCardDeck(character);const piles=["deck","hand","discard","exhaustPile"],seen=new Set(),unique=[];for(const pile of piles)for(const card of character[pile]||[]){const key=card?.instanceId||card?.id;if(card&&!seen.has(key)){seen.add(key);unique.push(card);}}const archive=character.cardArchive||[],removeList=cardRemovalOpen?'<div class="tb-card-removal-list">'+unique.map(card=>'<button type="button" data-card-remove="'+esc(card.instanceId||card.id)+'"><b>'+esc(card.name||card.id)+'</b><small>'+esc(card.rarity||"common")+' · '+(card.costX?"X":Number(card.cost)||0)+' энергии</small></button>').join("")+'</div>':'';return '<section class="tb-card-merchant"><div class="tb-card-merchant-heading"><div><span class="tb-eyebrow">КОЛОДА И КАРТЫ</span><h2>ТОРГОВЕЦ КАРТАМИ</h2><p>Пополняй колоду или отправляй лишние карты в Архив</p></div><strong>'+unique.length+' карт</strong></div><div class="tb-card-merchant-actions"><article><b>Случайная карта</b><small>Карта твоего класса или общая · случайная редкость</small><span>100 серебра</span><button type="button" data-card-shop-buy '+(Number(character.silver)<100?'disabled':'')+'>КУПИТЬ КАРТУ</button></article><article><b>Удаление карты</b><small>Карта удаляется из всех боевых стопок и хранится в Архиве</small><span>75 серебра</span><button type="button" data-card-remove-open '+(Number(character.silver)<75||unique.length<=1?'disabled':'')+'>'+(cardRemovalOpen?'ЗАКРЫТЬ СПИСОК':'УДАЛИТЬ КАРТУ')+'</button></article></div>'+removeList+'<div class="tb-card-archive-count">В Архиве: '+archive.length+' карт</div></section>';}
 
  function shopScreen(){

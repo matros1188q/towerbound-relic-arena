@@ -73,3 +73,11 @@ img{object-fit:contain}#tbRpg img,#tbRpg .tb-v2 img,.tb-v2 img{object-fit:contai
 .shop-drop{background-image:url("../icons/image_16.png");background-position:80% 50%;background-size:600% 500%}
 .shop-item{background-image:url("../icons/image_17.png");background-position:66.667% 33.333%}
 #tbRpg .tb-v2 .tb-product-icon .sprite-icon{width:48px;height:48px;flex-basis:48px}
+
+/* CASTOMS item artwork: replace repeated atlas glyphs with original fantasy still-life images. */
+.tb-custom-item-art{display:block;object-fit:contain!important;object-position:center;width:56px;height:56px;max-width:100%;margin:0 auto;filter:drop-shadow(0 5px 9px #0009)}
+.tb-product-icon .tb-custom-item-art{width:76px;height:76px}
+.tb-bag-item-art .tb-custom-item-art{width:48px;height:48px}
+.tb-item-detail-art .tb-custom-item-art{width:104px;height:104px}
+.tb-relic-shop-icon .tb-custom-item-art{width:54px;height:54px}
+.tb-custom-item-art.tb-bag-item-art-img{border-radius:10px}

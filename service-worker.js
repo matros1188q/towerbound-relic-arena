@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v611';
+const CACHE = 'towerbound-v612';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './',
@@ -231,6 +231,22 @@ const SHELL = [
   "./assets/cards/shaman_dark_gods_utility.png",
   "./assets/cards/shaman_nature_core.png",
   "./assets/cards/shaman_nature_utility.png",
+  './assets/Castoms/image.jpeg',
+  './assets/Castoms/image%202.jpeg',
+  './assets/Castoms/image%203.jpeg',
+  './assets/Castoms/image%204.jpeg',
+  './assets/Castoms/image%205.jpeg',
+  './assets/Castoms/image%207.jpeg',
+  './assets/Castoms/image%2013.jpeg',
+  './assets/Castoms/image%2014.jpeg',
+  './assets/Castoms/image%2015.jpeg',
+  './assets/Castoms/image%2016.jpeg',
+  './assets/Castoms/image%2017.jpeg',
+  './assets/Castoms/image%2018.jpeg',
+  './assets/Castoms/image%2019.jpeg',
+  './assets/Castoms/image%2020.jpeg',
+  './assets/Castoms/image%2021.jpeg',
+  './assets/Castoms/image%2022.jpeg',
   './endgame-systems.js',
   './assets/pwa/icon-192.png',
   './assets/pwa/icon-512.png'
