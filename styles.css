@@ -1193,3 +1193,15 @@
 
 /* 2026-11-23 · reliable additional 50px visual shift; keep button in place */
 #tbRpg .tb-v2 .v2-energy-bar .deck-info,#tbRpg .tb-v2 .v2-energy-bar .tb-deck-viewer-trigger{position:relative!important;left:-30px!important;transform:translateX(-50px)!important}
+
+
+/* TB deck row offset fix v1: override legacy negative offsets */
+#tbRpg .tb-v2 .v2-energy-bar .tb-deck-viewer-trigger,
+#tbRpg .tb-v2 .v2-energy-bar .deck-info{
+  position:relative!important;
+  left:120px!important;
+  transform:none!important;
+  margin-left:0!important;
+}
+#tbRpg .tb-v2 .v2-energy-bar{overflow:visible!important}
+#tbRpg .tb-v2 .v2-battle-bottom{overflow:visible!important}
