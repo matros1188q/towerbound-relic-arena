@@ -140,8 +140,8 @@ for(const classId of classes){
   assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?battle\.enemyQueueState=\{indices:nextIndex<0\?\[\]:queue\.map\(candidate=>Number\(candidate\.index\)\)\.filter\(Number\.isFinite\),cursor:nextIndex<0\?0:nextIndex\};[\s\S]*?save\(\);render\(\);[\s\S]*?scheduleEnemyTurnQueue\(nextIndex<0\?\[\]:queue,nextIndex<0\?0:nextIndex,token,500\)/,'enemy turn queue persists the next living enemy before saving and scheduling it');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
   assert.match(ui,/data-action="end-turn"/,'End Turn control is present');
-  assert.match(ui,/tb-telegraph/,"enemy telegraph content remains visible");
-  assert.doesNotMatch(ui,/tb-telegraph tb-target-warning/,"enemy telegraph is not positioned as a floating target badge");
+  assert.match(css,/tb-telegraph/,"enemy telegraph styles remain visible in the consolidated stylesheet");
+  assert.doesNotMatch(css,/tb-telegraph tb-target-warning/,"enemy telegraph is not positioned as a floating target badge");
   assert.match(css,/tb-enemy-focus \.tb-telegraph[^}]*position:relative!important/,"enemy telegraph is contained inside its card");
  }else{
   assert.match(ui,/triggerVfx\("enemy-hit","physical",phase===4\|\|attacker\.type==="boss"\)/,'every boss hit triggers the screen-shake path');
