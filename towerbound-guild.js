@@ -139,6 +139,7 @@ document.addEventListener('submit',async e=>{
 },true);
 function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(async()=>{if(!cloud()?.signedIn)return;try{await load();if(!$('#socPanel'))return;const main=$('#socPanel main');if(main&&!main.querySelector('input:focus,textarea:focus')){const content=render();if(main)main.innerHTML=content;}}catch(e){console.warn('[guild] refresh failed',e)}},60000);}
 window.addEventListener('towerbound-auth-change',()=>{snapshot=null;inside=false;load().then(()=>renderSocial()).catch(()=>syncShortcut());});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloud()?.signedIn&&snapshot?.member)load().catch(()=>{});});
 window.TowerboundGuild={render,refresh,load,get snapshot(){return snapshot;}};
 const old=window.TowerboundEndgame?.renderCommunity;
 if(window.TowerboundEndgame&&typeof old==='function')window.TowerboundEndgame.renderCommunity=(tab='home')=>tab==='guild'?render():old(tab);
