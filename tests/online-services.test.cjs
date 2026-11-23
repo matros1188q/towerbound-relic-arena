@@ -92,7 +92,7 @@ assert.ok(engine.includes('function insertGem')&&engine.includes('openSockets<=i
 assert.ok(engine.includes('const stone=character.bag.find(entry=>entry&&entry.id===stoneId&&entry.type==="enhancement_stone")'),'gem insertion requires a stone in inventory');
 assert.ok(engine.includes('item.installedGems.push(gem)')&&engine.includes('character.bag=character.bag.filter(entry=>entry.id!==stoneId)'),'gem insertion installs the gem and consumes its inventory item');
 assert.ok(engine.includes('function socketStone(characterId,itemId,stoneId){return insertGem(characterId,itemId,stoneId);}'),'legacy socket API remains compatible');
-assert.ok(ui.includes('engine.insertGem(c.id,item.id,stone.id)'),'equipment UI calls the hardened gem insertion API');
+assert.ok(ui.includes('engine.insertGem(c.id,target.dataset.stoneItem,target.dataset.stoneChoice)')&&ui.includes('data-stone-choice=')&&ui.includes('data-stone-item='),'equipment UI passes the selected stone and target item through the hardened gem insertion API');
 assert.ok(ui.includes('t.description.trim()')&&ui.includes('tb-stone-description'),'stone descriptions are displayed from the catalog in the inventory');
 assert.ok(ui.includes('function installedGemsOf')&&ui.includes('data-extract-gem'),'installed gems render and can be extracted');
 assert.ok(ui.includes('rarityPrefixes')&&ui.includes('itemDisplayName(item)'),'equipment rarity prefixes are not repeated in item names');
