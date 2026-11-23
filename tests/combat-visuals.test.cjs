@@ -46,9 +46,9 @@ for(const [name,source,re] of [
 ['battle DOM updates active enemy target cards',battleDom,/arena\.querySelectorAll\("\.new-enemy-item\[data-target\]"\)/],
 ['battle DOM no longer queries legacy arena, skill or target selectors',battleDom,/^((?!\.tb-arena|\.tb-panel-skill|\.tb-target-card)[\s\S])*$/],
 ['Attack cards have a distinct high-contrast combat style',css,/\.v2-card\.attack\{border-color:#e76b5e!important;background:linear-gradient\(180deg,#633b3a,#251b22\)!important/],
-['End Turn remains displayed with at least 48px height',css,/\.v2-btn-end\{display:flex!important[\s\S]*?min-height:48px!important[\s\S]*?visibility:visible!important/],
+['End Turn remains visible with a mobile-safe hit area',battleCss,/\.new-end-turn\{[\s\S]*?display:flex!important[\s\S]*?min-height:46px/],
 ['map top padding is zero below the compact global header',css,/\.tb-map-screen\{padding-top:0!important\}/],
-['enemies use a fixed three-column grid',css,/\.v2-enemies-side\{order:0!important;display:grid!important;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)!important/],
+['enemy targets use the active responsive flex row',battleCss,/\.new-enemies-side\{[\s\S]*?display:flex[\s\S]*?flex-wrap:wrap/],
 ['bag grid and readable square item tiles',css,/\.tb-item-grid\{display:grid!important;grid-template-columns:repeat\(4,1fr\)!important;gap:6px!important\}[\s\S]*?\.tb-bag-item\{min-height:80px!important;max-height:100px!important;aspect-ratio:1\/1!important;padding:4px!important[\s\S]*?\.tb-item-tile-open span,#tbRpg \.tb-v2 \.tb-item-tile-open small\{display:block!important;font-size:9px!important;white-space:normal!important/],
 ['collection cards use compact five-column square grid',css,/\.tb-collection-grid\{display:grid!important;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)!important;gap:4px!important;width:100%!important[\s\S]*?\.tb-collection-item\{aspect-ratio:1\/1!important;min-height:60px!important;max-height:70px!important;padding:2px!important;overflow:hidden!important[\s\S]*?\.tb-collection-item b,#tbRpg \.tb-v2 \.tb-collection-item small,#tbRpg \.tb-v2 \.tb-collection-item span\{font-size:8px!important/],
 ['checkpoint heal gating preserved',ui,/healReady=balance\.map\.checkpoints\.includes\(cp\)&&c\.run\.healingPenaltyUntil/],
@@ -73,7 +73,7 @@ for(const [name,source,re] of [
 console.log('Combat visual/tactical static checks passed.');
 
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map screen has no extra top padding');
-assert.ok(css.includes('.v2-enemies-side{order:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important'),'enemy target cards use a stable three-column arena grid');
+assert.ok(battleCss.includes('.new-enemies-side{')&&battleCss.includes('.new-enemy-item{'),'enemy target cards use the active responsive battle field');
 assert.ok(battleCss.includes('.new-enemy-item{')&&battleCss.includes('.new-enemy-item.selected{')&&battleCss.includes('.new-enemy-hp-bar{'),'active enemy target cards have visible selection and HP styling');
 assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}'),'bag uses a four-column grid');
 assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
