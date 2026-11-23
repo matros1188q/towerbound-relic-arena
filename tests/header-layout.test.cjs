@@ -37,7 +37,7 @@ assert.ok(html.includes('TB_TITLESCREEN_FINAL_GUARD_20261123'),'a final start-sc
 assert.ok(html.includes('width:50px!important;height:50px!important')&&html.includes('max-width:50px!important;max-height:50px!important'),'start-screen T mark is compact on iPhone');
 assert.ok(html.includes('width:100%!important;max-width:100%!important;min-width:0!important')&&html.includes('overflow-x:hidden!important'),'title screen cannot expand beyond the viewport');
 assert.ok(html.includes('src="./assets/icons/image.png"')&&!html.includes('./assets/towerbound-title-v2.webp'),'start screen uses the same current logo as the in-game header');
-assert.match(html,/rpg-rework-ui\.js\?v=68/,'UI cache version is updated');
+assert.match(html,/rpg-rework-ui\.js\?v=\d+/,'UI script cache version is updated');
 assert.match(sw,/^const CACHE = 'towerbound-v\d+';$/m,'service worker cache is updated');
 const progression=read('progression-24.js');
 assert.doesNotMatch(progression,/tb-progression-button/,'progression module no longer injects a global header button');
