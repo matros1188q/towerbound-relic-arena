@@ -5,6 +5,7 @@ const CACHE = 'towerbound-v490';
 const SHELL = [
   './',
   './index.html',
+  './configs/talents_tree.json',
   './manifest.json',
   './juice-pwa.css',
   './native-pwa.css',
