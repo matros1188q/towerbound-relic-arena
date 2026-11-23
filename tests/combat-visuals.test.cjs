@@ -4,6 +4,7 @@ const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 const core=fs.readFileSync(path.join(__dirname,'../rpg-rework-v2.js'),'utf8');
 const fx=fs.readFileSync(path.join(__dirname,'../combat-visuals.js'),'utf8');
 const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
+const battleCss=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.css.js'),'utf8');
 const battleDom=ui.slice(ui.indexOf('function updateBattleDOM'),ui.indexOf('function ensureBottomNav'));
 for(const [name,source,re] of [
 ['two-layer parallax',fx,/tb-back-parallax[\s\S]*tb-front-parallax/],
@@ -33,16 +34,16 @@ for(const [name,source,re] of [
 ['Duelist dual blade specialization has detailed combat description',ui,/dual_swords:\"Фокус на высоком темпе атак/],
 ['loot button is labeled Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
 ['loot action closes summary and returns to map without starting a new stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
-['battle DOM finds the V2 arena wrapper',battleDom,/root\.querySelector\("\.v2-battle-wrap"\)/],
+['battle DOM finds the active new battle wrapper',battleDom,/root\.querySelector\("\.new-battle-wrap"\)/],
 ['fresh battle resets the deck before the first draw',ui,/resetCardBattle\(c\);battle\.cardResume=false/],
 ['fresh battle captures the relic starting draw from the stage plan',ui,/relicStartingDraw:Math\.max\(0,Number\(plan\.relicStartingDraw\)\|\|0\)/],
 ['relic starting draw is applied once after innate cards',ui,/const relicDraw=Math\.max\(0,Number\(battle\.relicStartingDraw\)\|\|0\);battle\.relicStartingDraw=0;drawCards\(Math\.max\(0,5-c\.hand\.length\)\+cardDrawBonus\(c\)\+relicDraw\)/],
 ['saved battle resume does not reapply the relic starting draw',ui,/if\(savedSnapshot\)\{battle\.relicStartingDraw=0;/],
 ['player battle resume clears pending relic draw',ui,/if\(battle\.cardResume\)\{battle\.cardResume=false;battle\.relicStartingDraw=0;/],
-['battle DOM updates the card hand',battleDom,/arena\.querySelector\("#cardHand"\)[\s\S]*renderHand\(\)/],
+['battle DOM updates the active card hand',battleDom,/arena\.querySelector\("\.new-hand-row"\)[\s\S]*renderHand\(\)/],
 ['battle DOM updates energy and deck counters',battleDom,/energyDisplay[\s\S]*deckCount[\s\S]*discardCount/],
 ['enemy intent previews the next action and its value',ui,/label:enemyIntentText\(preview\)/],
-['battle DOM updates V2 enemy cards',battleDom,/arena\.querySelectorAll\("\.v2-enemy-card\[data-target\]"\)/],
+['battle DOM updates active enemy target cards',battleDom,/arena\.querySelectorAll\("\.new-enemy-item\[data-target\]"\)/],
 ['battle DOM no longer queries legacy arena, skill or target selectors',battleDom,/^((?!\.tb-arena|\.tb-panel-skill|\.tb-target-card)[\s\S])*$/],
 ['Attack cards have a distinct high-contrast combat style',css,/\.v2-card\.attack\{border-color:#e76b5e!important;background:linear-gradient\(180deg,#633b3a,#251b22\)!important/],
 ['End Turn remains displayed with at least 48px height',css,/\.v2-btn-end\{display:flex!important[\s\S]*?min-height:48px!important[\s\S]*?visibility:visible!important/],
@@ -60,7 +61,7 @@ for(const [name,source,re] of [
 ['card damage preview accounts for vulnerable targets',ui,/function cardPreviewDamage[\s\S]*target\.vulnerable\)>0\?1\.5:1/],
 ['card preview appears on hover and keyboard focus',ui,/showCardDamagePreview\(Number\(card\.dataset\.cardPlay\)\)/],
 ['enemy cards show visible status stacks above HP',ui,/class="v2-enemy-statuses"/],
-['card hand remains horizontally scrollable without shrinking',css,/\.v2-card-hand\{justify-content:flex-start!important;overflow-x:auto!important[\s\S]*\.v2-card\{flex-shrink:0!important/],
+['card hand remains horizontally scrollable without shrinking',battleCss,/\.new-hand-row\{[\s\S]*?overflow-x:auto[\s\S]*?\.new-hand-row \.v2-card\{flex:0 0 76px!important/],
 ['damage preview has a distinct lethal state',css,/\.v2-damage-preview\.lethal/],
 ['poison status',ui,/ОТРАВЛЕН/],
 ['elemental steam',ui,/ПАР · ОГЛУШЕНИЕ/],['electric shock',ui,/ЭЛЕКТРОШОК/],['boss interrupt',ui,/ПРЕРВАНО/],
@@ -73,7 +74,7 @@ console.log('Combat visual/tactical static checks passed.');
 
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map screen has no extra top padding');
 assert.ok(css.includes('.v2-enemies-side{order:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important'),'enemy target cards use a stable three-column arena grid');
-assert.ok(css.includes('.v2-battle-wrap .v2-enemies-side{position:relative!important;z-index:4!important;align-content:start!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;pointer-events:auto!important'),'enemy grid stays inside a scrollable viewport and is not clipped above the tap area');
+assert.ok(battleCss.includes('.new-enemy-item{')&&battleCss.includes('.new-enemy-item.selected{')&&battleCss.includes('.new-enemy-hp-bar{'),'active enemy target cards have visible selection and HP styling');
 assert.ok(css.includes('.tb-item-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}'),'bag uses a four-column grid');
 assert.ok(css.includes('.tb-collection-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important'),'collection uses a five-column grid');
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map has no extra top padding after the header');
