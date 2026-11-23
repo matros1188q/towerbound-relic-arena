@@ -1165,3 +1165,15 @@
 #tbRpg .tb-combat-log,.tb-combat-log{flex:0 0 auto!important;max-height:28px!important;min-height:0!important;margin:0!important;padding:2px 5px!important;overflow:hidden!important;font-size:8px!important;line-height:1.1!important}
 #tbRpg .v2-battle-bottom>.v2-end-turn{display:none!important}
 @media(max-width:520px){#tbRpg .v2-enemy-img{height:clamp(52px,16vw,78px)!important}#tbRpg .v2-hero-side{grid-template-columns:50px minmax(0,1fr) auto!important;gap:2px 5px!important}#tbRpg .v2-hero-img{width:50px!important;height:66px!important;max-height:66px!important}#tbRpg .v2-energy-bar{gap:2px!important}#tbRpg .v2-energy-bar>*{font-size:7px!important}#tbRpg .v2-energy-bar .v2-end-turn{min-width:68px!important;font-size:7px!important;padding:2px 4px!important}}
+
+
+/* 2026-11-23 · hard-remove enemy/hero panels and align deck counters */
+#tbRpg .v2-enemy-card,#tbRpg .v2-enemy-card.selected,#tbRpg .v2-hero-side{background:none!important;background-color:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;border-radius:0!important}
+#tbRpg .v2-enemy-card::before,#tbRpg .v2-enemy-card::after,#tbRpg .v2-hero-side::before,#tbRpg .v2-hero-side::after{content:none!important;display:none!important;background:none!important;border:0!important;box-shadow:none!important}
+#tbRpg .v2-enemy-card.selected{transform:none!important}
+#tbRpg .v2-energy-bar{display:flex!important;gap:3px!important}
+#tbRpg .v2-energy-bar #energyDisplay{order:1!important;flex:0 0 auto!important}
+#tbRpg .v2-energy-bar .deck-info{order:2!important;flex:0 1 auto!important;margin:0 0 0 auto!important;padding:0!important;text-align:right!important;white-space:nowrap!important}
+#tbRpg .v2-energy-bar .tb-deck-viewer-trigger{order:3!important;flex:0 0 auto!important;margin:0!important}
+#tbRpg .v2-energy-bar .v2-end-turn{order:4!important;flex:0 0 auto!important;margin-left:2px!important}
+@media(max-width:520px){#tbRpg .v2-energy-bar{gap:2px!important}#tbRpg .v2-energy-bar #energyDisplay{font-size:7px!important}#tbRpg .v2-energy-bar .deck-info{font-size:7px!important;letter-spacing:-.045em!important}#tbRpg .v2-energy-bar .tb-deck-viewer-trigger{padding:3px 4px!important;font-size:7px!important}#tbRpg .v2-energy-bar .v2-end-turn{min-width:62px!important;padding:2px 3px!important;font-size:7px!important}}
