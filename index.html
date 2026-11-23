@@ -1374,6 +1374,80 @@ html,body{width:100%;max-width:100%;min-width:0;overflow-x:hidden!important}
 </aside></div><div class="panel"><div class="panelhead"><h2>Кузница метапрогресса</h2><span class="sub">Эссенция: <b id="metaBank">0</b></span></div><div class="sub">Постоянные улучшения между походами · уровни сохраняются</div><div class="tb-meta-grid"><button class="tb-meta-btn" data-up="power">⚔️ Руническая мощь <b id="metaPower">0/5</b><small>+5% силы за уровень · цена <span id="costPower">2</span> ✦</small></button><button class="tb-meta-btn" data-up="vitality">💚 Жизненная нить <b id="metaVitality">0/5</b><small>+2 максимального здоровья · цена <span id="costVitality">2</span> ✦</small></button><button class="tb-meta-btn" data-up="fortune">🪙 Дар странника <b id="metaFortune">0/5</b><small>+2 стартового золота · цена <span id="costFortune">2</span> ✦</small></button><button class="tb-meta-btn" data-up="echo">🔮 Эхо душ <b id="metaEcho">0/5</b><small>+1 эссенция за этаж за уровень · цена <span id="costEcho">3</span> ✦</small></button><button class="tb-meta-btn" data-up="scout">🗝️ Искатель тайников <b id="metaScout">0/5</b><small>Чаще тайные комнаты · цена <span id="costScout">3</span> ✦</small></button><button class="tb-meta-btn" data-up="ward">🛡️ Оберег убежища <b id="metaWard">0/5</b><small>+2 здоровья в начале похода за уровень · цена <span id="costWard">3</span> ✦</small></button></div><div class="tb-sanctum"><div class="panelhead"><h2>Хроники убежища</h2><span class="sub" id="loreProgress">0 / 5 глав</span></div><p class="sub">Каждый новый рубеж раскрывает историю башни. На каждом седьмом этаже может открыться тайная комната с добычей.</p><div id="loreChapters" class="tb-lore-grid"></div></div><div class="panelhead"><h2>Испытание</h2><span class="sub">Особые правила</span></div><div class="actions"><select id="challengeMode" aria-label="Режим испытания"><option value="normal">Обычный поход</option><option value="elite">Элитные враги · +25% HP</option><option value="blood">Кровавая клятва · −20% HP</option><option value="storm">Шторм · +20% наград</option><option value="abyss">Бездна · боссам +35% HP, награды +50%</option></select><button id="challengeApply">Применить</button></div><div class="sub" id="challengeInfo">Обычный поход</div></div><div class="bottomnote">TOWERBOUND: RELIC ARENA · RELIC ENGINE · ПРОГРЕСС СОХРАНЯЕТСЯ НА УСТРОЙСТВЕ</div>
 </main><div class="title-screen" id="titleScreen"><div class="title-card"><div class="title-art" aria-label="Логотип Towerbound"><img class="title-illustration" src="./assets/icons/image.png" alt="T" width="96" height="96" decoding="async" fetchpriority="high"></div><div class="title-content"><div class="title-kicker">A DARK FANTASY ROGUELITE</div><h2>TOWERBOUND<br>RELIC ARENA</h2><p class="title-copy">Собери легендарные реликвии, создай собственную комбинацию сил и выживи в десяти волнах проклятой арены. Каждый выбор меняет ход похода.</p><div class="title-features"><div class="title-feature"><span>🗡️</span><b>СОБИРАЙ</b><small>Реликвии</small></div><div class="title-feature"><span>✨</span><b>СОЧЕТАЙ</b><small>Силы</small></div><div class="title-feature"><span>👑</span><b>ПОБЕЖДАЙ</b><small>Боссов</small></div></div><div class="title-actions"><button type="button" class="primary" id="enterArenaBtn">⚔ ВОЙТИ НА АРЕНУ</button><button type="button" class="title-secondary" id="howToPlayBtn">КАК ИГРАТЬ</button></div><div class="title-help" id="titleHelp"><b>1.</b> Купи реликвии за золото.<br><b>2.</b> Запусти волну — герой и враг будут атаковать друг друга автоматически.<br><b>3.</b> Собирай синергии реликвий и используй лечение между боями.<br><b>4.</b> После победы выбери благословение. Цель — пройти 10 этажей (70 узлов), победить 10 боссов и покорить Башню.</div></div></div></div><div class="modalback" id="accountDialog" role="dialog" aria-modal="true" aria-labelledby="accountTitle"><div class="modal account-modal"><button class="account-close" id="accountClose" type="button" aria-label="Закрыть">×</button><div class="eyebrow">TOWERBOUND · ПРОФИЛИ</div><h2 id="accountTitle">Кто входит в башню?</h2><p class="sub">У каждого профиля своё прохождение на этом устройстве.</p><div id="profileList" class="profile-list"></div><form id="profileCreateForm" class="profile-create"><label for="profileNameInput">Имя нового профиля</label><input id="profileNameInput" maxlength="20" minlength="2" autocomplete="nickname" placeholder="Например, Странник" required><button class="primary" type="submit">＋ Создать профиль</button></form><p class="account-note">Это локальные профили браузера, не облачные аккаунты. Для входа с другого устройства и восстановления по почте нужно подключить серверную авторизацию и облачную базу.</p></div></div>
 <div class="modalback" id="modalback"><div class="modal"><div style="font-size:42px" id="modalIcon">🏆</div><h2 id="modalTitle">Победа!</h2><p id="modalText"></p><div id="rewardChoices" class="reward-grid" hidden></div><button class="primary" id="modalBtn">Продолжить</button></div></div><div class="toast" id="toast"></div><div id="levelUpOverlay" class="tb-levelup-overlay" aria-live="assertive" role="status"><div class="tb-levelup-card"><span class="tb-levelup-rune">✦</span><small>СИЛА ГЕРОЯ ВОЗРОСЛА</small><strong>УРОВЕНЬ ПОВЫШЕН</strong><span id="levelUpLevel">УРОВЕНЬ 2</span><i>+1 ОЧКО ТАЛАНТА</i></div></div>
+
+<style id="TB_TITLESCREEN_FINAL_GUARD_20261123">
+/* Final start-screen guard: never inherit the old artwork panel or desktop grid on phones. */
+html,body{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:hidden!important}
+#titleScreen{
+ position:fixed!important;inset:0!important;left:0!important;right:0!important;
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ height:100dvh!important;max-height:100dvh!important;min-height:0!important;
+ margin:0!important;padding:0!important;box-sizing:border-box!important;
+ overflow-x:hidden!important;overflow-y:auto!important;transform:none!important;
+}
+#titleScreen,#titleScreen *{box-sizing:border-box!important;min-width:0!important}
+#titleScreen .title-card{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto!important;
+ align-content:start!important;align-items:stretch!important;justify-items:stretch!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ height:auto!important;min-height:100dvh!important;max-height:none!important;
+ margin:0!important;padding:calc(12px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom))!important;
+ gap:4px!important;overflow-x:hidden!important;overflow-y:visible!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:linear-gradient(180deg,#111426 0%,#0b0e19 100%)!important;
+ transform:none!important;
+}
+#titleScreen .title-card:before{display:none!important;content:none!important}
+#titleScreen .title-art{
+ grid-column:1!important;grid-row:1!important;display:grid!important;place-items:center!important;
+ width:100%!important;height:62px!important;min-height:62px!important;max-height:62px!important;
+ margin:0!important;padding:0!important;overflow:hidden!important;
+ border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;isolation:auto!important;
+}
+#titleScreen .title-art:before,#titleScreen .title-art:after,
+#titleScreen .title-art-vignette,#titleScreen .title-art-label{display:none!important;content:none!important}
+#titleScreen .title-illustration{
+ position:relative!important;inset:auto!important;display:block!important;flex:none!important;
+ width:50px!important;height:50px!important;min-width:50px!important;min-height:50px!important;
+ max-width:50px!important;max-height:50px!important;margin:0!important;padding:0!important;
+ object-fit:contain!important;object-position:center!important;
+ border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;
+ filter:none!important;transform:none!important;
+}
+#titleScreen .title-content{
+ grid-column:1!important;grid-row:2!important;display:flex!important;flex-direction:column!important;
+ align-self:stretch!important;justify-self:stretch!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ margin:0!important;padding:0 0 12px!important;overflow-x:hidden!important;overflow-wrap:anywhere!important;
+}
+#titleScreen .title-kicker{max-width:100%!important;margin:0 0 8px!important;font-size:9px!important;letter-spacing:.16em!important}
+#titleScreen .title-content h2{
+ width:100%!important;max-width:100%!important;margin:4px 0 12px!important;
+ font-size:clamp(30px,8.5vw,42px)!important;line-height:1!important;letter-spacing:-.02em!important;
+ overflow-wrap:anywhere!important;word-break:normal!important;
+}
+#titleScreen .title-copy{width:100%!important;max-width:100%!important;margin:0 0 12px!important;font-size:12px!important;line-height:1.55!important}
+#titleScreen .title-features{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;width:100%!important;max-width:100%!important;margin:10px 0 14px!important}
+#titleScreen .title-feature{min-width:0!important;padding:8px 4px!important}
+#titleScreen .title-feature b,#titleScreen .title-feature small{overflow-wrap:anywhere!important}
+#titleScreen .title-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important;width:100%!important;max-width:100%!important}
+#titleScreen .title-actions button{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:46px!important;margin:0!important}
+#titleScreen .title-help{width:100%!important;max-width:100%!important;overflow-wrap:anywhere!important}
+@media(min-width:1025px){
+ #titleScreen{align-items:center!important;justify-content:center!important;padding:24px!important}
+ #titleScreen .title-card{
+  grid-template-columns:72px minmax(0,1fr)!important;grid-template-rows:auto!important;
+  width:min(100%,980px)!important;min-height:0!important;height:auto!important;
+  margin:auto!important;padding:32px!important;gap:24px!important;
+  border:1px solid #d8c5ff3d!important;border-radius:24px!important;
+  box-shadow:0 28px 90px #0009!important;
+ }
+ #titleScreen .title-art{grid-column:1!important;grid-row:1!important;height:72px!important;min-height:72px!important;max-height:72px!important}
+ #titleScreen .title-illustration{width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important;max-width:58px!important;max-height:58px!important}
+ #titleScreen .title-content{grid-column:2!important;grid-row:1!important;padding:0!important}
+}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
 <script src="./towerbound-engine.js?v=combat-choreography-stage5"></script>
 <script>
