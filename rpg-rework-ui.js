@@ -123,7 +123,7 @@
  const tabs=[["stats","Характеристики"],["talents","Древо талантов"],["skills","Библиотека карт"],["gear","Коллекция"],["bag","Рюкзак"],["craft","Крафт"],["account","Аккаунт"],["speedrun","Спидран"]];
  const SKILL_UPGRADE_LEVELS=Object.freeze({1:1,2:20,3:50});
  let pendingSkillUpgradeId=null;
- let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver";
+ let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver",lastRenderedScreen=null;
  let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null;
 
  const CARD_DATABASE=Object.freeze({
@@ -1910,10 +1910,12 @@ function talentBonusDescription(talent,rank){
  function renderWithScrollSave(){
   const container=document.getElementById('tbRpg')||document.querySelector('.profile');
   const scrollHost=container?.querySelector('.tb-v2')||container;
-  const scrollPos=scrollHost?scrollHost.scrollTop:(window.scrollY||0);
+  const sameScreen=lastRenderedScreen===screen;
+  const scrollPos=sameScreen?(scrollHost?scrollHost.scrollTop:(window.scrollY||0)):0;
   renderView();
+  lastRenderedScreen=screen;
   if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);
-  const restore=()=>{const next=document.getElementById('tbRpg')||document.querySelector('.profile');const host=next?.querySelector('.tb-v2')||next;if(host)host.scrollTop=scrollPos;else window.scrollTo(0,scrollPos);};
+  const restore=()=>{const next=document.getElementById('tbRpg')||document.querySelector('.profile');const host=next?.querySelector('.tb-v2')||next;if(host)host.scrollTop=sameScreen?scrollPos:0;if(!sameScreen)window.scrollTo(0,0);};
   restore();if(typeof requestAnimationFrame==='function')requestAnimationFrame(restore);
  }
  function render(){return renderWithScrollSave();}
