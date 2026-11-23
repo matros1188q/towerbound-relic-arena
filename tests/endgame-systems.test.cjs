@@ -60,8 +60,8 @@ console.log('Endgame systems static checks: OK');
 
 [
 ['class="eg-primary-nav"', 'endgame modal has a compact three-section navigation'],
-['eg-guild-hero', 'Guild uses the redesigned boss-focused layout'],
-['eg-pass-hero', 'Battle Pass uses the redesigned seasonal progression layout'],
-['eg-endgame-grid', 'Endgame uses a feature-card dashboard'],
-['grid-template-columns:repeat(3,minmax(0,1fr))!important', 'Endgame navigation is a three-column row']
+['soc-boss-card', 'Guild uses the redesigned shared community boss card'],
+['soc-pass-milestone', 'Battle Pass uses the redesigned shared community reward milestones'],
+['soc-endgame-link', 'Endgame uses the redesigned shared community activity list'],
+['soc-metric-grid', 'Endgame sections share the community metrics card system']
 ].forEach(([needle,label]) => has(source,needle,label));
