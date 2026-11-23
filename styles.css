@@ -1177,3 +1177,7 @@
 #tbRpg .v2-energy-bar .tb-deck-viewer-trigger{order:3!important;flex:0 0 auto!important;margin:0!important}
 #tbRpg .v2-energy-bar .v2-end-turn{order:4!important;flex:0 0 auto!important;margin-left:2px!important}
 @media(max-width:520px){#tbRpg .v2-energy-bar{gap:2px!important}#tbRpg .v2-energy-bar #energyDisplay{font-size:7px!important}#tbRpg .v2-energy-bar .deck-info{font-size:7px!important;letter-spacing:-.045em!important}#tbRpg .v2-energy-bar .tb-deck-viewer-trigger{padding:3px 4px!important;font-size:7px!important}#tbRpg .v2-energy-bar .v2-end-turn{min-width:62px!important;padding:2px 3px!important;font-size:7px!important}}
+
+
+/* 2026-11-23 · shift draw/discard/deck cluster 10px left */
+#tbRpg .v2-energy-bar .deck-info,#tbRpg .v2-energy-bar .tb-deck-viewer-trigger{position:relative!important;left:-10px!important}
