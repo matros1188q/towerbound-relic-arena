@@ -388,7 +388,7 @@
   function recalcLevel(character){
    const previous=character.level;
    character.level=levelForXp(character.xp);
-   character.talentPoints=Math.max(0,character.level-1);
+   character.talentPoints=character.level<10?0:Math.min(101,character.level-9)+Math.max(0,Math.floor((character.level-110)/10));
    let spent=Object.values(character.talents||{}).reduce((sum,value)=>sum+value,0);
    if(spent>character.talentPoints){
     for(const key of Object.keys(character.talents||{}).reverse()){
