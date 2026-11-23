@@ -920,6 +920,7 @@ function createDialog(){
    if(enemy&&enemy.alive===true&&Number(enemy.hp)>0)enemyTurn(enemy);
    else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}
    if(!battle)return;
+   if(reconcileBattleCompletion())return;
    const nextIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
    battle.enemyQueueState={indices:nextIndex<0?[]:queue.map(candidate=>Number(candidate.index)).filter(Number.isFinite),cursor:nextIndex<0?0:nextIndex};
    save();render();
@@ -1031,8 +1032,9 @@ function createDialog(){
   const burnTargets=(battle.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.burn)>0);for(const enemy of burnTargets){const burn=Math.max(0,Number(enemy.burn)||0);applyTargetDamage(enemy,burn,"fire");if(!battle)return;enemy.burn=0;if(c.run.playerHp<=0){endFromDamage();return;}if(enemy.hp<=0){finishCurrentEnemy();if(!battle)return;}}
   const activeDots=Array.isArray(battle.dots)?battle.dots:(battle.dot?[battle.dot]:[]);for(const dot of activeDots){if(dot?.ticks>0){const target=battle.enemies.find(x=>x.index===battle.targetIndex&&x.alive);if(target){applyTargetDamage(target,dot.damage,"dark");if(!battle)return;dot.ticks--;if(c.run.playerHp<=0){endFromDamage();return;}if(target.hp<=0){finishCurrentEnemy();if(!battle)return;}}}}battle.dots=activeDots.filter(dot=>dot&&dot.ticks>0);battle.dot=battle.dots[0]||null;
   if(battle.hot?.ticks>0){c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+battle.hot.heal);battle.hot.ticks--;}
+  if(reconcileBattleCompletion())return;
   const queue=(battle.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0);
-  if(!queue.length){advanceToPlayerTurn();return;}
+  if(!queue.length){if(reconcileBattleCompletion())return;advanceToPlayerTurn();return;}
   battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;const queueToken=battle.enemyQueueToken;
   battle.busy=true;battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
   battle.enemyQueueState={indices:queue.map(enemy=>Number(enemy.index)).filter(Number.isFinite),cursor:0};
@@ -1569,6 +1571,18 @@ function talentBonusDescription(talent,rank){
    }else{battle.enemyQueueState=null;showPlayerTurn();}
    save();render();
   }catch(error){notify(error.message);}
+ }
+ function reconcileBattleCompletion(){
+  if(!battle||!Array.isArray(battle.enemies))return false;
+  const living=battle.enemies.filter(enemy=>enemy&&enemy.alive===true&&Number(enemy.hp)>0);
+  if(living.length)return false;
+  const defeated=battle.enemies.filter(Boolean).sort((a,b)=>Number(a.index)-Number(b.index)).at(-1);
+  if(!defeated)return false;
+  // Damage-over-time kills can bypass the regular card-hit completion path.
+  for(const enemy of battle.enemies){if(!enemy)continue;enemy.hp=0;enemy.alive=false;enemy.dead=true;enemy.pendingAttack=false;enemy.pendingAction=null;}
+  battle.enemy=defeated;battle.targetIndex=Number(defeated.index)||0;battle.enemyHp=0;battle.shield=Number(defeated.shield)||0;
+  finishCurrentEnemy();
+  return true;
  }
  function finishCurrentEnemy(){
   clearTimeout(pendingTimer);pendingTimer=null;
