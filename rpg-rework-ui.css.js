@@ -31,43 +31,10 @@
  style.textContent=cssText;
 })();
 
-/* Map screen width recovery — scoped away from the new battle arena. */
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)),
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card{
- box-sizing:border-box!important;
- width:100%!important;
- min-width:100%!important;
- max-width:100%!important;
-}
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel{
- display:flex!important;
- flex-direction:column!important;
- padding:15px!important;
-}
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card .tb-eyebrow,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card h2,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card p,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen .tb-eyebrow,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen h2,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen p,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel .tb-eyebrow,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel h2,
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel p{
- box-sizing:border-box!important;
- width:100%!important;
- min-width:100%!important;
- white-space:normal!important;
- word-break:normal!important;
- writing-mode:horizontal-tb!important;
- text-align:left!important;
- overflow-wrap:normal!important;
-}
-#tbRpg .tb-v2:not(:has(.new-battle-wrap)){
- width:100%!important;
- min-width:0!important;
- max-width:100%!important;
-}
+/* Map screen width recovery — valid runtime style injection. */
+(function(){
+ 'use strict';
+ var mapStyle=document.getElementById('towerbound-map-width-recovery-css');
+ if(!mapStyle){mapStyle=document.createElement('style');mapStyle.id='towerbound-map-width-recovery-css';document.head.appendChild(mapStyle);}
+ mapStyle.textContent="#tbRpg .tb-v2:not(:has(.new-battle-wrap)),\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card{\n box-sizing:border-box!important;\n width:100%!important;\n min-width:100%!important;\n max-width:100%!important;\n}\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel{\n display:flex!important;\n flex-direction:column!important;\n padding:15px!important;\n}\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card .tb-eyebrow,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card h2,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-chapter-card p,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen .tb-eyebrow,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen h2,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-map-screen p,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel .tb-eyebrow,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel h2,\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)) .tb-stage-panel p{\n box-sizing:border-box!important;\n width:100%!important;\n min-width:100%!important;\n white-space:normal!important;\n word-break:normal!important;\n writing-mode:horizontal-tb!important;\n text-align:left!important;\n overflow-wrap:normal!important;\n}\n#tbRpg .tb-v2:not(:has(.new-battle-wrap)){\n width:100%!important;\n min-width:0!important;\n max-width:100%!important;\n}";
+})();
