@@ -47,7 +47,7 @@ assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded'
 assert.ok(html.includes('./towerbound-cloud.js?v=18'),'cloud module cache is refreshed');
 assert.ok(html.includes('./rpg-rework-v2.js?v=17'),'engine cache is refreshed for gem socket support');
 assert.ok(html.includes('./rpg-rework-ui.js?v=67'),'battle, profile and transparent logo UI cache is refreshed');
-assert.ok(html.includes('./rpg-rework-ui.css.js?v=35'),'battle, profile and start screen stylesheet cache is refreshed');
+assert.ok(html.includes('./rpg-rework-ui.css.js?v=36'),'battle, profile and start screen stylesheet cache is refreshed');
 assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123'),'mobile start-screen viewport regression is guarded');
 assert.ok(ui.includes('./assets/icons/image.png')&&!ui.includes('./assets/ui/logo.jpeg'),'active RPG header uses the transparent logo source');
 assert.ok(css.includes('TowerBound three-zone battle arena v496'),'battle uses the three-zone layout');
