@@ -17,7 +17,7 @@ async function rpc(name,args={}){const c=client();if(!cloud()?.signedIn||!c)thro
 function activeCharacter(){const e=game||window.TowerboundRework;return e?.state?.characters?.find(c=>c.id===e.state.activeCharacterId)||e?.state?.characters?.[0]||null;}
 function setRuntimeBuffs(){
  const c=activeCharacter();if(!c)return;
- const buffs=snapshot?.buffs||{},daily=snapshot?.daily_bonus||{};
+ const buffs=snapshot?.member?(snapshot.buffs||{}):{},daily=snapshot?.member?(snapshot.daily_bonus||{}):{};
  try{Object.defineProperty(c,'guildBuffs',{value:{...buffs},writable:true,configurable:true,enumerable:false});Object.defineProperty(c,'guildDailyBonus',{value:{exp_bonus_percent:Number(daily.exp_bonus_percent)||0,drop_bonus_percent:Number(daily.drop_bonus_percent)||0},writable:true,configurable:true,enumerable:false});}catch(_){c.guildBuffs={...buffs};c.guildDailyBonus={...daily};}
 }
 async function syncServerRevision(){
@@ -129,7 +129,7 @@ document.addEventListener('submit',async e=>{
  const f=e.target.closest('#socPanel [data-guild-form]');if(!f)return;e.preventDefault();if(busy)return;busy=true;
  try{if(f.dataset.guildForm==='create')await createGuild();if(f.dataset.guildForm==='chat')await sendMessage();}catch(err){notify(errorText(err));}finally{busy=false;}
 },true);
-function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(async()=>{if(!$('#socPanel')||!snapshot?.member)return;if(view!=='chat'&&view!=='members'&&view!=='boss')return;try{await load();const main=$('#socPanel main');if(main&&!main.querySelector('input:focus,textarea:focus')){const content=render();if(main)main.innerHTML=content;}}catch(e){console.warn('[guild] refresh failed',e)}},12000);}
+function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(async()=>{if(!$('#socPanel'))return;try{await load();const main=$('#socPanel main');if(main&&!main.querySelector('input:focus,textarea:focus')){const content=render();if(main)main.innerHTML=content;}}catch(e){console.warn('[guild] refresh failed',e)}},12000);}
 window.addEventListener('towerbound-auth-change',()=>{snapshot=null;inside=false;load().then(()=>renderSocial()).catch(()=>{});});
 window.TowerboundGuild={render,refresh,load,get snapshot(){return snapshot;}};
 const old=window.TowerboundEndgame?.renderCommunity;
