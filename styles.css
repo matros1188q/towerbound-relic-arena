@@ -810,3 +810,62 @@
   #tbRpg .tb-v2 .tb-death-overlay .tb-death-losses{margin:7px 0!important}
   #tbRpg .tb-v2 .tb-death-overlay p{margin:6px 0!important}
 }
+
+
+/* 2026-11-23: screen-flow repair. Legacy #tbRpg section rules made whole
+   screens flex rows, squeezing their content into near-zero-width columns. */
+#tbRpg{overflow:hidden!important;overscroll-behavior:none!important}
+#tbRpg .tb-v2:not(:has(.new-battle-wrap)):not(:has(.tb-battle-rebuild)){
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  min-height:100%!important;max-height:100%!important;overflow-x:hidden!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(92px + env(safe-area-inset-bottom,0px))!important;
+}
+#tbRpg .tb-v2:has(.tb-arena)>.tb-header{display:flex!important}
+#tbRpg .tb-v2:has(.new-battle-wrap)>.tb-header{display:flex!important}
+#tbRpg .tb-v2>section.tb-shop,
+#tbRpg .tb-v2>section.tb-systems{
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:min(1100px,100%)!important;min-width:0!important;max-width:1100px!important;
+  margin:0 auto 24px!important;padding:clamp(12px,2.5vw,24px)!important;
+  align-items:initial!important;justify-content:initial!important;
+}
+#tbRpg .tb-v2 .tb-systems>.tb-system-card,
+#tbRpg .tb-v2 .tb-systems>.weekly-tasks-container,
+#tbRpg .tb-v2 .tb-systems>.speedrun-container{
+  display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
+  margin:12px 0!important;box-sizing:border-box!important;
+}
+#tbRpg .tb-v2 .tb-shop>.tb-relic-shop,
+#tbRpg .tb-v2 .tb-shop>.tb-card-merchant{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}
+#tbRpg .tb-v2 .tb-shop>.tb-daily-shop-chest{display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:wrap!important;width:100%!important;min-width:0!important}
+#tbRpg .tb-v2>section.tb-death.tb-death-overlay{
+  display:block!important;position:relative!important;isolation:isolate!important;
+  width:min(520px,100%)!important;max-width:520px!important;min-width:0!important;
+  max-height:none!important;height:auto!important;overflow:visible!important;
+  left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;
+  transform:none!important;margin:clamp(8px,2.5vh,22px) auto 24px!important;
+  padding:clamp(14px,3.2vw,22px)!important;box-sizing:border-box!important;
+  text-align:center!important;
+}
+#tbRpg .tb-v2 .tb-death-overlay .tb-death-mark{font-size:clamp(34px,8vw,48px)!important;line-height:1!important}
+#tbRpg .tb-v2 .tb-death-overlay h1{font-size:clamp(22px,5.5vw,28px)!important;line-height:1.15!important;margin:8px 0!important}
+#tbRpg .tb-v2 .tb-death-overlay p{font-size:13px!important;line-height:1.4!important;margin:8px 0!important;max-width:none!important}
+#tbRpg .tb-v2 .tb-death-overlay .tb-death-losses{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;margin:12px 0!important;width:100%!important;
+}
+#tbRpg .tb-v2 .tb-death-overlay .tb-death-losses>div{min-width:0!important;padding:9px 5px!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-death-overlay .tb-death-losses small{font-size:8px!important;line-height:1.2!important}
+#tbRpg .tb-v2 .tb-death-overlay .tb-death-losses b{font-size:clamp(15px,4vw,20px)!important;margin-top:5px!important}
+#tbRpg .tb-v2 .tb-death-overlay .tb-death-lives{margin:8px 0!important}
+#tbRpg .tb-v2 .tb-death-overlay button{display:block!important;width:100%!important;min-height:44px!important;margin:9px 0 0!important;white-space:normal!important}
+@media(max-width:560px){
+  #tbRpg .tb-v2{padding-left:10px!important;padding-right:10px!important}
+  #tbRpg .tb-v2>section.tb-shop,#tbRpg .tb-v2>section.tb-systems{padding:12px!important}
+  #tbRpg .tb-v2 .tb-death-overlay{margin:8px auto 18px!important;padding:12px!important}
+  #tbRpg .tb-v2 .tb-death-overlay .tb-death-losses{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+  #tbRpg .tb-v2 .tb-death-overlay .tb-death-losses>div{padding:8px 3px!important}
+  #tbRpg .tb-v2 .tb-death-overlay .tb-death-losses small{font-size:7px!important}
+}
