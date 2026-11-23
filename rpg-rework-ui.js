@@ -389,7 +389,7 @@
   battle.combatLog.push({text:String(message||""),color:String(color||"#d9d2c5"),time:Date.now()});
   if(battle.combatLog.length>20)battle.combatLog.splice(0,battle.combatLog.length-20);
   const box=root.querySelector("#tbCombatLogList");
-  if(box){box.innerHTML=battle.combatLog.map(entry=>'<div class="tb-combat-log-entry" style="color:'+esc(entry.color)+'">'+esc(entry.text)+'</div>').join("");box.scrollTop=box.scrollHeight;}
+  if(box){box.innerHTML=battle.combatLog.map(entry=>'<div class="tb-combat-log-entry" style="color:'+esc(entry.color)+'">'+esc(entry.text)+'</div>').join("");box.scrollLeft=box.scrollWidth;box.scrollTop=0;}
  }
  function combatLogMarkup(){const entries=(battle?.combatLog||[]).slice(-20);return '<details class="tb-combat-log v2-combat-log" open><summary>📜 ЖУРНАЛ БОЯ <span>'+entries.length+'/20</span></summary><div class="tb-combat-log-list" id="tbCombatLogList">'+entries.map(entry=>'<div class="tb-combat-log-entry" style="color:'+esc(entry.color)+'">'+esc(entry.text)+'</div>').join("")+'</div></details>';}
  function renderHand(){const c=live();if(!c)return "";ensureCardDeck(c);return c.hand.map((card,index)=>{const cost=(card.isXCost||card.costX)?"X":Math.max(0,(Number(card.cost)||0)-(live()?.run?.dailyChallengeActive&&live()?.run?.dailyChallengeModifier==="blood"?1:0)),displayEffects=cardEffects(card),previewTarget=(battle?.enemies||[]).find(enemy=>enemy.index===battle?.targetIndex&&enemy.alive&&enemy.hp>0),refineAttack=Math.max(0,Number((c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0))?.refine)||0),refineArmor=(c.gear||[]).filter(item=>item&&["chest","head","legs","hands",1,2,3,4].includes(item.slot)).reduce((sum,item)=>sum+Math.max(0,Number(item.refine)||0),0),previewDamage=previewTarget&&isAttackCard(card,displayEffects)?cardPreviewDamage(card,previewTarget):0,previewBlock=Number(displayEffects.block)>0?Math.round(Number(displayEffects.block)*(1+Math.max(0,Number(engine.getCombatStats(c).defense)||0)/100)+refineArmor*3+getCardBlockTalentBonus(c)+Math.max(0,Number(battle?.relicBlockBonus)||0)):0,dynamicDescription=Number.isFinite(Number(card.magicNumber))&&Number(card.magicNumber)!==0?String(card.description||"").replace(/\d+(?=\s+урона|\s+брони)/i,String(Number(displayEffects.damage)||Number(displayEffects.block)||0)):(card.description||""),lockedType=(card.type==="curse"||card.type==="status")&&card.id!=="status_slime",freeTotemReady=c.classId==="shaman"&&battle?.shamanFreeMode&&Number(c.totem)>=3,disabled=lockedType||cardEffects(card).unplayable||battle?.actor?.type!=="player"||battle?.busy||battle?.paused||(!freeTotemReady&&!(card.isXCost||card.costX)&&Number(c.currentEnergy)<Number(cost)),type=card.type||"skill",rarity=card.rarity||"common",image=card.image||CARD_ART_ROOT+(ART_MAPPING[card.id]||"strike.png");return '<button type="button" class="v2-card '+esc(type)+' rarity-'+esc(rarity)+(disabled?' is-disabled':'')+(card.isUpgraded?' is-upgraded':'')+'" data-card-play="'+index+'" data-card-type="'+esc(type)+'" '+(Number(displayEffects.block)>0?'data-card-block="true" ':'')+(disabled?'disabled':'')+' aria-label="'+esc(card.name)+', '+cost+' энергии. '+esc(card.description||'')+'"><span class="card-cost">'+cost+'</span><span class="card-img-wrapper"><img src="'+esc(image)+'" class="card-image" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'./assets/cards/strike.png\'"></span><span class="card-name">'+esc(card.name)+(card.isUpgraded?' <b class="tb-card-upgrade-mark">+</b>':'')+'</span><span class="card-desc">'+esc(dynamicDescription)+(previewDamage>0?(" · Урон сейчас: "+previewDamage+(refineAttack>0?" (заточка +"+(refineAttack*2)+")":"")):"")+(previewBlock>0?(" · Броня сейчас: "+previewBlock+(refineArmor>0?" (заточка +"+(refineArmor*3)+")":"")):"")+(card.exhaust?' · Истощение':'')+(card.retain?' · Сохранение':'')+(card.ethereal?' · Эфемерная':'')+(card.innate?' · Врождённая':'')+'</span></button>';}).join("");}
@@ -1303,9 +1303,9 @@ const relicMarkup=(c.relics||[]).map(relicId=>engine.RELICS_DATABASE?.[relicId])
 
 return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   <div class="v2-battle-top">
-    <span>ИНИЦИАТИВА · РАУНД ${battle.round}</span>
+    <span>РАУНД ${battle.round} · ИНИЦИАТИВА</span>
     <div class="v2-battle-relics" aria-label="Активные реликвии">${relicMarkup}</div>
-    <button type="button" class="tb-fast-battle-btn" data-action="toggle-fast-battle">${battle.fastBattle?"⚡ БЫСТРЫЙ БОЙ: ВКЛ":"⚡ БЫСТРЫЙ БОЙ: ВЫКЛ"}</button><button type="button" class="v2-pause-btn" data-action="pause">${battle.paused ? "ПРОДОЛЖИТЬ" : "ПАУЗА"}</button>
+    <button type="button" class="tb-fast-battle-btn" data-action="toggle-fast-battle" aria-label="${battle.fastBattle?"Выключить быстрый бой":"Включить быстрый бой"}" title="${battle.fastBattle?"Скорость ×2":"Обычная скорость"}">${battle.fastBattle?"⚡ ×2":"⚡ ×1"}</button><button type="button" class="v2-pause-btn" data-action="pause" aria-label="${battle.paused ? "Продолжить бой" : "Пауза"}" title="${battle.paused ? "Продолжить бой" : "Пауза"}">${battle.paused ? "▶" : "Ⅱ"}</button>
   </div>
   <div class="v2-battle-middle">
     <div class="v2-hero-side">
@@ -1313,7 +1313,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
       <div class="v2-hero-name">${esc(c.name)}</div>
       <div class="v2-hp-bar v2-hero-hp-bar"><div style="width:${hpPct}%"></div></div>
       <div class="v2-hero-hp-text">${Math.ceil(c.run.playerHp)} / ${hp} HP</div>
-      <div class="v2-hero-resource-text">${esc(classData(c).resource)} · ${Math.round(c.resource)} / ${Math.round(c.resourceMax)}</div>
+      <div class="v2-hero-resource-text" style="--resource-pct:${Math.max(0,Math.min(100,(Number(c.resource)||0)/Math.max(1,Number(c.resourceMax)||1)*100))}%">${esc(classData(c).resource)} · ${Math.round(c.resource)} / ${Math.round(c.resourceMax)}</div>
     </div>
     <div class="v2-enemies-side">${enemyMarkup}</div>
   </div>
@@ -1584,7 +1584,7 @@ return `<div class="v2-battle-wrap${battle.fastBattle?" tb-fast-battle":""}">
   const hp=engine.maxHp(c),playerHp=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
   const heroBar=arena.querySelector(".v2-hero-side .v2-hp-bar>div");if(heroBar)heroBar.style.width=playerHp+"%";
   const heroHpText=arena.querySelector(".v2-hero-hp-text");if(heroHpText)heroHpText.textContent=Math.ceil(c.run.playerHp)+" / "+hp+" HP";
-  const heroResource=arena.querySelector(".v2-hero-resource-text");if(heroResource)heroResource.textContent="Энергия · "+Math.round(c.currentEnergy)+"/"+Math.round(c.energy);updateClassResourceDOM();
+  const heroResource=arena.querySelector(".v2-hero-resource-text");if(heroResource){heroResource.textContent=classData(c).resource+" · "+Math.round(c.resource)+" / "+Math.round(c.resourceMax);heroResource.style.setProperty("--resource-pct",Math.max(0,Math.min(100,(Number(c.resource)||0)/Math.max(1,Number(c.resourceMax)||1)*100))+"%");}updateClassResourceDOM();
   const heroName=arena.querySelector(".v2-hero-name");if(heroName)heroName.textContent=c.name;
   arena.querySelectorAll(".v2-enemy-card[data-target]").forEach(card=>{
    const index=Number(card.dataset.target),target=(battle.enemies||[]).find(enemy=>enemy.index===index);
