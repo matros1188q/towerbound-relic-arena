@@ -612,7 +612,7 @@ function createDialog(){
     dailyChallengeLeaderboardMarkup()+
     '<div class="tb-bottom-strip"><span>Персонаж сохраняет уровень, таланты, экипировку и серебро</span><span>'+(c.heroic?"ГЕРОИЧЕСКИЙ РЕЖИМ":"Обычный режим")+'</span></div></section>';
  }
- function branchSkills(c){return skills.filter(skill=>skill.class_id===c.classId).slice(0,(balance.skills.skills_per_branch||10)*3);}
+ function branchSkills(c){return skills.filter(skill=>skill.class_id===c.classId&&skill.branch_id===c.branch);}
  function resolveSkill(c,skillId){
   const base=(classData(c).base_skills||[]).find(skill=>skill.id===skillId);
   const catalog=skills.find(skill=>skill.id===skillId&&skill.class_id===c.classId);
