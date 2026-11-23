@@ -2,6 +2,7 @@
 (function(){
  "use strict";
  var cssText = [
+ '#tbRpg .tb-v2:has(.new-battle-wrap){box-sizing:border-box;width:100%;max-width:none;height:100dvh;min-height:0;margin:0;padding:0;overflow:hidden}',
  '#tbRpg .new-battle-wrap{box-sizing:border-box;position:relative;display:flex!important;flex-direction:column!important;width:100%;height:100dvh!important;min-height:0;overflow:hidden!important;background:#0a0c10!important;color:#fff;padding:10px 10px calc(10px + env(safe-area-inset-bottom))!important;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
  '#tbRpg .new-battle-top{display:flex!important;align-items:center;justify-content:space-between;gap:8px;flex:0 0 auto;padding:0 0 10px;color:#fff;font-size:12px;border-bottom:1px solid #333}',
  '#tbRpg .new-round-label{font-weight:800;white-space:nowrap}#tbRpg .new-battle-relics{display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}#tbRpg .new-battle-relic{font-size:16px}#tbRpg .new-battle-actions{display:flex;align-items:center;gap:6px}',
