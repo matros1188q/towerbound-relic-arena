@@ -965,10 +965,34 @@ function createDialog(){
  }
   function playCard(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.isCardAnimating)return;
-  const cardNode=root.querySelector('[data-card-play="'+Number(cardIndex)+'"]');if(!live()?.hand?.[Number(cardIndex)])return;
-  battle.isCardAnimating=true;if(cardNode)cardNode.classList.add("tb-card-flyout");
-  const delay=battle.fastBattle?100:220;
-  setTimeout(()=>{if(!battle)return;const stateBefore=JSON.parse(JSON.stringify(engine.state)),battleBefore=JSON.parse(JSON.stringify(battle)),summaryBefore=postBattleSummary?JSON.parse(JSON.stringify(postBattleSummary)):null,screenBefore=screen,stageBefore=selectedStage,routeBefore=routeChoice;try{resolveCardPlay(cardIndex);}catch(error){for(const key of Object.keys(engine.state))delete engine.state[key];Object.assign(engine.state,stateBefore);battle=battleBefore;battle.enemies=Array.isArray(battle.enemies)?battle.enemies:[];battle.enemy=battle.enemies.find(enemy=>Number(enemy.index)===Number(battle.targetIndex))||battle.enemy;if(battle.enemy){battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;}postBattleSummary=summaryBefore;screen=screenBefore;selectedStage=stageBefore;routeChoice=routeBefore;recoverBattleControl(error,"Не удалось разыграть карту · состояние восстановлено",false);}finally{if(battle){battle.isCardAnimating=false;save();render();if((Number(battle.cardsPlayedThisTurn)||0)>=20)endPlayerTurn();}}},delay);
+  const scheduledBattle=battle,cardNode=root.querySelector('[data-card-play="'+Number(cardIndex)+'"]');if(!live()?.hand?.[Number(cardIndex)])return;
+  scheduledBattle.isCardAnimating=true;if(cardNode)cardNode.classList.add("tb-card-flyout");
+  const delay=scheduledBattle.fastBattle?100:220;
+  setTimeout(()=>{
+   if(!battle||battle!==scheduledBattle)return;
+   let stateBefore=null,battleBefore=null,summaryBefore=null,screenBefore=screen,stageBefore=selectedStage,routeBefore=routeChoice;
+   try{
+    // Snapshot creation must be guarded too; otherwise serialization errors leave the card lock stuck.
+    stateBefore=JSON.parse(JSON.stringify(engine.state));
+    battleBefore=JSON.parse(JSON.stringify(battle));
+    summaryBefore=postBattleSummary?JSON.parse(JSON.stringify(postBattleSummary)):null;
+    resolveCardPlay(cardIndex);
+   }catch(error){
+    if(stateBefore&&battleBefore){
+     for(const key of Object.keys(engine.state))delete engine.state[key];
+     Object.assign(engine.state,stateBefore);
+     battle=battleBefore;battle.enemies=Array.isArray(battle.enemies)?battle.enemies:[];
+     battle.enemy=battle.enemies.find(enemy=>Number(enemy.index)===Number(battle.targetIndex))||battle.enemy;
+     if(battle.enemy){battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;}
+     postBattleSummary=summaryBefore;screen=screenBefore;selectedStage=stageBefore;routeChoice=routeBefore;
+    }else{
+     battle.isCardAnimating=false;battle.busy=false;battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};
+    }
+    recoverBattleControl(error,"Не удалось разыграть карту · управление восстановлено",false);
+   }finally{
+    if(battle){battle.isCardAnimating=false;save();render();if((Number(battle.cardsPlayedThisTurn)||0)>=20)endPlayerTurn();}
+   }
+  },delay);
  }
  function resolveCardPlay(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
