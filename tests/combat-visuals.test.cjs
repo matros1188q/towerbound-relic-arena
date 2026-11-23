@@ -13,7 +13,7 @@ for(const [name,source,re] of [
 ['status popups',fx,/tb:combat-status/],['profile idle',fx,/tb-hero-idle/],['colored hp',fx,/w>60[\s\S]*w>25/],
 ['ultimate dim overlay',fx,/tb-fx-ultimate/],['overkill bonus',core,/flags\.overkillBonus\?1\.1:1/],
 ['element inference',ui,/elementHint\.includes\("fire"\)[\s\S]*elementHint\.includes\("water"\)[\s\S]*elementHint\.includes\("lightning"\)/],
-['skill icon uses skill asset then class fallback',ui,/const icon=evolved\?evolved\.icon:skill\?\.icon[\s\S]*const kind=\(\{assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"\}/],
+['skill icon uses skill asset then class fallback without skill evolution',ui,/const icon=skill\?\.icon[\s\S]*const kind=\(\{assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"\}/],
 ['route click delegation',ui,/\[data-route\]/],
 ['post-battle summary button says Finish',ui,/data-loot-continue[^\n]*ЗАВЕРШИТЬ/],
 ['post-battle summary returns to map without starting a stage',ui,/if\(target\.dataset\.lootContinue!==undefined\)\{postBattleSummary=null;screen="map";save\(\);render\(\);return;\}/],
@@ -70,6 +70,7 @@ for(const [name,source,re] of [
 ['phase-four boss deadline uses strict timeout and configured enrage damage',ui,/playerTurnCount>=Number\(battle\.bossDeadlineTurns\)[\s\S]{0,320}playerHp=Math\.max\(0,c\.run\.playerHp-enrageDamage\)/],['heroic mutations',ui,/mutation==="vampirism"/],['speedrun',ui,/speedrun/],
 ['companion strike',ui,/stats\.attack\*\.5/],['antidote trap',ui,/type==="antidote"/],['branch route',ui,/data-route="elite"/]
 ])assert.match(source,re,name);
+assert.ok(!ui.includes('getSkillEvolution')&&!ui.includes('evolvedSkill'),'skill evolution is absent from combat UI');
 console.log('Combat visual/tactical static checks passed.');
 
 assert.ok(css.includes('.tb-map-screen{padding-top:0!important}'),'map screen has no extra top padding');
