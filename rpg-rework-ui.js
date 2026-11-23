@@ -1524,14 +1524,13 @@ function talentBonusDescription(talent,rank){
   if(!settings().disable_skill_flashes)battle.fx={kind,color:colors[damageType]||"#e8d7a8",until:Date.now()+520};
   if(critical&&!settings().disable_screen_shake)battle.shakeUntil=Date.now()+300;
  }
- function pulseCombatActor(target,kind){const node=target==="player"?root.querySelector(".tb-hero-side"):root.querySelector('.new-enemy-item[data-target="'+(target&&target.index!==undefined?target.index:battle?.targetIndex)+'"]');if(!node)return;const cls=kind==="heal"?"tb-heal-glow":kind==="armor"?"tb-armor-glow":"tb-hit-shake";node.classList.remove(cls);void node.offsetWidth;node.classList.add(cls);setTimeout(()=>node.classList.remove(cls),850);}
+ function pulseCombatActor(target,kind){const node=target==="player"?root.querySelector(".new-hero-side"):root.querySelector('.new-enemy-item[data-target="'+(target&&target.index!==undefined?target.index:battle?.targetIndex)+'"]');if(!node)return;const cls=kind==="heal"?"tb-heal-glow":kind==="armor"?"tb-armor-glow":"tb-hit-shake";node.classList.remove(cls);void node.offsetWidth;node.classList.add(cls);setTimeout(()=>node.classList.remove(cls),850);}
  function showFloatingText(target,text,color){
   const layer=root.querySelector(".tb-fx-layer");if(!layer)return;
   const number=document.createElement("span");number.className="tb-floating-damage";
   number.classList.add(color==="#58e38b"?"is-heal":color==="#ffd34e"?"is-crit":"is-damage");
   number.textContent=String(text);number.style.color=color;
-  const anchor=target==="player"?root.querySelector(".new-hero-side"):
-   target&&typeof target==="object"?(target.index===battle?.targetIndex?root.querySelector(".new-enemy-item"):root.querySelector('.new-enemy-item[data-target="'+target.index+'"]')):root.querySelector(".new-enemy-item");
+  const anchor=target==="player"?root.querySelector(".new-hero-side"):target&&typeof target==="object"?root.querySelector('.new-enemy-item[data-target="'+target.index+'"]'):root.querySelector(".new-enemy-item");
   if(anchor){const box=anchor.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top+Math.min(20,box.height*.12))+"px";}
   layer.appendChild(number);setTimeout(()=>number.remove(),1000);
  }
