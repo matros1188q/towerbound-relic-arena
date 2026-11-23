@@ -29,6 +29,10 @@ assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS
 assert.match(html,/rpg-rework-ui\.css\.js\?v=36/,'CSS cache version is updated');
 assert.ok(css.includes('width:34px!important;min-width:34px!important;max-width:34px!important'),'transparent header logo is fixed to a compact 34px square');
 assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123')&&html.includes('grid-template-columns:minmax(0,1fr)!important'),'start screen uses a single-column phone layout');
+assert.ok(html.includes('TB_TITLESCREEN_FINAL_GUARD_20261123'),'a final start-screen override wins over legacy title-art styles');
+assert.ok(html.includes('width:50px!important;height:50px!important')&&html.includes('max-width:50px!important;max-height:50px!important'),'start-screen T mark is compact on iPhone');
+assert.ok(html.includes('width:100%!important;max-width:100%!important;min-width:0!important')&&html.includes('overflow-x:hidden!important'),'title screen cannot expand beyond the viewport');
+assert.ok(html.includes('src="./assets/icons/image.png"')&&!html.includes('./assets/towerbound-title-v2.webp'),'start screen uses the same current logo as the in-game header');
 assert.match(html,/rpg-rework-ui\.js\?v=67/,'UI cache version is updated');
 assert.match(sw,/^const CACHE = 'towerbound-v\d+';$/m,'service worker cache is updated');
 const progression=read('progression-24.js');
