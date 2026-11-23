@@ -267,12 +267,14 @@
   }
   function equipmentTotals(character){
    const result={attack:0,defense:0,health:0,crit:0,critDamage:0,spellPower:0,fireDamage:0,iceDamage:0,darkDamage:0,fireResist:0,iceResist:0,darkResist:0,physicalResist:0,attackSpeed:0,setPieces:{},itemLevelBonus:0};
-   const refine=balance.equipment.refine_stats_per_level||{attack:0,defense:0,health:0};
    for(const item of character.gear||[]){
     if(!item)continue;
     result.itemLevelBonus+=Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level;
-    for(const key of ["attack","defense","health","crit","critDamage","spellPower","fireDamage","iceDamage","darkDamage","fireResist","iceResist","darkResist","physicalResist"])result[key]+=(item.stats?.[key]||0);
-    result.attack+=refine.attack*(item.refine||0);result.defense+=refine.defense*(item.refine||0);result.health+=refine.health*(item.refine||0);
+    const refineMultiplier=1+Math.max(0,Number(item.refine)||0)*0.05;
+    for(const key of ["attack","defense","health","crit","critDamage","spellPower","fireDamage","iceDamage","darkDamage","fireResist","iceResist","darkResist","physicalResist"]){
+     const base=Number(item.stats?.[key])||0;
+     result[key]+=((key==="attack"||key==="defense"||key==="health")?base*refineMultiplier:base);
+    }
     for(const socket of ((Array.isArray(item.installedGems)&&item.installedGems.length)?item.installedGems:(item.sockets||[]))){
      const stone=socket.stoneType||socket.stone_type||{},level=socket.level||1;
      result.attack+=(stone.attack_per_level||0)*level;result.defense+=(stone.defense_per_level||0)*level;
@@ -419,7 +421,7 @@
     gear:[null,null,null,null,null,null],relics:[],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
     potionBelt:Array(balance.healing.potion_belt_slots).fill(null),dailyChest:{lastOpenedAt:0},achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
-    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,pendingRelicChoices:null,campStopsUsed:[],checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:mode.lives,buffs:{}},
+    run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,pendingRelicChoices:null,campStopsUsed:[],checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,lastPotionStage:null,speed2:false,lives:mode.lives,buffs:{}},
     paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
    };
    if(legacyEligible)character.gear=["weapon","chest","head","legs","hands","accessory"].map((slot,i)=>({id:"legacy-"+character.id+"-"+slot,name:"Наследие · "+slot,slot,itemLevel:50,rarity:"Эпическая",stats:{attack:i===0?18:4,defense:i===0?2:8,health:18},refine:0,sockets:[],socketsAvailable:0,bossLoot:false}));
@@ -893,6 +895,9 @@
   function useHealingPotion(characterId,stackId){
    const character=getChar(characterId),stage=character.run.stage;
    if(!stage)throw new Error("Healing potion can only be used during a battle");
+   const currentStage=Math.max(1,Number(character.progress?.currentStage)||1);
+   const lastPotionStage=character.run.lastPotionStage;
+   if(lastPotionStage!==null&&lastPotionStage!==undefined&&Number.isFinite(Number(lastPotionStage))&&currentStage-Number(lastPotionStage)<5)throw new Error("Зелье можно использовать раз в 5 этажей. Подождите.");
    const targetIndex=stage.targetIndex??stage.enemyIndex,enemy=stage.mobs[targetIndex];
    if(enemy?.type==="boss"&&runModifiers(character).some(modifier=>modifier.boss_no_potion))throw new Error("Daily or seasonal modifier disables potions on bosses");
    if(!difficultyOf(character).potion_belt)throw new Error("Potion belt is disabled in Hardcore");
@@ -905,6 +910,7 @@
    character.run.playerHp=Math.min(maxHp(character),character.run.playerHp+Math.round(maxHp(character)*healFraction));
    character.resource=Math.min(character.resourceMax,character.resource+(resourceConfig.regeneration?.potion||25));
    character.bag=character.bag.filter(item=>item.quantity!==0);
+   character.run.lastPotionStage=currentStage;
    return character.run.playerHp;
   }
   function potionBeltSnapshot(characterId){
@@ -1110,7 +1116,7 @@
   }
   function insertGem(characterId,itemId,stoneId){
    const character=getChar(characterId);
-   const item=character.gear.find(entry=>entry&&entry.id===itemId);
+   const item=character.gear.find(entry=>entry&&entry.id===itemId)||character.bag.find(entry=>entry&&entry.id===itemId&&entry.type==="equipment");
    const stone=character.bag.find(entry=>entry&&entry.id===stoneId&&entry.type==="enhancement_stone");
    if(!item)throw new Error("Предмет экипировки не найден");
    if(!stone)throw new Error("Камень отсутствует в рюкзаке");
@@ -1619,7 +1625,7 @@ if(typeof window!=="undefined"){
       bag,gear:gear.length?gear:[null,null,null,null,null,null],
       heroic:!!old.heroic,progress:{highestEver:best,currentStage:Math.max(1,Math.min(250,old.stage||1)),checkpoints:[50,100,150,200,250].filter(stage=>best>=stage)},
       run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
-       checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:balance.death.lives_per_run||3,buffs:{}},
+       checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,lastPotionStage:null,speed2:false,lives:balance.death.lives_per_run||3,buffs:{}},
       pity:{legendaryMisses:old.legendaryMisses||0,godlikeMisses:old.godlikeMisses||0},
       stats:{kills:old.kills||0,elapsedMs:0,completionMs:0}
      };
