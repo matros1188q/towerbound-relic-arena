@@ -8,7 +8,7 @@ for(const marker of ['createChallenge:challenge','attackGuildBoss:hit','sendGift
 assert.match(source,/type==='healing_potion'/,'gift must consume a real healing potion');
 assert.match(source,/season\(\)/,'seasonal shop must rotate on a 30-day cadence');
 assert.match(source,/function top\(\)/,'offline top-100 must exist');
-assert.ok(html.includes('<script src="./social-endgame.js?v=6"></script>'),'social UI must be loaded by index.html');
+assert.ok(html.includes('<script src="./social-endgame.js?v=7"></script>'),'social UI must be loaded by index.html');
 assert.ok(source.includes("p.id='socPanel'")&&source.includes('document.body.append(p)'),'community panel is rendered as a direct body child');
 assert.ok(source.includes('class="soc-primary-nav"')&&source.includes('data-soc="open-pass"'),'community navigation includes a persistent Battle Pass entry');
 assert.ok(source.includes('data-soc="open-guild"')&&source.includes('data-soc="open-rating"')&&source.includes('data-soc="open-endgame"'),'community navigation exposes Guild, Rating and Endgame together');
