@@ -26,12 +26,11 @@ async function syncServerRevision(){
  const cl=cloud();if(!cl?.signedIn||!cl.loadGame)return;
  try{const remote=await cl.loadGame();if(remote?.revision&&Number(remote.revision)>Number(cl.revision||0)&&cl.refreshFromServer)await cl.refreshFromServer();}catch(e){console.warn('[guild] save revision check failed',e)}
 }
-function syncGuildShortcut(){let button=$('#tbMyGuildShortcut');if(snapshot?.member){if(!button){button=document.createElement('button');button.id='tbMyGuildShortcut';button.type='button';button.textContent='⚜ Моя Гильдия';button.addEventListener('click',()=>{window.TowerboundSocial?.open?.();window.TowerboundSocial?.openTab?.('guild');});document.body.append(button);}}else if(button)button.remove();}
 async function load(){
- if(!cloud()?.signedIn){snapshot=null;syncGuildShortcut();return null;}
+ if(!cloud()?.signedIn){snapshot=null;syncShortcut();setRuntimeBuffs();return null;}
  snapshot=await rpc('tb_guild_snapshot');
  syncGuildShortcut();
- if(snapshot?.member){await syncServerRevision();setRuntimeBuffs();}
+ if(snapshot?.member)await syncServerRevision();setRuntimeBuffs();
  return snapshot;
 }
 function fmt(n){return Math.max(0,Number(n)||0).toLocaleString('ru-RU')}
