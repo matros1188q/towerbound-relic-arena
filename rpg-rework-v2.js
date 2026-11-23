@@ -435,12 +435,12 @@
   }
   function getSkillUnlocks(character,catalog){
    return (catalog||[]).filter(skill=>skill.class_id===character.classId&&
-    (skill.branch_id===null||skill.branch_id===character.branch)&&character.level>=skill.unlock_level).map(skill=>skill.id);
+    (!skill.branch_id||!character.branch||skill.branch_id===character.branch)&&character.level>=skill.unlock_level).map(skill=>skill.id);
   }
   function skillAvailable(character,skill){
    if(!character||!skill)return false;
    const unlockLevel=Number.isFinite(Number(skill.unlock_level))?Number(skill.unlock_level):1;
-   return character.level>=unlockLevel&&(!skill.branch_id||character.branch===skill.branch_id);
+   return character.level>=unlockLevel&&(!skill.branch_id||!character.branch||character.branch===skill.branch_id);
   }
   function stagePlan(character,stage){
    const map=balance.map,boss=stage%map.boss_every===0,range=(map.gauntlet_ranges||[]).find(item=>stage>=item.min&&stage<=item.max);
