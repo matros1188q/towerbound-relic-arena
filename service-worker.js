@@ -15,6 +15,7 @@ const SHELL = [
   './rpg-rework-v2.js',
   './styles.css',
   './rpg-rework-ui.js',
+  './rpg-rework-ui.css.js',
   './towerbound-polish.js',
   './towerbound-engine.js',
   './combat-visuals.js',
