@@ -60,6 +60,16 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-23 — Start screen viewport and transparent logo repair
+
+- Replaced the active RPG header's old `assets/ui/logo.jpeg` source (a JPEG containing a visible checkerboard pattern) with the transparent `assets/icons/image.png` mark.
+- Added an authoritative 34×34px logo rule to prevent intrinsic image dimensions or legacy global styles from expanding the mark and forcing horizontal overflow.
+- Added a final start-screen viewport rule in `index.html`: the title card is constrained to the viewport, and phone widths use a single-column layout with the artwork above the content. The title content and buttons are constrained to the available width.
+- Updated UI/CSS cache keys to `v67` / `v35` and PWA shell cache to `towerbound-v497`.
+- Files: `rpg-rework-ui.js`, `rpg-rework-ui.css.js`, `index.html`, `service-worker.js`, `tests/header-layout.test.cjs`, `tests/online-services.test.cjs`, `README.md`.
+- Verification boundary: source assertions updated and files re-fetched from `main`; GitHub Actions and a physical iPhone 16 Pro Max Safari/PWA visual pass remain unverified.
+
+
 ### 2026-11-23 — Three-zone card battle arena
 
 - Rebuilt the active card-combat viewport into a compact top control strip, a 40/60 hero-versus-enemies field, and a dedicated bottom action zone.
