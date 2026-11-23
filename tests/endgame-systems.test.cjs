@@ -59,3 +59,10 @@ function has(text, needle, label) {
 assert.match(html, /<script src="\.\/endgame-systems\.js\?v=[^"]+"><\/script>/, 'endgame script must be loaded with a cache-busted URL');
 assert.match(html, /<script src="\.\/rpg-rework-ui\.js\?v=[^"]+"><\/script>/, 'combat UI must be loaded with a cache-busted URL');
 console.log('Endgame systems static checks: OK');
+
+[
+['#tbEndgame,#tbEndgame *{writing-mode:horizontal-tb!important;text-orientation:mixed!important;}', 'endgame modal text forced horizontal'],
+['#tbEndgame .eg-window nav button{display:flex!important;flex-direction:row!important;', 'endgame modal tabs stay horizontal'],
+['#tbEndgameMenu,#tbEndgameMenu *{writing-mode:horizontal-tb!important;text-orientation:mixed!important;}', 'floating endgame launch menu text forced horizontal'],
+['font-size:clamp(9px,2.7vw,11px)!important;', 'endgame launch menu labels scale on narrow phones']
+].forEach(([needle,label]) => has(source,needle,label));
