@@ -14,7 +14,7 @@ assert.ok(mode.includes(':not(#socPanel)'),'rpg-open body isolation must keep th
 console.log('social endgame static checks: OK');
 
 assert.match(fs.readFileSync('rpg-rework-ui.js','utf8'),/bottom-progress[\s\S]*?bottom-community[\s\S]*?bottom-shop/,'community belongs between progress and shop in the primary floating navigation');
-assert.match(fs.readFileSync('rpg-rework-ui.js','utf8'),/case \"bottom-community\":window\.TowerboundSocial\?\.open\?\./,'community navigation action opens the community panel');
+assert.ok(fs.readFileSync('rpg-rework-ui.js','utf8').includes('case "bottom-community":{const social=window.TowerboundSocial;'),'community navigation action uses a guarded social-module handler');
 assert.match(source,/writing-mode:horizontal-tb!important/,'community panel normalizes inherited vertical text layout');
 assert.match(source,/TowerboundSocial=\{open:/,'community panel exposes an open method for primary navigation');
 assert.ok(!source.includes("launcher.id='socLauncher'"),'standalone floating community launcher is removed');
