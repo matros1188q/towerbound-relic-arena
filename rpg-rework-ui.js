@@ -2259,7 +2259,7 @@ function talentBonusDescription(talent,rank){
   }).catch(error=>console.error("Towerbound rework UI failed",error));
  }
  boot();
- window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;guildRaid=null;screen="map";render();save();},startGuildRaid};
+ window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;guildRaid=null;screen="map";render();save();},canStartGuildRaid:()=>!battle&&!live()?.run?.stage,startGuildRaid};
  window.skipCardReward=skipCardReward;
  window.TowerboundCards={database:CARD_DATABASE,generateReward:generateCardReward,showReward:showCardRewardScreen,addToDeck:(id)=>addCardToDeck(live(),id),upgrade:(instanceId)=>{const ok=upgradeCardInDeck(live(),instanceId);if(ok){save();render();}return ok;},guildSnapshot:()=>{const c=live();if(!c)return null;ensureCardDeck(c);return {character:{id:c.id,name:c.name,classId:c.classId,level:c.level,branch:c.branch, specialization:c.specialization,deck:JSON.parse(JSON.stringify(c.deck||[])),hand:JSON.parse(JSON.stringify(c.hand||[])),discard:JSON.parse(JSON.stringify(c.discard||[])),gear:JSON.parse(JSON.stringify(c.gear||[])),relics:JSON.parse(JSON.stringify(c.relics||[])),talents:JSON.parse(JSON.stringify(c.talents||{})),silver:c.silver},stats:JSON.parse(JSON.stringify(engine.getCombatStats(c)||{}))};}};
 })();
