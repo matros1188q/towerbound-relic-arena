@@ -870,7 +870,8 @@ function createDialog(){
   battle.isPlayerTurn=true;battle.timerRemainingMs=0;battle.timerStartedAt=0;
   battle.busy=false;battle.isCardAnimating=false;
   battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};battle.telegraph=null;
-  notify(message||"Ошибка действия · управление возвращено игроку");
+  const detail=error?.message?String(error.message).slice(0,180):"";
+  notify((message||"Ошибка действия · управление возвращено игроку")+(detail?" · "+detail:""));
   try{save();render();}catch(renderError){console.error("Battle recovery render failed",renderError);}
  }
  function recoverPlayerTurn(error){recoverBattleControl(error,"Ошибка хода противника · управление возвращено игроку",true);}
@@ -1045,7 +1046,7 @@ function createDialog(){
   if(Number(effects.draw)>0)drawCards(effects.draw);
   const generators=Array.isArray(card.generateCards)?card.generateCards:(card.generate?[{id:card.generate,count:1}]:[]);for(const spec of generators){const amount=Math.max(0,Math.floor(Number(spec?.count)||0));for(let n=0;n<amount;n++){const generated=createCardInstance(spec.id);if(!generated)continue;if(c.hand.length<10)c.hand.push(generated);else c.discard.push(generated);}}
   if(killed&&battle){if(battle.guildRaid){finishGuildRaid();return;}finishCurrentEnemy();if(!battle)return;}
-  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);save();render();if(battle?.guildRaid&&Number(battle.cardsPlayedThisTurn)>=3)finishGuildRaid();
+  if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);if(battle?.guildRaid&&Number(battle.cardsPlayedThisTurn)>=3)finishGuildRaid();
  }
  function endPlayerTurn(){
   if(battle?.guildRaid){notify("В рейде нужно разыграть ровно 3 карты");return;}
@@ -1762,7 +1763,7 @@ function talentBonusDescription(talent,rank){
   triggerVfx("ultimate",ultimate.damage_type,false);if(c.run.playerHp<=0){endFromDamage();return;}if(battle.enemy.hp<=0){finishCurrentEnemy();return;}save();render();
  }
  function enemyCounter(){resolveEnemyTelegraph();}
- function playerAction(skillId,slotIndex){
+ function playerActionUnsafe(skillId,slotIndex){
   if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed)return;
   const c=live(),stats=engine.getCombatStats(c),skill=resolveSkill(c,skillId);
   if(!skill||!engine.skillAvailable(c,skill)){notify("Умение недоступно");return;}
@@ -1816,7 +1817,19 @@ function talentBonusDescription(talent,rank){
   c.progression=c.progression||{};c.progression.skillMastery=c.progression.skillMastery||{};const mastery=(c.progression.skillMastery[skill.id]||0)+1;c.progression.skillMastery[skill.id]=mastery;if(mastery===100)notify("Мастерство освоено: "+skill.name+" · откат −1 ход");
   engine.logCombatEvent(c.id,"Использовано умение: "+skill.name);triggerVfx("skill",damageType,critical);
   if(c.run.playerHp<=0){endFromDamage();return;}
-  if(target.hp<=0){finishCurrentEnemy();return;}save();render();
+  if(target.hp<=0){finishCurrentEnemy();return;}
+ }
+ function playerAction(skillId,slotIndex){
+  if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed)return;
+  let stateBefore=null,battleBefore=null;
+  try{
+   stateBefore=JSON.parse(JSON.stringify(engine.state));battleBefore=JSON.parse(JSON.stringify(battle));
+   playerActionUnsafe(skillId,slotIndex);
+  }catch(error){
+   if(stateBefore&&battleBefore){for(const key of Object.keys(engine.state))delete engine.state[key];Object.assign(engine.state,stateBefore);battle=battleBefore;}
+   recoverBattleControl(error,"Не удалось применить умение · управление восстановлено",false);return;
+  }
+  if(battle){save();try{render();}catch(error){console.error("Skill applied but battle render failed",error);notify("Умение применено, но интерфейс не обновился · "+String(error?.message||error).slice(0,120));}}
  }
  function equipItem(itemId){
   try{engine.equipItem(live().id,itemId);syncEquipmentCards(live());save();render();notify("Предмет надет · карта экипировки добавлена");}catch(error){notify(error.message);}
