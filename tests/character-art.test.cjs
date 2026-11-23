@@ -5,6 +5,7 @@ const ui=fs.readFileSync('rpg-rework-ui.js','utf8');
 const legacy=fs.readFileSync('rpg-mode.js','utf8');
 const engine=fs.readFileSync('towerbound-engine.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
+const styles=fs.readFileSync('styles.css','utf8');
 const heroManifest=JSON.parse(fs.readFileSync('assets/characters/heroes/manifest.json','utf8'));
 const enemyManifest=JSON.parse(fs.readFileSync('assets/characters/enemies/manifest.json','utf8'));
 const bossManifest=JSON.parse(fs.readFileSync('assets/characters/bosses/manifest.json','utf8'));
@@ -23,7 +24,7 @@ assert.equal(chapters.chapters.length,5);
 for(let i=0;i<5;i++){assert.equal(chapters.chapters[i].background,chapterFiles[i]);assert.ok(fs.existsSync(chapterFiles[i]));}
 assert.ok(ui.includes('function chapterBackgroundPath(stage)'));assert.ok(ui.includes('background-size:cover;background-position:center'));
 assert.ok(ui.includes('function enemyPortrait(target)')&&ui.includes('target?.mobId'));
-assert.ok(ui.includes('object-fit:contain')&&legacy.includes('object-fit:contain'));
+assert.ok(styles.includes('object-fit:contain')&&legacy.includes('object-fit:contain'));
 assert.ok(html.includes('./assets/ui/art-sprites.css'));
 assert.ok(html.includes('./assets/ui/logo.jpeg')||legacy.includes('./assets/ui/logo.jpeg'));
 assert.ok(!ui.includes('ART_INBOX_BASE')&&!html.includes('./art-inbox/01-characters/'));

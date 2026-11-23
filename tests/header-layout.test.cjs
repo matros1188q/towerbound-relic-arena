@@ -26,7 +26,7 @@ assert.doesNotMatch(css,/tb-v2:has\(\.tb-arena\)>\.tb-header\{display:none!impor
 assert.doesNotMatch(read('native-pwa.css'),/\.tb-header \.game-logo\{[^}]*width:min\(280px/,'obsolete oversized logo rule is removed');
 assert.match(html,/native-pwa\.css\?v=16/,'native stylesheet cache is updated');
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
-assert.match(html,/rpg-rework-ui\.css\.js\?v=36/,'CSS cache version is updated');
+assert.match(html,/styles\.css\?v=2/,'single static stylesheet cache version is updated');
 assert.ok(css.includes('width:34px!important;min-width:34px!important;max-width:34px!important'),'transparent header logo is fixed to a compact 34px square');
 assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123')&&html.includes('grid-template-columns:minmax(0,1fr)!important'),'start screen uses a single-column phone layout');
 assert.ok(html.includes('TB_TITLESCREEN_FINAL_GUARD_20261123'),'a final start-screen override wins over legacy title-art styles');
