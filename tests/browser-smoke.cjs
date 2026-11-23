@@ -139,9 +139,17 @@ async function journey(type,name,viewport,url){
   await page.locator('[data-collection-close]').click();
   await page.locator('[data-action="bottom-progress"]').click();
   assert.equal(await page.locator('.tb-systems').count(),1,name+' opens the progress destination from bottom navigation');
+  const progressLayout=await page.locator('.tb-systems').evaluate(el=>({display:getComputedStyle(el).display,width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,content:el.innerText.trim().length,achievements:el.querySelectorAll('.tb-system-row').length}));
+  assert.equal(progressLayout.display,'block',name+' progress is a full-width block, not a squeezed legacy flex row');
+  assert.ok(progressLayout.width>viewport.width*.75&&progressLayout.height>150&&progressLayout.content>80,name+' progress content is visibly laid out: '+JSON.stringify(progressLayout));
+  assert.ok(progressLayout.achievements>0,name+' renders achievement rows');
   assert.equal(await page.locator('#socPanel').count(),0,name+' progress navigation does not open the social overlay');
   await page.locator('[data-action="bottom-shop"]').click();
   assert.equal(await page.locator('.tb-shop').count(),1,name+' opens the shop destination from bottom navigation');
+  const shopLayout=await page.locator('.tb-shop').evaluate(el=>({display:getComputedStyle(el).display,width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,content:el.innerText.trim().length,products:el.querySelectorAll('.tb-product').length}));
+  assert.equal(shopLayout.display,'block',name+' shop is a full-width block, not a squeezed legacy flex row');
+  assert.ok(shopLayout.width>viewport.width*.75&&shopLayout.height>180&&shopLayout.content>80,name+' shop content is visibly laid out: '+JSON.stringify(shopLayout));
+  assert.ok(shopLayout.products>0,name+' renders purchasable shop products');
   await page.locator('[data-action="bottom-account"]').click();
   assert.equal(await page.locator('.tb-systems').count(),1,name+' opens the account destination from bottom navigation');
   await page.locator('[data-action="bottom-map"]').click();
