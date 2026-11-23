@@ -1185,3 +1185,7 @@
 
 /* 2026-11-23 · additional 20px left shift for draw/discard/deck cluster */
 #tbRpg .v2-energy-bar .deck-info,#tbRpg .v2-energy-bar .tb-deck-viewer-trigger{left:-30px!important}
+
+
+/* 2026-11-23 · additional 50px left shift for draw/discard/deck cluster */
+#tbRpg .v2-energy-bar .deck-info,#tbRpg .v2-energy-bar .tb-deck-viewer-trigger{left:-80px!important}
