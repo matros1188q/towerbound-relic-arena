@@ -60,6 +60,16 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-23 — Final iPhone title-screen sizing guard
+
+- Added a final title-screen CSS guard after the legacy title styling so phone widths use a single column bounded to the viewport; removed the old art-panel background, orbit/vignette and label treatment from the active title mark.
+- Reduced the T mark to 50×50 CSS pixels on phones (58×58 on wide desktop layouts), using the same `assets/icons/image.png` source as the in-game RPG header.
+- Kept the title copy, feature row, help panel and enter-arena actions intact; forced all text/actions to stay inside the available width and allowed vertical scrolling rather than horizontal clipping.
+- Updated the service-worker shell cache to `towerbound-v500` so installed PWA clients receive the refreshed HTML. Added static regression assertions in `tests/header-layout.test.cjs`.
+- Files: `index.html`, `service-worker.js`, `tests/header-layout.test.cjs`, `README.md`.
+- Verification boundary: source changes saved to `main`; automated checks and a live iPhone 16 Pro Max Safari/PWA visual pass must still be confirmed.
+
+
 ### 2026-11-23 — iPhone start-screen viewport and logo repair
 
 - Replaced the legacy title-screen artwork `assets/towerbound-title-v2.webp` with the same current T logo asset used by the active RPG header and PWA icon: `assets/icons/image.png`.
