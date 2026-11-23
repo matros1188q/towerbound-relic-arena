@@ -101,21 +101,21 @@ for(const [manifestPath,expected] of [
   assert.ok(relative&&fs.existsSync(path.join(root,relative)),manifestPath+' references an existing asset: '+relative);
  }
 }
-const dedicatedClassPortraits={assassin:'image-Photoroom.png',bishop:'image 2-Photoroom(1).png',dragonkin:'image 3-Photoroom.png',destroyer:'image 4-Photoroom.png',elemental:'image 5-Photoroom.png',shaman:'image 6-Photoroom.png',duelist:'image 7-Photoroom.png'};
+const dedicatedClassPortraits={assassin:'image-Photoroom.png',bishop:'image_2-Photoroom(1).png',dragonkin:'image_3-Photoroom.png',destroyer:'image_4-Photoroom.png',elemental:'image_5-Photoroom.png',shaman:'image_6-Photoroom.png',duelist:'image_7-Photoroom.png'};
 for(const [id,fileName] of Object.entries(dedicatedClassPortraits)){
  const image=path.join(root,'assets/characters/heroes',fileName);
  assert.ok(fs.existsSync(image),id+' has a dedicated PNG portrait asset');
  assert.ok(fs.statSync(image).size>1024,id+' portrait is not an empty placeholder');
 }
-const crimsonRegent=path.join(root,'assets/characters/bosses/image 11.png');
+const crimsonRegent=path.join(root,'assets/characters/bosses/image_11.png');
 assert.ok(fs.existsSync(crimsonRegent),'Crimson Regent has a dedicated PNG boss portrait');
 assert.ok(fs.statSync(crimsonRegent).size>1024,'Crimson Regent portrait is not an empty placeholder');
 // Native PWA phase-2 release checks: dedicated class/boss art, fixed tab navigation and origin-safe Supabase auth.
 const uiSource=fs.readFileSync(path.join(root,'rpg-rework-ui.js'),'utf8');
-for(const [classId,fileName] of Object.entries({assassin:'image-Photoroom.png',bishop:'image 2-Photoroom(1).png',dragonkin:'image 3-Photoroom.png',destroyer:'image 4-Photoroom.png',elemental:'image 5-Photoroom.png',shaman:'image 6-Photoroom.png',duelist:'image 7-Photoroom.png'})){
+for(const [classId,fileName] of Object.entries({assassin:'image-Photoroom.png',bishop:'image_2-Photoroom(1).png',dragonkin:'image_3-Photoroom.png',destroyer:'image_4-Photoroom.png',elemental:'image_5-Photoroom.png',shaman:'image_6-Photoroom.png',duelist:'image_7-Photoroom.png'})){
  assert.ok(uiSource.includes(classId+':"heroes/'+fileName+'"'),classId+' uses its own dedicated class portrait');
 }
-assert.ok(uiSource.includes('"crimson-regent":"bosses/image 11.png"'),'Crimson Regent uses a dedicated boss JPG portrait');
+assert.ok(uiSource.includes('"crimson-regent":"bosses/image_11.png"'),'Crimson Regent uses a dedicated boss JPG portrait');
 assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
 assert.ok(uiSource.includes('if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}'),'bottom navigation stays out of the battle screen');
 for(const action of ['bottom-map','bottom-profile','bottom-progress','bottom-shop','bottom-account'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');

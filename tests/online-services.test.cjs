@@ -45,9 +45,9 @@ assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired')
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(html.includes('./towerbound-cloud.js?v=18'),'cloud module cache is refreshed');
-assert.ok(html.includes('./rpg-rework-v2.js?v=17'),'engine cache is refreshed for gem socket support');
-assert.ok(html.includes('./rpg-rework-ui.js?v=67'),'battle, profile and transparent logo UI cache is refreshed');
-assert.ok(html.includes('./styles.css?v=1'),'battle, profile and start screen styles load from one static stylesheet');
+assert.ok(html.includes('./rpg-rework-v2.js?v=18'),'engine cache is refreshed for gem socket support');
+assert.ok(html.includes('./rpg-rework-ui.js?v=68'),'battle, profile and transparent logo UI cache is refreshed');
+assert.ok(html.includes('./styles.css?v=2'),'battle, profile and start screen styles load from one static stylesheet');
 assert.ok(!html.includes('rpg-rework-ui.css.js'),'legacy runtime CSS loader is no longer loaded by the page');
 assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123'),'mobile start-screen viewport regression is guarded');
 assert.ok(html.includes('<img class="title-illustration" src="./assets/icons/image.png" alt="T" width="96" height="96" decoding="async" fetchpriority="high">')&&!html.includes('./assets/towerbound-title-v2.webp'),'start screen reuses the current transparent T logo instead of the legacy title illustration');
@@ -169,7 +169,7 @@ assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new E
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
 assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:39px!important')&&css.includes('height:34px!important'),'iPhone header preserves the original logo size and removes the progression button');
-assert.ok(html.includes('progression-24.js?v=9')&&html.includes('towerbound-cloud.js?v=18')&&html.includes('styles.css?v=1'),'updated progression, cloud and UI styles bypass stale browser cache');
+assert.ok(html.includes('progression-24.js?v=10')&&html.includes('towerbound-cloud.js?v=18')&&html.includes('styles.css?v=2'),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');

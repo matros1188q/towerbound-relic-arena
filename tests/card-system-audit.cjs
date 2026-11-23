@@ -93,4 +93,13 @@ assert.match(ui,/Number\(effects\.damageMissingHp\)>0\)&&!target/,'dynamic missi
 assert.match(ui,/Number\(effects\.damagePerEnergy\)>0[\s\S]*?Number\(effects\.damageMissingHp\)>0/,'X-cost and missing-health cards show calculated damage in inspection');
 assert.match(ui,/status_slime:\{id:"status_slime"[^\n]*effects:\{selfDiscard:true\}/,'self-discard status is a one-energy card');
 assert.match(ui,/c\.hand\.splice\(index,1\);[\s\S]*?if\(card\.exhaust\|\|card\.upgradedExhaust\)c\.exhaustPile\.push\(card\);else c\.discard\.push\(card\)/,'playing a self-discard card consumes it into the discard pile');
+
+assert.match(ui,/else c\.currentEnergy-=cost/,'playing a card deducts its calculated energy cost');
+assert.match(ui,/c\.hand\.splice\(index,1\);[\s\S]*?if\(card\.exhaust\|\|card\.upgradedExhaust\)c\.exhaustPile\.push\(card\);else c\.discard\.push\(card\)/,'a played card moves from hand into discard or exhaust');
+assert.match(ui,/for\(const key of \["poison","bleed","burn","weak","vulnerable"\]\)[\s\S]*?enemy\[key\]=Math\.max/,'poison and bleed effects persist on the targeted enemy object');
+assert.match(ui,/function endPlayerTurn\(\)[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'ending a player turn launches the enemy attack queue');
+assert.match(ui,/if\(\(battle\.playerDamageBuffTurns\|\|0\)>0\)battle\.playerDamageBuffTurns--/,'temporary player damage buffs expire after their turns');
+assert.match(ui,/if\(\(battle\.enemyDamageReductionTurns\|\|0\)>0\)battle\.enemyDamageReductionTurns--/,'temporary enemy damage reduction expires after its turns');
+assert.match(ui,/if\(\(battle\.playerWeakTurns\|\|0\)>0\)battle\.playerWeakTurns--/,'temporary player weakness expires after its turns');
+
 console.log('CARD SYSTEM AUDIT PASS: 126 unique cards, 126 matching art files, 7 class rosters, 21 specialization routing, supported effects/statuses, draw/discard/exhaust/retain and enemy turn queue.');

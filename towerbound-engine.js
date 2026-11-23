@@ -84,7 +84,7 @@ setWave:function(wave,boss){
  const enemyFiles=['shadow-goblin','cursed-knight','ash-wolf','rune-golem','grave-archer','plague-witch','ash-imp','swamp-reaper','bone-warden','crimson-executioner','void-hunter','spider-matron','blind-monk','stone-minotaur','phantom-duelist','soul-harvester','forest-horror','abyss-knight','cursed-alchemist','root-colossus'];
  const bossFiles=['bone-colossus','abyss-queen','ash-patriarch','ice-abbot','mirror-executioner','soul-devourer','root-titan','void-hunter-boss',null,'heart-of-tower'];
  const labels=['Теневой гоблин','Проклятый рыцарь','Пепельный волк','Рунный голем','Могильный лучник','Чумная ведьма','Пепельный бес','Болотный жнец','Костяной страж','Багровый палач','Пустотный охотник','Паучья матрона','Слепой монах','Каменный минотавр','Призрачный дуэлянт','Собиратель душ','Лесной ужас','Рыцарь бездны','Проклятый алхимик','Корневой исполин'];
- const heroFiles={assassin:'image-Photoroom.png',bishop:'image 2-Photoroom(1).png',dragonkin:'image 3-Photoroom.png',destroyer:'image 4-Photoroom.png',elemental:'image 5-Photoroom.png',shaman:'image 6-Photoroom.png',duelist:'image 7-Photoroom.png',warden:'warden.png',ranger:'ranger.png',arcanist:'arcanist.png',reaper:'reaper.png'};
+ const heroFiles={assassin:'image-Photoroom.png',bishop:'image_2-Photoroom(1).png',dragonkin:'image_3-Photoroom.png',destroyer:'image_4-Photoroom.png',elemental:'image_5-Photoroom.png',shaman:'image_6-Photoroom.png',duelist:'image_7-Photoroom.png',warden:'warden.png',ranger:'ranger.png',arcanist:'arcanist.png',reaper:'reaper.png'};
  const domHero=mount&&mount.querySelector('.tb-visible-hero');
  if(domHero){
   const heroId=(window.TowerboundHeroId||'assassin');
@@ -99,8 +99,8 @@ setWave:function(wave,boss){
  if(domEnemy){
   const category=boss&&bossFiles[Math.max(0,Math.min(9,Math.ceil(n/7)-1))]?'bosses':'enemies';
   const enemyJpg={'shadow-goblin':'image_4.png','cursed-knight':'image_3.png','ash-wolf':'image_7.png','rune-golem':'image_8.png','grave-archer':'image_4.png','plague-witch':'image_10.png','ash-imp':'image_11.png','swamp-reaper':'image_2.png','bone-warden':'image_13.png','crimson-executioner':'image_9.png','void-hunter':'image_16.png','spider-matron':'image_14.png','blind-monk':'image_17.png','stone-minotaur':'image_18.png','phantom-duelist':'image_5.png','soul-harvester':'image_15.png','forest-horror':'image_12.png','abyss-knight':'image_6.png','cursed-alchemist':'image_20.png','root-colossus':'image.png'};
- const bossPng={'bone-colossus':'bone-colossus.png','abyss-queen':'abyss-queen.png','ash-patriarch':'image 3.png','ice-abbot':'image 4.png','mirror-executioner':'mirror-executioner.png','soul-devourer':'soul-devourer.png','root-titan':'root-titan.png','void-hunter-boss':'void-hunter-boss.png','crimson-regent':'image 11.png','heart-of-tower':'image 12.png'};
- const src=boss?'./assets/characters/bosses/'+(bossPng[foeId]||'image 12.png'):'./assets/characters/enemies/'+(enemyJpg[foeId]||'image_4.png');
+ const bossPng={'bone-colossus':'bone-colossus.png','abyss-queen':'abyss-queen.png','ash-patriarch':'image_3.png','ice-abbot':'image_4.png','mirror-executioner':'mirror-executioner.png','soul-devourer':'soul-devourer.png','root-titan':'root-titan.png','void-hunter-boss':'void-hunter-boss.png','crimson-regent':'image_11.png','heart-of-tower':'image_12.png'};
+ const src=boss?'./assets/characters/bosses/'+(bossPng[foeId]||'image_12.png'):'./assets/characters/enemies/'+(enemyJpg[foeId]||'image_4.png');
   if(domEnemy.dataset.tbArtSrc!==src){domEnemy.dataset.tbArtSrc=src;domEnemy.src=src;}
   domEnemy.alt=(boss?'Босс: ':'')+(boss?(["Костяной колосс","Королева Бездны","Пепельный патриарх","Ледяной аббат","Зеркальный палач","Пожиратель душ","Корневой титан","Охотник Бездны","Сердце Башни"][Math.max(0,Math.min(8,Math.ceil(n/7)-1))]||labels[idx]):labels[idx]);
   domEnemy.dataset.tbActorId=foeId;

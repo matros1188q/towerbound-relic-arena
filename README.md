@@ -60,6 +60,15 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-23 — Auto-battle HP carry-over and underscore asset URLs
+
+- Removed the remaining per-stage full-health reset from simplified auto-battle. Manual combat already carries current HP between cleared stages; auto-battle now retains the current HP value instead of restoring it after every stage.
+- Kept the auto-battle limitation note and UI tooltip: the simulation uses base DPS and does not model card synergies or poison interactions.
+- Normalised active portrait, relic and sprite-atlas PNG paths to underscores, including the legacy RPG renderer and Phaser portrait map. Updated manifests, CSS sprites, service-worker precache and XP-potion icon reference. Binary images are renamed with their existing Git blobs, preserving the original bytes.
+- Made the progression initializer's engine guard explicit. Added regression checks for auto-battle HP carry-over, active asset filenames, card energy/discard/status application and temporary turn buffs.
+- Frontend cache versions: RPG engine `v18`, main UI `v68`, styles `v2`, sprite CSS `v4`, progression `v10`; PWA cache `towerbound-v506`.
+
+
 ### 2026-11-23 — Combat carry-over, static styles and asset path cleanup
 
 - Removed the full-health reset after a manual stage clear so remaining HP carries into the next stage. Kept the separate auto-battle simulation explicitly documented as a simplified base-DPS estimate.

@@ -1081,7 +1081,6 @@
     const gained=awardXp(character,stageXp);result.xp+=gained.amount;result.cleared++;
     character.progress.highestEver=Math.max(character.progress.highestEver,stage);character.progress.currentStage=stage+1;
     if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
-    character.run.playerHp=maxHp(character);
    }
    if(!result.stopped)result.stopped="Достигнут лимит авто-боя";
    return result;

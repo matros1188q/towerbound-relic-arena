@@ -484,5 +484,16 @@ console.log('RPG balance/content checks passed: 30 configs, combat cadence, curv
  assert.ok(source.includes('function finishEnemy(characterId,flags)'),'finishEnemy implementation remains present');
  assert.ok(!source.includes('character.run.stage=null;\n    character.run.playerHp=maxHp(character);'),'manual stage clear must preserve the remaining player HP');
  assert.ok(source.includes('// TODO: AutoBattle does not use card synergies, only base DPS.'),'auto battle limitations are documented next to the simulation');
+
+ const autoStart=source.indexOf('function autoBattle(characterId,options){');
+ const autoEnd=source.indexOf('\n  function mergeStones',autoStart);
+ assert.ok(autoStart>=0&&autoEnd>autoStart,'autoBattle implementation remains isolated for HP carry-over checks');
+ const autoSource=source.slice(autoStart,autoEnd);
+ assert.ok(!autoSource.includes('character.run.playerHp=maxHp(character);'),'auto-battle must carry remaining HP between cleared stages');
+ const finishStart=source.indexOf('function finishEnemy(characterId,flags){');
+ const finishEnd=source.indexOf('\n  function ',finishStart+20);
+ assert.ok(finishStart>=0&&finishEnd>finishStart,'finishEnemy implementation is isolated');
+ assert.doesNotMatch(source.slice(finishStart,finishEnd),/playerHp\s*=\s*maxHp\(character\)/,'manual stage clear must not restore full HP');
+
  assert.ok(ui.includes('title="Авто-бой не учитывает синергии карт и яды"'),'auto battle button explains the limitations of the simplified simulation');
 }

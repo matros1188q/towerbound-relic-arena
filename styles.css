@@ -230,11 +230,11 @@
 #tbRpg .tb-v2 #endturn.v2-btn-end:disabled{opacity:.82!important}
 #tbRpg .tb-v2 .v2-hero-hp-text,#tbRpg .tb-v2 .v2-hero-resource-text{display:block!important;margin-top:5px!important;color:#d6d0c5!important;font-size:10px!important;text-align:center!important}
 #tbRpg .tb-v2 .v2-skill-icon{display:inline-flex!important;flex:0 0 30px!important;width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;align-items:center!important;justify-content:center!important;background-repeat:no-repeat!important;vertical-align:middle!important;object-fit:contain!important}
-#tbRpg .tb-v2 .v2-skill-icon.skill-fire{background-image:url("./assets/icons/image 17.png")!important;background-size:400% 400%!important;background-position:0 0!important}
-#tbRpg .tb-v2 .v2-skill-icon.skill-ice{background-image:url("./assets/icons/image 17.png")!important;background-size:400% 400%!important;background-position:33.333% 0!important}
-#tbRpg .tb-v2 .v2-skill-icon.skill-arcane{background-image:url("./assets/icons/image 17.png")!important;background-size:400% 400%!important;background-position:66.667% 33.333%!important}
-#tbRpg .tb-v2 .v2-skill-icon.skill-poison{background-image:url("./assets/icons/image 13.png")!important;background-size:400% 300%!important;background-position:66.667% 0!important}
-#tbRpg .tb-v2 .v2-skill-icon.skill-phys{background-image:url("./assets/icons/image 13.png")!important;background-size:400% 300%!important;background-position:100% 0!important}
+#tbRpg .tb-v2 .v2-skill-icon.skill-fire{background-image:url("./assets/icons/image_17.png")!important;background-size:400% 400%!important;background-position:0 0!important}
+#tbRpg .tb-v2 .v2-skill-icon.skill-ice{background-image:url("./assets/icons/image_17.png")!important;background-size:400% 400%!important;background-position:33.333% 0!important}
+#tbRpg .tb-v2 .v2-skill-icon.skill-arcane{background-image:url("./assets/icons/image_17.png")!important;background-size:400% 400%!important;background-position:66.667% 33.333%!important}
+#tbRpg .tb-v2 .v2-skill-icon.skill-poison{background-image:url("./assets/icons/image_13.png")!important;background-size:400% 300%!important;background-position:66.667% 0!important}
+#tbRpg .tb-v2 .v2-skill-icon.skill-phys{background-image:url("./assets/icons/image_13.png")!important;background-size:400% 300%!important;background-position:100% 0!important}
 #tbRpg .tb-v2 .v2-skill-icon-glyph{font-size:22px!important;color:#f0d7a6!important}
 #tbRpg .tb-v2 .v2-skill-icon-empty{color:#7b818b!important;font-size:20px!important}
 #tbRpg .tb-v2 .v2-skill-btn{min-height:72px!important;gap:2px!important}
