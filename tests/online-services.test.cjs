@@ -49,6 +49,9 @@ assert.ok(html.includes('./rpg-rework-v2.js?v=17'),'engine cache is refreshed fo
 assert.ok(html.includes('./rpg-rework-ui.js?v=67'),'battle, profile and transparent logo UI cache is refreshed');
 assert.ok(html.includes('./rpg-rework-ui.css.js?v=36'),'battle, profile and start screen stylesheet cache is refreshed');
 assert.ok(html.includes('TB_START_SCREEN_VIEWPORT_FIX_20261123'),'mobile start-screen viewport regression is guarded');
+assert.ok(html.includes('<img class="title-illustration" src="./assets/icons/image.png" alt="T" width="96" height="96" decoding="async" fetchpriority="high">')&&!html.includes('./assets/towerbound-title-v2.webp'),'start screen reuses the current transparent T logo instead of the legacy title illustration');
+assert.ok(html.includes('grid-template-columns:minmax(0,1fr)!important;')&&html.includes('width:100%!important;max-width:100%!important;min-width:0!important;')&&html.includes('@media(max-width:900px)'),'start screen is locked to a single responsive column on iPhone and small tablets');
+assert.ok(html.includes('background:transparent!important;box-shadow:none!important;isolation:auto!important;')&&html.includes('title-art-vignette,#titleScreen .title-art-label{display:none!important}'),'old logo panel, vignette and title-art label are removed');
 assert.ok(ui.includes('./assets/icons/image.png')&&!ui.includes('./assets/ui/logo.jpeg'),'active RPG header uses the transparent logo source');
 assert.ok(css.includes('TowerBound three-zone battle arena v496'),'battle uses the three-zone layout');
 assert.ok(css.includes('grid-template-columns:minmax(0,2fr) minmax(0,3fr)'),'hero and enemy field use the 40/60 split');
