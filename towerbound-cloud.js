@@ -100,6 +100,7 @@ async function writeRemote(snapshot,expected){
  return row;
 }
 async function loadGame(){return await readRemote();}
+async function refreshFromServer(){const remote=await readRemote();if(!remote?.save_data)throw new Error("Облачное сохранение не найдено");revision=Number(remote.revision)||revision;restoreLocal(remote.save_data);}
 async function saveGame(snapshot=localSnapshot(),expected=revision){return await writeRemote(snapshot,expected);}
 
 async function chooseSource(remote){
@@ -108,6 +109,7 @@ async function chooseSource(remote){
  revision=remote?Number(remote.revision):0;
  if(!remote){const hasCharacters=snapshotHasCharacters(local);say('В облаке пока нет сохранения.');await writeRemote(local,0);$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;setStatus('ОБЛАКО · СОХРАНЕНО','online');say(hasCharacters?'Прогресс привязан к аккаунту. Локальная копия сохранена.':'Успешный вход. Создайте персонажа');return;}
  const localHasCharacters=snapshotHasCharacters(local),remoteHasCharacters=snapshotHasCharacters(remote.save_data);
+ if(sameUser&&knownRevision<revision){say("Облачное сохранение обновилось на сервере. Загружаем актуальные данные…");restoreLocal(remote.save_data);return;}
  if(remoteHasCharacters&&!localHasCharacters){
   say('В облаке найден персонаж. Восстанавливаем прогресс…');
   restoreLocal(remote.save_data);
@@ -198,5 +200,5 @@ function init(){
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
-window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,saveGame,queueSave,syncNow,signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
+window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,saveGame,queueSave,syncNow,signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
 })();
