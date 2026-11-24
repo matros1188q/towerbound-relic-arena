@@ -10,7 +10,9 @@
       "relative_path": "assets/characters/enemies/image_2.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.swamp-reaper"
+      "exact_asset_id": "enemy.swamp-reaper",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "cursed-knight",
@@ -19,7 +21,9 @@
       "relative_path": "assets/characters/enemies/image_3.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.cursed-knight"
+      "exact_asset_id": "enemy.cursed-knight",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "shadow-goblin",
@@ -28,7 +32,9 @@
       "relative_path": "assets/characters/enemies/image_4.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.shadow-goblin"
+      "exact_asset_id": "enemy.shadow-goblin",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "phantom-duelist",
@@ -37,7 +43,9 @@
       "relative_path": "assets/characters/enemies/image_5.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.phantom-duelist"
+      "exact_asset_id": "enemy.phantom-duelist",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "abyss-knight",
@@ -46,7 +54,9 @@
       "relative_path": "assets/characters/enemies/image_6.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.abyss-knight"
+      "exact_asset_id": "enemy.abyss-knight",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "ash-wolf",
@@ -55,7 +65,9 @@
       "relative_path": "assets/characters/enemies/image_7.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.ash-wolf"
+      "exact_asset_id": "enemy.ash-wolf",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "rune-golem",
@@ -64,7 +76,9 @@
       "relative_path": "assets/characters/enemies/image_8.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.rune-golem"
+      "exact_asset_id": "enemy.rune-golem",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "crimson-executioner",
@@ -73,7 +87,9 @@
       "relative_path": "assets/characters/enemies/image_9.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.crimson-executioner"
+      "exact_asset_id": "enemy.crimson-executioner",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "plague-witch",
@@ -82,7 +98,9 @@
       "relative_path": "assets/characters/enemies/image_10.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.plague-witch"
+      "exact_asset_id": "enemy.plague-witch",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "ash-imp",
@@ -91,7 +109,9 @@
       "relative_path": "assets/characters/enemies/image_11.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.ash-imp"
+      "exact_asset_id": "enemy.ash-imp",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "forest-horror",
@@ -100,7 +120,9 @@
       "relative_path": "assets/characters/enemies/image_12.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.forest-horror"
+      "exact_asset_id": "enemy.forest-horror",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "bone-warden",
@@ -109,7 +131,9 @@
       "relative_path": "assets/characters/enemies/image_13.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.bone-warden"
+      "exact_asset_id": "enemy.bone-warden",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "spider-matron",
@@ -118,7 +142,9 @@
       "relative_path": "assets/characters/enemies/image_14.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.spider-matron"
+      "exact_asset_id": "enemy.spider-matron",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "soul-harvester",
@@ -127,7 +153,9 @@
       "relative_path": "assets/characters/enemies/image_15.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.soul-harvester"
+      "exact_asset_id": "enemy.soul-harvester",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "void-hunter",
@@ -136,7 +164,9 @@
       "relative_path": "assets/characters/enemies/image_16.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.void-hunter"
+      "exact_asset_id": "enemy.void-hunter",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "blind-monk",
@@ -145,7 +175,9 @@
       "relative_path": "assets/characters/enemies/image_17.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.blind-monk"
+      "exact_asset_id": "enemy.blind-monk",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "stone-minotaur",
@@ -154,7 +186,9 @@
       "relative_path": "assets/characters/enemies/image_18.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.stone-minotaur"
+      "exact_asset_id": "enemy.stone-minotaur",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "cursed-alchemist",
@@ -163,7 +197,9 @@
       "relative_path": "assets/characters/enemies/image_20.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.cursed-alchemist"
+      "exact_asset_id": "enemy.cursed-alchemist",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "root-colossus",
@@ -172,7 +208,9 @@
       "relative_path": "assets/characters/enemies/image.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.root-colossus"
+      "exact_asset_id": "enemy.root-colossus",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "grave-archer",
@@ -181,7 +219,9 @@
       "relative_path": "assets/characters/enemies/grave-archer.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "enemy.grave-archer"
+      "exact_asset_id": "enemy.grave-archer",
+      "width": 1024,
+      "height": 1024
     }
   ]
 }

@@ -10,7 +10,9 @@
       "relative_path": "assets/characters/bosses/mirror-executioner.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.mirror-executioner"
+      "exact_asset_id": "boss.mirror-executioner",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "ash-patriarch",
@@ -19,7 +21,9 @@
       "relative_path": "assets/characters/bosses/image_3.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.ash-patriarch"
+      "exact_asset_id": "boss.ash-patriarch",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "ice-abbot",
@@ -28,7 +32,9 @@
       "relative_path": "assets/characters/bosses/image_4.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.ice-abbot"
+      "exact_asset_id": "boss.ice-abbot",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "crimson-regent",
@@ -37,7 +43,9 @@
       "relative_path": "assets/characters/bosses/image_11.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.crimson-regent"
+      "exact_asset_id": "boss.crimson-regent",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "heart-of-tower",
@@ -46,7 +54,9 @@
       "relative_path": "assets/characters/bosses/image_12.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.heart-of-tower"
+      "exact_asset_id": "boss.heart-of-tower",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "abyss-queen",
@@ -55,7 +65,9 @@
       "relative_path": "assets/characters/bosses/abyss-queen.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.abyss-queen"
+      "exact_asset_id": "boss.abyss-queen",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "bone-colossus",
@@ -64,7 +76,9 @@
       "relative_path": "assets/characters/bosses/bone-colossus.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.bone-colossus"
+      "exact_asset_id": "boss.bone-colossus",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "root-titan",
@@ -73,7 +87,9 @@
       "relative_path": "assets/characters/bosses/root-titan.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.root-titan"
+      "exact_asset_id": "boss.root-titan",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "soul-devourer",
@@ -82,7 +98,9 @@
       "relative_path": "assets/characters/bosses/soul-devourer.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.soul-devourer"
+      "exact_asset_id": "boss.soul-devourer",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "void-hunter-boss",
@@ -91,7 +109,9 @@
       "relative_path": "assets/characters/bosses/void-hunter-boss.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "boss.void-hunter-boss"
+      "exact_asset_id": "boss.void-hunter-boss",
+      "width": 1024,
+      "height": 1024
     }
   ]
 }

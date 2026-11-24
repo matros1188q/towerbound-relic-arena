@@ -10,7 +10,9 @@
       "relative_path": "assets/characters/heroes/image-Photoroom.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "hero.assassin"
+      "exact_asset_id": "hero.assassin",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "bishop",
@@ -19,7 +21,9 @@
       "relative_path": "assets/characters/heroes/image_2-Photoroom(1).png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "hero.bishop"
+      "exact_asset_id": "hero.bishop",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "dragonkin",
@@ -28,7 +32,9 @@
       "relative_path": "assets/characters/heroes/image_3-Photoroom.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "hero.dragonkin"
+      "exact_asset_id": "hero.dragonkin",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "destroyer",
@@ -37,7 +43,9 @@
       "relative_path": "assets/characters/heroes/image_4-Photoroom.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "hero.destroyer"
+      "exact_asset_id": "hero.destroyer",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "elemental",
@@ -46,7 +54,9 @@
       "relative_path": "assets/characters/heroes/image_5-Photoroom.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "hero.elemental"
+      "exact_asset_id": "hero.elemental",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "shaman",
@@ -55,7 +65,9 @@
       "relative_path": "assets/characters/heroes/image_6-Photoroom.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "hero.shaman"
+      "exact_asset_id": "hero.shaman",
+      "width": 1024,
+      "height": 1024
     },
     {
       "id": "duelist",
@@ -64,7 +76,9 @@
       "relative_path": "assets/characters/heroes/image_7-Photoroom.png",
       "image_format": "png",
       "usage": "gameplay",
-      "exact_asset_id": "hero.duelist"
+      "exact_asset_id": "hero.duelist",
+      "width": 1024,
+      "height": 1024
     }
   ]
 }
