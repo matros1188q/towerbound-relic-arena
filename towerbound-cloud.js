@@ -108,6 +108,25 @@ function isFreshStarterSnapshot(snapshot){
  }catch(_){return false;}
 }
 function sameSave(a,b){if(!a?.keys||!b?.keys)return false;const ak=Object.keys(a.keys).sort(),bk=Object.keys(b.keys).sort();return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&a.keys[k]===b.keys[k]);}
+function stableValue(value){if(Array.isArray(value))return value.map(stableValue);if(value&&typeof value==='object')return Object.keys(value).sort().reduce((out,key)=>(out[key]=stableValue(value[key]),out),{});return value;}
+function onlyBagDiff(local,remote){
+ if(!local?.keys||!remote?.keys)return false;
+ const a=Object.keys(local.keys).sort(),b=Object.keys(remote.keys).sort();if(a.length!==b.length||a.some((k,i)=>k!==b[i]))return false;
+ let changed=false;
+ for(const key of a){
+  const av=local.keys[key],bv=remote.keys[key];
+  if(key!=='tb-rpg-v2'){if(av!==bv)return false;continue;}
+  if(typeof av!=='string'||typeof bv!=='string')return false;
+  try{
+   const ag=JSON.parse(av),bg=JSON.parse(bv),ac=Array.isArray(ag.characters)?ag.characters:[],bc=Array.isArray(bg.characters)?bg.characters:[];
+   if(ac.length!==bc.length)return false;
+   const strip=game=>{const copy=JSON.parse(JSON.stringify(game));for(const ch of copy.characters||[])delete ch.bag;return JSON.stringify(stableValue(copy));};
+   if(strip(ag)!==strip(bg))return false;
+   if(JSON.stringify(stableValue(ac.map(x=>x.bag||[])))!==JSON.stringify(stableValue(bc.map(x=>x.bag||[]))))changed=true;
+  }catch(_){return false;}
+ }
+ return changed;
+}
 function walletComparable(snapshot){
  if(!snapshot?.keys)return null;const result={};
  const stable=value=>Array.isArray(value)?value.map(stable):(value&&typeof value==='object'?Object.keys(value).sort().reduce((out,key)=>(out[key]=stable(value[key]),out),{}):value);
@@ -164,9 +183,15 @@ async function refreshFromServer(){
  const local=localSnapshot();
  if(!hasLocal(local)){revision=Number(remote.revision)||revision;restoreLocal(remote.save_data);return;}
  if(sameSave(local,remote.save_data)){revision=Number(remote.revision)||revision;try{localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}return;}
+ if(onlyBagDiff(local,remote.save_data)){revision=Number(remote.revision)||revision;restoreLocal(remote.save_data);return;}
  if(!onlyWalletDiff(local,remote.save_data))throw new Error("SAVE_CONFLICT · Облачная версия содержит другие изменения. Сначала синхронизируй сохранение.");
  const merged=mergeWalletSnapshot(local,remote.save_data);revision=Number(remote.revision)||revision;
  await writeRemote(merged,revision);restoreLocal(merged);
+}
+async function reloadAuthoritative(){
+ if(!session)throw new Error('Для обновления сохранения войди в аккаунт');
+ const remote=await readRemote();if(!remote?.save_data)throw new Error('Облачное сохранение не найдено');
+ revision=Number(remote.revision)||0;restoreLocal(remote.save_data);return revision;
 }
 async function saveGame(snapshot=localSnapshot(),expected=revision){return await writeRemote(snapshot,expected);}
 
@@ -192,7 +217,7 @@ async function chooseSource(remote){
   setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Более высокий игровой прогресс сохранён в облаке.');
   return;
  }
- if(sameUser&&knownRevision<revision&&onlyWalletDiff(local,remote.save_data)){say("Облачный баланс обновился. Объединяем валюту с локальным прогрессом…");const merged=mergeWalletSnapshot(local,remote.save_data);await writeRemote(merged,revision);restoreLocal(merged);return;}
+ if(sameUser&&knownRevision<revision&&onlyWalletDiff(local,remote.save_data)){say("Облачный баланс обновился. Объединяем валюту с локальным прогрессом…");const merged=mergeWalletSnapshot(local,remote.save_data);await writeRemote(merged,revision);restoreLocal(merged);return;}if(sameUser&&knownRevision<revision&&onlyBagDiff(local,remote.save_data)){say('Получены серверные изменения инвентаря. Обновляем сумку…');restoreLocal(remote.save_data);return;}
  if(!localExists){say('Загружаем облачный прогресс…');restoreLocal(remote.save_data);}
  if(sameSave(local,remote.save_data)||(sameUser&&knownRevision===revision&&sameSave(local,remote.save_data))){
   try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
@@ -327,5 +352,5 @@ function init(){
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
-window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,saveGame,queueSave,flushSave,syncNow,signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
+window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,reloadAuthoritative,saveGame,queueSave,flushSave,syncNow,signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
 })();
