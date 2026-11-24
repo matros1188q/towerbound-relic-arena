@@ -2367,7 +2367,20 @@ function talentBonusDescription(talent,rank){
  ["pointerup","pointercancel","pointerleave"].forEach(type=>document.addEventListener(type,()=>clearTimeout(cardLongPressTimer),true));
  document.addEventListener("click",event=>{if(cardLongPressTriggered&&event.target.closest("#tbRpg [data-card-play]")){event.preventDefault();event.stopImmediatePropagation();cardLongPressTriggered=false;}},true);
  document.addEventListener("click",handleClick);
-  window.addEventListener("towerbound-auth-change",()=>{if(screen==="characters")render();});
+  window.addEventListener("towerbound-auth-change",()=>{
+  try{
+   if(engine){
+    const raw=localStorage.getItem("tb-rpg-v2"),restored=raw?JSON.parse(raw):null;
+    if(restored&&Array.isArray(restored.characters)){
+     for(const key of Object.keys(engine.state))delete engine.state[key];
+     Object.assign(engine.state,restored);
+     selectedId=engine.state.activeCharacterId||engine.state.characters[0]?.id||null;
+     if(!engine.state.characters.some(character=>character.id===selectedId))selectedId=engine.state.characters[0]?.id||null;
+    }
+   }
+  }catch(error){console.error("[Towerbound] auth restore hydration failed",error);}
+  if(screen==="characters")render();
+ });
  window.addEventListener("towerbound-cloud-restore",()=>{
   try{
    if(!engine)return;

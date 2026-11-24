@@ -9,6 +9,7 @@ const migration=fs.readFileSync('supabase/migrations/202611240004_durable_player
 assert.ok(cloud.includes('const cloudBootstrap=new Promise(resolve=>{resolveCloudBootstrap=resolve;})'));
 assert.ok(ui.includes('if(window.TowerboundCloudReady)await window.TowerboundCloudReady;'));
 assert.ok(ui.includes('post-cloud engine hydration failed')&&ui.includes("localStorage.getItem('tb-rpg-v2')"),'engine state is rehydrated from cloud-restored storage after the cloud bootstrap');
+assert.ok(ui.includes('auth restore hydration failed')&&ui.includes('towerbound-auth-change'),'engine state is rehydrated again after the completed authenticated cloud restore');
 assert.ok(cloud.includes('retryLoad:()=>session?onSession(session,true)'),'failed cloud loads can be retried without signing out');
 assert.ok(ui.includes('Синхронизация сохранения')&&ui.includes('data-action=\"cloud-retry\"'),'empty character list is blocked until cloud loading is confirmed');
 assert.ok(cloud.includes('function validateSnapshot(snapshot)'));
