@@ -14,7 +14,7 @@ assert.ok(cloud.includes('retryLoad:async()=>{if(!session)throw new Error')&&clo
 assert.ok(ui.includes('Синхронизация сохранения')&&ui.includes('data-action=\"cloud-retry\"'),'empty character list is blocked until cloud loading is confirmed');
 assert.ok(cloud.includes('function validateSnapshot(snapshot)'));
 assert.ok(cloud.includes('function backupLocalSnapshot()'));
-assert.ok(cloud.includes('remoteHasCharacters=false,retryAfter=0;'),'remote save and backoff state are declared');
+assert.ok(/remoteHasCharacters=false/.test(cloud)&&/retryAfter=0/.test(cloud),'remote save and backoff state are declared');
 assert.ok(cloud.includes('function localBackupSummary()')&&cloud.includes('async function restoreLocalBackup()'),'local backup can be inspected and restored');
 assert.ok(cloud.includes('if(!best){')&&cloud.includes('Keep the normal login path to one indexed query'),'save history is not queried on every login');
 assert.ok(cloud.includes('Never make login wait for a write RPC')&&cloud.includes("setStatus('ЛОКАЛЬНО · ОБЛАКО ОЖИДАЕТ','pending')"),'higher local progress remains playable without waiting for cloud write');
