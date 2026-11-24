@@ -35,7 +35,7 @@ console.log('Towerbound polish checks passed: onboarding, action-guided battle t
 // Mobile performance and card-action invariants.
 assert.ok(polish.includes('setTimeout(()=>{decorateTimer=null;decorate();},50)'),'DOM decoration is throttled with a 50ms debounce');
 assert.ok(polish.includes('observer.observe(root,{childList:true,subtree:true})')&&!polish.includes('characterData:true'),'DOM observer ignores text-only mutations');
-assert.ok(ui.includes('else c.currentEnergy-=cost'),'playing a card deducts its final computed energy cost');
+assert.ok(ui.includes('else if(!battle.guildRaid)c.currentEnergy-=cost'),'playing a card deducts its final computed energy cost outside guild raids');
 assert.ok(ui.includes('else c.discard.push(card)'),'ordinary played cards move to the discard pile');
 assert.ok(ui.includes('enemy[key]=Math.max(0,Number(enemy[key])||0)+stacks'),'poison, bleed and other card statuses persist on enemy state');
 assert.ok(ui.includes('scheduleEnemyTurnQueue(queue,0,queueToken,500)'),'ending the player turn starts the enemy turn queue');

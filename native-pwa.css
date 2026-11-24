@@ -899,3 +899,15 @@ html,body,#tbRpg,.tb-v2 {
 .tb-bottom-nav [data-nav-tab="community"]{color:#e7d2a2}
 .tb-bottom-nav [data-nav-tab="community"].active{color:#ffe29a}
 @media(min-width:800px){.tb-bottom-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}}
+
+/* Keep profile actions clear of the sticky tabs and fixed bottom navigation. */
+#tbRpg .tb-v2 .tb-profile-content{
+  scroll-padding-top:calc(58px + env(safe-area-inset-top,0px))!important;
+  scroll-padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important;
+}
+#tbRpg .tb-v2 .tb-profile-content [data-action="daily-chest"]{
+  scroll-margin-top:calc(64px + env(safe-area-inset-top,0px))!important;
+  scroll-margin-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important;
+  position:relative!important;
+  z-index:2!important;
+}
