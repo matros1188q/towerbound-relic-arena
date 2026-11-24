@@ -1488,6 +1488,53 @@ function talentBonusDescription(talent,rank){
   const kind=({assassin:"skill-poison",bishop:"skill-arcane",dragonkin:"skill-fire",destroyer:"skill-phys",elemental:"skill-arcane",duelist:"skill-phys",shaman:"skill-arcane"}[classId]||"skill-arcane");
   return '<span class="v2-skill-icon '+kind+'" aria-hidden="true"></span>';
  }
+ const ARENA_BACKGROUND_LOCATIONS=[
+  {from:1,to:16,chapter:1,name:"Затопленный сток",src:"assets/Fon/image 25.jpeg"},
+  {from:17,to:33,chapter:1,name:"Тюрьма",src:"assets/Fon/image 26.jpeg"},
+  {from:34,to:50,chapter:1,name:"Разрушенная комната с колоннами",src:"assets/Fon/image 27.jpeg"},
+  {from:51,to:63,chapter:2,name:"Руины с деревьями",src:"assets/Fon/image 28.jpeg"},
+  {from:64,to:76,chapter:2,name:"Грибное болото",src:"assets/Fon/image 29.jpeg"},
+  {from:77,to:88,chapter:2,name:"Ледяная пещера",src:"assets/Fon/image 30.jpeg"},
+  {from:89,to:100,chapter:2,name:"Раскаленная кузня",src:"assets/Fon/image 31.jpeg"},
+  {from:101,to:112,chapter:3,name:"Библиотека",src:"assets/Fon/image 32.jpeg"},
+  {from:113,to:125,chapter:3,name:"Святилище Света",src:"assets/Fon/image 33.jpeg"},
+  {from:126,to:137,chapter:3,name:"Обсерватория с шестеренками",src:"assets/Fon/image 34.jpeg"},
+  {from:138,to:150,chapter:3,name:"Гнездо пауков",src:"assets/Fon/image 35.jpeg"},
+  {from:151,to:166,chapter:4,name:"Алтарь Крови",src:"assets/Fon/image 36.jpeg"},
+  {from:167,to:183,chapter:4,name:"Разлом Пустоты",src:"assets/Fon/image 37.jpeg"},
+  {from:184,to:200,chapter:4,name:"Тронный Зал Теней",src:"assets/Fon/image 38.jpeg"},
+  {from:201,to:212,chapter:5,name:"Сердце Башни",src:"assets/Fon/image 39.jpeg"},
+  {from:213,to:224,chapter:5,name:"Небесная Бездна",src:"assets/Fon/image 40.jpeg"},
+  {from:225,to:237,chapter:5,name:"Логово Дракона",src:"assets/Fon/image 42.jpeg"},
+  {from:238,to:250,chapter:5,name:"Финальные Врата",src:"assets/Fon/image 43.jpeg"}
+ ];
+ let arenaBackgroundChapter=0,arenaBackgroundPreloads=new Map(),arenaBackgroundRequest=0;
+ function arenaBackgroundForStage(stage){const value=Math.max(1,Math.min(250,Number(stage)||1));return ARENA_BACKGROUND_LOCATIONS.find(item=>value>=item.from&&value<=item.to)||ARENA_BACKGROUND_LOCATIONS[0];}
+ function ensureArenaBackground(arena,stage){
+  if(!arena||typeof Image==="undefined")return;
+  let first=arena.querySelector('.tb-arena-bg-layer[data-layer="a"]'),second=arena.querySelector('.tb-arena-bg-layer[data-layer="b"]');
+  if(!first){first=document.createElement("div");first.className="tb-arena-bg-layer";first.dataset.layer="a";first.setAttribute("aria-hidden","true");arena.insertBefore(first,arena.firstChild);}
+  if(!second){second=document.createElement("div");second.className="tb-arena-bg-layer";second.dataset.layer="b";second.setAttribute("aria-hidden","true");arena.insertBefore(second,first.nextSibling);}
+  const location=arenaBackgroundForStage(stage);
+  if(arena.dataset.arenaBackground===location.src)return;
+  if(arenaBackgroundChapter!==location.chapter){
+   arenaBackgroundChapter=location.chapter;arenaBackgroundPreloads.clear();
+   ARENA_BACKGROUND_LOCATIONS.filter(item=>item.chapter===location.chapter).forEach(item=>{const image=new Image();image.decoding='async';image.src=item.src;arenaBackgroundPreloads.set(item.src,image);});
+  }
+  const request=++arenaBackgroundRequest,image=arenaBackgroundPreloads.get(location.src);
+  if(!image)return;
+  const apply=()=>{
+   if(request!==arenaBackgroundRequest||!arena.isConnected)return;
+   const visible=first.classList.contains('is-visible')?first:second.classList.contains('is-visible')?second:null;
+   const next=visible===first?second:first;
+   next.style.backgroundImage='url("'+location.src.replace(/"/g,'%22')+'")';
+   next.classList.add('is-visible');if(visible)visible.classList.remove('is-visible');
+   arena.dataset.arenaBackground=location.src;arena.dataset.arenaLocation=location.name;arena.dataset.arenaChapter=String(location.chapter);
+  };
+  if(image.complete&&image.naturalWidth>0){apply();return;}
+  image.addEventListener('load',apply,{once:true});
+  image.addEventListener('error',()=>console.warn('[TowerBound] arena background failed to load',location.src),{once:true});
+ }
  function battleScreen(){
   const c=live(),hp=engine.maxHp(live());
   const hpPct=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
@@ -1861,7 +1908,7 @@ function talentBonusDescription(talent,rank){
  }
  function updateBattleDOM(){
   if(!battle)return;
-  const c=live(),arena=root.querySelector(".new-battle-wrap");if(!arena)return;
+  const c=live(),arena=root.querySelector(".new-battle-wrap");if(!arena)return;ensureArenaBackground(arena,battle.stage);
   const hp=engine.maxHp(c),playerHp=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
   const heroBar=arena.querySelector(".new-hero-side .new-hp-bar>div");if(heroBar)heroBar.style.width=playerHp+"%";
   const heroHpText=arena.querySelector(".new-hero-hp-text");if(heroHpText)heroHpText.textContent=Math.ceil(c.run.playerHp)+" / "+hp+" HP";
@@ -2019,7 +2066,7 @@ function talentBonusDescription(talent,rank){
    const existing=root.querySelector(".new-battle-wrap"),key=battleRenderKey();
    if(existing&&existing.dataset.renderKey===key){updateBattleDOM();try{ensureBottomNav();}catch(error){console.warn("[Towerbound] battle navigation badges unavailable",error);}return;}
    root.innerHTML='<div class="tb-v2">'+battleScreen()+'</div>';
-   const arena=root.querySelector(".new-battle-wrap");if(arena)arena.dataset.renderKey=key;
+   const arena=root.querySelector(".new-battle-wrap");if(arena){arena.dataset.renderKey=key;ensureArenaBackground(arena,battle.stage);}
   }else if(screen==="characters")root.innerHTML='<div class="tb-v2">'+characterList()+'</div>';
   else if(screen==="map")root.innerHTML='<div class="tb-v2">'+mapScreen()+'</div>';
   else if(screen==="profile")root.innerHTML='<div class="tb-v2">'+profileScreen()+'</div>';
