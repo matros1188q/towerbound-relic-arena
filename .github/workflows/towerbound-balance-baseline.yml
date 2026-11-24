@@ -1,0 +1,45 @@
+name: Towerbound balance baseline (provisional)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tests/balance-simulation.test.cjs'
+      - 'tests/full-250-build-balance.test.cjs'
+      - 'tests/towerbound-card-balance/**'
+      - 'configs/balance/**'
+      - 'configs/skills/catalog.json'
+      - '.github/workflows/towerbound-balance-baseline.yml'
+permissions:
+  contents: read
+jobs:
+  balance-baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run 63 specialization attempts
+        id: balance
+        shell: bash
+        run: |
+          mkdir -p artifacts/towerbound-balance
+          set +e
+          node tests/full-250-build-balance.test.cjs > artifacts/towerbound-balance/summary.json 2> artifacts/towerbound-balance/stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ -s artifacts/towerbound-balance/summary.json ]; then
+            node -e "const fs=require('fs');const p='artifacts/towerbound-balance/summary.json';const s=fs.readFileSync(p,'utf8');const i=s.indexOf('{');if(i>=0){const j=s.lastIndexOf('}');fs.writeFileSync(p,JSON.stringify(JSON.parse(s.slice(i,j+1)),null,2));}"
+          fi
+          exit "$code"
+      - name: Upload 63-run baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: towerbound-balance-baseline
+          path: artifacts/towerbound-balance/
+          if-no-files-found: warn
