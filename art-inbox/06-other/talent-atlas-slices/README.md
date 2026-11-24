@@ -1,7 +1,7 @@
-# Archived talent atlas slices
+# Talent atlas slices — active runtime assets
 
-These 550 PNG slices were retained as source/work material, not deleted.
+The 550 PNG files in this folder were incorrectly moved out of the runtime asset directory during an earlier cleanup. They are used by the seven-class talent tree: `configs/talents_tree.json` contains 490 nodes and references 425 distinct icon files under `./assets/talents/`.
 
-A full scan of the published runtime entry points, JavaScript modules, stylesheets, HTML and service-worker shell found no references to `assets/talents/`. The live talent attribute icons are supplied by the registered atlas in `assets/skills/image_17.png` and its CSS crops.
+The original paths have been restored in `assets/talents/`. Keep the PNGs there: the tree loads each node icon from its configured path. Do not archive or remove these files based only on a static JavaScript search; the references are data-driven in JSON.
 
-The files are kept here so they remain available for future art work without being mistaken for active game assets or added to the PWA runtime cache.
+This folder is retained only as a note about the source-art workflow; the runtime copies live in `assets/talents/`.

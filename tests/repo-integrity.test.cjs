@@ -28,6 +28,11 @@ const treePaths=new Set(all.map(relative));
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const localRefs=[...html.matchAll(/(?:src|href)=["'](\.\/[^"'?#]+)(?:\?[^"']*)?["']/g)].map(match=>match[1].replace(/^\.\//,'')).filter(file=>file!==''&&!file.endsWith('/'));
 for(const file of localRefs)assert.ok(treePaths.has(file),'Missing local HTML asset: '+file);
+const talentTree=JSON.parse(fs.readFileSync(path.join(root,'configs/talents_tree.json'),'utf8'));
+for(const node of talentTree.nodes||[]){
+ const icon=String(node.icon||'').replace(/^\.\//,'');
+ assert.ok(icon&&treePaths.has(icon),'Missing talent tree icon '+icon+' for node '+node.id);
+}
 const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
 const shellRefs=[...sw.matchAll(/["']\.\/([^"']+)["']/g)].map(match=>decodeURIComponent(match[1].split('?')[0]));
 for(const file of shellRefs)assert.ok(treePaths.has(file),'Missing service-worker shell asset: '+file);
