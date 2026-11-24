@@ -71,7 +71,7 @@ const showLoginGate=(force=false)=>{overlay.classList.remove('login-required');$
 const hideLoginGate=()=>{overlay.classList.remove('login-required','open');overlay.style.display='none';overlay.style.visibility='hidden';$('#tbCloudClose').hidden=false;};
 button.addEventListener('click',open);$('#tbCloudClose').addEventListener('click',close);
 overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
-async function signIn(login,password,remember=true){if(!client)throw new Error('Supabase ещё подключается');const clean=String(login||'').trim().toLowerCase();if(!/^[a-z0-9][a-z0-9._-]{2,31}$/.test(clean))throw new Error('Логин: 3–32 символа, латиница, цифры, точка, дефис или подчёркивание');if(String(password||'').length<6)throw new Error('Пароль должен содержать минимум 6 символов');setRemember(remember);let result=await withTimeout(client.auth.signInWithPassword({email:authEmail(clean),password:String(password)}),'Вход в аккаунт');if(result.error&&/Invalid login credentials/i.test(result.error.message||'')){const legacy=await withTimeout(client.auth.signInWithPassword({email:clean+'@towerbound.game',password:String(password)}),'Проверка старого логина');if(!legacy.error)result=legacy;}const {data,error}=result;if(error)throw new Error(localizedAuthError(error,'Не удалось войти'));if(!data.session)throw new Error('Supabase не вернул активную сессию');await withTimeout(onSession(data.session),'Подключение облачного сохранения',25000);return true;}
+async function signIn(login,password,remember=true){if(!client)throw new Error('Supabase ещё подключается');const clean=String(login||'').trim().toLowerCase();if(!/^[a-z0-9][a-z0-9._-]{2,31}$/.test(clean))throw new Error('Логин: 3–32 символа, латиница, цифры, точка, дефис или подчёркивание');if(String(password||'').length<6)throw new Error('Пароль должен содержать минимум 6 символов');setRemember(remember);let result=await withTimeout(client.auth.signInWithPassword({email:authEmail(clean),password:String(password)}),'Вход в аккаунт');if(result.error&&/Invalid login credentials/i.test(result.error.message||'')){const legacy=await withTimeout(client.auth.signInWithPassword({email:clean+'@towerbound.game',password:String(password)}),'Проверка старого логина');if(!legacy.error)result=legacy;}const {data,error}=result;if(error)throw new Error(localizedAuthError(error,'Не удалось войти'));if(!data.session)throw new Error('Supabase не вернул активную сессию');await withTimeout(onSession(data.session,true),'Подключение облачного сохранения',25000);if(!savesReady&&!conflict)throw new Error('Вход выполнен, но облачное сохранение не загрузилось. Повтори вход; локальные данные не затронуты.');return true;}
 async function signUp(login,password,remember=true){if(!client)throw new Error('Supabase ещё подключается');const clean=String(login||'').trim().toLowerCase();if(!/^[a-z0-9][a-z0-9._-]{2,31}$/.test(clean))throw new Error('Логин: 3–32 символа, латиница, цифры, точка, дефис или подчёркивание');if(String(password||'').length<6)throw new Error('Пароль должен содержать минимум 6 символов');setRemember(remember);const {data,error}=await client.auth.signUp({email:authEmail(clean),password:String(password),options:{emailRedirectTo:window.location.origin+window.location.pathname}});if(error)throw new Error(localizedAuthError(error,'Не удалось зарегистрироваться'));if(data.session)await onSession(data.session);else say('Регистрация создана. Для входа с игровым логином отключи Confirm email в настройках Supabase Auth.');return true;}
 async function signOut(){if(!client)throw new Error('Supabase недоступен');setRemember(false);const {error}=await client.auth.signOut();if(error)throw error;conflict=false;await onSession(null);return true;}
 function localSnapshot(){
@@ -254,9 +254,9 @@ async function chooseSource(remote){
  $('#tbCloudAccount').textContent=session.user.email+' · облачная версия №'+revision;
  say('Выбери источник прогресса.');window.__TB_CLOUD_PENDING_REMOTE=remote;window.__TB_CLOUD_PENDING_LOCAL=local;
 }
-async function onSession(next){
+async function onSession(next,force=false){
  const sessionKey=next?.user?.id||'signed-out';
- if(sessionKey===handledSessionKey)return sessionTask;
+ if(sessionKey===handledSessionKey&&!force)return sessionTask;
  handledSessionKey=sessionKey;
  sessionTask=(async()=>{
   conflict=false;session=next;savesReady=false;
@@ -268,7 +268,7 @@ async function onSession(next){
    const remote=await loadGame();
    await chooseSource(remote);
    if(!conflict){savesReady=true;$('#tbCloudIntro').textContent='Облако подключено. Прогресс готов к синхронизации.';say('Облако подключено. Сохранение готово к синхронизации.');queueSave();}
-  }catch(e){savesReady=false;console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');$('#tbCloudIntro').textContent='Не удалось подключить облачное сохранение.';say('Не удалось загрузить сохранение: '+(e.message||'ошибка сети')+'. Локальные данные не изменены.');}
+  }catch(e){savesReady=false;console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');$('#tbCloudIntro').textContent='Не удалось подключить облачное сохранение.';say('Не удалось загрузить сохранение: '+(e.message||'ошибка сети')+'. Локальные данные не изменены.');if(session?.user?.id===sessionKey)handledSessionKey='';}
   window.dispatchEvent(new Event('towerbound-auth-change'));
  })();
  return sessionTask;
@@ -336,7 +336,7 @@ async function saveLoop(){
 }
 async function syncNow(){
  if(!session||!client)throw new Error('Сначала войди в облачный аккаунт');
- if(!savesReady)throw new Error('Облачное сохранение ещё загружается. Подожди завершения подключения.');
+ if(!savesReady){await onSession(session,true);if(!savesReady)throw new Error('Облачное сохранение ещё не загружено. Повтори попытку через несколько секунд.');}
  if(conflict)throw new Error('Есть конфликт сохранений: выбери версию в окне облачного аккаунта');
  clearTimeout(timer);dirty=true;
  while(syncing)await new Promise(resolve=>setTimeout(resolve,40));
@@ -380,5 +380,5 @@ function init(){
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
-window.TowerboundCloudReady=cloudBootstrap;window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get savesReady(){return savesReady;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,reloadAuthoritative,saveGame,queueSave,flushSave,syncNow,signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
+window.TowerboundCloudReady=cloudBootstrap;window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get savesReady(){return savesReady;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,reloadAuthoritative,saveGame,queueSave,flushSave,syncNow,retryLoad:()=>session?onSession(session,true):Promise.reject(new Error('Сначала войди в аккаунт')),signIn,signUp,signOut,status:()=>({...status}),requireLogin:()=>showLoginGate(true)};
 })();

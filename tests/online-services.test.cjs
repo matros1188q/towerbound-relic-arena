@@ -73,7 +73,7 @@ assert.ok(ui.includes('window.TowerboundCloud?.queueSave?.()'),'game save explic
 assert.ok(ui.includes('title="Авто-бой не учитывает синергии карт и яды"'),'auto battle button explains the limitations of the simplified simulation');
 assert.ok(ui.includes('data-action="cloud-sync"')&&ui.includes('data-action="cloud-account"'),'settings screen exposes cloud account and manual sync controls');
 assert.ok(cloud.includes("const AUTH_EMAIL_DOMAIN='towerbound.com'")&&cloud.includes("const authEmail=login=>String(login||'').trim().toLowerCase()+'@'+AUTH_EMAIL_DOMAIN"),'new game logins map to a valid .com synthetic Supabase email');
-assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("legacy=await client.auth.signInWithPassword({email:clean+'@towerbound.game'"),'sign-in uses the new email and preserves legacy .game accounts as fallback');
+assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("legacy=await withTimeout(client.auth.signInWithPassword({email:clean+'@towerbound.game'"),'sign-in uses the new email, bounded timeout and legacy .game fallback');
 assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("client.auth.signUp({email:authEmail(clean)"),'registration and login share the new synthetic email domain');
 assert.ok(cloud.includes('Неверный логин или пароль')&&cloud.includes('Ошибка регистрации. Попробуйте другой логин')&&cloud.includes('Этот логин уже занят')&&cloud.includes('Пароль должен быть не менее 6 символов'),'Supabase auth errors are translated to Russian');
 assert.ok(cloud.includes('#tbCloudMessage[data-kind="error"]')&&cloud.includes('id="tbCloudHint"')&&cloud.includes('Зарегистрироваться'),'login errors are red and registration guidance is visible');

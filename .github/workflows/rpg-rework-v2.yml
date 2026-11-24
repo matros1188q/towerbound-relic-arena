@@ -42,6 +42,7 @@ jobs:
       - run: node --check towerbound-cloud.js
       - run: node --check towerbound-online.js
       - run: node tests/online-services.test.cjs
+      - run: node tests/cloud-save-safety.test.cjs
       - run: node --check progression-24.js
       - run: node --check endgame-systems.js
       - run: node --check rpg-rework-ui.js

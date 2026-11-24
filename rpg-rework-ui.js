@@ -602,9 +602,11 @@
  function characterList(){
   const chars=engine.state.characters;
   const selected=chars.find(c=>c.id===selectedId)||chars[0];
-  const cloud=window.TowerboundCloud,authenticated=!!cloud?.signedIn;
+  const cloud=window.TowerboundCloud,authenticated=!!cloud?.signedIn,cloudReady=!!cloud?.savesReady;
   if(selected&&!selectedId)selectedId=selected.id;
-  const emptyContent=authenticated
+  const emptyContent=authenticated&&!cloudReady
+   ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Синхронизация сохранения</h2><p>Пока облако не подтвердило загрузку, создание нового персонажа заблокировано — это защищает прежний прогресс.</p><button type="button" data-action="cloud-retry" class="tb-primary">ПОВТОРИТЬ ЗАГРУЗКУ</button></div>'
+   : authenticated
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button type="button" data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>'
    : '<div class="tb-empty tb-login-gate"><div class="tb-empty-crest">✦</div><h2>Вход в игру</h2><p>Войди в аккаунт или зарегистрируйся, чтобы создать персонажа и сохранить прогресс.</p><form class="tb-character-login" novalidate><label for="login">Логин</label><input id="login" name="login" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Логин"><label for="pass">Пароль</label><input id="pass" name="password" type="password" autocomplete="current-password" placeholder="Пароль"><label class="tb-login-remember"><input id="rememberMe" type="checkbox" checked> Запомнить меня</label><button type="button" data-action="empty-login" class="tb-primary tb-login-submit">ВОЙТИ</button><button type="button" data-action="empty-register" class="tb-text-link">Зарегистрироваться</button><p class="tb-login-message" role="status" aria-live="polite"></p></form></div>';
   return header("Выбор персонажа", authenticated ? "Аккаунт · " + (engine.state.account.diamonds || 0) + " алмазов" : "Войди, чтобы начать") +
@@ -2287,6 +2289,7 @@ function talentBonusDescription(talent,rank){
    case "account-sync":(async()=>{try{await window.TowerboundCloud.syncNow();render();notify('Синхронизировано');}catch(error){notify(error.message);}})();break;
    case "cloud-account":if(window.TowerboundCloud?.open)window.TowerboundCloud.open();else notify("Облачный модуль ещё загружается");break;
    case "cloud-sync":(async()=>{try{const cloud=window.TowerboundCloud;if(!cloud?.syncNow)throw new Error("Облачный модуль недоступен");await cloud.syncNow();notify("Облачное сохранение синхронизировано");}catch(error){notify(error.message||"Не удалось синхронизировать");}})();break;
+    case "cloud-retry":(async()=>{try{await window.TowerboundCloud?.retryLoad?.();render();}catch(error){notify(error.message||"Не удалось загрузить сохранение");}})();break;
    case "daily-chest":try{const reward=engine.claimDailyChest(live().id);save();render();notify(reward.type==="silver"?"Сундук: +"+reward.amount+" серебра":reward.type==="potion"?"Сундук: +1 зелье исцеления":"Сундук: +10 материалов");}catch(error){notify(error.message);}break;
    case "systems":screen="account";render();break;
    case "leaderboard":screen="leaderboard";onlineLeaderboardError="";render();refreshOnlineLeaderboard();break;
