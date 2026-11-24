@@ -89,8 +89,8 @@ assert.equal(stagePlans,1750,'all 250 stages are planned for all seven classes')
 assert.equal(bossPlans,175,'all 25 boss encounters are planned for each class');
 for(const [manifestPath,expected] of [
  ['assets/characters/heroes/manifest.json',7],
- ['assets/characters/enemies/manifest.json',19],
- ['assets/characters/bosses/manifest.json',5],
+ ['assets/characters/enemies/manifest.json',20],
+ ['assets/characters/bosses/manifest.json',10],
  ['assets/skills/art-manifest.json',6],
  ['assets/synergies/art-manifest.json',15]
 ]){
