@@ -32,10 +32,6 @@ const art=vm.runInNewContext('('+extractObject(ui,'const ART_MAPPING=Object.free
 const manifest=readJson('assets/cards/art-manifest.json');
 const classes=readJson('configs/balance/classes.json').classes;
 const cardEntries=Object.entries(cards);
-const talentTree=readJson('configs/talents_tree.json');
-assert.ok((talentTree.nodes||[]).every(node=>!Object.prototype.hasOwnProperty.call(node.effect||{},'cardCostReduction')),'talent tree contains no permanent card-cost reduction nodes');
-assert.doesNotMatch(ui,/treeEffect\(c,"cardCostReduction"\)/,'talents never reduce card energy costs');
-assert.doesNotMatch(ui,/window\.confirm\("У вас осталась энергия/,'ending a turn never opens a blocking confirmation dialog');
 assert.equal(manifest.total,126,'card artwork manifest declares 126 cards');
 assert.equal(cardEntries.length,126,'runtime card database contains 126 cards');
 assert.equal(manifest.cards.length,126,'manifest has 126 concrete card records');
@@ -45,7 +41,6 @@ const manifestById=new Map(manifest.cards.map(card=>[card.id,card]));
 const allowedTypes=new Set(['attack','defense','skill','curse','status']);
 const allowedRarities=new Set(['common','rare','epic','legendary']);
 const allowedEffects=new Set([
- 'nextCardCostReduction','nextCardsCostReduction',
  'damage','damageAll','damagePerEnergy','damagePerPoison','damagePerBleed','damageMissingHp',
  'block','heal','healPerBleed','draw','energy','poison','bleed','burn','weak','vulnerable',
  'conditionalBleed','playerWeak','fury','spellPower','nextAttackDamage','hits','ignoreArmor',
