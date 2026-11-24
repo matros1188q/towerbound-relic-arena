@@ -143,6 +143,7 @@ function restoreLocal(snapshot){
  try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
  // Apply the restored save in the running game; a hard reload caused the character screen to flash/reset.
  window.dispatchEvent(new CustomEvent('towerbound-cloud-restore',{detail:{revision}}));
+ restoring=false;
 }
 async function readRemote(){
  const {data,error}=await client.from('player_saves').select('save_data,revision,updated_at').eq('user_id',session.user.id).maybeSingle();
