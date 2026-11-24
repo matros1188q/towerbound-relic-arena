@@ -213,10 +213,14 @@ async function readRemote(){
  const {data,error}=await withTimeout(client.from('player_saves').select('save_data,revision,updated_at').eq('user_id',session.user.id).maybeSingle(),'Загрузка облачного сохранения');
  if(error)throw error;
  let best=data?.save_data||null,history=[];
- try{
-  const result=await withTimeout(client.from('player_save_history').select('save_data,revision,updated_at').eq('user_id',session.user.id).order('revision',{ascending:false}).limit(25),'Проверка резервных сохранений',10000);
-  if(!result.error&&Array.isArray(result.data))history=result.data;
- }catch(historyError){console.warn('[Towerbound cloud] save history unavailable; using current save',historyError);}
+ // Keep the normal login path to one indexed query. Read history only when the
+ // primary row is absent; otherwise history adds load and can stall sign-in.
+ if(!best){
+  try{
+   const result=await withTimeout(client.from('player_save_history').select('save_data,revision,updated_at').eq('user_id',session.user.id).order('revision',{ascending:false}).limit(25),'Проверка резервных сохранений',8000);
+   if(!result.error&&Array.isArray(result.data))history=result.data;
+  }catch(historyError){console.warn('[Towerbound cloud] save history unavailable; using current save',historyError);}
+ }
  if(best)validateSnapshot(best);
  for(const entry of history){
   try{validateSnapshot(entry.save_data);if(!best||compareProgress(entry.save_data,best)>0)best=entry.save_data;}catch(historyError){console.warn('[Towerbound cloud] invalid history revision skipped',entry.revision,historyError);}
@@ -268,12 +272,15 @@ async function chooseSource(remote){
   return;
  }
  if(localHasCharacters&&remoteHasCharacters&&progressOrder>0){
-  say('На этом устройстве найден более продвинутый прогресс. Сохраняем его в облако…');
-  await writeRemote(local,revision);
-  conflict=false;
+  // Never make login wait for a write RPC. Keep the higher local hero playable,
+  // mark it dirty, and let the background sync retry with bounded backoff.
+  say('На устройстве найден более высокий прогресс. Открываем его; облако обновится в фоне…');
+  restoreLocal(local);
+  conflict=false;dirty=true;
   try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
   $('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=false;
-  setStatus('ОБЛАКО · СОХРАНЕНО','online');say('Более высокий игровой прогресс сохранён в облаке.');
+  setStatus('ЛОКАЛЬНО · ОБЛАКО ОЖИДАЕТ','pending');
+  say('Твой более высокий локальный прогресс открыт. Синхронизация с облаком будет выполнена в фоне.');
   return;
  }
  if(sameUser&&knownRevision<revision&&onlyWalletDiff(local,remote.save_data)){say("Облачный баланс обновился. Объединяем валюту с локальным прогрессом…");const merged=mergeWalletSnapshot(local,remote.save_data);await writeRemote(merged,revision);restoreLocal(merged);return;}if(sameUser&&knownRevision<revision&&onlyBagDiff(local,remote.save_data)){say('Получены серверные изменения инвентаря. Обновляем сумку…');restoreLocal(remote.save_data);return;}
@@ -341,10 +348,10 @@ async function saveLoop(){
      break;
     }
     if(order>0){
-     if(attempts>=2){retryAfter=Date.now()+30000;dirty=true;setStatus('ОБЛАКО · ОЖИДАНИЕ ПОВТОРА','error');say('Облачная версия часто меняется. Синхронизация приостановлена на 30 секунд, локальные данные сохранены.','error');break;}
-     dirty=true;
-     say('Обнаружена более свежая локальная версия. Повторяем сохранение с актуальной версией облака…');
-     continue;
+     retryAfter=Date.now()+30000;dirty=true;
+     setStatus('ЛОКАЛЬНО · ПОВТОР ПОЗЖЕ','error');
+     say('Локальный прогресс сохранён. Облачная запись столкнулась с параллельным изменением; повторим через 30 секунд.','error');
+     break;
     }
     if(order<0){
      say('В облаке найден более новый прогресс. Восстанавливаем его на устройстве…');
