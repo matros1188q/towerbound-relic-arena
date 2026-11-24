@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Seven class talent trees, 70 nodes per class. Coordinates use a 0–1000 canvas space.",
+  "description": "Seven class talent trees, 70 nodes per class. Coordinates use shared world space centered at 1125,1125; the talent canvas supports panning and zooming.",
   "classes": [
     {
       "id": "assassin",
