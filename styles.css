@@ -972,3 +972,10 @@
 #tbRpg .tb-v2 .new-battle-wrap>:not(.tb-arena-bg-layer):not(.tb-fx-layer){position:relative;z-index:1}
 #tbRpg .tb-v2 .new-battle-wrap>.tb-fx-layer{z-index:5}
 @media(prefers-reduced-motion:reduce){#tbRpg .tb-v2 .new-battle-wrap>.tb-arena-bg-layer{transition:none}}
+
+/* The profile account tab embeds systemsScreen inside the profile. The generic section rule makes sections flex rows, so explicitly stack these cards vertically and keep them inside the mobile viewport. */
+#tbRpg .tb-v2 .tb-profile-account>section.tb-systems{
+ display:block!important;position:relative!important;width:100%!important;min-width:0!important;
+ max-width:1100px!important;margin:0 auto 24px!important;padding:12px!important;
+ box-sizing:border-box!important;align-items:initial!important;justify-content:initial!important;
+}
