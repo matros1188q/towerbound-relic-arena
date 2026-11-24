@@ -39,7 +39,6 @@ async function runAttempt(browser,build,seed,index,startLevel){
    const qa=window.TowerboundBalanceQA;qa.createCharacter('QA'+String(attemptIndex).padStart(2,'0'),classId);
    const prepared=qa.prepareSpecialization(branchId);if(prepared.branch!==branchId||prepared.level<10)throw new Error('Specialization preparation failed: '+JSON.stringify(prepared));
    const stageLogs=[];let branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
-   if(startLevel>1){const engine=qa.engine(),character=engine.state.characters.find(item=>item.id===qa.snapshot().character.id),xpNeeded=Array.from({length:startLevel-1},(_,i)=>engine.requiredXp(i+1)).reduce((sum,value)=>sum+value,0);engine.awardXp(character,xpNeeded);qa.chooseBranch(branchId);branchChosen=true;qa.allocateTalents();}
    const hpNow=()=>Number(qa.snapshot().character?.run?.playerHp)||0,maxHp=()=>Number(qa.snapshot().character?qa.engine().maxHp(qa.snapshot().character):1)||1;
    const trackHp=before=>{const after=hpNow();if(after<before)totalDamageTaken+=before-after;else if(after>before)totalHealing+=after-before;};
    const pickTarget=b=>{const living=(b.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0),weight=e=>e.type==='boss'?110:e.type==='elite'?100:e.role==='saboteur'?95:e.role==='poison'?90:e.role==='healer'?85:e.role==='bleed'?75:e.role==='normal'?50:e.role==='tank'?30:40;return living.sort((a,b)=>weight(b)-weight(a)||(a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp)))[0]||null;};
@@ -77,7 +76,7 @@ async function runAttempt(browser,build,seed,index,startLevel){
      trackHp(abilityHpBefore);snap=qa.snapshot();
      const abilityEnemyAfter=(snap.battle?.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),abilityDamage=Math.max(0,abilityEnemyHp-abilityEnemyAfter);totalDamage+=abilityDamage;stageDamage+=abilityDamage;
      if(!snap.battle)break;b=snap.battle;c=snap.character;
-     // Card-only balance pass: resolve cards and real enemy turns; no legacy active ultimates/counters.
+     // Real turn: use available class action, then resolve cards and enemy turns.
      for(let n=0;n<20;n++){
       snap=qa.snapshot();if(!snap.battle||snap.battle.actor?.type!=='player')break;
       const currentTarget=pickTarget(snap.battle);if(currentTarget&&currentTarget.index!==snap.battle.targetIndex)qa.setTarget(currentTarget.index);
