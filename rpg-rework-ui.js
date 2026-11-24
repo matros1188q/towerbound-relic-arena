@@ -845,7 +845,7 @@ function createDialog(){
    if(effect==="evade"||effect==="absorb_all"||effect==="stun"||effect==="riposte")counterDamageMultiplier=0;
    else if(effect==="damage_reduction"||effect==="slow")counterDamageMultiplier=1-Math.max(0,Math.min(1,Number(reaction.damage_reduction??(effect==="slow"?.8:.5))));
    else counterDamageMultiplier=.5;
-   if(effect==="stun"){attacker.stunned=true;notify("РЁВ · противник оглушён");}
+   if(effect==="stun"){notify("РЁВ · атака противника прервана");}
    else if(effect==="slow"){attacker.slowTurns=Math.max(Number(attacker.slowTurns)||0,1);attacker.slowReduction=Math.max(0,Math.min(1,Number(reaction.speed_reduction)||0));notify("ЗАМЕДЛЕНИЕ · получаемый урон снижен");}
    else if(effect==="cleanse"){
     if((battle.poisonStacks||0)>0)battle.poisonStacks=Math.max(0,battle.poisonStacks-Number(reaction.remove_stacks||1));
