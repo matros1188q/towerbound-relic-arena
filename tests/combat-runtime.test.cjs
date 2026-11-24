@@ -24,9 +24,13 @@ assert.equal(balance.bosses.phases.length,4,'four boss phases are configured');
 const combatUi=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 assert.match(combatUi,/target\.maxPhases=Math\.max\(2,\(balance\.bosses\.phases\|\|\[\]\)\.length\|\|4\)/,'runtime boss phase count follows the four configured phases');
 assert.match(combatUi,/if\(enemy\.type==="boss"\)\{updateBossPhase\(enemy\);if\(!battle\)return;\}/,'boss phase transitions are evaluated after poison and bleed ticks');
-assert.match(combatUi,/battle\.actionDamageLedger=\{\};const reflected=applyTargetDamage/,'counter reflection starts a fresh boss damage action');
+assert.match(combatUi,/const reaction=battle\.counterAction\|\|counterAbility\(c\)/,'counter action uses the selected class-specific reaction');
+assert.match(combatUi,/effect==="evade"\|\|effect==="absorb_all"\|\|effect==="stun"\|\|effect==="riposte"/,'evade, barrier, stun and riposte have distinct zero-damage reactions');
+assert.match(combatUi,/effect==="damage_reduction"\|\|effect==="slow"/,'damage reduction and slow use their configured reduction');
+assert.match(combatUi,/effect==="cleanse"/,'Shaman cleanse removes a negative stack');
+assert.match(combatUi,/configuredMultiplier=Math\.max\(0,Number\(ultimate\.damage_multiplier\)\|\|2\),damage=stats\.dps\*configuredMultiplier\/3/,'ultimate damage uses the configured total multiplier across three hits');
 assert.match(combatUi,/battle\.actionDamageLedger=\{\};const counter=applyTargetDamage/,'parry starts a fresh boss damage action');
-assert.match(combatUi,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}\s*if\(reflected\.killed\)/,'lethal thorns damage during a counter ends the run immediately');
+assert.match(combatUi,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}\s*notify\("ПАРИРОВАНИЕ · ответный удар/,'lethal thorns damage during a riposte ends the run immediately');
 assert.match(combatUi,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}\s*if\(counter\.killed\)/,'lethal thorns damage during a parry ends the run immediately');
 
 if(balance.combat.turn_based?.enabled){
