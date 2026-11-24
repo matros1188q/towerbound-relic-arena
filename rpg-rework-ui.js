@@ -604,7 +604,7 @@
   const selected=chars.find(c=>c.id===selectedId)||chars[0];
   const cloud=window.TowerboundCloud,authenticated=!!cloud?.signedIn,cloudReady=!!cloud?.savesReady,cloudStatus=cloud?.status?.()||{},remoteHasCharacters=!!cloudStatus.remoteHasCharacters,engineHasCharacters=!!engine?.state?.characters?.length,localBackup=cloudStatus.localBackup;
   if(selected&&!selectedId)selectedId=selected.id;
-  const emptyContent=authenticated&&(!cloudReady||(remoteHasCharacters&&!engineHasCharacters))
+  /* Local characters remain playable while cloud refresh runs; only an empty profile waits for the first cloud response. */const emptyContent=authenticated&&!engineHasCharacters&&(!cloudReady||remoteHasCharacters)
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Синхронизация сохранения</h2><p>В облаке есть персонаж, но игра ещё не подтвердила его загрузку. Создание нового персонажа заблокировано, чтобы не затереть прогресс.</p><button type="button" data-action="cloud-retry" class="tb-primary">ПОВТОРИТЬ ЗАГРУЗКУ</button>'+(localBackup?.available?'<button type="button" data-action="cloud-recover-local" class="tb-secondary">ПРОВЕРИТЬ РЕЗЕРВНУЮ КОПИЮ</button>':'')+'</div>'
    : authenticated
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button type="button" data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>'
@@ -2454,7 +2454,7 @@ function talentBonusDescription(talent,rank){
   if(!window.TowerboundReworkReady)return;
   window.TowerboundReworkReady.then(async value=>{
    if(!value)return;
-   if(window.TowerboundCloudReady)await window.TowerboundCloudReady;
+   if(window.TowerboundCloudReady)await window.TowerboundCloudReady; // Resolves on local auth bootstrap; remote save hydration no longer blocks engine startup.
    else await new Promise(resolve=>{let settled=false;const done=()=>{if(settled)return;settled=true;resolve();};window.addEventListener('towerbound-cloud-ready',done,{once:true});setTimeout(done,18000);});
    engine=value;balance=engine.balance;
    // The engine may have been constructed from an empty local cache before cloud auth finished.
