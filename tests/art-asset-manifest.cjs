@@ -32,7 +32,7 @@ for(const [file,content] of Object.entries(source)){
 const uiScript=source['rpg-rework-ui.js'];
 for(const [id,file] of Object.entries({assassin:'image-Photoroom.png',bishop:'image_2-Photoroom(1).png',dragonkin:'image_3-Photoroom.png',destroyer:'image_4-Photoroom.png',elemental:'image_5-Photoroom.png',shaman:'image_6-Photoroom.png',duelist:'image_7-Photoroom.png'}))assert.ok(uiScript.includes(id+':"heroes/'+file+'"'),'Missing hero PNG mapping: '+id);
 assert.ok(uiScript.includes('craft_material:"./assets/relics/image_6.png"')&&uiScript.includes('function shopProductIconHtml(item)'),'Craft material and store art resolver must be active');
-assert.ok(uiScript.includes('relicIconHtml(item,item?.slot)'),'Equipment/store render must pass item slot');
+assert.ok(uiScript.includes('relicIconHtml(item,item?.slot,"tb-bag-item-art-img")'),'Equipment inventory render must pass item slot through the shared art wrapper');
 assert.ok(uiScript.includes('item?.itemId')&&uiScript.includes('ITEM_ART_BY_ID'),'Inventory art resolver must use catalog itemId before effect type.');
 assert.ok(uiScript.includes('RELIC_ART_BY_ID'),'Card relics must have dedicated semantic artwork.');
 assert.ok(itemArt.inventory.xp_hourglass==='../relics/hourglass.png','Hourglass must not reuse the coin JPEG.');
