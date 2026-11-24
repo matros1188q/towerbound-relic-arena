@@ -587,6 +587,7 @@
  }
  const PERSISTED_BATTLE_FIELDS=["playerTurnCount","bossDeadlineTurns","bossTurns","bossAddsSummoned","poisonStacks","playerWeakTurns","playerDamageBuffTurns","playerDamageBuff","enemyDamageReductionTurns","enemyDamageReduction","potionUsedThisTurn","firstAttackDouble","bossPhase","assassinAttacksThisTurn","shamanFreeMode","playerBleed","counterCooldownTurns","ultimateCooldownTurns","counterPrimed","counterConsumed","counterTargetIndex","counterAction","nextDamageShield","nextAttackDamageBonus","cardSpellPower","cardsPlayedThisTurn","playerSkillUsed","enemyStunned","parryChance","dots","dot","hot","teleportUsed","comboStacks","overkillBonus"];
  function save(){try{
+  if(!engine||!engine.state)throw new Error('Игровое состояние ещё загружается');
   for(const character of engine.state.characters||[]){character.deck=Array.isArray(character.deck)?character.deck:[];character.unlockedCards=Array.isArray(character.unlockedCards)?character.unlockedCards:[];character.relics=Array.isArray(character.relics)?character.relics:[];character.hand=Array.isArray(character.hand)?character.hand:[];character.discard=Array.isArray(character.discard)?character.discard:[];character.exhaustPile=Array.isArray(character.exhaustPile)?character.exhaustPile:[];character.combo=Math.max(0,Number(character.combo)||0);character.rage=Math.max(0,Number(character.rage)||0);character.charges=Math.max(0,Number(character.charges)||0);}
   const c=live();
   if(c?.run?.stage&&battle){
@@ -2416,6 +2417,8 @@ function talentBonusDescription(talent,rank){
   if(!window.TowerboundReworkReady)return;
   window.TowerboundReworkReady.then(async value=>{
    if(!value)return;
+   if(window.TowerboundCloudReady)await window.TowerboundCloudReady;
+   else await new Promise(resolve=>{let settled=false;const done=()=>{if(settled)return;settled=true;resolve();};window.addEventListener('towerbound-cloud-ready',done,{once:true});setTimeout(done,18000);});
    engine=value;balance=engine.balance;const unlockedBefore=Array.isArray(engine.state.account?.unlockedCards)?engine.state.account.unlockedCards.length:0;unlockedCardIds();if(engine.state.account.unlockedCards.length!==unlockedBefore)save();window.TowerboundLevelUpModal=(level,points)=>showLevelUpModal(level,points);
    skills=[]; // Card-first combat: legacy skill catalogue is not loaded into the active UI.
    let active=null;
