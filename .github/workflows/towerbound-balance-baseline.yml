@@ -14,7 +14,7 @@ permissions:
 jobs:
   real-card-balance:
     runs-on: ubuntu-24.04
-    timeout-minutes: 360
+    timeout-minutes: 120
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -22,18 +22,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check simulator and game syntax
+      - name: Install Playwright
+        run: npm install --no-save playwright@1.54.2
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Check source syntax
         run: |
           node --check rpg-rework-ui.js
           node --check rpg-rework-v2.js
           node --check tests/towerbound-card-balance.cjs
-      - name: Install Playwright and Chromium
-        run: |
-          npm install --no-save playwright@1.54.2
-          npx playwright install --with-deps chromium
-      - name: Run all 63 card-combat balance attempts
+      - name: Run 63 real card-combat attempts
         run: node tests/towerbound-card-balance.cjs
-      - name: Upload real card-combat logs
+      - name: Upload real card-combat balance report
         if: always()
         uses: actions/upload-artifact@v4
         with:
