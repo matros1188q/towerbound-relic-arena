@@ -18,7 +18,7 @@ for(const pack of [heroes,enemies,bosses]){
  for(const asset of pack.assets){assert.equal(asset.image_format,'png');exists(asset.relative_path);}
 }
 for(const item of relics.assets)exists(item.path);
-for(const group of [itemArt.shop,itemArt.inventory,itemArt.relics,itemArt.mobDrops])for(const asset of Object.values(group||{})){if(typeof asset==='string')exists(path.normalize(path.join('assets/Castoms',asset)));}
+for(const group of [itemArt.shop,itemArt.shopVariants,itemArt.inventory,itemArt.relics,itemArt.mobDrops])for(const asset of Object.values(group||{})){if(typeof asset==='string')exists(path.normalize(path.join('assets/Castoms',asset)));}
 for(const sheet of ui.spriteSheets)exists(sheet.path);
 for(const sheet of skills.sprite_sheets||[])exists(sheet.path);
 for(const chapter of chapters.chapters){assert.ok(chapter.background.endsWith('.jpeg'),'Chapter backgrounds must remain JPEG');exists(chapter.background);}
@@ -67,6 +67,8 @@ const pwa=JSON.parse(fs.readFileSync(path.join(root,'manifest.json'),'utf8'));
 assert.ok(pwa.icons.length>=2&&pwa.icons.every(icon=>icon.src==='./assets/icons/image.png'),'PWA manifest icons use the Towerbound T logo');
 
 assert.equal(itemArt.inventory.pity_token,"image 17.jpeg","Pity token must not reuse the luck potion bottle");
+for(const ids of [['xp_10','xp_20','xp_50','xp_100'],['heal_10','heal_25','heal_35','heal_50'],['drop_20','drop_50','drop_75','drop_100']])assert.equal(new Set(ids.map(id=>itemArt.inventory[id])).size,ids.length,'Each shop potency tier must have individual artwork: '+ids.join(', '));
+assert.deepEqual(itemArt.shopVariants,{xp_10:itemArt.inventory.xp_10,xp_20:itemArt.inventory.xp_20,xp_50:itemArt.inventory.xp_50,xp_100:itemArt.inventory.xp_100,heal_10:itemArt.inventory.heal_10,heal_25:itemArt.inventory.heal_25,heal_35:itemArt.inventory.heal_35,heal_50:itemArt.inventory.heal_50,drop_20:itemArt.inventory.drop_20,drop_50:itemArt.inventory.drop_50,drop_75:itemArt.inventory.drop_75,drop_100:itemArt.inventory.drop_100},'Shop and backpack share each tier-specific art path');
 assert.notEqual(itemArt.inventory.enhancement_stone,itemArt.inventory.craft_material,"Enhancement stone and craft material need distinct art");
 assert.notEqual(itemArt.inventory.refine_stone,itemArt.inventory.enhancement_stone,"Refine stone and enhancement stone need distinct art");
 assert.notEqual(itemArt.inventory.refine_10,itemArt.inventory.refine_20,"Refinement tiers need distinct art");

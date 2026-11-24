@@ -24,9 +24,9 @@
   cup:"image%2021.jpeg",hammer:"image%2022.jpeg"
  });
  const ITEM_ART_BY_ID=Object.freeze({
-  xp_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_100:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,
-  heal_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_25:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_35:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,healing_potion:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,
-  drop_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_75:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_100:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,
+  xp_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_20:"./assets/relics/oracle.png",xp_50:"./assets/relics/starfall.png",xp_100:"./assets/relics/echo.png",
+  heal_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_25:"./assets/relics/heart.png",heal_35:"./assets/relics/phoenix.png",heal_50:"./assets/relics/laststand.png",healing_potion:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,
+  drop_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_50:"./assets/relics/luckycoin.png",drop_75:"./assets/relics/moon.png",drop_100:"./assets/relics/meteor.png",
   pity_token:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye,pity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye,
   antidote:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.antidote,map_compass:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,map_hint:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,
   silver_charm:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,silver_bonus:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,xp_hourglass:"./assets/relics/hourglass.png",

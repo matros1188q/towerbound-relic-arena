@@ -59,22 +59,23 @@
     "Premium-account products intentionally retain their existing artwork.",
     "Craft material uses the single green ore image, not the mixed image_15 atlas.",
     "Gloves and amulets are rendered as individual crops from the 3-column image_12 sheet; bundle uses a single chest crop.",
-    "Backpack, loot and item detail share the same normalized art wrapper and contain-sized viewport."
+    "Backpack, loot and item detail share the same normalized art wrapper and contain-sized viewport.",
+    "Each XP, healing and luck potency tier has its own semantically matched illustration; tier badges remain visible in the shop and backpack."
   ],
   "inventory": {
     "xp_10": "image.jpeg",
-    "xp_20": "image.jpeg",
-    "xp_50": "image.jpeg",
-    "xp_100": "image.jpeg",
+    "xp_20": "../relics/oracle.png",
+    "xp_50": "../relics/starfall.png",
+    "xp_100": "../relics/echo.png",
     "healing_potion": "image 2.jpeg",
     "heal_10": "image 2.jpeg",
-    "heal_25": "image 2.jpeg",
-    "heal_35": "image 2.jpeg",
-    "heal_50": "image 2.jpeg",
+    "heal_25": "../relics/heart.png",
+    "heal_35": "../relics/phoenix.png",
+    "heal_50": "../relics/laststand.png",
     "drop_20": "image 3.jpeg",
-    "drop_50": "image 3.jpeg",
-    "drop_75": "image 3.jpeg",
-    "drop_100": "image 3.jpeg",
+    "drop_50": "../relics/luckycoin.png",
+    "drop_75": "../relics/moon.png",
+    "drop_100": "../relics/meteor.png",
     "pity_token": "image 17.jpeg",
     "pity": "image 17.jpeg",
     "antidote": "image 4.jpeg",
@@ -106,5 +107,19 @@
     "enhancement_stone": "../relics/image_7.png",
     "refine_stone": "../relics/image_8.png",
     "enchant_scroll": "../relics/image_9.png"
+  },
+  "shopVariants": {
+    "xp_10": "image.jpeg",
+    "xp_20": "../relics/oracle.png",
+    "xp_50": "../relics/starfall.png",
+    "xp_100": "../relics/echo.png",
+    "heal_10": "image 2.jpeg",
+    "heal_25": "../relics/heart.png",
+    "heal_35": "../relics/phoenix.png",
+    "heal_50": "../relics/laststand.png",
+    "drop_20": "image 3.jpeg",
+    "drop_50": "../relics/luckycoin.png",
+    "drop_75": "../relics/moon.png",
+    "drop_100": "../relics/meteor.png"
   }
 }
