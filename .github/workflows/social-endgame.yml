@@ -16,7 +16,13 @@ on:
   pull_request:
     paths:
       - 'social-endgame.js'
+      - 'towerbound-guild.js'
+      - 'towerbound-online.js'
+      - 'towerbound-cloud.js'
+      - 'rpg-mode.js'
+      - 'supabase/migrations/**'
       - 'tests/social-endgame.test.cjs'
+      - 'tests/guild-social.test.cjs'
       - 'index.html'
       - '.github/workflows/social-endgame.yml'
 jobs:
