@@ -266,7 +266,7 @@ async function chooseSource(remote){
  const localHasCharacters=snapshotHasCharacters(local),remoteHasCharacters=snapshotHasCharacters(remote.save_data);
  const progressOrder=compareProgress(local,remote.save_data);
  const freshLocal=isFreshStarterSnapshot(local);
- if(remoteHasCharacters&&(!localHasCharacters||freshLocal||progressOrder<0)){
+ /* The cloud row is authoritative for a different/unbound browser profile. When progress metrics tie, prefer the cloud copy too: otherwise stale local starter data can trigger a false save conflict and keep the character picker locked forever. Keep local only when it is demonstrably ahead for this same account. */if(remoteHasCharacters&&(!sameUser||!localHasCharacters||freshLocal||progressOrder<=0)){
   say(freshLocal?'Обнаружен новый стартовый профиль. Восстанавливаем сохранение аккаунта…':'В облаке найден более продвинутый прогресс. Восстанавливаем его…');
   restoreLocal(remote.save_data);
   return;
