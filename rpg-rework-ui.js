@@ -2262,6 +2262,22 @@ function talentBonusDescription(talent,rank){
  document.addEventListener("click",event=>{if(cardLongPressTriggered&&event.target.closest("#tbRpg [data-card-play]")){event.preventDefault();event.stopImmediatePropagation();cardLongPressTriggered=false;}},true);
  document.addEventListener("click",handleClick);
   window.addEventListener("towerbound-auth-change",()=>{if(screen==="characters")render();});
+ window.addEventListener("towerbound-cloud-restore",()=>{
+  try{
+   if(!engine)return;
+   const raw=localStorage.getItem("tb-rpg-v2"),restored=raw?JSON.parse(raw):null;
+   if(!restored||!Array.isArray(restored.characters))throw new Error("Восстановленное сохранение не содержит список персонажей");
+   for(const key of Object.keys(engine.state))delete engine.state[key];
+   Object.assign(engine.state,restored);
+   selectedId=engine.state.activeCharacterId||engine.state.characters[0]?.id||null;
+   if(!engine.state.characters.some(character=>character.id===selectedId))selectedId=engine.state.characters[0]?.id||null;
+   if(screen==="battle"){stopBattleStatusLoop();clearPendingTurnTimer();battle=null;screen="map";}
+   guildRaid=null;
+   postBattleSummary=null;
+   render();
+   console.info("[Towerbound] cloud save applied without page reload");
+  }catch(error){console.error("[Towerbound] cloud restore could not be applied in-place",error);}
+ });
  document.addEventListener("pointerdown",unlockAudioAndMusic,{capture:true,passive:true});
  function handleBattleKeys(event){
   if(screen!=="battle"||!battle||battle.paused||event.repeat||event.ctrlKey||event.metaKey||event.altKey)return;
