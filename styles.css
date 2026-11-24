@@ -963,3 +963,12 @@
 #tbRpg .tb-v2 .new-enemy-threat.elite{border:1px solid #e5bd6d99;background:#4b351bbb;color:#ffe3a6}
 #tbRpg .tb-v2 .v2-combat-log summary{letter-spacing:.06em}
 @media(max-width:600px){#tbRpg .tb-v2 .new-hero-warning{font-size:8px;padding:5px 4px}#tbRpg .tb-v2 .new-enemy-threat{font-size:7px}}
+
+
+/* Stage backgrounds: two stacked layers crossfade without shifting the arena layout. */
+#tbRpg .tb-v2 .new-battle-wrap{position:relative;isolation:isolate;overflow:hidden}
+#tbRpg .tb-v2 .new-battle-wrap>.tb-arena-bg-layer{position:absolute;inset:0;z-index:0;pointer-events:none;background-size:cover;background-position:center center;background-repeat:no-repeat;opacity:0;filter:brightness(.46) saturate(.82);transition:opacity 1s ease-in-out;will-change:opacity;border-radius:inherit}
+#tbRpg .tb-v2 .new-battle-wrap>.tb-arena-bg-layer.is-visible{opacity:1}
+#tbRpg .tb-v2 .new-battle-wrap>:not(.tb-arena-bg-layer){z-index:1}
+#tbRpg .tb-v2 .new-battle-wrap>.tb-fx-layer{z-index:5}
+@media(prefers-reduced-motion:reduce){#tbRpg .tb-v2 .new-battle-wrap>.tb-arena-bg-layer{transition:none}}
