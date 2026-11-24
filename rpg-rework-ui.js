@@ -2546,6 +2546,20 @@ function talentBonusDescription(talent,rank){
    setTarget:(index)=>{setBattleTarget(Number(index));return battle?.targetIndex??null;},
    playCard:(index)=>{if(!battle||battle.actor?.type!=="player")return false;resolveCardPlay(Number(index));return !!battle;},
    endTurn:()=>{if(!battle||battle.actor?.type!=="player")return false;endPlayerTurn();return !!battle;},
+   prepareSpecialization:(branchId)=>{
+    const c=live();if(!c)throw new Error("Character is missing");
+    const required=Array.from({length:9},(_,index)=>engine.requiredXp(index+1)).reduce((sum,value)=>sum+value,0);
+    c.xp=Math.max(Number(c.xp)||0,required);engine.recalcLevel(c);
+    if(c.level<10)throw new Error("Unable to prepare level 10 specialization test");
+    if(c.branch&&c.branch!==branchId)throw new Error("Character already has a different branch");
+    if(!c.branch){engine.chooseBranch(c.id,branchId,0);grantSpecializationCards(c,branchId);}
+    ensureCardDeck(c);syncEquipmentCards(c);allocateBalanceTalents();
+    c.progress.currentStage=1;c.progress.highestEver=0;c.progress.checkpoints=[];
+    c.run.active=false;c.run.stage=null;c.run.snapshot=null;c.run.experience=0;c.run.foundItemIds=[];c.run.playerHp=engine.maxHp(c);
+    save();render();return{level:c.level,branch:c.branch,talentPoints:c.talentPoints,spent:Object.values(c.talents||{}).reduce((sum,value)=>sum+value,0),deckSize:c.deck.length,hp:c.run.playerHp,maxHp:engine.maxHp(c)};
+   },
+   canBasicAttack:()=>!!battle&&battle.actor?.type==="player"&&!battle.playerSkillUsed&&!battle.busy&&!battle.paused,
+   basicAttack:()=>{if(!battle||battle.actor?.type!=="player"||battle.playerSkillUsed)return false;basicAttack();return !!battle?.playerSkillUsed;},
    useCounter:()=>{if(!battle||battle.actor?.type!=="player")return false;const before=!!battle.counterPrimed;useCounterSkill();return !before&&!!battle?.counterPrimed;},
    canCounter:()=>{const c=live();if(!c||!battle)return false;const counter=counterAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.counter??18):(counter.resource_cost??balance.resources.action_costs.counter);return !battle.playerSkillUsed&&!battle.counterPrimed&&(battle.counterCooldownTurns||0)<=0&&Number(c.resource)>=cost;},
    useUltimate:()=>{if(!battle||battle.actor?.type!=="player")return false;const before=!!battle.playerSkillUsed;useUltimate();return !before&&!!battle?.playerSkillUsed;},
