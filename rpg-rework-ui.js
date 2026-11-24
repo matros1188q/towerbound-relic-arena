@@ -1504,15 +1504,19 @@ function talentBonusDescription(talent,rank){
    const attackCountdown=Math.max(1,attackInterval-((Number(target.turnsTaken)||0)%attackInterval));
    const countdownMarkup=(target.type==="boss"||target.type==="elite")?'<div class="new-enemy-countdown">Атака через: '+attackCountdown+'</div>':"";
    const phaseMarkup=target.type==="boss"?'<div class="tb-boss-phase">ФАЗА '+Math.min(target.maxPhases||4,target.phase||1)+' / '+(target.maxPhases||4)+'</div>':"";
+   const threatMarkup=target.type==="boss"?'<div class="new-enemy-threat boss">☠ БОСС · ВЫСОКАЯ УГРОЗА</div>':target.type==="elite"?'<div class="new-enemy-threat elite">✦ ЭЛИТНЫЙ ПРОТИВНИК</div>':"";
    const statuses=["poison","bleed","burn","weak","vulnerable"].filter(key=>Number(target[key])>0).map(key=>'<span class="new-enemy-status">'+({poison:"☠️ Яд",bleed:"🩸 Кровь",burn:"🔥 Горение",weak:"💨 Слабость",vulnerable:"🎯 Уязвимость"}[key])+' '+target[key]+'</span>').join("");
    return '<div class="new-enemy-item'+(targetIndex===battle.targetIndex?" selected":"")+'" data-target="'+targetIndex+'" role="button" tabindex="0" aria-pressed="'+(targetIndex===battle.targetIndex?'true':'false')+'">'+
     '<img src="'+esc(enemyPortrait(target))+'" class="new-enemy-img" alt="'+esc(target.name||"Враг")+'">'+
     '<div class="new-enemy-name">'+(weaknessIcon?'<span aria-label="Уязвимость">'+weaknessIcon+'</span>':"")+esc(target.name||balance.mobs.roles[target.role]?.name||"Враг")+'</div>'+
-    countdownMarkup+phaseMarkup+'<div class="new-enemy-intent">'+esc(intent)+'</div>'+
+    threatMarkup+countdownMarkup+phaseMarkup+'<div class="new-enemy-intent">'+esc(intent)+'</div>'+
     '<div class="new-enemy-statuses">'+statuses+'</div><div class="new-enemy-hp-bar"><div style="width:'+enemyHpPct+'%"></div></div>'+
     '<div class="new-enemy-hp-text">'+Math.ceil(target.hp)+' HP</div></div>';
   }).join("");
   const handMarkup=renderHand();
+  const healingPotionCount=(c.bag||[]).filter(item=>item&&item.type==="healing_potion").reduce((sum,item)=>sum+Math.max(0,Number(item.quantity)||0),0);
+  if(hpPct<=30&&!battle.lowHpWarningLogged){battle.lowHpWarningLogged=true;logExpeditionEvent("Здоровье ниже 30% · "+Math.ceil(c.run.playerHp)+" / "+hp+" HP","#ff7777");}
+  const hpWarningMarkup=hpPct<=30?'<div class="new-hero-warning '+(hpPct<=15?"critical":"") +'" role="status" aria-live="polite">'+(hpPct<=15?"⚠ КРИТИЧЕСКИ МАЛО ЗДОРОВЬЯ":"⚠ ЗДОРОВЬЕ НИЗКОЕ")+' · '+(healingPotionCount>0&&potionCooldown===0?"Зелье готово — используй его в свой ход":healingPotionCount>0?"Зелье на перезарядке · разыграй защиту":"Зелья нет · разыграй карты защиты")+'</div>':"";
   const relicMarkup=(c.relics||[]).map(id=>engine.RELICS_DATABASE?.[id]).filter(Boolean).map(relic=>'<span class="new-battle-relic" title="'+esc(relic.name+": "+relic.description)+'">'+esc(relic.icon||"✦")+'</span>').join("");
   const potionMarkup=(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span>🧪</span><b>'+Number(item.quantity)+'</b></button>').join("");
   return '<div class="new-battle-wrap'+(battle.fastBattle?" tb-fast-battle":"")+'">'+
@@ -1520,7 +1524,7 @@ function talentBonusDescription(talent,rank){
    '<div class="new-battle-actions"><button type="button" class="tb-fast-battle-btn" data-action="toggle-fast-battle">'+(battle.fastBattle?"⚡ ×2":"⚡ ×1")+'</button><button type="button" class="new-pause-btn" data-action="pause">'+(battle.paused?"▶":"Ⅱ")+'</button></div></div>'+
    '<div class="new-battle-middle"><div class="new-hero-side"><img src="'+esc(portrait(c.classId))+'" class="new-hero-img" alt="">'+
    '<div class="new-hero-name">'+esc(c.name)+'</div><div class="new-hp-bar"><div style="width:'+hpPct+'%"></div></div>'+
-   '<div class="new-hero-hp-text">'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</div><div class="new-hero-resource-text">'+esc(classData(c).resource)+' · '+Math.round(c.resource)+' / '+Math.round(c.resourceMax)+'</div>'+
+   '<div class="new-hero-hp-text">'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</div>'+hpWarningMarkup+'<div class="new-hero-resource-text">'+esc(classData(c).resource)+' · '+Math.round(c.resource)+' / '+Math.round(c.resourceMax)+'</div>'+
    '<div class="new-hero-potions"><span class="tb-potion-cooldown">'+(potionCooldown>0?'Через '+potionCooldown+' этажей':'Готово')+'</span>'+potionMarkup+'</div></div>'+
    '<div class="new-enemies-side">'+enemyMarkup+'</div></div>'+
    '<div class="new-battle-bottom"><div class="new-turn-guidance" aria-live="polite">'+(battle.guildRaid?"РЕЙД · РАЗЫГРАЙ 3 КАРТЫ · "+Number(battle.cardsPlayedThisTurn||0)+"/3":(battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют..."))+'</div>'+
