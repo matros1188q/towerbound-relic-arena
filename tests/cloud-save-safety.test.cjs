@@ -7,6 +7,7 @@ const html=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 const migration=fs.readFileSync('supabase/migrations/202611240004_durable_player_save_history.sql','utf8');
 assert.ok(cloud.includes('const cloudBootstrap=new Promise(resolve=>{resolveCloudBootstrap=resolve;})'));
+assert.ok(cloud.includes('authEventSequence=0')&&cloud.includes('if(sequence===authEventSequence)void onSession(next)'),'stale queued auth events cannot overwrite a newer login session');
 assert.ok(ui.includes('if(window.TowerboundCloudReady)await window.TowerboundCloudReady;'));
 assert.ok(ui.includes('post-cloud engine hydration failed')&&ui.includes("localStorage.getItem('tb-rpg-v2')"),'engine state is rehydrated from cloud-restored storage after the cloud bootstrap');
 assert.ok(ui.includes('auth restore hydration failed')&&ui.includes('towerbound-auth-change'),'engine state is rehydrated again after the completed authenticated cloud restore');
