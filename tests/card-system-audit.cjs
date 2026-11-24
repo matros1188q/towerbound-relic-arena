@@ -94,7 +94,7 @@ assert.match(ui,/Number\(effects\.damagePerEnergy\)>0[\s\S]*?Number\(effects\.da
 assert.match(ui,/status_slime:\{id:"status_slime"[^\n]*effects:\{selfDiscard:true\}/,'self-discard status is a one-energy card');
 assert.match(ui,/c\.hand\.splice\(index,1\);[\s\S]*?if\(card\.exhaust\|\|card\.upgradedExhaust\)c\.exhaustPile\.push\(card\);else c\.discard\.push\(card\)/,'playing a self-discard card consumes it into the discard pile');
 
-assert.match(ui,/else c\.currentEnergy-=cost/,'playing a card deducts its calculated energy cost');
+assert.match(ui,/else if\(!battle\.guildRaid\)c\.currentEnergy-=cost/,'playing a card deducts its calculated energy cost outside guild raids');
 assert.match(ui,/c\.hand\.splice\(index,1\);[\s\S]*?if\(card\.exhaust\|\|card\.upgradedExhaust\)c\.exhaustPile\.push\(card\);else c\.discard\.push\(card\)/,'a played card moves from hand into discard or exhaust');
 assert.match(ui,/for\(const key of \["poison","bleed","burn","weak","vulnerable"\]\)[\s\S]*?enemy\[key\]=Math\.max/,'poison and bleed effects persist on the targeted enemy object');
 assert.match(ui,/function endPlayerTurn\(\)[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'ending a player turn launches the enemy attack queue');
