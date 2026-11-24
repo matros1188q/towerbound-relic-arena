@@ -2509,6 +2509,64 @@ function talentBonusDescription(talent,rank){
  }
  boot();
  window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;guildRaid=null;screen="map";render();save();},canStartGuildRaid:()=>!!engine&&!!live()&&!battle&&!live()?.run?.stage,startGuildRaid};
+ if(window.__TB_BALANCE_TEST_MODE){
+  const balanceSnapshot=()=>{const c=live();return JSON.parse(JSON.stringify({screen,selectedStage,character:c||null,battle:battle||null,postBattleSummary:postBattleSummary||null}));};
+  const allocateBalanceTalents=()=>{
+   const c=live();if(!c||!c.branch)return 0;
+   const branch=(classData(c).branches||[]).find(item=>item.id===c.branch);if(!branch)return 0;
+   let available=Math.max(0,(Number(c.talentPoints)||0)-Object.values(c.talents||{}).reduce((sum,value)=>sum+(Number(value)||0),0)),spent=0;
+   const priorities=["attack","health","defense","card_draw","critical"];
+   for(const effect of priorities)for(const talent of branch.talents||[]){
+    if(talent.effect_template!==effect)continue;
+    while(available>0&&(Number(c.talents?.[talent.id])||0)<Math.min(3,Number(talent.max_rank)||3)){
+     engine.useTalentPoint(c.id,talent.id,3);available--;spent++;
+    }
+   }
+   return spent;
+  };
+  window.TowerboundBalanceQA={
+   createCharacter:(name,classId)=>{
+    if(!engine)throw new Error("Game engine is not ready");
+    if(engine.state.characters.length)throw new Error("A balance attempt must use a fresh isolated browser context");
+    selectedClass=classId;const created=engine.createCharacter(name,classId);selectedId=created.id;engine.state.activeCharacterId=created.id;
+    screen="map";selectedStage=1;ensureCardDeck(live());syncEquipmentCards(live());save();return created.id;
+   },
+   chooseBranch:(branchId)=>{
+    const c=live();if(!c)throw new Error("Character is missing");
+    engine.chooseBranch(c.id,branchId,0);const cardsAdded=grantSpecializationCards(c,branchId);save();return{branch:c.branch,cardsAdded};
+   },
+   allocateTalents:allocateBalanceTalents,
+   startStage:(stage)=>{
+    if(battle)throw new Error("Previous battle is still active");
+    const c=live();if(!c)throw new Error("Character is missing");
+    selectedStage=Number(stage)||Number(c.progress.currentStage)||1;routeChoice="standard";beginStage();
+    return balanceSnapshot();
+   },
+   setTarget:(index)=>{setBattleTarget(Number(index));return battle?.targetIndex??null;},
+   playCard:(index)=>{if(!battle||battle.actor?.type!=="player")return false;resolveCardPlay(Number(index));return !!battle;},
+   endTurn:()=>{if(!battle||battle.actor?.type!=="player")return false;endPlayerTurn();return !!battle;},
+   useCounter:()=>{if(!battle||battle.actor?.type!=="player")return false;const before=!!battle.counterPrimed;useCounterSkill();return !before&&!!battle?.counterPrimed;},
+   canCounter:()=>{const c=live();if(!c||!battle)return false;const counter=counterAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.counter??18):(counter.resource_cost??balance.resources.action_costs.counter);return !battle.playerSkillUsed&&!battle.counterPrimed&&(battle.counterCooldownTurns||0)<=0&&Number(c.resource)>=cost;},
+   useUltimate:()=>{if(!battle||battle.actor?.type!=="player")return false;const before=!!battle.playerSkillUsed;useUltimate();return !before&&!!battle?.playerSkillUsed;},
+   canUltimate:()=>{const c=live();if(!c||!battle)return false;const ultimate=ultimateAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.ultimate??42):(ultimate.resource_cost??balance.resources.action_costs.ultimate);return !battle.playerSkillUsed&&(battle.ultimateCooldownTurns||0)<=0&&Number(c.resource)>=cost;},
+   usePotion:()=>{
+    const c=live();if(!c||!battle||battle.actor?.type!=="player"||battle.potionUsedThisTurn)return false;
+    const potion=(c.bag||[]).find(item=>item.type==="healing_potion"&&Number(item.quantity)>0);if(!potion)return false;
+    const before=Number(c.run.playerHp)||0;try{engine.useHealingPotion(c.id,potion.id);applyTreePotionHealing(c,before);battle.potionUsedThisTurn=true;return true;}catch(error){return false;}
+   },
+   claimBestRelic:()=>{
+    const c=live(),choices=postBattleSummary?.relicChoices||c?.run?.pendingRelicChoices||[];
+    if(!c||!choices.length)return null;
+    const rank=id=>({steel_heart:9,phoenix_feather:8,scholar_lens:8,lucky_coin:7,bloodstone:7,assassin_blade:7,war_drums:6,mirror_shard:6,arcane_prism:6,frost_sigil:6,greed:2,hunter_mark:2}[id]||4);
+    const choice=choices.slice().sort((a,b)=>rank(b.id)-rank(a.id))[0];try{return engine.claimRelic(c.id,choice.id);}catch(error){return null;}
+   },
+   useCampRest:(stage)=>{const c=live();if(!c)return null;try{return engine.useCampRest(c.id,Number(stage));}catch(error){return null;}},
+   clearPostBattle:()=>{postBattleSummary=null;document.querySelector(".card-reward-overlay")?.remove();const c=live();if(c?.pendingCardReward)c.pendingCardReward=null;save();return true;},
+   snapshot:balanceSnapshot,
+   cardDatabase:()=>CARD_DATABASE,
+   engine:()=>engine
+  };
+ }
  window.skipCardReward=skipCardReward;
  window.TowerboundCards={database:CARD_DATABASE,generateReward:generateCardReward,showReward:showCardRewardScreen,addToDeck:(id)=>addCardToDeck(live(),id),upgrade:(instanceId)=>{const ok=upgradeCardInDeck(live(),instanceId);if(ok){save();render();}return ok;},guildSnapshot:()=>{const c=live();if(!c)return null;ensureCardDeck(c);return {character:{id:c.id,name:c.name,classId:c.classId,level:c.level,branch:c.branch, specialization:c.specialization,deck:JSON.parse(JSON.stringify(c.deck||[])),hand:JSON.parse(JSON.stringify(c.hand||[])),discard:JSON.parse(JSON.stringify(c.discard||[])),gear:JSON.parse(JSON.stringify(c.gear||[])),relics:JSON.parse(JSON.stringify(c.relics||[])),talents:JSON.parse(JSON.stringify(c.talents||{})),silver:c.silver},stats:JSON.parse(JSON.stringify(engine.getCombatStats(c)||{}))};}};
 })();
