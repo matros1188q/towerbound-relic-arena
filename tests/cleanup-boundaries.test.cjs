@@ -6,7 +6,7 @@ const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const talentDir=path.join(root,'assets/talents');
 assert.ok(fs.existsSync(talentDir),'active talent icon asset directory exists');
-const activeTalentImages=fs.readdirSync(talentDir).filter(name=>/\\.png$/i.test(name));
+const activeTalentImages=fs.readdirSync(talentDir).filter(name=>name.toLowerCase().endsWith('.png'));
 assert.equal(activeTalentImages.length,550,'all 550 talent atlas slices remain in the active runtime asset directory');
 const talentTree=JSON.parse(read('configs/talents_tree.json'));
 const referencedTalentIcons=[...new Set((talentTree.nodes||[]).map(node=>String(node.icon||'').replace('./','')).filter(Boolean))];
@@ -14,7 +14,7 @@ assert.equal(referencedTalentIcons.length,425,'seven-class talent tree keeps its
 for(const icon of referencedTalentIcons)assert.ok(fs.existsSync(path.join(root,icon)),'talent tree icon exists: '+icon);
 const archiveDir=path.join(root,'art-inbox/06-other/talent-atlas-slices');
 assert.ok(fs.existsSync(archiveDir),'talent atlas work-material note remains available');
-assert.equal(fs.readdirSync(archiveDir).filter(name=>/\\.png$/i.test(name)).length,0,'active talent PNGs are not duplicated in the art inbox');
+assert.equal(fs.readdirSync(archiveDir).filter(name=>name.toLowerCase().endsWith('.png')).length,0,'active talent PNGs are not duplicated in the art inbox');
 assert.ok(fs.existsSync(path.join(root,'art-inbox/06-other/images_126_cropped.zip')),'unused source ZIP is preserved in the work-material inbox');
 assert.ok(!fs.existsSync(path.join(root,'assets/Castoms/images_126_cropped.zip')),'source ZIP is not mixed into the live custom item art folder');
 const runtimeFiles=[
