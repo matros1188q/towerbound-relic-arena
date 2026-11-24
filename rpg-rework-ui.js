@@ -2563,6 +2563,15 @@ function talentBonusDescription(talent,rank){
    },
    useCampRest:(stage)=>{const c=live();if(!c)return null;try{return engine.useCampRest(c.id,Number(stage));}catch(error){return null;}},
    clearPostBattle:()=>{postBattleSummary=null;document.querySelector(".card-reward-overlay")?.remove();const c=live();if(c?.pendingCardReward)c.pendingCardReward=null;save();return true;},
+   inspect:()=>{
+    const c=live(),cardView=card=>({id:card.id,name:card.name,type:card.type,cost:Number(card.cost)||0,effects:cardEffects(card),isUpgraded:!!card.isUpgraded,exhaust:!!card.exhaust,retain:!!card.retain});
+    return{
+     screen,selectedStage,
+     character:c?{id:c.id,name:c.name,classId:c.classId,level:c.level,xp:c.xp,talentPoints:c.talentPoints,branch:c.branch,talents:{...(c.talents||{})},hp:Number(c.run?.playerHp)||0,maxHp:engine.maxHp(c),currentStage:c.progress?.currentStage||1,highestEver:c.progress?.highestEver||0,runActive:!!c.run?.active,runStage:c.run?.stage?.stage||null,lives:c.run?.lives||0,silver:c.silver||0,deckSize:(c.deck||[]).length,hand:(c.hand||[]).map(cardView),discardSize:(c.discard||[]).length,potions:(c.bag||[]).filter(item=>item.type==="healing_potion").reduce((sum,item)=>sum+(Number(item.quantity)||0),0),gear:(c.gear||[]).filter(Boolean).map(item=>({name:item.name,rarity:item.rarity,slot:item.slot,itemLevel:item.itemLevel,stats:item.stats})),relics:(c.relics||[]).slice(),itemsFound:c.stats?.items_found||0,kills:c.stats?.kills||0,bossKills:c.stats?.boss_kills||0,stageSnapshot:c.run?.stage?.uiBattleSnapshot||null}:null,
+     battle:battle?{stage:battle.stage,actorType:battle.actor?.type||null,round:battle.round||1,busy:!!battle.busy,paused:!!battle.paused,energy:c?.currentEnergy||0,cardBlock:battle.cardBlock||0,cardsPlayedThisTurn:battle.cardsPlayedThisTurn||0,targetIndex:battle.targetIndex,enemies:(battle.enemies||[]).map(enemy=>({index:enemy.index,name:enemy.name||enemy.mobId||enemy.role,type:enemy.type,role:enemy.role,hp:enemy.hp,maxHp:enemy.maxHp,alive:enemy.alive,poison:enemy.poison||0,bleed:enemy.bleed||0,weak:enemy.weak||0,vulnerable:enemy.vulnerable||0,intent:enemy.intent||null,phase:enemy.phase||1})),combatLog:(battle.combatLog||[]).slice(-20)}:null,
+     summary:postBattleSummary?{ready:!!postBattleSummary.ready,stage:postBattleSummary.stage,xp:postBattleSummary.xp,silver:postBattleSummary.silver,loot:(postBattleSummary.loot||[]).map(item=>({name:item.name,type:item.type,rarity:item.rarity,disposition:item.disposition})),relicChoices:(postBattleSummary.relicChoices||[]).map(item=>({id:item.id,name:item.name}))}:null
+    };
+   },
    snapshot:balanceSnapshot,
    cardDatabase:()=>CARD_DATABASE,
    engine:()=>engine
