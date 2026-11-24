@@ -40,12 +40,12 @@ async function runAttempt(browser,build,seed,index){
    const stageLogs=[];let branchChosen=false,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
    const hpNow=()=>Number(qa.snapshot().character?.run?.playerHp)||0,maxHp=()=>Number(qa.snapshot().character?qa.engine().maxHp(qa.snapshot().character):1)||1;
    const trackHp=before=>{const after=hpNow();if(after<before)totalDamageTaken+=before-after;else if(after>before)totalHealing+=after-before;};
-   const pickTarget=b=>{const living=(b.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0),weight=e=>e.type==='boss'?100:e.role==='healer'?90:e.role==='saboteur'?85:e.role==='poison'?80:e.role==='bleed'?70:e.role==='normal'?50:e.role==='tank'?30:40;return living.sort((a,b)=>weight(b)-weight(a)||(a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp)))[0]||null;};
+   const pickTarget=b=>{const living=(b.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0),weight=e=>e.type==='boss'?110:e.type==='elite'?100:e.role==='saboteur'?95:e.role==='poison'?90:e.role==='healer'?85:e.role==='bleed'?75:e.role==='normal'?50:e.role==='tank'?30:40;return living.sort((a,b)=>weight(b)-weight(a)||(a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp)))[0]||null;};
    const scoreCard=(card,b,c)=>{
     const e=card.effects||{},cost=(card.isXCost||card.costX)?Number(c.currentEnergy)||0:Math.max(0,Number(card.cost)||0);
     if(cost>(Number(c.currentEnergy)||0)||e.unplayable||card.type==='curse'||card.type==='status')return -1;
     const alive=(b.enemies||[]).filter(x=>x.alive&&x.hp>0).length,damage=(Math.max(0,Number(e.damage)||0)*Math.max(1,Number(e.hits)||1))+(Math.max(0,Number(e.damageAll)||0)*Math.max(1,alive))+(Math.max(0,Number(e.damagePerEnergy)||0)*cost);
-    const dots=(Number(e.poison)||0)*4+(Number(e.bleed)||0)*3.5+(Number(e.burn)||0)*3+(Number(e.conditionalBleed)||0)*2,block=Math.max(0,Number(e.block)||0)*(Number(c.run.playerHp)<qa.engine().maxHp(c)*.65?1.35:.75);
+    const dots=(Number(e.poison)||0)*4+(Number(e.bleed)||0)*3.5+(Number(e.burn)||0)*3+(Number(e.conditionalBleed)||0)*2,hpRatio=Number(c.run.playerHp)/Math.max(1,qa.engine().maxHp(c)),block=Math.max(0,Number(e.block)||0)*(hpRatio<.35?3.2:hpRatio<.65?2.1:1.0);
     const heal=Math.max(0,Number(e.heal)||0)*2.2,utility=Math.max(0,Number(e.draw)||0)*5+Math.max(0,Number(e.energy)||0)*6+Math.max(0,Number(e.fury)||0)*3+Math.max(0,Number(e.spellPower)||0)*2+Math.max(0,Number(e.nextAttackDamage)||0)*1.5;
     const target=(b.enemies||[]).find(x=>x.index===b.targetIndex),lethal=target&&damage>=Number(target.hp)?9:0,intent=(b.enemies||[]).some(x=>x.alive&&(x.intent?.type==='attack'||x.pendingAttack)),defenseValue=intent?block:Math.min(block,2);
     return(damage+dots+defenseValue+heal+utility+lethal)/(Math.max(.5,cost)+.35)+(cost===0?1.5:0);
@@ -60,7 +60,7 @@ async function runAttempt(browser,build,seed,index){
      snap=qa.snapshot();if(!snap.battle)break;if(snap.screen==='death'||snap.character.run.playerHp<=0){stageReason='death';break;}
      const b=snap.battle,c=snap.character;if(b.actor?.type!=='player'){stageReason='enemy-turn-stalled';break;}
      const target=pickTarget(b);if(target&&target.index!==b.targetIndex)qa.setTarget(target.index);
-     let beforeHp=hpNow();if(beforeHp<qa.engine().maxHp(c)*.42&&!b.potionUsedThisTurn)qa.usePotion();trackHp(beforeHp);
+     let beforeHp=hpNow();if(beforeHp<qa.engine().maxHp(c)*.65&&!b.potionUsedThisTurn)qa.usePotion();trackHp(beforeHp);
      snap=qa.snapshot();if(!snap.battle)break;
      const liveBattle=snap.battle,liveChar=snap.character,focus=pickTarget(liveBattle);if(focus&&focus.index!==liveBattle.targetIndex)qa.setTarget(focus.index);
      if(qa.canUltimate()&&(focus?.type==='boss'||focus?.type==='elite')){
