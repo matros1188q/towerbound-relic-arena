@@ -7,7 +7,7 @@ const cfg=window.TOWERBOUND_SUPABASE_CONFIG||{};
 const SAVE_KEYS=new Set(['tb-rpg-v2','tb-rpg-v1','towerbound-save-v1','towerbound-profiles-v1','towerbound-active-profile-v1','tb-endgame-v1','tb-social-v1']);
 const isSaveKey=k=>SAVE_KEYS.has(String(k))||String(k).startsWith('towerbound-profile-save-');
 const $=s=>document.querySelector(s);
-let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false,savesReady=false,remoteHasCharacters=false,retryAfter=0;
+let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false,savesReady=false,remoteHasCharacters=false,retryAfter=0,sessionBusy=false,lastCloudError='';
 let sessionTask=Promise.resolve();
 let resolveCloudBootstrap;
 const cloudBootstrap=new Promise(resolve=>{resolveCloudBootstrap=resolve;});
@@ -209,36 +209,43 @@ function restoreLocal(snapshot){
   throw error;
  }finally{restoring=false;}
 }
+async function withAccountDbLock(task){
+ const userId=session?.user?.id;
+ if(!userId||!navigator.locks?.request)return await task();
+ return await navigator.locks.request('towerbound-db-'+userId,{mode:'exclusive'},task);
+}
 async function readRemote(){
- const {data,error}=await withTimeout(client.from('player_saves').select('save_data,revision,updated_at').eq('user_id',session.user.id).maybeSingle(),'Загрузка облачного сохранения');
- if(error)throw error;
- let best=data?.save_data||null,history=[];
- // Keep the normal login path to one indexed query. Read history only when the
- // primary row is absent; otherwise history adds load and can stall sign-in.
- if(!best){
-  try{
-   const result=await withTimeout(client.from('player_save_history').select('save_data,revision,updated_at').eq('user_id',session.user.id).order('revision',{ascending:false}).limit(25),'Проверка резервных сохранений',8000);
-   if(!result.error&&Array.isArray(result.data))history=result.data;
-  }catch(historyError){console.warn('[Towerbound cloud] save history unavailable; using current save',historyError);}
- }
- if(best)validateSnapshot(best);
- for(const entry of history){
-  try{validateSnapshot(entry.save_data);if(!best||compareProgress(entry.save_data,best)>0)best=entry.save_data;}catch(historyError){console.warn('[Towerbound cloud] invalid history revision skipped',entry.revision,historyError);}
- }
- if(!data&&best)return{save_data:best,revision:0,updated_at:null,recoveredFromHistory:true};
- if(data&&best&&best!==data.save_data)return{...data,save_data:best,recoveredFromHistory:true};
- return data;
+ return await withAccountDbLock(async()=>{
+  const {data,error}=await withTimeout(client.from('player_saves').select('save_data,revision,updated_at').eq('user_id',session.user.id).maybeSingle(),'Загрузка облачного сохранения');
+  if(error)throw error;
+  let best=data?.save_data||null,history=[];
+  if(!best){
+   try{
+    const result=await withTimeout(client.from('player_save_history').select('save_data,revision,updated_at').eq('user_id',session.user.id).order('revision',{ascending:false}).limit(25),'Проверка резервных сохранений',8000);
+    if(!result.error&&Array.isArray(result.data))history=result.data;
+   }catch(historyError){console.warn('[Towerbound cloud] save history unavailable; using current save',historyError);}
+  }
+  if(best)validateSnapshot(best);
+  for(const entry of history){try{validateSnapshot(entry.save_data);if(!best||compareProgress(entry.save_data,best)>0)best=entry.save_data;}catch(historyError){console.warn('[Towerbound cloud] invalid history revision skipped',entry.revision,historyError);}}
+  if(!data&&best)return{save_data:best,revision:0,updated_at:null,recoveredFromHistory:true};
+  if(data&&best&&best!==data.save_data)return{...data,save_data:best,recoveredFromHistory:true};
+  return data;
+ });
 }
 async function writeRemote(snapshot,expected){
  validateSnapshot(snapshot);
  if(Number(expected)>0&&!snapshotHasCharacters(snapshot))throw new Error('SAVE_GUARD_BLOCKED · Пустое сохранение не может заменить существующего персонажа');
- const {data,error}=await withTimeout(client.rpc('save_player_game',{p_save_data:snapshot,p_expected_revision:expected}),'Запись облачного сохранения');
- if(error)throw error;
- const row=Array.isArray(data)?data[0]:data;
- if(!row||!Number.isFinite(Number(row.revision)))throw new Error('Сервер не вернул новую версию сохранения');
- revision=Number(row.revision);
- try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
- return row;
+ return await withAccountDbLock(async()=>{
+  let expectedRevision=Number(expected)||0;
+  try{if(localStorage.getItem('tb-cloud-user-id')===session.user.id)expectedRevision=Math.max(expectedRevision,Number(localStorage.getItem('tb-cloud-revision'))||0);}catch(_){}
+  const {data,error}=await withTimeout(client.rpc('save_player_game',{p_save_data:snapshot,p_expected_revision:expectedRevision}),'Запись облачного сохранения',30000);
+  if(error)throw error;
+  const row=Array.isArray(data)?data[0]:data;
+  if(!row||!Number.isFinite(Number(row.revision)))throw new Error('Сервер не вернул новую версию сохранения');
+  revision=Number(row.revision);
+  try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
+  return row;
+ });
 }
 async function loadGame(){return await readRemote();}
 async function refreshFromServer(){
@@ -296,8 +303,8 @@ async function chooseSource(remote){
 }
 async function onSession(next,force=false){
  const sessionKey=next?.user?.id||'signed-out';
- if(sessionKey===handledSessionKey&&!force)return sessionTask;
- handledSessionKey=sessionKey;
+ if(sessionKey===handledSessionKey&&(sessionBusy||!force))return sessionTask;
+ handledSessionKey=sessionKey;sessionBusy=true;lastCloudError='';
  sessionTask=(async()=>{
   conflict=false;session=next;savesReady=false;remoteHasCharacters=false;
   if(!session){dirty=false;setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';showLoginGate();window.dispatchEvent(new Event('towerbound-auth-change'));return;}
@@ -309,8 +316,15 @@ async function onSession(next,force=false){
    remoteHasCharacters=snapshotHasCharacters(remote?.save_data);
    await chooseSource(remote);
    if(!conflict){savesReady=true;$('#tbCloudIntro').textContent='Облако подключено. Прогресс готов к синхронизации.';say('Облако подключено. Сохранение готово к синхронизации.');if(dirty)queueSave();}
-  }catch(e){savesReady=false;console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');$('#tbCloudIntro').textContent='Не удалось подключить облачное сохранение.';say('Не удалось загрузить сохранение: '+(e.message||'ошибка сети')+'. Локальные данные не изменены.');if(session?.user?.id===sessionKey)handledSessionKey='';}
-  window.dispatchEvent(new Event('towerbound-auth-change'));
+  }catch(e){
+   savesReady=false;lastCloudError=String(e?.message||e||'Ошибка загрузки облачного сохранения');
+   console.error('[Towerbound cloud] load failed',e);setStatus('ОБЛАКО · ОШИБКА','error');
+   $('#tbCloudIntro').textContent='Не удалось подключить облачное сохранение.';
+   say('Не удалось загрузить сохранение: '+lastCloudError+'. Локальные данные не изменены.','error');
+  }finally{
+   sessionBusy=false;
+   window.dispatchEvent(new Event('towerbound-auth-change'));
+  }
  })();
  return sessionTask;
 }
@@ -435,5 +449,5 @@ function init(){
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
-window.TowerboundCloudReady=cloudBootstrap;window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get savesReady(){return savesReady;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,reloadAuthoritative,saveGame,queueSave,flushSave,syncNow,retryLoad:()=>session?onSession(session,true):Promise.reject(new Error('Сначала войди в аккаунт')),signIn,signUp,signOut,status:()=>({...status,remoteHasCharacters,localBackup:localBackupSummary()}),inspectLocalBackup:localBackupSummary,restoreLocalBackup,requireLogin:()=>showLoginGate(true)};
+window.TowerboundCloudReady=cloudBootstrap;window.TowerboundCloud={get configured(){return !!client;},get signedIn(){return !!session;},get savesReady(){return savesReady;},get revision(){return revision;},get client(){return client;},get session(){return session;},open,loadGame,refreshFromServer,reloadAuthoritative,saveGame,queueSave,flushSave,syncNow,retryLoad:async()=>{if(!session)throw new Error('Сначала войди в аккаунт');await onSession(session,true);if(!savesReady)throw new Error(lastCloudError||'Облачное сохранение не подтверждено');return true;},signIn,signUp,signOut,status:()=>({...status,remoteHasCharacters,localBackup:localBackupSummary()}),inspectLocalBackup:localBackupSummary,restoreLocalBackup,requireLogin:()=>showLoginGate(true)};
 })();
