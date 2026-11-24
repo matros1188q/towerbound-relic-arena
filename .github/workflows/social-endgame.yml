@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'social-endgame.js'
+      - 'towerbound-friends.js'
+      - 'tests/friends-system.test.cjs'
       - 'towerbound-guild.js'
       - 'towerbound-online.js'
       - 'towerbound-cloud.js'
@@ -34,5 +36,7 @@ jobs:
         with:
           node-version: 22
       - run: node --check social-endgame.js
+      - run: node --check towerbound-friends.js
+      - run: node tests/friends-system.test.cjs
       - run: node tests/social-endgame.test.cjs
       - run: node tests/guild-social.test.cjs
