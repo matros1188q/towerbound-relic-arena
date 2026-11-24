@@ -2530,7 +2530,7 @@ function talentBonusDescription(talent,rank){
     if(!engine)throw new Error("Game engine is not ready");
     if(engine.state.characters.length)throw new Error("A balance attempt must use a fresh isolated browser context");
     selectedClass=classId;const created=engine.createCharacter(name,classId);selectedId=created.id;engine.state.activeCharacterId=created.id;
-    screen="map";selectedStage=1;ensureCardDeck(live());syncEquipmentCards(live());save();return created.id;
+    screen="map";selectedStage=1;ensureCardDeck(live());syncEquipmentCards(live());const character=live();character.run.mapEvents=character.run.mapEvents&&typeof character.run.mapEvents==="object"?character.run.mapEvents:{};for(let stage=1;stage<=balance.map.total_stages;stage++){if(stage%balance.map.boss_every===0||Object.prototype.hasOwnProperty.call(character.run.mapEvents,stage))continue;character.run.mapEvents[stage]=gameRandom()<.2?["altar","chest","wanderer"][Math.floor(gameRandom()*3)]:null;}save();return created.id;
    },
    chooseBranch:(branchId)=>{
     const c=live();if(!c)throw new Error("Character is missing");
@@ -2562,6 +2562,7 @@ function talentBonusDescription(talent,rank){
     const choice=choices.slice().sort((a,b)=>rank(b.id)-rank(a.id))[0];try{return engine.claimRelic(c.id,choice.id);}catch(error){return null;}
    },
    useCampRest:(stage)=>{const c=live();if(!c)return null;try{return engine.useCampRest(c.id,Number(stage));}catch(error){return null;}},
+   resolveMapEvent:(stage)=>{const c=live(),type=eventTypeForStage(c,Number(stage));if(!c||!type)return null;const overlay=document.createElement("div");overlay.className="tb-map-event-overlay";overlay.dataset.eventType=type;overlay.dataset.eventStage=String(stage);document.body.appendChild(overlay);const choice=type==="chest"?"open":type==="altar"?"pray":Number(c.silver)>=50?"pay":"attack";resolveMapEventChoice(choice);return{type,choice,cleared:Number(c.progress.highestEver)>=Number(stage),battle:!!battle};},
    clearPostBattle:()=>{postBattleSummary=null;document.querySelector(".card-reward-overlay")?.remove();const c=live();if(c?.pendingCardReward)c.pendingCardReward=null;save();return true;},
    inspect:()=>{
     const c=live(),cardView=card=>({id:card.id,name:card.name,type:card.type,cost:Number(card.cost)||0,effects:cardEffects(card),isUpgraded:!!card.isUpgraded,exhaust:!!card.exhaust,retain:!!card.retain});
