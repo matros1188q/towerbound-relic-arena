@@ -67,7 +67,7 @@ assert.ok(cloud.includes('async function syncNow()'),'manual cloud sync is await
 assert.ok(cloud.includes("$('#tbCloudSyncNow').addEventListener('click',async()=>{try{await syncNow();"),'cloud overlay waits for confirmed remote save');
 assert.ok(!cloud.includes("$('#tbCloudSyncNow').addEventListener('click',()=>{conflict=false;queueSave();"),'manual sync must not clear an unresolved conflict or claim background success');
 assert.ok(cloud.includes("window.addEventListener('online',()=>{if(session&&!conflict)queueSave();});"),'offline saves are retried after connectivity returns');
-assert.ok(cloud.includes('loadGame,refreshFromServer,saveGame,queueSave,flushSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
+assert.ok(cloud.includes('loadGame,refreshFromServer,reloadAuthoritative,saveGame,queueSave,flushSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
 assert.ok(!cloud.includes('Storage.prototype.setItem')&&!cloud.includes('const originalSet=Storage.prototype.setItem'),'cloud module does not patch the global Storage prototype');
 assert.ok(ui.includes('window.TowerboundCloud?.queueSave?.()'),'game save explicitly queues cloud synchronization');
 assert.ok(ui.includes('title="Авто-бой не учитывает синергии карт и яды"'),'auto battle button explains the limitations of the simplified simulation');
