@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v659';
+const CACHE = 'towerbound-v660';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './',
@@ -60,6 +60,15 @@ const SHELL = [
   "./assets/relics/rune.png",
   "./assets/relics/riftsigil.png",
   "./assets/relics/stormglass.png",
+  "./assets/relics/oracle.png",
+  "./assets/relics/starfall.png",
+  "./assets/relics/echo.png",
+  "./assets/relics/heart.png",
+  "./assets/relics/phoenix.png",
+  "./assets/relics/laststand.png",
+  "./assets/relics/luckycoin.png",
+  "./assets/relics/moon.png",
+  "./assets/relics/meteor.png",
 
   './assets/ui/art-sprites.css',
   "./assets/characters/bosses/void-hunter-boss.png",
