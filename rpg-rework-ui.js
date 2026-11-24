@@ -1508,15 +1508,20 @@ function talentBonusDescription(talent,rank){
   {from:225,to:237,chapter:5,name:"Логово Дракона",src:"assets/Fon/image 42.jpeg"},
   {from:238,to:250,chapter:5,name:"Финальные Врата",src:"assets/Fon/image 43.jpeg"}
  ];
- let arenaBackgroundChapter=0,arenaBackgroundPreloads=new Map(),arenaBackgroundRequest=0;
+ let arenaBackgroundChapter=0,arenaBackgroundPreloads=new Map(),arenaBackgroundRequest=0,arenaBackgroundCurrentSrc="";
  function arenaBackgroundForStage(stage){const value=Math.max(1,Math.min(250,Number(stage)||1));return ARENA_BACKGROUND_LOCATIONS.find(item=>value>=item.from&&value<=item.to)||ARENA_BACKGROUND_LOCATIONS[0];}
  function ensureArenaBackground(arena,stage){
   if(!arena||typeof Image==="undefined")return;
   let first=arena.querySelector('.tb-arena-bg-layer[data-layer="a"]'),second=arena.querySelector('.tb-arena-bg-layer[data-layer="b"]');
   if(!first){first=document.createElement("div");first.className="tb-arena-bg-layer";first.dataset.layer="a";first.setAttribute("aria-hidden","true");arena.insertBefore(first,arena.firstChild);}
   if(!second){second=document.createElement("div");second.className="tb-arena-bg-layer";second.dataset.layer="b";second.setAttribute("aria-hidden","true");arena.insertBefore(second,first.nextSibling);}
+  if(!first.dataset.seeded){
+   if(arenaBackgroundCurrentSrc){first.style.backgroundImage='url("'+arenaBackgroundCurrentSrc.replace(/"/g,'%22')+'")';first.classList.add("is-visible");}
+   first.dataset.seeded="1";
+  }
   const location=arenaBackgroundForStage(stage);
   if(arena.dataset.arenaBackground===location.src)return;
+  if(arenaBackgroundCurrentSrc===location.src){arena.dataset.arenaBackground=location.src;arena.dataset.arenaLocation=location.name;arena.dataset.arenaChapter=String(location.chapter);return;}
   if(arenaBackgroundChapter!==location.chapter){
    arenaBackgroundChapter=location.chapter;arenaBackgroundPreloads.clear();
    ARENA_BACKGROUND_LOCATIONS.filter(item=>item.chapter===location.chapter).forEach(item=>{const image=new Image();image.decoding='async';image.src=item.src;arenaBackgroundPreloads.set(item.src,image);});
@@ -1529,7 +1534,7 @@ function talentBonusDescription(talent,rank){
    const next=visible===first?second:first;
    next.style.backgroundImage='url("'+location.src.replace(/"/g,'%22')+'")';
    next.classList.add('is-visible');if(visible)visible.classList.remove('is-visible');
-   arena.dataset.arenaBackground=location.src;arena.dataset.arenaLocation=location.name;arena.dataset.arenaChapter=String(location.chapter);
+   arenaBackgroundCurrentSrc=location.src;arena.dataset.arenaBackground=location.src;arena.dataset.arenaLocation=location.name;arena.dataset.arenaChapter=String(location.chapter);
   };
   if(image.complete&&image.naturalWidth>0){apply();return;}
   image.addEventListener('load',apply,{once:true});
