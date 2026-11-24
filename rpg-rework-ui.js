@@ -593,9 +593,9 @@
   if(c?.run?.stage&&battle){
    c.run.stage.uiBattleSnapshot={enemies:JSON.parse(JSON.stringify(battle.enemies||[])),targetIndex:battle.targetIndex,round:battle.round||1,comboStacks:battle.comboStacks||0,skillCooldowns:JSON.parse(JSON.stringify(battle.skillCooldowns||{})),comboProgress:JSON.parse(JSON.stringify(battle.comboProgress||{})),combatState:Object.fromEntries(PERSISTED_BATTLE_FIELDS.filter(key=>battle[key]!==undefined).map(key=>[key,battle[key]])),cardState:{deck:JSON.parse(JSON.stringify(c.deck||[])),hand:JSON.parse(JSON.stringify(c.hand||[])),discard:JSON.parse(JSON.stringify(c.discard||[])),exhaustPile:JSON.parse(JSON.stringify(c.exhaustPile||[])),currentEnergy:Number(c.currentEnergy)||0,cardBlock:Number(battle.cardBlock)||0,actorType:battle.actor?.type||"player"},enemyQueueState:battle.enemyQueueState?{indices:[...(battle.enemyQueueState.indices||[])],cursor:Math.max(0,Number(battle.enemyQueueState.cursor)||0)}:null};
   }
-  localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));window.TowerboundCloud?.queueSave?.();window.TowerboundOnline?.queuePublish();
+  if(window.__TB_BALANCE_TEST_MODE)return;localStorage.setItem("tb-rpg-v2",JSON.stringify(engine.state));window.TowerboundCloud?.queueSave?.();window.TowerboundOnline?.queuePublish();
  }catch(e){notify("Не удалось сохранить: "+e.message);}}
- function notify(message){toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
+ function notify(message){if(window.__TB_BALANCE_TEST_MODE)return;toastMessage=message;const el=root.querySelector(".tb-toast");if(el){el.textContent=message;el.classList.add("show");}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{const x=root.querySelector(".tb-toast");if(x)x.classList.remove("show");},3200);}
  function button(action,label,attrs){return '<button type="button" data-action="'+action+'" '+(attrs||"")+'>'+label+'</button>';}
  function header(){return '<header class="tb-header" aria-label="TowerBound Relic Arena"><div class="tb-brand"><img class="game-logo" src="./assets/icons/image.png" alt="T" width="34" height="34" decoding="async"><strong class="tb-brand-title">TowerBound Relic Arena</strong></div></header>';}
 
@@ -899,6 +899,7 @@ function createDialog(){
   battle.enemyQueueState={indices:(queue||[]).map(enemy=>Number(enemy.index)).filter(Number.isFinite),cursor:Math.max(0,Number(index)||0)};
   clearPendingTurnTimer();
   const safeDelay=Math.max(16,safeTimeoutMs(delay,1000));
+  if(window.__TB_BALANCE_TEST_MODE&&window.__TB_BALANCE_SYNC_TURNS){pendingTimer=null;if(battle){battle.timerRemainingMs=0;battle.timerStartedAt=0;}runEnemyTurnQueue(queue,index,token);return;}
   if(battle){battle.timerRemainingMs=safeDelay;battle.timerStartedAt=Date.now();}
   pendingTimer=setTimeout(()=>{
    pendingTimer=null;
@@ -2164,7 +2165,7 @@ function talentBonusDescription(talent,rank){
   const restore=()=>{const next=document.getElementById('tbRpg')||document.querySelector('.profile');const host=next?.querySelector('.tb-v2')||next;if(host)host.scrollTop=preserveScroll?scrollPos:0;if(!preserveScroll)window.scrollTo(0,0);};
   restore();if(typeof requestAnimationFrame==='function')requestAnimationFrame(restore);
  }
- function render(){return renderWithScrollSave();}
+ function render(){if(window.__TB_BALANCE_TEST_MODE)return;return renderWithScrollSave();}
 
  function showLevelUpModal(level,points){
   document.querySelector(".tb-level-up-overlay")?.remove();
@@ -2489,7 +2490,7 @@ function talentBonusDescription(talent,rank){
    // The engine may have been constructed from an empty local cache before cloud auth finished.
    // Rehydrate its existing state object after the authoritative cloud restore has completed.
    try{const raw=localStorage.getItem('tb-rpg-v2'),restored=raw?JSON.parse(raw):null;if(restored&&Array.isArray(restored.characters)){for(const key of Object.keys(engine.state))delete engine.state[key];Object.assign(engine.state,restored);}}catch(error){console.error('[Towerbound] post-cloud engine hydration failed',error);}
-   const unlockedBefore=Array.isArray(engine.state.account?.unlockedCards)?engine.state.account.unlockedCards.length:0;unlockedCardIds();if(engine.state.account.unlockedCards.length!==unlockedBefore)save();window.TowerboundLevelUpModal=(level,points)=>showLevelUpModal(level,points);
+   const unlockedBefore=Array.isArray(engine.state.account?.unlockedCards)?engine.state.account.unlockedCards.length:0;unlockedCardIds();if(engine.state.account.unlockedCards.length!==unlockedBefore)save();window.TowerboundLevelUpModal=(level,points)=>{if(!window.__TB_BALANCE_TEST_MODE)showLevelUpModal(level,points);};
    skills=[]; // Card-first combat: legacy skill catalogue is not loaded into the active UI.
    let active=null;
    if(engine.state.characters.length){
