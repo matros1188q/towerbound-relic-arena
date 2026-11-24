@@ -60,6 +60,17 @@ These phases are plans, not claims that the functionality is already implemented
 
 ## Project change log
 
+### 2026-11-24 — Save to cloud after every in-game action
+
+- Added an action-level safety net: every in-game button click snapshots the complete game state locally and queues cloud synchronization, including navigation such as opening the shop, map and profile.
+- Reduced the cloud-save coalescing delay from 350 ms to 80 ms so each completed action is sent promptly without creating a separate RPC for every synchronous UI event.
+- Hardened the single-writer queue: if another action changes state while a cloud write is in flight, the newest snapshot is automatically sent immediately after the current write. Existing conflict protection, revision checks, local persistence and offline retry behavior remain intact.
+- Updated browser assets: cloud module v29, RPG UI v1035, service-worker cache towerbound-v669.
+- Added regression assertions for action-level autosave, prompt queueing and draining changes that arrive during an active write.
+- Files: `towerbound-cloud.js`, `rpg-rework-ui.js`, `index.html`, `service-worker.js`, `tests/cloud-save-safety.test.cjs`, `README.md`.
+- Verification boundary: source-level checks are included; GitHub Actions and GitHub Pages deployment must pass for this exact commit before this change is considered published.
+
+
 ### 2026-11-23 — Auto-battle HP carry-over and underscore asset URLs
 
 - Removed the remaining per-stage full-health reset from simplified auto-battle. Manual combat already carries current HP between cleared stages; auto-battle now retains the current HP value instead of restoring it after every stage.

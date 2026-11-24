@@ -375,7 +375,11 @@ async function saveLoop(){
   console.error('[Towerbound cloud] save failed',error);
   setStatus('ОБЛАКО · ОШИБКА СОХРАНЕНИЯ','error');
   say('Не удалось сохранить прогресс в облако: '+(error?.message||'ошибка сети')+'. Локальная копия сохранена.','error');
- }finally{syncing=false;}
+ }finally{
+  syncing=false;
+  // Drain the newest snapshot if another action arrived during the RPC.
+  if(dirty&&session&&!conflict){clearTimeout(timer);timer=setTimeout(saveLoop,Math.max(80,retryAfter-Date.now()));}
+ }
  return saved;
 }
 async function syncNow(){
@@ -388,7 +392,14 @@ async function syncNow(){
  if(!saved)throw new Error(status.text||'Не удалось синхронизировать сохранение');
  return{revision,status:{...status}};
 }
-function queueSave(){if(restoring)return;dirty=true;if(!session||!savesReady||conflict)return;clearTimeout(timer);timer=setTimeout(saveLoop,Math.max(350,retryAfter-Date.now()));}
+function queueSave(){
+ if(restoring)return;
+ dirty=true;
+ if(!session||!savesReady||conflict)return;
+ // Coalesce same-tick mutations, then persist promptly.
+ clearTimeout(timer);
+ timer=setTimeout(saveLoop,Math.max(80,retryAfter-Date.now()));
+}
 async function flushSave(){
  if(restoring)return false;
  dirty=true;if(!session||!client||!savesReady||conflict)return false;

@@ -2383,6 +2383,11 @@ function talentBonusDescription(talent,rank){
  ["pointerup","pointercancel","pointerleave"].forEach(type=>document.addEventListener(type,()=>clearTimeout(cardLongPressTimer),true));
  document.addEventListener("click",event=>{if(cardLongPressTriggered&&event.target.closest("#tbRpg [data-card-play]")){event.preventDefault();event.stopImmediatePropagation();cardLongPressTriggered=false;}},true);
  document.addEventListener("click",handleClick);
+ // Safety net for every in-game button, including navigation and controls without explicit save() calls.
+ document.addEventListener("click",event=>{
+  if(!event.target?.closest?.("#tbRpg button,.card-reward-overlay button,.tb-starter-deck-overlay button,.tb-relic-reward-overlay button,.tb-camp-overlay button,.tb-deck-viewer-overlay button,.tb-map-event-overlay button,.tb-loot-overlay button"))return;
+  Promise.resolve().then(()=>{if(engine&&live())save();});
+ });
   window.addEventListener("towerbound-auth-change",()=>{
   try{
    if(engine){
