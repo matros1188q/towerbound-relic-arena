@@ -2579,7 +2579,7 @@ function talentBonusDescription(talent,rank){
     const choice=choices.slice().sort((a,b)=>rank(b.id)-rank(a.id))[0];try{return engine.claimRelic(c.id,choice.id);}catch(error){return null;}
    },
    useCampRest:(stage)=>{const c=live();if(!c)return null;try{return engine.useCampRest(c.id,Number(stage));}catch(error){return null;}},
-   buyAntidote:()=>{const c=live();if(!c||!c.run.active||selectedStage%13!==0)return false;try{engine.purchase(c.id,"silver","antidote");return true;}catch(error){return false;}},
+   buyAntidote:(stage)=>{selectedStage=Number(stage);const c=live();if(!c||!c.run.active||selectedStage%13!==0)return false;try{engine.purchase(c.id,"silver","antidote");return true;}catch(error){return false;}},
    useCheckpointHeal:()=>{const c=live();if(!c||c.run.stage)return null;try{return engine.checkpointHeal(c.id);}catch(error){return null;}},
    resolveMapEvent:(stage)=>{selectedStage=Number(stage);const c=live(),type=eventTypeForStage(c,Number(stage));if(!c||!type||c.run.completedMapEvents?.includes(Number(stage)))return null;const overlay=document.createElement("div");overlay.className="tb-map-event-overlay";overlay.dataset.eventType=type;overlay.dataset.eventStage=String(stage);document.body.appendChild(overlay);const hpRatio=Number(c.run.playerHp)/Math.max(1,engine.maxHp(c)),choice=type==="chest"?"open":type==="altar"?(hpRatio>.08?"pray":"leave"):Number(c.silver)>=50&&hpRatio<.85?"pay":"attack";resolveMapEventChoice(choice);return{type,choice,cleared:Number(c.progress.currentStage)>Number(stage),battle:!!battle};},
    confirmDeath:()=>{const c=live();if(!c)return null;const result=engine.confirmDeath(c.id);battle=null;postBattleSummary=null;screen="map";selectedStage=c.progress.currentStage;save();return result;},
