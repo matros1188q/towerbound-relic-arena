@@ -45,8 +45,8 @@ assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action mi
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
 assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
-assert.ok(html.includes('./towerbound-cloud.js?v=18'),'cloud module cache is refreshed');
-assert.ok(html.includes('./rpg-rework-v2.js?v=18'),'engine cache is refreshed for gem socket support');
+assert.ok(/\.\/towerbound-cloud\.js\?v=\d+/.test(html),'cloud module cache is versioned');
+assert.ok(/\.\/rpg-rework-v2\.js\?v=\d+/.test(html),'engine cache is versioned for gem socket support');
 assert.ok(/\.\/rpg-rework-ui\.js\?v=\d+/.test(html),'battle, profile and transparent logo UI cache is versioned');
 assert.ok(/\.\/styles\.css\?v=\d+/.test(html),'battle, profile and start screen styles load from one versioned static stylesheet');
 assert.ok(/rpg-rework-ui\.css\.js\?v=\d+/.test(html)&&shellUrls.includes('./rpg-rework-ui.css.js'),'battle arena runtime stylesheet remains explicitly versioned and offline-cached');

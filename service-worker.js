@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v640';
+const CACHE = 'towerbound-v641';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './',
@@ -276,43 +276,39 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
-
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-
-  // HTML documents must prefer the network so an installed PWA sees releases.
-  // The service-worker script itself is fetched by the browser's update
-  // algorithm, not intercepted here; updateViaCache: 'none' handles that path.
-  const isHtml = request.mode === 'navigate' ||
-    url.pathname.endsWith('/') ||
-    url.pathname.endsWith('/index.html');
-
+  const isHtml = request.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
   if (isHtml) {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          if (response && response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE).then(cache => cache.put(request, copy));
-          }
-          return response;
-        })
-        .catch(() => caches.match(request).then(cached => cached || caches.match('./index.html')))
-    );
+    event.respondWith(fetch(request).then(response => {
+      if (response && response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
+      return response;
+    }).catch(async () => {
+      const cached = await caches.match(request);
+      return cached || await caches.match('./index.html') || Response.error();
+    }));
     return;
   }
-
-  // Other same-origin assets remain cache-first for fast repeat launches.
-  event.respondWith(
-    caches.match(request, { ignoreSearch: true }).then(cached => {
-      if (cached) return cached;
-      return fetch(request).then(response => {
-        if (response && response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE).then(cache => cache.put(request, copy));
-        }
-        return response;
-      }).catch(() => Response.error());
-    })
-  );
+  // Versioned assets are network-first: a new ?v= value must never receive an older cached script or stylesheet.
+  if (url.search.length > 0) {
+    event.respondWith(fetch(request).then(response => {
+      if (response && response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
+      return response;
+    }).catch(async () => {
+      const exact = await caches.match(request);
+      if (exact) return exact;
+      const unversioned = new URL(request.url);
+      unversioned.search = '';
+      return await caches.match(new Request(unversioned.href)) || Response.error();
+    }));
+    return;
+  }
+  // Unversioned assets remain cache-first for fast offline launches.
+  event.respondWith(caches.match(request).then(cached => {
+    if (cached) return cached;
+    return fetch(request).then(response => {
+      if (response && response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
+      return response;
+    }).catch(() => Response.error());
+  }));
 });

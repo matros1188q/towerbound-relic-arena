@@ -115,5 +115,13 @@ let towerSt=document.createElement('style');towerSt.textContent=`
 `;
 document.head.append(towerSt);
 function boot(){if(!window.TowerboundReworkReady)return;window.TowerboundReworkReady.then(e=>{engine=e;let m=location.hash.match(/(?:^#|&)tbduel=([^&]+)/);if(m){try{let ch=dec(m[1]);if(ch.kind==='tbduel'&&Date.now()-ch.createdAt<30*D&&confirm('Принять дуэль от '+ch.challenger.name+'?')){let r=accept(ch);toast((r.won?'Победа':'Поражение')+' · '+r.turns[2])}history.replaceState(null,'',location.pathname+location.search)}catch(x){toast(x.message)}}}).catch(e=>console.error('[social]',e))}
+window.addEventListener('towerbound-cloud-restore',()=>{
+ try{
+  const restored=JSON.parse(localStorage.getItem(K)||'{}');
+  for(const key of Object.keys(data))delete data[key];
+  if(restored&&typeof restored==='object')Object.assign(data,restored);
+  if($('#socPanel'))render();
+ }catch(error){console.warn('[Towerbound] Social cloud restore failed',error);}
+});
 window.TowerboundSocial={refresh:()=>{if($('#socPanel'))render()},openTab:(next)=>{replay=null;tab=['duels','guild','pass','leaderboard','endgame','tower'].includes(next)?next:'endgame';if(engine){render();return}const ready=window.TowerboundReworkReady;if(ready&&typeof ready.then==='function'){render();ready.then(value=>{if(value){engine=value;render()}else toast('Игровой модуль пока недоступен')}).catch(error=>{console.error('[social] open failed',error);toast('Не удалось загрузить сообщество')})}else toast('Игровой модуль ещё загружается')},open:()=>{replay=null;if(engine){render();return}const ready=window.TowerboundReworkReady;if(ready&&typeof ready.then==='function'){render();ready.then(value=>{if(value){engine=value;render()}else toast('Игровой модуль пока недоступен')}).catch(error=>{console.error('[social] open failed',error);toast('Не удалось загрузить сообщество')})}else toast('Игровой модуль ещё загружается')},close:()=>$('#socPanel')?.remove(),createChallenge:challenge,attackGuildBoss:hit,sendGift:gift,leaderboard:top};boot();
 })();
