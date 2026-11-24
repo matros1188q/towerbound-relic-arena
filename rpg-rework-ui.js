@@ -2138,6 +2138,21 @@ function talentBonusDescription(talent,rank){
   }
  }
  function renderWithScrollSave(){
+  // A cloud restore can finish before or after the engine is constructed.
+  // Reconcile an empty engine from the confirmed local cloud snapshot before rendering.
+  try{
+   const cloud=window.TowerboundCloud,cloudStatus=cloud?.status?.()||{};
+   if(engine?.state&&cloud?.savesReady&&cloudStatus.remoteHasCharacters&&!engine.state.characters?.length){
+    const raw=localStorage.getItem('tb-rpg-v2'),restored=raw?JSON.parse(raw):null;
+    if(restored&&Array.isArray(restored.characters)&&restored.characters.length){
+     for(const key of Object.keys(engine.state))delete engine.state[key];
+     Object.assign(engine.state,restored);
+     selectedId=engine.state.activeCharacterId||engine.state.characters[0]?.id||null;
+     if(!engine.state.characters.some(character=>character.id===selectedId))selectedId=engine.state.characters[0]?.id||null;
+     console.info('[Towerbound] empty engine reconciled from confirmed cloud snapshot');
+    }
+   }
+  }catch(error){console.error('[Towerbound] render-time cloud reconciliation failed',error);}
   const container=document.getElementById('tbRpg')||document.querySelector('.profile');
   const scrollHost=container?.querySelector('.tb-v2')||container;
   const preserveScroll=lastRenderedScreen===screen&&(screen!=="profile"||lastRenderedProfileTab===profileTab);
