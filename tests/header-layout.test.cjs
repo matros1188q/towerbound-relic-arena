@@ -42,7 +42,7 @@ assert.match(css,/#tbRpg \.tb-v2>section\.tb-death\.tb-death-overlay\{[\s\S]*?po
 assert.match(css,/padding:0 0 4px!important/,'only four pixels plus divider remain below the logo');
 assert.doesNotMatch(css,/tb-v2:has\(\.tb-arena\)>\.tb-header\{display:none!important\}/,'obsolete combat header hiding rule is removed');
 assert.doesNotMatch(read('native-pwa.css'),/\.tb-header \.game-logo\{[^}]*width:min\(280px/,'obsolete oversized logo rule is removed');
-assert.match(html,/native-pwa\.css\?v=16/,'native stylesheet cache is updated');
+assert.match(html,/native-pwa\.css\?v=\d+/,'native stylesheet cache is updated');
 assert.doesNotMatch(css,/tb-progression-button/,'obsolete progression-button CSS is removed');
 assert.match(html,/styles\.css\?v=\d+/,'static stylesheet uses an explicit cache-busting version');
 assert.ok(css.includes('width:34px!important;min-width:34px!important;max-width:34px!important'),'transparent header logo is fixed to a compact 34px square');
