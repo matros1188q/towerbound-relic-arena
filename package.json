@@ -7,7 +7,7 @@
     "economy": "node tests/economy-sim.cjs",
     "balance:all": "npm run balance && npm run economy",
     "art:check": "node tests/art-asset-manifest.cjs",
-    "test:polish": "node tests/card-codex-redesign.test.cjs && node tests/interactive-controls-audit.cjs && node tests/progression-interface.test.cjs && node tests/combat-reliability.test.cjs && node tests/combat-deep-regression.test.cjs && node tests/polish-onboarding.test.cjs && node tests/card-onboarding.test.cjs && node tests/header-layout.test.cjs && node tests/repo-integrity.test.cjs && node tests/full-game-audit.cjs && node tests/card-system-audit.cjs && node tests/save-economy-audit.cjs",
+    "test:polish": "node tests/card-codex-redesign.test.cjs && node tests/interactive-controls-audit.cjs && node tests/progression-interface.test.cjs && node tests/combat-reliability.test.cjs && node tests/combat-deep-regression.test.cjs && node tests/polish-onboarding.test.cjs && node tests/card-onboarding.test.cjs && node tests/header-layout.test.cjs && node tests/repo-integrity.test.cjs && node tests/full-game-audit.cjs && node tests/card-system-audit.cjs && node tests/save-economy-audit.cjs && node tests/cleanup-boundaries.test.cjs",
     "test:browser": "node tests/browser-smoke.cjs"
   }
 }
