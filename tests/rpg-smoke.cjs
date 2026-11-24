@@ -431,17 +431,17 @@ const {chromium}=require('playwright');
    window.saveTowerboundRework();
   });
   await starterDeckConfirmForSmoke.click();
-  const battleStartDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0];return{runActive:c?.run?.active,stage:c?.run?.stage?.stage,stageMobs:c?.run?.stage?.mobs?.length,mapEvents:c?.run?.mapEvents,completedMapEvents:c?.run?.completedMapEvents,overlays:[...document.querySelectorAll('.tb-starter-deck-overlay,.tb-map-event-overlay,.card-reward-overlay,.tb-turn-tutorial')].map(node=>node.className),battleWrap:!!document.querySelector('.v2-battle-wrap'),text:document.querySelector('#tbRpg')?.innerText.slice(0,900)};});
+  const battleStartDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0];return{runActive:c?.run?.active,stage:c?.run?.stage?.stage,stageMobs:c?.run?.stage?.mobs?.length,mapEvents:c?.run?.mapEvents,completedMapEvents:c?.run?.completedMapEvents,overlays:[...document.querySelectorAll('.tb-starter-deck-overlay,.tb-map-event-overlay,.card-reward-overlay,.tb-turn-tutorial')].map(node=>node.className),battleWrap:!!document.querySelector('.new-battle-wrap'),text:document.querySelector('#tbRpg')?.innerText.slice(0,900)};});
   console.log('BATTLE START DIAGNOSTIC',JSON.stringify(battleStartDiagnostic));
-  await page.waitForSelector('.v2-battle-wrap',{timeout:5000});
+  await page.waitForSelector('.new-battle-wrap',{timeout:5000});
   // The QA fixture creates one deterministic enemy with enough HP to exercise multiple player/enemy turns before victory.
   const seededHp=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.playerHp=100000;window.saveTowerboundRework();return c.run.playerHp;});
   assert.equal(seededHp,100000,'smoke fixture retains the high-HP test seed');
   assert.equal(await page.locator('.v2-card').count(),5,'card battle starts with five cards in hand');
   assert.ok(await page.locator('.v2-card.attack').count()>0,'starter hand contains attack cards');
   assert.ok(await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];return [...(c.deck||[]),...(c.hand||[]),...(c.discard||[])].some(card=>card.type==='defense');}),'starter deck contains defense cards even when the shuffled opening hand does not draw one');
-  assert.equal(await page.locator('.v2-enemy-card').count(),1,'deterministic smoke encounter contains one enemy');
-  assert.equal(await page.locator('.v2-turn-guidance').count(),1,'V2 battle displays turn guidance');
+  assert.equal(await page.locator('.new-enemy-item').count(),1,'deterministic smoke encounter contains one enemy');
+  assert.equal(await page.locator('.new-turn-guidance').count(),1,'V2 battle displays turn guidance');
   assert.equal(await page.locator('#energyDisplay').count(),1,'V2 battle displays current energy');
   assert.equal(await page.locator('#cardHand').count(),1,'V2 battle displays the card hand');
   assert.equal(await page.locator('#endturn').count(),1,'V2 battle has one End Turn control');
@@ -453,15 +453,15 @@ const {chromium}=require('playwright');
   assert.ok(firstLayout.end&&firstLayout.end.height>=44&&firstLayout.end.visibility!=='hidden'&&firstLayout.end.display!=='none','End Turn is visible in the initial player turn');
   assert.ok(firstLayout.scrollWidth<=firstLayout.width,'V2 battle has no horizontal page overflow on 390px mobile');
   assert.equal(await page.locator('.tb-turn-tutorial').count(),0,'no full-screen tutorial blocks combat input');
-  const enemy=page.locator('.v2-enemy-card').first();
+  const enemy=page.locator('.new-enemy-item').first();
   const targetId=await enemy.getAttribute('data-target');
-  const enemyHitTest=await enemy.evaluate(el=>{const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y),describe=node=>node?{tag:node.tagName,className:typeof node.className==='string'?node.className:'',id:node.id,rect:(()=>{const b=node.getBoundingClientRect();return{x:b.x,y:b.y,width:b.width,height:b.height};})(),style:(()=>{const c=getComputedStyle(node);return{pointerEvents:c.pointerEvents,position:c.position,zIndex:c.zIndex,visibility:c.visibility,display:c.display};})()}:null;return{ok:hit?.closest('.v2-enemy-card')===el,enemy:describe(el),hit:describe(hit),stack:document.elementsFromPoint(x,y).slice(0,8).map(describe),middle:describe(el.closest('.v2-battle-middle')),bottom:describe(el.closest('.v2-battle-wrap')?.querySelector('.v2-battle-bottom'))};});
+  const enemyHitTest=await enemy.evaluate(el=>{const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y),describe=node=>node?{tag:node.tagName,className:typeof node.className==='string'?node.className:'',id:node.id,rect:(()=>{const b=node.getBoundingClientRect();return{x:b.x,y:b.y,width:b.width,height:b.height};})(),style:(()=>{const c=getComputedStyle(node);return{pointerEvents:c.pointerEvents,position:c.position,zIndex:c.zIndex,visibility:c.visibility,display:c.display};})()}:null;return{ok:hit?.closest('.new-enemy-item')===el,enemy:describe(el),hit:describe(hit),stack:document.elementsFromPoint(x,y).slice(0,8).map(describe),middle:describe(el.closest('.new-battle-middle')),bottom:describe(el.closest('.new-battle-wrap')?.querySelector('.new-battle-bottom'))};});
   assert.ok(enemyHitTest.ok,'enemy card must be the topmost tap target: '+JSON.stringify(enemyHitTest));
   await enemy.click();
-  assert.ok(await page.locator('.v2-enemy-card[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'a real tap selects the enemy target');
-  let hpBefore=await page.locator('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text').innerText();
+  assert.ok(await page.locator('.new-enemy-item[data-target="'+targetId+'"]').evaluate(el=>el.classList.contains('selected')),'a real tap selects the enemy target');
+  let hpBefore=await page.locator('.new-enemy-item[data-target="'+targetId+'"] .new-enemy-hp-text').innerText();
   await page.locator('.v2-card.attack:not([disabled])').first().click();
-  await page.waitForFunction(({targetId,hpBefore})=>{const node=document.querySelector('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text');return node&&node.textContent!==hpBefore;},{targetId,hpBefore},{timeout:5000});
+  await page.waitForFunction(({targetId,hpBefore})=>{const node=document.querySelector('.new-enemy-item[data-target="'+targetId+'"] .new-enemy-hp-text');return node&&node.textContent!==hpBefore;},{targetId,hpBefore},{timeout:5000});
   assert.match(await page.locator('#energyDisplay').innerText(),/2\/3/,'playing an attack card spends one energy');
   const hpBeforeEnemyPhase=await page.evaluate(()=>window.TowerboundRework.state.characters[0].run.playerHp);
   await page.locator('#endturn').click();
@@ -497,11 +497,11 @@ const {chromium}=require('playwright');
   for(let turn=0;turn<7&&!won;turn++){
    const attackCard=page.locator('.v2-card.attack:not([disabled])').first();
    if(await attackCard.count()){
-    const currentHp=await page.locator('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text').innerText().catch(()=>null);
+    const currentHp=await page.locator('.new-enemy-item[data-target="'+targetId+'"] .new-enemy-hp-text').innerText().catch(()=>null);
     await attackCard.click();
     try{await page.waitForSelector('.tb-loot-overlay',{timeout:2500});won=true;}
     catch(error){
-     await page.waitForFunction(({targetId,currentHp})=>{const node=document.querySelector('.v2-enemy-card[data-target="'+targetId+'"] .v2-enemy-hp-text');return !node||node.textContent!==currentHp;},{targetId,currentHp},{timeout:5000});
+     await page.waitForFunction(({targetId,currentHp})=>{const node=document.querySelector('.new-enemy-item[data-target="'+targetId+'"] .new-enemy-hp-text');return !node||node.textContent!==currentHp;},{targetId,currentHp},{timeout:5000});
     }
    }
    if(!won){
@@ -517,7 +517,7 @@ const {chromium}=require('playwright');
    }
   }
   assert.ok(won,'the player can defeat the final enemy and complete the stage');
-  assert.notEqual(await page.locator('.v2-battle-wrap').count(),1,'winning the fight exits the battle screen');
+  assert.notEqual(await page.locator('.new-battle-wrap').count(),1,'winning the fight exits the battle screen');
   assert.match(await page.locator('.tb-loot-overlay').innerText(),/БОЙ ЗАВЕРШЕН/,'victory opens the post-battle reward summary');
   const rewardDeckSize=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];return(c.deck||[]).length;});
   const levelUpContinue=page.locator('.tb-level-up-overlay [data-level-up-continue]');
