@@ -171,7 +171,7 @@ assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('i
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
 assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:39px!important')&&css.includes('height:34px!important'),'iPhone header preserves the original logo size and removes the progression button');
 assert.ok(/progression-24\.js\?v=\d+/.test(html)&&/towerbound-cloud\.js\?v=\d+/.test(html)&&/styles\.css\?v=\d+/.test(html),'updated progression, cloud and UI styles bypass stale browser cache');
-assert.ok(cloud.includes('overlay.style.visibility=\'visible\'')&&cloud.includes('conflict=true;overlay.classList.add(\'open\')'),'cloud save conflicts remain visible for source selection');
+assert.ok(cloud.includes("overlay.style.visibility='visible'")&&cloud.includes('conflict=true;savesReady=false;setStatus')&&cloud.includes("overlay.classList.add('open')"),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
 assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
 assert.ok(css.includes('tb-login-gate')&&css.includes('white-space:nowrap')&&css.includes('@media(max-width:400px)'),'centered login and narrow mobile header styles are present');
