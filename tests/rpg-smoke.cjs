@@ -148,7 +148,7 @@ const {chromium}=require('playwright');
   await page.locator('#pass').fill('qa-password');
   await page.locator('.tb-character-login #rememberMe').uncheck();
   await page.locator('[data-action="empty-login"]').click();
-  try{await page.waitForFunction(()=>window.TowerboundCloud?.signedIn,{timeout:12000});}catch(error){console.error('MATROSCHEG AUTH DEBUG',JSON.stringify(await page.evaluate(()=>({signedIn:window.TowerboundCloud?.signedIn,configured:window.TowerboundCloud?.configured,remember:localStorage.getItem('tb-remember-me'),message:document.querySelector('.tb-login-message')?.textContent,lastAuth:window.__tbLastAuth,login:document.querySelector('#login')?.value,cloudStatus:window.TowerboundCloud?.status?.()})),null,2));throw error;}
+  try{await page.waitForFunction(()=>window.TowerboundCloud?.signedIn,undefined,{timeout:12000});}catch(error){console.error('MATROSCHEG AUTH DEBUG',JSON.stringify(await page.evaluate(()=>({signedIn:window.TowerboundCloud?.signedIn,configured:window.TowerboundCloud?.configured,remember:localStorage.getItem('tb-remember-me'),message:document.querySelector('.tb-login-message')?.textContent,lastAuth:window.__tbLastAuth,login:document.querySelector('#login')?.value,cloudStatus:window.TowerboundCloud?.status?.()})),null,2));throw error;}
   assert.equal(await page.evaluate(()=>window.__tbLastAuth.email),'matroscheg@towerbound.com','game login maps to lowercase synthetic email');
   await page.reload({waitUntil:'networkidle'});
   await page.waitForSelector('#tbRpg .tb-login-gate');
