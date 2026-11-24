@@ -2304,7 +2304,36 @@ function talentBonusDescription(talent,rank){
    case "account-sync":(async()=>{try{await window.TowerboundCloud.syncNow();render();notify('Синхронизировано');}catch(error){notify(error.message);}})();break;
    case "cloud-account":if(window.TowerboundCloud?.open)window.TowerboundCloud.open();else notify("Облачный модуль ещё загружается");break;
    case "cloud-sync":(async()=>{try{const cloud=window.TowerboundCloud;if(!cloud?.syncNow)throw new Error("Облачный модуль недоступен");await cloud.syncNow();notify("Облачное сохранение синхронизировано");}catch(error){notify(error.message||"Не удалось синхронизировать");}})();break;
-    case "cloud-retry":(async()=>{try{await window.TowerboundCloud?.retryLoad?.();render();}catch(error){notify(error.message||"Не удалось загрузить сохранение");}})();break;
+    case "cloud-retry":(async()=>{
+     const button=target;const original=button.textContent;
+     if(button.dataset.retrying==="true")return;
+     button.dataset.retrying="true";button.disabled=true;button.textContent="ЗАГРУЖАЕМ ОБЛАЧНОЕ СОХРАНЕНИЕ…";
+     notify("Повторно запрашиваем персонажа из облака…");
+     try{
+      const cloud=window.TowerboundCloud;
+      if(!cloud?.signedIn||typeof cloud.retryLoad!=="function")throw new Error("Облачный аккаунт ещё не подключён. Обнови страницу и войди снова.");
+      await cloud.retryLoad();
+      if(!cloud.savesReady){
+       const state=cloud.status?.()||{};
+       throw new Error(state.text||"Сервер пока не подтвердил загрузку. Попробуй ещё раз через несколько секунд.");
+      }
+      const raw=localStorage.getItem("tb-rpg-v2"),restored=raw?JSON.parse(raw):null;
+      if(!restored||!Array.isArray(restored.characters)||!restored.characters.length)throw new Error("Облако ответило, но список персонажей не попал в локальное сохранение.");
+      if(engine?.state){
+       for(const key of Object.keys(engine.state))delete engine.state[key];
+       Object.assign(engine.state,restored);
+       selectedId=engine.state.activeCharacterId||engine.state.characters[0]?.id||null;
+       if(!engine.state.characters.some(character=>character.id===selectedId))selectedId=engine.state.characters[0]?.id||null;
+      }
+      render();notify("Персонаж успешно загружен из облака.");
+     }catch(error){
+      render();notify("Загрузка не завершена: "+(error.message||"неизвестная ошибка"));
+      console.error("[Towerbound] manual cloud retry failed",error);
+     }finally{
+      const current=root.querySelector('[data-action="cloud-retry"]');
+      if(current){current.disabled=false;current.textContent=original;delete current.dataset.retrying;}
+     }
+    })();break;
     case "cloud-recover-local":(async()=>{try{const cloud=window.TowerboundCloud,info=cloud?.inspectLocalBackup?.();if(!info?.available){notify("Локальная резервная копия не найдена");return;}const details=info.characters.map(c=>c.name+" · ур. "+c.level+" · этаж "+c.highestFloor).join("; ");const warning=info.userMatch?"":"\nКопия не привязана к текущему аккаунту. Проверь данные внимательно.";if(!window.confirm("Найдена резервная копия:\n"+details+warning+"\n\nВосстановить её и записать в облако?"))return;await cloud.restoreLocalBackup();render();notify("Резервная копия восстановлена");}catch(error){notify(error.message||"Не удалось восстановить резервную копию");}})();break;
    case "daily-chest":try{const reward=engine.claimDailyChest(live().id);save();render();notify(reward.type==="silver"?"Сундук: +"+reward.amount+" серебра":reward.type==="potion"?"Сундук: +1 зелье исцеления":"Сундук: +10 материалов");}catch(error){notify(error.message);}break;
    case "systems":screen="account";render();break;
