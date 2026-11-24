@@ -31,9 +31,7 @@ jobs:
         run: |
           npm install --no-save playwright@1.54.2
           npx playwright install --with-deps chromium
-      - name: Run current card-combat balance attempt
-        env:
-          TB_BALANCE_RUN_LIMIT: 1
+      - name: Run all 63 card-combat balance attempts
         run: node tests/towerbound-card-balance.cjs
       - name: Upload real card-combat logs
         if: always()
