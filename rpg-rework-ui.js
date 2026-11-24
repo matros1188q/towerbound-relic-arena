@@ -2536,6 +2536,7 @@ function talentBonusDescription(talent,rank){
     const c=live();if(!c)throw new Error("Character is missing");
     engine.chooseBranch(c.id,branchId,0);const cardsAdded=grantSpecializationCards(c,branchId);save();return{branch:c.branch,cardsAdded};
    },
+   chooseBestRunModifier:()=>{const c=live();if(!c)return null;const options=engine.runModifierOptions(c.id)||[];const score=m=>(Number(m.player_damage_multiplier||1)-1)*2-(Number(m.enemy_damage_multiplier||1)-1)*2-(Number(m.all_enemies_shield_fraction)||0)*1.5+(Number(m.low_hp_damage_multiplier||1)-1)*1.5+(Number(m.reward_xp_multiplier||1)-1)*.2+(Number(m.elite_loot_multiplier||1)-1)*.1+(Number(m.skill_cooldown_multiplier||1)<1?.15:0);const best=options.slice().sort((x,y)=>score(y)-score(x))[0];if(!best)return null;engine.setRunModifier(c.id,best.id);return best.id;},
    allocateTalents:allocateBalanceTalents,
    startStage:(stage)=>{
     if(battle)throw new Error("Previous battle is still active");
@@ -2577,6 +2578,7 @@ function talentBonusDescription(talent,rank){
    },
    useCampRest:(stage)=>{const c=live();if(!c)return null;try{return engine.useCampRest(c.id,Number(stage));}catch(error){return null;}},
    resolveMapEvent:(stage)=>{selectedStage=Number(stage);const c=live(),type=eventTypeForStage(c,Number(stage));if(!c||!type)return null;const overlay=document.createElement("div");overlay.className="tb-map-event-overlay";overlay.dataset.eventType=type;overlay.dataset.eventStage=String(stage);document.body.appendChild(overlay);const choice=type==="chest"?"open":type==="altar"?"pray":Number(c.silver)>=50?"pay":"attack";resolveMapEventChoice(choice);return{type,choice,cleared:Number(c.progress.highestEver)>=Number(stage),battle:!!battle};},
+   confirmDeath:()=>{const c=live();if(!c)return null;const result=engine.confirmDeath(c.id);battle=null;postBattleSummary=null;screen="map";selectedStage=c.progress.currentStage;save();return result;},
    clearPostBattle:()=>{postBattleSummary=null;document.querySelector(".card-reward-overlay")?.remove();const c=live();if(c?.pendingCardReward)c.pendingCardReward=null;save();return true;},
    inspect:()=>{
     const c=live(),cardView=card=>({id:card.id,name:card.name,type:card.type,cost:Number(card.cost)||0,effects:cardEffects(card),isUpgraded:!!card.isUpgraded,exhaust:!!card.exhaust,retain:!!card.retain});
