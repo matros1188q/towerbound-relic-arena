@@ -1,10 +1,35 @@
 'use strict';
 
-const CACHE = 'towerbound-v641';
+const CACHE = 'towerbound-v642';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './',
   './index.html',
+  './native-pwa.css?v=17',
+  './rpg-2000h.css?v=1',
+  './card-codex.css?v=1',
+  './assets/ui/art-sprites.css?v=4',
+  './assets/skills/fire.png?v=11',
+  './assets/icons/ghost.svg?v=1',
+  './assets/icons/shield.svg?v=11',
+  './towerbound-engine.js?v=combat-choreography-stage5-assets-1',
+  './rpg-mode.js?v=13',
+  './rpg-expansion.js?v=2',
+  './rpg-rework-v2.js?v=19',
+  './styles.css?v=1007',
+  './rpg-rework-ui.css.js?v=1004',
+  './rpg-rework-ui.js?v=1017',
+  './towerbound-polish.js?v=8',
+  './combat-visuals.js?v=3',
+  './progression-24.js?v=10',
+  './social-endgame.js?v=9',
+  './endgame-systems.js?v=225',
+  './juice-pwa.js?v=1',
+  './supabase-config.js?v=1',
+  './towerbound-cloud.js?v=23',
+  './towerbound-online.js?v=1',
+  './towerbound-guild.css?v=5',
+  './towerbound-guild.js?v=15',
   './configs/talents_tree.json',
   './manifest.json',
   './juice-pwa.css',
@@ -297,9 +322,7 @@ self.addEventListener('fetch', event => {
     }).catch(async () => {
       const exact = await caches.match(request);
       if (exact) return exact;
-      const unversioned = new URL(request.url);
-      unversioned.search = '';
-      return await caches.match(new Request(unversioned.href)) || Response.error();
+      return Response.error();
     }));
     return;
   }

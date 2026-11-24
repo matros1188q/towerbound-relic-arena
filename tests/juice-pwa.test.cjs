@@ -7,5 +7,8 @@ assert(versionedStart>=0&&versionedEnd>versionedStart,'versioned assets must hav
 const versionedHandler=sw.slice(versionedStart,versionedEnd);
 assert(versionedHandler.indexOf('fetch(request)')>=0&&versionedHandler.indexOf('fetch(request)')<versionedHandler.indexOf('caches.match(request)'),'versioned JS/CSS must be network-first');
 assert(versionedHandler.includes('caches.match(request)'),'offline fallback for versioned assets must use an exact URL including its query string');
+assert(!versionedHandler.includes("unversioned.search = ''"),'versioned assets must never fall back to an older unversioned cache entry');
+const versionedLocalAssets=[...html.matchAll(/(?:src|href)=["'](\.\/[^"']+\\?[^"']+)["']/g)].map(match=>match[1]);
+for(const asset of versionedLocalAssets)assert(sw.includes("'"+asset+"'")||sw.includes('"'+asset+'"'),'versioned app-shell asset must be pre-cached exactly: '+asset);
 assert(!sw.includes('ignoreSearch: true'),'service worker must never ignore asset version query strings');
 assert(sw.includes(".catch(() => Response.error())"),'missing offline assets must fail instead of returning the HTML app shell');assert.equal((sw.match(/caches\.match\('\.\/index\.html'\)/g)||[]).length,1,'only failed page navigations may fall back to the cached HTML shell');assert(!sw.includes(".catch(error => console.warn('Towerbound shell cache:'"),'a failed precache must abort service-worker installation and preserve the previous worker');console.log('Juice/PWA static integration checks passed');
