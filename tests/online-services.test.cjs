@@ -165,7 +165,7 @@ assert.ok(characterGate.includes('data-action="empty-login"')&&characterGate.inc
 assert.ok(characterGate.includes('СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА'),'authenticated empty state has its primary create action');
 assert.ok(ui.includes('Сначала войди в игровой аккаунт'),'new-character action is guarded by Supabase session');
 assert.ok(ui.includes('towerbound-auth-change')&&ui.includes('cloud.signIn(login,password,remember)'),'successful auth refreshes the character screen');
-assert.ok(cloud.includes('await withTimeout(onSession(data.session,true)')&&cloud.includes("new Event('towerbound-auth-change')"),'Supabase sign-in awaits cloud restore and emits auth state changes');
+assert.ok(cloud.includes('void onSession(data.session)')&&cloud.includes('async function onSession(next,force=false)')&&cloud.includes("window.dispatchEvent(new Event('towerbound-auth-change'))"),'Supabase sign-in starts cloud restore without blocking login and emits auth state changes after hydration');
 
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey&&!force)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise while failed sessions remain retryable');
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
