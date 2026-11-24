@@ -2422,7 +2422,11 @@ function talentBonusDescription(talent,rank){
    if(!value)return;
    if(window.TowerboundCloudReady)await window.TowerboundCloudReady;
    else await new Promise(resolve=>{let settled=false;const done=()=>{if(settled)return;settled=true;resolve();};window.addEventListener('towerbound-cloud-ready',done,{once:true});setTimeout(done,18000);});
-   engine=value;balance=engine.balance;const unlockedBefore=Array.isArray(engine.state.account?.unlockedCards)?engine.state.account.unlockedCards.length:0;unlockedCardIds();if(engine.state.account.unlockedCards.length!==unlockedBefore)save();window.TowerboundLevelUpModal=(level,points)=>showLevelUpModal(level,points);
+   engine=value;balance=engine.balance;
+   // The engine may have been constructed from an empty local cache before cloud auth finished.
+   // Rehydrate its existing state object after the authoritative cloud restore has completed.
+   try{const raw=localStorage.getItem('tb-rpg-v2'),restored=raw?JSON.parse(raw):null;if(restored&&Array.isArray(restored.characters)){for(const key of Object.keys(engine.state))delete engine.state[key];Object.assign(engine.state,restored);}}catch(error){console.error('[Towerbound] post-cloud engine hydration failed',error);}
+   const unlockedBefore=Array.isArray(engine.state.account?.unlockedCards)?engine.state.account.unlockedCards.length:0;unlockedCardIds();if(engine.state.account.unlockedCards.length!==unlockedBefore)save();window.TowerboundLevelUpModal=(level,points)=>showLevelUpModal(level,points);
    skills=[]; // Card-first combat: legacy skill catalogue is not loaded into the active UI.
    let active=null;
    if(engine.state.characters.length){
