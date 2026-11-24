@@ -1051,8 +1051,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "poisonStacks": 2,
-        "cardCostReduction": 1
+        "poisonStacks": 2
       },
       "connections": [
         "assassin.heart"
@@ -1166,8 +1165,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "poisonStacks": 1,
-        "cardCostReduction": 1
+        "poisonStacks": 1
       },
       "connections": [
         "assassin.poison.06"
@@ -1283,8 +1281,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "poisonStacks": 1,
-        "cardCostReduction": 1
+        "poisonStacks": 1
       },
       "connections": [
         "assassin.poison.12"
@@ -1399,8 +1396,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "poisonStacks": 1,
-        "cardCostReduction": 1
+        "poisonStacks": 1
       },
       "connections": [
         "assassin.poison.18",
@@ -4263,8 +4259,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01,
-        "cardCostReduction": 1
+        "damagePercent": 0.01
       },
       "connections": [
         "destroyer.heart"
@@ -4397,8 +4392,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001,
-        "cardCostReduction": 1
+        "damagePercent": 0.013000000000000001
       },
       "connections": [
         "destroyer.fists.07"
@@ -4532,8 +4526,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016,
-        "cardCostReduction": 1
+        "damagePercent": 0.016
       },
       "connections": [
         "destroyer.fists.14"
@@ -4667,8 +4660,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01,
-        "cardCostReduction": 1
+        "damagePercent": 0.01
       },
       "connections": [
         "destroyer.fists.21"
@@ -6044,8 +6036,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01,
-        "cardCostReduction": 1
+        "damagePercent": 0.01
       },
       "connections": [
         "elemental.heart"
@@ -6178,8 +6169,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001,
-        "cardCostReduction": 1
+        "damagePercent": 0.013000000000000001
       },
       "connections": [
         "elemental.water.07"
@@ -6313,8 +6303,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016,
-        "cardCostReduction": 1
+        "damagePercent": 0.016
       },
       "connections": [
         "elemental.water.14"
@@ -6448,8 +6437,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01,
-        "cardCostReduction": 1
+        "damagePercent": 0.01
       },
       "connections": [
         "elemental.water.21"
@@ -6970,8 +6958,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01,
-        "cardCostReduction": 1
+        "damagePercent": 0.02
       },
       "connections": [
         "duelist.heart"
@@ -7104,8 +7091,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001,
-        "cardCostReduction": 1
+        "damagePercent": 0.013000000000000001
       },
       "connections": [
         "duelist.dual.07"
@@ -7239,8 +7225,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016,
-        "cardCostReduction": 1
+        "damagePercent": 0.016
       },
       "connections": [
         "duelist.dual.14"
@@ -7374,8 +7359,7 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01,
-        "cardCostReduction": 1
+        "damagePercent": 0.01
       },
       "connections": [
         "duelist.dual.21"

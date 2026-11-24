@@ -775,9 +775,14 @@
      const slot=["weapon","chest","head","accessory"][Math.floor(random()*4)];
      items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,itemLevel:stage}));
     }
-   }else if(random()<Math.min(1,drops.normal_item_chance*dropMultiplier)){
-    items.push(createDrop(character,random()<drops.normal_rare_weight?"Редкая":"Обычная",{itemLevel:stage}));
+   }else if(enemy.type==="normal"){
+    character.dropPity=character.dropPity&&typeof character.dropPity==="object"?character.dropPity:{};
+    const misses=Math.max(0,Number(character.dropPity.normalEquipmentMisses)||0),guaranteed=misses>=2;
+    if(guaranteed||random()<Math.min(1,drops.normal_item_chance*dropMultiplier))items.push(createDrop(character,random()<drops.normal_rare_weight?"Редкая":"Обычная",{itemLevel:stage}));
+    const gearDropped=items.some(item=>item.type==="equipment"||item.type==="auto_salvage");
+    character.dropPity.normalEquipmentMisses=gearDropped?0:misses+1;
    }
+   if(items.some(item=>item.type==="equipment"||item.type==="auto_salvage")){character.dropPity=character.dropPity||{};character.dropPity.normalEquipmentMisses=0;}
    return items;
   }
   function finishEnemy(characterId,flags){

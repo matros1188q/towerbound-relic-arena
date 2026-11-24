@@ -15,10 +15,10 @@ const SHELL = [
   './towerbound-engine.js?v=combat-choreography-stage5-assets-1',
   './rpg-mode.js?v=13',
   './rpg-expansion.js?v=2',
-  './rpg-rework-v2.js?v=19',
+  './rpg-rework-v2.js?v=20',
   './styles.css?v=1016',
   './rpg-rework-ui.css.js?v=1005',
-  './rpg-rework-ui.js?v=1028',
+  './rpg-rework-ui.js?v=1029',
   './towerbound-polish.js?v=8',
   './combat-visuals.js?v=3',
   './progression-24.js?v=10',
@@ -295,11 +295,16 @@ const SHELL = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(SHELL.map(path => new Request(path, { cache: 'reload' })).map(request => request)))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    const requests = SHELL.map(path => new Request(path, { cache: 'reload' }));
+    const missing = [];
+    for (const request of requests) {
+      if (!(await cache.match(request))) missing.push(request);
+    }
+    if (missing.length) await cache.addAll(missing);
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', event => {
@@ -329,7 +334,18 @@ self.addEventListener('fetch', event => {
     }));
     return;
   }
-  // Versioned assets are network-first: a new ?v= value must never receive an older cached script or stylesheet.
+  // Balance JSON is immutable for a given ?v= key. Serve cached data immediately after its first successful fetch.
+  if (url.pathname.includes('/configs/balance/') && url.pathname.endsWith('.json')) {
+    event.respondWith(caches.match(request).then(cached => {
+      if (cached) return cached;
+      return fetch(request).then(response => {
+        if (response && response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
+        return response;
+      }).catch(() => Response.error());
+    }));
+    return;
+  }
+  // Versioned scripts/styles stay network-first so explicit version bumps always update them.
   if (url.search.length > 0) {
     event.respondWith(fetch(request).then(response => {
       if (response && response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));

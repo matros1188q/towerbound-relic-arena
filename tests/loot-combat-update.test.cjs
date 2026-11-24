@@ -33,6 +33,17 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
 }
 
 {
+ const e=make(()=>0.99),c=e.createCharacter('Pity QA','duelist'),live=e.state.characters[0];
+ live.xp=Array.from({length:9},(_,index)=>e.requiredXp(index+1)).reduce((sum,xp)=>sum+xp,0);
+ live.level=e.levelForXp(live.xp);e.chooseBranch(c.id,'dual_swords');
+ assert.equal(e.rollLoot(live,{type:'normal'},20,false,false).length,0,'first missed normal kill does not force a premature drop');
+ assert.equal(e.rollLoot(live,{type:'normal'},21,false,false).length,0,'second missed normal kill increments the pity counter');
+ const guaranteed=e.rollLoot(live,{type:'normal'},22,false,false);
+ assert.equal(guaranteed.length,1,'third normal kill guarantees an equipment drop after two misses');
+ assert.equal(live.dropPity.normalEquipmentMisses,0,'equipment drop resets the normal gear pity counter');
+}
+
+{
  const e=make();
  for(const id of ids){
   const c=e.createCharacter('Hero '+id,id),live=e.state.characters.find(x=>x.id===c.id);
