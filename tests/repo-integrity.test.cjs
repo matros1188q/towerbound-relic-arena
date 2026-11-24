@@ -29,7 +29,7 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const localRefs=[...html.matchAll(/(?:src|href)=["'](\.\/[^"'?#]+)(?:\?[^"']*)?["']/g)].map(match=>match[1].replace(/^\.\//,'')).filter(file=>file!==''&&!file.endsWith('/'));
 for(const file of localRefs)assert.ok(treePaths.has(file),'Missing local HTML asset: '+file);
 const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
-const shellRefs=[...sw.matchAll(/["']\.\/([^"']+)["']/g)].map(match=>decodeURIComponent(match[1]));
+const shellRefs=[...sw.matchAll(/["']\.\/([^"']+)["']/g)].map(match=>decodeURIComponent(match[1].split('?')[0]));
 for(const file of shellRefs)assert.ok(treePaths.has(file),'Missing service-worker shell asset: '+file);
 const scripts=new Set([...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)].map(match=>match[1].split('?')[0].replace(/^\.\//,'')));
 for(const file of all.filter(file=>path.dirname(file)===root&&file.endsWith('.js')&&!file.endsWith('service-worker.js'))){
