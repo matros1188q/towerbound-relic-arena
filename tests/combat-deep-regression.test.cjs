@@ -60,4 +60,9 @@ assert.match(ui,/target\.mutation==="vampirism"&&target\.hp>0/,'vampirism mutati
 assert.match(ui,/applyTargetDamage\(enemy,burn,"fire"\);(?:if\(!battle\)return;)?enemy\.burn=0;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal burn retaliation ends the run immediately');
 assert.match(ui,/applyTargetDamage\(target,dot\.damage,"dark"\);(?:if\(!battle\)return;)?dot\.ticks--;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal dark DoT retaliation ends the run immediately');
 assert.match(ui,/battle\.isPlayerTurn=false;clearPendingTurnTimer\(\);battle\.busy=false;battle\.actionDamageLedger=\{\};battle\.actionIsPrimaryHit=false;battle\.actionIsSkill=false;[\s\S]*?const burnTargets=/,'end-turn status ticks start a fresh damage action and cannot trigger card procs');
+assert.match(ui,/battle\.poisonStacks=Math\.max\(0,stacks-1\)/,'player poison consumes one stack after each end-turn tick');
+assert.match(ui,/targetIndex:Number\(battle\.enemy\?\.index\?\?battle\.targetIndex\)/,'new enemy DOTs retain the exact target index');
+assert.match(ui,/Number\(x\.index\)===Number\(dot\.targetIndex\)/,'enemy DOTs tick only on the enemy they were applied to');
+assert.match(ui,/findIndex\(dot=>Number\(dot\?\.targetIndex\)===Number\(enemy\.index\)\)/,'tank cleanse removes only its own DOT');
+assert.doesNotMatch(ui,/battle\.enemy\.pendingCleanseDebuff=true;battle\.enemy\.debuffKind="debuff"/,'a non-DOT damage-reduction debuff cannot make a tank remove an unrelated DOT');
 console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
