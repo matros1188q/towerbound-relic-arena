@@ -837,15 +837,33 @@ function createDialog(){
  function applyEnemyHit(attacker,raw){
   if(!battle||!attacker||attacker.alive!==true||Number(attacker.hp)<=0){if(attacker){attacker.alive=false;attacker.dead=true;attacker.hp=0;attacker.pendingAttack=false;}return;}
   const c=live(),phase=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp).phase:0;
+  let counterDamageMultiplier=1;
   if(battle.counterPrimed&&!battle.counterConsumed&&(battle.counterTargetIndex===undefined||battle.counterTargetIndex===attacker.index)){
-   battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=battle.telegraph?.targetIndex;
-   battle.actionDamageLedger={};const reflected=applyTargetDamage(attacker,raw,"physical");if(!battle)return;notify("100% отражение · "+reflected.dealt+" урона");
-   if(c.run.playerHp<=0){endFromDamage();return;}
-   if(reflected.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();}
-   return;
+   const reaction=battle.counterAction||counterAbility(c),effect=reaction?.effect||"damage_reduction";
+   battle.counterConsumed=true;battle.counterPrimed=false;battle.counterTargetIndex=attacker.index;
+   battle.actionDamageLedger={};
+   if(effect==="evade"||effect==="absorb_all"||effect==="stun"||effect==="riposte")counterDamageMultiplier=0;
+   else if(effect==="damage_reduction"||effect==="slow")counterDamageMultiplier=1-Math.max(0,Math.min(1,Number(reaction.damage_reduction??(effect==="slow"?.8:.5))));
+   else counterDamageMultiplier=.5;
+   if(effect==="stun"){attacker.stunned=true;notify("РЁВ · противник оглушён");}
+   else if(effect==="slow"){attacker.slowTurns=Math.max(Number(attacker.slowTurns)||0,Number(reaction.cooldown_turns)||1);notify("ЗАМЕДЛЕНИЕ · получаемый урон снижен");}
+   else if(effect==="cleanse"){
+    if((battle.poisonStacks||0)>0)battle.poisonStacks=Math.max(0,battle.poisonStacks-Number(reaction.remove_stacks||1));
+    else if((battle.playerBleed||0)>0)battle.playerBleed=Math.max(0,battle.playerBleed-Number(reaction.remove_stacks||1));
+    else battle.playerWeakTurns=Math.max(0,(Number(battle.playerWeakTurns)||0)-1);
+    notify("ОЧИЩЕНИЕ · негативный эффект снят, урон снижен");
+   }else if(effect==="riposte"){
+    const riposte=Math.max(1,Math.round(engine.getCombatStats(c).dps*(Number(reaction.damage_multiplier)||1)));
+    const counter=applyTargetDamage(attacker,riposte,"physical");if(!battle)return;
+    notify("ПАРИРОВАНИЕ · ответный удар "+counter.dealt+" урона");
+    if(counter.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();return;}
+   }else if(effect==="evade")notify("ТЕНЬ · атака уклонена");
+   else if(effect==="absorb_all")notify("БАРЬЕР · атака полностью поглощена");
+   else if(effect==="damage_reduction")notify("ЧЕШУЯ · урон снижен");
+   if(counterDamageMultiplier===0)return;
   }
   const branchStats=balance.classes.branch_stat_bonuses?.[c.classId+"."+c.branch]||{},branchCounterChance=Number(branchStats.counterattack_chance)||0,parryChance=Math.max(branchCounterChance,Number(battle.parryChance)||0);battle.parryChance=0;if(parryChance>0&&gameRandom()<parryChance){const iceCounter=c.classId==="dragonkin",riposte=Math.max(1,Math.round(engine.getCombatStats(c).dps*(Number(branchStats.counterattack_damage_multiplier)||(iceCounter?.75:1.2))));battle.actionDamageLedger={};const counter=applyTargetDamage(attacker,riposte,iceCounter?"ice":"physical");if(!battle)return;notify((iceCounter?"ЛЕДЯНАЯ ЗАЩИТА":"ПАРИРОВАНИЕ")+" · КОНТРАТАКА −"+counter.dealt+" HP");if(c.run.playerHp<=0){endFromDamage();return;}if(counter.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();return;}return;}
-  let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)));
+  let incoming=Math.max(0,Math.round(raw*engine.mitigationMultiplier(engine.getCombatStats(c).defense,battle.stage)*counterDamageMultiplier));
   const bleedAttack=attacker?.role==='bleed'||attacker?.intent?.type==='bleed'||attacker?.intent?.damageType==='bleed';if(bleedAttack)incoming=Math.round(incoming*(1-Math.min(.75,Math.max(0,Number(c.guildBuffs?.bleed_resist)||0)*.05)));
   if((battle.enemyDamageReductionTurns||0)>0)incoming=Math.round(incoming*(1-(battle.enemyDamageReduction||0)));
   const blockedByCards=Math.min(Math.max(0,Number(battle.cardBlock)||0),incoming);incoming=Math.max(0,incoming-blockedByCards);battle.cardBlock=Math.max(0,(Number(battle.cardBlock)||0)-blockedByCards);
@@ -1867,7 +1885,7 @@ function talentBonusDescription(talent,rank){
   const c=live(),ultimate=ultimateAbility(c),cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.ultimate??42):(ultimate.resource_cost??balance.resources.action_costs.ultimate);
   if(c.resource<cost){notify("Не хватает ресурса для ультимейта");return;}
   c.resource-=cost;battle.playerSkillUsed=true;battle.ultimateCooldownTurns=Math.max(1,ultimate.cooldown_turns||3);
-  const stats=engine.getCombatStats(c),damage=stats.dps*2.0*(stats.damageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*(Number(balance.classes.branch_stat_bonuses?.["destroyer.wand_shield"]?.defense_damage_fraction)||.5):0);battle.actionDamageLedger={};
+  const stats=engine.getCombatStats(c),configuredMultiplier=Math.max(0,Number(ultimate.damage_multiplier)||2),damage=stats.dps*configuredMultiplier/3*(stats.damageMultiplier||1)+(c.classId==="destroyer"&&c.branch==="wand_shield"?stats.defense*(Number(balance.classes.branch_stat_bonuses?.["destroyer.wand_shield"]?.defense_damage_fraction)||.5)/3:0);battle.actionDamageLedger={};
   if(ultimate.effect==="heal_shield"||ultimate.effect==="heal_aoe")c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.round(engine.maxHp(c)*ultimate.heal_fraction));
   if(ultimate.effect==="heal_shield")battle.nextDamageShield=Math.round(engine.maxHp(c)*ultimate.shield_fraction);
   if(ultimate.effect==="heal_aoe"||ultimate.effect==="aoe_burst"){for(const target of battle.enemies.filter(x=>x.alive)){for(let hit=0;hit<3&&target.hp>0&&c.run.playerHp>0;hit++){applyTargetDamage(target,damage,ultimate.damage_type,{ultimate:true});if(!battle)return;}if(c.run.playerHp<=0)break;}}
