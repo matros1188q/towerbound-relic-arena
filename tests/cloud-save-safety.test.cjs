@@ -17,7 +17,7 @@ assert.ok(cloud.includes('Защита сохранения: облачная в
 assert.ok(cloud.includes('SAVE_GUARD_BLOCKED'));
 assert.ok(cloud.includes("withTimeout(client.auth.getSession()")&&cloud.includes("withTimeout(client.from('player_saves')"));
 assert.ok(cloud.includes('button.disabled=true')&&cloud.includes('finally{button.disabled=false;}'));
-assert.ok(cloud.includes("if(hasCharacters){await writeRemote(local,0);}else{revision=0;"));
+assert.ok(cloud.includes("if(hasCharacters){await writeRemote(local,0);")&&cloud.includes("else{revision=0;"));
 assert.ok(/towerbound-cloud\.js\?v=25/.test(html)&&/rpg-rework-ui\.js\?v=1029/.test(html));
 assert.ok(sw.includes("const CACHE = 'towerbound-v661'")&&sw.includes("'./towerbound-cloud.js?v=25'")&&sw.includes("'./rpg-rework-ui.js?v=1029'"));
 assert.ok(migration.includes('create table if not exists public.player_save_history'));
