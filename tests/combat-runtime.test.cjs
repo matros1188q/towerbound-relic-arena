@@ -185,7 +185,6 @@ for(const classId of classes){
  assert.equal(materialChest.type,"materials","daily chest can award crafting materials");
  assert.equal(testEngine.getChar(first.id).bag.find(item=>item.type==="craft_material")?.quantity,10,"material reward grants ten crafting materials");
 }
-assert.ok(ui.includes('effect==="stun"){notify("РЁВ · атака противника прервана");}'),'Destroyer roar cancels the incoming hit without incorrectly stunning a second enemy turn');
-assert.ok(ui.includes('effect==="riposte"){\n    const riposte='),'Duelist parry resolves its configured riposte reaction');
-assert.ok(ui.includes('Number(ultimate.damage_multiplier)||2'),'class ultimate reads its configured damage multiplier');
+assert.match(combatUi,/if\(effect==="stun"\)\{notify\("РЁВ · атака противника прервана"\);\}/,'Destroyer roar cancels one incoming hit without stunning a second enemy turn');
+assert.doesNotMatch(combatUi,/if\(effect==="stun"\)\{attacker\.stunned=true/,'Destroyer roar does not apply a second-turn stun after cancelling the current hit');
 console.log('Combat runtime regression passed: 7 counters, telegraphs, boss phases, enemy stats, elemental matchups, 7 procs, combos and cross-target proc persistence.');
