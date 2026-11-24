@@ -1,5 +1,5 @@
 name: Towerbound real card-combat balance
-# A/B baseline: compare counter-first and ultimate-first pilots on identical 63-run matrices.
+# Card-only baseline: 21 specializations x 3 deterministic seeds; no legacy active abilities.
 on:
   workflow_dispatch:
   push:
@@ -16,8 +16,6 @@ jobs:
   real-card-balance:
     strategy:
       fail-fast: false
-      matrix:
-        priority: [counter-first, ultimate-first]
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
@@ -36,15 +34,14 @@ jobs:
           node --check rpg-rework-ui.js
           node --check rpg-rework-v2.js
           node --check tests/towerbound-card-balance.cjs
-      - name: Run 63 branch-focused card-combat attempts from level 10
+      - name: Run 63 card-only specialization attempts from level 10
         env:
           TB_BALANCE_START_LEVEL: 10
-          TB_BALANCE_PILOT_PRIORITY: ${{ matrix.priority }}
         run: node tests/towerbound-card-balance.cjs
       - name: Upload real card-combat balance report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: towerbound-real-card-balance-${{ matrix.priority }}
+          name: towerbound-card-only-balance
           path: artifacts/towerbound-card-balance/
           if-no-files-found: warn
