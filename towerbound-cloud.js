@@ -7,7 +7,7 @@ const cfg=window.TOWERBOUND_SUPABASE_CONFIG||{};
 const SAVE_KEYS=new Set(['tb-rpg-v2','tb-rpg-v1','towerbound-save-v1','towerbound-profiles-v1','towerbound-active-profile-v1','tb-endgame-v1','tb-social-v1']);
 const isSaveKey=k=>SAVE_KEYS.has(String(k))||String(k).startsWith('towerbound-profile-save-');
 const $=s=>document.querySelector(s);
-let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false,savesReady=false,remoteHasCharacters=false,retryAfter=0,sessionBusy=false,lastCloudError='',cloudRetryCount=0;
+let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false,authEventSequence=0,savesReady=false,remoteHasCharacters=false,retryAfter=0,sessionBusy=false,lastCloudError='',cloudRetryCount=0;
 let sessionTask=Promise.resolve();
 let resolveCloudBootstrap;
 const cloudBootstrap=new Promise(resolve=>{resolveCloudBootstrap=resolve;});
@@ -456,7 +456,7 @@ function init(){
   say('Проверь подключение к интернету и доступность cdn.jsdelivr.net.');showLoginGate();$('#tbCloudSignIn').disabled=$('#tbCloudSignUp').disabled=true;resolveCloudBootstrap({ready:false,reason:'sdk-unavailable'});window.dispatchEvent(new Event('towerbound-cloud-ready'));return;
  }
  client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
- client.auth.onAuthStateChange((_event,next)=>{if(authInitialized)setTimeout(()=>onSession(next),0);});
+ client.auth.onAuthStateChange((_event,next)=>{if(!authInitialized)return;const sequence=++authEventSequence;setTimeout(()=>{if(sequence===authEventSequence)void onSession(next);},0);});
  withTimeout(client.auth.getSession(),'Проверка сессии').then(async({data,error})=>{if(error)throw error;let active=data.session;if(active&&!remembered()){await client.auth.signOut();active=null;}authInitialized=true;handledSessionKey='';if(active){session=active;setStatus('ОБЛАКО · ЗАГРУЗКА В ФОНЕ','pending');/* Release the game engine as soon as the locally persisted auth session is known. Cloud save hydration runs independently. */resolveCloudBootstrap({ready:true,signedIn:true,cloudLoading:true});window.dispatchEvent(new Event('towerbound-cloud-ready'));setTimeout(()=>{void onSession(active);},0);}else{session=null;showLoginGate();setStatus('АККАУНТ · НУЖЕН ВХОД','local');resolveCloudBootstrap({ready:true,signedIn:false,cloudLoading:false});window.dispatchEvent(new Event('towerbound-cloud-ready'));}}).catch(e=>{console.error('[Towerbound cloud] bootstrap failed',e);authInitialized=true;showLoginGate();setStatus('ОБЛАКО · ОШИБКА','error');say((e.message||'Не удалось проверить сессию')+' · локальные данные не затронуты','error');resolveCloudBootstrap({ready:false,error:e.message||String(e)});window.dispatchEvent(new Event('towerbound-cloud-ready'));});
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
