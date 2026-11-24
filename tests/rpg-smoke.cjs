@@ -69,7 +69,7 @@ const {chromium}=require('playwright');
  assert.match(battleUiSource,/new-hero-warning/,"stage 5 shows low-health recovery guidance");
  assert.match(battleUiSource,/new-enemy-threat boss/,"boss encounters carry an explicit high-threat marker");
  assert.match(battleUiSource,/new-enemy-threat elite/,"elite encounters carry an explicit threat marker");
- assert.match(battleUiSource,/Этап \\+battle\\.stage\\+.*пройден/,"stage completion is written to the expedition log");
+ assert.match(battleUiSource,/logExpeditionEvent\\("Этап "\\+battle\\.stage\\+" пройден/,"stage completion is written to the expedition log");
  assert.match(battleCssSource,/new-hero-warning\\.critical/,"critical HP guidance has a distinct mobile-safe visual state");
  assert.match(battleUiSource,/function logExpeditionEvent\(message,color\)/,"stage 5 keeps a persistent per-run expedition log");
  assert.match(battleUiSource,/ЖУРНАЛ ЭКСПЕДИЦИИ/,"battle log presents persistent expedition history");
