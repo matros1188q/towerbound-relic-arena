@@ -56,7 +56,10 @@
     "Mob-drop materials have dedicated semantic art: craft material, enhancement gem, refine gem and enchantment scroll.",
     "Pity tokens use the eye charm rather than reusing the green luck-potion bottle.",
     "Hourglass uses the dedicated relic hourglass PNG, not the coin image.",
-    "Premium-account products intentionally retain their existing artwork."
+    "Premium-account products intentionally retain their existing artwork.",
+    "Craft material uses the single green ore image, not the mixed image_15 atlas.",
+    "Gloves and amulets are rendered as individual crops from the 3-column image_12 sheet; bundle uses a single chest crop.",
+    "Backpack, loot and item detail share the same normalized art wrapper and contain-sized viewport."
   ],
   "inventory": {
     "xp_10": "image.jpeg",
@@ -92,14 +95,14 @@
     "refine_10": "../relics/riftsigil.png",
     "refine_20": "../relics/stormglass.png",
     "safe_refine": "../relics/guardian.png",
-    "craft_material": "../relics/image_15.png",
+    "craft_material": "../relics/image_6.png",
     "enhancement_stone": "../relics/image_7.png",
     "refine_stone": "../relics/image_8.png",
     "enchant_scroll": "../relics/image_9.png"
   },
   "mobDrops": {
     "healing_potion": "image 2.jpeg",
-    "craft_material": "../relics/image_15.png",
+    "craft_material": "../relics/image_6.png",
     "enhancement_stone": "../relics/image_7.png",
     "refine_stone": "../relics/image_8.png",
     "enchant_scroll": "../relics/image_9.png"

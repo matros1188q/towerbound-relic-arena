@@ -31,7 +31,7 @@ for(const [file,content] of Object.entries(source)){
 }
 const uiScript=source['rpg-rework-ui.js'];
 for(const [id,file] of Object.entries({assassin:'image-Photoroom.png',bishop:'image_2-Photoroom(1).png',dragonkin:'image_3-Photoroom.png',destroyer:'image_4-Photoroom.png',elemental:'image_5-Photoroom.png',shaman:'image_6-Photoroom.png',duelist:'image_7-Photoroom.png'}))assert.ok(uiScript.includes(id+':"heroes/'+file+'"'),'Missing hero PNG mapping: '+id);
-assert.ok(uiScript.includes('return "image_15.png"')&&uiScript.includes('function shopProductIconHtml(item)'),'Craft material and store art resolver must be active');
+assert.ok(uiScript.includes('craft_material:"./assets/relics/image_6.png"')&&uiScript.includes('function shopProductIconHtml(item)'),'Craft material and store art resolver must be active');
 assert.ok(uiScript.includes('relicIconHtml(item,item?.slot)'),'Equipment/store render must pass item slot');
 assert.ok(uiScript.includes('item?.itemId')&&uiScript.includes('ITEM_ART_BY_ID'),'Inventory art resolver must use catalog itemId before effect type.');
 assert.ok(uiScript.includes('RELIC_ART_BY_ID'),'Card relics must have dedicated semantic artwork.');
@@ -50,7 +50,7 @@ assert.ok(css.includes('.sprite-icon{')&&css.includes('../skills/image_17.png'),
 for(const name of ['talent-atk','talent-hp','talent-def','talent-agi','talent-crit','shop-potion','shop-premium','shop-refine'])assert.ok(css.includes('.'+name),'Missing sprite crop '+name);
 assert.ok(/const CACHE = 'towerbound-v\d+'/.test(sw),'PWA cache must use a versioned towerbound-vN release key');
 assert.ok(sw.includes('./assets/chapters/image_2.jpeg'),'Service worker must preserve chapter JPEG backgrounds');
-assert.ok(relics.assets.some(x=>x.id==='craft-material'&&x.path==='assets/relics/image_15.png'),'Craft material PNG must be registered');
+assert.ok(relics.assets.some(x=>x.id==='craft-material'&&x.path==='assets/relics/image_6.png'),'Craft material must use the standalone green ore PNG, not the mixed atlas');
 for(const folder of ['assets/characters/enemies','assets/chapters']){const names=fs.readdirSync(path.join(root,folder));assert.ok(!names.some(name=>name.includes(' ')),folder+' filenames must not contain spaces');}
 const normalisedPaths=["assets/characters/heroes/image_2-Photoroom(1).png","assets/characters/heroes/image_3-Photoroom.png","assets/characters/heroes/image_4-Photoroom.png","assets/characters/heroes/image_5-Photoroom.png","assets/characters/heroes/image_6-Photoroom.png","assets/characters/heroes/image_7-Photoroom.png","assets/characters/bosses/image_3.png","assets/characters/bosses/image_4.png","assets/characters/bosses/image_11.png","assets/characters/bosses/image_12.png","assets/relics/image_2.png","assets/relics/image_3.png","assets/relics/image_4.png","assets/relics/image_5.png","assets/relics/image_6.png","assets/relics/image_7.png","assets/relics/image_8.png","assets/relics/image_9.png","assets/relics/image_10.png","assets/relics/image_12.png","assets/relics/image_14.png","assets/relics/image_15.png","assets/relics/image_18.png","assets/icons/image_5.png","assets/icons/image_11.png","assets/icons/image_13.png","assets/icons/image_15.png","assets/icons/image_16.png","assets/icons/image_17.png","assets/icons/image_19.png","assets/skills/image_17.png"];
 for(const assetPath of normalisedPaths)exists(assetPath);
@@ -74,6 +74,11 @@ assert.equal(new Set(Object.values(itemArt.mobDrops)).size,5,"Each mob-drop item
 assert.equal(itemArt.mobDrops.enchant_scroll,itemArt.inventory.enchant_scroll,"Mob-drop scroll art must match backpack art");
 assert.ok(uiScript.includes('function itemArtVariantLabel(item)')&&uiScript.includes('tb-item-art-badge'),'Potion and refine tiers must have visible unique variant labels');
 assert.ok(uiScript.includes('customItemImageHtml(custom,"tb-shop-item-art",item)')&&uiScript.includes('customItemImageHtml(custom,"tb-bag-item-art-img",item)'),'Shop and backpack must share the same item image renderer');
-assert.ok(source['styles.css'].includes('.tb-item-art-wrap')&&source['styles.css'].includes('.tb-bag-item-art img{display:block!important;width:62px'),'Backpack artwork must use a fixed contain-sized image box');
+assert.ok(source['styles.css'].includes('.tb-bag-item-art>.tb-item-art-wrap')&&source['styles.css'].includes('.tb-bag-item-art img,#tbRpg .tb-v2 .tb-bag-item-art .tb-relic-atlas')&&source['styles.css'].includes('width:56px!important'),'Backpack artwork must use a normalized contain-sized image box');
+assert.equal(itemArt.inventory.craft_material,'../relics/image_6.png');
+assert.equal(itemArt.mobDrops.craft_material,'../relics/image_6.png');
+assert.ok(uiScript.includes('tb-relic-glove')&&uiScript.includes('tb-relic-amulet')&&uiScript.includes('tb-relic-bundle'),'Multi-item atlas art must be cropped to one object');
+assert.ok(css.includes('.tb-relic-glove{background-image:url("../relics/image_12.png")')&&css.includes('.tb-relic-bundle{background-image:url("../relics/image_18.png")'),'Atlas crops must use the correct source sheets');
+assert.ok(relics.sprite_crops.some(x=>x.id==='gloves')&&relics.sprite_crops.some(x=>x.id==='amulet'),'Relic art manifest documents the individual sprite crops');
 
 console.log('ART-ASSET CHECK PASS: PNG portraits/relics/skills/icons, JPEG chapter backgrounds, item routing, sprite crops and cache.');

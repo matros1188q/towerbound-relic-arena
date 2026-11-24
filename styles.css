@@ -999,3 +999,10 @@
 #tbRpg .tb-v2 .tb-product-icon .tb-shop-item-art{width:72px!important;height:72px!important;object-fit:contain!important;object-position:center!important}
 #tbRpg .tb-v2 .tb-bag-item-art .tb-bag-item-art-img{width:62px!important;height:62px!important;object-fit:contain!important;object-position:center!important}
 @media(max-width:420px){#tbRpg .tb-v2 .tb-bag-item-art{width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important;max-width:58px!important;max-height:58px!important}#tbRpg .tb-v2 .tb-bag-item-art img{width:56px!important;height:56px!important;max-width:56px!important;max-height:56px!important}}
+
+
+/* 2026-11-24: normalize backpack item art boxes; no sprite sheet may spill or be clipped. */
+#tbRpg .tb-v2 .tb-bag-item-art{display:grid!important;place-items:center!important;width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;max-width:64px!important;max-height:64px!important;aspect-ratio:1/1!important;overflow:hidden!important;flex:0 0 64px!important;box-sizing:border-box!important;margin:0 auto!important;padding:0!important}
+#tbRpg .tb-v2 .tb-bag-item-art>.tb-item-art-wrap{display:grid!important;place-items:center!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;overflow:hidden!important;flex:none!important;box-sizing:border-box!important}
+#tbRpg .tb-v2 .tb-bag-item-art img,#tbRpg .tb-v2 .tb-bag-item-art .tb-relic-atlas{display:block!important;width:56px!important;height:56px!important;min-width:0!important;min-height:0!important;max-width:56px!important;max-height:56px!important;object-fit:contain!important;object-position:center!important;margin:0!important;padding:0!important;box-sizing:border-box!important}
+#tbRpg .tb-v2 .tb-item-detail-art>.tb-item-art-wrap{display:grid!important;place-items:center!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important}

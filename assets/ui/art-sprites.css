@@ -81,3 +81,10 @@ img{object-fit:contain}#tbRpg img,#tbRpg .tb-v2 img,.tb-v2 img{object-fit:contai
 .tb-item-detail-art .tb-custom-item-art{width:104px;height:104px}
 .tb-relic-shop-icon .tb-custom-item-art{width:54px;height:54px}
 .tb-custom-item-art.tb-bag-item-art-img{border-radius:10px}
+
+
+/* Single-item crops from the 3x1 glove/boot/amulet sheet and 4x3 chest sheet. */
+.tb-relic-atlas{display:block;width:42px;height:42px;flex:0 0 42px;background-repeat:no-repeat;background-color:transparent;overflow:hidden}
+.tb-relic-glove{background-image:url("../relics/image_12.png");background-size:300% 100%;background-position:0% 50%}
+.tb-relic-amulet{background-image:url("../relics/image_12.png");background-size:300% 100%;background-position:100% 50%}
+.tb-relic-bundle{background-image:url("../relics/image_18.png");background-size:400% 300%;background-position:0% 100%}

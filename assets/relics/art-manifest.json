@@ -20,7 +20,7 @@
     {
       "id": "amulet",
       "name": "Амулет",
-      "path": "assets/relics/image_6.png"
+      "path": "assets/relics/image_12.png"
     },
     {
       "id": "weapon",
@@ -55,17 +55,43 @@
     {
       "id": "potion-stack",
       "name": "Стопка зелий",
-      "path": "assets/relics/image_14.png"
+      "path": "assets/relics/image_5.png"
     },
     {
       "id": "bundle",
       "name": "Набор сундука и зелий",
-      "path": "assets/relics/image_18.png"
+      "path": "assets/relics/rune.png"
     },
     {
       "id": "craft-material",
       "name": "Материал для крафта",
-      "path": "assets/relics/image_15.png"
+      "path": "assets/relics/image_6.png"
+    }
+  ],
+  "sprite_crops": [
+    {
+      "id": "gloves",
+      "path": "assets/relics/image_12.png",
+      "columns": 3,
+      "rows": 1,
+      "column": 1,
+      "row": 1
+    },
+    {
+      "id": "amulet",
+      "path": "assets/relics/image_12.png",
+      "columns": 3,
+      "rows": 1,
+      "column": 3,
+      "row": 1
+    },
+    {
+      "id": "bundle",
+      "path": "assets/relics/image_18.png",
+      "columns": 4,
+      "rows": 3,
+      "column": 1,
+      "row": 3
     }
   ]
 }
