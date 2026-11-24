@@ -1647,6 +1647,7 @@ function talentBonusDescription(talent,rank){
   if(!result){if(battle)battle.finishingEnemy=false;return;}
   if(allLoot.length)notify("Добыча: "+allLoot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
+   logExpeditionEvent("Этап "+battle.stage+" пройден · следующий узел "+(Number(c.progress.currentStage)||battle.stage+1),"#9bd49b");
    if(c.classId==="destroyer")c.rage=0;
    const carryOverHp=Math.max(1,Math.min(engine.maxHp(c),Math.round(engine.maxHp(c)*playerHpRatioBeforeReward)));
    c.run.playerHp=carryOverHp;
