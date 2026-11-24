@@ -16,7 +16,7 @@ assert.ok(cloud.includes('function validateSnapshot(snapshot)'));
 assert.ok(cloud.includes('function backupLocalSnapshot()'));
 assert.ok(/remoteHasCharacters=false/.test(cloud)&&/retryAfter=0/.test(cloud),'remote save and backoff state are declared');
 assert.ok(cloud.includes('function localBackupSummary()')&&cloud.includes('async function restoreLocalBackup()'),'local backup can be inspected and restored');
-assert.ok(cloud.includes('if(!best){')&&cloud.includes('Keep the normal login path to one indexed query'),'save history is not queried on every login');
+assert.ok(cloud.includes('if(!best){')&&cloud.includes("from('player_save_history')")&&cloud.includes('.limit(25)'),'save history is queried only when the primary cloud save is empty and is bounded to 25 revisions');
 assert.ok(cloud.includes('Never make login wait for a write RPC')&&cloud.includes("setStatus('ЛОКАЛЬНО · ОБЛАКО ОЖИДАЕТ','pending')"),'higher local progress remains playable without waiting for cloud write');
 assert.ok(cloud.includes("retryAfter=Date.now()+30000;dirty=true;")&&cloud.includes('Облачная запись столкнулась с параллельным изменением'),'save conflicts are throttled after the first detected conflict');
 assert.ok(cloud.includes('Date.now()<retryAfter')&&cloud.includes('retryAfter=Date.now()+30000'),'save conflicts use bounded backoff');
