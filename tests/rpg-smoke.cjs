@@ -71,6 +71,13 @@ const {chromium}=require('playwright');
  assert.match(battleUiSource,/new-enemy-threat elite/,"elite encounters carry an explicit threat marker");
  assert.match(battleUiSource,/logExpeditionEvent\("Этап "\+battle\.stage\+" пройден/,"stage completion is written to the expedition log");
  assert.match(battleCssSource,/new-hero-warning\.critical/,"critical HP guidance has a distinct mobile-safe visual state");
+ assert.equal((battleUiSource.match(/\{from:\\d+,to:\\d+,chapter:\\d+,name:/g)||[]).length,18,"all 18 arena locations have stage ranges");
+ assert.match(battleUiSource,/name:"Затопленный сток",src:"assets\\/Fon\\/image 25\.jpeg"/,"first arena location uses the first FON asset");
+ assert.match(battleUiSource,/name:"Финальные Врата",src:"assets\\/Fon\\/image 43\.jpeg"/,"final boss gate uses the final FON asset");
+ assert.match(battleUiSource,/filter\(item=>item\.chapter===location\.chapter\)/,"only the current chapter's arena backgrounds are preloaded");
+ assert.match(battleUiSource,/image\.addEventListener\('load',apply/,"arena background switches only after its image is ready");
+ assert.match(battleCssSource,/transition:opacity 1s ease-in-out/,"arena backgrounds crossfade smoothly");
+
   const server=http.createServer((req,res)=>{
   const pathname=decodeURIComponent((req.url||'/').split('?')[0]);
   const relative=pathname==='/'?'index.html':pathname.replace(/^\/+/,'');
