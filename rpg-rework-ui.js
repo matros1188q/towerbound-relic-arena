@@ -846,7 +846,7 @@ function createDialog(){
    else if(effect==="damage_reduction"||effect==="slow")counterDamageMultiplier=1-Math.max(0,Math.min(1,Number(reaction.damage_reduction??(effect==="slow"?.8:.5))));
    else counterDamageMultiplier=.5;
    if(effect==="stun"){attacker.stunned=true;notify("РЁВ · противник оглушён");}
-   else if(effect==="slow"){attacker.slowTurns=Math.max(Number(attacker.slowTurns)||0,Number(reaction.cooldown_turns)||1);notify("ЗАМЕДЛЕНИЕ · получаемый урон снижен");}
+   else if(effect==="slow"){attacker.slowTurns=Math.max(Number(attacker.slowTurns)||0,1);attacker.slowReduction=Math.max(0,Math.min(1,Number(reaction.speed_reduction)||0));notify("ЗАМЕДЛЕНИЕ · получаемый урон снижен");}
    else if(effect==="cleanse"){
     if((battle.poisonStacks||0)>0)battle.poisonStacks=Math.max(0,battle.poisonStacks-Number(reaction.remove_stacks||1));
     else if((battle.playerBleed||0)>0)battle.playerBleed=Math.max(0,battle.playerBleed-Number(reaction.remove_stacks||1));
@@ -855,6 +855,7 @@ function createDialog(){
    }else if(effect==="riposte"){
     const riposte=Math.max(1,Math.round(engine.getCombatStats(c).dps*(Number(reaction.damage_multiplier)||1)));
     const counter=applyTargetDamage(attacker,riposte,"physical");if(!battle)return;
+    if(c.run.playerHp<=0){endFromDamage();return;}
     notify("ПАРИРОВАНИЕ · ответный удар "+counter.dealt+" урона");
     if(counter.killed){battle.telegraph=null;battle.enemy=attacker;battle.targetIndex=attacker.index;engine.selectTarget(c.id,attacker.index);finishCurrentEnemy();return;}
    }else if(effect==="evade")notify("ТЕНЬ · атака уклонена");
@@ -901,7 +902,7 @@ function createDialog(){
   if(planned?.type==="bleed"||enemy.role==="bleed"){const guildResist=Math.min(.9,Math.max(0,Number(c.guildBuffs?.bleed_resist)||0)*.05);if(gameRandom()>=guildResist){battle.playerBleed=(battle.playerBleed||0)+1;notify("Кровотечение · "+battle.playerBleed+" стак.");}else notify("Гильдейская защита остановила кровотечение");}
   const stats=engine.getEnemyStats(c.id,battle.stage,enemy),weakMultiplier=Number(enemy.weak)>0?.75:1,bossPhase=enemy.type==="boss"?Math.max(1,Number(enemy.phase)||1):1;
   battle.telegraph=null;
-  const dailyMultiplier=c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="rage"?1.2:1;const strike=Math.max(1,Math.round(Number(stats.damage||0)*weakMultiplier*dailyMultiplier*(bossPhase>=3?1.15:1)));
+  const dailyMultiplier=c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="rage"?1.2:1,slowMultiplier=Number(enemy.slowTurns)>0?1-Math.max(0,Math.min(1,Number(enemy.slowReduction)||0)):1;const strike=Math.max(1,Math.round(Number(stats.damage||0)*weakMultiplier*dailyMultiplier*(bossPhase>=3?1.15:1)*slowMultiplier));if(Number(enemy.slowTurns)>0)enemy.slowTurns=Math.max(0,Number(enemy.slowTurns)-1);
   applyEnemyHit(enemy,strike);
   if(enemy.type==="boss"&&bossPhase>=2&&enemy.alive&&c.run.playerHp>0){logCombatEvent("Босс проводит двойную атаку","#ff8c69");applyEnemyHit(enemy,Math.max(1,Math.round(strike*.65)));}
   if(enemy.type==="boss"&&bossPhase>=3&&c.run.playerHp>0){battle.playerWeakTurns=Math.max(1,Number(battle.playerWeakTurns)||0);logCombatEvent("Ярость финальной фазы · вы ослаблены","#c28cff");}
