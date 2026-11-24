@@ -4,12 +4,17 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const archive='art-inbox/06-other/talent-atlas-slices';
-const archiveDir=path.join(root,archive);
-assert.ok(fs.existsSync(archiveDir),'archived talent atlas source folder exists');
-const archived=fs.readdirSync(archiveDir).filter(name=>/\.png$/i.test(name));
-assert.equal(archived.length,550,'all 550 unreferenced talent atlas slices are preserved outside runtime assets');
-assert.ok(!fs.existsSync(path.join(root,'assets/talents')),'inactive talent slice directory is no longer shipped as a runtime asset folder');
+const talentDir=path.join(root,'assets/talents');
+assert.ok(fs.existsSync(talentDir),'active talent icon asset directory exists');
+const activeTalentImages=fs.readdirSync(talentDir).filter(name=>/\\.png$/i.test(name));
+assert.equal(activeTalentImages.length,550,'all 550 talent atlas slices remain in the active runtime asset directory');
+const talentTree=JSON.parse(read('configs/talents_tree.json'));
+const referencedTalentIcons=[...new Set((talentTree.nodes||[]).map(node=>String(node.icon||'').replace(/^\\.\\//,'' )).filter(Boolean))];
+assert.equal(referencedTalentIcons.length,425,'seven-class talent tree keeps its 425 distinct data-driven icon references');
+for(const icon of referencedTalentIcons)assert.ok(fs.existsSync(path.join(root,icon)),'talent tree icon exists: '+icon);
+const archiveDir=path.join(root,'art-inbox/06-other/talent-atlas-slices');
+assert.ok(fs.existsSync(archiveDir),'talent atlas work-material note remains available');
+assert.equal(fs.readdirSync(archiveDir).filter(name=>/\\.png$/i.test(name)).length,0,'active talent PNGs are not duplicated in the art inbox');
 assert.ok(fs.existsSync(path.join(root,'art-inbox/06-other/images_126_cropped.zip')),'unused source ZIP is preserved in the work-material inbox');
 assert.ok(!fs.existsSync(path.join(root,'assets/Castoms/images_126_cropped.zip')),'source ZIP is not mixed into the live custom item art folder');
 const runtimeFiles=[
@@ -21,8 +26,7 @@ const runtimeFiles=[
 ];
 for(const file of runtimeFiles){
  const source=read(file);
- assert.ok(!/assets\/talents\//.test(source),'runtime source must not reference archived talent slices: '+file);
- assert.ok(!/art-inbox\//.test(source),'work-material inbox must not be imported into runtime: '+file);
+ assert.ok(!/art-inbox\\//.test(source),'work-material inbox must not be imported into runtime: '+file);
 }
 const itemManifest=JSON.parse(read('assets/Castoms/item-art-manifest.json'));
 for(const sectionName of ['shop','relics']){
@@ -32,4 +36,4 @@ for(const sectionName of ['shop','relics']){
   assert.ok(fs.existsSync(path.join(root,resolved)),sectionName+'/'+key+' custom art remains present: '+resolved);
  }
 }
-console.log('CLEANUP BOUNDARIES PASS: 550 unused talent slices and source ZIP archived; active custom item art preserved; runtime remains isolated from work materials.');
+console.log('CLEANUP BOUNDARIES PASS: 550 active talent icons and 425 tree references verified; source ZIP archived; active custom item art preserved; runtime remains isolated from work materials.');
