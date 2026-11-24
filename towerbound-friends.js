@@ -35,7 +35,7 @@ if(kind==='gift'){const select=$('[data-friend-item="'+CSS.escape(id)+'"]'),qty=
 document.addEventListener('click',e=>{const b=e.target.closest('#socPanel [data-friend-action]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();action(b.dataset.friendAction,b.dataset.id)},true);
 document.addEventListener('click',e=>{const b=e.target.closest('#socPanel [data-soc="open-friends"]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();render();loadAll()},true);
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target?.id==='tbFriendSearch'){e.preventDefault();search()}});
-const social=window.TowerboundSocial;if(social&&typeof social.openTab==='function'){const original=social.openTab.bind(social);social.openTab=next=>{if(next==='duels'||next==='friends'){render();loadAll();return}return original(next)};social.open=()=>{render();loadAll()}}
+const social=window.TowerboundSocial;if(social&&typeof social.openTab==='function'){const original=social.openTab.bind(social),originalOpen=social.open.bind(social);social.openTab=next=>{if(next==='duels'||next==='friends'){if(!$('#socPanel'))originalOpen();render();loadAll();return}return original(next)};social.open=()=>{originalOpen();render();loadAll()}}
 window.TowerboundFriends={refresh:loadAll,open:()=>{render();loadAll()}};
 window.addEventListener('towerbound-auth-change',()=>{if($('#socPanel'))loadAll()});
 window.addEventListener('towerbound-cloud-restore',()=>{if($('#socPanel'))render()});
