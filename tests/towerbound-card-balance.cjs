@@ -39,9 +39,10 @@ async function runAttempt(browser,build,seed,index,startLevel){
    const qa=window.TowerboundBalanceQA;qa.createCharacter('QA'+String(attemptIndex).padStart(2,'0'),classId);
    const prepared=qa.prepareSpecialization(branchId,startLevel);if(prepared.branch!==branchId||prepared.level<startLevel)throw new Error('Specialization preparation failed: '+JSON.stringify(prepared));
    const runModifier=qa.chooseBestRunModifier();
-   const stageLogs=[],deathStages=[],checkpointRetries={};let checkpointRestores=0,checkpointHeals=0,antidotesUsed=0,branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
+   const stageLogs=[],deathStages=[],checkpointRetries={},battleEvents=[];let checkpointRestores=0,checkpointHeals=0,antidotesUsed=0,branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
    const hpNow=()=>Number(qa.snapshot().character?.run?.playerHp)||0,maxHp=()=>Number(qa.snapshot().character?qa.engine().maxHp(qa.snapshot().character):1)||1;
    const trackHp=before=>{const after=hpNow();if(after<before)totalDamageTaken+=before-after;else if(after>before)totalHealing+=after-before;};
+   const captureBattleEvent=(stage,kind,details={})=>{const state=qa.snapshot(),c=state.character||{},b=state.battle||{},saved=c.run?.stage?.uiBattleSnapshot||{};const enemies=(b.enemies||saved.enemies||[]).map(e=>({index:e.index,name:e.name||e.mobId||e.role,role:e.role,type:e.type,hp:e.hp,maxHp:e.maxHp,alive:e.alive,shield:e.shield,poison:e.poison||0,bleed:e.bleed||0,burn:e.burn||0,weak:e.weak||0,vulnerable:e.vulnerable||0,stunned:!!e.stunned,intent:e.intent||null,phase:e.phase||1,turnsTaken:e.turnsTaken||0}));const hand=(c.hand||saved.cardState?.hand||[]).map(card=>({id:card.id||card.instanceId,name:card.name,cost:card.cost,type:card.type,effects:card.effects||null,upgraded:!!card.isUpgraded,exhaust:!!card.exhaust,retain:!!card.retain}));battleEvents.push({stage,kind,round:b.round||saved.round||0,actor:b.actor?.type||saved.cardState?.actorType||null,player:{hp:Number(c.run?.playerHp)||0,maxHp:c.run?qa.engine().maxHp(c):0,resource:Number(c.resource)||0,energy:Number(c.currentEnergy??saved.cardState?.currentEnergy)||0,block:Number(b.cardBlock??saved.cardState?.cardBlock)||0,poisonStacks:Number(b.poisonStacks)||0,bleedStacks:Number(b.playerBleed)||0,weakTurns:Number(b.playerWeakTurns)||0,damageShield:Number(b.nextDamageShield)||0},hand,discardSize:(c.discard||saved.cardState?.discard||[]).length,deckSize:(c.deck||saved.cardState?.deck||[]).length,enemies,enemyQueue:b.enemyQueueState||saved.enemyQueueState||null,combatLog:(b.combatLog||c.run?.expeditionLog||[]).slice(-12).map(entry=>({text:entry.text,color:entry.color})),details});};
    const pickTarget=b=>{const living=(b.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0),weight=e=>e.type==='boss'?115:e.role==='healer'?108:e.role==='saboteur'?102:e.role==='poison'?94:e.role==='bleed'?84:e.type==='elite'?76:e.role==='normal'?50:e.role==='tank'?30:40;return living.sort((a,b)=>weight(b)-weight(a)||(a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp)))[0]||null;};
    const scoreCard=(card,b,c)=>{
     const e=card.effects||{},cost=(card.isXCost||card.costX)?Number(c.currentEnergy)||0:Math.max(0,Number(card.cost)||0);
@@ -63,7 +64,7 @@ async function runAttempt(browser,build,seed,index,startLevel){
      qa.clearPostBattle();if(stage===250){reason='cleared-250';break;}continue;
     }
     if(!snap.battle){if(stage%13===0&&!(snap.character.bag||[]).some(item=>item.type==='antidote'&&Number(item.quantity||1)>0)&&qa.buyAntidote(stage))antidotesUsed++;qa.startStage(stage);}snap=qa.snapshot();if(!snap.battle){reason=snap.screen==='death'?'death':'stage-did-not-start';lastStage=stage;break;}
-    const stageEnemies=(snap.battle.enemies||[]).map(enemy=>({role:enemy.role,type:enemy.type,hp:enemy.maxHp||enemy.hp,name:enemy.name}));
+    const stageEnemies=(snap.battle.enemies||[]).map(enemy=>({role:enemy.role,type:enemy.type,hp:enemy.maxHp||enemy.hp,name:enemy.name}));captureBattleEvent(stage,'battle-start',{enemies:stageEnemies});
     let stageTurns=0,stageCards=0,stageDamage=0,stageReason='clear';const stageMaxTurns=80;
     while(true){
      snap=qa.snapshot();if(!snap.battle)break;if(snap.screen==='death'||snap.character.run.playerHp<=0){stageReason='death';break;}
@@ -72,8 +73,9 @@ async function runAttempt(browser,build,seed,index,startLevel){
      let beforeHp=hpNow();if(beforeHp<qa.engine().maxHp(c)*.65&&!b.potionUsedThisTurn)qa.usePotion();trackHp(beforeHp);
      snap=qa.snapshot();if(!snap.battle)break;
      const abilityEnemyHp=(snap.battle.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),abilityHpBefore=hpNow();
-     if(qa.canUltimate())qa.useUltimate();
-     else{const incoming=(snap.battle.enemies||[]).reduce((sum,x)=>sum+(x.alive?Number(x.intent?.damage)||0:0),0);if(incoming>0&&qa.canCounter())qa.useCounter();else if(qa.canBasicAttack())qa.basicAttack();}
+     let classAction='none';if(qa.canUltimate()){classAction='ultimate';qa.useUltimate();}
+     else{const incoming=(snap.battle.enemies||[]).reduce((sum,x)=>sum+(x.alive?Number(x.intent?.damage)||0:0),0);if(incoming>0&&qa.canCounter()){classAction='counter';qa.useCounter();}else if(qa.canBasicAttack()){classAction='basic-attack';qa.basicAttack();}}
+     captureBattleEvent(stage,'class-action',{action:classAction});
      trackHp(abilityHpBefore);snap=qa.snapshot();
      const abilityEnemyAfter=(snap.battle?.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),abilityDamage=Math.max(0,abilityEnemyHp-abilityEnemyAfter);totalDamage+=abilityDamage;stageDamage+=abilityDamage;
      if(!snap.battle)break;b=snap.battle;c=snap.character;
@@ -84,12 +86,12 @@ async function runAttempt(browser,build,seed,index,startLevel){
       const current=qa.snapshot(),cards=current.character.hand||[];let best=-1,bestScore=0;
       for(let i=0;i<cards.length;i++){const value=scoreCard(cards[i],current.battle,current.character);if(value>bestScore){bestScore=value;best=i;}}
       if(best<0)break;
-      const enemyHpBefore=(current.battle.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),hpBefore=hpNow();qa.playCard(best);trackHp(hpBefore);
+      const selectedCard=cards[best],cardDetails={id:selectedCard?.id||selectedCard?.instanceId,name:selectedCard?.name,cost:selectedCard?.cost,type:selectedCard?.type,effects:selectedCard?.effects||null,energyBefore:current.character.currentEnergy};const enemyHpBefore=(current.battle.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),hpBefore=hpNow();captureBattleEvent(stage,'card-before',{card:cardDetails,targetIndex:current.battle.targetIndex});qa.playCard(best);trackHp(hpBefore);captureBattleEvent(stage,'card-after',{card:cardDetails});
       const after=qa.snapshot(),enemyHpAfter=(after.battle?.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),dealt=Math.max(0,enemyHpBefore-enemyHpAfter);totalDamage+=dealt;stageDamage+=dealt;totalCards++;stageCards++;
       if(!after.battle||after.screen==='death')break;
      }
      snap=qa.snapshot();if(!snap.battle||snap.screen==='death')break;
-     if(snap.battle.actor?.type==='player'){beforeHp=hpNow();qa.endTurn();trackHp(beforeHp);stageTurns++;totalTurns++;}
+     if(snap.battle.actor?.type==='player'){captureBattleEvent(stage,'end-turn-before');beforeHp=hpNow();qa.endTurn();trackHp(beforeHp);stageTurns++;totalTurns++;captureBattleEvent(stage,'end-turn-after');}
      if(stageTurns>=stageMaxTurns){stageReason='turn-limit';break;}
     }
     snap=qa.snapshot();lastStage=stage;const cleared=Number(snap.character?.progress?.currentStage||0)>stage||(stage===250&&Number(snap.character?.progress?.highestEver||0)>=250),died=snap.screen==='death'||Number(snap.character?.run?.playerHp||0)<=0;
@@ -101,12 +103,12 @@ async function runAttempt(browser,build,seed,index,startLevel){
     }else{
      reason=died?'death':stageReason==='clear'?'stage-not-cleared':stageReason;
      stageLogs.push({stage,level:snap.character?.level,branch:snap.character?.branch,hpStart:stageStartHp,hpEnd:snap.character?.run?.playerHp,turns:stageTurns,cards:stageCards,damageDealt:stageDamage,enemies:stageEnemies,cleared:false,reason});
-     if(died){const recovery=qa.confirmDeath();deathStages.push({stage,checkpointRestored:!!recovery?.checkpointRestored,checkpointStage:recovery?.checkpointStage||null,livesRemaining:recovery?.livesRemaining??null});if(recovery?.checkpointRestored){const checkpointStage=Math.max(1,Number(recovery.checkpointStage)||stage);checkpointRetries[checkpointStage]=(checkpointRetries[checkpointStage]||0)+1;if(checkpointRetries[checkpointStage]>3){reason='checkpoint-retry-limit';break;}checkpointRestores++;stage=checkpointStage-1;reason='checkpoint-recovery';continue;}}
+     if(died){captureBattleEvent(stage,'death-final',{reason,stageTurns,stageCards,stageDamage});const recovery=qa.confirmDeath();deathStages.push({stage,checkpointRestored:!!recovery?.checkpointRestored,checkpointStage:recovery?.checkpointStage||null,livesRemaining:recovery?.livesRemaining??null});if(recovery?.checkpointRestored){const checkpointStage=Math.max(1,Number(recovery.checkpointStage)||stage);checkpointRetries[checkpointStage]=(checkpointRetries[checkpointStage]||0)+1;if(checkpointRetries[checkpointStage]>3){reason='checkpoint-retry-limit';break;}checkpointRestores++;stage=checkpointStage-1;reason='checkpoint-recovery';continue;}}
      break;
     }
    }
    const final=qa.snapshot(),c=final.character;
-   return{classId,branchId,seed:seedValue,runModifier,cleared:Number(c?.progress?.highestEver)||0,completed:reason==='cleared-250',reason,deathStage:reason==='death'?lastStage:null,deathStages,checkpointRestores,checkpointHeals,antidotesUsed,level:c?.level||1,branchChosen:c?.branch===branchId,branch:c?.branch||null,talentRanks:c?.talents||{},maxHp:qa.engine().maxHp(c),hp:c?.run?.playerHp||0,totalTurns,totalCards,totalDamage,totalDamageTaken,totalHealing,kills:c?.stats?.kills||0,itemsFound:c?.stats?.items_found||0,gear:(c?.gear||[]).filter(Boolean).length,relics:(c?.relics||[]).length,stageLogs};
+   return{classId,branchId,seed:seedValue,runModifier,cleared:Number(c?.progress?.highestEver)||0,completed:reason==='cleared-250',reason,deathStage:reason==='death'?lastStage:null,deathStages,checkpointRestores,checkpointHeals,antidotesUsed,level:c?.level||1,branchChosen:c?.branch===branchId,branch:c?.branch||null,talentRanks:c?.talents||{},maxHp:qa.engine().maxHp(c),hp:c?.run?.playerHp||0,totalTurns,totalCards,totalDamage,totalDamageTaken,totalHealing,battleEvents,kills:c?.stats?.kills||0,itemsFound:c?.stats?.items_found||0,gear:(c?.gear||[]).filter(Boolean).length,relics:(c?.relics||[]).length,stageLogs,battleEvents};
   },{classId:build.classId,branchId:build.branchId,seedValue:seed,attemptIndex:index+1,startLevel});
   if(pageErrors.length)result.pageErrors=pageErrors;return result;
  }finally{await context.close();}
