@@ -24,6 +24,8 @@ async function runAttempt(browser,build,seed,index){
   let state=(Number(seedValue)||1)>>>0;
   Math.random=()=>{state=(state+0x6D2B79F5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};
   window.__TB_BALANCE_TEST_MODE=true;window.__TB_BALANCE_SYNC_TURNS=true;
+  let uuidCounter=0;const uuidPrefix=(Number(seedValue)||1).toString(16).padStart(8,'0').slice(-8);
+  try{Object.defineProperty(crypto,'randomUUID',{configurable:true,value:()=>uuidPrefix+'-0000-4000-8000-'+(++uuidCounter).toString(16).padStart(12,'0')});}catch{}
   const session={user:{id:'towerbound-balance-qa',email:'balance-qa@example.test'}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));
   const adapter={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch{return null;}};
    return{__tbQaStub:true,auth:{onAuthStateChange:cb=>{listener=cb;return{data:{subscription:{unsubscribe(){}}}};},getSession:async()=>({data:{session:readSession()},error:null}),signInWithPassword:async()=>({data:{session:readSession()},error:null}),signUp:async()=>({data:{session:readSession()},error:null}),signOut:async()=>{localStorage.removeItem('__tb_qa_auth_session');if(listener)listener('SIGNED_OUT',null);return{error:null};}},
@@ -61,7 +63,7 @@ async function runAttempt(browser,build,seed,index){
      let beforeHp=hpNow();if(beforeHp<qa.engine().maxHp(c)*.42&&!b.potionUsedThisTurn)qa.usePotion();trackHp(beforeHp);
      snap=qa.snapshot();if(!snap.battle)break;
      const liveBattle=snap.battle,liveChar=snap.character,focus=pickTarget(liveBattle);if(focus&&focus.index!==liveBattle.targetIndex)qa.setTarget(focus.index);
-     if(qa.canUltimate()&&(focus?.type==='boss'||focus?.type==='elite'||(liveBattle.enemies||[]).filter(x=>x.alive).length>=3)){
+     if(qa.canUltimate()&&(focus?.type==='boss'||focus?.type==='elite')){
       beforeHp=hpNow();const enemyHpBefore=(liveBattle.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0);qa.useUltimate();trackHp(beforeHp);
       const after=qa.snapshot(),enemyHpAfter=(after.battle?.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),dealt=Math.max(0,enemyHpBefore-enemyHpAfter);totalDamage+=dealt;stageDamage+=dealt;if(!after.battle)break;
      }else if(qa.canCounter()&&(liveBattle.telegraph||focus?.intent?.type==='attack')&&Number(liveChar.run.playerHp)<qa.engine().maxHp(liveChar)*.85)qa.useCounter();
