@@ -9,7 +9,7 @@ assert.ok(fs.existsSync(talentDir),'active talent icon asset directory exists');
 const activeTalentImages=fs.readdirSync(talentDir).filter(name=>/\\.png$/i.test(name));
 assert.equal(activeTalentImages.length,550,'all 550 talent atlas slices remain in the active runtime asset directory');
 const talentTree=JSON.parse(read('configs/talents_tree.json'));
-const referencedTalentIcons=[...new Set((talentTree.nodes||[]).map(node=>String(node.icon||'').replace(/^\\.\\//,'' )).filter(Boolean))];
+const referencedTalentIcons=[...new Set((talentTree.nodes||[]).map(node=>String(node.icon||'').replace('./','')).filter(Boolean))];
 assert.equal(referencedTalentIcons.length,425,'seven-class talent tree keeps its 425 distinct data-driven icon references');
 for(const icon of referencedTalentIcons)assert.ok(fs.existsSync(path.join(root,icon)),'talent tree icon exists: '+icon);
 const archiveDir=path.join(root,'art-inbox/06-other/talent-atlas-slices');
