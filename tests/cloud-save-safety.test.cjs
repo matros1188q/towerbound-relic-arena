@@ -8,6 +8,7 @@ const sw=fs.readFileSync('service-worker.js','utf8');
 const migration=fs.readFileSync('supabase/migrations/202611240004_durable_player_save_history.sql','utf8');
 assert.ok(cloud.includes('const cloudBootstrap=new Promise(resolve=>{resolveCloudBootstrap=resolve;})'));
 assert.ok(cloud.includes('authEventSequence=0')&&cloud.includes('if(sequence===authEventSequence)void onSession(next)'),'stale queued auth events cannot overwrite a newer login session');
+assert.ok(cloud.includes('ignoreSignedOutEvents=0')&&cloud.includes("event==='SIGNED_OUT'&&ignoreSignedOutEvents>0")&&cloud.includes('ignoreSignedOutEvents++;const {error}=await client.auth.signOut()'),'explicit sign-out is not processed twice by both the API and auth listener');
 assert.ok(cloud.includes('sessionGeneration=0')&&cloud.includes('const generation=++sessionGeneration,isCurrent=()=>generation===sessionGeneration')&&cloud.includes('if(!isCurrent())return'),'stale cloud hydration cannot overwrite a newer account session');
 assert.ok(cloud.includes('const userId=session?.user?.id;')&&cloud.includes(".eq('user_id',userId)"),'remote reads bind queries to a captured authenticated user id');
 assert.ok(cloud.includes('if(session?.user?.id!==userId)throw new Error(\'Сессия аккаунта изменилась; запись отменена\')')&&cloud.includes("localStorage.setItem('tb-cloud-user-id',userId)"),'cloud writes cannot be attributed to a different account after a session switch');
