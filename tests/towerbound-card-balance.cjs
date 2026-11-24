@@ -92,7 +92,7 @@ async function runAttempt(browser,build,seed,index,startLevel){
      if(snap.battle.actor?.type==='player'){beforeHp=hpNow();qa.endTurn();trackHp(beforeHp);stageTurns++;totalTurns++;}
      if(stageTurns>=stageMaxTurns){stageReason='turn-limit';break;}
     }
-    snap=qa.snapshot();lastStage=stage;const cleared=Number(snap.character?.progress?.highestEver||0)>=stage,died=snap.screen==='death'||Number(snap.character?.run?.playerHp||0)<=0;
+    snap=qa.snapshot();lastStage=stage;const cleared=Number(snap.character?.progress?.currentStage||0)>stage,died=snap.screen==='death'||Number(snap.character?.run?.playerHp||0)<=0;
     if(cleared){
      if(!branchChosen&&snap.character.level>=10&&!snap.character.branch){qa.chooseBranch(branchId);branchChosen=true;}if(snap.character.branch===branchId)qa.allocateTalents();
      qa.claimBestRelic();if(stage%50===0)qa.useCampRest(stage);
