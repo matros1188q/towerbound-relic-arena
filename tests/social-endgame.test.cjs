@@ -8,7 +8,7 @@ for(const marker of ['createChallenge:challenge','attackGuildBoss:hit','sendGift
 assert.match(source,/type==='healing_potion'/,'gift must consume a real healing potion');
 assert.match(source,/season\(\)/,'seasonal shop must rotate on a 30-day cadence');
 assert.match(source,/function top\(\)/,'offline top-100 must exist');
-assert.ok(html.includes('<script src="./social-endgame.js?v=8"></script>'),'social UI must be loaded by index.html');
+assert.match(html, /<script src="\.\/social-endgame\.js\?v=\d+"><\/script>/, 'social UI must be loaded by index.html');
 assert.ok(source.includes("p.id='socPanel'")&&source.includes('document.body.append(p)'),'community panel is rendered as a direct body child');
 assert.ok(source.includes('class="soc-primary-nav"')&&source.includes('data-soc="open-pass"'),'community navigation includes a persistent Battle Pass entry');
 assert.ok(source.includes('data-soc="open-guild"')&&source.includes('data-soc="open-rating"')&&source.includes('data-soc="open-endgame"'),'community navigation exposes Guild, Rating and Endgame together');
@@ -17,6 +17,7 @@ assert.ok(source.includes("if(a==='open-guild'){tab='guild'")&&source.includes("
 assert.ok(source.includes('renderCommunity(tab===\'endgame\'?\'home\':tab)')&&source.includes("tab==='tower'"),'shared community shell renders Endgame and Tower content');
 assert.ok(source.includes('is-active'),'active tab is highlighted');
 assert.ok(source.includes('refresh:()=>{if($(\'#socPanel\'))render()}'),'shared panel refresh API');
+assert.ok(source.includes("window.addEventListener('towerbound-cloud-restore'")&&source.includes('const restored=JSON.parse(localStorage.getItem(K)||\'{}\')'),'social data refreshes after cloud restore');
 assert.ok(source.includes('window.TowerboundEndgame?.handleCommunityAction?.(b.dataset.eg,b)'),'community panel forwards Guild and Pass actions to Endgame');
 assert.ok(!source.includes('Эволюция')&&!source.includes('open-evolution'),'evolution removed from community');
 assert.ok(mode.includes(':not(#socPanel)'),'rpg-open body isolation must keep the community panel visible');
