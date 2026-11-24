@@ -62,11 +62,7 @@ async function runAttempt(browser,build,seed,index){
      const target=pickTarget(b);if(target&&target.index!==b.targetIndex)qa.setTarget(target.index);
      let beforeHp=hpNow();if(beforeHp<qa.engine().maxHp(c)*.65&&!b.potionUsedThisTurn)qa.usePotion();trackHp(beforeHp);
      snap=qa.snapshot();if(!snap.battle)break;
-     const liveBattle=snap.battle,liveChar=snap.character,focus=pickTarget(liveBattle);if(focus&&focus.index!==liveBattle.targetIndex)qa.setTarget(focus.index);
-     if(qa.canUltimate()&&(focus?.type==='boss'||focus?.type==='elite')){
-      beforeHp=hpNow();const enemyHpBefore=(liveBattle.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0);qa.useUltimate();trackHp(beforeHp);
-      const after=qa.snapshot(),enemyHpAfter=(after.battle?.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),dealt=Math.max(0,enemyHpBefore-enemyHpAfter);totalDamage+=dealt;stageDamage+=dealt;if(!after.battle)break;
-     }else if(qa.canCounter()&&(liveBattle.telegraph||focus?.intent?.type==='attack')&&Number(liveChar.run.playerHp)<qa.engine().maxHp(liveChar)*.85)qa.useCounter();
+     // Card-only balance pass: resolve cards and real enemy turns; no legacy active ultimates/counters.
      for(let n=0;n<20;n++){
       snap=qa.snapshot();if(!snap.battle||snap.battle.actor?.type!=='player')break;
       const currentTarget=pickTarget(snap.battle);if(currentTarget&&currentTarget.index!==snap.battle.targetIndex)qa.setTarget(currentTarget.index);
@@ -111,4 +107,6 @@ let server,browser;
  process.stdout.write('\n'+JSON.stringify(summary,null,2)+'\n');
  assert.equal(results.length,selectedRuns.length,'all selected class/branch/seed attempts must execute');
  assert.ok(results.every(run=>run.branchChosen&&run.branch===run.branchId),'each run must unlock and test its requested specialization');
+ assert.ok(results.every(run=>run.totalCards>0),'each run must resolve actual cards, not only active skills');
+ assert.ok(results.every(run=>run.totalTurns>0),'each run must execute enemy turns, not only scripted kills');
 })().catch(error=>{console.error(error);process.exitCode=1;});
