@@ -271,7 +271,7 @@ async function onSession(next,force=false){
  if(sessionKey===handledSessionKey&&!force)return sessionTask;
  handledSessionKey=sessionKey;
  sessionTask=(async()=>{
-  conflict=false;session=next;savesReady=false;
+  conflict=false;session=next;savesReady=false;remoteHasCharacters=false;
   if(!session){dirty=false;setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';showLoginGate();window.dispatchEvent(new Event('towerbound-auth-change'));return;}
   hideLoginGate();$('#tbCloudTitle').textContent='Облачный аккаунт Towerbound';$('#tbCloudIntro').textContent='Игровой аккаунт подключён. Прогресс синхронизируется с облаком.';
   $('#tbCloudAuth').hidden=true;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent=session.user.email||session.user.id;

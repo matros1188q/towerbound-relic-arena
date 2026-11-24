@@ -602,10 +602,10 @@
  function characterList(){
   const chars=engine.state.characters;
   const selected=chars.find(c=>c.id===selectedId)||chars[0];
-  const cloud=window.TowerboundCloud,authenticated=!!cloud?.signedIn,cloudReady=!!cloud?.savesReady;
+  const cloud=window.TowerboundCloud,authenticated=!!cloud?.signedIn,cloudReady=!!cloud?.savesReady,remoteHasCharacters=!!cloud?.status?.().remoteHasCharacters,engineHasCharacters=!!engine?.state?.characters?.length;
   if(selected&&!selectedId)selectedId=selected.id;
-  const emptyContent=authenticated&&!cloudReady
-   ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Синхронизация сохранения</h2><p>Пока облако не подтвердило загрузку, создание нового персонажа заблокировано — это защищает прежний прогресс.</p><button type="button" data-action="cloud-retry" class="tb-primary">ПОВТОРИТЬ ЗАГРУЗКУ</button></div>'
+  const emptyContent=authenticated&&(!cloudReady||(remoteHasCharacters&&!engineHasCharacters))
+   ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Синхронизация сохранения</h2><p>В облаке есть персонаж, но игра ещё не подтвердила его загрузку. Создание нового персонажа заблокировано, чтобы не затереть прогресс.</p><button type="button" data-action="cloud-retry" class="tb-primary">ПОВТОРИТЬ ЗАГРУЗКУ</button></div>'
    : authenticated
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button type="button" data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>'
    : '<div class="tb-empty tb-login-gate"><div class="tb-empty-crest">✦</div><h2>Вход в игру</h2><p>Войди в аккаунт или зарегистрируйся, чтобы создать персонажа и сохранить прогресс.</p><form class="tb-character-login" novalidate><label for="login">Логин</label><input id="login" name="login" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Логин"><label for="pass">Пароль</label><input id="pass" name="password" type="password" autocomplete="current-password" placeholder="Пароль"><label class="tb-login-remember"><input id="rememberMe" type="checkbox" checked> Запомнить меня</label><button type="button" data-action="empty-login" class="tb-primary tb-login-submit">ВОЙТИ</button><button type="button" data-action="empty-register" class="tb-text-link">Зарегистрироваться</button><p class="tb-login-message" role="status" aria-live="polite"></p></form></div>';
