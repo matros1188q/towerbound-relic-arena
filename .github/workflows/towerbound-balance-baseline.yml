@@ -1,4 +1,5 @@
 name: Towerbound real card-combat balance
+# A/B baseline: compare counter-first and ultimate-first pilots on identical 63-run matrices.
 on:
   workflow_dispatch:
   push:
