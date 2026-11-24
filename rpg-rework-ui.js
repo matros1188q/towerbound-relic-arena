@@ -2537,6 +2537,7 @@ function talentBonusDescription(talent,rank){
     engine.chooseBranch(c.id,branchId,0);const cardsAdded=grantSpecializationCards(c,branchId);save();return{branch:c.branch,cardsAdded};
    },
    chooseBestRunModifier:()=>{const c=live();if(!c)return null;const options=engine.runModifierOptions(c.id)||[];const score=m=>(Number(m.player_damage_multiplier||1)-1)*2-(Number(m.enemy_damage_multiplier||1)-1)*2-(Number(m.all_enemies_shield_fraction)||0)*1.5+(Number(m.low_hp_damage_multiplier||1)-1)*1.5+(Number(m.reward_xp_multiplier||1)-1)*.2+(Number(m.elite_loot_multiplier||1)-1)*.1+(Number(m.skill_cooldown_multiplier||1)<1?.15:0);const best=options.slice().sort((x,y)=>score(y)-score(x))[0];if(!best)return null;engine.setRunModifier(c.id,best.id);return best.id;},
+   chooseBestRunModifier:()=>{const c=live();if(!c)return null;const options=engine.runModifierOptions(c.id)||[];const score=m=>(Number(m.player_damage_multiplier||1)-1)*2-(Number(m.enemy_damage_multiplier||1)-1)*2-(Number(m.all_enemies_shield_fraction)||0)*1.5+(Number(m.low_hp_damage_multiplier||1)-1)*1.5+(Number(m.reward_xp_multiplier||1)-1)*.2+(Number(m.elite_loot_multiplier||1)-1)*.1+(Number(m.skill_cooldown_multiplier||1)<1?.15:0);const best=options.slice().sort((x,y)=>score(y)-score(x))[0];if(!best)return null;engine.setRunModifier(c.id,best.id);return best.id;},
    allocateTalents:allocateBalanceTalents,
    startStage:(stage)=>{
     if(battle)throw new Error("Previous battle is still active");
@@ -2547,9 +2548,10 @@ function talentBonusDescription(talent,rank){
    setTarget:(index)=>{setBattleTarget(Number(index));return battle?.targetIndex??null;},
    playCard:(index)=>{if(!battle||battle.actor?.type!=="player")return false;resolveCardPlay(Number(index));return !!battle;},
    endTurn:()=>{if(!battle||battle.actor?.type!=="player")return false;endPlayerTurn();return !!battle;},
-   prepareSpecialization:(branchId)=>{
+   prepareSpecialization:(branchId,targetLevel=10)=>{
     const c=live();if(!c)throw new Error("Character is missing");
-    const required=Array.from({length:9},(_,index)=>engine.requiredXp(index+1)).reduce((sum,value)=>sum+value,0);
+    const level=Math.max(10,Math.min(100,Number(targetLevel)||10));
+    const required=Array.from({length:level-1},(_,index)=>engine.requiredXp(index+1)).reduce((sum,value)=>sum+value,0);
     c.xp=Math.max(Number(c.xp)||0,required);engine.recalcLevel(c);
     if(c.level<10)throw new Error("Unable to prepare level 10 specialization test");
     if(c.branch&&c.branch!==branchId)throw new Error("Character already has a different branch");
@@ -2578,6 +2580,7 @@ function talentBonusDescription(talent,rank){
    },
    useCampRest:(stage)=>{const c=live();if(!c)return null;try{return engine.useCampRest(c.id,Number(stage));}catch(error){return null;}},
    resolveMapEvent:(stage)=>{selectedStage=Number(stage);const c=live(),type=eventTypeForStage(c,Number(stage));if(!c||!type)return null;const overlay=document.createElement("div");overlay.className="tb-map-event-overlay";overlay.dataset.eventType=type;overlay.dataset.eventStage=String(stage);document.body.appendChild(overlay);const choice=type==="chest"?"open":type==="altar"?"pray":Number(c.silver)>=50?"pay":"attack";resolveMapEventChoice(choice);return{type,choice,cleared:Number(c.progress.highestEver)>=Number(stage),battle:!!battle};},
+   confirmDeath:()=>{const c=live();if(!c)return null;const result=engine.confirmDeath(c.id);battle=null;postBattleSummary=null;screen="map";selectedStage=c.progress.currentStage;save();return result;},
    confirmDeath:()=>{const c=live();if(!c)return null;const result=engine.confirmDeath(c.id);battle=null;postBattleSummary=null;screen="map";selectedStage=c.progress.currentStage;save();return result;},
    clearPostBattle:()=>{postBattleSummary=null;document.querySelector(".card-reward-overlay")?.remove();const c=live();if(c?.pendingCardReward)c.pendingCardReward=null;save();return true;},
    inspect:()=>{
