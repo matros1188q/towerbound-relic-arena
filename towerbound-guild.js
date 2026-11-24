@@ -5,7 +5,7 @@ const guildStyle=document.createElement('style');guildStyle.id='tbGuildStyles';g
 const names={attack:'Усиление атаки',magic_attack:'Усиление магической атаки',crit_damage:'Урон от критического удара',crit_chance:'Шанс критического удара',hp:'Увеличение здоровья',defense:'Усиление защиты',drop:'Шанс выпадения добычи',experience:'Получаемый опыт',poison_resist:'Сопротивление ядам',bleed_resist:'Сопротивление кровотечению'};
 const desc={attack:'+2% атаки за уровень',magic_attack:'+2% магической атаки за уровень',crit_damage:'+5% критического урона за уровень',crit_chance:'+1% шанса крита за уровень',hp:'+3% максимального здоровья за уровень',defense:'+2% защиты за уровень',drop:'+2% шанса добычи за уровень',experience:'+2% опыта за уровень',poison_resist:'+5% сопротивления яду за уровень',bleed_resist:'+5% сопротивления кровотечению за уровень'};
 const order=Object.keys(names);
-let snapshot=null,view='directory',inside=false,searchText='',busy=false,pollTimer=0,game=null,lastError='',lastPresence=0,lastRevisionCheck=0;
+let snapshot=null,view='directory',inside=false,searchText='',busy=false,pollTimer=0,game=null,lastError='',lastPresence=0,lastRevisionCheck=0,loadTask=null,revisionCheckTask=null,loadFailureCount=0,nextLoadAt=0,lastLoadError=null;
 const cloud=()=>window.TowerboundCloud,client=()=>cloud()?.client;
 function notify(m){if(window.TowerboundToast)window.TowerboundToast(m);else if(window.TowerboundRPG?.toast)window.TowerboundRPG.toast(m);else alert(m)}
 function errorText(e){
@@ -24,15 +24,23 @@ function setRuntimeBuffs(){
 }
 async function syncServerRevision(){
  const cl=cloud();if(!cl?.signedIn||!cl.loadGame)return;
- try{const knownRevision=Number(cl.revision||0);const remote=await cl.loadGame();if(remote?.revision&&Number(remote.revision)>knownRevision&&cl.refreshFromServer)await cl.refreshFromServer();}catch(e){console.warn('[guild] save revision check failed',e)}
+ if(revisionCheckTask)return revisionCheckTask;
+ revisionCheckTask=(async()=>{try{const knownRevision=Number(cl.revision||0);const remote=await cl.loadGame();if(remote?.revision&&Number(remote.revision)>knownRevision&&cl.refreshFromServer)await cl.refreshFromServer();}catch(e){console.warn('[guild] save revision check failed',e)}finally{lastRevisionCheck=Date.now();revisionCheckTask=null;}})();
+ return revisionCheckTask;
 }
-async function load(checkRevision=true){
+async function load(checkRevision=true,force=false){
  if(!cloud()?.signedIn){snapshot=null;syncShortcut();setRuntimeBuffs();return null;}
- snapshot=await rpc('tb_guild_snapshot');
- syncShortcut();
- if(snapshot?.member&&checkRevision){await syncServerRevision();lastRevisionCheck=Date.now();}
- setRuntimeBuffs();
- return snapshot;
+ if(loadTask)return loadTask;
+ if(!force&&Date.now()<nextLoadAt){if(snapshot)return snapshot;throw lastLoadError||new Error('Повторная загрузка гильдии временно отложена');}
+ loadTask=(async()=>{try{
+  snapshot=await rpc('tb_guild_snapshot');
+  syncShortcut();
+  if(snapshot?.member&&checkRevision)await syncServerRevision();
+  setRuntimeBuffs();loadFailureCount=0;nextLoadAt=0;lastLoadError=null;lastPresence=Date.now();
+  return snapshot;
+ }catch(error){loadFailureCount++;const delay=Math.min(120000,5000*Math.pow(2,Math.min(loadFailureCount-1,4)));nextLoadAt=Date.now()+delay;lastLoadError=error;lastPresence=Date.now();throw error;
+ }finally{loadTask=null;}})();
+ return loadTask;
 }
 function fmt(n){return Math.max(0,Number(n)||0).toLocaleString('ru-RU')}
 function dateTime(value){if(!value)return '—';const d=new Date(value);return d.toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
@@ -82,7 +90,7 @@ function render(){
  return output;
 }
 function renderSocial(){const panel=$('#socPanel');if(panel&&window.TowerboundSocial?.refresh){window.TowerboundSocial.refresh();return;}if(panel){const main=panel.querySelector('main');if(main)main.innerHTML=render();}}
-async function refresh(){lastError='';await load();return render();}
+async function refresh(){lastError='';await load(true,true);return render();}
 async function createGuild(){
  const name=$('#tbgCreateName')?.value?.trim()||'',tag=$('#tbgCreateTag')?.value?.trim()||'';
  await rpc('tb_guild_create',{p_name:name,p_tag:tag});inside=true;view='overview';searchText='';await load();notify('Гильдия создана бесплатно');renderSocial();
@@ -138,7 +146,7 @@ document.addEventListener('submit',async e=>{
  const f=e.target.closest('#socPanel [data-guild-form]');if(!f)return;e.preventDefault();if(busy)return;busy=true;
  try{if(f.dataset.guildForm==='create')await createGuild();if(f.dataset.guildForm==='chat')await sendMessage();}catch(err){notify(errorText(err));}finally{busy=false;}
 },true);
-function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(async()=>{if(!cloud()?.signedIn)return;const panel=$('#socPanel'),now=Date.now(),due=panel&&view==='chat'?5000:panel&&(view==='members'||view==='boss')?15000:30000;if(now-lastPresence<due)return;try{await load(false);lastPresence=now;if(now-lastRevisionCheck>60000){await syncServerRevision();lastRevisionCheck=now;}const main=$('#socPanel main');if(main&&!main.querySelector('input:focus,textarea:focus')){const content=render();main.innerHTML=content;}}catch(e){console.warn('[guild] refresh failed',e)}},5000);}
+function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(async()=>{if(!cloud()?.signedIn)return;const panel=$('#socPanel');if(!panel||panel.hidden||!panel.getClientRects().length)return;const now=Date.now(),due=view==='chat'?5000:(view==='members'||view==='boss')?15000:30000;if(now-lastPresence<due||loadTask||now<nextLoadAt)return;try{await load(false);if(now-lastRevisionCheck>60000)await syncServerRevision();const main=panel.querySelector('main');if(main&&!main.querySelector('input:focus,textarea:focus')){const content=render();main.innerHTML=content;}}catch(e){console.warn('[guild] refresh failed; backing off',e)}},5000);}
 window.addEventListener('towerbound-auth-change',()=>{snapshot=null;inside=false;load().then(()=>renderSocial()).catch(()=>syncShortcut());});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloud()?.signedIn&&snapshot?.member)load().catch(()=>{});});
 window.TowerboundGuild={render,refresh,load,get snapshot(){return snapshot;}};
 const old=window.TowerboundEndgame?.renderCommunity;
