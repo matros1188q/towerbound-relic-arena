@@ -141,7 +141,8 @@ function restoreLocal(snapshot){
  for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(isSaveKey(k)&&!remoteKeys.has(k))localStorage.removeItem(k);}
  for(const [k,v] of Object.entries(snapshot.keys)){if(isSaveKey(k)&&typeof v==='string')localStorage.setItem(k,v);}
  try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
- location.reload();
+ // Apply the restored save in the running game; a hard reload caused the character screen to flash/reset.
+ window.dispatchEvent(new CustomEvent('towerbound-cloud-restore',{detail:{revision}}));
 }
 async function readRemote(){
  const {data,error}=await client.from('player_saves').select('save_data,revision,updated_at').eq('user_id',session.user.id).maybeSingle();
