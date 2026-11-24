@@ -966,9 +966,9 @@
 
 
 /* Stage backgrounds: two stacked layers crossfade without shifting the arena layout. */
-#tbRpg .tb-v2 .new-battle-wrap{position:relative;isolation:isolate;overflow:hidden}
+#tbRpg .tb-v2 .new-battle-wrap{position:relative;isolation:isolate}
 #tbRpg .tb-v2 .new-battle-wrap>.tb-arena-bg-layer{position:absolute;inset:0;z-index:0;pointer-events:none;background-size:cover;background-position:center center;background-repeat:no-repeat;opacity:0;filter:brightness(.46) saturate(.82);transition:opacity 1s ease-in-out;will-change:opacity;border-radius:inherit}
 #tbRpg .tb-v2 .new-battle-wrap>.tb-arena-bg-layer.is-visible{opacity:1}
-#tbRpg .tb-v2 .new-battle-wrap>:not(.tb-arena-bg-layer){z-index:1}
+#tbRpg .tb-v2 .new-battle-wrap>:not(.tb-arena-bg-layer):not(.tb-fx-layer){position:relative;z-index:1}
 #tbRpg .tb-v2 .new-battle-wrap>.tb-fx-layer{z-index:5}
 @media(prefers-reduced-motion:reduce){#tbRpg .tb-v2 .new-battle-wrap>.tb-arena-bg-layer{transition:none}}
