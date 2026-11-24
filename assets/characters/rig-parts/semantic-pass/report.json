@@ -303,14 +303,14 @@
           "label": "Upper-clothes",
           "class_id": 4,
           "file": "upper-clothes.png",
-          "pixels": 26958,
+          "pixels": 26959,
           "bbox": [
             207,
             128,
             633,
             793
           ],
-          "coverage": 0.06802
+          "coverage": 0.06803
         },
         {
           "label": "Dress",
@@ -381,7 +381,7 @@
           "label": "Right-arm",
           "class_id": 15,
           "file": "right-arm.png",
-          "pixels": 801,
+          "pixels": 800,
           "bbox": [
             208,
             547,
