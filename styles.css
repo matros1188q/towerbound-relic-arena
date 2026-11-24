@@ -952,3 +952,14 @@
  #tbRpg .tb-v2 .new-hand-row .v2-card .card-desc,
  #tbRpg .tb-v2 .v2-card[data-card-play] .card-desc{font-size:6.2px!important;line-height:1.1!important}
 }
+
+
+/* Stage 5 — expedition feedback, low-health guidance and elite/boss threat labels. */
+#tbRpg .tb-v2 .new-hero-warning{width:100%;max-width:100%;margin:4px 0 2px;padding:6px 7px;border:1px solid #d5a34b88;border-radius:7px;background:linear-gradient(100deg,#49321cdd,#261b1ddd);color:#ffe0a1;font:900 9px/1.3 system-ui,sans-serif;text-align:center;overflow-wrap:anywhere}
+#tbRpg .tb-v2 .new-hero-warning.critical{border-color:#ff657b;background:linear-gradient(100deg,#641f32ee,#321622ee);color:#ffd4db;box-shadow:0 0 16px #ff536b33;animation:tb-stage5-warning 1.1s ease-in-out infinite alternate}
+@keyframes tb-stage5-warning{to{filter:brightness(1.22)}}
+#tbRpg .tb-v2 .new-enemy-threat{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:4px 7px;border-radius:6px;font:900 8px/1.2 system-ui,sans-serif;letter-spacing:.07em;text-align:center;overflow-wrap:anywhere}
+#tbRpg .tb-v2 .new-enemy-threat.boss{border:1px solid #ff7c8c99;background:#5b1d31bb;color:#ffd2d8}
+#tbRpg .tb-v2 .new-enemy-threat.elite{border:1px solid #e5bd6d99;background:#4b351bbb;color:#ffe3a6}
+#tbRpg .tb-v2 .v2-combat-log summary{letter-spacing:.06em}
+@media(max-width:600px){#tbRpg .tb-v2 .new-hero-warning{font-size:8px;padding:5px 4px}#tbRpg .tb-v2 .new-enemy-threat{font-size:7px}}
