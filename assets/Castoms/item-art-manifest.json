@@ -13,9 +13,12 @@
     "healerKit": "image 21.jpeg",
     "rescueSeal": "image 16.jpeg",
     "extraSocket": "image 19.jpeg",
-    "pityToken": "image 3.jpeg",
+    "pityToken": "image 17.jpeg",
     "refineGuard": "image 15.jpeg",
-    "refineTools": "image 22.jpeg"
+    "refineTools": "image 22.jpeg",
+    "refine10": "../relics/image_9.png",
+    "refine20": "../relics/image_7.png",
+    "safeRefine": "../relics/guardian.png"
   },
   "relics": {
     "coin": "image 13.jpeg",
@@ -48,11 +51,12 @@
     "keepExistingArtwork": true
   },
   "notes": [
-    "Premium-account products intentionally retain their existing icon.",
-    "Potion tiers intentionally share recognizable family artwork; the same item keeps the same image in shop, bag, loot and detail views.",
+    "Potion types keep their recognizable base illustration; potency variants are distinguished by a visible badge in both shop and backpack.",
+    "The same catalog item resolves to the same art path in shop, loot, backpack and item detail views.",
+    "Mob-drop materials have dedicated semantic art: craft material, enhancement gem, refine gem and enchantment scroll.",
+    "Pity tokens use the eye charm rather than reusing the green luck-potion bottle.",
     "Hourglass uses the dedicated relic hourglass PNG, not the coin image.",
-    "Store extras resolve by their original catalog itemId because runtime type stores the effect key.",
-    "All twelve card-relic shop items have dedicated, semantically matched artwork."
+    "Premium-account products intentionally retain their existing artwork."
   ],
   "inventory": {
     "xp_10": "image.jpeg",
@@ -68,7 +72,8 @@
     "drop_50": "image 3.jpeg",
     "drop_75": "image 3.jpeg",
     "drop_100": "image 3.jpeg",
-    "pity_token": "image 3.jpeg",
+    "pity_token": "image 17.jpeg",
+    "pity": "image 17.jpeg",
     "antidote": "image 4.jpeg",
     "map_compass": "image 5.jpeg",
     "map_hint": "image 5.jpeg",
@@ -84,11 +89,19 @@
     "extra_socket": "image 19.jpeg",
     "socket": "image 19.jpeg",
     "refine_guard": "image 15.jpeg",
-    "refine_10": "image 22.jpeg",
-    "refine_20": "image 22.jpeg",
-    "safe_refine": "image 22.jpeg",
+    "refine_10": "../relics/image_9.png",
+    "refine_20": "../relics/image_7.png",
+    "safe_refine": "../relics/guardian.png",
     "craft_material": "../relics/image_15.png",
-    "enhancement_stone": "../relics/image_15.png",
-    "refine_stone": "../relics/image_9.png"
+    "enhancement_stone": "../relics/image_7.png",
+    "refine_stone": "../relics/image_8.png",
+    "enchant_scroll": "../relics/image_9.png"
+  },
+  "mobDrops": {
+    "healing_potion": "image 2.jpeg",
+    "craft_material": "../relics/image_15.png",
+    "enhancement_stone": "../relics/image_7.png",
+    "refine_stone": "../relics/image_8.png",
+    "enchant_scroll": "../relics/image_9.png"
   }
 }

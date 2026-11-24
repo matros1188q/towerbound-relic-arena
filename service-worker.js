@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v656';
+const CACHE = 'towerbound-v657';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './',
@@ -16,9 +16,9 @@ const SHELL = [
   './rpg-mode.js?v=13',
   './rpg-expansion.js?v=2',
   './rpg-rework-v2.js?v=19',
-  './styles.css?v=1014',
+  './styles.css?v=1015',
   './rpg-rework-ui.css.js?v=1005',
-  './rpg-rework-ui.js?v=1025',
+  './rpg-rework-ui.js?v=1026',
   './towerbound-polish.js?v=8',
   './combat-visuals.js?v=3',
   './progression-24.js?v=10',
@@ -56,6 +56,24 @@ const SHELL = [
   './rpg-2000h.css',
   './card-codex.css',
   './assets/ui/logo.jpeg',
+  "./assets/Castoms/image.jpeg",
+  "./assets/Castoms/image 2.jpeg",
+  "./assets/Castoms/image 3.jpeg",
+  "./assets/Castoms/image 4.jpeg",
+  "./assets/Castoms/image 5.jpeg",
+  "./assets/Castoms/image 7.jpeg",
+  "./assets/Castoms/image 13.jpeg",
+  "./assets/Castoms/image 14.jpeg",
+  "./assets/Castoms/image 15.jpeg",
+  "./assets/Castoms/image 16.jpeg",
+  "./assets/Castoms/image 17.jpeg",
+  "./assets/Castoms/image 18.jpeg",
+  "./assets/Castoms/image 19.jpeg",
+  "./assets/Castoms/image 20.jpeg",
+  "./assets/Castoms/image 21.jpeg",
+  "./assets/Castoms/image 22.jpeg",
+  "./assets/relics/guardian.png",
+  "./assets/relics/rune.png",
 
   './assets/ui/art-sprites.css',
   "./assets/characters/bosses/void-hunter-boss.png",

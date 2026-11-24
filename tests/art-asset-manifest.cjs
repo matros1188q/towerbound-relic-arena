@@ -18,7 +18,7 @@ for(const pack of [heroes,enemies,bosses]){
  for(const asset of pack.assets){assert.equal(asset.image_format,'png');exists(asset.relative_path);}
 }
 for(const item of relics.assets)exists(item.path);
-for(const group of [itemArt.shop,itemArt.inventory,itemArt.relics])for(const asset of Object.values(group||{})){if(typeof asset==='string')exists(path.normalize(path.join('assets/Castoms',asset)));}
+for(const group of [itemArt.shop,itemArt.inventory,itemArt.relics,itemArt.mobDrops])for(const asset of Object.values(group||{})){if(typeof asset==='string')exists(path.normalize(path.join('assets/Castoms',asset)));}
 for(const sheet of ui.spriteSheets)exists(sheet.path);
 for(const sheet of skills.sprite_sheets||[])exists(sheet.path);
 for(const chapter of chapters.chapters){assert.ok(chapter.background.endsWith('.jpeg'),'Chapter backgrounds must remain JPEG');exists(chapter.background);}
@@ -65,4 +65,13 @@ assert.ok(index.includes('assets/ui/art-sprites.css?v='),'Sprite stylesheet must
 assert.ok(index.includes('apple-touch-icon')&&index.includes('./assets/icons/image.png'),'iOS home-screen icon uses the Towerbound T logo');
 const pwa=JSON.parse(fs.readFileSync(path.join(root,'manifest.json'),'utf8'));
 assert.ok(pwa.icons.length>=2&&pwa.icons.every(icon=>icon.src==='./assets/icons/image.png'),'PWA manifest icons use the Towerbound T logo');
+
+assert.equal(itemArt.inventory.pity_token,"image 17.jpeg","Pity token must not reuse the luck potion bottle");
+assert.notEqual(itemArt.inventory.enhancement_stone,itemArt.inventory.craft_material,"Enhancement stone and craft material need distinct art");
+assert.notEqual(itemArt.inventory.refine_stone,itemArt.inventory.enhancement_stone,"Refine stone and enhancement stone need distinct art");
+assert.equal(itemArt.mobDrops.enchant_scroll,itemArt.inventory.enchant_scroll,"Mob-drop scroll art must match backpack art");
+assert.ok(uiScript.includes('function itemArtVariantLabel(item)')&&uiScript.includes('tb-item-art-badge'),'Potion and refine tiers must have visible unique variant labels');
+assert.ok(uiScript.includes('customItemImageHtml(custom,"tb-shop-item-art",item)')&&uiScript.includes('customItemImageHtml(custom,"tb-bag-item-art-img",item)'),'Shop and backpack must share the same item image renderer');
+assert.ok(source['styles.css'].includes('.tb-item-art-wrap')&&source['styles.css'].includes('.tb-bag-item-art img{display:block!important;width:62px'),'Backpack artwork must use a fixed contain-sized image box');
+
 console.log('ART-ASSET CHECK PASS: PNG portraits/relics/skills/icons, JPEG chapter backgrounds, item routing, sprite crops and cache.');

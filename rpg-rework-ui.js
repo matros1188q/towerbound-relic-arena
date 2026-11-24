@@ -26,14 +26,15 @@
  const ITEM_ART_BY_ID=Object.freeze({
   xp_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_100:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,
   heal_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_25:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_35:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,healing_potion:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,
-  drop_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_75:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_100:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,pity_token:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,pity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,
+  drop_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_75:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_100:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,
+  pity_token:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye,pity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye,
   antidote:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.antidote,map_compass:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,map_hint:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,
   silver_charm:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,silver_bonus:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,xp_hourglass:"./assets/relics/hourglass.png",
   repair_kit:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,potion_case:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,potion_capacity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,
   rescue_seal:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,one_rescue:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,stone_cache:"./assets/relics/rune.png",
   extra_socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,refine_guard:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.shield,
-  refine_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,refine_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,safe_refine:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,
-  craft_material:"./assets/relics/image_15.png",enhancement_stone:"./assets/relics/image_15.png",refine_stone:"./assets/relics/image_9.png"
+  refine_10:"./assets/relics/image_9.png",refine_20:"./assets/relics/image_7.png",safe_refine:"./assets/relics/guardian.png",
+  craft_material:"./assets/relics/image_15.png",enhancement_stone:"./assets/relics/image_7.png",refine_stone:"./assets/relics/image_8.png",enchant_scroll:"./assets/relics/image_9.png"
  });
  function customItemArtPath(item){
   const ids=[item?.itemId,item?.id,item?.type,item?.effect,item?.kind].filter(Boolean).map(value=>String(value).toLowerCase());
@@ -93,8 +94,18 @@
   if(value.includes("talisman")||value.includes("amulet")||value.includes("талисман")||value.includes("амул"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman;
   return "";
  }
- function customItemImageHtml(path,classes){
-  return '<img class="tb-custom-item-art '+(classes||'')+'" src="'+path+'" alt="" loading="lazy" decoding="async">';
+ function itemArtVariantLabel(item){
+  const keys=[item?.itemId,item?.type,item?.effect,item?.kind,item?.id].filter(Boolean).map(value=>String(value).toLowerCase());
+  const key=keys.find(value=>/^(?:xp|heal|drop)_\d+$/.test(value)||/^refine_(?:10|20)$/.test(value)||value==="safe_refine");
+  if(!key)return "";
+  if(key==="safe_refine")return "SAFE";
+  const match=key.match(/^(?:xp|heal|drop)_(\d+)$/);
+  if(match)return match[1]+"%";
+  return key==="refine_10"?"+10%":"+20%";
+ }
+ function customItemImageHtml(path,classes,item){
+  const badge=itemArtVariantLabel(item);
+  return '<div class="tb-item-art-wrap"><img class="tb-custom-item-art '+(classes||'')+'" src="'+path+'" alt="" loading="lazy" decoding="async">'+(badge?'<span class="tb-item-art-badge">'+badge+'</span>':'')+'</div>';
  }
 
  const relicArtFiles={head:"image_2.png",chest:"image_3.png",ring:"image_4.png",accessory:"image_4.png",amulet:"image_6.png",weapon:"image_10.png",hands:"image_12.png",potion:"image_5.png",scroll:"image_9.png",redGem:"image_7.png",blueGem:"image_8.png",potionStack:"image_14.png",bundle:"image_18.png"};
@@ -130,7 +141,7 @@
  function inventoryIconHtml(item,equipment){
   if(equipment)return relicIconHtml(item,item?.slot);
   const custom=customItemArtPath(item);
-  if(custom)return customItemImageHtml(custom,"tb-bag-item-art-img");
+  if(custom)return customItemImageHtml(custom,"tb-bag-item-art-img",item);
   const value=String(item?.type||item?.id||item?.name||"").toLowerCase();
   let icon="";
   if(value.includes("craft_material")||value.includes("craft material")||value.includes("материал")||value.includes("enhancement_stone")||value.includes("enhancement stone")||value.includes("камень усиления"))icon="support-orb";
@@ -1351,7 +1362,7 @@ function talentBonusDescription(talent,rank){
  function shopProductSprite(item){const id=String(item?.id||"").toLowerCase();if(id.startsWith("heal")||id.includes("potion"))return "shop-potion";if(id.startsWith("premium")||id.includes("rescue"))return "shop-premium";if(id.includes("refine")||id.includes("chisel")||id.includes("socket"))return "shop-refine";if(id.startsWith("xp"))return "shop-xp";if(id.startsWith("drop"))return "shop-drop";return "shop-item";}
  function shopProductIconHtml(item){
   const custom=customItemArtPath(item);
-  if(custom)return customItemImageHtml(custom,"tb-shop-item-art");
+  if(custom)return customItemImageHtml(custom,"tb-shop-item-art",item);
   return '<span class="sprite-icon '+shopProductSprite(item)+'" aria-hidden="true"></span>';
  }
  
