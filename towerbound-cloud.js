@@ -7,7 +7,7 @@ const cfg=window.TOWERBOUND_SUPABASE_CONFIG||{};
 const SAVE_KEYS=new Set(['tb-rpg-v2','tb-rpg-v1','towerbound-save-v1','towerbound-profiles-v1','towerbound-active-profile-v1','tb-endgame-v1','tb-social-v1']);
 const isSaveKey=k=>SAVE_KEYS.has(String(k))||String(k).startsWith('towerbound-profile-save-');
 const $=s=>document.querySelector(s);
-let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false,savesReady=false,remoteHasCharacters=false,retryAfter=0,sessionBusy=false,lastCloudError='';
+let client=null,session=null,revision=0,syncing=false,dirty=false,timer=0,conflict=false,restoring=false,handledSessionKey='',authInitialized=false,savesReady=false,remoteHasCharacters=false,retryAfter=0,sessionBusy=false,lastCloudError='',cloudRetryCount=0;
 let sessionTask=Promise.resolve();
 let resolveCloudBootstrap;
 const cloudBootstrap=new Promise(resolve=>{resolveCloudBootstrap=resolve;});
@@ -242,7 +242,7 @@ async function writeRemote(snapshot,expected){
   if(error)throw error;
   const row=Array.isArray(data)?data[0]:data;
   if(!row||!Number.isFinite(Number(row.revision)))throw new Error('Сервер не вернул новую версию сохранения');
-  revision=Number(row.revision);
+  revision=Number(row.revision);cloudRetryCount=0;
   try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
   return row;
  });
@@ -347,7 +347,14 @@ async function saveLoop(){
     setStatus('ОБЛАКО · СИНХРОНИЗИРОВАНО','online');
     say('Прогресс сохранён в облаке · версия '+revision+'.');
    }catch(error){
-    const isConflict=String(error?.message||error).includes('SAVE_CONFLICT')||String(error?.code||'')==='40001';
+    const errorCode=String(error?.code||''),errorMessage=String(error?.message||error);
+    const isBusy=errorCode==='55P03'||/SAVE_BUSY/.test(errorMessage);
+    if(isBusy){
+     retryAfter=Date.now()+10000+Math.floor(Math.random()*10000);dirty=true;
+     setStatus('ОБЛАКО · ОЖИДАНИЕ','pending');
+     say('Другая запись уже выполняется. Прогресс останется на устройстве; облако повторит сохранение автоматически.');break;
+    }
+    const isConflict=errorMessage.includes('SAVE_CONFLICT')||errorCode==='40001';
     if(!isConflict)throw error;
     const remote=await readRemote();
     if(!remote?.save_data)throw new Error('Сервер сообщил о конфликте, но актуальное сохранение не найдено');
@@ -385,7 +392,12 @@ async function saveLoop(){
    say('Не удалось завершить синхронизацию после нескольких попыток. Локальный прогресс оставлен на устройстве. Нажми «Синхронизировать сейчас».','error');
   }
  }catch(error){
-  saved=false;dirty=true;retryAfter=Date.now()+15000;
+  saved=false;dirty=true;
+  const errorCode=String(error?.code||''),errorMessage=String(error?.message||error);
+  if(errorCode==='PGRST002'||errorCode==='PGRST003'||/schema cache|connection pool|HTTP 503|HTTP 504/i.test(errorMessage)){
+   cloudRetryCount=Math.min(cloudRetryCount+1,5);
+   retryAfter=Date.now()+Math.min(120000,15000*Math.pow(2,cloudRetryCount-1))+Math.floor(Math.random()*5000);
+  }else retryAfter=Date.now()+15000;
   console.error('[Towerbound cloud] save failed',error);
   setStatus('ОБЛАКО · ОШИБКА СОХРАНЕНИЯ','error');
   say('Не удалось сохранить прогресс в облако: '+(error?.message||'ошибка сети')+'. Локальная копия сохранена.','error');
