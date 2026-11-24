@@ -10,6 +10,7 @@ assert.ok(cloud.includes('const cloudBootstrap=new Promise(resolve=>{resolveClou
 assert.ok(cloud.includes('authEventSequence=0')&&cloud.includes('if(sequence===authEventSequence)void onSession(next)'),'stale queued auth events cannot overwrite a newer login session');
 assert.ok(cloud.includes('sessionGeneration=0')&&cloud.includes('const generation=++sessionGeneration,isCurrent=()=>generation===sessionGeneration')&&cloud.includes('if(!isCurrent())return'),'stale cloud hydration cannot overwrite a newer account session');
 assert.ok(cloud.includes('const userId=session?.user?.id;')&&cloud.includes(".eq('user_id',userId)"),'remote reads bind queries to a captured authenticated user id');
+assert.ok(cloud.includes('if(session?.user?.id!==userId)throw new Error(\'Сессия аккаунта изменилась; запись отменена\')')&&cloud.includes("localStorage.setItem('tb-cloud-user-id',userId)"),'cloud writes cannot be attributed to a different account after a session switch');
 assert.ok(ui.includes('if(window.TowerboundCloudReady)await window.TowerboundCloudReady;'));
 assert.ok(ui.includes('post-cloud engine hydration failed')&&ui.includes("localStorage.getItem('tb-rpg-v2')"),'engine state is rehydrated from cloud-restored storage after the cloud bootstrap');
 assert.ok(ui.includes('auth restore hydration failed')&&ui.includes('towerbound-auth-change'),'engine state is rehydrated again after the completed authenticated cloud restore');
