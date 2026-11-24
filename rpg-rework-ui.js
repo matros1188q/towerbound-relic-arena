@@ -1522,6 +1522,8 @@ function talentBonusDescription(talent,rank){
   const location=arenaBackgroundForStage(stage);
   if(arena.dataset.arenaBackground===location.src)return;
   if(arenaBackgroundCurrentSrc===location.src){arena.dataset.arenaBackground=location.src;arena.dataset.arenaLocation=location.name;arena.dataset.arenaChapter=String(location.chapter);return;}
+  if(arena.dataset.arenaBackgroundPending===location.src)return;
+  arena.dataset.arenaBackgroundPending=location.src;
   if(arenaBackgroundChapter!==location.chapter){
    arenaBackgroundChapter=location.chapter;arenaBackgroundPreloads.clear();
    ARENA_BACKGROUND_LOCATIONS.filter(item=>item.chapter===location.chapter).forEach(item=>{const image=new Image();image.decoding='async';image.src=item.src;arenaBackgroundPreloads.set(item.src,image);});
@@ -1534,11 +1536,11 @@ function talentBonusDescription(talent,rank){
    const next=visible===first?second:first;
    next.style.backgroundImage='url("'+location.src.replace(/"/g,'%22')+'")';
    next.classList.add('is-visible');if(visible)visible.classList.remove('is-visible');
-   arenaBackgroundCurrentSrc=location.src;arena.dataset.arenaBackground=location.src;arena.dataset.arenaLocation=location.name;arena.dataset.arenaChapter=String(location.chapter);
+   arenaBackgroundCurrentSrc=location.src;arena.dataset.arenaBackground=location.src;delete arena.dataset.arenaBackgroundPending;arena.dataset.arenaLocation=location.name;arena.dataset.arenaChapter=String(location.chapter);
   };
   if(image.complete&&image.naturalWidth>0){apply();return;}
   image.addEventListener('load',apply,{once:true});
-  image.addEventListener('error',()=>console.warn('[TowerBound] arena background failed to load',location.src),{once:true});
+  image.addEventListener('error',()=>{if(request===arenaBackgroundRequest)delete arena.dataset.arenaBackgroundPending;console.warn('[TowerBound] arena background failed to load',location.src);},{once:true});
  }
  function battleScreen(){
   const c=live(),hp=engine.maxHp(live());
