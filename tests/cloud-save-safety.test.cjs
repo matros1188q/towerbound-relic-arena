@@ -13,6 +13,7 @@ assert.ok(cloud.includes('retryLoad:()=>session?onSession(session,true)'),'faile
 assert.ok(ui.includes('Синхронизация сохранения')&&ui.includes('data-action=\"cloud-retry\"'),'empty character list is blocked until cloud loading is confirmed');
 assert.ok(cloud.includes('function validateSnapshot(snapshot)'));
 assert.ok(cloud.includes('function backupLocalSnapshot()'));
+assert.ok(cloud.includes("from('player_save_history')")&&cloud.includes('recoveredFromHistory:true'),'cloud loader automatically recovers the best progression snapshot from private history');
 assert.ok(cloud.includes('Защита сохранения: облачная версия пуста'));
 assert.ok(cloud.includes('SAVE_GUARD_BLOCKED'));
 assert.ok(cloud.includes("withTimeout(client.auth.getSession()")&&cloud.includes("withTimeout(client.from('player_saves')"));

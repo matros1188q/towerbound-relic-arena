@@ -190,7 +190,19 @@ function restoreLocal(snapshot){
 }
 async function readRemote(){
  const {data,error}=await withTimeout(client.from('player_saves').select('save_data,revision,updated_at').eq('user_id',session.user.id).maybeSingle(),'Загрузка облачного сохранения');
- if(error)throw error;if(data?.save_data)validateSnapshot(data.save_data);return data;
+ if(error)throw error;
+ let best=data?.save_data||null,history=[];
+ try{
+  const result=await withTimeout(client.from('player_save_history').select('save_data,revision,updated_at').eq('user_id',session.user.id).order('revision',{ascending:false}).limit(25),'Проверка резервных сохранений',10000);
+  if(!result.error&&Array.isArray(result.data))history=result.data;
+ }catch(historyError){console.warn('[Towerbound cloud] save history unavailable; using current save',historyError);}
+ if(best)validateSnapshot(best);
+ for(const entry of history){
+  try{validateSnapshot(entry.save_data);if(!best||compareProgress(entry.save_data,best)>0)best=entry.save_data;}catch(historyError){console.warn('[Towerbound cloud] invalid history revision skipped',entry.revision,historyError);}
+ }
+ if(!data&&best)return{save_data:best,revision:0,updated_at:null,recoveredFromHistory:true};
+ if(data&&best&&best!==data.save_data)return{...data,save_data:best,recoveredFromHistory:true};
+ return data;
 }
 async function writeRemote(snapshot,expected){
  validateSnapshot(snapshot);
