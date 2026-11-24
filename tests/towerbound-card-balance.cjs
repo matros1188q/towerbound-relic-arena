@@ -37,7 +37,8 @@ async function runAttempt(browser,build,seed,index,startLevel){
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework&&!!window.TowerboundBalanceQA,{timeout:30000});
   const result=await page.evaluate(({classId,branchId,seedValue,attemptIndex,startLevel})=>{
    const qa=window.TowerboundBalanceQA;qa.createCharacter('QA'+String(attemptIndex).padStart(2,'0'),classId);
-   const stageLogs=[];let branchChosen=false,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
+   const prepared=qa.prepareSpecialization(branchId);if(prepared.branch!==branchId||prepared.level<10)throw new Error('Specialization preparation failed: '+JSON.stringify(prepared));
+   const stageLogs=[];let branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
    if(startLevel>1){const engine=qa.engine(),characterId=qa.snapshot().character.id,xpNeeded=Array.from({length:startLevel-1},(_,i)=>engine.requiredXp(i+1)).reduce((sum,value)=>sum+value,0);engine.awardXp(characterId,xpNeeded);qa.chooseBranch(branchId);branchChosen=true;qa.allocateTalents();}
    const hpNow=()=>Number(qa.snapshot().character?.run?.playerHp)||0,maxHp=()=>Number(qa.snapshot().character?qa.engine().maxHp(qa.snapshot().character):1)||1;
    const trackHp=before=>{const after=hpNow();if(after<before)totalDamageTaken+=before-after;else if(after>before)totalHealing+=after-before;};
@@ -53,10 +54,10 @@ async function runAttempt(browser,build,seed,index,startLevel){
    };
    for(let stage=1;stage<=250;stage++){
     let snap=qa.snapshot(),character=snap.character;if(!character){reason='character-missing';break;}
-    if(character.level>=10&&!character.branch){qa.chooseBranch(branchId);branchChosen=true;}if(character.branch===branchId)qa.allocateTalents();
+    if(character.branch!==branchId)throw new Error('Specialization changed unexpectedly before floor '+stage);qa.allocateTalents();
     const stageStartHp=hpNow(),event=qa.resolveMapEvent(stage);snap=qa.snapshot();
     if(event?.cleared&&!snap.battle){
-     if(!branchChosen&&snap.character.level>=10&&!snap.character.branch){qa.chooseBranch(branchId);branchChosen=true;}if(snap.character.branch===branchId)qa.allocateTalents();
+     if(snap.character.branch!==branchId)throw new Error('Specialization missing after floor '+stage);qa.allocateTalents();
      qa.claimBestRelic();if(stage%50===0)qa.useCampRest(stage);
      stageLogs.push({stage,level:snap.character.level,branch:snap.character.branch,hpStart:stageStartHp,hpEnd:snap.character.run.playerHp,maxHp:qa.engine().maxHp(snap.character),turns:0,cards:0,damageDealt:0,enemies:[],event:event.type,eventChoice:event.choice,cleared:true});
      qa.clearPostBattle();if(stage===250){reason='cleared-250';break;}continue;
@@ -66,10 +67,16 @@ async function runAttempt(browser,build,seed,index,startLevel){
     let stageTurns=0,stageCards=0,stageDamage=0,stageReason='clear';const stageMaxTurns=80;
     while(true){
      snap=qa.snapshot();if(!snap.battle)break;if(snap.screen==='death'||snap.character.run.playerHp<=0){stageReason='death';break;}
-     const b=snap.battle,c=snap.character;if(b.actor?.type!=='player'){stageReason='enemy-turn-stalled';break;}
+     let b=snap.battle,c=snap.character;if(b.actor?.type!=='player'){stageReason='enemy-turn-stalled';break;}
      const target=pickTarget(b);if(target&&target.index!==b.targetIndex)qa.setTarget(target.index);
      let beforeHp=hpNow();if(beforeHp<qa.engine().maxHp(c)*.65&&!b.potionUsedThisTurn)qa.usePotion();trackHp(beforeHp);
      snap=qa.snapshot();if(!snap.battle)break;
+     const abilityEnemyHp=(snap.battle.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),abilityHpBefore=hpNow();
+     if(qa.canUltimate())qa.useUltimate();
+     else{const incoming=(snap.battle.enemies||[]).reduce((sum,x)=>sum+(x.alive?Number(x.intent?.damage)||0:0),0);if(incoming>0&&qa.canCounter())qa.useCounter();else if(qa.canBasicAttack())qa.basicAttack();}
+     trackHp(abilityHpBefore);snap=qa.snapshot();
+     const abilityEnemyAfter=(snap.battle?.enemies||[]).reduce((sum,x)=>sum+(x.alive?x.hp:0),0),abilityDamage=Math.max(0,abilityEnemyHp-abilityEnemyAfter);totalDamage+=abilityDamage;stageDamage+=abilityDamage;
+     if(!snap.battle)break;b=snap.battle;c=snap.character;
      // Card-only balance pass: resolve cards and real enemy turns; no legacy active ultimates/counters.
      for(let n=0;n<20;n++){
       snap=qa.snapshot();if(!snap.battle||snap.battle.actor?.type!=='player')break;
@@ -108,7 +115,7 @@ let server,browser;
  try{for(let i=0;i<selectedRuns.length;i++){const build=selectedRuns[i];process.stdout.write('['+(i+1)+'/'+selectedRuns.length+'] '+build.className+' / '+build.branchName+' / seed '+build.seed+' ... ');const result=await runAttempt(browser,build,build.seed,i,startLevel);results.push(result);process.stdout.write((result.completed?'250 этажей':'этаж '+result.cleared+' · '+result.reason)+' · '+result.totalTurns+' ходов · '+result.totalCards+' карт\n');fs.writeFileSync(path.join(artifacts,'runs.json'),JSON.stringify(results,null,2));}}
  finally{await browser.close();server.close();}
  const grouped=builds.map(build=>{const runs=results.filter(run=>run.classId===build.classId&&run.branchId===build.branchId);return{classId:build.classId,className:build.className,branchId:build.branchId,branchName:build.branchName,runs:runs.length,clears:runs.filter(run=>run.completed).length,failed:runs.filter(run=>!run.completed).length,averageFloor:runs.length?Number((runs.reduce((sum,run)=>sum+run.cleared,0)/runs.length).toFixed(1)):null,averageTurns:runs.length?Number((runs.reduce((sum,run)=>sum+run.totalTurns,0)/runs.length).toFixed(1)):null,averageDamageTaken:runs.length?Number((runs.reduce((sum,run)=>sum+run.totalDamageTaken,0)/runs.length).toFixed(1)):null,deathFloors:runs.map(run=>run.deathStage).filter(Boolean)};});
- const summary={test:'towerbound-real-card-combat-balance',model:'current browser runtime: resolveCardPlay, endPlayerTurn, enemyTurn, runEnemyTurnQueue, finishCurrentEnemy and rpg-rework-v2 progression/rewards',startingLevel:startLevel,startingFloor:1,targetFloor:250,plannedRuns:allRuns.length,executedRuns:results.length,complete:results.length===allRuns.length,branchCoverage:results.filter(run=>run.branchChosen&&run.branch===run.branchId).length,branchCoverageMisses:results.filter(run=>!run.branchChosen||run.branch!==run.branchId).map(run=>({classId:run.classId,branchId:run.branchId,cleared:run.cleared,reason:run.reason})),completedRuns:results.filter(run=>run.completed).length,failedRuns:results.filter(run=>!run.completed).length,classes:classIds.length,specializations:builds.length,seedsPerSpecialization:seeds.length,results:grouped,environment:{difficulty:balance.difficulty.default,route:'standard with natural elite chance',gear:'only engine drops and auto-equips; no injected equipment',rewards:'engine loot and deterministic best-relic choice',talents:'branch talents allocated attack/health/defense/card-draw/critical priority',mapEvents:'live event tables and choice handlers; altar/card, chest/relic-or-gold, and wanderer/healing choices are resolved through the game UI handlers'}};
+ const summary={test:'towerbound-real-card-combat-balance',model:'current browser runtime: resolveCardPlay, endPlayerTurn, enemyTurn, runEnemyTurnQueue, finishCurrentEnemy and rpg-rework-v2 progression/rewards',startingLevel:startLevel,startingFloor:1,targetFloor:250,plannedRuns:allRuns.length,executedRuns:results.length,complete:results.length===allRuns.length,branchCoverage:results.filter(run=>run.branchChosen&&run.branch===run.branchId).length,branchCoverageMisses:results.filter(run=>!run.branchChosen||run.branch!==run.branchId).map(run=>({classId:run.classId,branchId:run.branchId,cleared:run.cleared,reason:run.reason})),completedRuns:results.filter(run=>run.completed).length,failedRuns:results.filter(run=>!run.completed).length,classes:classIds.length,specializations:builds.length,seedsPerSpecialization:seeds.length,results:grouped,environment:{difficulty:balance.difficulty.default,startingLevel:10,route:'standard with natural elite chance',gear:'only engine drops and auto-equips; no injected equipment',rewards:'engine loot and deterministic best-relic choice',talents:'branch talents allocated attack/health/defense/card-draw/critical priority',mapEvents:'live event tables and choice handlers; altar/card, chest/relic-or-gold, and wanderer/healing choices are resolved through the game UI handlers'}};
  fs.writeFileSync(path.join(artifacts,'summary.json'),JSON.stringify(summary,null,2));
  const report=['# Towerbound · real card-combat balance','','- Runs: '+results.length+'/'+allRuns.length+' · start level '+startLevel+' · floor 1','- Cleared floor 250: '+summary.completedRuns,'- Failed: '+summary.failedRuns,'- Branch unlocked: '+summary.branchCoverage+'/'+results.length,'','| Class | Branch | Runs | Cleared 250 | Avg. floor | Avg. turns | Avg. damage taken | Death floors |','|---|---|---:|---:|---:|---:|---:|---|',...grouped.map(x=>'| '+x.className+' | '+x.branchName+' | '+x.runs+' | '+x.clears+' | '+(x.averageFloor??'—')+' | '+(x.averageTurns??'—')+' | '+(x.averageDamageTaken??'—')+' | '+(x.deathFloors.join(', ')||'—')+' |'),'','## Method','','- Uses current card resolution, hand/energy/discard, class effects, enemy turns and roles, boss phases, progression, loot and equipment drops.',
   '- Controlled specialization comparison: each character is advanced through the real XP curve to level '+startLevel+', then the requested branch is selected and its available talents are spent before floor 1.','- No pre-equipped gear or artificial stat boosts.','- Each attempt starts with a fresh isolated account and character.','- Map-event choice screens are bypassed.','- See runs.json for per-floor logs and each attempt.'];
