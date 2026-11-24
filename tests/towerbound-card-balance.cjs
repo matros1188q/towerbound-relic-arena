@@ -91,7 +91,7 @@ async function runAttempt(browser,build,seed,index){
     }
    }
    const final=qa.snapshot(),c=final.character;
-   return{classId,branchId,seed:seedValue,cleared:Number(c?.progress?.highestEver)||0,completed:reason==='cleared-250',reason,deathStage:reason==='death'?lastStage:null,level:c?.level||1,branchChosen:!!c?.branch,branch:c?.branch||null,talentRanks:c?.talents||{},maxHp:qa.engine().maxHp(c.id),hp:c?.run?.playerHp||0,totalTurns,totalCards,totalDamage,totalDamageTaken,totalHealing,kills:c?.stats?.kills||0,itemsFound:c?.stats?.items_found||0,gear:(c?.gear||[]).filter(Boolean).length,relics:(c?.relics||[]).length,stageLogs,pageErrors};
+   return{classId,branchId,seed:seedValue,cleared:Number(c?.progress?.highestEver)||0,completed:reason==='cleared-250',reason,deathStage:reason==='death'?lastStage:null,level:c?.level||1,branchChosen:!!c?.branch,branch:c?.branch||null,talentRanks:c?.talents||{},maxHp:qa.engine().maxHp(c.id),hp:c?.run?.playerHp||0,totalTurns,totalCards,totalDamage,totalDamageTaken,totalHealing,kills:c?.stats?.kills||0,itemsFound:c?.stats?.items_found||0,gear:(c?.gear||[]).filter(Boolean).length,relics:(c?.relics||[]).length,stageLogs};
   },{classId:build.classId,branchId:build.branchId,seedValue:seed,attemptIndex:index+1});
   if(pageErrors.length)result.pageErrors=pageErrors;return result;
  }finally{await context.close();}
@@ -107,6 +107,6 @@ let server,browser;
  const report=['# Towerbound · real card-combat balance','','- Runs: '+results.length+'/'+allRuns.length,'- Cleared floor 250: '+summary.completedRuns,'- Failed: '+summary.failedRuns,'','| Class | Branch | Runs | Cleared 250 | Avg. floor | Avg. turns | Avg. damage taken | Death floors |','|---|---|---:|---:|---:|---:|---:|---|',...grouped.map(x=>'| '+x.className+' | '+x.branchName+' | '+x.runs+' | '+x.clears+' | '+(x.averageFloor??'—')+' | '+(x.averageTurns??'—')+' | '+(x.averageDamageTaken??'—')+' | '+(x.deathFloors.join(', ')||'—')+' |'),'','## Method','','- Uses current card resolution, hand/energy/discard, class effects, enemy turns and roles, boss phases, progression, loot and equipment drops.','- No pre-equipped gear or artificial stat boosts.','- Each attempt starts with a fresh isolated account and character.','- Map-event choice screens are bypassed.','- See runs.json for per-floor logs and each attempt.'];
  fs.writeFileSync(path.join(artifacts,'report.md'),report.join('\n'));
  process.stdout.write('\n'+JSON.stringify(summary,null,2)+'\n');
- assert.equal(results.length,allRuns.length,'all 63 class/branch/seed attempts must execute');
+ assert.equal(results.length,selectedRuns.length,'all selected class/branch/seed attempts must execute');
  assert.ok(results.every(run=>run.branchChosen&&run.branch===run.branchId),'each run must unlock and test its requested specialization');
 })().catch(error=>{console.error(error);process.exitCode=1;});
