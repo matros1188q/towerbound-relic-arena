@@ -28,7 +28,7 @@ assert.ok(cloud.includes('SAVE_GUARD_BLOCKED'));
 assert.ok(cloud.includes("withTimeout(client.auth.getSession()")&&cloud.includes("withTimeout(client.from('player_saves')"));
 assert.ok(cloud.includes('button.disabled=true')&&cloud.includes('finally{button.disabled=false;}'));
 assert.ok(cloud.includes("if(hasCharacters){await writeRemote(local,0);")&&cloud.includes("else{revision=0;"));
-const cloudVersion=html.match(/towerbound-cloud\\.js\\?v=(\\d+)/)?.[1],uiVersion=html.match(/rpg-rework-ui\\.js\\?v=(\\d+)/)?.[1],cacheVersion=sw.match(/const CACHE = 'towerbound-v(\\d+)'/)?.[1];
+const cloudVersion=html.match(/towerbound-cloud\.js\?v=(\d+)/)?.[1],uiVersion=html.match(/rpg-rework-ui\.js\?v=(\d+)/)?.[1],cacheVersion=sw.match(/const CACHE = 'towerbound-v(\d+)'/)?.[1];
 assert.ok(cloudVersion&&uiVersion&&cacheVersion,'cloud, UI and service worker cache versions are present');
 assert.ok(sw.includes("'./towerbound-cloud.js?v="+cloudVersion+"'")&&sw.includes("'./rpg-rework-ui.js?v="+uiVersion+"'"),'service worker precache matches current HTML runtime versions');
 assert.ok(migration.includes('create table if not exists public.player_save_history'));
