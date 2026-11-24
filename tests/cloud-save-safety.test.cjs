@@ -10,7 +10,7 @@ assert.ok(cloud.includes('const cloudBootstrap=new Promise(resolve=>{resolveClou
 assert.ok(ui.includes('if(window.TowerboundCloudReady)await window.TowerboundCloudReady;'));
 assert.ok(ui.includes('post-cloud engine hydration failed')&&ui.includes("localStorage.getItem('tb-rpg-v2')"),'engine state is rehydrated from cloud-restored storage after the cloud bootstrap');
 assert.ok(ui.includes('auth restore hydration failed')&&ui.includes('towerbound-auth-change'),'engine state is rehydrated again after the completed authenticated cloud restore');
-assert.ok(cloud.includes('retryLoad:()=>session?onSession(session,true)'),'failed cloud loads can be retried without signing out');
+assert.ok(cloud.includes('retryLoad:async()=>{if(!session)throw new Error')&&cloud.includes('await onSession(session,true)')&&cloud.includes('if(!savesReady)throw new Error(lastCloudError'),'failed cloud loads can be retried without signing out and retry confirms cloud restoration before continuing');
 assert.ok(ui.includes('Синхронизация сохранения')&&ui.includes('data-action=\"cloud-retry\"'),'empty character list is blocked until cloud loading is confirmed');
 assert.ok(cloud.includes('function validateSnapshot(snapshot)'));
 assert.ok(cloud.includes('function backupLocalSnapshot()'));
