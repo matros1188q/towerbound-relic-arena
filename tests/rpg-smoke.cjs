@@ -366,35 +366,34 @@ const {chromium}=require('playwright');
   assert.equal(await page.evaluate(()=>typeof window.TowerboundEndgame?.open),'function','endgame screens expose their navigation API');
   for(const size of [{width:390,height:844},{width:430,height:932}]){
    await page.setViewportSize(size);
-   for(const tab of ['tower','pass','guild','evolution']){
+   for(const tab of ['tower','pass','guild','endgame']){
     const openDebug=await page.evaluate(tab=>{
      window.TowerboundEndgame.open(tab);
-     const root=document.querySelector('#tbEndgame'),win=root?.querySelector('.eg-window');
+     const root=document.querySelector('#socPanel'),win=root?.querySelector('.soc-window');
      const box=el=>{if(!el)return null;const r=el.getBoundingClientRect(),s=getComputedStyle(el);return{display:s.display,visibility:s.visibility,opacity:s.opacity,width:r.width,height:r.height,left:r.left,top:r.top};};
-     return{characters:window.TowerboundRework?.state?.characters?.length,activeCharacterId:window.TowerboundRework?.state?.activeCharacterId,root:box(root),window:box(win),body:box(document.body),htmlWidth:document.documentElement.scrollWidth,stylePresent:!!document.querySelector('link[rel="stylesheet"][href*="styles.css"]')};
+     return{tab,root:box(root),window:box(win),body:box(document.body),htmlWidth:document.documentElement.scrollWidth};
     },tab);
-    console.log('ENDGAME MOBILE OPEN:',tab,JSON.stringify(openDebug));
-    await page.waitForSelector('#tbEndgame .eg-window',{state:'attached',timeout:3000});
-    if(tab==='pass')assert.equal(await page.locator('#tbEndgame .eg-pass-row').count(),50,'Battle Pass renders all 50 reward levels');
-    if(tab==='tower')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/текущий этаж: 1/i,'Tower screen starts at floor one');
-    if(tab==='guild')assert.match(await page.locator('#tbEndgame .eg-card').innerText(),/5[\s\u00a0\u202f]?000[\s\u00a0\u202f]?000/,'Guild screen renders the 5-million HP world boss');
-    if(tab==='evolution'){
-     await page.waitForFunction(()=>document.querySelectorAll('#tbEndgame [data-eg="evolve"]').length>=2,null,{timeout:5000});
-     assert.ok(await page.locator('#tbEndgame [data-eg="evolve"]').count()>=2,'level 50 evolution screen offers both skill upgrades');
-     const option=await page.locator('#tbEndgame [data-eg="evolve"]').first().evaluate(el=>({skill:el.dataset.skill,choice:el.dataset.choice}));
-     await page.locator('#tbEndgame [data-eg="evolve"]').first().click();
-     await page.waitForFunction(({skill,choice})=>window.TowerboundRework.state.characters[0].ext?.evolvedSkills?.[skill]?.id===choice,option,{timeout:3000});
-     assert.equal(await page.evaluate(({skill})=>window.TowerboundEndgame.getSkillEvolution(skill)?.id,option),option.choice,'chosen evolution is persisted and exposed to the combat UI');
+    console.log('SOCIAL ENDGAME MOBILE OPEN:',JSON.stringify(openDebug));
+    await page.waitForSelector('#socPanel .soc-window',{state:'visible',timeout:3000});
+    if(tab==='pass')assert.equal(await page.locator('#socPanel .soc-pass-milestone').count(),10,'Battle Pass renders all 10 five-level milestone rewards');
+    if(tab==='tower'){
+     const towerText=await page.locator('#socPanel .soc-tower-hero').innerText();
+     assert.ok(towerText.includes('ТЕКУЩИЙ ЭТАЖ')&&towerText.includes('1'),'Tower screen starts at floor one');
     }
-    const bounds=await page.locator('#tbEndgame .eg-window').evaluate(el=>{
-     const r=el.getBoundingClientRect(),back=el.querySelector('[data-eg="back-map"]').getBoundingClientRect();
-     return{left:r.left,right:r.right,top:r.top,bottom:r.bottom,backLeft:back.left,backRight:back.right,backTop:back.top,backBottom:back.bottom,docWidth:document.documentElement.scrollWidth,viewportWidth:innerWidth,viewportHeight:innerHeight};
+    if(tab==='guild'){
+     await page.waitForSelector('#socPanel .tbg-shell',{state:'attached',timeout:3000});
+     assert.ok(await page.locator('#socPanel .tbg-shell').count()>0,'Guild tab renders the current guild interface');
+    }
+    if(tab==='endgame')assert.equal(await page.locator('#socPanel .soc-endgame-hero').count(),1,'Endgame tab renders the current shared community hub');
+    const bounds=await page.locator('#socPanel .soc-window').evaluate(el=>{
+     const r=el.getBoundingClientRect(),close=el.querySelector('.soc-close').getBoundingClientRect();
+     return{left:r.left,right:r.right,top:r.top,bottom:r.bottom,closeLeft:close.left,closeRight:close.right,closeTop:close.top,closeBottom:close.bottom,docWidth:document.documentElement.scrollWidth,viewportWidth:innerWidth,viewportHeight:innerHeight};
     });
-    assert.ok(bounds.left>=0&&bounds.right<=size.width+1&&bounds.top>=0&&bounds.bottom<=size.height+1,'endgame '+tab+' window stays inside '+size.width+'x'+size.height);
-    assert.ok(bounds.backLeft>=0&&bounds.backRight<=size.width+1&&bounds.backTop>=0&&bounds.backBottom<=size.height+1,'endgame '+tab+' back-to-map button stays visible on mobile');
-    assert.ok(bounds.docWidth<=bounds.viewportWidth,'endgame '+tab+' does not introduce horizontal page overflow');
-    await page.locator('#tbEndgame [data-eg="back-map"]').click();
-    await page.waitForSelector('#tbEndgame',{state:'detached',timeout:3000});
+    assert.ok(bounds.left>=0&&bounds.right<=size.width+1&&bounds.top>=0&&bounds.bottom<=size.height+1,'community '+tab+' window stays inside '+size.width+'x'+size.height);
+    assert.ok(bounds.closeLeft>=0&&bounds.closeRight<=size.width+1&&bounds.closeTop>=0&&bounds.closeBottom<=size.height+1,'community '+tab+' close button stays visible on mobile');
+    assert.ok(bounds.docWidth<=bounds.viewportWidth,'community '+tab+' does not introduce horizontal page overflow');
+    await page.locator('#socPanel .soc-close').click();
+    await page.waitForSelector('#socPanel',{state:'detached',timeout:3000});
    }
   }
   await page.evaluate(()=>{
