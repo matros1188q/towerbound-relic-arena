@@ -38,7 +38,8 @@ async function runAttempt(browser,build,seed,index,startLevel){
   const result=await page.evaluate(({classId,branchId,seedValue,attemptIndex,startLevel})=>{
    const qa=window.TowerboundBalanceQA;qa.createCharacter('QA'+String(attemptIndex).padStart(2,'0'),classId);
    const prepared=qa.prepareSpecialization(branchId,startLevel);if(prepared.branch!==branchId||prepared.level<startLevel)throw new Error('Specialization preparation failed: '+JSON.stringify(prepared));
-   const stageLogs=[],deathStages=[];let checkpointRestores=0,branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
+   const runModifier=qa.chooseBestRunModifier();
+   const stageLogs=[],deathStages=[],checkpointRetries={};let checkpointRestores=0,branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
    const hpNow=()=>Number(qa.snapshot().character?.run?.playerHp)||0,maxHp=()=>Number(qa.snapshot().character?qa.engine().maxHp(qa.snapshot().character):1)||1;
    const trackHp=before=>{const after=hpNow();if(after<before)totalDamageTaken+=before-after;else if(after>before)totalHealing+=after-before;};
    const pickTarget=b=>{const living=(b.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0),weight=e=>e.type==='boss'?110:e.type==='elite'?100:e.role==='saboteur'?95:e.role==='poison'?90:e.role==='healer'?85:e.role==='bleed'?75:e.role==='normal'?50:e.role==='tank'?30:40;return living.sort((a,b)=>weight(b)-weight(a)||(a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp)))[0]||null;};
@@ -100,12 +101,12 @@ async function runAttempt(browser,build,seed,index,startLevel){
     }else{
      reason=died?'death':stageReason==='clear'?'stage-not-cleared':stageReason;
      stageLogs.push({stage,level:snap.character?.level,branch:snap.character?.branch,hpStart:stageStartHp,hpEnd:snap.character?.run?.playerHp,turns:stageTurns,cards:stageCards,damageDealt:stageDamage,enemies:stageEnemies,cleared:false,reason});
-     if(died){const recovery=qa.confirmDeath();deathStages.push({stage,checkpointRestored:!!recovery?.checkpointRestored,checkpointStage:recovery?.checkpointStage||null,livesRemaining:recovery?.livesRemaining??null});if(recovery?.checkpointRestored){checkpointRestores++;stage=Number(recovery.checkpointStage)-1;reason='checkpoint-recovery';continue;}}
+     if(died){const recovery=qa.confirmDeath();deathStages.push({stage,checkpointRestored:!!recovery?.checkpointRestored,checkpointStage:recovery?.checkpointStage||null,livesRemaining:recovery?.livesRemaining??null});if(recovery?.checkpointRestored){const checkpointStage=Math.max(1,Number(recovery.checkpointStage)||stage);checkpointRetries[checkpointStage]=(checkpointRetries[checkpointStage]||0)+1;if(checkpointRetries[checkpointStage]>3){reason='checkpoint-retry-limit';break;}checkpointRestores++;stage=checkpointStage-1;reason='checkpoint-recovery';continue;}}
      break;
     }
    }
    const final=qa.snapshot(),c=final.character;
-   return{classId,branchId,seed:seedValue,cleared:Number(c?.progress?.highestEver)||0,completed:reason==='cleared-250',reason,deathStage:reason==='death'?lastStage:null,deathStages,checkpointRestores,level:c?.level||1,branchChosen:c?.branch===branchId,branch:c?.branch||null,talentRanks:c?.talents||{},maxHp:qa.engine().maxHp(c),hp:c?.run?.playerHp||0,totalTurns,totalCards,totalDamage,totalDamageTaken,totalHealing,kills:c?.stats?.kills||0,itemsFound:c?.stats?.items_found||0,gear:(c?.gear||[]).filter(Boolean).length,relics:(c?.relics||[]).length,stageLogs};
+   return{classId,branchId,seed:seedValue,runModifier,cleared:Number(c?.progress?.highestEver)||0,completed:reason==='cleared-250',reason,deathStage:reason==='death'?lastStage:null,deathStages,checkpointRestores,level:c?.level||1,branchChosen:c?.branch===branchId,branch:c?.branch||null,talentRanks:c?.talents||{},maxHp:qa.engine().maxHp(c),hp:c?.run?.playerHp||0,totalTurns,totalCards,totalDamage,totalDamageTaken,totalHealing,kills:c?.stats?.kills||0,itemsFound:c?.stats?.items_found||0,gear:(c?.gear||[]).filter(Boolean).length,relics:(c?.relics||[]).length,stageLogs};
   },{classId:build.classId,branchId:build.branchId,seedValue:seed,attemptIndex:index+1,startLevel});
   if(pageErrors.length)result.pageErrors=pageErrors;return result;
  }finally{await context.close();}
