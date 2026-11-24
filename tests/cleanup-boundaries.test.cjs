@@ -26,7 +26,7 @@ const runtimeFiles=[
 ];
 for(const file of runtimeFiles){
  const source=read(file);
- assert.ok(!/art-inbox\\//.test(source),'work-material inbox must not be imported into runtime: '+file);
+ assert.ok(!source.includes('art-inbox/'),'work-material inbox must not be imported into runtime: '+file);
 }
 const itemManifest=JSON.parse(read('assets/Castoms/item-art-manifest.json'));
 for(const sectionName of ['shop','relics']){
