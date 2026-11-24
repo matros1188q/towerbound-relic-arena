@@ -9,7 +9,7 @@
 
 ## Asset and work-material separation
 
-- The 550 PNG files previously in `assets/talents/` had no references in runtime HTML, JavaScript, CSS or the service-worker shell. They are preserved in `art-inbox/06-other/talent-atlas-slices/`, not deleted.
+- All 550 talent PNG files remain in the active runtime directory `assets/talents/`. The seven-class talent tree currently references 425 distinct icon paths; the remaining atlas PNGs are retained and must not be treated as disposable. `tests/cleanup-boundaries.test.cjs` verifies the 550-file inventory and all 425 referenced paths. The `art-inbox/06-other/talent-atlas-slices/` folder is work-material documentation only and contains no duplicate PNGs.
 - `assets/Castoms/images_126_cropped.zip` was a source archive, not a runtime asset; it is preserved in `art-inbox/06-other/`.
 - The 16 custom item images in `assets/Castoms/` remain in place because the shop/relic artwork manifest maps them to live game products.
 - The six class, enemy, boss, relic, skill and UI artwork manifests remain in their active asset folders.
