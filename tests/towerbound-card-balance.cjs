@@ -38,7 +38,7 @@ async function runAttempt(browser,build,seed,index,startLevel){
   const result=await page.evaluate(({classId,branchId,seedValue,attemptIndex,startLevel})=>{
    const qa=window.TowerboundBalanceQA;qa.createCharacter('QA'+String(attemptIndex).padStart(2,'0'),classId);
    const prepared=qa.prepareSpecialization(branchId,startLevel);if(prepared.branch!==branchId||prepared.level<startLevel)throw new Error('Specialization preparation failed: '+JSON.stringify(prepared));
-   const stageLogs=[];let branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
+   const stageLogs=[],deathStages=[];let checkpointRestores=0,branchChosen=true,totalTurns=0,totalCards=0,totalDamage=0,totalDamageTaken=0,totalHealing=0,reason='stage-limit',lastStage=0;
    const hpNow=()=>Number(qa.snapshot().character?.run?.playerHp)||0,maxHp=()=>Number(qa.snapshot().character?qa.engine().maxHp(qa.snapshot().character):1)||1;
    const trackHp=before=>{const after=hpNow();if(after<before)totalDamageTaken+=before-after;else if(after>before)totalHealing+=after-before;};
    const pickTarget=b=>{const living=(b.enemies||[]).filter(enemy=>enemy.alive&&Number(enemy.hp)>0),weight=e=>e.type==='boss'?110:e.type==='elite'?100:e.role==='saboteur'?95:e.role==='poison'?90:e.role==='healer'?85:e.role==='bleed'?75:e.role==='normal'?50:e.role==='tank'?30:40;return living.sort((a,b)=>weight(b)-weight(a)||(a.hp/Math.max(1,a.maxHp))-(b.hp/Math.max(1,b.maxHp)))[0]||null;};
