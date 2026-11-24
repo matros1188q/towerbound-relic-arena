@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.12",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Усиленная форма: Точный выпад",
+  "unlock_level": 62,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "parry",
+  "description": "Усиленная форма: Точный выпад — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

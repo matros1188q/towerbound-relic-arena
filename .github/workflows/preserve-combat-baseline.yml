@@ -1,0 +1,28 @@
+name: Preserve pre-combat baseline tag
+on:
+  push:
+    branches: [feature/combat-and-presentation-pass]
+    paths: [.github/workflows/preserve-combat-baseline.yml]
+permissions:
+  contents: write
+jobs:
+  tag-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create immutable baseline tag
+        env:
+          BASELINE_SHA: f1e0f18e0169e6915425add78ccfafc78e24f2b8
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git fetch --force origin
+          if git show-ref --tags --verify --quiet refs/tags/legacy-before-combat-pass; then
+            existing="$(git rev-list -n 1 legacy-before-combat-pass)"
+            test "$existing" = "$BASELINE_SHA"
+          else
+            git tag legacy-before-combat-pass "$BASELINE_SHA"
+            git push origin refs/tags/legacy-before-combat-pass
+          fi

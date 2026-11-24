@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.ice_dragon.07",
+  "class_id": "dragonkin",
+  "branch_id": "ice_dragon",
+  "name": "Полярный щит",
+  "unlock_level": 38,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "shield",
+  "description": "Полярный щит — ice_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

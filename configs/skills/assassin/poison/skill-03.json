@@ -1,0 +1,16 @@
+{
+  "id": "assassin.poison.03",
+  "class_id": "assassin",
+  "branch_id": "poison",
+  "name": "Змеиный след",
+  "unlock_level": 19,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Змеиный след — poison specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

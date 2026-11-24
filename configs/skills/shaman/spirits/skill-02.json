@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.02",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Вселение волка",
+  "unlock_level": 15,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Вселение волка — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

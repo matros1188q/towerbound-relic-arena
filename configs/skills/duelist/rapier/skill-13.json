@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.13",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Совершенная форма: Чтение движения",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "parry",
+  "description": "Совершенная форма: Чтение движения — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.greatsword.13",
+  "class_id": "destroyer",
+  "branch_id": "greatsword",
+  "name": "Совершенная форма: Рубящий разлом",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "strike",
+  "description": "Совершенная форма: Рубящий разлом — greatsword specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

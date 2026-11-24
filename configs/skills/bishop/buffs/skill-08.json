@@ -1,0 +1,16 @@
+{
+  "id": "bishop.buffs.08",
+  "class_id": "bishop",
+  "branch_id": "buffs",
+  "name": "Несокрушимая вера",
+  "unlock_level": 43,
+  "is_active": true,
+  "effect_template": "buff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "buff",
+  "description": "Несокрушимая вера — buffs specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

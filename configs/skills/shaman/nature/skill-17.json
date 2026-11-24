@@ -1,0 +1,16 @@
+{
+  "id": "shaman.nature.17",
+  "class_id": "shaman",
+  "branch_id": "nature",
+  "name": "Знак превосходства: Пылающие оковы",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "buff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "buff",
+  "description": "Знак превосходства: Пылающие оковы — nature specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

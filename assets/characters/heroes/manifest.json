@@ -1,0 +1,70 @@
+{
+  "pack": "towerbound-png-art-v3",
+  "category": "heroes",
+  "format": "png",
+  "assets": [
+    {
+      "id": "assassin",
+      "name": "Убийца",
+      "filename": "image-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image-Photoroom.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "hero.assassin"
+    },
+    {
+      "id": "bishop",
+      "name": "Епископ",
+      "filename": "image_2-Photoroom(1).png",
+      "relative_path": "assets/characters/heroes/image_2-Photoroom(1).png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "hero.bishop"
+    },
+    {
+      "id": "dragonkin",
+      "name": "Драконит",
+      "filename": "image_3-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image_3-Photoroom.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "hero.dragonkin"
+    },
+    {
+      "id": "destroyer",
+      "name": "Разрушитель",
+      "filename": "image_4-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image_4-Photoroom.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "hero.destroyer"
+    },
+    {
+      "id": "elemental",
+      "name": "Владыка стихий",
+      "filename": "image_5-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image_5-Photoroom.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "hero.elemental"
+    },
+    {
+      "id": "shaman",
+      "name": "Шаман",
+      "filename": "image_6-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image_6-Photoroom.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "hero.shaman"
+    },
+    {
+      "id": "duelist",
+      "name": "Дуэлянт",
+      "filename": "image_7-Photoroom.png",
+      "relative_path": "assets/characters/heroes/image_7-Photoroom.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "hero.duelist"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+name: Deploy Towerbound to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+          name: towerbound-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 1
+      - name: Wait for Pages artifact indexing
+        run: sleep 20
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: towerbound-pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Verify published site and critical assets
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          test -n "$PAGE_URL"
+          for attempt in $(seq 1 12); do
+            if curl --fail --silent --show-error --location "$PAGE_URL" -o /tmp/towerbound-index.html; then
+              break
+            fi
+            if [ "$attempt" -eq 12 ]; then
+              echo "GitHub Pages did not return a successful response"
+              exit 1
+            fi
+            sleep 5
+          done
+          grep -q 'rpg-mode.js' /tmp/towerbound-index.html
+          for asset in rpg-mode.js rpg-rework-v2.js rpg-rework-ui.js native-pwa.css service-worker.js; do
+            curl --fail --silent --show-error --location "${PAGE_URL}${asset}" -o /dev/null
+            echo "Verified published asset: $asset"
+          done
+          echo "Published GitHub Pages site is reachable and critical RPG assets are served."

@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "choose": 3,
+  "scope": "run",
+  "modifiers": [
+    {
+      "id": "elite_bounty",
+      "name": "Охота на элиту",
+      "description": "Элитки ×2 лута, но +30% урона.",
+      "elite_loot_multiplier": 2,
+      "enemy_damage_multiplier": 1.3
+    },
+    {
+      "id": "iron_skin",
+      "name": "Железная кожа",
+      "description": "Всем врагам щит 25%, +50% опыта.",
+      "all_enemies_shield_fraction": 0.25,
+      "reward_xp_multiplier": 1.5
+    },
+    {
+      "id": "glass_cannon",
+      "name": "Стеклянная пушка",
+      "description": "+35% урона игрока, +25% входящего.",
+      "player_damage_multiplier": 1.35,
+      "enemy_damage_multiplier": 1.25
+    },
+    {
+      "id": "arcane_hunt",
+      "name": "Арканная охота",
+      "description": "Перезарядка −20%, обычный лут −20%.",
+      "skill_cooldown_multiplier": 0.8,
+      "normal_loot_multiplier": 0.8
+    },
+    {
+      "id": "last_stand",
+      "name": "Последний рубеж",
+      "description": "При HP ниже 30% урон +40%.",
+      "low_hp_threshold": 0.3,
+      "low_hp_damage_multiplier": 1.4
+    }
+  ]
+}

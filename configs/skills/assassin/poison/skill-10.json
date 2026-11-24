@@ -1,0 +1,16 @@
+{
+  "id": "assassin.poison.10",
+  "class_id": "assassin",
+  "branch_id": "poison",
+  "name": "Пандемия",
+  "unlock_level": 53,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "dot",
+  "description": "Пандемия — poison specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "duelist.sword_shield.12",
+  "class_id": "duelist",
+  "branch_id": "sword_shield",
+  "name": "Усиленная форма: Ответный выпад",
+  "unlock_level": 62,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Усиленная форма: Ответный выпад — sword_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

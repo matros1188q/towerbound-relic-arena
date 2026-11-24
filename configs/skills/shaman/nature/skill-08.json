@@ -1,0 +1,16 @@
+{
+  "id": "shaman.nature.08",
+  "class_id": "shaman",
+  "branch_id": "nature",
+  "name": "Морозный раскол",
+  "unlock_level": 43,
+  "is_active": true,
+  "effect_template": "buff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "buff",
+  "description": "Морозный раскол — nature specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

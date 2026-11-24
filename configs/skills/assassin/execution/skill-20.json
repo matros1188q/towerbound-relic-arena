@@ -1,0 +1,16 @@
+{
+  "id": "assassin.execution.20",
+  "class_id": "assassin",
+  "branch_id": "execution",
+  "name": "Легендарная форма: Абсолютное уничтожение",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "execute",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "execute",
+  "description": "Легендарная форма: Абсолютное уничтожение — execution specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

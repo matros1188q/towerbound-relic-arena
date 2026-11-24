@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.fists.19",
+  "class_id": "destroyer",
+  "branch_id": "fists",
+  "name": "Возвышение: Тысяча попаданий",
+  "unlock_level": 95,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "strike",
+  "description": "Возвышение: Тысяча попаданий — fists specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

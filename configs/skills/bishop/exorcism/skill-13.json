@@ -1,0 +1,16 @@
+{
+  "id": "bishop.exorcism.13",
+  "class_id": "bishop",
+  "branch_id": "exorcism",
+  "name": "Совершенная форма: Печать отлучения",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "aoe",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "aoe",
+  "description": "Совершенная форма: Печать отлучения — exorcism specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

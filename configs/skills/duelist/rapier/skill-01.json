@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.01",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Укол шпаги",
+  "unlock_level": 10,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "parry",
+  "description": "Укол шпаги — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

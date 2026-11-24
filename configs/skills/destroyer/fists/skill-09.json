@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.fists.09",
+  "class_id": "destroyer",
+  "branch_id": "fists",
+  "name": "Тысяча попаданий",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "strike",
+  "description": "Тысяча попаданий — fists specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "assassin.poison.17",
+  "class_id": "assassin",
+  "branch_id": "poison",
+  "name": "Знак превосходства: Поглощение токсина",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "dot",
+  "description": "Знак превосходства: Поглощение токсина — poison specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

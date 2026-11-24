@@ -1,0 +1,31 @@
+name: Hero semantic full-canvas QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/characters/rig-parts/semantic-pass/**'
+      - 'scripts/build_semantic_full_canvas_review.py'
+      - '.github/workflows/hero-semantic-full-canvas.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  semantic-review:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image tooling
+        run: python -m pip install --disable-pip-version-check Pillow
+      - name: Rebuild full-canvas layers and QA sheets
+        run: |
+          python -m py_compile scripts/build_semantic_full_canvas_review.py
+          python scripts/build_semantic_full_canvas_review.py
+      - name: Upload review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hero-semantic-full-canvas-review
+          path: artifacts/semantic-full-canvas/
+          if-no-files-found: error

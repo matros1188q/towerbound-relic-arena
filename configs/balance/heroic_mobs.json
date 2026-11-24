@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "traits": [
+    {
+      "id": "medic",
+      "name": "Некромедик",
+      "mechanic": "revive_ally",
+      "reviveFraction": 0.35,
+      "maxRevives": 1,
+      "telegraph": 1.4
+    },
+    {
+      "id": "reflector",
+      "name": "Зеркальный танк",
+      "mechanic": "reflect_damage",
+      "reflectFraction": 0.2,
+      "duration": 3,
+      "telegraph": 1.2
+    },
+    {
+      "id": "volatile",
+      "name": "Чумной носитель",
+      "mechanic": "death_explosion",
+      "damageFraction": 0.12,
+      "telegraph": 1
+    }
+  ]
+}

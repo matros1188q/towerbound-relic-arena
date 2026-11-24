@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.join(__dirname,'..','configs','balance');
+const names=['run_modifiers','heroic_mobs','chapters','weekly_quests','cosmetics','skill_combos'];
+const data=Object.fromEntries(names.map(n=>[n,JSON.parse(fs.readFileSync(path.join(root,n+'.json'),'utf8'))]));
+assert.equal(data.run_modifiers.choose,3);
+assert.ok(data.run_modifiers.modifiers.length>=3);
+assert.equal(data.heroic_mobs.traits.length,3);
+assert.equal(data.chapters.chapters.length,5);
+assert.deepEqual(data.chapters.chapters.map(x=>x.stages),[[1,50],[51,100],[101,150],[151,200],[201,250]]);
+assert.equal(data.weekly_quests.quests.length,7);
+assert.equal(data.skill_combos.classes.length,7);
+for(const c of data.skill_combos.classes)assert.deepEqual(c.slots.map(x=>x.id),['primer','detonator','aoe','utility']);
+assert.equal(data.cosmetics.balanceImpact,false);
+console.log('2000h configs: OK');

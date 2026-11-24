@@ -1,0 +1,52 @@
+{
+  "pack": "towerbound-png-art-v3",
+  "category": "bosses",
+  "format": "png",
+  "assets": [
+    {
+      "id": "mirror-executioner",
+      "name": "Зеркальный палач",
+      "filename": "mirror-executioner.png",
+      "relative_path": "assets/characters/bosses/mirror-executioner.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.mirror-executioner"
+    },
+    {
+      "id": "ash-patriarch",
+      "name": "Пепельный патриарх",
+      "filename": "image_3.png",
+      "relative_path": "assets/characters/bosses/image_3.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.ash-patriarch"
+    },
+    {
+      "id": "ice-abbot",
+      "name": "Ледяной аббат",
+      "filename": "image_4.png",
+      "relative_path": "assets/characters/bosses/image_4.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.ice-abbot"
+    },
+    {
+      "id": "crimson-regent",
+      "name": "Багровый регент",
+      "filename": "image_11.png",
+      "relative_path": "assets/characters/bosses/image_11.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.crimson-regent"
+    },
+    {
+      "id": "heart-of-tower",
+      "name": "Сердце Башни",
+      "filename": "image_12.png",
+      "relative_path": "assets/characters/bosses/image_12.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.heart-of-tower"
+    }
+  ]
+}

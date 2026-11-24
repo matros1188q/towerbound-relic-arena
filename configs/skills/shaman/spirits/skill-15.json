@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.15",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Мастерский приём: Тотем жизни",
+  "unlock_level": 76,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Мастерский приём: Тотем жизни — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

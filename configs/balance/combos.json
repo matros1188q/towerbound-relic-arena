@@ -1,0 +1,222 @@
+{
+  "combos": [
+    {
+      "id": "assassin_combo_1",
+      "class": "assassin",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot2",
+        "slot3"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 2,
+        "guaranteed_crit": true
+      },
+      "label": "Сильная связка"
+    },
+    {
+      "id": "assassin_combo_2",
+      "class": "assassin",
+      "branch_scope": "any",
+      "chain": [
+        "slot2",
+        "slot3",
+        "slot4"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 1.5,
+        "guaranteed_crit": false
+      },
+      "label": "Тактическая связка"
+    },
+    {
+      "id": "bishop_combo_1",
+      "class": "bishop",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot2"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 2,
+        "guaranteed_crit": true
+      },
+      "label": "Сильная связка"
+    },
+    {
+      "id": "bishop_combo_2",
+      "class": "bishop",
+      "branch_scope": "any",
+      "chain": [
+        "slot2",
+        "slot4"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 1.5,
+        "guaranteed_crit": false
+      },
+      "label": "Тактическая связка"
+    },
+    {
+      "id": "dragonkin_combo_1",
+      "class": "dragonkin",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot3",
+        "slot2"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 2,
+        "guaranteed_crit": true
+      },
+      "label": "Сильная связка"
+    },
+    {
+      "id": "dragonkin_combo_2",
+      "class": "dragonkin",
+      "branch_scope": "any",
+      "chain": [
+        "slot2",
+        "slot4"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 1.5,
+        "guaranteed_crit": false
+      },
+      "label": "Тактическая связка"
+    },
+    {
+      "id": "destroyer_combo_1",
+      "class": "destroyer",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot2",
+        "slot3"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 2,
+        "guaranteed_crit": true
+      },
+      "label": "Сильная связка"
+    },
+    {
+      "id": "destroyer_combo_2",
+      "class": "destroyer",
+      "branch_scope": "any",
+      "chain": [
+        "slot3",
+        "slot4"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 1.5,
+        "guaranteed_crit": false
+      },
+      "label": "Тактическая связка"
+    },
+    {
+      "id": "elemental_combo_1",
+      "class": "elemental",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot2",
+        "slot4"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 2,
+        "guaranteed_crit": true
+      },
+      "label": "Сильная связка"
+    },
+    {
+      "id": "elemental_combo_2",
+      "class": "elemental",
+      "branch_scope": "any",
+      "chain": [
+        "slot2",
+        "slot3"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 1.5,
+        "guaranteed_crit": false
+      },
+      "label": "Тактическая связка"
+    },
+    {
+      "id": "duelist_combo_1",
+      "class": "duelist",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot2",
+        "slot3"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 2,
+        "guaranteed_crit": true
+      },
+      "label": "Сильная связка"
+    },
+    {
+      "id": "duelist_combo_2",
+      "class": "duelist",
+      "branch_scope": "any",
+      "chain": [
+        "slot2",
+        "slot2",
+        "slot4"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 1.5,
+        "guaranteed_crit": false
+      },
+      "label": "Тактическая связка"
+    },
+    {
+      "id": "shaman_combo_1",
+      "class": "shaman",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot2"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 2,
+        "guaranteed_crit": true
+      },
+      "label": "Сильная связка"
+    },
+    {
+      "id": "shaman_combo_2",
+      "class": "shaman",
+      "branch_scope": "any",
+      "chain": [
+        "slot1",
+        "slot3",
+        "slot4"
+      ],
+      "slot_binding": "selected_attack_loadout",
+      "bonus": {
+        "damage_mult": 1.5,
+        "guaranteed_crit": false
+      },
+      "label": "Тактическая связка"
+    }
+  ]
+}

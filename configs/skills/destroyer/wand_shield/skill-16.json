@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.wand_shield.16",
+  "class_id": "destroyer",
+  "branch_id": "wand_shield",
+  "name": "Предельная форма: Всплеск силы",
+  "unlock_level": 81,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "shield",
+  "description": "Предельная форма: Всплеск силы — wand_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

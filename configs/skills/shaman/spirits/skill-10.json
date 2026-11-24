@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.10",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Первозданный союз",
+  "unlock_level": 53,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "heal",
+  "description": "Первозданный союз — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

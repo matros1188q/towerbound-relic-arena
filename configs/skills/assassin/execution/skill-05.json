@@ -1,0 +1,16 @@
+{
+  "id": "assassin.execution.05",
+  "class_id": "assassin",
+  "branch_id": "execution",
+  "name": "Палач",
+  "unlock_level": 29,
+  "is_active": true,
+  "effect_template": "execute",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "execute",
+  "description": "Палач — execution specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

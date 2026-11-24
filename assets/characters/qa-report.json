@@ -1,0 +1,9 @@
+{
+  "heroes": 4,
+  "enemies": 20,
+  "bosses_with_art": 9,
+  "boss_profiles_without_dedicated_art": [
+    "boss.crimson-regent"
+  ],
+  "total_unique_roles": 33
+}

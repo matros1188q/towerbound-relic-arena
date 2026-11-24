@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.20",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Легендарная форма: Первозданный союз",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Легендарная форма: Первозданный союз — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

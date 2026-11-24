@@ -1,0 +1,71 @@
+{
+  "base_by_level": [
+    {
+      "level": 1,
+      "bp": 125
+    },
+    {
+      "level": 75,
+      "bp": 22000
+    },
+    {
+      "level": 100,
+      "bp": 60000
+    }
+  ],
+  "item_level_bp_per_level": [
+    {
+      "level": 1,
+      "weight": 0
+    },
+    {
+      "level": 75,
+      "weight": 1.5
+    },
+    {
+      "level": 100,
+      "weight": 2
+    }
+  ],
+  "rarity_bp_per_item": {
+    "common": 0,
+    "rare": 0,
+    "epic": 416.6666667,
+    "legendary": 666.6666667,
+    "Godlike": 0,
+    "Богоподобная": 0
+  },
+  "tiers": [
+    {
+      "id": "bronze",
+      "name": "Бронза",
+      "min": 0,
+      "max": 1999
+    },
+    {
+      "id": "silver",
+      "name": "Серебро",
+      "min": 2000,
+      "max": 7999
+    },
+    {
+      "id": "gold",
+      "name": "Золото",
+      "min": 8000,
+      "max": 19999
+    },
+    {
+      "id": "platinum",
+      "name": "Платина",
+      "min": 20000,
+      "max": 44999
+    },
+    {
+      "id": "diamond",
+      "name": "Алмаз",
+      "min": 45000,
+      "max": null
+    }
+  ],
+  "heroic_min_bp": 15000
+}

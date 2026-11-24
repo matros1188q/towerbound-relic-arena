@@ -1,0 +1,16 @@
+{
+  "id": "elemental.water.04",
+  "class_id": "elemental",
+  "branch_id": "water",
+  "name": "Водоворот",
+  "unlock_level": 24,
+  "is_active": true,
+  "effect_template": "aoe",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "aoe",
+  "description": "Водоворот — water specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

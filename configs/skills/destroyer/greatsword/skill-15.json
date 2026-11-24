@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.greatsword.15",
+  "class_id": "destroyer",
+  "branch_id": "greatsword",
+  "name": "Мастерский приём: Грохот стали",
+  "unlock_level": 76,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "strike",
+  "description": "Мастерский приём: Грохот стали — greatsword specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

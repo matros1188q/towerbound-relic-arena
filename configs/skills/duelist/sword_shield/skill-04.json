@@ -1,0 +1,16 @@
+{
+  "id": "duelist.sword_shield.04",
+  "class_id": "duelist",
+  "branch_id": "sword_shield",
+  "name": "Контрудар",
+  "unlock_level": 24,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "shield",
+  "description": "Контрудар — sword_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

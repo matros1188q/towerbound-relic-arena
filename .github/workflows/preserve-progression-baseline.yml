@@ -1,0 +1,27 @@
+name: Preserve pre-progression baseline
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/preserve-progression-baseline.yml]
+  pull_request:
+    branches: [main]
+    paths: [.github/workflows/preserve-progression-baseline.yml]
+permissions:
+  contents: write
+jobs:
+  tag-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Point rollback tag at the exact pre-progression commit
+        env:
+          BASELINE_SHA: e77ef1f3e1d6a7d2eb98b088f8bfa8a5dcc0ebe6
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git fetch --force origin
+          git cat-file -e "${BASELINE_SHA}^{commit}"
+          git tag -f legacy-before-progression "$BASELINE_SHA"
+          git push --force origin refs/tags/legacy-before-progression

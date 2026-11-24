@@ -1,0 +1,231 @@
+{
+  "pack": "towerbound-ui-art-v1",
+  "category": "synergies",
+  "assets": [
+    {
+      "id": "fire",
+      "name": "🔥 Огонь",
+      "path": "assets/synergies/fire.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        64,
+        46,
+        890,
+        971
+      ]
+    },
+    {
+      "id": "poison",
+      "name": "☠️ Яд",
+      "path": "assets/synergies/poison.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        264,
+        236,
+        730,
+        838
+      ]
+    },
+    {
+      "id": "storm",
+      "name": "⚡ Гроза",
+      "path": "assets/synergies/storm.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        96,
+        194,
+        894,
+        874
+      ]
+    },
+    {
+      "id": "abyss",
+      "name": "🌀 Бездна",
+      "path": "assets/synergies/abyss.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        258,
+        239,
+        737,
+        752
+      ]
+    },
+    {
+      "id": "life",
+      "name": "🌿 Жизнь",
+      "path": "assets/synergies/life.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        76,
+        107,
+        935,
+        917
+      ]
+    },
+    {
+      "id": "volley",
+      "name": "🏹 Залп",
+      "path": "assets/synergies/volley.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        171,
+        199,
+        875,
+        834
+      ]
+    },
+    {
+      "id": "ice",
+      "name": "❄️ Лёд",
+      "path": "assets/synergies/ice.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        195,
+        102,
+        804,
+        903
+      ]
+    },
+    {
+      "id": "mystery",
+      "name": "🔮 Тайна",
+      "path": "assets/synergies/mystery.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        193,
+        193,
+        786,
+        782
+      ]
+    },
+    {
+      "id": "luck",
+      "name": "🪙 Удача",
+      "path": "assets/synergies/luck.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        100,
+        126,
+        898,
+        940
+      ]
+    },
+    {
+      "id": "blood",
+      "name": "🩸 Кровь",
+      "path": "assets/synergies/blood.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        337,
+        203,
+        664,
+        783
+      ]
+    },
+    {
+      "id": "guard",
+      "name": "🛡️ Стража",
+      "path": "assets/synergies/guard.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        227,
+        142,
+        798,
+        867
+      ]
+    },
+    {
+      "id": "light",
+      "name": "🌟 Свет",
+      "path": "assets/synergies/light.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        82,
+        52,
+        917,
+        960
+      ]
+    },
+    {
+      "id": "time",
+      "name": "⏳ Время",
+      "path": "assets/synergies/time.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        133,
+        68,
+        859,
+        968
+      ]
+    },
+    {
+      "id": "steel",
+      "name": "⚔️ Сталь",
+      "path": "assets/synergies/steel.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        175,
+        126,
+        828,
+        876
+      ]
+    },
+    {
+      "id": "spirit",
+      "name": "🕯️ Дух",
+      "path": "assets/synergies/spirit.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "alpha_bounds": [
+        205,
+        112,
+        788,
+        885
+      ]
+    }
+  ]
+}

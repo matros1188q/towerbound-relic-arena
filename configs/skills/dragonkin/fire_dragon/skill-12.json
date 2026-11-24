@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.fire_dragon.12",
+  "class_id": "dragonkin",
+  "branch_id": "fire_dragon",
+  "name": "Усиленная форма: Пламенный коготь",
+  "unlock_level": 62,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Усиленная форма: Пламенный коготь — fire_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

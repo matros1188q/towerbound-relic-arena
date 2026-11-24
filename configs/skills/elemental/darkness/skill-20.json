@@ -1,0 +1,16 @@
+{
+  "id": "elemental.darkness.20",
+  "class_id": "elemental",
+  "branch_id": "darkness",
+  "name": "Легендарная форма: Вечное проклятие",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "debuff",
+  "description": "Легендарная форма: Вечное проклятие — darkness specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

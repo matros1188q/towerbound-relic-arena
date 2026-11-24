@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.wand_shield.13",
+  "class_id": "destroyer",
+  "branch_id": "wand_shield",
+  "name": "Совершенная форма: Боевой импульс",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "shield",
+  "description": "Совершенная форма: Боевой импульс — wand_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "duelist.sword_shield.10",
+  "class_id": "duelist",
+  "branch_id": "sword_shield",
+  "name": "Последний защитник",
+  "unlock_level": 53,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "shield",
+  "description": "Последний защитник — sword_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

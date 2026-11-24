@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.fists.13",
+  "class_id": "destroyer",
+  "branch_id": "fists",
+  "name": "Совершенная форма: Серия ударов",
+  "unlock_level": 67,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "strike",
+  "description": "Совершенная форма: Серия ударов — fists specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

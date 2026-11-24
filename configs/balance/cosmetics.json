@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "balanceImpact": false,
+  "chests": [
+    {
+      "id": "weapon",
+      "name": "Сундук обликов оружия",
+      "price": 35,
+      "pool": [
+        "ashen_blade",
+        "frostbite",
+        "starfall"
+      ]
+    },
+    {
+      "id": "frame",
+      "name": "Сундук рамок",
+      "price": 25,
+      "pool": [
+        "rune_frame",
+        "obsidian_frame",
+        "starlight_frame"
+      ]
+    },
+    {
+      "id": "death",
+      "name": "Сундук эффектов смерти",
+      "price": 30,
+      "pool": [
+        "soul_embers",
+        "crystal_shatter",
+        "void_dissolve"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "ashen_blade",
+      "name": "Пепельный клинок",
+      "type": "weapon_skin"
+    },
+    {
+      "id": "frostbite",
+      "name": "Иней",
+      "type": "weapon_skin"
+    },
+    {
+      "id": "starfall",
+      "name": "Звездопад",
+      "type": "weapon_skin"
+    },
+    {
+      "id": "rune_frame",
+      "name": "Рунная рамка",
+      "type": "frame"
+    },
+    {
+      "id": "obsidian_frame",
+      "name": "Обсидиановая рамка",
+      "type": "frame"
+    },
+    {
+      "id": "starlight_frame",
+      "name": "Звёздная рамка",
+      "type": "frame"
+    },
+    {
+      "id": "soul_embers",
+      "name": "Угли души",
+      "type": "death_effect"
+    },
+    {
+      "id": "crystal_shatter",
+      "name": "Раскол кристалла",
+      "type": "death_effect"
+    },
+    {
+      "id": "void_dissolve",
+      "name": "Растворение в пустоте",
+      "type": "death_effect"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "duration_minutes": 5,
+  "steps": 6,
+  "skippable": true,
+  "reward": {
+    "silver": 100,
+    "healing_potions": 1
+  },
+  "steps_data": [
+    {
+      "id": "create",
+      "title": "Создай героя"
+    },
+    {
+      "id": "map",
+      "title": "Выбери этап"
+    },
+    {
+      "id": "battle",
+      "title": "Освой атаку"
+    },
+    {
+      "id": "skill",
+      "title": "Используй умение"
+    },
+    {
+      "id": "potion",
+      "title": "Примени зелье"
+    },
+    {
+      "id": "gear",
+      "title": "Надень экипировку"
+    }
+  ]
+}

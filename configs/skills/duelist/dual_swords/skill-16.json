@@ -1,0 +1,16 @@
+{
+  "id": "duelist.dual_swords.16",
+  "class_id": "duelist",
+  "branch_id": "dual_swords",
+  "name": "Предельная форма: Разрыв темпа",
+  "unlock_level": 81,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "strike",
+  "description": "Предельная форма: Разрыв темпа — dual_swords specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

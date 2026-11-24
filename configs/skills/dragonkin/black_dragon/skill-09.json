@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.black_dragon.09",
+  "class_id": "dragonkin",
+  "branch_id": "black_dragon",
+  "name": "Драконья сингулярность",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "debuff",
+  "description": "Драконья сингулярность — black_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

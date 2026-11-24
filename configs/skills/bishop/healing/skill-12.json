@@ -1,0 +1,16 @@
+{
+  "id": "bishop.healing.12",
+  "class_id": "bishop",
+  "branch_id": "healing",
+  "name": "Усиленная форма: Исцеляющий свет",
+  "unlock_level": 62,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Усиленная форма: Исцеляющий свет — healing specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

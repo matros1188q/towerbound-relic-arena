@@ -1,0 +1,16 @@
+{
+  "id": "duelist.rapier.17",
+  "class_id": "duelist",
+  "branch_id": "rapier",
+  "name": "Знак превосходства: Безупречная защита",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "parry",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "parry",
+  "description": "Знак превосходства: Безупречная защита — rapier specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

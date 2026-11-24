@@ -1,0 +1,16 @@
+{
+  "id": "duelist.dual_swords.01",
+  "class_id": "duelist",
+  "branch_id": "dual_swords",
+  "name": "Двойной выпад",
+  "unlock_level": 10,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "strike",
+  "description": "Двойной выпад — dual_swords specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

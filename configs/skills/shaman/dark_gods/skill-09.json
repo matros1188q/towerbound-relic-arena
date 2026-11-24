@@ -1,0 +1,16 @@
+{
+  "id": "shaman.dark_gods.09",
+  "class_id": "shaman",
+  "branch_id": "dark_gods",
+  "name": "Глас бездны",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "debuff",
+  "description": "Глас бездны — dark_gods specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

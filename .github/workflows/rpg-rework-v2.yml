@@ -1,0 +1,79 @@
+name: RPG rework v2 checks
+on:
+  push:
+    branches: [feature/rework-v2, feature/balance-and-content-pass, feature/combat-and-presentation-pass, feature/gamefeel, feature/combat-visuals-20, feature/progression-24, fix/audit-pass, main]
+    paths:
+      - 'rpg-rework-v2.js'
+      - 'towerbound-cloud.js'
+      - 'towerbound-online.js'
+      - 'supabase/migrations/**'
+      - 'rpg-rework-ui.js'
+      - 'combat-visuals.js'
+      - 'progression-24.js'
+      - 'endgame-systems.js'
+      - 'rpg-rework-ui.css.js'
+      - 'rpg-mode.js'
+      - 'rpg-expansion.js'
+      - 'index.html'
+      - 'configs/**'
+      - 'tests/**'
+      - '.github/workflows/rpg-rework-v2.yml'
+  pull_request:
+    paths:
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+      - 'endgame-systems.js'
+      - 'rpg-rework-ui.css.js'
+      - 'rpg-mode.js'
+      - 'rpg-expansion.js'
+      - 'index.html'
+      - 'configs/**'
+      - 'tests/**'
+      - '.github/workflows/rpg-rework-v2.yml'
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check rpg-rework-v2.js
+      - run: node --check towerbound-cloud.js
+      - run: node --check towerbound-online.js
+      - run: node tests/online-services.test.cjs
+      - run: node --check progression-24.js
+      - run: node --check endgame-systems.js
+      - run: node --check rpg-rework-ui.js
+      - run: node --check rpg-rework-ui.css.js
+      - run: node --check rpg-mode.js
+      - run: node --check rpg-expansion.js
+      - run: node tests/rpg-expansion-static.cjs
+      - run: node tests/gamefeel.test.cjs
+      - run: node tests/rpg-rework-v2.test.cjs
+      - run: node tests/ui-polish-regression.test.cjs
+      - run: node tests/loot-combat-update.test.cjs
+      - run: node tests/card-system-audit.cjs
+      - run: node tests/combat-deep-regression.test.cjs
+      - run: node tests/equipment-relic-card-synergy.test.cjs
+      - run: node tests/deckbuilder-balance.test.cjs
+      - run: node tests/combat-runtime.test.cjs
+      - run: node tests/card-meta-progression.test.cjs
+      - run: node tests/campfire-curse-saboteur.test.cjs
+      - run: node tests/balance-sim.cjs
+      - name: Check specialization balance simulator syntax
+        run: |
+          node --check tests/balance-sim.cjs
+          node --check tests/economy-sim.cjs
+      - name: Run 21-specialization balance matrix
+        run: node tests/balance-sim.cjs
+      - name: Simulate all 21 builds through the 250-stage tower
+        run: node tests/economy-sim.cjs
+      - run: node tests/combat-visuals.test.cjs
+      - run: node tests/character-art.test.cjs
+      - run: node tests/progression-24.test.cjs
+      - run: node tests/endgame-systems.test.cjs
+      - run: node tests/full-game-audit.cjs
+      - run: npm install --no-save playwright@1.54.2
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/rpg-smoke.cjs

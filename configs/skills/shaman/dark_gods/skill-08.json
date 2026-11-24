@@ -1,0 +1,16 @@
+{
+  "id": "shaman.dark_gods.08",
+  "class_id": "shaman",
+  "branch_id": "dark_gods",
+  "name": "Гниение души",
+  "unlock_level": 43,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "debuff",
+  "description": "Гниение души — dark_gods specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

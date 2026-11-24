@@ -1,0 +1,16 @@
+{
+  "id": "elemental.darkness.09",
+  "class_id": "elemental",
+  "branch_id": "darkness",
+  "name": "Бездна внутри",
+  "unlock_level": 48,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "debuff",
+  "description": "Бездна внутри — darkness specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

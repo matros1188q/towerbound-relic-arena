@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.11",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Пробуждение: Зов предков",
+  "unlock_level": 57,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Пробуждение: Зов предков — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

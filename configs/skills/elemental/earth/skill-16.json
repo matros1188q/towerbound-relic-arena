@@ -1,0 +1,16 @@
+{
+  "id": "elemental.earth.16",
+  "class_id": "elemental",
+  "branch_id": "earth",
+  "name": "Предельная форма: Гравитационный кулак",
+  "unlock_level": 81,
+  "is_active": true,
+  "effect_template": "control",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "control",
+  "description": "Предельная форма: Гравитационный кулак — earth specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

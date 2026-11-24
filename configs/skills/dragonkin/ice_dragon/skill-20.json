@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.ice_dragon.20",
+  "class_id": "dragonkin",
+  "branch_id": "ice_dragon",
+  "name": "Легендарная форма: Вечная мерзлота",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Легендарная форма: Вечная мерзлота — ice_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

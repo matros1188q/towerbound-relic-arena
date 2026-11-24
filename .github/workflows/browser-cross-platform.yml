@@ -1,0 +1,47 @@
+name: TowerBound browser and regression tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: towerbound-browser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression-and-browser:
+    name: Regression + Chromium / Firefox / WebKit
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out main revision
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright test runner
+        run: npm install --no-save playwright@1.54.2
+
+      - name: Install Chromium, Firefox and WebKit
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run balance simulations
+        run: npm run balance:all
+
+      - name: Validate art asset manifest
+        run: npm run art:check
+
+      - name: Run onboarding, UI and repository regression tests
+        run: npm run test:polish
+
+      - name: Run desktop and mobile journeys in all three browser engines
+        run: npm run test:browser

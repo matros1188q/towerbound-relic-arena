@@ -1,0 +1,16 @@
+{
+  "id": "assassin.execution.12",
+  "class_id": "assassin",
+  "branch_id": "execution",
+  "name": "Усиленная форма: Теневой рывок",
+  "unlock_level": 62,
+  "is_active": true,
+  "effect_template": "execute",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "execute",
+  "description": "Усиленная форма: Теневой рывок — execution specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "shaman.spirits.01",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Удар духа",
+  "unlock_level": 10,
+  "is_active": true,
+  "effect_template": "strike",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "heal",
+  "description": "Удар духа — атакующая техника, наносящая 220% урона от силы атаки.",
+  "template_file": "configs/balance/skill_effects.json",
+  "damage_type": "physical",
+  "damage_multiplier": 2.2
+}

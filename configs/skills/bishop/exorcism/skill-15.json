@@ -1,0 +1,16 @@
+{
+  "id": "bishop.exorcism.15",
+  "class_id": "bishop",
+  "branch_id": "exorcism",
+  "name": "Мастерский приём: Ослепляющий приговор",
+  "unlock_level": 76,
+  "is_active": true,
+  "effect_template": "aoe",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "aoe",
+  "description": "Мастерский приём: Ослепляющий приговор — exorcism specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

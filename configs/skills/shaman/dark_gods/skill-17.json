@@ -1,0 +1,16 @@
+{
+  "id": "shaman.dark_gods.17",
+  "class_id": "shaman",
+  "branch_id": "dark_gods",
+  "name": "Знак превосходства: Око тьмы",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "debuff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "debuff",
+  "description": "Знак превосходства: Око тьмы — dark_gods specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "bishop.healing.20",
+  "class_id": "bishop",
+  "branch_id": "healing",
+  "name": "Легендарная форма: Полное восстановление",
+  "unlock_level": 100,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "heal",
+  "description": "Легендарная форма: Полное восстановление — healing specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

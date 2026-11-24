@@ -1,0 +1,69 @@
+{
+  "assassin": {
+    "id": "assassin_crit",
+    "name": "Ответ тени",
+    "icon": "◒",
+    "trigger": "critical_hit",
+    "effect": "next_hit_damage_multiplier",
+    "value": 1.5,
+    "uses": 1,
+    "duration_seconds": 8
+  },
+  "duelist": {
+    "id": "duelist_rhythm",
+    "name": "Ритм дуэлянта",
+    "icon": "⚔",
+    "trigger": "three_attacks",
+    "effect": "free_skill",
+    "uses": 1,
+    "duration_seconds": 10,
+    "attacks_required": 3
+  },
+  "bishop": {
+    "id": "bishop_emergency",
+    "name": "Последняя милость",
+    "icon": "✚",
+    "trigger": "health_below_fraction",
+    "threshold": 0.3,
+    "effect": "heal_max_health_fraction",
+    "value": 0.2,
+    "cooldown_seconds": 30
+  },
+  "dragonkin": {
+    "id": "dragonkin_guard",
+    "name": "Чешуя дракона",
+    "icon": "◆",
+    "trigger": "five_attacks",
+    "effect": "shield_max_health_fraction",
+    "value": 0.1,
+    "uses": 1,
+    "attacks_required": 5
+  },
+  "destroyer": {
+    "id": "destroyer_rage",
+    "name": "Ярость победы",
+    "icon": "✹",
+    "trigger": "kill",
+    "effect": "damage_multiplier",
+    "value": 1.2,
+    "duration_seconds": 5
+  },
+  "elemental": {
+    "id": "elemental_resonance",
+    "name": "Слияние стихий",
+    "icon": "❄",
+    "trigger": "two_distinct_elements",
+    "effect": "next_skill_damage_multiplier",
+    "value": 1.3,
+    "uses": 1
+  },
+  "shaman": {
+    "id": "shaman_purge",
+    "name": "Духовное очищение",
+    "icon": "☼",
+    "trigger": "three_buffs",
+    "effect": "cleanse_debuffs",
+    "buffs_required": 3,
+    "uses": 1
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "unlock_level": 100,
+  "max_level": 100,
+  "xp_per_point": 500000,
+  "stats": [
+    "attack",
+    "health",
+    "defense",
+    "critical",
+    "resistance"
+  ],
+  "reset_cost_silver": 5000,
+  "points_per_level": 1
+}

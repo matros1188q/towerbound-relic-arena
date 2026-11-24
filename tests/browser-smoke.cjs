@@ -1,0 +1,283 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const http=require('node:http');
+const path=require('node:path');
+const {chromium,firefox,webkit}=require('playwright');
+const root=process.cwd();
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.json':'application/json; charset=utf-8','.woff2':'font/woff2'};
+function startServer(){
+ const server=http.createServer((req,res)=>{
+  try{
+   const url=new URL(req.url,'http://127.0.0.1');
+   const relative=url.pathname==='/'?'index.html':decodeURIComponent(url.pathname.slice(1));
+   const file=path.resolve(root,relative);
+   if(file!==root&&!file.startsWith(root+path.sep)){res.writeHead(403).end('Forbidden');return;}
+   fs.readFile(file,(error,data)=>{
+    if(error){res.writeHead(404).end('Not found');return;}
+    res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store'}).end(data);
+   });
+  }catch{res.writeHead(400).end('Bad request');}
+ });
+ return new Promise(resolve=>server.listen(0,'127.0.0.1',()=>resolve(server)));
+}
+async function journey(type,name,viewport,url){
+ const browser=await type.launch({headless:true});
+ let context;
+ try{
+  const mobileEmulation=type===firefox?{}:{isMobile:viewport.width<500,hasTouch:viewport.width<500};
+  context=await browser.newContext({viewport,colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block',...mobileEmulation});
+  const page=await context.newPage(),errors=[],failed=[],consoleErrors=[];
+ page.on('dialog',dialog=>dialog.accept());
+ page.on('pageerror',error=>errors.push(error.message));
+ page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});
+ page.on('requestfailed',request=>{const url=request.url(),reason=request.failure()?.errorText;if(reason!=='net::ERR_ABORTED'&&reason!=='NS_BINDING_ABORTED'&&!url.includes('fonts.googleapis.com')&&!url.includes('fonts.gstatic.com')&&!url.includes('cdn.jsdelivr.net'))failed.push(url+': '+reason);});
+ await page.route('https://cdn.jsdelivr.net/**',route=>route.request().url().includes('/npm/@supabase/supabase-js@2')?route.fulfill({status:200,contentType:'application/javascript',body:'/* Browser QA auth adapter is installed by addInitScript. */'}):route.abort());
+ await page.route('https://fonts.googleapis.com/**',route=>route.abort());
+ await page.route('https://fonts.gstatic.com/**',route=>route.abort());
+  await page.addInitScript(()=>{
+   const qaAdapter={createClient:()=>{let listener=null;const readSession=()=>{try{return JSON.parse(localStorage.getItem('__tb_qa_auth_session')||'null');}catch(e){return null;}};
+    return{__tbQaStub:true,auth:{onAuthStateChange:cb=>{listener=cb;},getSession:async()=>({data:{session:readSession()},error:null}),
+     signInWithPassword:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
+     signUp:async({email,password})=>{window.__tbLastAuth={email,password};const session={user:{id:'qa-user',email}};localStorage.setItem('__tb_qa_auth_session',JSON.stringify(session));if(listener)listener('SIGNED_IN',session);return{data:{session},error:null};},
+     signOut:async()=>{localStorage.removeItem('__tb_qa_auth_session');if(listener)listener('SIGNED_OUT',null);return{error:null};}},
+     from:()=>{const query={select(){return this;},eq(){return this;},neq(){return this;},gte(){return this;},lte(){return this;},gt(){return this;},order(){return this;},limit:async()=>({data:[],error:null}),maybeSingle:async()=>({data:null,error:null}),upsert:async()=>({data:null,error:null})};return query;},
+     rpc:async()=>({data:{revision:1},error:null})};
+   }};
+   Object.freeze(qaAdapter);
+   Object.defineProperty(window,'supabase',{configurable:false,enumerable:true,writable:false,value:qaAdapter});
+   window.__tbQaSupabaseStub=true;
+  });
+  await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework,{timeout:20000});
+  await page.waitForSelector('#tbRpg .tb-v2',{timeout:15000});
+  await page.evaluate(()=>{localStorage.clear();document.querySelector('#titleScreen')?.classList.add('is-hidden');document.querySelector('#accountDialog')?.classList.remove('open');});
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
+  await page.waitForSelector('#tbRpg .tb-login-gate');
+  await page.waitForFunction(()=>window.TowerboundCloud?.configured&&window.TowerboundCloud.status?.().text==='АККАУНТ · НУЖЕН ВХОД',{timeout:10000});
+  assert.equal(await page.evaluate(()=>window.TowerboundCloud?.client?.__tbQaStub===true),true,name+' uses the isolated browser auth adapter rather than the live Supabase CDN');
+  assert.equal(await page.locator('.tb-login-gate h2').innerText(),'Вход в игру',name+' starts with centered login gate');
+  await page.locator('#login').fill('BrowserQA');
+  await page.locator('#pass').fill('qa-password');
+  await page.locator('[data-action="empty-login"]').click();
+  try {
+   await page.waitForFunction(()=>window.TowerboundCloud?.signedIn || !!document.querySelector('.tb-login-message.is-error'),{timeout:12000});
+  } catch(error) {
+   const authDiagnostic=await page.evaluate(()=>({configured:window.TowerboundCloud?.configured,signedIn:window.TowerboundCloud?.signedIn,status:window.TowerboundCloud?.status?.(),message:document.querySelector('.tb-login-message')?.textContent,buttonDisabled:document.querySelector('[data-action="empty-login"]')?.disabled,lastAuth:window.__tbLastAuth,cloudError:document.querySelector('#tbCloudMessage')?.textContent}));
+   process.stderr.write('AUTH DIAGNOSTIC '+name+' '+JSON.stringify(authDiagnostic)+'\\n');
+   throw error;
+  }
+  const authState=await page.evaluate(()=>({signedIn:!!window.TowerboundCloud?.signedIn,configured:window.TowerboundCloud?.configured,status:window.TowerboundCloud?.status?.(),message:document.querySelector('.tb-login-message')?.textContent,lastAuth:window.__tbLastAuth,sessionStorage:localStorage.getItem('__tb_qa_auth_session'),cloudMessage:document.querySelector('#tbCloudMessage')?.textContent}));
+  assert.equal(authState.signedIn,true,name+' signs in through the browser auth adapter: '+JSON.stringify(authState));
+  await page.waitForSelector('[data-action="new"]');
+  assert.equal(await page.locator('.tb-header .tb-account-button').count(),0,name+' has no redundant account button');
+  const logo=page.locator('.tb-brand img.game-logo');
+  assert.equal(await logo.count(),1,name+' character header shows the JPG TowerBound logo');
+  const logoLayout=await logo.evaluate(el=>({width:el.getBoundingClientRect().width,fit:getComputedStyle(el).objectFit,loaded:el.complete&&el.naturalWidth>0}));
+  assert.ok(logoLayout.width<=300.5,name+' logo respects its max width');
+  assert.equal(logoLayout.fit,'contain',name+' logo preserves aspect ratio');
+  assert.ok(logoLayout.loaded,name+' logo JPG loaded');
+  await page.locator('[data-action="new"]').first().click();
+  assert.equal(await page.locator('[data-class]').count(),7,name+' displays seven playable classes');
+  await page.locator('[data-class="assassin"]').click();
+  await page.locator('#name').fill('Cross QA');
+  await page.locator('[data-action="confirm-create"]').click();
+  await page.waitForFunction(()=>window.TowerboundRework?.state.characters.length===1);
+  assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('tb-rpg-v2')).characters.length),1,name+' persists the new character');
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForSelector('#tbRpg .tb-v2');
+  assert.match(await page.locator('#tbRpg').innerText(),/Cross QA/,name+' restores the saved character after reload');
+  await page.locator('[data-action="play"]').click();
+  await page.waitForFunction(()=>document.querySelectorAll('.tb-map-node').length===250,{timeout:15000});
+  const mapNodeCount=await page.locator('.tb-map-node').count();
+  assert.equal(mapNodeCount,250,name+' renders all 250 stages before combat');
+  const mapLayout=await page.evaluate(()=>{
+   const toolbar=document.querySelector('.tb-stage-toolbar'),grid=document.querySelector('.tb-map-layout'),nav=document.querySelector('.tb-bottom-nav');
+   return {toolbarBeforeGrid:!!toolbar&&!!grid&&!!(toolbar.compareDocumentPosition(grid)&Node.DOCUMENT_POSITION_FOLLOWING),
+    navButtons:nav?.querySelectorAll('button').length||0,navZ:Number(getComputedStyle(nav||document.body).zIndex),
+    navPointer:getComputedStyle(nav||document.body).pointerEvents,width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+  });
+  assert.equal(mapLayout.toolbarBeforeGrid,true,name+' places the compact selected-stage panel before the map grid');
+  assert.equal(mapLayout.navButtons,6,name+' exposes the six primary bottom navigation tabs: map, profile, progress, community, shop and account');
+  assert.equal(mapLayout.navPointer,'auto',name+' keeps bottom navigation clickable');
+  await page.locator('[data-action="bottom-profile"]').click();
+  assert.equal(await page.locator('.tb-tabs button').count(),8,name+' renders all eight profile tabs');
+  for(const tab of ['stats','talents','skills','gear','bag','craft','account','speedrun']){
+   const tabButton=page.locator('.tb-tabs [data-tab="'+tab+'"]');
+   await tabButton.click();
+   assert.equal(await tabButton.evaluate(el=>el.classList.contains('active')),true,name+' activates the '+tab+' profile tab');
+   assert.equal(await page.locator('#socPanel').count(),0,name+' keeps the '+tab+' profile tab isolated from the social click handler');
+  }
+  await page.locator('[data-action="bottom-account"]').click();
+  await page.locator('[data-action="open-meta-progression"]').click();
+  await page.waitForFunction(()=>{const panel=document.querySelector('#tbProgressionOverlay');return !!panel&&!panel.hidden;},{timeout:10000});
+  await page.locator('#tbProgressionOverlay [data-progress-tab="economy"]').click();
+  assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Чёрный рынок/,name+' opens the progression economy tab without leaving the overlay');
+  await page.locator('#tbProgressionOverlay [data-progress-tab="ux"]').click();
+  assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Лучшая экипировка/,name+' opens the progression convenience tab');
+  await page.locator('#tbProgressionOverlay [data-tbp="language"]').click();
+  await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.innerText.includes('Convenience'));
+  assert.match(await page.locator('#tbProgressionOverlay nav').innerText(),/Economy/,name+' translates progression navigation to English');
+  await page.locator('#tbProgressionOverlay [data-progress-tab="economy"]').click();
+  assert.match(await page.locator('#tbProgressionOverlay .tbp-content').innerText(),/Black Market/,name+' translates economy content to English');
+  await page.locator('#tbProgressionOverlay [data-progress-tab="ux"]').click();
+  await page.locator('#tbProgressionOverlay [data-tbp="language"]').click();
+  await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.innerText.includes('Удобство'));
+  await page.locator('#tbProgressionOverlay [data-tbp="close"]').first().click({position:{x:10,y:10}});
+  await page.waitForFunction(()=>document.querySelector('#tbProgressionOverlay')?.hidden===true);
+  await page.locator('[data-action="bottom-profile"]').click();
+  await page.locator('[data-tab="gear"]').click();
+  const collectionItems=page.locator('.tb-collection-item');
+  assert.ok(await collectionItems.count()>=30,name+' renders at least 30 class collection entries across equipment slots and rarities');
+  const collectionEntry=await collectionItems.first().evaluate(el=>({slot:el.querySelector('b')?.textContent?.trim(),rarity:el.querySelector('small')?.textContent?.trim()}));
+  assert.ok(collectionEntry.slot&&collectionEntry.rarity,name+' labels collection entries by equipment slot and rarity');
+  const collectionHit=await collectionItems.first().evaluate(el=>{const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,hit=document.elementFromPoint(x,y),siblings=[...el.parentElement.querySelectorAll('.tb-collection-item')].slice(0,3).map(item=>{const b=item.getBoundingClientRect();return{key:item.dataset.collectionItem,left:b.left,top:b.top,right:b.right,bottom:b.bottom};});const ancestors=[];for(let node=el;node&&ancestors.length<9;node=node.parentElement){const b=node.getBoundingClientRect(),c=getComputedStyle(node);ancestors.push({tag:node.tagName,className:String(node.className||''),width:b.width,height:b.height,display:c.display,alignItems:c.alignItems,gridTemplateColumns:c.gridTemplateColumns,flex:c.flex,position:c.position});}return{first:{key:el.dataset.collectionItem,left:r.left,top:r.top,right:r.right,bottom:r.bottom},hit:hit?.outerHTML?.slice(0,260)||null,siblings,computed:{position:getComputedStyle(el).position,zIndex:getComputedStyle(el).zIndex,transform:getComputedStyle(el).transform,pointerEvents:getComputedStyle(el).pointerEvents},ancestors};});
+  process.stdout.write('COLLECTION HIT DIAGNOSTIC '+name+' '+JSON.stringify(collectionHit)+'\\n');
+  await collectionItems.first().click();
+  assert.equal(await page.locator('.tb-collection-detail').count(),1,name+' opens the selected collection item detail');
+  await page.locator('[data-collection-close]').click();
+  await page.locator('[data-action="bottom-progress"]').click();
+  assert.equal(await page.locator('.tb-systems').count(),1,name+' opens the progress destination from bottom navigation');
+  const progressLayout=await page.locator('.tb-systems').evaluate(el=>({display:getComputedStyle(el).display,width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,content:el.innerText.trim().length,achievements:el.querySelectorAll('.tb-system-row').length}));
+  assert.equal(progressLayout.display,'block',name+' progress is a full-width block, not a squeezed legacy flex row');
+  assert.ok(progressLayout.width>viewport.width*.75&&progressLayout.height>150&&progressLayout.content>80,name+' progress content is visibly laid out: '+JSON.stringify(progressLayout));
+  assert.ok(progressLayout.achievements>0,name+' renders achievement rows');
+  assert.equal(await page.locator('#socPanel').count(),0,name+' progress navigation does not open the social overlay');
+  await page.locator('[data-action="bottom-shop"]').click();
+  assert.equal(await page.locator('.tb-shop').count(),1,name+' opens the shop destination from bottom navigation');
+  const shopLayout=await page.locator('.tb-shop').evaluate(el=>({display:getComputedStyle(el).display,width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,content:el.innerText.trim().length,products:el.querySelectorAll('.tb-product').length}));
+  assert.equal(shopLayout.display,'block',name+' shop is a full-width block, not a squeezed legacy flex row');
+  assert.ok(shopLayout.width>viewport.width*.75&&shopLayout.height>180&&shopLayout.content>80,name+' shop content is visibly laid out: '+JSON.stringify(shopLayout));
+  assert.ok(shopLayout.products>0,name+' renders purchasable shop products');
+  await page.locator('[data-action="bottom-account"]').click();
+  assert.equal(await page.locator('.tb-systems').count(),1,name+' opens the account destination from bottom navigation');
+  await page.locator('[data-action="bottom-map"]').click();
+  await page.waitForSelector('.tb-stage-toolbar');
+  // Exercise the map's dynamic antidote purchase button, not just its static handler.
+  await page.evaluate(()=>{
+   const c=window.TowerboundRework?.state?.characters?.[0];
+   if(!c)throw new Error('Antidote QA character is missing');
+   c.progress.highestEver=13;c.progress.currentStage=1;c.run.active=true;c.run.stage=null;c.run.campStopsUsed=[13];
+   c.silver=100;c.bag=(c.bag||[]).filter(item=>item.type!=="antidote");
+   window.TowerboundReworkUI.showMap();
+  });
+  await page.locator('[data-stage="13"]').evaluate(element=>element.click());
+  await page.locator('.tb-stage-more summary').click();
+  await page.locator('[data-action="buy-antidote"]').click();
+  await page.waitForFunction(()=>{
+   const c=window.TowerboundRework?.state?.characters?.[0];
+   return c?.silver===85&&(c.bag||[]).some(item=>item.type==="antidote"&&item.quantity===1);
+  },{timeout:5000});
+  const antidotePurchase=await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];return{silver:c.silver,quantity:c.bag.filter(item=>item.type==="antidote").reduce((sum,item)=>sum+Number(item.quantity||0),0)};});
+  assert.deepEqual(antidotePurchase,{silver:85,quantity:1},name+' buys one antidote for exactly 15 silver');
+  await page.locator('[data-stage="1"]').evaluate(element=>element.click());
+  await page.evaluate(()=>{
+   const c=window.TowerboundRework.state.characters[0];
+   c.run.active=false;c.run.stage=null;c.run.campStopsUsed=[];c.silver=100;c.bag=c.bag.filter(item=>item.type!=="antidote");
+   window.TowerboundReworkUI.showMap();
+   Math.random=()=>.5;
+  });
+  await page.locator('[data-action="start"]').click();
+  const starterDeckConfirm=page.locator('[data-starter-deck-confirm]');
+  await starterDeckConfirm.waitFor({state:'visible',timeout:5000});
+  await page.evaluate(()=>{const character=window.TowerboundRework?.state?.characters?.[0];if(!character?.run)throw new Error('QA character run was not found before starter deck confirmation');character.run.mapEvents={};});
+  await starterDeckConfirm.click();
+  await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
+  assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
+  // Keep the combat fixture alive across all three browsers: no lethal enemy damage or early poison victory.
+  await page.evaluate(()=>{
+   const character=window.TowerboundRework?.state?.characters?.find(item=>item.id===window.TowerboundRework.state.activeCharacterId),stage=character?.run?.stage,snapshot=stage?.uiBattleSnapshot;
+   if(!snapshot||!Array.isArray(snapshot.enemies)||snapshot.enemies.length<2)throw new Error('Combat fixture did not expose at least two live enemies');
+   for(const enemy of snapshot.enemies){
+    enemy.hp=100000;enemy.maxHp=Math.max(100000,Number(enemy.maxHp)||0);enemy.alive=true;enemy.dead=false;
+    for(const key of Object.keys(enemy))if(/^(damage|attackDamage|damagePerHit|power|dmg)$/i.test(key)&&Number.isFinite(Number(enemy[key])))enemy[key]=0;
+    if(enemy.intent&&typeof enemy.intent==='object')for(const key of Object.keys(enemy.intent))if(/damage|attack|power|dmg/i.test(key)&&Number.isFinite(Number(enemy.intent[key])))enemy.intent[key]=0;
+   }
+   for(const mob of stage.mobs||[]){mob.hp=100000;mob.maxHp=Math.max(100000,Number(mob.maxHp)||0);mob.alive=true;mob.dead=false;for(const key of Object.keys(mob))if(/^(damage|attackDamage|damagePerHit|power|dmg)$/i.test(key)&&Number.isFinite(Number(mob[key])))mob[key]=0;}
+  });
+  // Full-screen onboarding is intentionally disabled; it must never intercept combat input.
+  assert.equal(await page.locator('.tb-turn-tutorial').count(),0,name+' does not show a blocking battle tutorial');
+  assert.equal(await page.locator('.v2-card').count(),5,name+' draws five cards at the start of the turn');
+  const attack=page.locator('#cardHand .v2-card.attack:not([disabled])').first();
+  assert.ok(await attack.count(),name+' has a playable attack card');
+  await attack.click();
+  await page.waitForFunction(()=>document.querySelectorAll('.new-hand-row .v2-card').length===4,{timeout:10000});
+  await page.locator('[data-action="end-turn"]').click();
+  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&button.disabled&&button.textContent.includes('ХОД ПРОТИВНИКА');},{timeout:10000});
+  // Pause during the enemy queue, keep it paused, then resume the exact pending enemy.
+  const pause=page.locator('.new-pause-btn');
+  await pause.click();
+  await page.waitForFunction(()=>document.querySelector('.new-pause-btn')?.textContent.includes('ПРОДОЛЖИТЬ'),{timeout:5000});
+  const pausedQueue=await page.evaluate(()=>{const state=window.TowerboundRework?.state,c=state?.characters?.find(x=>x.id===state.activeCharacterId);return c?.run?.stage?.uiBattleSnapshot?.enemyQueueState||null;});
+  assert.ok(pausedQueue&&Array.isArray(pausedQueue.indices),name+' persists the enemy queue while paused');
+  await page.waitForTimeout(650);
+  assert.ok((await pause.innerText()).includes('ПРОДОЛЖИТЬ'),name+' remains paused without consuming the enemy queue');
+  await pause.click();
+  await page.waitForFunction(()=>{const button=document.querySelector('[data-action="end-turn"]');return button&&!button.disabled&&button.textContent.includes('ЗАВЕРШИТЬ ХОД');},{timeout:15000});
+  const combatBounds=await page.locator('.new-battle-wrap').evaluate(el=>{const r=el.getBoundingClientRect();return{bottom:r.bottom,height:r.height,viewport:innerHeight};});
+  assert.ok(combatBounds.height>0&&combatBounds.bottom<=combatBounds.viewport+2,name+' combat arena fits the viewport');
+  fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
+  await page.screenshot({path:path.join(root,'card-combat-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
+  fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
+  await page.screenshot({path:path.join(root,'artifacts','turn-based-end-turn-'+name.toLowerCase()+'-'+viewport.width+'.png'),fullPage:true});
+  const diagnostics=await page.evaluate(()=>({
+   width:document.documentElement.clientWidth,
+   scrollWidth:document.documentElement.scrollWidth,
+   classButtons:document.querySelectorAll('[data-class]').length,
+   ready:!!window.TowerboundRework,
+   mapVisible:!!document.querySelector('.tb-map-node')
+  }));
+  assert.equal(diagnostics.ready,true,name+' runtime initializes');
+  assert.ok(diagnostics.scrollWidth<=diagnostics.width+1,name+' has no horizontal page overflow at '+viewport.width+'px');
+  // Reproduce a persisted dead-target state, then reload and resume the same stage.
+  await page.evaluate(()=>{
+   const engine=window.TowerboundRework,character=engine.state.characters[0];character.run.mapEvents={};character.run.completedMapEvents=[];const stage=character.run.stage,snapshot=stage.uiBattleSnapshot;
+   if(!snapshot||!Array.isArray(snapshot.enemies)||snapshot.enemies.length<2)throw new Error('Combat snapshot was not persisted before reload');
+   snapshot.enemies[0].hp=0;snapshot.enemies[0].alive=false;snapshot.enemies[0].dead=true;
+   snapshot.targetIndex=0;stage.targetIndex=0;stage.enemyIndex=0;
+   localStorage.setItem('tb-rpg-v2',JSON.stringify(engine.state));
+   // Prevent the old pagehide autosave from overwriting the deliberately corrupted recovery fixture.
+   const nativeSetItem=Storage.prototype.setItem;
+   Storage.prototype.setItem=function(key,value){if(key==="tb-rpg-v2")return;return nativeSetItem.call(this,key,value);};
+  });
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
+  // Startup may regenerate stage-one map events. Mark this fixture stage as already resolved so the recovery test reaches combat deterministically.
+  await page.evaluate(()=>{const c=window.TowerboundRework.state.characters[0];c.run.mapEvents={};c.run.completedMapEvents=[1];localStorage.setItem('tb-rpg-v2',JSON.stringify(window.TowerboundRework.state));});
+  await page.locator('[data-action="play"]').click();
+  const levelUpContinue=page.locator('.tb-level-up-overlay [data-level-up-continue]');
+  if(await levelUpContinue.isVisible().catch(()=>false)){
+   await levelUpContinue.click();
+   await page.waitForSelector('.tb-level-up-overlay',{state:'detached',timeout:5000});
+  }
+  await page.locator('[data-action="start"]').click();
+  const recoveryDiagnostic=await page.evaluate(()=>{const c=window.TowerboundRework?.state?.characters?.[0],stage=c?.run?.stage;return{runActive:c?.run?.active,stage:stage?.stage,mobCount:stage?.mobs?.length,killed:stage?.killedIndices,target:stage?.targetIndex,enemy:stage?.enemyIndex,snapshotTarget:stage?.uiBattleSnapshot?.targetIndex,snapshotEnemies:stage?.uiBattleSnapshot?.enemies?.map(enemy=>({index:enemy.index,hp:enemy.hp,alive:enemy.alive,dead:enemy.dead})),overlays:[...document.querySelectorAll('.tb-starter-deck-overlay,.tb-map-event-overlay,.tb-turn-tutorial')].map(node=>node.className),endTurn:document.querySelector('[data-action="end-turn"]')?.outerHTML,actions:[...document.querySelectorAll('#tbRpg [data-action]')].map(node=>node.dataset.action).slice(0,40),text:document.querySelector('#tbRpg')?.innerText.slice(0,800)};});
+  process.stdout.write('RECOVERY DIAGNOSTIC '+name+' '+JSON.stringify(recoveryDiagnostic)+'\\n');
+  await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
+  const recovered=await page.evaluate(()=>({
+   target:document.querySelector('.new-enemy-item.selected')?.dataset.target,
+   killed:window.TowerboundRework.state.characters[0].run.stage?.killedIndices||[],
+   current:window.TowerboundRework.state.characters[0].run.stage?.targetIndex
+  }));
+
+  assert.ok(recovered.target&&recovered.target!=='0',name+' reload skips the defeated target and resumes on a living mob');
+  assert.ok(recovered.killed.includes(0),name+' reload records the previously defeated mob exactly once');
+  assert.equal(Number(recovered.target),recovered.current,name+' UI and persisted target remain synchronized after reload');
+  assert.deepEqual(errors,[],name+' has no uncaught browser errors');
+  assert.deepEqual(failed,[],name+' has no unexpected failed local/network requests');
+  process.stdout.write('PASS '+name+' '+viewport.width+'x'+viewport.height+' — boot → character create → save/reload → 250-stage map\n');
+ }finally{if(context)await context.close().catch(()=>{});await browser.close().catch(()=>{});}
+}
+(async()=>{
+ const server=await startServer(),url='http://127.0.0.1:'+server.address().port+'/';
+ try{
+  for(const [name,type] of [['Chromium',chromium],['Firefox',firefox],['WebKit',webkit]]){
+   await journey(type,name,{width:1280,height:900},url);
+   await journey(type,name,{width:390,height:844},url);
+   await journey(type,name,{width:430,height:932},url);
+  }
+  process.stdout.write('All nine RPG browser journeys passed. WebKit mobile viewport emulation is not a physical iPhone Safari certification.\n');
+ }catch(error){process.stderr.write((error&&error.stack)||String(error));process.exitCode=1;}
+ finally{server.close();}
+})();

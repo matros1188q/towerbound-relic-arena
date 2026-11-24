@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "hero": "warden",
+  "source_image": "assets/characters/heroes/warden.png",
+  "canvas": {
+    "width": 1024,
+    "height": 1024
+  },
+  "status": "reconstruction-spec-only-not-animation-ready",
+  "coordinate_convention": "x increases right; y increases down; left/right labels follow the existing annotation file",
+  "anchors_px": {
+    "neck": [
+      462,
+      174
+    ],
+    "pelvis": [
+      431,
+      565
+    ],
+    "left_shoulder": [
+      344,
+      233
+    ],
+    "right_shoulder": [
+      565,
+      212
+    ],
+    "left_elbow": [
+      318,
+      365
+    ],
+    "right_elbow": [
+      588,
+      370
+    ],
+    "left_wrist": [
+      271,
+      460
+    ],
+    "right_wrist": [
+      648,
+      474
+    ],
+    "left_hip": [
+      385,
+      590
+    ],
+    "right_hip": [
+      490,
+      590
+    ],
+    "left_knee": [
+      369,
+      735
+    ],
+    "right_knee": [
+      488,
+      746
+    ],
+    "left_ankle": [
+      358,
+      879
+    ],
+    "right_ankle": [
+      500,
+      891
+    ]
+  },
+  "layer_order_back_to_front": [
+    "rear_cape",
+    "right_thigh",
+    "left_thigh",
+    "pelvis_reconstruction",
+    "torso_backfill",
+    "right_upper_arm_reconstruction",
+    "right_forearm_reconstruction",
+    "right_hand_reconstruction",
+    "left_upper_arm",
+    "left_forearm",
+    "left_hand",
+    "torso",
+    "head",
+    "left_pauldron",
+    "right_pauldron",
+    "sword_hand",
+    "sword",
+    "shield_grip",
+    "shield"
+  ],
+  "reconstruction_regions": [
+    {
+      "id": "pelvis_reconstruction",
+      "priority": "critical",
+      "reason": "Waist armor/skirt hides the hip junction; current thigh cutouts do not provide a clean articulated pelvis.",
+      "anchor": [
+        431,
+        565
+      ],
+      "bounds_px": [
+        330,
+        520,
+        555,
+        700
+      ],
+      "required_output": "transparent PNG with continuous armor/cloth under the waist skirt; preserve original silhouette and texture",
+      "must_not_guess": true
+    },
+    {
+      "id": "right_upper_arm_reconstruction",
+      "priority": "critical",
+      "reason": "The shield and shoulder armor occlude most of the arm; the semantic right-arm mask is a tiny unrelated fragment and is not a usable limb.",
+      "anchor": [
+        565,
+        212
+      ],
+      "joint_end": [
+        588,
+        370
+      ],
+      "bounds_px": [
+        500,
+        185,
+        690,
+        430
+      ],
+      "required_output": "complete upper-arm underpainting connecting shoulder to elbow, matching plate armor and perspective",
+      "must_not_guess": true
+    },
+    {
+      "id": "right_forearm_reconstruction",
+      "priority": "critical",
+      "reason": "Forearm is substantially hidden behind the shield; a complete segment is required for elbow-to-wrist rotation.",
+      "anchor": [
+        588,
+        370
+      ],
+      "joint_end": [
+        648,
+        474
+      ],
+      "bounds_px": [
+        545,
+        330,
+        735,
+        545
+      ],
+      "required_output": "complete armored forearm underpainting extending behind shield to wrist",
+      "must_not_guess": true
+    },
+    {
+      "id": "right_hand_reconstruction",
+      "priority": "critical",
+      "reason": "Grip/hand is obscured by shield handle and shield body; required for sword/shield pose continuity.",
+      "anchor": [
+        648,
+        474
+      ],
+      "bounds_px": [
+        600,
+        420,
+        710,
+        540
+      ],
+      "required_output": "hand and grip patch consistent with source weapon pose",
+      "must_not_guess": true
+    },
+    {
+      "id": "right_foot_edge_repair",
+      "priority": "high",
+      "reason": "Current foot polygon is approximate and reaches the bottom canvas edge; inspect sole and toe silhouette before rotation.",
+      "anchor": [
+        500,
+        891
+      ],
+      "bounds_px": [
+        390,
+        890,
+        590,
+        1024
+      ],
+      "required_output": "clean foot cutout with ankle overlap and preserved boot silhouette",
+      "must_not_guess": true
+    },
+    {
+      "id": "left_foot_edge_repair",
+      "priority": "high",
+      "reason": "Current foot polygon is approximate and reaches the bottom canvas edge; inspect sole and toe silhouette before rotation.",
+      "anchor": [
+        358,
+        879
+      ],
+      "bounds_px": [
+        205,
+        900,
+        425,
+        1024
+      ],
+      "required_output": "clean foot cutout with ankle overlap and preserved boot silhouette",
+      "must_not_guess": true
+    }
+  ],
+  "overlap_rules": [
+    "Reconstructed right arm parts remain behind the shield; never paint them over the shield face.",
+    "The shield must remain a single uninterrupted foreground layer with no neighboring pixels.",
+    "Upper-arm and forearm cutouts need hidden overlap beneath the pauldron and shield so rotation never exposes transparent seams.",
+    "Pelvis backfill must extend beneath both thigh roots and the waist skirt.",
+    "Boot layers overlap shin layers by the joint cover area; do not split exactly at the visible armor seam."
+  ],
+  "acceptance_checks": [
+    "Every reconstruction region has an authored transparent PNG and a matching source-resolution preview.",
+    "No transparent holes appear at shoulder, elbow, wrist, hip, knee or ankle through a full 20-degree rotation test.",
+    "Shield stays in front of the right arm through idle, attack, hit and cast.",
+    "No semantic clothing mask is accepted as an anatomical limb without visual boundary review.",
+    "A human visual review approves original-vs-layer composite at iPhone portrait scale."
+  ],
+  "blockers": [
+    "No reconstructed pixel art exists yet for the hidden right arm, hand or pelvis.",
+    "Existing polygon and semantic masks are candidate masks only.",
+    "No production Warden rig manifest may be generated until all critical regions pass acceptance checks."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "destroyer.wand_shield.11",
+  "class_id": "destroyer",
+  "branch_id": "wand_shield",
+  "name": "Пробуждение: Руна мощи",
+  "unlock_level": 57,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Пробуждение: Руна мощи — wand_shield specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

@@ -1,0 +1,59 @@
+name: Towerbound regression checks
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: towerbound-checks-\${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  static-and-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check service-worker.js
+          node --check rpg-mode.js
+          node --check towerbound-engine.js
+          node --check combat-visuals.js
+          node --check juice-pwa.js
+          node --check rpg-rework-v2.js
+          node --check rpg-rework-ui.js
+          node --check towerbound-polish.js
+          node --check tests/polish-onboarding.test.cjs
+          node --check tests/progression-math.test.cjs
+          node --check rpg-rework-ui.css.js
+          node --check towerbound-cloud.js
+          node --check towerbound-online.js
+          node --check tests/balance-sim.cjs
+          node --check tests/economy-sim.cjs
+      - name: Validate JPG art manifests and sprite mappings
+        run: npm run art:check
+      - name: Run PWA and offline-cache regression assertions
+        run: node tests/juice-pwa.test.cjs
+      - name: Run polish and onboarding regression assertions
+        run: npm run test:polish
+      - name: Run checkpoint and card meta-progression assertions
+        run: node tests/card-meta-progression.test.cjs
+      - name: Run campfire, card-curse and saboteur assertions
+        run: node tests/campfire-curse-saboteur.test.cjs
+      - name: Verify BP, talent and skill upgrade math
+        run: node tests/progression-math.test.cjs
+      - name: Run Towerbound regression assertions
+        run: node tests/online-services.test.cjs
+      - name: Run combat balance simulation
+        run: npm run balance
+      - name: Run exhaustive 250-stage simulation for all 21 builds
+        run: node tests/full-250-build-balance.test.cjs
+      - name: Run full 21-build balance progression simulation
+        run: node tests/balance-simulation.test.cjs
+      - name: Run 250-stage economy simulation
+        run: npm run economy

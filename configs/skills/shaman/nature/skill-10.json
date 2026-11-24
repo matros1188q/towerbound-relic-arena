@@ -1,0 +1,16 @@
+{
+  "id": "shaman.nature.10",
+  "class_id": "shaman",
+  "branch_id": "nature",
+  "name": "Оружие первостихии",
+  "unlock_level": 53,
+  "is_active": true,
+  "effect_template": "buff",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "medium",
+  "resource_cost_tier": "medium",
+  "animation_key": "buff",
+  "description": "Оружие первостихии — nature specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

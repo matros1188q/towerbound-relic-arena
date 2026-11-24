@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.fire_dragon.18",
+  "class_id": "dragonkin",
+  "branch_id": "fire_dragon",
+  "name": "Абсолютная техника: Драконий шторм",
+  "unlock_level": 91,
+  "is_active": true,
+  "effect_template": "dot",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "dot",
+  "description": "Абсолютная техника: Драконий шторм — fire_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

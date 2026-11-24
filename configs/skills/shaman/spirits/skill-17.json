@@ -1,0 +1,16 @@
+{
+  "id": "shaman.spirits.17",
+  "class_id": "shaman",
+  "branch_id": "spirits",
+  "name": "Знак превосходства: Облик пращура",
+  "unlock_level": 86,
+  "is_active": true,
+  "effect_template": "heal",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "long",
+  "resource_cost_tier": "high",
+  "animation_key": "heal",
+  "description": "Знак превосходства: Облик пращура — spirits specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}

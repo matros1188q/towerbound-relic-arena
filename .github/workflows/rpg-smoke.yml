@@ -1,0 +1,17 @@
+name: RPG smoke test
+on:
+  push:
+    branches: [main]
+    paths: ['rpg-mode.js','rpg-rework-v2.js','rpg-rework-ui.js','rpg-rework-ui.css.js','towerbound-polish.js','tests/rpg-smoke.cjs','.github/workflows/rpg-smoke.yml']
+  workflow_dispatch:
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright@1.54.2
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/rpg-smoke.cjs

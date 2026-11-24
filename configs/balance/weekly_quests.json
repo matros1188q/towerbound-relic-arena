@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "period": "iso_week",
+  "quests_per_week": 7,
+  "reset": "monday_00_utc",
+  "quests": [
+    {
+      "id": "elite",
+      "name": "Охота на элиту",
+      "metric": "elite_kills",
+      "target": 20,
+      "reward": {
+        "silver": 2500,
+        "diamonds": 2
+      },
+      "description": "Победите 20 элитных монстров. Награда: 2500 серебра и 2 алмаза.",
+      "metric_label": "Побеждено элитных монстров"
+    },
+    {
+      "id": "stages",
+      "name": "Путь наверх",
+      "metric": "stages_cleared",
+      "target": 35,
+      "reward": {
+        "silver": 2200
+      },
+      "description": "Завершите 35 этапов Башни. Награда: 2200 серебра.",
+      "metric_label": "Пройдено этапов Башни"
+    },
+    {
+      "id": "bosses",
+      "name": "Палач боссов",
+      "metric": "boss_kills",
+      "target": 5,
+      "reward": {
+        "silver": 3000,
+        "diamonds": 3
+      },
+      "description": "Победите 5 боссов. Награда: 3000 серебра и 3 алмаза.",
+      "metric_label": "Побеждено боссов"
+    },
+    {
+      "id": "skills",
+      "name": "Мастер комбинаций",
+      "metric": "branch_skills_used",
+      "target": 50,
+      "reward": {
+        "silver": 1800
+      },
+      "description": "Используйте 50 умений выбранной специализации. Награда: 1800 серебра.",
+      "metric_label": "Использовано умений специализации"
+    },
+    {
+      "id": "salvage",
+      "name": "Переплавка",
+      "metric": "items_salvaged",
+      "target": 25,
+      "reward": {
+        "silver": 1600
+      },
+      "description": "Разберите 25 предметов и получите материалы. Награда: 1600 серебра.",
+      "metric_label": "Разобрано предметов"
+    },
+    {
+      "id": "heroic",
+      "name": "Герой испытаний",
+      "metric": "heroic_stages",
+      "target": 15,
+      "reward": {
+        "silver": 3000,
+        "diamonds": 2
+      },
+      "description": "Завершите 15 этапов в героическом режиме. Награда: 3000 серебра и 2 алмаза.",
+      "metric_label": "Пройдено этапов в героическом режиме"
+    },
+    {
+      "id": "runs",
+      "name": "Неугасимый поход",
+      "metric": "runs_completed",
+      "target": 3,
+      "reward": {
+        "silver": 3500,
+        "diamonds": 3
+      },
+      "description": "Полностью завершите 3 забега. Награда: 3500 серебра и 3 алмаза.",
+      "metric_label": "Завершено забегов"
+    }
+  ],
+  "ui_language": "ru",
+  "tab_label": "Еженедельные задания"
+}

@@ -1,0 +1,57 @@
+name: Cross-browser smoke tests
+on:
+  push:
+    branches: [main, feature/combat-and-presentation-pass, fix/audit-pass, feature/turn-based-combat, integration/turn-based-combat, integration/turn-based-combat-v2]
+    paths:
+      - 'index.html'
+      - 'rpg-mode.js'
+      - 'towerbound-engine.js'
+      - 'rpg-rework-v2.js'
+      - 'rpg-rework-ui.js'
+      - 'rpg-rework-ui.css.js'
+      - 'endgame-systems.js'
+      - 'configs/**'
+      - 'assets/**'
+      - 'tests/**'
+      - '.github/workflows/browser-smoke.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check RPG JavaScript syntax
+        run: |
+          node --check rpg-mode.js
+          node --check rpg-rework-v2.js
+          node --check rpg-rework-ui.js
+      - name: Turn-based combat regression tests
+        run: |
+          node tests/turn-based-combat.cjs
+          node tests/combat-runtime.test.cjs
+          node tests/rpg-rework-v2.test.cjs
+      - name: Test Canvas2D rig player
+        run: node tests/character-rig-player.test.cjs
+      - name: Install Playwright
+        run: npm install --no-save playwright@1.54.2
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Cross-browser journeys and End Turn screenshots
+        run: node tests/browser-smoke.cjs
+      - name: Upload End Turn screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: turn-based-end-turn-screenshots
+          path: artifacts/*.png
+          if-no-files-found: warn

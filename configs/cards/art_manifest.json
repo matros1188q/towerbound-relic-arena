@@ -1,0 +1,512 @@
+{
+  "version": 2,
+  "sourceArchive": "images_126_cropped.zip",
+  "total": 126,
+  "filenameConvention": "<card_id>.png",
+  "cards": [
+    {
+      "id": "strike",
+      "file": "strike.png"
+    },
+    {
+      "id": "defend",
+      "file": "defend.png"
+    },
+    {
+      "id": "dash",
+      "file": "dash.png"
+    },
+    {
+      "id": "precise_shot",
+      "file": "precise_shot.png"
+    },
+    {
+      "id": "iron_skin",
+      "file": "iron_skin.png"
+    },
+    {
+      "id": "backstab",
+      "file": "backstab.png"
+    },
+    {
+      "id": "heavy_blow",
+      "file": "heavy_blow.png"
+    },
+    {
+      "id": "focus",
+      "file": "focus.png"
+    },
+    {
+      "id": "ghost_step",
+      "file": "ghost_step.png"
+    },
+    {
+      "id": "x_barrage",
+      "file": "x_barrage.png"
+    },
+    {
+      "id": "vengeance_x",
+      "file": "vengeance_x.png"
+    },
+    {
+      "id": "dagger",
+      "file": "dagger.png"
+    },
+    {
+      "id": "summon_daggers",
+      "file": "summon_daggers.png"
+    },
+    {
+      "id": "inspiration",
+      "file": "inspiration.png"
+    },
+    {
+      "id": "rampage",
+      "file": "rampage.png"
+    },
+    {
+      "id": "gear_sword_cleave",
+      "file": "gear_sword_cleave.png"
+    },
+    {
+      "id": "gear_staff_bolt",
+      "file": "gear_staff_bolt.png"
+    },
+    {
+      "id": "gear_iron_wall",
+      "file": "gear_iron_wall.png"
+    },
+    {
+      "id": "gear_evasion",
+      "file": "gear_evasion.png"
+    },
+    {
+      "id": "gear_power_surge",
+      "file": "gear_power_surge.png"
+    },
+    {
+      "id": "curse_wound",
+      "file": "curse_wound.png"
+    },
+    {
+      "id": "curse_doubt",
+      "file": "curse_doubt.png"
+    },
+    {
+      "id": "status_slime",
+      "file": "status_slime.png"
+    },
+    {
+      "id": "assassin_poison_blade",
+      "file": "assassin_poison_blade.png"
+    },
+    {
+      "id": "assassin_bleed",
+      "file": "assassin_bleed.png"
+    },
+    {
+      "id": "assassin_shadow",
+      "file": "assassin_shadow.png"
+    },
+    {
+      "id": "assassin_bleed_edge",
+      "file": "assassin_bleed_edge.png"
+    },
+    {
+      "id": "assassin_bleed_mastery",
+      "file": "assassin_bleed_mastery.png"
+    },
+    {
+      "id": "assassin_poison_edge",
+      "file": "assassin_poison_edge.png"
+    },
+    {
+      "id": "assassin_poison_mastery",
+      "file": "assassin_poison_mastery.png"
+    },
+    {
+      "id": "assassin_execution_edge",
+      "file": "assassin_execution_edge.png"
+    },
+    {
+      "id": "assassin_execution_mastery",
+      "file": "assassin_execution_mastery.png"
+    },
+    {
+      "id": "assassin_bleed_core",
+      "file": "assassin_bleed_core.png"
+    },
+    {
+      "id": "assassin_bleed_utility",
+      "file": "assassin_bleed_utility.png"
+    },
+    {
+      "id": "assassin_poison_core",
+      "file": "assassin_poison_core.png"
+    },
+    {
+      "id": "assassin_poison_utility",
+      "file": "assassin_poison_utility.png"
+    },
+    {
+      "id": "assassin_execution_core",
+      "file": "assassin_execution_core.png"
+    },
+    {
+      "id": "assassin_execution_utility",
+      "file": "assassin_execution_utility.png"
+    },
+    {
+      "id": "destroyer_crush",
+      "file": "destroyer_crush.png"
+    },
+    {
+      "id": "destroyer_warcry",
+      "file": "destroyer_warcry.png"
+    },
+    {
+      "id": "destroyer_fists_edge",
+      "file": "destroyer_fists_edge.png"
+    },
+    {
+      "id": "destroyer_fists_mastery",
+      "file": "destroyer_fists_mastery.png"
+    },
+    {
+      "id": "destroyer_greatsword_edge",
+      "file": "destroyer_greatsword_edge.png"
+    },
+    {
+      "id": "destroyer_greatsword_mastery",
+      "file": "destroyer_greatsword_mastery.png"
+    },
+    {
+      "id": "destroyer_wand_shield_edge",
+      "file": "destroyer_wand_shield_edge.png"
+    },
+    {
+      "id": "destroyer_wand_shield_mastery",
+      "file": "destroyer_wand_shield_mastery.png"
+    },
+    {
+      "id": "destroyer_fists_core",
+      "file": "destroyer_fists_core.png"
+    },
+    {
+      "id": "destroyer_fists_utility",
+      "file": "destroyer_fists_utility.png"
+    },
+    {
+      "id": "destroyer_greatsword_core",
+      "file": "destroyer_greatsword_core.png"
+    },
+    {
+      "id": "destroyer_greatsword_utility",
+      "file": "destroyer_greatsword_utility.png"
+    },
+    {
+      "id": "destroyer_wand_shield_core",
+      "file": "destroyer_wand_shield_core.png"
+    },
+    {
+      "id": "destroyer_wand_shield_utility",
+      "file": "destroyer_wand_shield_utility.png"
+    },
+    {
+      "id": "bishop_prayer",
+      "file": "bishop_prayer.png"
+    },
+    {
+      "id": "bishop_divine_shield",
+      "file": "bishop_divine_shield.png"
+    },
+    {
+      "id": "bishop_smite",
+      "file": "bishop_smite.png"
+    },
+    {
+      "id": "bishop_exorcism_edge",
+      "file": "bishop_exorcism_edge.png"
+    },
+    {
+      "id": "bishop_exorcism_mastery",
+      "file": "bishop_exorcism_mastery.png"
+    },
+    {
+      "id": "bishop_healing_edge",
+      "file": "bishop_healing_edge.png"
+    },
+    {
+      "id": "bishop_healing_mastery",
+      "file": "bishop_healing_mastery.png"
+    },
+    {
+      "id": "bishop_buffs_edge",
+      "file": "bishop_buffs_edge.png"
+    },
+    {
+      "id": "bishop_buffs_mastery",
+      "file": "bishop_buffs_mastery.png"
+    },
+    {
+      "id": "bishop_exorcism_core",
+      "file": "bishop_exorcism_core.png"
+    },
+    {
+      "id": "bishop_exorcism_utility",
+      "file": "bishop_exorcism_utility.png"
+    },
+    {
+      "id": "bishop_healing_core",
+      "file": "bishop_healing_core.png"
+    },
+    {
+      "id": "bishop_healing_utility",
+      "file": "bishop_healing_utility.png"
+    },
+    {
+      "id": "bishop_buffs_core",
+      "file": "bishop_buffs_core.png"
+    },
+    {
+      "id": "bishop_buffs_utility",
+      "file": "bishop_buffs_utility.png"
+    },
+    {
+      "id": "dragonkin_flame",
+      "file": "dragonkin_flame.png"
+    },
+    {
+      "id": "dragonkin_frost",
+      "file": "dragonkin_frost.png"
+    },
+    {
+      "id": "dragonkin_meteor",
+      "file": "dragonkin_meteor.png"
+    },
+    {
+      "id": "dragonkin_fire_dragon_edge",
+      "file": "dragonkin_fire_dragon_edge.png"
+    },
+    {
+      "id": "dragonkin_fire_dragon_mastery",
+      "file": "dragonkin_fire_dragon_mastery.png"
+    },
+    {
+      "id": "dragonkin_ice_dragon_edge",
+      "file": "dragonkin_ice_dragon_edge.png"
+    },
+    {
+      "id": "dragonkin_ice_dragon_mastery",
+      "file": "dragonkin_ice_dragon_mastery.png"
+    },
+    {
+      "id": "dragonkin_black_dragon_edge",
+      "file": "dragonkin_black_dragon_edge.png"
+    },
+    {
+      "id": "dragonkin_black_dragon_mastery",
+      "file": "dragonkin_black_dragon_mastery.png"
+    },
+    {
+      "id": "dragonkin_fire_dragon_core",
+      "file": "dragonkin_fire_dragon_core.png"
+    },
+    {
+      "id": "dragonkin_fire_dragon_utility",
+      "file": "dragonkin_fire_dragon_utility.png"
+    },
+    {
+      "id": "dragonkin_ice_dragon_core",
+      "file": "dragonkin_ice_dragon_core.png"
+    },
+    {
+      "id": "dragonkin_ice_dragon_utility",
+      "file": "dragonkin_ice_dragon_utility.png"
+    },
+    {
+      "id": "dragonkin_black_dragon_core",
+      "file": "dragonkin_black_dragon_core.png"
+    },
+    {
+      "id": "dragonkin_black_dragon_utility",
+      "file": "dragonkin_black_dragon_utility.png"
+    },
+    {
+      "id": "elemental_chain",
+      "file": "elemental_chain.png"
+    },
+    {
+      "id": "elemental_storm",
+      "file": "elemental_storm.png"
+    },
+    {
+      "id": "elemental_meditation",
+      "file": "elemental_meditation.png"
+    },
+    {
+      "id": "elemental_darkness_edge",
+      "file": "elemental_darkness_edge.png"
+    },
+    {
+      "id": "elemental_darkness_mastery",
+      "file": "elemental_darkness_mastery.png"
+    },
+    {
+      "id": "elemental_water_edge",
+      "file": "elemental_water_edge.png"
+    },
+    {
+      "id": "elemental_water_mastery",
+      "file": "elemental_water_mastery.png"
+    },
+    {
+      "id": "elemental_earth_edge",
+      "file": "elemental_earth_edge.png"
+    },
+    {
+      "id": "elemental_earth_mastery",
+      "file": "elemental_earth_mastery.png"
+    },
+    {
+      "id": "elemental_darkness_core",
+      "file": "elemental_darkness_core.png"
+    },
+    {
+      "id": "elemental_darkness_utility",
+      "file": "elemental_darkness_utility.png"
+    },
+    {
+      "id": "elemental_water_core",
+      "file": "elemental_water_core.png"
+    },
+    {
+      "id": "elemental_water_utility",
+      "file": "elemental_water_utility.png"
+    },
+    {
+      "id": "elemental_earth_core",
+      "file": "elemental_earth_core.png"
+    },
+    {
+      "id": "elemental_earth_utility",
+      "file": "elemental_earth_utility.png"
+    },
+    {
+      "id": "duelist_parry",
+      "file": "duelist_parry.png"
+    },
+    {
+      "id": "duelist_riposte",
+      "file": "duelist_riposte.png"
+    },
+    {
+      "id": "duelist_dual_swords_edge",
+      "file": "duelist_dual_swords_edge.png"
+    },
+    {
+      "id": "duelist_dual_swords_mastery",
+      "file": "duelist_dual_swords_mastery.png"
+    },
+    {
+      "id": "duelist_sword_shield_edge",
+      "file": "duelist_sword_shield_edge.png"
+    },
+    {
+      "id": "duelist_sword_shield_mastery",
+      "file": "duelist_sword_shield_mastery.png"
+    },
+    {
+      "id": "duelist_rapier_edge",
+      "file": "duelist_rapier_edge.png"
+    },
+    {
+      "id": "duelist_rapier_mastery",
+      "file": "duelist_rapier_mastery.png"
+    },
+    {
+      "id": "duelist_dual_swords_core",
+      "file": "duelist_dual_swords_core.png"
+    },
+    {
+      "id": "duelist_dual_swords_utility",
+      "file": "duelist_dual_swords_utility.png"
+    },
+    {
+      "id": "duelist_sword_shield_core",
+      "file": "duelist_sword_shield_core.png"
+    },
+    {
+      "id": "duelist_sword_shield_utility",
+      "file": "duelist_sword_shield_utility.png"
+    },
+    {
+      "id": "duelist_rapier_core",
+      "file": "duelist_rapier_core.png"
+    },
+    {
+      "id": "duelist_rapier_utility",
+      "file": "duelist_rapier_utility.png"
+    },
+    {
+      "id": "shaman_totem",
+      "file": "shaman_totem.png"
+    },
+    {
+      "id": "shaman_spirit",
+      "file": "shaman_spirit.png"
+    },
+    {
+      "id": "shaman_nature",
+      "file": "shaman_nature.png"
+    },
+    {
+      "id": "shaman_spirits_edge",
+      "file": "shaman_spirits_edge.png"
+    },
+    {
+      "id": "shaman_spirits_mastery",
+      "file": "shaman_spirits_mastery.png"
+    },
+    {
+      "id": "shaman_dark_gods_edge",
+      "file": "shaman_dark_gods_edge.png"
+    },
+    {
+      "id": "shaman_dark_gods_mastery",
+      "file": "shaman_dark_gods_mastery.png"
+    },
+    {
+      "id": "shaman_nature_edge",
+      "file": "shaman_nature_edge.png"
+    },
+    {
+      "id": "shaman_nature_mastery",
+      "file": "shaman_nature_mastery.png"
+    },
+    {
+      "id": "shaman_spirits_core",
+      "file": "shaman_spirits_core.png"
+    },
+    {
+      "id": "shaman_spirits_utility",
+      "file": "shaman_spirits_utility.png"
+    },
+    {
+      "id": "shaman_dark_gods_core",
+      "file": "shaman_dark_gods_core.png"
+    },
+    {
+      "id": "shaman_dark_gods_utility",
+      "file": "shaman_dark_gods_utility.png"
+    },
+    {
+      "id": "shaman_nature_core",
+      "file": "shaman_nature_core.png"
+    },
+    {
+      "id": "shaman_nature_utility",
+      "file": "shaman_nature_utility.png"
+    }
+  ]
+}

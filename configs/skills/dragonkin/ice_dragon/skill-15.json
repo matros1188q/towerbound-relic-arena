@@ -1,0 +1,16 @@
+{
+  "id": "dragonkin.ice_dragon.15",
+  "class_id": "dragonkin",
+  "branch_id": "ice_dragon",
+  "name": "Мастерский приём: Ледяная стена",
+  "unlock_level": 76,
+  "is_active": true,
+  "effect_template": "shield",
+  "targeting": "template_defined",
+  "scaling": "class_primary_stat",
+  "cooldown_tier": "short",
+  "resource_cost_tier": "low",
+  "animation_key": "shield",
+  "description": "Мастерский приём: Ледяная стена — ice_dragon specialization skill.",
+  "template_file": "configs/balance/skill_effects.json"
+}
