@@ -9,6 +9,7 @@ const heroes=readJson('assets/characters/heroes/manifest.json');
 const enemies=readJson('assets/characters/enemies/manifest.json');
 const bosses=readJson('assets/characters/bosses/manifest.json');
 const relics=readJson('assets/relics/art-manifest.json');
+const itemArt=readJson('assets/Castoms/item-art-manifest.json');
 const skills=readJson('assets/skills/art-manifest.json');
 const ui=readJson('assets/ui/art-manifest.json');
 const chapters=readJson('configs/balance/chapters.json');
@@ -17,6 +18,7 @@ for(const pack of [heroes,enemies,bosses]){
  for(const asset of pack.assets){assert.equal(asset.image_format,'png');exists(asset.relative_path);}
 }
 for(const item of relics.assets)exists(item.path);
+for(const group of [itemArt.shop,itemArt.inventory,itemArt.relics])for(const asset of Object.values(group||{})){if(typeof asset==='string')exists(path.normalize(path.join('assets/Castoms',asset)));}
 for(const sheet of ui.spriteSheets)exists(sheet.path);
 for(const sheet of skills.sprite_sheets||[])exists(sheet.path);
 for(const chapter of chapters.chapters){assert.ok(chapter.background.endsWith('.jpeg'),'Chapter backgrounds must remain JPEG');exists(chapter.background);}
@@ -31,6 +33,10 @@ const uiScript=source['rpg-rework-ui.js'];
 for(const [id,file] of Object.entries({assassin:'image-Photoroom.png',bishop:'image_2-Photoroom(1).png',dragonkin:'image_3-Photoroom.png',destroyer:'image_4-Photoroom.png',elemental:'image_5-Photoroom.png',shaman:'image_6-Photoroom.png',duelist:'image_7-Photoroom.png'}))assert.ok(uiScript.includes(id+':"heroes/'+file+'"'),'Missing hero PNG mapping: '+id);
 assert.ok(uiScript.includes('return "image_15.png"')&&uiScript.includes('function shopProductIconHtml(item)'),'Craft material and store art resolver must be active');
 assert.ok(uiScript.includes('relicIconHtml(item,item?.slot)'),'Equipment/store render must pass item slot');
+assert.ok(uiScript.includes('item?.itemId')&&uiScript.includes('ITEM_ART_BY_ID'),'Inventory art resolver must use catalog itemId before effect type.');
+assert.ok(uiScript.includes('RELIC_ART_BY_ID'),'Card relics must have dedicated semantic artwork.');
+assert.ok(itemArt.inventory.xp_hourglass==='../relics/hourglass.png','Hourglass must not reuse the coin JPEG.');
+assert.ok(itemArt.relics.assassin_blade==='../relics/fang.png'&&itemArt.relics.mirror_shard==='../relics/mirror.png','Relics must use dedicated matching artwork.');
 assert.ok(uiScript.includes('chapterBackgrounds=["image_2.jpeg","image_3.jpeg","image_4.jpeg","image_5.jpeg","image.jpeg"]'),'Chapter JPEG backgrounds must be preserved');
 const mode=source['rpg-mode.js'];
 const sw=source['service-worker.js'];

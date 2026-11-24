@@ -18,16 +18,30 @@
  const CUSTOM_ITEM_ART_ROOT="./assets/Castoms/";
  const CUSTOM_ITEM_ART=Object.freeze({
   xp:"image.jpeg",heal:"image%202.jpeg",drop:"image%203.jpeg",antidote:"image%204.jpeg",
-  compass:"image%205.jpeg",talisman:"image%207.jpeg",hourglass:"image%2013.jpeg",
+  compass:"image%205.jpeg",talisman:"image%207.jpeg",
   coin:"image%2013.jpeg",dagger:"image%2014.jpeg",shield:"image%2015.jpeg",skull:"image%2016.jpeg",
   eye:"image%2017.jpeg",feather:"image%2018.jpeg",ring:"image%2019.jpeg",crown:"image%2020.jpeg",
   cup:"image%2021.jpeg",hammer:"image%2022.jpeg"
  });
+ const ITEM_ART_BY_ID=Object.freeze({
+  xp_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_100:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,
+  heal_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_25:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_35:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,healing_potion:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,
+  drop_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_50:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_75:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_100:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,pity_token:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,pity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,
+  antidote:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.antidote,map_compass:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,map_hint:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,
+  silver_charm:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,silver_bonus:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,xp_hourglass:"./assets/relics/hourglass.png",
+  repair_kit:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,potion_case:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,potion_capacity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,
+  rescue_seal:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,one_rescue:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,stone_cache:"./assets/relics/rune.png",
+  extra_socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,refine_guard:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.shield,
+  refine_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,refine_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,safe_refine:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,
+  craft_material:"./assets/relics/image_15.png",enhancement_stone:"./assets/relics/image_15.png",refine_stone:"./assets/relics/image_9.png"
+ });
  function customItemArtPath(item){
-  const id=String(item?.id||item?.type||"").toLowerCase();
-  const value=[item?.type,item?.id,item?.name,item?.effect,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
+  const ids=[item?.itemId,item?.id,item?.type,item?.effect,item?.kind].filter(Boolean).map(value=>String(value).toLowerCase());
+  for(const key of ids){if(ITEM_ART_BY_ID[key])return ITEM_ART_BY_ID[key];}
+  const id=String(item?.itemId||item?.id||item?.type||"").toLowerCase();
+  const value=[item?.type,item?.itemId,item?.id,item?.name,item?.effect,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
   if(id.startsWith("premium")||value.includes("премиум")||value.includes("premium account"))return "";
-  if(value.includes("hourglass")||value.includes("песоч"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hourglass;
+  if(value.includes("hourglass")||value.includes("песоч"))return "./assets/relics/hourglass.png";
   if(value.includes("potion case")||value.includes("healer kit")||value.includes("футляр целителя")||value.includes("набор целителя"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup;
   if(value.includes("antidote")||value.includes("противояд"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.antidote;
   if(value.includes("compass")||value.includes("компас"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass;
@@ -53,7 +67,15 @@
   if(value.includes("hammer")||value.includes("молот"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer;
   return "";
  }
+ const RELIC_ART_BY_ID=Object.freeze({
+  bloodstone:"./assets/relics/rune.png",steel_heart:"./assets/relics/heart.png",greed:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.coin,
+  assassin_blade:"./assets/relics/fang.png",scholar_lens:"./assets/relics/oracle.png",phoenix_feather:"./assets/relics/phoenix.png",
+  frost_sigil:"./assets/relics/frost.png",war_drums:"./assets/relics/spark.png",mirror_shard:"./assets/relics/mirror.png",
+  arcane_prism:"./assets/relics/stormglass.png",hunter_mark:"./assets/relics/quiver.png",lucky_coin:"./assets/relics/luckycoin.png"
+ });
  function customRelicArtPath(item){
+  const id=String(item?.id||"").toLowerCase();
+  if(RELIC_ART_BY_ID[id])return RELIC_ART_BY_ID[id];
   const value=[item?.id,item?.name,item?.type,item?.slot].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
   if(value.includes("heart")||value.includes("сердц"))return "./assets/relics/heart.png";
   if(value.includes("stone")||value.includes("камень")||value.includes("rune")||value.includes("руна"))return "./assets/relics/rune.png";

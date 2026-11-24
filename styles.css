@@ -979,3 +979,11 @@
  max-width:1100px!important;margin:0 auto 24px!important;padding:12px!important;
  box-sizing:border-box!important;align-items:initial!important;justify-content:initial!important;
 }
+
+/* Towerbound item-art consistency pass: predictable sizing in shop, bag and item details. */
+#tbRpg .tb-v2 .tb-bag-item-art{display:grid!important;place-items:center!important;flex:0 0 54px!important;width:54px!important;height:54px!important;min-width:54px!important;min-height:54px!important;max-width:54px!important;max-height:54px!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-bag-item-art img,#tbRpg .tb-v2 .tb-item-detail-art img{display:block!important;width:52px!important;height:52px!important;min-width:0!important;min-height:0!important;max-width:52px!important;max-height:52px!important;object-fit:contain!important;object-position:center center!important;transform:none!important;margin:0 auto!important;padding:1px!important}
+#tbRpg .tb-v2 .tb-bag-item>.tb-item-tile-open{display:grid!important;grid-template-rows:54px!important;place-items:center!important;align-content:center!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-bag-item-art .tb-custom-item-art{object-fit:contain!important;object-position:center!important}
+#tbRpg .tb-v2 .tb-product-icon{display:grid!important;place-items:center!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-product-icon .tb-shop-item-art{display:block!important;width:72px!important;height:72px!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important}
