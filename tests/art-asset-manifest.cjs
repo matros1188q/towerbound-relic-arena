@@ -69,6 +69,8 @@ assert.ok(pwa.icons.length>=2&&pwa.icons.every(icon=>icon.src==='./assets/icons/
 assert.equal(itemArt.inventory.pity_token,"image 17.jpeg","Pity token must not reuse the luck potion bottle");
 assert.notEqual(itemArt.inventory.enhancement_stone,itemArt.inventory.craft_material,"Enhancement stone and craft material need distinct art");
 assert.notEqual(itemArt.inventory.refine_stone,itemArt.inventory.enhancement_stone,"Refine stone and enhancement stone need distinct art");
+assert.notEqual(itemArt.inventory.refine_10,itemArt.inventory.refine_20,"Refinement tiers need distinct art");
+assert.equal(new Set(Object.values(itemArt.mobDrops)).size,5,"Each mob-drop item type needs its own artwork");
 assert.equal(itemArt.mobDrops.enchant_scroll,itemArt.inventory.enchant_scroll,"Mob-drop scroll art must match backpack art");
 assert.ok(uiScript.includes('function itemArtVariantLabel(item)')&&uiScript.includes('tb-item-art-badge'),'Potion and refine tiers must have visible unique variant labels');
 assert.ok(uiScript.includes('customItemImageHtml(custom,"tb-shop-item-art",item)')&&uiScript.includes('customItemImageHtml(custom,"tb-bag-item-art-img",item)'),'Shop and backpack must share the same item image renderer');

@@ -16,8 +16,8 @@
     "pityToken": "image 17.jpeg",
     "refineGuard": "image 15.jpeg",
     "refineTools": "image 22.jpeg",
-    "refine10": "../relics/image_9.png",
-    "refine20": "../relics/image_7.png",
+    "refine10": "../relics/riftsigil.png",
+    "refine20": "../relics/stormglass.png",
     "safeRefine": "../relics/guardian.png"
   },
   "relics": {
@@ -89,8 +89,8 @@
     "extra_socket": "image 19.jpeg",
     "socket": "image 19.jpeg",
     "refine_guard": "image 15.jpeg",
-    "refine_10": "../relics/image_9.png",
-    "refine_20": "../relics/image_7.png",
+    "refine_10": "../relics/riftsigil.png",
+    "refine_20": "../relics/stormglass.png",
     "safe_refine": "../relics/guardian.png",
     "craft_material": "../relics/image_15.png",
     "enhancement_stone": "../relics/image_7.png",

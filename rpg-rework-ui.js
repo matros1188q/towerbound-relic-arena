@@ -33,7 +33,7 @@
   repair_kit:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,potion_case:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,potion_capacity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,
   rescue_seal:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,one_rescue:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,stone_cache:"./assets/relics/rune.png",
   extra_socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,refine_guard:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.shield,
-  refine_10:"./assets/relics/image_9.png",refine_20:"./assets/relics/image_7.png",safe_refine:"./assets/relics/guardian.png",
+  refine_10:"./assets/relics/riftsigil.png",refine_20:"./assets/relics/stormglass.png",safe_refine:"./assets/relics/guardian.png",
   craft_material:"./assets/relics/image_15.png",enhancement_stone:"./assets/relics/image_7.png",refine_stone:"./assets/relics/image_8.png",enchant_scroll:"./assets/relics/image_9.png"
  });
  function customItemArtPath(item){
