@@ -328,6 +328,7 @@ const {chromium}=require('playwright');
   await page.locator('.tb-profile .tb-tabs [data-tab="account"]').click();
   await page.waitForSelector('.tb-systems');
   assert.equal(await page.locator('#tbRpg .tb-v2').evaluate(el=>el.scrollTop),0,'switching profile tabs resets stale scroll so account controls are not covered by sticky navigation');
+  assert.equal(await page.locator('.tb-profile-content').evaluate(el=>getComputedStyle(el).overflowY),'visible','profile content must not become a nested vertical scroll container when horizontal clipping is applied');
   assert.match(await page.locator('.tb-systems').innerText(),/Достижения · 0\/30/,'account systems screen displays achievement catalogue');
   assert.equal(await page.locator('[data-setting="volume_master"]').count(),1,'master volume setting is available');
   await page.locator('[data-setting="volume_master"]').fill('0.5');
