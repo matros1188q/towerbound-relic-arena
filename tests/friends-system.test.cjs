@@ -1,0 +1,16 @@
+'use strict';
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
+const friends=fs.readFileSync('towerbound-friends.js','utf8');
+const cloud=fs.readFileSync('towerbound-cloud.js','utf8');
+const html=fs.readFileSync('index.html','utf8');
+const migration=fs.readFileSync('supabase/migrations/202611240001_friends_and_atomic_gifts.sql','utf8');
+for(const rpc of ['tb_friend_search','tb_friend_request','tb_friend_respond','tb_friend_cancel','tb_friend_remove','tb_friend_list','tb_friend_requests_list','tb_friend_gift_inbox','tb_friend_send_gift'])assert.ok(migration.includes('function public.'+rpc+'('),'missing server RPC '+rpc);
+for(const action of ['search','add','accept','decline','cancel','remove','gift','refresh'])assert.ok(friends.includes("data-friend-action=\""+action+"\"")||friends.includes("kind===' "+action+"'")||friends.includes("kind===' "+action+"')")||friends.includes("kind==='"+action+"'"),'missing friend UI action '+action);
+assert.ok(migration.includes('enable row level security'),'friend tables must enable RLS');
+assert.ok(migration.includes('revoke all on function public.tb_friend_send_gift')&&migration.includes('grant execute on function public.tb_friend_send_gift(uuid,text,integer) to authenticated'),'gift RPC must be authenticated-only');
+assert.ok(migration.includes('for update')&&migration.includes('revision=revision+1'),'gift transfer must lock and version both cloud saves');
+assert.ok(friends.includes("rpc('tb_friend_send_gift'")&&friends.includes('await cloud().syncNow()')&&friends.includes('await cloud().reloadAuthoritative()'),'gift UI must sync before and reload after server transfer');
+assert.ok(cloud.includes('function onlyBagDiff(')&&cloud.includes('async function reloadAuthoritative()'),'cloud layer must reconcile server gift inventory changes');
+assert.match(html,/<script src="\.\/towerbound-friends\.js\?v=\d+"><\/script>/,'friend module must be loaded by index.html');
+console.log('friends system static checks: OK');
