@@ -165,14 +165,14 @@ assert.ok(characterGate.includes('data-action="empty-login"')&&characterGate.inc
 assert.ok(characterGate.includes('СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА'),'authenticated empty state has its primary create action');
 assert.ok(ui.includes('Сначала войди в игровой аккаунт'),'new-character action is guarded by Supabase session');
 assert.ok(ui.includes('towerbound-auth-change')&&ui.includes('cloud.signIn(login,password,remember)'),'successful auth refreshes the character screen');
-assert.ok(cloud.includes('await onSession(data.session)')&&cloud.includes("new Event('towerbound-auth-change')"),'Supabase sign-in awaits cloud restore and emits auth state changes');
+assert.ok(cloud.includes('await withTimeout(onSession(data.session,true)')&&cloud.includes("new Event('towerbound-auth-change')"),'Supabase sign-in awaits cloud restore and emits auth state changes');
 
-assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise');
+assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey&&!force)return sessionTask')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the same cloud-restore promise while failed sessions remain retryable');
 assert.ok(!progression.includes("tb-progression-button")&&progression.includes("window.TowerboundProgression={open:"),'progression is exposed through the account instead of a global header button');
 assert.ok(css.includes('white-space:nowrap')&&!css.includes('tb-progression-button')&&css.includes('height:39px!important')&&css.includes('height:34px!important'),'iPhone header preserves the original logo size and removes the progression button');
 assert.ok(/progression-24\.js\?v=\d+/.test(html)&&/towerbound-cloud\.js\?v=\d+/.test(html)&&/styles\.css\?v=\d+/.test(html),'updated progression, cloud and UI styles bypass stale browser cache');
 assert.ok(cloud.includes("overlay.style.visibility='visible'")&&cloud.includes('conflict=true;savesReady=false;setStatus')&&cloud.includes("overlay.classList.add('open')"),'cloud save conflicts remain visible for source selection');
 assert.ok(cloud.includes('signInWithPassword({email:authEmail(clean)'),'sign-in uses the current virtual login email');
-assert.ok(cloud.includes('Успешный вход. Создайте персонажа'),'empty cloud account gives first-character guidance');
+assert.ok(cloud.includes('После создания персонажа прогресс будет сохранён.'),'empty cloud account gives first-character guidance without creating an empty cloud save');
 assert.ok(css.includes('tb-login-gate')&&css.includes('white-space:nowrap')&&css.includes('@media(max-width:400px)'),'centered login and narrow mobile header styles are present');
 
