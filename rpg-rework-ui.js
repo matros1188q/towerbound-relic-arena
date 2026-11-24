@@ -1597,6 +1597,7 @@ function talentBonusDescription(talent,rank){
    if(savedSnapshot?.cardState){const state=savedSnapshot.cardState;c.deck=Array.isArray(state.deck)?state.deck:[];c.hand=Array.isArray(state.hand)?state.hand:[];c.discard=Array.isArray(state.discard)?state.discard:[];c.exhaustPile=Array.isArray(state.exhaustPile)?state.exhaustPile:[];c.currentEnergy=Math.max(0,Math.min(c.energy,Number(state.currentEnergy)||0));battle.cardBlock=Math.max(0,Number(state.cardBlock)||0);battle.cardResume=state.actorType!=="enemy";battle.actor={type:state.actorType==="enemy"?"enemy":"player",id:state.actorType==="enemy"?"enemy-phase":"player",name:state.actorType==="enemy"?"Ход противников":c.name};}else{resetCardBattle(c);battle.cardResume=false;}
    if(loadBattleEnemy()===false){battle=null;screen="map";selectedStage=c.progress.currentStage;save();render();notify("Бой восстановлен на карте: живых целей не осталось");return;}
    syncInitiative();screen="battle";
+   logExpeditionEvent("Этап "+battle.stage+" · "+(plan.boss?"БОСС":routeChoice==="elite"?"ЭЛИТНЫЙ БОЙ":"сражение началось"),plan.boss?"#ff8c69":routeChoice==="elite"?"#e8bd5b":"#d9d2c5");
    const savedQueue=savedSnapshot?.enemyQueueState;
    if(savedSnapshot?.cardState?.actorType==="enemy"&&savedQueue&&Array.isArray(savedQueue.indices)){
     battle.enemyQueueState={indices:savedQueue.indices.map(Number).filter(Number.isFinite),cursor:Math.max(0,Number(savedQueue.cursor)||0)};
