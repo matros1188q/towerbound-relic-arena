@@ -18,6 +18,8 @@ on:
   pull_request:
     paths:
       - 'social-endgame.js'
+      - 'towerbound-friends.js'
+      - 'tests/friends-system.test.cjs'
       - 'towerbound-guild.js'
       - 'towerbound-online.js'
       - 'towerbound-cloud.js'
