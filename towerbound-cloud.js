@@ -236,17 +236,21 @@ async function readRemote(){
  });
 }
 async function writeRemote(snapshot,expected){
+ const userId=session?.user?.id;
+ if(!userId)throw new Error('Сначала войди в облачный аккаунт');
  validateSnapshot(snapshot);
  if(Number(expected)>0&&!snapshotHasCharacters(snapshot))throw new Error('SAVE_GUARD_BLOCKED · Пустое сохранение не может заменить существующего персонажа');
  return await withAccountDbLock(async()=>{
+  if(session?.user?.id!==userId)throw new Error('Сессия аккаунта изменилась; запись отменена');
   let expectedRevision=Number(expected)||0;
-  try{if(localStorage.getItem('tb-cloud-user-id')===session.user.id)expectedRevision=Math.max(expectedRevision,Number(localStorage.getItem('tb-cloud-revision'))||0);}catch(_){}
+  try{if(localStorage.getItem('tb-cloud-user-id')===userId)expectedRevision=Math.max(expectedRevision,Number(localStorage.getItem('tb-cloud-revision'))||0);}catch(_){}
   const {data,error}=await withTimeout(client.rpc('save_player_game',{p_save_data:snapshot,p_expected_revision:expectedRevision}),'Запись облачного сохранения',30000);
   if(error)throw error;
+  if(session?.user?.id!==userId)throw new Error('Сессия аккаунта изменилась во время записи; локальная версия сохранена');
   const row=Array.isArray(data)?data[0]:data;
   if(!row||!Number.isFinite(Number(row.revision)))throw new Error('Сервер не вернул новую версию сохранения');
   revision=Number(row.revision);cloudRetryCount=0;
-  try{localStorage.setItem('tb-cloud-user-id',session.user.id);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
+  try{localStorage.setItem('tb-cloud-user-id',userId);localStorage.setItem('tb-cloud-revision',String(revision));}catch(e){}
   return row;
  });
 }
