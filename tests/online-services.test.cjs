@@ -23,7 +23,7 @@ for(const asset of ['./towerbound-engine.js','./combat-visuals.js','./progressio
 assert.ok(serviceWorker.includes('self.skipWaiting()'),'new service worker must skip the waiting phase');
 assert.ok(serviceWorker.includes('self.clients.claim()'),'new service worker must claim open pages');
 assert.ok(serviceWorker.includes("request.mode === 'navigate'")&&serviceWorker.includes("url.pathname.endsWith('/index.html')"),'HTML documents must use the network-first branch');
-assert.ok(serviceWorker.indexOf('fetch(request)')<serviceWorker.indexOf("caches.match(request).then(cached => cached || caches.match('./index.html'))"),'HTML network failure must fall back to cached content');
+assert.ok(serviceWorker.includes(".catch(async () => {")&&serviceWorker.includes('const cached = await caches.match(request);')&&serviceWorker.includes("caches.match('./index.html')"),'HTML network failure must fall back to cached content');
 assert.ok(pwa.includes("{updateViaCache:'none'}"),'service worker registration must bypass HTTP cache for its script');
 assert.ok(pwa.includes('UPDATE_CHECK_MS=60*60*1000')&&pwa.includes('setInterval(checkForUpdate,UPDATE_CHECK_MS)'),'PWA must check for updates hourly');
 assert.ok(pwa.includes("addEventListener('updatefound'")&&pwa.includes("installing.state==='installed'"),'PWA must detect newly installed workers');
