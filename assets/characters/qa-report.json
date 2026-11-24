@@ -1,9 +1,10 @@
 {
-  "heroes": 4,
+  "heroes": 7,
   "enemies": 20,
   "bosses_with_art": 9,
-  "boss_profiles_without_dedicated_art": [
-    "boss.crimson-regent"
-  ],
-  "total_unique_roles": 33
+  "boss_profiles_without_dedicated_art": [],
+  "total_unique_roles": 36,
+  "legacy_art_not_in_active_roster": [
+    "crimson-regent"
+  ]
 }

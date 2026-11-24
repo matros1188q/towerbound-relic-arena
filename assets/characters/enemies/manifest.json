@@ -173,6 +173,15 @@
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "enemy.root-colossus"
+    },
+    {
+      "id": "grave-archer",
+      "name": "Могильный лучник",
+      "filename": "grave-archer.png",
+      "relative_path": "assets/characters/enemies/grave-archer.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "enemy.grave-archer"
     }
   ]
 }

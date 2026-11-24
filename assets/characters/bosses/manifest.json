@@ -47,6 +47,51 @@
       "image_format": "png",
       "usage": "gameplay",
       "exact_asset_id": "boss.heart-of-tower"
+    },
+    {
+      "id": "abyss-queen",
+      "name": "Королева Бездны",
+      "filename": "abyss-queen.png",
+      "relative_path": "assets/characters/bosses/abyss-queen.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.abyss-queen"
+    },
+    {
+      "id": "bone-colossus",
+      "name": "Костяной колосс",
+      "filename": "bone-colossus.png",
+      "relative_path": "assets/characters/bosses/bone-colossus.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.bone-colossus"
+    },
+    {
+      "id": "root-titan",
+      "name": "Титан корней",
+      "filename": "root-titan.png",
+      "relative_path": "assets/characters/bosses/root-titan.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.root-titan"
+    },
+    {
+      "id": "soul-devourer",
+      "name": "Пожиратель душ",
+      "filename": "soul-devourer.png",
+      "relative_path": "assets/characters/bosses/soul-devourer.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.soul-devourer"
+    },
+    {
+      "id": "void-hunter-boss",
+      "name": "Охотник Бездны",
+      "filename": "void-hunter-boss.png",
+      "relative_path": "assets/characters/bosses/void-hunter-boss.png",
+      "image_format": "png",
+      "usage": "gameplay",
+      "exact_asset_id": "boss.void-hunter-boss"
     }
   ]
 }
