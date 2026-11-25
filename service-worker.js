@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v713';
+const CACHE = 'towerbound-v714';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './assets/Chest.jpg',
@@ -28,7 +28,7 @@ const SHELL = [
   './rpg-mode.js?v=13',
   './rpg-expansion.js?v=2',
   './rpg-rework-v2.js?v=25',
-  './styles.css?v=1037',
+  './styles.css?v=1038',
   './rpg-rework-ui.css.js?v=1005',
   './rpg-rework-ui.js?v=1065',
   './towerbound-polish.js?v=8',
