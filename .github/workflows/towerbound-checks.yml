@@ -59,5 +59,7 @@ jobs:
         run: node tests/balance-simulation.test.cjs
       - name: Run card-driven automatic battle regression
         run: node tests/auto-battle-card-synergy.test.cjs
+      - name: Compare real card decks across 21 specializations and tower ranges
+        run: node tests/card-driven-balance-sim.cjs
       - name: Run 250-stage economy simulation
         run: npm run economy
