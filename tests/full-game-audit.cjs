@@ -119,7 +119,7 @@ assert.ok(uiSource.includes('"crimson-regent":"bosses/image_11.png"'),'Crimson R
 assert.ok(uiSource.includes('function ensureBottomNav()'),'fixed bottom navigation is installed by the RPG UI');
 assert.ok(uiSource.includes('if(screen==="battle"||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}'),'bottom navigation stays out of the battle screen');
 for(const action of ['bottom-map','bottom-profile','bottom-progress','bottom-shop','bottom-account'])assert.ok(uiSource.includes('data-action="'+action+'"'),action+' navigation tab exists');
-assert.ok(uiSource.includes('data-nav-tab="progress"'),'progression remains available in the bottom navigation, outside the brand header');
+assert.ok(uiSource.includes('data-action="bottom-progress"'),'progression remains available in the bottom navigation, outside the brand header');
 assert.ok(uiSource.includes('data-nav-tab="progress"'),'progression remains accessible from the main navigation');
 for(const label of ['БОЙ / КАРТА','ПЕРСОНАЖ','ПРОГРЕСС','МАГАЗИН','АККАУНТ'])assert.ok(uiSource.includes(label),'bottom navigation label exists: '+label);
 const cloudSource=fs.readFileSync(path.join(root,'towerbound-cloud.js'),'utf8');
