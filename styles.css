@@ -1489,3 +1489,52 @@
   background-size:100% 100%,contain!important;
   background-color:#090d17!important;
 }
+
+
+/* TOWERBOUND · FULLSCREEN 250-FLOOR ASCENT MAP · MAPA.jpg */
+
+#tbRpg .tb-tower-map-overlay{position:fixed!important;inset:0!important;z-index:1000000!important;display:flex!important;flex-direction:column!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;background:#080b12!important;color:#f4e8d1!important;isolation:isolate!important}
+#tbRpg .tb-tower-map-head{position:relative!important;z-index:5!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;flex:0 0 auto!important;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px!important;border-bottom:1px solid #c39a5b88!important;background:linear-gradient(180deg,#171a23f7,#0a0d14f5)!important;box-shadow:0 5px 18px #000a!important}
+#tbRpg .tb-tower-map-head>div{display:grid!important;gap:2px!important}
+#tbRpg .tb-tower-map-head small{color:#c6a36b!important;font:900 8px/1.2 system-ui!important;letter-spacing:.2em!important}
+#tbRpg .tb-tower-map-head strong{color:#ffe2a0!important;font:900 23px/1.1 Georgia,serif!important;text-shadow:0 0 14px #d99b3b66!important}
+#tbRpg .tb-tower-map-head strong i{color:#a99a80!important;font:700 12px system-ui!important;font-style:normal!important}
+#tbRpg .tb-tower-map-head span{color:#c6c0b5!important;font:600 10px system-ui!important}
+#tbRpg .tb-tower-map-head>button{display:grid!important;place-items:center!important;width:42px!important;height:42px!important;flex:0 0 42px!important;border:1px solid #c9a568!important;border-radius:12px!important;background:linear-gradient(180deg,#38302a,#17151a)!important;color:#ffe4b0!important;font:300 30px/1 system-ui!important}
+#tbRpg .tb-tower-map-tools{position:relative!important;z-index:4!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;flex:0 0 auto!important;padding:8px 12px!important;background:#0b0e16ed!important;border-bottom:1px solid #d0aa5b33!important}
+#tbRpg .tb-tower-map-tools>span{display:flex!important;align-items:center!important;gap:7px!important;color:#cfc4ad!important;font:700 8px system-ui!important;white-space:nowrap!important}
+#tbRpg .tb-tower-map-tools i{display:inline-block!important;width:8px!important;height:8px!important;border-radius:50%!important;background:#777!important}
+#tbRpg .tb-tower-map-tools i.done{background:#d5ad61!important;box-shadow:0 0 8px #e7bd6a!important}
+#tbRpg .tb-tower-map-tools i.active{background:#fff0a4!important;box-shadow:0 0 10px #ffce55!important}
+#tbRpg .tb-tower-map-tools i.locked{background:#586170!important}
+#tbRpg .tb-tower-map-tools i.boss{background:#c65a45!important;box-shadow:0 0 8px #d75a42!important}
+#tbRpg .tb-tower-map-tools button{min-height:34px!important;padding:0 10px!important;border:1px solid #bd985b!important;border-radius:9px!important;background:linear-gradient(180deg,#413323,#1a1716)!important;color:#f8d99c!important;font:900 8px system-ui!important;white-space:nowrap!important}
+#tbRpg .tb-tower-map-scroll{position:relative!important;flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;scroll-behavior:smooth!important;touch-action:pan-y!important;background:radial-gradient(ellipse at 50% 0%,#25303c 0%,#090d15 68%)!important}
+#tbRpg .tb-tower-map-segment{position:relative!important;width:min(100%,760px)!important;aspect-ratio:928/1660!important;margin:0 auto!important;overflow:hidden!important;background-color:#0b1019!important;background-image:linear-gradient(180deg,rgba(7,10,17,.08),rgba(5,8,14,.1)),url("./assets/MAPA.jpg")!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important;border-bottom:1px solid #c6a15b55!important;box-shadow:inset 0 -25px 45px #03060c88!important}
+#tbRpg .tb-tower-map-segment:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#05080c44,transparent 24%,transparent 76%,#05080c44),linear-gradient(180deg,#080c1688,transparent 16%,transparent 75%,#070b13aa)!important}
+#tbRpg .tb-tower-map-chapter{position:absolute!important;z-index:2!important;top:2.5%!important;left:4%!important;display:grid!important;gap:2px!important;padding:7px 10px!important;border:1px solid #d2ae6c99!important;border-radius:9px!important;background:#090d16c9!important;box-shadow:0 4px 12px #0009!important;backdrop-filter:blur(5px)!important}
+#tbRpg .tb-tower-map-chapter span{color:#e5bf78!important;font:900 7px system-ui!important;letter-spacing:.16em!important}
+#tbRpg .tb-tower-map-chapter b{color:#fff0d0!important;font:700 12px Georgia,serif!important}
+#tbRpg .tb-tower-map-chapter small{color:#b9ad99!important;font:700 7px system-ui!important}
+#tbRpg .tb-tower-floor-node{position:absolute!important;z-index:3!important;left:var(--floor-x)!important;top:var(--floor-y)!important;display:grid!important;place-content:center!important;justify-items:center!important;gap:0!important;width:clamp(35px,8vw,52px)!important;height:clamp(35px,8vw,52px)!important;min-width:0!important;min-height:0!important;padding:2px!important;transform:translate(-50%,-50%)!important;border:1px solid #b99b6b!important;border-radius:50%!important;background:radial-gradient(circle at 35% 25%,#63513b,#17151a 68%)!important;color:#f5e2bc!important;box-shadow:0 3px 10px #000d,inset 0 1px #fff5!important;cursor:pointer!important;touch-action:manipulation!important}
+#tbRpg .tb-tower-floor-node strong{display:block!important;color:#f6e2b6!important;font:900 13px/1 Georgia,serif!important;text-shadow:0 1px 3px #000!important}
+#tbRpg .tb-tower-floor-node small{display:block!important;margin-top:2px!important;color:#c7b18b!important;font:900 6px/1 system-ui!important;letter-spacing:.04em!important}
+#tbRpg .tb-tower-floor-node.is-cleared{border-color:#e4c47c!important;background:radial-gradient(circle at 35% 25%,#a27a3d,#3b291b 72%)!important;box-shadow:0 0 12px #d7a84a99,inset 0 1px #fff8!important}
+#tbRpg .tb-tower-floor-node.is-cleared strong{color:#fff0bb!important}
+#tbRpg .tb-tower-floor-node.is-selected{outline:2px solid #fff0a4!important;outline-offset:3px!important;box-shadow:0 0 0 5px #f3c75b44,0 0 24px #ffd66b!important}
+#tbRpg .tb-tower-floor-node.is-current{width:clamp(48px,11vw,66px)!important;height:clamp(48px,11vw,66px)!important;border:2px solid #ffe18b!important;background:radial-gradient(circle at 35% 25%,#fff0a5,#bd8129 42%,#3b2110 78%)!important;box-shadow:0 0 0 5px #ffcf5544,0 0 28px 10px #ffbd4eaa!important;animation:tbTowerCurrentPulse 2.4s ease-in-out infinite!important}
+#tbRpg .tb-tower-floor-node.is-current strong{color:#241606!important;font-size:17px!important;text-shadow:none!important}
+#tbRpg .tb-tower-floor-node.is-current small{color:#fff0bf!important}
+#tbRpg .tb-tower-floor-node.is-boss{width:clamp(44px,10vw,60px)!important;height:clamp(44px,10vw,60px)!important;border:2px solid #e2a16b!important;border-radius:15px!important;background:radial-gradient(circle,#8d3d2b,#2b1115 76%)!important;box-shadow:0 0 18px #e35e3c99,inset 0 0 12px #ffbf6a55!important}
+#tbRpg .tb-tower-floor-node.is-boss strong{color:#ffe0a4!important;font-size:19px!important}
+#tbRpg .tb-tower-floor-node.is-elite{border-color:#d8755e!important;background:radial-gradient(circle,#71352e,#201319 75%)!important}
+#tbRpg .tb-tower-floor-node.is-event{border-color:#9d8bd0!important}
+#tbRpg .tb-tower-floor-node:disabled{opacity:.58!important;filter:grayscale(.65)!important;cursor:not-allowed!important}
+#tbRpg .tb-tower-floor-node:disabled strong{color:#a0a0a0!important}
+#tbRpg .tb-tower-map-segment[data-chapter="2"]{filter:hue-rotate(12deg) saturate(.92)}
+#tbRpg .tb-tower-map-segment[data-chapter="3"]{filter:hue-rotate(185deg) saturate(.8)}
+#tbRpg .tb-tower-map-segment[data-chapter="4"]{filter:hue-rotate(-22deg) saturate(1.12)}
+#tbRpg .tb-tower-map-segment[data-chapter="5"]{filter:hue-rotate(35deg) saturate(1.08)}
+@keyframes tbTowerCurrentPulse{0%,100%{filter:brightness(1);transform:translate(-50%,-50%) scale(1)}50%{filter:brightness(1.18);transform:translate(-50%,-50%) scale(1.07)}}
+@media(max-width:520px){#tbRpg .tb-tower-map-head{padding-left:11px!important;padding-right:11px!important}#tbRpg .tb-tower-map-tools{padding:7px 8px!important}#tbRpg .tb-tower-map-tools>span{gap:4px!important;font-size:7px!important}#tbRpg .tb-tower-map-tools button{padding:0 7px!important;font-size:7px!important}#tbRpg .tb-tower-map-chapter{left:3%!important;top:2%!important;padding:5px 7px!important}#tbRpg .tb-tower-map-chapter b{font-size:10px!important}#tbRpg .tb-tower-floor-node{width:clamp(31px,8.8vw,42px)!important;height:clamp(31px,8.8vw,42px)!important}#tbRpg .tb-tower-floor-node.is-current{width:48px!important;height:48px!important}#tbRpg .tb-tower-floor-node.is-boss{width:44px!important;height:44px!important}}
+@media(prefers-reduced-motion:reduce){#tbRpg .tb-tower-floor-node.is-current{animation:none!important}}
