@@ -7,6 +7,7 @@ const progression=fs.readFileSync(path.join(root,'progression-24.js'),'utf8');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
 const engineSource=fs.readFileSync(path.join(root,'rpg-rework-v2.js'),'utf8');
+const {createEngine}=require('../rpg-rework-v2.js');
 for(const tab of ['progress','economy','ux','lore'])assert.ok(progression.includes('data-progress-tab="'+tab+'"'),'progression tab '+tab+' is rendered');
 assert.match(progression,/role="tablist"/,'progression navigation is an accessible tablist');
 assert.match(progression,/aria-selected=/,'selected progression tab is exposed to assistive technology');
@@ -26,6 +27,20 @@ assert.match(engineSource,/permanentXpBonus/,'core XP multiplier owns permanent 
 assert.match(engineSource,/runeHealth=.*progression\.runewords/,'core max HP calculation owns runeword health application');
 assert.match(engineSource,/function assignParagon\([\s\S]*?character\.paragon\.stats\[stat\]=/,'Paragon points are recorded by the core engine');
 assert.doesNotMatch(engineSource.slice(engineSource.indexOf('function getCombatStats('),engineSource.indexOf('function getRefinementGlow(')),/paragon\.stats/,'Paragon allocation currently has no combat-stat application');
+const balanceDir=path.join(root,'configs/balance');
+const balance=Object.fromEntries(fs.readdirSync(balanceDir).filter(name=>name.endsWith('.json')).map(name=>[name.slice(0,-5),JSON.parse(fs.readFileSync(path.join(balanceDir,name),'utf8'))]));
+const bonusEngine=createEngine(balance,{random:()=>0.25,now:()=>Date.UTC(2026,10,25)});
+const bonusCharacter=bonusEngine.createCharacter('Rune Audit','assassin');
+const bonusState=bonusEngine.getChar(bonusCharacter.id);
+const xpBefore=bonusEngine.xpMultiplier(bonusState,1,{});
+bonusState.progression={permanentXpBonus:0.1,runewords:[{name:'Test rune',attack:0.1,defense:0.1,health:0.1}]};
+const xpAfter=bonusEngine.xpMultiplier(bonusState,1,{});
+assert.ok(Math.abs(xpAfter/xpBefore-1.1)<1e-9,'permanent XP bonus is applied exactly once by the core multiplier');
+const hpBefore=bonusEngine.maxHp(bonusState);
+const expectedRuneHp=Math.round(hpBefore*1.1);
+assert.equal(bonusEngine.maxHp(bonusState),expectedRuneHp,'one 10% health runeword increases max HP by exactly 10%');
+assert.equal(bonusEngine.getCombatStats(bonusState).maxHp,expectedRuneHp,'combat stats and maxHp report the same single runeword health bonus');
+
 
 assert.doesNotMatch(progression,/secret\.addEventListener\('click'/,'secret-room reward is handled once by the overlay delegated click handler');
 assert.doesNotMatch(progression,/tb-progression-cloud-draft|Google\/Apple OAuth не подключён/,'obsolete local-only cloud-save placeholder is removed');
