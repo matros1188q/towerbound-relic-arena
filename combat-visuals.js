@@ -14,6 +14,17 @@ style.textContent=[
 '#tbRpg .tb-v2.tb-low-hp:after{content:"";position:fixed;inset:0;z-index:999990;pointer-events:none;box-shadow:inset 0 0 60px 18px rgba(220,20,35,.72);animation:tb-low-hp 1.1s ease-in-out infinite alternate}',
 '#tbRpg .tb-v2 .tb-boss-intro{position:fixed;inset:0;z-index:999999;display:grid;place-content:center;text-align:center;background:radial-gradient(ellipse,#34251d,#05070b 75%);animation:tb-boss-intro 2s ease forwards;pointer-events:none}',
 '#tbRpg .tb-v2 .tb-boss-intro b{font:900 clamp(28px,7vw,64px) Georgia;color:#f1d18b;text-shadow:0 0 28px #b13b27}',
+'#tbRpg .tb-v2 .tb-ancient-victory{position:fixed;inset:0;z-index:1000000;display:grid;place-content:center;justify-items:center;gap:10px;padding:28px 20px;text-align:center;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,rgba(113,82,36,.92),rgba(16,13,24,.96) 48%,rgba(3,5,11,.98) 100%);animation:tb-ancient-victory-in 3.2s cubic-bezier(.2,.7,.2,1) forwards}',
+'#tbRpg .tb-v2 .tb-ancient-victory.is-trial{background:radial-gradient(ellipse at 50% 46%,rgba(48,93,91,.92),rgba(14,22,34,.96) 48%,rgba(3,5,11,.98) 100%)}',
+'#tbRpg .tb-v2 .tb-ancient-victory .tb-victory-rings{position:absolute;left:50%;top:45%;width:min(76vw,360px);aspect-ratio:1;transform:translate(-50%,-50%)}',
+'#tbRpg .tb-v2 .tb-ancient-victory .tb-victory-rings i{position:absolute;inset:8%;border:1px solid #ffe4a0;border-radius:50%;box-shadow:0 0 22px #f4d18a66,inset 0 0 20px #f4d18a22;animation:tb-ancient-victory-ring 2.7s ease-out infinite}',
+'#tbRpg .tb-v2 .tb-ancient-victory .tb-victory-rings i:nth-child(2){inset:20%;border-style:dashed;animation-delay:.22s}',
+'#tbRpg .tb-v2 .tb-ancient-victory.is-trial .tb-victory-rings i{border-color:#91f4e3;box-shadow:0 0 22px #65e4d366,inset 0 0 20px #65e4d322}',
+'#tbRpg .tb-v2 .tb-ancient-victory .tb-victory-sigil{position:relative;z-index:1;font:900 clamp(76px,18vw,128px)/1 Georgia;color:#fff0bf;text-shadow:0 0 22px #ffdb8b,0 0 60px #e9a94b;animation:tb-ancient-victory-sigil 2.5s cubic-bezier(.16,.8,.2,1) both}',
+'#tbRpg .tb-v2 .tb-ancient-victory.is-trial .tb-victory-sigil{color:#c5fff3;text-shadow:0 0 22px #80f4df,0 0 60px #47c8c0}',
+'#tbRpg .tb-v2 .tb-ancient-victory small{position:relative;z-index:1;color:#f6d994;font:900 10px/1.4 system-ui;letter-spacing:.28em}',
+'#tbRpg .tb-v2 .tb-ancient-victory h2{position:relative;z-index:1;margin:0;color:#fff3d0;font:900 clamp(21px,5vw,34px)/1.15 Georgia;letter-spacing:.08em;text-shadow:0 3px 18px #000}',
+'#tbRpg .tb-v2 .tb-ancient-victory p{position:relative;z-index:1;margin:0;color:#e6d7b6;font:800 11px/1.5 system-ui;letter-spacing:.16em}',
 '#tbRpg .tb-v2 .tb-weather{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}',
 '#tbRpg .tb-v2 .tb-weather i{position:absolute;top:-12%;left:var(--x);font-size:var(--s);opacity:var(--o);animation:tb-weather-fall var(--d) linear infinite}',
 '#tbRpg .tb-v2 .tb-combat-status{position:absolute;z-index:15;top:18%;left:50%;transform:translateX(-50%);font-size:22px;animation:tb-status-rise 1.1s ease-out forwards;pointer-events:none}',
@@ -45,6 +56,9 @@ style.textContent=[
 '@keyframes tb-hero-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}',
 '@keyframes tb-low-hp{to{opacity:.25}}',
 '@keyframes tb-boss-intro{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0;visibility:hidden}}',
+'@keyframes tb-ancient-victory-in{0%{opacity:0;backdrop-filter:blur(0)}12%,78%{opacity:1;backdrop-filter:blur(7px)}100%{opacity:0;backdrop-filter:blur(0);visibility:hidden}}',
+'@keyframes tb-ancient-victory-ring{0%{transform:scale(.5) rotate(0);opacity:0}18%{opacity:.8}100%{transform:scale(1.35) rotate(135deg);opacity:0}}',
+'@keyframes tb-ancient-victory-sigil{0%{opacity:0;transform:translateY(25px) scale(.45) rotate(-25deg)}25%{opacity:1;transform:translateY(0) scale(1.08) rotate(0)}72%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.16)}}',
 '@keyframes tb-weather-fall{to{transform:translate3d(-15vw,120vh,0) rotate(180deg)}}',
 '@keyframes tb-status-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-48px) scale(1.1)}}'
 ].join(String.fromCharCode(10));document.head.appendChild(style);
@@ -68,6 +82,8 @@ function ancientBurst(event){
  setTimeout(()=>burst.remove(),duration+80);
 }
 document.addEventListener("tb:ancient-relic-proc",ancientBurst);
+function ancientVictory(event){const root=getRoot();if(!root)return;root.querySelector(".tb-ancient-victory")?.remove();const trial=event.detail?.kind==="trial",overlay=document.createElement("div");overlay.className="tb-ancient-victory"+(trial?" is-trial":"");overlay.setAttribute("aria-hidden","true");const rings=document.createElement("span");rings.className="tb-victory-rings";rings.innerHTML="<i></i><i></i>";const sigil=document.createElement("b");sigil.className="tb-victory-sigil";sigil.textContent=trial?"✧":"✦";const eyebrow=document.createElement("small");eyebrow.textContent="ПОЛНОЕ ПРОБУЖДЕНИЕ · 4 / 4";const title=document.createElement("h2");title.textContent=trial?"ИСПЫТАНИЕ ПРЕОДОЛЕНО":"СТРАЖ БАШНИ ПОВЕРЖЕН";const subtitle=document.createElement("p");subtitle.textContent=trial?"ДРЕВНИЙ ОРДЕН ПРИЗНАЛ ТВОЮ СИЛУ":"ПЕЧАТЬ ДРЕВНИХ РЕЛИКВИЙ ОТКЛИКНУЛАСЬ";overlay.append(rings,sigil,eyebrow,title,subtitle);root.appendChild(overlay);setTimeout(()=>overlay.remove(),3400);}
+document.addEventListener("tb:ancient-relic-victory",ancientVictory);
 
 function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){if(root.classList.contains('tb-low-hp'))root.classList.remove('tb-low-hp');return;}
 const match=(root.querySelector('.tb-arena-top')?.textContent||'').match(/ЭТАП\s+(\d+)/i);const stage=Number(match?.[1]||0);
