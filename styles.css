@@ -1089,3 +1089,43 @@
 @keyframes tbRelicStars{0%,100%{opacity:.62;transform:scale(.96)}50%{opacity:1;transform:scale(1.05)}}
 @media(max-width:420px){#tbRpg .tb-relic-acquired-modal{padding:20px 17px 17px}#tbRpg .tb-relic-acquired-art{width:138px;height:138px}}
 @media(prefers-reduced-motion:reduce){#tbRpg .tb-relic-acquired-overlay,#tbRpg .tb-relic-acquired-modal,#tbRpg .tb-relic-acquired-stars,#tbRpg .tb-relic-acquired-art,#tbRpg .tb-relic-acquired-art::after{animation:none!important}}
+
+/* Ancient relic set milestones: separate cinematic awakening for 2, 3 and 4 pieces. */
+#tbRpg .tb-ancient-awakening-overlay{--tb-awake:#8fd5dc;position:fixed;inset:0;z-index:100510;display:grid;place-items:center;padding:18px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 43%,color-mix(in srgb,var(--tb-awake) 25%,transparent),#080b13ed 48%,#020409f7 100%);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);animation:tbAncientAwakeBackdrop .4s ease-out both}
+#tbRpg .tb-ancient-awakening-overlay.tier-2{--tb-awake:#83d8df}
+#tbRpg .tb-ancient-awakening-overlay.tier-3{--tb-awake:#e9c36f}
+#tbRpg .tb-ancient-awakening-overlay.tier-4{--tb-awake:#c19aff}
+#tbRpg .tb-ancient-awakening-overlay.class-assassin{--tb-awake:#b9e4d5}
+#tbRpg .tb-ancient-awakening-overlay.class-bishop{--tb-awake:#ffe7a0}
+#tbRpg .tb-ancient-awakening-overlay.class-dragonkin{--tb-awake:#ff8650}
+#tbRpg .tb-ancient-awakening-overlay.class-destroyer{--tb-awake:#f18a55}
+#tbRpg .tb-ancient-awakening-overlay.class-elemental{--tb-awake:#8fc9ff}
+#tbRpg .tb-ancient-awakening-overlay.class-duelist{--tb-awake:#d5b7ff}
+#tbRpg .tb-ancient-awakening-overlay.class-shaman{--tb-awake:#9edb8a}
+#tbRpg .tb-ancient-awakening-modal{position:relative;width:min(100%,390px);max-height:90dvh;overflow:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:23px 21px 20px;border:1px solid color-mix(in srgb,var(--tb-awake) 75%,transparent);border-radius:24px;background:linear-gradient(155deg,#242b32 0%,#171b27 55%,#0e121b 100%);box-shadow:0 24px 90px #000e,0 0 38px color-mix(in srgb,var(--tb-awake) 20%,transparent),inset 0 0 36px color-mix(in srgb,var(--tb-awake) 9%,transparent);box-sizing:border-box;animation:tbAncientAwakeModal .7s cubic-bezier(.16,.82,.22,1.12) both}
+#tbRpg .tb-ancient-awakening-modal::before{content:"";position:absolute;inset:8px;border:1px solid color-mix(in srgb,var(--tb-awake) 24%,transparent);border-radius:17px;pointer-events:none}
+#tbRpg .tb-ancient-awakening-runes{color:var(--tb-awake);font:900 16px/1.2 Georgia,serif;letter-spacing:.28em;text-shadow:0 0 17px var(--tb-awake);animation:tbAncientRunePulse 2s ease-in-out infinite}
+#tbRpg .tb-ancient-awakening-core{position:relative;display:grid;place-items:center;width:132px;height:132px;margin:16px 0 13px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--tb-awake) 28%,transparent),transparent 68%);filter:drop-shadow(0 0 20px color-mix(in srgb,var(--tb-awake) 35%,transparent))}
+#tbRpg .tb-ancient-awakening-core::before,#tbRpg .tb-ancient-awakening-core::after{content:"";position:absolute;inset:9px;border:1px solid var(--tb-awake);border-radius:50%;box-shadow:0 0 18px color-mix(in srgb,var(--tb-awake) 42%,transparent),inset 0 0 20px color-mix(in srgb,var(--tb-awake) 18%,transparent);animation:tbAncientRing 5s linear infinite}
+#tbRpg .tb-ancient-awakening-core::after{inset:0;border-style:dashed;opacity:.7;animation-direction:reverse;animation-duration:13s}
+#tbRpg .tb-ancient-awakening-core i{position:absolute;inset:34px;border-radius:50%;background:var(--tb-awake);opacity:.32;filter:blur(20px);animation:tbAncientCore 1.8s ease-in-out infinite}
+#tbRpg .tb-ancient-awakening-core b{position:relative;z-index:1;color:#fff5d7;font:900 56px/1 Georgia,serif;text-shadow:0 0 10px var(--tb-awake),0 0 28px var(--tb-awake)}
+#tbRpg .tb-ancient-awakening-core span{position:absolute;inset:23px;border:1px solid color-mix(in srgb,var(--tb-awake) 70%,transparent);transform:rotate(45deg);border-radius:13px}
+#tbRpg .tb-ancient-awakening-kicker{color:var(--tb-awake);font:900 9px/1.2 system-ui;letter-spacing:.2em}
+#tbRpg .tb-ancient-awakening-modal h2{margin:9px 0 5px;color:#fff0c9;font:900 clamp(20px,6vw,27px)/1.12 Georgia,serif;text-shadow:0 0 20px color-mix(in srgb,var(--tb-awake) 45%,transparent)}
+#tbRpg .tb-ancient-awakening-name{color:#f3dba7;font:800 13px/1.35 system-ui}
+#tbRpg .tb-ancient-awakening-effect{margin-top:14px;padding:10px 13px;width:100%;border:1px solid color-mix(in srgb,var(--tb-awake) 48%,transparent);border-radius:11px;background:color-mix(in srgb,var(--tb-awake) 10%,#10151d);color:#fff2d0;font:900 11px/1.35 system-ui;letter-spacing:.04em;box-sizing:border-box;box-shadow:0 0 18px color-mix(in srgb,var(--tb-awake) 13%,transparent)}
+#tbRpg .tb-ancient-awakening-modal p{max-width:300px;margin:12px 0;color:#c9c5bd;font:600 11px/1.5 system-ui}
+#tbRpg .tb-ancient-awakening-progress{display:flex;gap:9px;margin:5px 0 18px}
+#tbRpg .tb-ancient-awakening-progress i{width:26px;height:5px;border-radius:9px;background:#424650}
+#tbRpg .tb-ancient-awakening-progress i.is-lit{background:var(--tb-awake);box-shadow:0 0 12px var(--tb-awake)}
+#tbRpg .tb-ancient-awakening-modal button{width:100%;min-height:47px;border:1px solid color-mix(in srgb,var(--tb-awake) 75%,#fff);border-radius:12px;background:linear-gradient(120deg,color-mix(in srgb,var(--tb-awake) 28%,#24232b),#34303c);color:#fff3d5;font:900 10px/1 system-ui;letter-spacing:.16em;cursor:pointer;box-shadow:0 5px 22px #0008}
+#tbRpg .tb-ancient-awakening-overlay.tier-4 .tb-ancient-awakening-core{width:150px;height:150px}
+#tbRpg .tb-ancient-awakening-overlay.tier-4 .tb-ancient-awakening-core b{font-size:66px}
+@keyframes tbAncientAwakeBackdrop{from{opacity:0}to{opacity:1}}
+@keyframes tbAncientAwakeModal{0%{opacity:0;transform:translateY(28px) scale(.82)}65%{opacity:1;transform:translateY(-4px) scale(1.025)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes tbAncientRing{to{transform:rotate(360deg)}}
+@keyframes tbAncientRunePulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes tbAncientCore{0%,100%{opacity:.18;transform:scale(.82)}50%{opacity:.55;transform:scale(1.12)}}
+@media(max-width:420px){#tbRpg .tb-ancient-awakening-modal{padding:19px 16px 16px}#tbRpg .tb-ancient-awakening-core{width:116px;height:116px}}
+@media(prefers-reduced-motion:reduce){#tbRpg .tb-ancient-awakening-overlay,#tbRpg .tb-ancient-awakening-modal,#tbRpg .tb-ancient-awakening-runes,#tbRpg .tb-ancient-awakening-core,#tbRpg .tb-ancient-awakening-core::before,#tbRpg .tb-ancient-awakening-core::after,#tbRpg .tb-ancient-awakening-core i{animation:none!important}}
