@@ -134,6 +134,43 @@ for(const [specIndex,spec] of specializationMatrix.entries()){
   }
 }
 
+
+for(const [specIndex,spec] of specializationMatrix.entries()){
+  let economyEngine=createEngine(balance,{random:()=>0.25,now:()=>Date.UTC(2026,10,25)});
+  const created=economyEngine.createCharacter('GR'+(specIndex+1),spec.classId);
+  let hero=economyEngine.state.characters.find(character=>character.id===created.id);
+  hero.level=10;
+  hero.xp=Array.from({length:9},(_,index)=>economyEngine.requiredXp(index+1)).reduce((sum,value)=>sum+value,0);
+  economyEngine.chooseBranch(hero.id,spec.branchId);
+  let previousXp=hero.xp,previousSilver=hero.silver||0,previousKills=hero.stats.kills||0;
+  for(let runNumber=1;runNumber<=3;runNumber++){
+    for(let stageNumber=1;stageNumber<=2;stageNumber++){
+      const stage=economyEngine.beginStage(hero.id,stageNumber);
+      assert.ok(stage.mobs.length>0,spec.classId+'/'+spec.branchId+' run '+runNumber+' stage '+stageNumber+' generates encounters');
+      for(let targetIndex=0;targetIndex<stage.mobs.length;targetIndex++){
+        economyEngine.finishEnemy(hero.id,{targetIndex});
+      }
+      assert.equal(hero.run.stage,null,spec.classId+'/'+spec.branchId+' clears every generated encounter');
+      assert.ok(hero.xp>previousXp,spec.classId+'/'+spec.branchId+' accumulates real combat XP across runs');
+      assert.ok(hero.silver>previousSilver,spec.classId+'/'+spec.branchId+' accumulates real combat silver across runs');
+      assert.ok((hero.stats.kills||0)>previousKills,spec.classId+'/'+spec.branchId+' records real kills across runs');
+      previousXp=hero.xp;previousSilver=hero.silver;previousKills=hero.stats.kills;
+    }
+    economyEngine.voluntaryRestart(hero.id);
+    assert.equal(hero.stats.runs_completed,runNumber,spec.classId+'/'+spec.branchId+' completes each accumulated run exactly once');
+    const snapshot=JSON.parse(JSON.stringify(economyEngine.saveSnapshot()));
+    economyEngine=createEngine(balance,{state:snapshot,random:()=>0.25,now:()=>Date.UTC(2026,10,25)});
+    hero=economyEngine.state.characters.find(character=>character.id===created.id);
+    assert.equal(hero.branch,spec.branchId,spec.classId+'/'+spec.branchId+' keeps its branch between accumulated runs');
+    assert.equal(hero.progress.highestEver,2,spec.classId+'/'+spec.branchId+' keeps the highest cleared stage between runs');
+    assert.equal(hero.progress.currentStage,balance.death.new_run_stage,spec.classId+'/'+spec.branchId+' starts the next run at the configured start stage');
+    assert.equal(hero.stats.runs_completed,runNumber,spec.classId+'/'+spec.branchId+' persists the completed-run counter');
+    assert.equal(hero.xp,previousXp,spec.classId+'/'+spec.branchId+' persists accumulated combat XP');
+    assert.equal(hero.silver,previousSilver,spec.classId+'/'+spec.branchId+' persists accumulated combat silver');
+    assert.equal(hero.stats.kills,previousKills,spec.classId+'/'+spec.branchId+' persists accumulated kills');
+  }
+}
+
 const deathCharacter=bonusEngine.createCharacter('Checkpoint Audit','dragonkin');
 const deathState=bonusEngine.state.characters.find(character=>character.id===deathCharacter.id);
 deathState.level=35;deathState.xp=9000;deathState.silver=999;
@@ -184,4 +221,4 @@ const handledActions=new Set([...actionHandler.matchAll(/case'([^']+)'/g)].map(m
 for(const action of renderedActions)assert.ok(handledActions.has(action),'rendered progression action '+action+' has a handler');
 assert.match(progression,/settings\.disable_telegraphs\?'Включить':'Отключить'/,'telegraph toggle reflects the global setting');
 assert.match(progression,/settings\.disable_particles\?'Включить частицы':'Отключить частицы'/,'particle toggle reflects the global setting');
-console.log('Towerbound progression interface checks passed: 4 tabs, mobile modal, real cloud sync, and 42 serialized run cycles across all 21 specializations.');
+console.log('Towerbound progression interface checks passed: 4 tabs, mobile modal, real cloud sync, 42 serialized run cycles plus 126 real progression runs across all 21 specializations.');
