@@ -87,7 +87,7 @@ const worker = fs.readFileSync(path.join(__dirname, '../service-worker.js'), 'ut
 assert.match(ui, /function syncEquipmentCards/);
 assert.match(ui, /sourceType="equipment"/);
 assert.match(ui, /function getCardDamageWithTalents/);
-assert.ok(ui.includes('getCardDamageWithTalents(card,c,battle.guildRaid&&isXCost?Math.max(1,Number(c.energy)||3):cost)'),'card damage uses computed energy cost and guild-raid exception');
+assert.ok(ui.includes('getCardDamageWithTalents(card,c,battle.guildRaid&&isXCost?Math.max(1,Number(c.energy)||3):cost,effects)'),'card damage uses computed energy cost, effect overrides and guild-raid exception');
 assert.match(ui, /data-relic-buy/);
 assert.match(ui, /data-relic-reward-pick/);
 assert.match(ui, /data-unequip/);
