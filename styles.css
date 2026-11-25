@@ -1458,3 +1458,19 @@
 #tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="community"]>span{background-image:url('./assets/characters/heroes/shaman.jpg')!important}
 #tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="shop"]>span{background-image:url('./assets/relics/guardian.png')!important}
 #tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="account"]>span{background-image:url('./assets/icons/oracle.svg')!important}
+
+/* TOWERBOUND USER ASSET PACK · NAMED HOME ART V1 */
+#tbRpg .tb-v2 .tb-seasonal-status{background-position:center!important;background-size:cover!important}
+#tbRpg .tb-v2 .tb-seasonal-status:before{display:none!important}
+#tbRpg .tb-v2 .tb-seasonal-status[data-season-modifier="swift_enemies"]{background-image:linear-gradient(90deg,rgba(7,8,15,.94),rgba(18,15,27,.70)),url('./assets/Mod1.jfif')!important}
+#tbRpg .tb-v2 .tb-seasonal-status[data-season-modifier="double_elites"]{background-image:linear-gradient(90deg,rgba(7,8,15,.94),rgba(18,15,27,.70)),url('./assets/Mod2.jfif')!important}
+#tbRpg .tb-v2 .tb-seasonal-status[data-season-modifier="boss_no_heal"]{background-image:linear-gradient(90deg,rgba(7,8,15,.94),rgba(18,15,27,.70)),url('./assets/Mod3.jfif')!important}
+#tbRpg .tb-v2 .tb-seasonal-status[data-season-modifier="cursed_levels"]{background-image:linear-gradient(90deg,rgba(7,8,15,.94),rgba(18,15,27,.70)),url('./assets/mod4.jfif')!important}
+#tbRpg .tb-v2 .tb-map-quick-panel button[data-action="daily-chest"]{background-image:linear-gradient(180deg,transparent 15%,rgba(4,5,10,.16) 42%,rgba(4,5,10,.96) 100%),url('./assets/Chest.jpg')!important;background-position:center!important;background-size:cover!important}
+#tbRpg .tb-v2 .tb-map-quick-panel button[data-action="open-season-modifiers"]{background-image:linear-gradient(180deg,transparent 15%,rgba(4,5,10,.16) 42%,rgba(4,5,10,.96) 100%),url('./assets/ModAll.jpg')!important;background-position:center!important;background-size:cover!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="map"]>span{background-image:url('./assets/Map.jpg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="profile"]>span{background-image:url('./assets/Pers.jpg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="progress"]>span{background-image:url('./assets/Prog.jpg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="community"]>span{background-image:url('./assets/Soob.jpg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="shop"]>span{background-image:url('./assets/Mag.jpg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="account"]>span{background-image:url('./assets/Akk.jpg')!important}
