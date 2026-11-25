@@ -68,5 +68,6 @@ console.log('BUILD\tWINDOW\tMEDIAN CLEARED / 9\tWORST\tBEST\tAVG CARDS\tAVG POTI
 for(const row of rows)console.log([row.build,row.window,row.medianCleared,row.worst,row.best,row.averageCards,row.averagePotions,row.averageStatusDamage,row.averageBlock].join('\t'));
 console.log(JSON.stringify({audit:'card-driven-auto-battle-balance',builds:21,windows:windows.length,seedsPerWindow:3,totalTrials:rows.length*3,totalStages,clearedStages:totalCleared,clearRatePct:Number((totalCleared/Math.max(1,totalStages)*100).toFixed(2)),cardsPlayed:totalCards,potionsUsed:totalPotions,statusDamage:totalStatusDamage,blockGenerated:totalBlock}));
 assert.ok(totalCards>0,'real deck cards must be played across the build matrix');
+assert.ok(totalPotions>0,'available healing potions must be used by card-driven auto battle when needed');
 assert.ok(totalStages>0&&totalCleared>=0,'card simulation returns bounded progression results');
 assert.ok(rows.every(row=>row.trials.length===3),'each specialization/window has three deterministic seeds');
