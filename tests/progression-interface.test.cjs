@@ -209,7 +209,7 @@ assert.equal(terminalState.stats.runs_completed,terminalRunsBefore+1,'repeated t
 assert.doesNotMatch(progression,/secret\.addEventListener\('click'/,'secret-room reward is handled once by the overlay delegated click handler');
 assert.doesNotMatch(progression,/tb-progression-cloud-draft|Google\/Apple OAuth не подключён/,'obsolete local-only cloud-save placeholder is removed');
 assert.match(progression,/Сохранение Towerbound через игровой аккаунт/,'cloud-save card describes the actual account-based service');
-assert.match(html,/progression-24\.js\?v=13/,'progression UI asset cache version is bumped');
+assert.match(html,/progression-24\\.js\\?v=14/,'progression UI asset cache version is bumped');
 assert.match(sw,/towerbound-v[0-9]+/,'service worker cache is versioned to prevent stale UI on iOS');
 const actionStart=progression.indexOf('async function act(a){');
 const actionEnd=progression.indexOf('function inject(){',actionStart);
