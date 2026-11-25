@@ -75,5 +75,9 @@
         0.2
       ]
     }
-  ]
+  ],
+  "checkpoint_reward_silver": {
+    "base": 250,
+    "per_stage": 5
+  }
 }
