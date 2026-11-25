@@ -107,3 +107,6 @@ assert.match(css,/tbBattleImpactShake/,'battle shake animation is styled');
 assert.match(css,/inset 0 0 50px rgba\(255,0,0/,'player damage uses a red inset edge flash');
 assert.match(css,/tb-echo-past-card/,'Echo of the Past has a dedicated dark story card');
 console.log('Card drag, impact feedback and boss lore regression checks passed.');
+
+assert.match(ui,/if\(Math\.abs\(dx\)\+Math\.abs\(dy\)>7&&!drag\.moved\)/,"drag lift starts only after intentional movement so taps still click");
+assert.doesNotMatch(css,/tb-card-dragging\{[^}]*pointer-events:none/,"dragged cards remain the click target during mouse gestures");

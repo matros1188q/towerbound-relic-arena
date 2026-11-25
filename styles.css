@@ -1189,7 +1189,7 @@
 
 /* Card drag-and-drop: tactile lift, smooth return and clear drop feedback. */
 #tbRpg .tb-v2 [data-card-play]{touch-action:pan-x;user-select:none;-webkit-user-select:none;cursor:grab;will-change:transform;}
-#tbRpg .tb-v2 [data-card-play].tb-card-dragging{z-index:1000!important;position:relative;pointer-events:none;filter:brightness(1.16) drop-shadow(0 16px 22px #000b);box-shadow:0 0 0 1px #f4d28b,0 18px 38px #000b!important;}
+#tbRpg .tb-v2 [data-card-play].tb-card-dragging{z-index:1000!important;position:relative;filter:brightness(1.16) drop-shadow(0 16px 22px #000b);box-shadow:0 0 0 1px #f4d28b,0 18px 38px #000b!important;}
 #tbRpg .tb-v2 [data-card-play].tb-card-return{z-index:5;}
 #tbRpg .new-battle-wrap.tb-shake{animation:tbBattleImpactShake .2s ease-out both;}
 @keyframes tbBattleImpactShake{0%{transform:translate3d(0,0,0)}18%{transform:translate3d(-5px,1px,0)}36%{transform:translate3d(5px,-1px,0)}54%{transform:translate3d(-3px,0,0)}72%{transform:translate3d(2px,0,0)}100%{transform:translate3d(0,0,0)}}
