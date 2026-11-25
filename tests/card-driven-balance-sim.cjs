@@ -53,7 +53,8 @@ for(const [buildIndex,build] of classes.entries()){
    const starterIds=baseDecks[build.classId];
    const specializationIds=Object.values(cardDb).filter(card=>card.classId===build.classId&&card.branchId===build.branchId&&card.starter).slice(0,2).map(card=>card.id);
    character.deck=[...starterIds,...specializationIds,...equipmentCardIds(character)].map(makeCard);
-   character.hand=[];character.discard=[];character.exhaustPile=[];character.energy=3;character.currentEnergy=3;\n   character.bag.push({id:'qa-potion-a',type:'healing_potion',quantity:2},{id:'qa-potion-b',type:'healing_potion',quantity:2});
+   character.hand=[];character.discard=[];character.exhaustPile=[];character.energy=3;character.currentEnergy=3;
+   character.bag.push({id:'qa-potion-a',type:'healing_potion',quantity:2},{id:'qa-potion-b',type:'healing_potion',quantity:2});
    const result=engine.autoBattle(character.id,{maxStages:9});
    trials.push({seed,cleared:result.cleared,failedStage:result.failedStage,hpPct:Math.round((Number(character.run.playerHp)||0)/Math.max(1,engine.maxHp(character))*100),cardsPlayed:result.cardsPlayed,potionsUsed:result.potionsUsed,statusDamage:result.statusDamage,cardDamage:result.cardDamage,blockGenerated:result.blockGenerated,turns:result.turns});
   }
