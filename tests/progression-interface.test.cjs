@@ -92,9 +92,9 @@ for(let cycle=1;cycle<=3;cycle++){
 const specializationMatrix=Object.entries(balance.classes.classes).flatMap(([classId,classData])=>
   (classData.branches||[]).map(branch=>({classId,branchId:typeof branch==='string'?branch:branch.id})));
 assert.equal(specializationMatrix.length,21,'the multi-run persistence matrix covers all 21 specializations');
-for(const spec of specializationMatrix){
+for(const [specIndex,spec] of specializationMatrix.entries()){
   let simEngine=createEngine(balance,{random:()=>0.25,now:()=>Date.UTC(2026,10,25)});
-  const created=simEngine.createCharacter('Run '+spec.classId+' '+spec.branchId,spec.classId);
+  const created=simEngine.createCharacter('QA'+(specIndex+1),spec.classId);
   let simHero=simEngine.state.characters.find(character=>character.id===created.id);
   simHero.level=10;
   simHero.xp=Array.from({length:9},(_,index)=>simEngine.requiredXp(index+1)).reduce((sum,value)=>sum+value,0);
