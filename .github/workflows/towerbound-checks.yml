@@ -37,6 +37,8 @@ jobs:
           node --check tests/economy-sim.cjs
       - name: Validate JPG art manifests and sprite mappings
         run: npm run art:check
+      - name: Run permanent progression and repeated restart regression
+        run: node tests/progression-interface.test.cjs
       - name: Run PWA and offline-cache regression assertions
         run: node tests/juice-pwa.test.cjs
       - name: Run polish and onboarding regression assertions
