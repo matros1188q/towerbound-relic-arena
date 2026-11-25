@@ -106,6 +106,8 @@ async function journey(type,name,viewport,url){
   assert.equal(await page.locator('.tb-profile-categories [data-tab]').count(),10,name+' renders grouped profile sub-tabs');
   for(const tab of ['stats','talents','skills','gear','bag','stash','merchant','relics','craft','speedrun']){
    const tabButton=page.locator('.tb-profile-categories [data-tab="'+tab+'"]');
+   const category=page.locator('.tb-profile-categories details').filter({has:tabButton});
+   if(!(await category.evaluate(el=>el.open)))await category.locator('summary').click();
    await tabButton.click();
    assert.equal(await page.locator('.tb-profile-categories [data-tab="'+tab+'"]').evaluate(el=>el.classList.contains('active')),true,name+' activates the '+tab+' profile tab');
    assert.equal(await page.locator('#socPanel').count(),0,name+' keeps the '+tab+' profile tab isolated from social click handling');
