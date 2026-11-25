@@ -1051,7 +1051,7 @@
    const damage=(target,raw,type,ignoreArmor)=>{if(!target?.alive||target.hp<=0)return 0;let value=Math.max(0,Math.round(raw*damageTypeMultiplier(target,type||"physical")*(target.vulnerable>0?1.5:1)));if(!ignoreArmor&&target.role==="tank"&&target.guardCharges>0){value=Math.round(value*(1-(balance.mobs.roles.tank.shield_fraction||.1)));target.guardCharges--;}if(target.type==="boss")value=capBossDamage(target,value,0);const dealt=Math.min(target.hp,value);target.hp=Math.max(0,target.hp-value);if(target.hp<=0)target.alive=false;if(dealt>0){if(target.role==="healer")target.provoked=true;character.run.playerHp=hp;applyVampirism(character.id,dealt);hp=character.run.playerHp;}return dealt;};
    const alive=()=>enemies.filter(enemy=>enemy.alive&&enemy.hp>0);
    const chooseTarget=()=>alive().sort((a,b)=>(a.type==="boss"?-1:b.type==="boss"?1:a.hp/a.maxHp-b.hp/b.maxHp))[0]||null;
-   const playScore=(card,target,freeCardAvailable)=>{const e=card?.effects||{},cost=freeCardAvailable?0:(card.isXCost||card.costX)?energy:Math.max(0,Number(card.cost)||0);let score=(Number(e.damage)||Number(e.damageAll)||0)+(Number(e.damagePerEnergy)||0)*((card.isXCost||card.costX)?energy:0)+(Number(e.damagePerPoison)||0)*(target?.poison||0)+(Number(e.damagePerBleed)||0)*(target?.bleed||0)+(Number(e.damageMissingHp)||0)*Math.max(0,maxHp(character)-hp);score*=Math.max(.1,stats.damageMultiplier||1);score+=Math.max(0,Number(e.poison)||0)*2+Math.max(0,Number(e.bleed)||0)*1.5+Math.max(0,Number(e.burn)||0)*1.5+Math.max(0,Number(e.vulnerable)||0)*3;score+=Math.max(0,Number(e.block)||0)*(hp<maxHp(character)*.65?1.8:.35);score+=Math.max(0,Number(e.heal)||0)*(hp<maxHp(character)*.85?2:0);score+=Math.max(0,Number(e.draw)||0)*2+Math.max(0,Number(e.energy)||0)*4;return{score,cost};};
+   const playScore=(card,target,freeCardAvailable)=>{const e=card?.effects||{},cost=freeCardAvailable?0:(card.isXCost||card.costX)?energy:Math.max(0,Number(card.cost)||0),expectedIncoming=alive().reduce((sum,enemy)=>sum+Math.max(1,Math.round(enemy.damage*mitigationMultiplier(stats.defense,stage))),0),attackCards=hand.filter(item=>item.type==="attack"||Number(item.effects?.damage)>0||Number(item.effects?.damageAll)>0).length,magicCards=hand.filter(item=>["fire","ice","dark","lightning","water","earth","arcane"].includes(String(item.effects?.damageType||item.damageType||"").toLowerCase())).length;let score=((Number(e.damage)||0)+(Number(e.damageAll)||0)*Math.max(1,alive().length))+(Number(e.damagePerEnergy)||0)*((card.isXCost||card.costX)?energy:0)+(Number(e.damagePerPoison)||0)*(target?.poison||0)+(Number(e.damagePerBleed)||0)*(target?.bleed||0)+(Number(e.damageMissingHp)||0)*Math.max(0,maxHp(character)-hp);score*=Math.max(.1,stats.damageMultiplier||1);score+=Math.max(0,Number(e.poison)||0)*3+Math.max(0,Number(e.bleed)||0)*2.5+Math.max(0,Number(e.burn)||0)*2.5+Math.max(0,Number(e.vulnerable)||0)*Math.max(2,target?.hp*.035||2)+Math.max(0,Number(e.weak)||0)*expectedIncoming*.12;const blockNeed=Math.max(0,expectedIncoming-block),usefulBlock=Math.min(Math.max(0,Number(e.block)||0),blockNeed);score+=usefulBlock*(hp<maxHp(character)*.35?1.2:hp<maxHp(character)*.7?.8:.25);score+=Math.min(Math.max(0,Number(e.heal)||0),Math.max(0,maxHp(character)-hp))*(hp<maxHp(character)*.85?1.7:0);score+=Math.max(0,Number(e.draw)||0)*(hand.length<3?3:1.5)+Math.max(0,Number(e.energy)||0)*5;score+=Math.max(0,Number(e.nextAttackDamage)||0)*(attackCards?2.5:0);score+=Math.max(0,Number(e.fury)||0)*(character.classId==="destroyer"?9:0);score+=Math.max(0,Number(e.spellPower)||0)*(magicCards?2.5:0);score+=Math.max(0,Number(e.totem)||0)*(character.classId==="shaman"?4:0);score+=Math.max(0,Number(e.stun)||0)*expectedIncoming*.35;return{score,cost};};
    drawCards(Math.max(5,Number(character.cardDrawPerTurn)||5));
    while(turns<120&&hp>0&&alive().length){
     turns++;
@@ -1076,7 +1076,7 @@
      if(character.classId==="elemental"&&isMagic&&Number(character.magicCharge)>0){classMultiplier*=1+Math.min(10,Number(character.magicCharge)||0)*.1;character.magicCharge=0;}
      const dynamic=(Number(effects.damagePerPoison)||0)*(target.poison||0)+(Number(effects.damagePerBleed)||0)*(target.bleed||0)+(Number(effects.damageMissingHp)||0)*Math.max(0,maxHp(character)-hp);
      const base=(Number(effects.damage)||Number(effects.damageAll)||0)+(xCost?(Number(effects.damagePerEnergy)||0)*spent:0)+dynamic+(Number(effects.bonusDamageIfBlock)>0&&block>0?Number(effects.bonusDamageIfBlock):0)+(Number(effects.damageFlat)||0);
-     const raw=Math.max(0,Math.round((base+classFlat)*(1+Math.max(0,Number(stats.attack)||0)/100)*Math.max(.1,Number(stats.damageMultiplier)||1)*classMultiplier*(Number(character.classId==="assassin"?1:1))));
+     const raw=Math.max(0,Math.round((base+classFlat+(attack?nextAttackDamage:0)+(isMagic?spellPowerBonus:0))*(1+Math.max(0,Number(stats.attack)||0)/100)*Math.max(.1,Number(stats.damageMultiplier)||1)*classMultiplier));if(attack)nextAttackDamage=0;
      const type=effects.damageType||card.damageType||"physical";
      if(Number(effects.damageAll)>0){for(const enemy of alive())cardDamage+=damage(enemy,raw,type,!!effects.ignoreArmor);}
      else if(raw>0)cardDamage+=damage(target,raw,type,!!effects.ignoreArmor);
@@ -1085,7 +1085,7 @@
       if(character.classId==="assassin"){character.autoAssassinAttacks=(Number(character.autoAssassinAttacks)||0)+1;if(character.autoAssassinAttacks>=3){character.combo=Math.min(3,(Number(character.combo)||0)+1);character.autoAssassinAttacks=0;synergyProcs++;}}
       if(character.classId==="duelist")character.charges=Math.min(5,(Number(character.charges)||0)+1);
      }
-     if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);synergyProcs++;
+     if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);if(Number(effects.fury)>0&&character.classId==="destroyer")character.rage=Math.min(10,(Number(character.rage)||0)+Number(effects.fury));if(Number(effects.spellPower)>0)spellPowerBonus+=Number(effects.spellPower);if(Number(effects.nextAttackDamage)>0)nextAttackDamage+=Number(effects.nextAttackDamage);synergyProcs++;
      if(character.classId==="bishop"&&Number(effects.heal)>0)character.faith=Math.min(5,(Number(character.faith)||0)+1);
      if(character.classId==="elemental"&&isMagic&&!Number(effects.damagePerEnergy))character.magicCharge=Math.min(10,(Number(character.magicCharge)||0)+1);
      const cardElement=String(effects.element||effects.damageType||card.damageType||"");if(character.classId==="dragonkin"&&["fire","ice","dark","lightning","water","earth"].includes(cardElement)&&cardElement!==String(character.element||"fire")){character.element=cardElement;block+=5;blockGenerated+=5;}
@@ -1093,6 +1093,7 @@
      const targets=Number(effects.damageAll)>0?alive():[target];
      for(const enemy of targets)for(const key of ["poison","bleed","burn","weak","vulnerable"])if(Number(effects[key])>0)enemy[key]=Math.max(0,Number(enemy[key])||0)+Math.floor(Number(effects[key]));
      if(Number(effects.conditionalBleed)>0&&target.poison>0)target.bleed+=Number(effects.conditionalBleed);
+     if(Number(effects.stun)>0)target.stun=Math.max(Number(target.stun)||0,Number(effects.stun));
      if(Number(effects.block)>0){const value=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)));block+=value;blockGenerated+=value;}
      if(Number(effects.heal)>0)hp=Math.min(maxHp(character),hp+Math.max(1,Math.round(Number(effects.heal))));
      if(Number(effects.energy)>0)energy=Math.min(5,energy+Math.floor(Number(effects.energy)));
@@ -1110,6 +1111,7 @@
     }
     if(!alive().length)break;
     for(const enemy of alive()){
+     if(Number(enemy.stun)>0){enemy.stun--;continue;}
      enemy.turnsTaken++;
      if(enemy.role==="healer"&&!enemy.provoked&&enemy.turnsTaken%2===0){const ally=alive().filter(other=>other.index!==enemy.index&&other.hp<other.maxHp).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(ally)ally.hp=Math.min(ally.maxHp,ally.hp+Math.round(ally.maxHp*.2));}
      if(enemy.role==="tank"&&enemy.turnsTaken%3===0)enemy.guardCharges=Math.max(1,enemy.guardCharges||0);
