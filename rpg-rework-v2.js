@@ -1045,10 +1045,10 @@
      make("dash",0,{block:3,draw:1},"skill"));
    }
    const shuffle=list=>{const out=list.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;};
-   let draw=shuffle(cards),hand=[],discard=[],exhaust=[],energy=Math.max(1,Math.min(6,Number(character.energy)||3)),hp=Math.max(1,Math.min(maxHp(character),Number(character.run.playerHp)||maxHp(character))),block=0,turns=0,cardsPlayed=0,cardDamage=0,statusDamage=0,blockGenerated=0;
+   let draw=shuffle(cards),hand=[],discard=[],exhaust=[],synergyProcs=0,energy=Math.max(1,Math.min(6,Number(character.energy)||3)),hp=Math.max(1,Math.min(maxHp(character),Number(character.run.playerHp)||maxHp(character))),block=0,turns=0,cardsPlayed=0,cardDamage=0,statusDamage=0,blockGenerated=0;
    const enemies=plan.mobs.map((mob,index)=>{const value=getEnemyStats(character.id,stage,mob);return{...mob,index,hp:value.hp,maxHp:value.hp,damage:value.damage,alive:true,poison:0,bleed:0,burn:0,weak:0,vulnerable:0,guardCharges:0,turnsTaken:0,shield:0};});
    const drawCards=count=>{let drawn=0;for(let n=0;n<count;n++){if(hand.length>=10)break;if(!draw.length&&discard.length){draw=shuffle(discard);discard=[];}if(!draw.length)break;hand.push(draw.shift());drawn++;}return drawn;};
-   const damage=(target,raw,type,ignoreArmor)=>{if(!target?.alive||target.hp<=0)return 0;let value=Math.max(0,Math.round(raw*damageTypeMultiplier(target,type||"physical")*(target.vulnerable>0?1.5:1)));if(!ignoreArmor&&target.role==="tank"&&target.guardCharges>0){value=Math.round(value*(1-(balance.mobs.roles.tank.shield_fraction||.1)));target.guardCharges--;}if(target.type==="boss")value=capBossDamage(target,value,0);const dealt=Math.min(target.hp,value);target.hp=Math.max(0,target.hp-value);if(target.hp<=0)target.alive=false;if(dealt>0){applyVampirism(character.id,dealt);hp=character.run.playerHp;}return dealt;};
+   const damage=(target,raw,type,ignoreArmor)=>{if(!target?.alive||target.hp<=0)return 0;let value=Math.max(0,Math.round(raw*damageTypeMultiplier(target,type||"physical")*(target.vulnerable>0?1.5:1)));if(!ignoreArmor&&target.role==="tank"&&target.guardCharges>0){value=Math.round(value*(1-(balance.mobs.roles.tank.shield_fraction||.1)));target.guardCharges--;}if(target.type==="boss")value=capBossDamage(target,value,0);const dealt=Math.min(target.hp,value);target.hp=Math.max(0,target.hp-value);if(target.hp<=0)target.alive=false;if(dealt>0){if(target.role==="healer")target.provoked=true;character.run.playerHp=hp;applyVampirism(character.id,dealt);hp=character.run.playerHp;}return dealt;};
    const alive=()=>enemies.filter(enemy=>enemy.alive&&enemy.hp>0);
    const chooseTarget=()=>alive().sort((a,b)=>(a.type==="boss"?-1:b.type==="boss"?1:a.hp/a.maxHp-b.hp/b.maxHp))[0]||null;
    const playScore=(card,target)=>{const e=card?.effects||{},cost=(card.isXCost||card.costX)?energy:Math.max(0,Number(card.cost)||0);let score=(Number(e.damage)||Number(e.damageAll)||0)+(Number(e.damagePerEnergy)||0)*((card.isXCost||card.costX)?energy:0)+(Number(e.damagePerPoison)||0)*(target?.poison||0)+(Number(e.damagePerBleed)||0)*(target?.bleed||0)+(Number(e.damageMissingHp)||0)*Math.max(0,maxHp(character)-hp);score*=Math.max(.1,stats.damageMultiplier||1);score+=Math.max(0,Number(e.poison)||0)*2+Math.max(0,Number(e.bleed)||0)*1.5+Math.max(0,Number(e.burn)||0)*1.5+Math.max(0,Number(e.vulnerable)||0)*3;score+=Math.max(0,Number(e.block)||0)*(hp<maxHp(character)*.65?1.8:.35);score+=Math.max(0,Number(e.heal)||0)*(hp<maxHp(character)*.85?2:0);score+=Math.max(0,Number(e.draw)||0)*2+Math.max(0,Number(e.energy)||0)*4;return{score,cost};};
@@ -1081,10 +1081,10 @@
      else if(raw>0)cardDamage+=damage(target,raw,type,!!effects.ignoreArmor);
      const hits=Math.max(1,Math.floor(Number(effects.hits)||1));if(hits>1&&raw>0)for(let n=1;n<hits&&target.alive;n++)cardDamage+=damage(target,raw,type,!!effects.ignoreArmor);
      if(attack){
-      if(character.classId==="assassin"){character.autoAssassinAttacks=(Number(character.autoAssassinAttacks)||0)+1;if(character.autoAssassinAttacks>=3){character.combo=Math.min(3,(Number(character.combo)||0)+1);character.autoAssassinAttacks=0;}}
+      if(character.classId==="assassin"){character.autoAssassinAttacks=(Number(character.autoAssassinAttacks)||0)+1;if(character.autoAssassinAttacks>=3){character.combo=Math.min(3,(Number(character.combo)||0)+1);character.autoAssassinAttacks=0;synergyProcs++;}}
       if(character.classId==="duelist")character.charges=Math.min(5,(Number(character.charges)||0)+1);
      }
-     if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);
+     if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);synergyProcs++;
      if(character.classId==="bishop"&&Number(effects.heal)>0)character.faith=Math.min(5,(Number(character.faith)||0)+1);
      if(character.classId==="elemental"&&isMagic&&!Number(effects.damagePerEnergy))character.magicCharge=Math.min(10,(Number(character.magicCharge)||0)+1);
      const targets=Number(effects.damageAll)>0?alive():[target];
@@ -1093,7 +1093,7 @@
      if(Number(effects.block)>0){const value=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)));block+=value;blockGenerated+=value;}
      if(Number(effects.heal)>0)hp=Math.min(maxHp(character),hp+Math.max(1,Math.round(Number(effects.heal))));
      if(Number(effects.energy)>0)energy=Math.min(5,energy+Math.floor(Number(effects.energy)));
-     if(Number(effects.draw)>0)drawCards(effects.draw);
+     if(Number(effects.draw)>0)drawCards(effects.draw);if(effects.statuses&&typeof effects.statuses==="object")for(const enemy of targets)for(const [key,value] of Object.entries(effects.statuses))if(["poison","bleed","burn","weak","vulnerable"].includes(key)&&Number(value)>0)enemy[key]=(Number(enemy[key])||0)+Math.floor(Number(value));
      const generators=Array.isArray(card.generateCards)?card.generateCards:(card.generate?[{id:card.generate,count:1}]:[]);
      for(const spec of generators)for(let n=0;n<Math.min(5,Math.max(0,Number(spec.count)||0));n++)if(hand.length<10)hand.push({id:spec.id,cost:0,type:"attack",effects:{damage:4}});
      if(hp<=0)break;
@@ -1127,7 +1127,7 @@
    // Preserve deck composition and upgrades after the simulated fight; the next stage reshuffles every pile.
    character.deck=[...draw,...hand,...discard,...exhaust];
    character.hand=[];character.discard=[];character.exhaustPile=[];
-   return{won:alive().length===0&&hp>0,turns,cardsPlayed,cardDamage,statusDamage,blockGenerated,hpPct:hp/Math.max(1,maxHp(character))*100};
+   return{won:alive().length===0&&hp>0,turns,cardsPlayed,cardDamage,statusDamage,blockGenerated,synergyProcs,hpPct:hp/Math.max(1,maxHp(character))*100};
   }
   function autoBattle(characterId,options){
    options=options||{};
@@ -1136,14 +1136,14 @@
    if(!difficultyOf(character).auto_battle)throw new Error("Auto-battle is disabled in Hardcore");
    if(!character.run.runModifierId){const offered=runModifierOptions(character.id);if(offered.length)character.run.runModifierId=offered[0].id;}
    const ceiling=character.progress.highestEver-balance.auto_battle.highest_ever_offset;
-   const result={cleared:0,xp:0,stopped:null,cardsPlayed:0,cardDamage:0,statusDamage:0,blockGenerated:0,turns:0,failedStage:null};
+   const result={cleared:0,xp:0,stopped:null,cardsPlayed:0,cardDamage:0,statusDamage:0,blockGenerated:0,synergyProcs:0,turns:0,failedStage:null};
    if(ceiling<character.progress.currentStage){result.stopped="Нет ранее пройденных этапов для авто-боя";return result;}
    beginRun(character);
    while(result.cleared<limit&&character.progress.currentStage<=ceiling){
     const stage=character.progress.currentStage,plan=stagePlan(character,stage);
     if(plan.boss){result.stopped="Босс требует ручного боя";break;}
     const stats=getCombatStats(character),fight=simulateAutoCardStage(character,stage,plan,stats);
-    result.cardsPlayed+=fight.cardsPlayed;result.cardDamage+=fight.cardDamage;result.statusDamage+=fight.statusDamage;result.blockGenerated+=fight.blockGenerated;result.turns+=fight.turns;
+    result.cardsPlayed+=fight.cardsPlayed;result.cardDamage+=fight.cardDamage;result.statusDamage+=fight.statusDamage;result.blockGenerated+=fight.blockGenerated;result.synergyProcs+=fight.synergyProcs;result.turns+=fight.turns;
     if(!fight.won){result.failedStage=stage;result.stopped="Авто-бой остановлен: колода не справилась с этапом "+stage;break;}
     let stageXp=0;
     for(const enemy of plan.mobs)stageXp+=enemyXp(enemy,stage)*xpMultiplier(character,stage,{auto:true});
