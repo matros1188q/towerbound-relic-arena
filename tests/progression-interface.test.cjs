@@ -6,6 +6,7 @@ const root=path.join(__dirname,'..');
 const progression=fs.readFileSync(path.join(root,'progression-24.js'),'utf8');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
+const engineSource=fs.readFileSync(path.join(root,'rpg-rework-v2.js'),'utf8');
 for(const tab of ['progress','economy','ux','lore'])assert.ok(progression.includes('data-progress-tab="'+tab+'"'),'progression tab '+tab+' is rendered');
 assert.match(progression,/role="tablist"/,'progression navigation is an accessible tablist');
 assert.match(progression,/aria-selected=/,'selected progression tab is exposed to assistive technology');
@@ -17,6 +18,15 @@ assert.match(progression,/\.tbp-grid\{grid-template-columns:minmax\(0,1fr\)\}/,'
 assert.match(progression,/async function act\(a\)/,'progression actions support asynchronous cloud operations');
 assert.match(progression,/await cloud\.syncNow\(\)/,'cloud save action invokes the real authenticated sync flow');
 assert.match(progression,/cloud\.open\(\)/,'cloud save action opens account login when needed');
+assert.doesNotMatch(progression,/awardForBonus|if\(c&&result\?\.xp>0\)/,'permanent XP bonus is not awarded a second time outside xpMultiplier');
+assert.match(progression,/result\?\.runEnded===true&&!result\?\.checkpointRestored/,'reincarnation gift is only offered after a terminal death, never a checkpoint restore');
+assert.match(progression,/engine\.maxHp=baseMaxHp;/,'progression module does not multiply runeword health a second time');
+assert.doesNotMatch(progression,/healthBonus/,'runeword health is not duplicated in combat-stat wrappers');
+assert.match(engineSource,/permanentXpBonus/,'core XP multiplier owns permanent XP bonus application');
+assert.match(engineSource,/runeHealth=.*progression\.runewords/,'core max HP calculation owns runeword health application');
+assert.match(engineSource,/function assignParagon\([\s\S]*?character\.paragon\.stats\[stat\]=/,'Paragon points are recorded by the core engine');
+assert.doesNotMatch(engineSource.slice(engineSource.indexOf('function getCombatStats('),engineSource.indexOf('function getRefinementGlow(')),/paragon\.stats/,'Paragon allocation currently has no combat-stat application');
+
 assert.doesNotMatch(progression,/secret\.addEventListener\('click'/,'secret-room reward is handled once by the overlay delegated click handler');
 assert.doesNotMatch(progression,/tb-progression-cloud-draft|Google\/Apple OAuth не подключён/,'obsolete local-only cloud-save placeholder is removed');
 assert.match(progression,/Сохранение Towerbound через игровой аккаунт/,'cloud-save card describes the actual account-based service');
