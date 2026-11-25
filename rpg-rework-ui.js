@@ -1020,34 +1020,34 @@ function createDialog(){
   }catch(error){recoverPlayerTurn(error);}
  }
 
- function specializationSynergyPayload(character,card,target){
+ function specializationSynergyPayload(character,card,target,baseEffects){
   const branchId=String(character?.branch||"");
   if(!branchId||String(card?.branchId||"")!==branchId)return null;
   const branch=(classData(character)?.branches||[]).find(item=>item.id===branchId);
   const invested=(branch?.talents||[]).reduce((sum,talent)=>sum+Math.max(0,Number(character?.talents?.[talent.id])||0),0);
-  const potency=1+Math.min(2,Math.floor(invested/10)),effects={},add=(key,value)=>{effects[key]=(Number(effects[key])||0)+value;};
+  const potency=1+Math.min(2,Math.floor(invested/10)),effects={},cardIsAttack=isAttackCard(card,baseEffects||cardEffects(card)),add=(key,value)=>{effects[key]=(Number(effects[key])||0)+value;};
   let label="";
   switch(branchId){
    case "bleed":add("bleed",potency);label="Кровавый резонанс · +"+potency+" кровотечения";break;
    case "poison":add("poison",potency);label="Токсичный резонанс · +"+potency+" яда";break;
-   case "execution":if(target&&Number(target.hp)<=Number(target.maxHp)*.5){add("damage",2+potency*2);label="Казнь · +"+(2+potency*2)+" урона по ослабленной цели";}else{add("vulnerable",1);label="Приговор · +1 уязвимость";}break;
+   case "execution":if(cardIsAttack&&target&&Number(target.hp)<=Number(target.maxHp)*.5){add("damage",2+potency*2);label="Казнь · +"+(2+potency*2)+" урона по ослабленной цели";}else{add("vulnerable",1);label="Приговор · +1 уязвимость";}break;
    case "exorcism":add("weak",potency);label="Очищение · +"+potency+" слабости";break;
    case "healing":add("heal",2+potency*2);label="Благодать · +"+(2+potency*2)+" лечения";break;
    case "buffs":add("fury",potency);label="Боевой псалом · +"+(potency*10)+"% силы";break;
    case "fire_dragon":add("burn",potency);label="Пламенный резонанс · +"+potency+" горения";break;
    case "ice_dragon":add("block",2+potency);add("weak",1);label="Ледяная крепость · +"+(2+potency)+" брони и слабость";break;
    case "black_dragon":add("vulnerable",1);add("heal",potency);label="Поглощение пустоты · уязвимость и лечение "+potency;break;
-   case "fists":add("damage",2+potency);label="Шквал кулаков · +"+(2+potency)+" урона";break;
-   case "greatsword":add("damage",3+potency*2);effects.ignoreArmor=true;label="Разлом брони · +"+(3+potency*2)+" урона без брони";break;
+   case "fists":if(cardIsAttack){add("damage",2+potency);label="Шквал кулаков · +"+(2+potency)+" урона";}else{add("block",2+potency);add("nextAttackDamage",2);label="Стойка бойца · броня и усиление удара";}break;
+   case "greatsword":if(cardIsAttack){add("damage",3+potency*2);effects.ignoreArmor=true;label="Разлом брони · +"+(3+potency*2)+" урона без брони";}else{add("block",2+potency);label="Стойка титана · дополнительная броня";}break;
    case "wand_shield":add("block",2+potency);add("nextAttackDamage",2);label="Арканический заслон · броня и усиление удара";break;
    case "darkness":add("vulnerable",potency);label="Метка тьмы · +"+potency+" уязвимости";break;
    case "water":add("draw",1);add("energy",1);label="Прилив · добор карты и +1 энергия";break;
    case "earth":add("block",3+potency);add("weak",1);label="Каменный оплот · броня и слабость";break;
-   case "dual_swords":add("damage",2+potency);add("draw",1);label="Танец клинков · урон и добор";break;
+   case "dual_swords":if(cardIsAttack){add("damage",2+potency);label="Танец клинков · +"+(2+potency)+" урона";}else{add("nextAttackDamage",2+potency);label="Танец клинков · усиление следующей атаки";}add("draw",1);break;
    case "sword_shield":add("block",2+potency);add("nextAttackDamage",2);label="Стальная стойка · броня и контратака";break;
    case "rapier":add("vulnerable",1);add("nextAttackDamage",2+potency);label="Точный выпад · уязвимость и усиление атаки";break;
    case "spirits":add("poison",1);add("bleed",1);label="Зов предков · яд и кровотечение";break;
-   case "dark_gods":add("damage",2+potency);add("vulnerable",1);label="Дар тёмных богов · урон и уязвимость";break;
+   case "dark_gods":if(cardIsAttack){add("damage",2+potency);add("vulnerable",1);label="Дар тёмных богов · урон и уязвимость";}else{add("weak",1);add("heal",potency);label="Милость тёмных богов · слабость и лечение";}break;
    case "nature":add("poison",1);add("weak",1);add("heal",potency);label="Живые корни · яд, слабость и лечение";break;
    default:return null;
   }
@@ -1055,7 +1055,7 @@ function createDialog(){
  }
  function previewCardEffects(card,character,target){
   const effects=cardEffects(card),next=(Number(battle?.specializationResonance)||0)+1;
-  if(next>=2){const payload=specializationSynergyPayload(character,card,target);if(payload)for(const [key,value] of Object.entries(payload.effects)){if(typeof value==="boolean")effects[key]=value;else effects[key]=(Number(effects[key])||0)+Number(value||0);}}
+  if(next>=2){const payload=specializationSynergyPayload(character,card,target,effects);if(payload)for(const [key,value] of Object.entries(payload.effects)){if(typeof value==="boolean")effects[key]=value;else effects[key]=(Number(effects[key])||0)+Number(value||0);}}
   return effects;
  }
  function applySpecializationCardSynergy(character,card,effects,target){
@@ -1063,7 +1063,7 @@ function createDialog(){
   battle.specializationResonance=(Number(battle.specializationResonance)||0)+1;
   if(battle.specializationResonance<2)return null;
   battle.specializationResonance=0;
-  const payload=specializationSynergyPayload(character,card,target);
+  const payload=specializationSynergyPayload(character,card,target,effects);
   if(!payload)return null;
   for(const [key,value] of Object.entries(payload.effects)){if(typeof value==="boolean")effects[key]=value;else effects[key]=(Number(effects[key])||0)+Number(value||0);}
   return payload.label;
