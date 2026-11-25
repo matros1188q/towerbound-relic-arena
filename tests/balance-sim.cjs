@@ -85,7 +85,7 @@ function makeEnemy(engine,character,stage,type,seed){
 function setupBuild(classId,branchId,stage,seed){
  const random=rng(seed);
  const engine=createEngine(balance,{random,now:()=>Date.UTC(2026,10,10)});
- engine.createCharacter('Matrix '+classId+' '+branchId,classId);
+ engine.createCharacter('QA',classId);
  const character=engine.state.characters[0];
  character.level=levelAt(stage);
  character.talentPoints=Math.max(0,character.level-1);
