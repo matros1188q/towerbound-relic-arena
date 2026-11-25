@@ -1538,3 +1538,23 @@
 @keyframes tbTowerCurrentPulse{0%,100%{filter:brightness(1);transform:translate(-50%,-50%) scale(1)}50%{filter:brightness(1.18);transform:translate(-50%,-50%) scale(1.07)}}
 @media(max-width:520px){#tbRpg .tb-tower-map-head{padding-left:11px!important;padding-right:11px!important}#tbRpg .tb-tower-map-tools{padding:7px 8px!important}#tbRpg .tb-tower-map-tools>span{gap:4px!important;font-size:7px!important}#tbRpg .tb-tower-map-tools button{padding:0 7px!important;font-size:7px!important}#tbRpg .tb-tower-map-chapter{left:3%!important;top:2%!important;padding:5px 7px!important}#tbRpg .tb-tower-map-chapter b{font-size:10px!important}#tbRpg .tb-tower-floor-node{width:clamp(31px,8.8vw,42px)!important;height:clamp(31px,8.8vw,42px)!important}#tbRpg .tb-tower-floor-node.is-current{width:48px!important;height:48px!important}#tbRpg .tb-tower-floor-node.is-boss{width:44px!important;height:44px!important}}
 @media(prefers-reduced-motion:reduce){#tbRpg .tb-tower-floor-node.is-current{animation:none!important}}
+
+
+/* Tower map: all 250 floors in one viewport; isolate touch from the screen beneath */
+html.tb-tower-map-lock,body.tb-tower-map-lock{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
+body.tb-tower-map-lock #tbRpg{overflow:hidden!important;overscroll-behavior:none!important}
+#tbRpg .tb-tower-map-overlay{position:fixed!important;inset:0!important;z-index:2147483000!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:manipulation!important;display:flex!important;flex-direction:column!important}
+#tbRpg .tb-tower-map-scroll{flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important;padding:4px 5px max(5px,env(safe-area-inset-bottom))!important}
+#tbRpg .tb-tower-map-segment{width:100%!important;height:100%!important;max-width:900px!important;aspect-ratio:auto!important;margin:0 auto!important;display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr))!important;grid-template-rows:repeat(25,minmax(0,1fr))!important;gap:clamp(1px,.7vw,5px)!important;padding:clamp(3px,1vw,10px)!important;overflow:hidden!important;background-size:cover!important;background-position:center!important}
+#tbRpg .tb-tower-map-segment:after{pointer-events:none!important}
+#tbRpg .tb-tower-map-chapter{display:none!important}
+#tbRpg .tb-tower-floor-node{position:relative!important;left:auto!important;top:auto!important;grid-column:var(--floor-col)!important;grid-row:var(--floor-row)!important;justify-self:center!important;align-self:center!important;width:clamp(19px,5.8vw,35px)!important;height:clamp(19px,5.8vw,35px)!important;min-width:0!important;min-height:0!important;padding:0!important;transform:none!important;border-radius:8px!important;gap:0!important;box-shadow:0 1px 5px #000d,inset 0 1px #fff4!important}
+#tbRpg .tb-tower-floor-node strong{font:900 clamp(7px,2.2vw,11px)/1 system-ui!important}
+#tbRpg .tb-tower-floor-node small{display:none!important}
+#tbRpg .tb-tower-floor-node.is-current{width:clamp(23px,6.6vw,39px)!important;height:clamp(23px,6.6vw,39px)!important;transform:scale(1.08)!important;outline:2px solid #fff0a4!important;outline-offset:1px!important;animation:none!important}
+#tbRpg .tb-tower-floor-node.is-current strong{font-size:clamp(9px,2.8vw,14px)!important}
+#tbRpg .tb-tower-floor-node.is-boss{width:clamp(21px,6.2vw,37px)!important;height:clamp(21px,6.2vw,37px)!important;border-radius:9px!important}
+#tbRpg .tb-tower-floor-node.is-selected:not(.is-current){outline:2px solid #fff0a4!important;outline-offset:1px!important}
+#tbRpg .tb-tower-map-tools{justify-content:space-between!important;min-height:32px!important;padding:5px 9px!important}
+#tbRpg .tb-map-layout-hint{color:#c7b18b!important;font:800 7px system-ui!important;white-space:nowrap!important}
+@media(max-width:420px){#tbRpg .tb-tower-map-head{padding-top:calc(env(safe-area-inset-top,0px) + 7px)!important;padding-bottom:7px!important}#tbRpg .tb-tower-map-head strong{font-size:20px!important}#tbRpg .tb-tower-map-head>button{width:36px!important;height:36px!important;flex-basis:36px!important}#tbRpg .tb-tower-map-tools>span{font-size:7px!important;gap:4px!important}#tbRpg .tb-tower-map-tools i{width:6px!important;height:6px!important}}
