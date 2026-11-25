@@ -88,6 +88,52 @@ for(let cycle=1;cycle<=3;cycle++){
   assert.equal(afterRepeatedRestart.stats.runs_completed,previousRunCount,'multi-run cycle '+cycle+' records exactly one completed run');
 }
 
+
+const specializationMatrix=Object.entries(balance.classes.classes).flatMap(([classId,classData])=>
+  (classData.branches||[]).map(branch=>({classId,branchId:typeof branch==='string'?branch:branch.id})));
+assert.equal(specializationMatrix.length,21,'the multi-run persistence matrix covers all 21 specializations');
+for(const spec of specializationMatrix){
+  let simEngine=createEngine(balance,{random:()=>0.25,now:()=>Date.UTC(2026,10,25)});
+  const created=simEngine.createCharacter('Run '+spec.classId+' '+spec.branchId,spec.classId);
+  let simHero=simEngine.state.characters.find(character=>character.id===created.id);
+  simHero.level=10;
+  simHero.xp=simEngine.requiredXp(10);
+  simHero.silver=100000;
+  simHero.progression={permanentXpBonus:0.15,permanentAttackBonus:0.05,runewords:[{key:'multi-run-'+spec.classId+'-'+spec.branchId,name:'Multi-run rune',attack:0.1,defense:0.05,health:0.1}]};
+  simHero.gear[0]={id:'multi-run-weapon-'+spec.classId+'-'+spec.branchId,slot:0,type:'equipment',rarity:'Редкая',stats:{attack:15,health:10}};
+  simHero.relics=['bloodstone'];
+  simHero.bag.push({id:'multi-run-material-'+spec.classId+'-'+spec.branchId,type:'craft_material',quantity:17});
+  simHero.deck=[{id:'multi-run-card-'+spec.classId+'-'+spec.branchId,cardId:'strike',upgraded:true}];
+  simHero.unlockedCards=['strike','defend'];
+  simEngine.state.account.unlockedCards=['strike','defend','heavy_blow'];
+  simEngine.chooseBranch(simHero.id,spec.branchId);
+  for(let runNumber=1;runNumber<=2;runNumber++){
+    const stage=simEngine.beginStage(simHero.id,simHero.progress.currentStage);
+    assert.ok(stage.mobs.length>0,spec.classId+'/'+spec.branchId+' run '+runNumber+' starts a real combat stage');
+    for(let targetIndex=0;targetIndex<stage.mobs.length;targetIndex++){
+      simEngine.finishEnemy(simHero.id,{targetIndex});
+    }
+    assert.equal(simHero.run.stage,null,spec.classId+'/'+spec.branchId+' run '+runNumber+' clears the stage before restart');
+    simEngine.voluntaryRestart(simHero.id);
+    assert.equal(simHero.stats.runs_completed,runNumber,spec.classId+'/'+spec.branchId+' records each completed run once');
+    const saved=JSON.parse(JSON.stringify(simEngine.saveSnapshot()));
+    simEngine=createEngine(balance,{state:saved,random:()=>0.25,now:()=>Date.UTC(2026,10,25)});
+    simHero=simEngine.state.characters.find(character=>character.id===created.id);
+    assert.equal(simHero.branch,spec.branchId,spec.classId+'/'+spec.branchId+' keeps specialization after serialized reload');
+    assert.equal(simHero.level,10,spec.classId+'/'+spec.branchId+' keeps permanent level');
+    assert.equal(simHero.progress.currentStage,balance.death.new_run_stage,spec.classId+'/'+spec.branchId+' resets only the run floor');
+    assert.equal(simHero.gear[0].id,'multi-run-weapon-'+spec.classId+'-'+spec.branchId,spec.classId+'/'+spec.branchId+' keeps equipped gear');
+    assert.deepEqual(simHero.relics,['bloodstone'],spec.classId+'/'+spec.branchId+' keeps relics');
+    assert.equal(simHero.bag.find(item=>item.id==='multi-run-material-'+spec.classId+'-'+spec.branchId)?.quantity,17,spec.classId+'/'+spec.branchId+' keeps crafting materials');
+    assert.equal(simHero.deck[0].id,'multi-run-card-'+spec.classId+'-'+spec.branchId,spec.classId+'/'+spec.branchId+' keeps the retained deck');
+    assert.deepEqual(simHero.unlockedCards,['strike','defend'],spec.classId+'/'+spec.branchId+' keeps character card unlocks');
+    assert.deepEqual(simEngine.state.account.unlockedCards,['strike','defend','heavy_blow'],spec.classId+'/'+spec.branchId+' keeps account-wide card unlocks');
+    assert.equal(simHero.progression.permanentXpBonus,0.15,spec.classId+'/'+spec.branchId+' keeps permanent XP bonus');
+    assert.equal(simHero.progression.runewords[0].key,'multi-run-'+spec.classId+'-'+spec.branchId,spec.classId+'/'+spec.branchId+' keeps runewords');
+    assert.equal(simHero.stats.runs_completed,runNumber,spec.classId+'/'+spec.branchId+' keeps run count after serialized reload');
+  }
+}
+
 const deathCharacter=bonusEngine.createCharacter('Checkpoint Audit','dragonkin');
 const deathState=bonusEngine.state.characters.find(character=>character.id===deathCharacter.id);
 deathState.level=35;deathState.xp=9000;deathState.silver=999;
@@ -132,4 +178,4 @@ const handledActions=new Set([...actionHandler.matchAll(/case'([^']+)'/g)].map(m
 for(const action of renderedActions)assert.ok(handledActions.has(action),'rendered progression action '+action+' has a handler');
 assert.match(progression,/settings\.disable_telegraphs\?'Включить':'Отключить'/,'telegraph toggle reflects the global setting');
 assert.match(progression,/settings\.disable_particles\?'Включить частицы':'Отключить частицы'/,'particle toggle reflects the global setting');
-console.log('Towerbound progression interface checks passed: 4 tabs, mobile modal, real cloud sync action.');
+console.log('Towerbound progression interface checks passed: 4 tabs, mobile modal, real cloud sync, and 42 serialized run cycles across all 21 specializations.');
