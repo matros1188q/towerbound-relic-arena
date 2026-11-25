@@ -32,6 +32,17 @@ assert.ok(ui.includes('applyTreeCardBonuses(card,cardEffects(card),treeCache)'),
 assert.ok(ui.includes('treeCardBonusDescription(card,handTreeCache)'),'card-linked effects are shown on cards in hand');
 assert.ok(ui.includes('cardDamageDealt+=Math.max(0,Number(hit.dealt)||0)'),'lifesteal tracks actual dealt damage');
 assert.ok(ui.includes('treeCache.lifestealPercent'),'lifesteal is read from talent tree');
+const helperStart=ui.indexOf('function applyTreeCardBonuses');
+const helperEnd=ui.indexOf('function makeStarterDeck',helperStart);
+assert.ok(helperStart>=0&&helperEnd>helperStart,'card talent runtime helper boundaries exist');
+const helpers=new Function(ui.slice(helperStart,helperEnd)+';return {applyTreeCardBonuses,treeCardBonusDescription};')();
+const bleedCard=helpers.applyTreeCardBonuses({id:'assassin_bleed_edge'},{damage:8,bleed:3},{cardDamagePercent_assassin_bleed_edge:.04,cardBleed_assassin_bleed_edge:1});
+assert.equal(bleedCard.damage,8.32,'bleed card receives its talent damage multiplier');
+assert.equal(bleedCard.bleed,4,'bleed card receives its new bleed stack');
+const bishopCard=helpers.applyTreeCardBonuses({id:'bishop_healing_edge'},{heal:10,block:4},{cardDamage_bishop_healing_edge:3});
+assert.equal(bishopCard.damage,3,'bishop healing card becomes a hybrid heal-and-damage card');
+assert.equal(bishopCard.heal,10,'bishop healing card keeps its original healing');
+assert.match(helpers.treeCardBonusDescription({id:'assassin_bleed_edge'},{cardBleed_assassin_bleed_edge:1}),/кровотечения/,'new card effect is visible in the hand description');
 const lifeNodes=tree.nodes.filter(node=>Number(node.effect?.lifestealPercent)>0);
 assert.equal(lifeNodes.length,5,'light lifesteal is limited to five non-healing-oriented branches');
 assert.ok(lifeNodes.every(node=>node.maxRank===1&&Number(node.effect.lifestealPercent)<=0.02),'lifesteal remains a small one-rank capstone');
