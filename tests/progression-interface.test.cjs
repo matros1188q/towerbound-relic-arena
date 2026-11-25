@@ -66,6 +66,28 @@ assert.deepEqual(restarted.deck,[{id:'retained-card',cardId:'strike',upgraded:tr
 assert.deepEqual(restarted.unlockedCards,['strike','defend'],'voluntary restart preserves permanent card unlocks');
 assert.equal(restarted.progression.permanentXpBonus,0.2,'voluntary restart preserves permanent progression bonuses');
 assert.equal(restarted.progression.runewords[0].key,'persist','voluntary restart preserves runewords');
+let previousRunCount=restarted.stats.runs_completed||0;
+for(let cycle=1;cycle<=3;cycle++){
+  restarted.run.active=true;
+  restarted.run.stage=null;
+  restarted.run.experience=cycle*250;
+  restarted.progress.currentStage=20+cycle;
+  restarted.progress.highestEver=Math.max(restarted.progress.highestEver,20+cycle);
+  bonusEngine.voluntaryRestart(persistentCharacter.id);
+  const afterRepeatedRestart=bonusEngine.state.characters.find(character=>character.id===persistentCharacter.id);
+  assert.equal(afterRepeatedRestart.progress.currentStage,balance.death.new_run_stage,'multi-run cycle '+cycle+' resets the run floor');
+  assert.equal(afterRepeatedRestart.level,42,'multi-run cycle '+cycle+' preserves permanent level');
+  assert.equal(afterRepeatedRestart.xp,12345,'multi-run cycle '+cycle+' preserves permanent XP');
+  assert.equal(afterRepeatedRestart.silver,2345,'multi-run cycle '+cycle+' preserves silver');
+  assert.equal(afterRepeatedRestart.gear[0].id,'retained-weapon','multi-run cycle '+cycle+' preserves equipped gear');
+  assert.deepEqual(afterRepeatedRestart.relics,['bloodstone'],'multi-run cycle '+cycle+' preserves relics');
+  assert.deepEqual(afterRepeatedRestart.unlockedCards,['strike','defend'],'multi-run cycle '+cycle+' preserves unlocked cards');
+  assert.equal(afterRepeatedRestart.progression.permanentXpBonus,0.2,'multi-run cycle '+cycle+' preserves permanent XP bonus');
+  assert.equal(afterRepeatedRestart.progression.runewords[0].key,'persist','multi-run cycle '+cycle+' preserves runewords');
+  previousRunCount++;
+  assert.equal(afterRepeatedRestart.stats.runs_completed,previousRunCount,'multi-run cycle '+cycle+' records exactly one completed run');
+}
+
 const deathCharacter=bonusEngine.createCharacter('Checkpoint Audit','dragonkin');
 const deathState=bonusEngine.state.characters.find(character=>character.id===deathCharacter.id);
 deathState.level=35;deathState.xp=9000;deathState.silver=999;
