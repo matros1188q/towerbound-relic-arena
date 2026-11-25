@@ -24,9 +24,9 @@ for(const node of tree.nodes){
 assert.equal(branches.size,21,'all 21 specializations have talent branches');
 for(const [branch,nodes] of branches){
  const count=nodes.filter(node=>Object.keys(node.effect||{}).some(key=>/^card[A-Z][A-Za-z]+_/.test(key))).length;
- assert.ok(count>=4,branch+' has four card-linked talent nodes');
+ assert.ok(count>=8,branch+' has eight card-linked talent nodes');
 }
-assert.equal(targeted.length,84,'each of the 84 specialization cards receives an individual talent bonus');
+assert.equal(targeted.length,168,'each of the 84 specialization cards receives two individual talent bonuses');
 assert.ok(ui.includes('function applyTreeCardBonuses'),'card-linked effects are applied by combat runtime');
 assert.ok(ui.includes('applyTreeCardBonuses(card,cardEffects(card),treeCache)'),'card-linked effects are applied when a card is played');
 assert.ok(ui.includes('treeCardBonusDescription(card,handTreeCache)'),'card-linked effects are shown on cards in hand');
@@ -46,4 +46,4 @@ assert.match(helpers.treeCardBonusDescription({id:'assassin_bleed_edge'},{cardBl
 const lifeNodes=tree.nodes.filter(node=>Number(node.effect?.lifestealPercent)>0);
 assert.equal(lifeNodes.length,5,'light lifesteal is limited to five non-healing-oriented branches');
 assert.ok(lifeNodes.every(node=>node.maxRank===1&&Number(node.effect.lifestealPercent)<=0.02),'lifesteal remains a small one-rank capstone');
-console.log('Talent/card specialization checks passed: 21 branches, 84 card-linked talents, 5 light lifesteal capstones.');
+console.log('Talent/card specialization checks passed: 21 branches, 168 card-linked talents, 5 light lifesteal capstones.');
