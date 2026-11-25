@@ -401,10 +401,35 @@
  function campCardUpgrade(card){
   const definition=CARD_DATABASE[card?.id]||{},baseEffects=card?.effects||definition.effects||{};
   const configured=card?.upgradedEffects||definition.upgradedEffects;
-  const effects=configured?JSON.parse(JSON.stringify(configured)):JSON.parse(JSON.stringify(baseEffects));
-  if(!configured)["damage","damageAll","block","shield"].forEach(key=>{if(Number(effects[key])>0)effects[key]=Math.ceil(Number(effects[key])*1.25);});
-  const description=card?.upgradedDescription||definition.upgradedDescription||((card?.description||definition.description||card?.name||"Карта")+" · Улучшено");
-  return{effects,description};
+  const hasConfigured=!!configured&&Object.keys(configured).length>0;
+  const effects=hasConfigured?JSON.parse(JSON.stringify(configured)):JSON.parse(JSON.stringify(baseEffects));
+  const percentKeys=new Set(["damage","damageAll","damagePerEnergy","damagePerPoison","damagePerBleed","damageMissingHp","block","shield","heal","healPerBleed","bonusDamageIfBlock","nextAttackDamage","spellPower"]);
+  const additiveKeys=new Set(["poison","bleed","burn","conditionalBleed","weak","vulnerable","draw","energy","hits","nextCardCostReduction"]);
+  const labels={damage:"урона",damageAll:"массового урона",damagePerEnergy:"урона за энергию",damagePerPoison:"урона за заряд яда",damagePerBleed:"урона за кровотечение",damageMissingHp:"урона за недостающее HP",block:"брони",shield:"щита",heal:"лечения",healPerBleed:"лечения за кровотечение",bonusDamageIfBlock:"условного урона",nextAttackDamage:"урона следующей атаки",spellPower:"силы магии",poison:"яда",bleed:"кровотечения",burn:"горения",conditionalBleed:"кровотечения при отравлении",weak:"слабости",vulnerable:"уязвимости",draw:"карты к добору",energy:"энергии",hits:"удара",nextCardCostReduction:"снижения стоимости следующей карты"};
+  const changes=[];
+  if(!hasConfigured){
+   for(const key of Object.keys(effects)){
+    const value=Number(effects[key]);if(!Number.isFinite(value)||value<=0)continue;
+    let next=value;
+    if(percentKeys.has(key))next=key==="fury"?Number((value*1.25).toFixed(2)):Math.max(value+1,Math.ceil(value*1.25));
+    else if(additiveKeys.has(key))next=value+1;
+    else if(key==="fury")next=Number((value*1.25).toFixed(2));
+    if(next>value){effects[key]=next;const delta=Number((next-value).toFixed(2));changes.push({key,delta});}
+   }
+  }
+  const baseGenerated=card?.generateCards||definition.generateCards;
+  const configuredGenerated=card?.upgradedGenerateCards||definition.upgradedGenerateCards;
+  const generateCards=Array.isArray(configuredGenerated)?JSON.parse(JSON.stringify(configuredGenerated)):Array.isArray(baseGenerated)?JSON.parse(JSON.stringify(baseGenerated)):null;
+  if(generateCards&&!Array.isArray(configuredGenerated)){
+   for(let i=0;i<generateCards.length;i++){
+    const baseCount=Math.max(0,Number(baseGenerated?.[i]?.count)||0);
+    if(baseCount>0){generateCards[i].count=baseCount+1;changes.push({key:"generatedCards",delta:1});}
+   }
+  }
+  const changeLabels=changes.map(change=>change.key==="fury"?"+"+Math.round(change.delta*10)+"% к урону":change.key==="generatedCards"?"+1 создаваемая карта":"+"+change.delta+" "+(labels[change.key]||change.key));
+  const baseDescription=card?.description||definition.description||card?.name||"Карта";
+  const description=card?.upgradedDescription||definition.upgradedDescription||(baseDescription+" · Улучшено"+(changeLabels.length?": "+changeLabels.join(", "):""));
+  return{effects,description,generateCards};
  }
  function renderCampStopOverlay(stage,view){
   const c=live();if(!c||!engine.canUseCampStop(c.id,stage)){document.querySelector(".tb-camp-overlay")?.remove();return;}
@@ -2222,7 +2247,7 @@ function talentBonusDescription(talent,rank){
    const c=live(),entry=collectDeckCards(c).find(item=>item.key===target.dataset.campUpgrade);
    if(!entry||entry.card.isUpgraded){notify("Эта карта уже улучшена или больше не в колоде");return;}
    const upgrade=campCardUpgrade(entry.card);
-   try{engine.claimCampForge(c.id,campStopStage);entry.card.effects=upgrade.effects;entry.card.description=upgrade.description;entry.card.isUpgraded=true;document.querySelector(".tb-camp-overlay")?.remove();campStopStage=null;save();render();notify("Карта улучшена: "+entry.card.name+" +");}catch(error){notify(error.message);}return;
+   try{engine.claimCampForge(c.id,campStopStage);entry.card.effects=upgrade.effects;entry.card.upgradedEffects=upgrade.effects;if(Array.isArray(upgrade.generateCards))entry.card.generateCards=upgrade.generateCards;entry.card.description=upgrade.description;entry.card.isUpgraded=true;document.querySelector(".tb-camp-overlay")?.remove();campStopStage=null;save();render();notify("Карта улучшена: "+entry.card.name+" +");}catch(error){notify(error.message);}return;
   }
   if(target.dataset.starterCard!==undefined){const id=target.dataset.starterCard;if(starterDeckSelection.includes(id))starterDeckSelection=starterDeckSelection.filter(value=>value!==id);else if(starterDeckSelection.length<3&&unlockedCardIds().includes(id))starterDeckSelection.push(id);else notify("Можно выбрать не более трёх открытых карт");renderStarterDeckModal();return;}
   if(target.dataset.starterDeckCancel!==undefined){document.querySelector(".tb-starter-deck-overlay")?.remove();starterDeckSelection=[];return;}
