@@ -1474,3 +1474,18 @@
 #tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="community"]>span{background-image:url('./assets/Soob.jpg')!important}
 #tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="shop"]>span{background-image:url('./assets/Mag.jpg')!important}
 #tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="account"]>span{background-image:url('./assets/Akk.jpg')!important}
+
+/* SEASON ART FIT: SHOW FULL IMAGE, NO CROPPING */
+/* Keep the complete ModAll and active Mod1–Mod4 artwork visible inside its cell. */
+#tbRpg .tb-v2 .tb-map-quick-panel button[data-action="open-season-modifiers"]{
+  background-repeat:no-repeat!important;
+  background-position:center center!important;
+  background-size:100% 100%,contain!important;
+  background-color:#090d17!important;
+}
+#tbRpg .tb-v2 .tb-seasonal-status{
+  background-repeat:no-repeat!important;
+  background-position:center center!important;
+  background-size:100% 100%,contain!important;
+  background-color:#090d17!important;
+}
