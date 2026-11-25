@@ -489,7 +489,9 @@ console.log('RPG balance/content checks passed: 30 configs, combat cadence, curv
  const autoEnd=source.indexOf('\n  function mergeStones',autoStart);
  assert.ok(autoStart>=0&&autoEnd>autoStart,'autoBattle implementation remains isolated for HP carry-over checks');
  const autoSource=source.slice(autoStart,autoEnd);
- assert.ok(autoSource.includes('simulateAutoCardStage(character,stage,plan,stats)'),'auto battle delegates each stage to the card simulator');\n assert.ok(autoSource.includes('result.cardsPlayed'),'auto battle reports cards actually played');\n assert.ok(autoSource.includes('result.statusDamage'),'auto battle includes status-effect damage');
+ assert.ok(autoSource.includes('simulateAutoCardStage(character,stage,plan,stats)'),'auto battle delegates each stage to the card simulator');
+ assert.ok(autoSource.includes('result.cardsPlayed'),'auto battle reports cards actually played');
+ assert.ok(autoSource.includes('result.statusDamage'),'auto battle includes status-effect damage');
  const finishStart=source.indexOf('function finishEnemy(characterId,flags){');
  const finishEnd=source.indexOf('\n  function ',finishStart+20);
  assert.ok(finishStart>=0&&finishEnd>finishStart,'finishEnemy implementation is isolated');
