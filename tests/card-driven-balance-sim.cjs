@@ -64,7 +64,7 @@ for(const [buildIndex,build] of classes.entries()){
  }
 }
 console.log('CARD-DRIVEN AUTO-BATTLE MATRIX');
-console.log('BUILD\tWINDOW\tMEDIAN CLEARED / 9\tWORST\tBEST\tAVG CARDS\tAVG STATUS DAMAGE\tAVG BLOCK');
+console.log('BUILD\tWINDOW\tMEDIAN CLEARED / 9\tWORST\tBEST\tAVG CARDS\tAVG POTIONS\tAVG STATUS DAMAGE\tAVG BLOCK');
 for(const row of rows)console.log([row.build,row.window,row.medianCleared,row.worst,row.best,row.averageCards,row.averagePotions,row.averageStatusDamage,row.averageBlock].join('\t'));
 console.log(JSON.stringify({audit:'card-driven-auto-battle-balance',builds:21,windows:windows.length,seedsPerWindow:3,totalTrials:rows.length*3,totalStages,clearedStages:totalCleared,clearRatePct:Number((totalCleared/Math.max(1,totalStages)*100).toFixed(2)),cardsPlayed:totalCards,potionsUsed:totalPotions,statusDamage:totalStatusDamage,blockGenerated:totalBlock}));
 assert.ok(totalCards>0,'real deck cards must be played across the build matrix');
