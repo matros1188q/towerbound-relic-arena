@@ -167,8 +167,8 @@
     {
       "id": "assassin.crit.02",
       "classId": "assassin",
-      "name": "Криты · Отточенность",
-      "description": "Усиливает направление «Криты».",
+      "name": "Открытая рана",
+      "description": "«Приговор палача» накладывает ещё +1 уязвимость за ранг.",
       "branch": "crit",
       "x": -257.4,
       "y": 750.6,
@@ -176,7 +176,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardVulnerable_assassin_execution_edge": 1
       },
       "connections": [
         "assassin.crit.01"
@@ -264,8 +265,8 @@
     {
       "id": "assassin.crit.07",
       "classId": "assassin",
-      "name": "Криты · Совершенство",
-      "description": "Усиливает направление «Криты».",
+      "name": "Смертельная точность",
+      "description": "«Обезглавливающий выпад» наносит ещё 2% урона за ранг.",
       "branch": "crit",
       "x": -329.4,
       "y": 383.4,
@@ -273,7 +274,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.012
+        "damagePercent": 0.012,
+        "cardDamagePercent_assassin_execution_mastery": 0.02
       },
       "connections": [
         "assassin.crit.06"
@@ -363,8 +365,8 @@
     {
       "id": "assassin.crit.12",
       "classId": "assassin",
-      "name": "Криты · Порыв",
-      "description": "Усиливает направление «Криты».",
+      "name": "Приговор без промаха",
+      "description": "«Метка обречённого» наносит ещё 2% урона за ранг.",
       "branch": "crit",
       "x": -1474.2,
       "y": 189,
@@ -372,7 +374,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.02
+        "damagePercent": 0.02,
+        "cardDamagePercent_assassin_execution_core": 0.02
       },
       "connections": [
         "assassin.crit.11"
@@ -460,8 +463,8 @@
     {
       "id": "assassin.crit.17",
       "classId": "assassin",
-      "name": "Криты · Практика",
-      "description": "Усиливает направление «Криты».",
+      "name": "Последний вздох",
+      "description": "«Казнь» наносит ещё 2% урона за ранг.",
       "branch": "crit",
       "x": -2683.8,
       "y": 261,
@@ -470,7 +473,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "critChance": 0.01
+        "critChance": 0.01,
+        "cardDamagePercent_assassin_execution_utility": 0.02
       },
       "connections": [
         "assassin.crit.16"
@@ -619,8 +623,8 @@
     {
       "id": "assassin.bleed.02",
       "classId": "assassin",
-      "name": "Кровотечение · Отточенность",
-      "description": "Усиливает направление «Кровотечение».",
+      "name": "Кровавый разгон",
+      "description": "«Кровавый росчерк» наносит ещё 2% урона за ранг.",
       "branch": "bleed",
       "x": 988.2,
       "y": -149.4,
@@ -628,7 +632,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "bleedStacks": 1
+        "bleedStacks": 1,
+        "cardDamagePercent_assassin_bleed_edge": 0.02
       },
       "connections": [
         "assassin.bleed.01"
@@ -715,8 +720,8 @@
     {
       "id": "assassin.bleed.07",
       "classId": "assassin",
-      "name": "Кровотечение · Совершенство",
-      "description": "Усиливает направление «Кровотечение».",
+      "name": "Кровавый заслон",
+      "description": "«Ритуал алой жатвы» даёт ещё 1 броню за ранг.",
       "branch": "bleed",
       "x": 1297.8,
       "y": -365.4,
@@ -725,7 +730,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "bleedStacks": 1,
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardBlock_assassin_bleed_mastery": 1
       },
       "connections": [
         "assassin.bleed.06"
@@ -814,8 +820,8 @@
     {
       "id": "assassin.bleed.12",
       "classId": "assassin",
-      "name": "Кровотечение · Порыв",
-      "description": "Усиливает направление «Кровотечение».",
+      "name": "Рана не закрывается",
+      "description": "«Кровавый порез» накладывает ещё +1 кровотечение за ранг.",
       "branch": "bleed",
       "x": 1074.6,
       "y": -1380.6,
@@ -823,7 +829,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "bleedStacks": 1
+        "bleedStacks": 1,
+        "cardBleed_assassin_bleed_core": 1
       },
       "connections": [
         "assassin.bleed.11"
@@ -911,8 +918,8 @@
     {
       "id": "assassin.bleed.17",
       "classId": "assassin",
-      "name": "Кровотечение · Практика",
-      "description": "Усиливает направление «Кровотечение».",
+      "name": "Плата кровью",
+      "description": "«Жажда крови» дополнительно лечит на 1 за ранг.",
       "branch": "bleed",
       "x": 577.8,
       "y": -2338.2,
@@ -920,7 +927,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "bleedStacks": 1
+        "bleedStacks": 1,
+        "cardHeal_assassin_bleed_utility": 1
       },
       "connections": [
         "assassin.bleed.16"
@@ -1071,8 +1079,8 @@
     {
       "id": "assassin.poison.02",
       "classId": "assassin",
-      "name": "Яды · Отточенность",
-      "description": "Усиливает направление «Яды».",
+      "name": "Ядовитый выпад",
+      "description": "«Отравленный клинок» наносит ещё 2% урона за ранг.",
       "branch": "poison",
       "x": 2241,
       "y": 491.4,
@@ -1080,7 +1088,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "poisonStacks": 1
+        "poisonStacks": 1,
+        "cardDamagePercent_assassin_poison_edge": 0.02
       },
       "connections": [
         "assassin.poison.01"
@@ -1167,8 +1176,8 @@
     {
       "id": "assassin.poison.07",
       "classId": "assassin",
-      "name": "Яды · Совершенство",
-      "description": "Усиливает направление «Яды».",
+      "name": "Токсичный паралич",
+      "description": "«Смертельная эссенция» накладывает ещё +1 слабость за ранг.",
       "branch": "poison",
       "x": 2565,
       "y": 693,
@@ -1177,7 +1186,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "poisonStacks": 1,
-        "cardCostReduction": 1
+        "cardCostReduction": 1,
+        "cardWeak_assassin_poison_mastery": 1
       },
       "connections": [
         "assassin.poison.06"
@@ -1266,8 +1276,8 @@
     {
       "id": "assassin.poison.12",
       "classId": "assassin",
-      "name": "Яды · Порыв",
-      "description": "Усиливает направление «Яды».",
+      "name": "Яд в крови",
+      "description": "«Токсичный удар» накладывает ещё +1 яд за ранг.",
       "branch": "poison",
       "x": 3407.4,
       "y": 81,
@@ -1275,7 +1285,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "poisonStacks": 1
+        "poisonStacks": 1,
+        "cardPoison_assassin_poison_core": 1
       },
       "connections": [
         "assassin.poison.11"
@@ -1363,8 +1374,8 @@
     {
       "id": "assassin.poison.17",
       "classId": "assassin",
-      "name": "Яды · Практика",
-      "description": "Усиливает направление «Яды».",
+      "name": "Токсичный шок",
+      "description": "«Взрыв токсинов» накладывает +1 слабость за ранг.",
       "branch": "poison",
       "x": 4098.6,
       "y": -754.2,
@@ -1372,7 +1383,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "poisonStacks": 1
+        "poisonStacks": 1,
+        "cardWeak_assassin_poison_utility": 1
       },
       "connections": [
         "assassin.poison.16"
@@ -1541,8 +1553,8 @@
     {
       "id": "bishop.exorcism.02",
       "classId": "bishop",
-      "name": "Изгнание · Отточенность",
-      "description": "Усиливает направление «Изгнание».",
+      "name": "Клеймо нечисти",
+      "description": "«Изгнание скверны» наносит ещё 2% урона за ранг.",
       "branch": "exorcism",
       "x": -257.4,
       "y": 750.6,
@@ -1550,7 +1562,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_bishop_exorcism_edge": 0.02
       },
       "connections": [
         "bishop.exorcism.01"
@@ -1637,8 +1650,8 @@
     {
       "id": "bishop.exorcism.07",
       "classId": "bishop",
-      "name": "Изгнание · Совершенство",
-      "description": "Усиливает направление «Изгнание».",
+      "name": "Очищающее пламя",
+      "description": "«Печать очищения» накладывает ещё +1 слабость за ранг.",
       "branch": "exorcism",
       "x": -329.4,
       "y": 383.4,
@@ -1646,7 +1659,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardWeak_bishop_exorcism_mastery": 1
       },
       "connections": [
         "bishop.exorcism.06"
@@ -1734,8 +1748,8 @@
     {
       "id": "bishop.exorcism.12",
       "classId": "bishop",
-      "name": "Изгнание · Порыв",
-      "description": "Усиливает направление «Изгнание».",
+      "name": "Священная кара",
+      "description": "«Святой приговор» наносит ещё 2% урона за ранг.",
       "branch": "exorcism",
       "x": -1474.2,
       "y": 189,
@@ -1743,7 +1757,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardDamagePercent_bishop_exorcism_core": 0.02
       },
       "connections": [
         "bishop.exorcism.11"
@@ -1830,8 +1845,8 @@
     {
       "id": "bishop.exorcism.17",
       "classId": "bishop",
-      "name": "Изгнание · Практика",
-      "description": "Усиливает направление «Изгнание».",
+      "name": "Свет подавления",
+      "description": "«Очищающий свет» накладывает ещё +1 слабость за ранг.",
       "branch": "exorcism",
       "x": -2683.8,
       "y": 261,
@@ -1839,7 +1854,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardWeak_bishop_exorcism_utility": 1
       },
       "connections": [
         "bishop.exorcism.16"
@@ -1985,8 +2001,8 @@
     {
       "id": "bishop.healing.02",
       "classId": "bishop",
-      "name": "Исцеление · Отточенность",
-      "description": "Усиливает направление «Исцеление».",
+      "name": "Щит милосердия",
+      "description": "«Благословение жизни» даёт ещё 1 броню за ранг.",
       "branch": "healing",
       "x": 988.2,
       "y": -149.4,
@@ -1995,7 +2011,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardBlock_bishop_healing_edge": 1
       },
       "connections": [
         "bishop.healing.01"
@@ -2086,8 +2103,8 @@
     {
       "id": "bishop.healing.07",
       "classId": "bishop",
-      "name": "Исцеление · Совершенство",
-      "description": "Усиливает направление «Исцеление».",
+      "name": "Крепость света",
+      "description": "«Священное восстановление» даёт ещё 1 броню за ранг.",
       "branch": "healing",
       "x": 1297.8,
       "y": -365.4,
@@ -2096,7 +2113,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.01,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardBlock_bishop_healing_mastery": 1
       },
       "connections": [
         "bishop.healing.06"
@@ -2188,8 +2206,8 @@
     {
       "id": "bishop.healing.12",
       "classId": "bishop",
-      "name": "Исцеление · Порыв",
-      "description": "Усиливает направление «Исцеление».",
+      "name": "Кара благодати",
+      "description": "«Благодать» наносит ещё 2 урона за ранг.",
       "branch": "healing",
       "x": 1074.6,
       "y": -1380.6,
@@ -2198,7 +2216,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardDamage_bishop_healing_core": 2
       },
       "connections": [
         "bishop.healing.11"
@@ -2289,8 +2308,8 @@
     {
       "id": "bishop.healing.17",
       "classId": "bishop",
-      "name": "Исцеление · Практика",
-      "description": "Усиливает направление «Исцеление».",
+      "name": "Свет воздаяния",
+      "description": "«Кара» наносит ещё 2 урона за ранг.",
       "branch": "healing",
       "x": 577.8,
       "y": -2338.2,
@@ -2299,7 +2318,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardDamage_bishop_healing_utility": 2
       },
       "connections": [
         "bishop.healing.16"
@@ -2451,8 +2471,8 @@
     {
       "id": "bishop.blessing.02",
       "classId": "bishop",
-      "name": "Благословение · Отточенность",
-      "description": "Усиливает направление «Благословение».",
+      "name": "Псалом ярости",
+      "description": "«Боевой псалом» даёт ещё +1 ярость за ранг.",
       "branch": "blessing",
       "x": 2241,
       "y": 491.4,
@@ -2461,7 +2481,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardFury_bishop_buffs_edge": 1
       },
       "connections": [
         "bishop.blessing.01"
@@ -2552,8 +2573,8 @@
     {
       "id": "bishop.blessing.07",
       "classId": "bishop",
-      "name": "Благословение · Совершенство",
-      "description": "Усиливает направление «Благословение».",
+      "name": "Озарение",
+      "description": "«Вознесение духа» добирает +1 карту за ранг.",
       "branch": "blessing",
       "x": 2565,
       "y": 693,
@@ -2562,7 +2583,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.01,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardDraw_bishop_buffs_mastery": 1
       },
       "connections": [
         "bishop.blessing.06"
@@ -2654,8 +2676,8 @@
     {
       "id": "bishop.blessing.12",
       "classId": "bishop",
-      "name": "Благословение · Порыв",
-      "description": "Усиливает направление «Благословение».",
+      "name": "Боевой настрой",
+      "description": "«Боевой настрой» даёт +1 броню за ранг.",
       "branch": "blessing",
       "x": 3407.4,
       "y": 81,
@@ -2664,7 +2686,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardBlock_bishop_buffs_core": 1
       },
       "connections": [
         "bishop.blessing.11"
@@ -2755,8 +2778,8 @@
     {
       "id": "bishop.blessing.17",
       "classId": "bishop",
-      "name": "Благословение · Практика",
-      "description": "Усиливает направление «Благословение».",
+      "name": "Вдохновенный гнев",
+      "description": "«Вдохновляющая молитва» даёт +1 ярость за ранг.",
       "branch": "blessing",
       "x": 4098.6,
       "y": -754.2,
@@ -2765,7 +2788,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardFury_bishop_buffs_utility": 1
       },
       "connections": [
         "bishop.blessing.16"
@@ -2937,8 +2961,8 @@
     {
       "id": "dragonkin.fire.02",
       "classId": "dragonkin",
-      "name": "Пламя · Отточенность",
-      "description": "Усиливает направление «Пламя».",
+      "name": "Пылающий укус",
+      "description": "«Пламенный укус» наносит ещё 2% урона за ранг.",
       "branch": "fire",
       "x": -257.4,
       "y": 750.6,
@@ -2946,7 +2970,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_dragonkin_fire_dragon_edge": 0.02
       },
       "connections": [
         "dragonkin.fire.01"
@@ -3033,8 +3058,8 @@
     {
       "id": "dragonkin.fire.07",
       "classId": "dragonkin",
-      "name": "Пламя · Совершенство",
-      "description": "Усиливает направление «Пламя».",
+      "name": "Драконье дыхание",
+      "description": "«Дыхание дракона» наносит ещё 2% урона за ранг.",
       "branch": "fire",
       "x": -329.4,
       "y": 383.4,
@@ -3042,7 +3067,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardDamagePercent_dragonkin_fire_dragon_mastery": 0.02
       },
       "connections": [
         "dragonkin.fire.06"
@@ -3130,8 +3156,8 @@
     {
       "id": "dragonkin.fire.12",
       "classId": "dragonkin",
-      "name": "Пламя · Порыв",
-      "description": "Усиливает направление «Пламя».",
+      "name": "Испепеление",
+      "description": "«Огненный плевок» накладывает +1 горение за ранг.",
       "branch": "fire",
       "x": -1474.2,
       "y": 189,
@@ -3139,7 +3165,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardBurn_dragonkin_fire_dragon_core": 1
       },
       "connections": [
         "dragonkin.fire.11"
@@ -3226,8 +3253,8 @@
     {
       "id": "dragonkin.fire.17",
       "classId": "dragonkin",
-      "name": "Пламя · Практика",
-      "description": "Усиливает направление «Пламя».",
+      "name": "Раскалённый выпад",
+      "description": "«Пылающая чешуя» усиливает следующую атаку ещё на 1 за ранг.",
       "branch": "fire",
       "x": -2683.8,
       "y": 261,
@@ -3235,7 +3262,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardNextAttackDamage_dragonkin_fire_dragon_utility": 1
       },
       "connections": [
         "dragonkin.fire.16"
@@ -3382,8 +3410,8 @@
     {
       "id": "dragonkin.ice.02",
       "classId": "dragonkin",
-      "name": "Лёд · Отточенность",
-      "description": "Усиливает направление «Лёд».",
+      "name": "Ледяное пробитие",
+      "description": "«Ледяное копьё» наносит ещё 2% урона за ранг.",
       "branch": "ice",
       "x": 988.2,
       "y": -149.4,
@@ -3392,7 +3420,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardDamagePercent_dragonkin_ice_dragon_edge": 0.02
       },
       "connections": [
         "dragonkin.ice.01"
@@ -3483,8 +3512,8 @@
     {
       "id": "dragonkin.ice.07",
       "classId": "dragonkin",
-      "name": "Лёд · Совершенство",
-      "description": "Усиливает направление «Лёд».",
+      "name": "Холодный приговор",
+      "description": "«Панцирь вечной мерзлоты» накладывает ещё +1 слабость за ранг.",
       "branch": "ice",
       "x": 1297.8,
       "y": -365.4,
@@ -3493,7 +3522,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.01,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardWeak_dragonkin_ice_dragon_mastery": 1
       },
       "connections": [
         "dragonkin.ice.06"
@@ -3585,8 +3615,8 @@
     {
       "id": "dragonkin.ice.12",
       "classId": "dragonkin",
-      "name": "Лёд · Порыв",
-      "description": "Усиливает направление «Лёд».",
+      "name": "Ледяная хватка",
+      "description": "«Ледяной панцирь» накладывает ещё +1 слабость за ранг.",
       "branch": "ice",
       "x": 1074.6,
       "y": -1380.6,
@@ -3595,7 +3625,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardWeak_dragonkin_ice_dragon_core": 1
       },
       "connections": [
         "dragonkin.ice.11"
@@ -3686,8 +3717,8 @@
     {
       "id": "dragonkin.ice.17",
       "classId": "dragonkin",
-      "name": "Лёд · Практика",
-      "description": "Усиливает направление «Лёд».",
+      "name": "Морозная острота",
+      "description": "«Морозное копьё» наносит ещё 2% урона за ранг.",
       "branch": "ice",
       "x": 577.8,
       "y": -2338.2,
@@ -3696,7 +3727,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardDamagePercent_dragonkin_ice_dragon_utility": 0.02
       },
       "connections": [
         "dragonkin.ice.16"
@@ -3847,8 +3879,8 @@
     {
       "id": "dragonkin.void.02",
       "classId": "dragonkin",
-      "name": "Чёрная магия · Отточенность",
-      "description": "Усиливает направление «Чёрная магия».",
+      "name": "Голод бездны",
+      "description": "«Теневая пасть» наносит ещё 2% урона за ранг.",
       "branch": "void",
       "x": 2241,
       "y": 491.4,
@@ -3856,7 +3888,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_dragonkin_black_dragon_edge": 0.02
       },
       "connections": [
         "dragonkin.void.01"
@@ -3943,8 +3976,8 @@
     {
       "id": "dragonkin.void.07",
       "classId": "dragonkin",
-      "name": "Чёрная магия · Совершенство",
-      "description": "Усиливает направление «Чёрная магия».",
+      "name": "Поглощённая мощь",
+      "description": "«Поглощение пустоты» наносит ещё 2% урона за ранг.",
       "branch": "void",
       "x": 2565,
       "y": 693,
@@ -3952,7 +3985,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardDamagePercent_dragonkin_black_dragon_mastery": 0.02
       },
       "connections": [
         "dragonkin.void.06"
@@ -4040,8 +4074,8 @@
     {
       "id": "dragonkin.void.12",
       "classId": "dragonkin",
-      "name": "Чёрная магия · Порыв",
-      "description": "Усиливает направление «Чёрная магия».",
+      "name": "Тень разрывает броню",
+      "description": "«Укус пустоты» накладывает ещё +1 уязвимость за ранг.",
       "branch": "void",
       "x": 3407.4,
       "y": 81,
@@ -4049,7 +4083,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardVulnerable_dragonkin_black_dragon_core": 1
       },
       "connections": [
         "dragonkin.void.11"
@@ -4136,8 +4171,8 @@
     {
       "id": "dragonkin.void.17",
       "classId": "dragonkin",
-      "name": "Чёрная магия · Практика",
-      "description": "Усиливает направление «Чёрная магия».",
+      "name": "Пожирание защиты",
+      "description": "«Поглощение души» накладывает +1 уязвимость за ранг.",
       "branch": "void",
       "x": 4098.6,
       "y": -754.2,
@@ -4145,7 +4180,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardVulnerable_dragonkin_black_dragon_utility": 1
       },
       "connections": [
         "dragonkin.void.16"
@@ -4312,8 +4348,8 @@
     {
       "id": "destroyer.fists.02",
       "classId": "destroyer",
-      "name": "Кулаки · Отточенность",
-      "description": "Усиливает направление «Кулаки».",
+      "name": "Ударная волна",
+      "description": "«Град кулаков» наносит ещё 2% урона за ранг.",
       "branch": "fists",
       "x": -257.4,
       "y": 750.6,
@@ -4321,7 +4357,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_destroyer_fists_edge": 0.02
       },
       "connections": [
         "destroyer.fists.01"
@@ -4408,8 +4445,8 @@
     {
       "id": "destroyer.fists.07",
       "classId": "destroyer",
-      "name": "Кулаки · Совершенство",
-      "description": "Усиливает направление «Кулаки».",
+      "name": "Собранная мощь",
+      "description": "«Несокрушимая стойка» усиливает следующую атаку ещё на 1 за ранг.",
       "branch": "fists",
       "x": -329.4,
       "y": 383.4,
@@ -4417,7 +4454,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardNextAttackDamage_destroyer_fists_mastery": 1
       },
       "connections": [
         "destroyer.fists.06"
@@ -4506,8 +4544,8 @@
     {
       "id": "destroyer.fists.12",
       "classId": "destroyer",
-      "name": "Кулаки · Порыв",
-      "description": "Усиливает направление «Кулаки».",
+      "name": "Шквал без паузы",
+      "description": "«Шквал ударов» наносит ещё 2% урона за ранг.",
       "branch": "fists",
       "x": -1474.2,
       "y": 189,
@@ -4515,7 +4553,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardDamagePercent_destroyer_fists_core": 0.02
       },
       "connections": [
         "destroyer.fists.11"
@@ -4603,8 +4642,8 @@
     {
       "id": "destroyer.fists.17",
       "classId": "destroyer",
-      "name": "Кулаки · Практика",
-      "description": "Усиливает направление «Кулаки».",
+      "name": "Железная стойка",
+      "description": "«Стойка бойца» даёт ещё 1 броню за ранг.",
       "branch": "fists",
       "x": -2683.8,
       "y": 261,
@@ -4612,7 +4651,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardBlock_destroyer_fists_utility": 1
       },
       "connections": [
         "destroyer.fists.16"
@@ -4759,8 +4799,8 @@
     {
       "id": "destroyer.greatsword.02",
       "classId": "destroyer",
-      "name": "Двуручный меч · Отточенность",
-      "description": "Усиливает направление «Двуручный меч».",
+      "name": "Разлом защиты",
+      "description": "«Рассекающий разлом» накладывает +1 уязвимость за ранг.",
       "branch": "greatsword",
       "x": 988.2,
       "y": -149.4,
@@ -4768,7 +4808,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardVulnerable_destroyer_greatsword_edge": 1
       },
       "connections": [
         "destroyer.greatsword.01"
@@ -4855,8 +4896,8 @@
     {
       "id": "destroyer.greatsword.07",
       "classId": "destroyer",
-      "name": "Двуручный меч · Совершенство",
-      "description": "Усиливает направление «Двуручный меч».",
+      "name": "Титанический гнев",
+      "description": "«Гнев титана» наносит ещё 2% урона за ранг.",
       "branch": "greatsword",
       "x": 1297.8,
       "y": -365.4,
@@ -4864,7 +4905,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardDamagePercent_destroyer_greatsword_mastery": 0.02
       },
       "connections": [
         "destroyer.greatsword.06"
@@ -4952,8 +4994,8 @@
     {
       "id": "destroyer.greatsword.12",
       "classId": "destroyer",
-      "name": "Двуручный меч · Порыв",
-      "description": "Усиливает направление «Двуручный меч».",
+      "name": "Широкий надлом",
+      "description": "«Широкий размах» накладывает +1 слабость за ранг.",
       "branch": "greatsword",
       "x": 1074.6,
       "y": -1380.6,
@@ -4961,7 +5003,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardWeak_destroyer_greatsword_core": 1
       },
       "connections": [
         "destroyer.greatsword.11"
@@ -5048,8 +5091,8 @@
     {
       "id": "destroyer.greatsword.17",
       "classId": "destroyer",
-      "name": "Двуручный меч · Практика",
-      "description": "Усиливает направление «Двуручный меч».",
+      "name": "Раскол до основания",
+      "description": "«Раскол брони» наносит ещё 2% урона за ранг.",
       "branch": "greatsword",
       "x": 577.8,
       "y": -2338.2,
@@ -5057,7 +5100,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_destroyer_greatsword_utility": 0.02
       },
       "connections": [
         "destroyer.greatsword.16"
@@ -5202,8 +5246,8 @@
     {
       "id": "destroyer.arcane.02",
       "classId": "destroyer",
-      "name": "Жезл и щит · Отточенность",
-      "description": "Усиливает направление «Жезл и щит».",
+      "name": "Арканный барьер",
+      "description": "«Чародейский заслон» даёт +1 силы магии за ранг.",
       "branch": "arcane",
       "x": 2241,
       "y": 491.4,
@@ -5211,7 +5255,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardSpellPower_destroyer_wand_shield_edge": 1
       },
       "connections": [
         "destroyer.arcane.01"
@@ -5298,8 +5343,8 @@
     {
       "id": "destroyer.arcane.07",
       "classId": "destroyer",
-      "name": "Жезл и щит · Совершенство",
-      "description": "Усиливает направление «Жезл и щит».",
+      "name": "Бастионный ответ",
+      "description": "«Контрудар бастиона» даёт ещё 1 броню за ранг.",
       "branch": "arcane",
       "x": 2565,
       "y": 693,
@@ -5307,7 +5352,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardBlock_destroyer_wand_shield_mastery": 1
       },
       "connections": [
         "destroyer.arcane.06"
@@ -5395,8 +5441,8 @@
     {
       "id": "destroyer.arcane.12",
       "classId": "destroyer",
-      "name": "Жезл и щит · Порыв",
-      "description": "Усиливает направление «Жезл и щит».",
+      "name": "Щит мастера",
+      "description": "«Щит арканиста» даёт ещё 1 броню за ранг.",
       "branch": "arcane",
       "x": 3407.4,
       "y": 81,
@@ -5404,7 +5450,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardBlock_destroyer_wand_shield_core": 1
       },
       "connections": [
         "destroyer.arcane.11"
@@ -5491,8 +5538,8 @@
     {
       "id": "destroyer.arcane.17",
       "classId": "destroyer",
-      "name": "Жезл и щит · Практика",
-      "description": "Усиливает направление «Жезл и щит».",
+      "name": "Разряд возмездия",
+      "description": "«Ответный разряд» наносит ещё 2% урона за ранг.",
       "branch": "arcane",
       "x": 4098.6,
       "y": -754.2,
@@ -5500,7 +5547,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_destroyer_wand_shield_utility": 0.02
       },
       "connections": [
         "destroyer.arcane.16"
@@ -5666,8 +5714,8 @@
     {
       "id": "elemental.darkness.02",
       "classId": "elemental",
-      "name": "Тьма · Отточенность",
-      "description": "Усиливает направление «Тьма».",
+      "name": "Поглощение силы",
+      "description": "«Поглощение мрака» наносит ещё 2% урона за ранг.",
       "branch": "darkness",
       "x": -257.4,
       "y": 750.6,
@@ -5675,7 +5723,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_elemental_darkness_edge": 0.02
       },
       "connections": [
         "elemental.darkness.01"
@@ -5762,8 +5811,8 @@
     {
       "id": "elemental.darkness.07",
       "classId": "elemental",
-      "name": "Тьма · Совершенство",
-      "description": "Усиливает направление «Тьма».",
+      "name": "Бездна отвечает",
+      "description": "«Проклятие бездны» наносит ещё 2% урона за ранг.",
       "branch": "darkness",
       "x": -329.4,
       "y": 383.4,
@@ -5771,7 +5820,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardDamagePercent_elemental_darkness_mastery": 0.02
       },
       "connections": [
         "elemental.darkness.06"
@@ -5859,8 +5909,8 @@
     {
       "id": "elemental.darkness.12",
       "classId": "elemental",
-      "name": "Тьма · Порыв",
-      "description": "Усиливает направление «Тьма».",
+      "name": "Клеймо отчаяния",
+      "description": "«Теневое клеймо» накладывает +1 слабость за ранг.",
       "branch": "darkness",
       "x": -1474.2,
       "y": 189,
@@ -5868,7 +5918,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardWeak_elemental_darkness_core": 1
       },
       "connections": [
         "elemental.darkness.11"
@@ -5955,8 +6006,8 @@
     {
       "id": "elemental.darkness.17",
       "classId": "elemental",
-      "name": "Тьма · Практика",
-      "description": "Усиливает направление «Тьма».",
+      "name": "Пожиратель крови",
+      "description": "«Пожиратель света» наносит ещё +1 урон за каждый стак кровотечения за ранг.",
       "branch": "darkness",
       "x": -2683.8,
       "y": 261,
@@ -5964,7 +6015,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePerBleed_elemental_darkness_utility": 1
       },
       "connections": [
         "elemental.darkness.16"
@@ -6111,8 +6163,8 @@
     {
       "id": "elemental.water.02",
       "classId": "elemental",
-      "name": "Вода · Отточенность",
-      "description": "Усиливает направление «Вода».",
+      "name": "Острый поток",
+      "description": "«Водяной серп» наносит ещё 2% урона за ранг.",
       "branch": "water",
       "x": 988.2,
       "y": -149.4,
@@ -6120,7 +6172,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_elemental_water_edge": 0.02
       },
       "connections": [
         "elemental.water.01"
@@ -6207,8 +6260,8 @@
     {
       "id": "elemental.water.07",
       "classId": "elemental",
-      "name": "Вода · Совершенство",
-      "description": "Усиливает направление «Вода».",
+      "name": "Приливной щит",
+      "description": "«Приливная волна» даёт ещё 1 броню за ранг.",
       "branch": "water",
       "x": 1297.8,
       "y": -365.4,
@@ -6216,7 +6269,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardBlock_elemental_water_mastery": 1
       },
       "connections": [
         "elemental.water.06"
@@ -6305,8 +6359,8 @@
     {
       "id": "elemental.water.12",
       "classId": "elemental",
-      "name": "Вода · Порыв",
-      "description": "Усиливает направление «Вода».",
+      "name": "Сбивающая волна",
+      "description": "«Стремнина» накладывает +1 слабость за ранг.",
       "branch": "water",
       "x": 1074.6,
       "y": -1380.6,
@@ -6314,7 +6368,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardWeak_elemental_water_core": 1
       },
       "connections": [
         "elemental.water.11"
@@ -6402,8 +6457,8 @@
     {
       "id": "elemental.water.17",
       "classId": "elemental",
-      "name": "Вода · Практика",
-      "description": "Усиливает направление «Вода».",
+      "name": "Волна прозрения",
+      "description": "«Целительный прилив» добирает +1 карту за ранг.",
       "branch": "water",
       "x": 577.8,
       "y": -2338.2,
@@ -6411,7 +6466,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDraw_elemental_water_utility": 1
       },
       "connections": [
         "elemental.water.16"
@@ -6558,8 +6614,8 @@
     {
       "id": "elemental.earth.02",
       "classId": "elemental",
-      "name": "Земля · Отточенность",
-      "description": "Усиливает направление «Земля».",
+      "name": "Каменная пробивная сила",
+      "description": "«Каменный шип» наносит ещё 2% урона за ранг.",
       "branch": "earth",
       "x": 2241,
       "y": 491.4,
@@ -6568,7 +6624,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardDamagePercent_elemental_earth_edge": 0.02
       },
       "connections": [
         "elemental.earth.01"
@@ -6659,8 +6716,8 @@
     {
       "id": "elemental.earth.07",
       "classId": "elemental",
-      "name": "Земля · Совершенство",
-      "description": "Усиливает направление «Земля».",
+      "name": "Тяжесть оплота",
+      "description": "«Оплот земли» накладывает +1 слабость за ранг.",
       "branch": "earth",
       "x": 2565,
       "y": 693,
@@ -6669,7 +6726,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.01,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardWeak_elemental_earth_mastery": 1
       },
       "connections": [
         "elemental.earth.06"
@@ -6761,8 +6819,8 @@
     {
       "id": "elemental.earth.12",
       "classId": "elemental",
-      "name": "Земля · Порыв",
-      "description": "Усиливает направление «Земля».",
+      "name": "Осколки мощи",
+      "description": "«Каменный осколок» наносит ещё 2% урона за ранг.",
       "branch": "earth",
       "x": 3407.4,
       "y": 81,
@@ -6771,7 +6829,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardDamagePercent_elemental_earth_core": 0.02
       },
       "connections": [
         "elemental.earth.11"
@@ -6862,8 +6921,8 @@
     {
       "id": "elemental.earth.17",
       "classId": "elemental",
-      "name": "Земля · Практика",
-      "description": "Усиливает направление «Земля».",
+      "name": "Стена подавления",
+      "description": "«Земляная стена» накладывает +1 слабость за ранг.",
       "branch": "earth",
       "x": 4098.6,
       "y": -754.2,
@@ -6872,7 +6931,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardWeak_elemental_earth_utility": 1
       },
       "connections": [
         "elemental.earth.16"
@@ -7045,8 +7105,8 @@
     {
       "id": "duelist.dual.02",
       "classId": "duelist",
-      "name": "Парные клинки · Отточенность",
-      "description": "Усиливает направление «Парные клинки».",
+      "name": "Два пореза",
+      "description": "«Двойной разрез» накладывает +1 кровотечение за ранг.",
       "branch": "dual",
       "x": -257.4,
       "y": 750.6,
@@ -7054,7 +7114,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardBleed_duelist_dual_swords_edge": 1
       },
       "connections": [
         "duelist.dual.01"
@@ -7141,8 +7202,8 @@
     {
       "id": "duelist.dual.07",
       "classId": "duelist",
-      "name": "Парные клинки · Совершенство",
-      "description": "Усиливает направление «Парные клинки».",
+      "name": "Танец ран",
+      "description": "«Танец клинков» накладывает +1 кровотечение за ранг.",
       "branch": "dual",
       "x": -329.4,
       "y": 383.4,
@@ -7150,7 +7211,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardBleed_duelist_dual_swords_mastery": 1
       },
       "connections": [
         "duelist.dual.06"
@@ -7239,8 +7301,8 @@
     {
       "id": "duelist.dual.12",
       "classId": "duelist",
-      "name": "Парные клинки · Порыв",
-      "description": "Усиливает направление «Парные клинки».",
+      "name": "Парная рана",
+      "description": "«Парный выпад» накладывает +1 кровотечение за ранг.",
       "branch": "dual",
       "x": -1474.2,
       "y": 189,
@@ -7248,7 +7310,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardBleed_duelist_dual_swords_core": 1
       },
       "connections": [
         "duelist.dual.11"
@@ -7336,8 +7399,8 @@
     {
       "id": "duelist.dual.17",
       "classId": "duelist",
-      "name": "Парные клинки · Практика",
-      "description": "Усиливает направление «Парные клинки».",
+      "name": "Смертельный ритм",
+      "description": "«Смертельный выпад» наносит ещё 2% урона за ранг.",
       "branch": "dual",
       "x": -2683.8,
       "y": 261,
@@ -7345,7 +7408,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_duelist_dual_swords_utility": 0.02
       },
       "connections": [
         "duelist.dual.16"
@@ -7492,8 +7556,8 @@
     {
       "id": "duelist.shield.02",
       "classId": "duelist",
-      "name": "Меч и щит · Отточенность",
-      "description": "Усиливает направление «Меч и щит».",
+      "name": "Контратака в брешь",
+      "description": "«Стальная контратака» накладывает +1 уязвимость за ранг.",
       "branch": "shield",
       "x": 988.2,
       "y": -149.4,
@@ -7502,7 +7566,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardVulnerable_duelist_sword_shield_edge": 1
       },
       "connections": [
         "duelist.shield.01"
@@ -7593,8 +7658,8 @@
     {
       "id": "duelist.shield.07",
       "classId": "duelist",
-      "name": "Меч и щит · Совершенство",
-      "description": "Усиливает направление «Меч и щит».",
+      "name": "Ответный выпад",
+      "description": "«Стена клинков» усиливает следующую атаку ещё на 1 за ранг.",
       "branch": "shield",
       "x": 1297.8,
       "y": -365.4,
@@ -7603,7 +7668,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.01,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardNextAttackDamage_duelist_sword_shield_mastery": 1
       },
       "connections": [
         "duelist.shield.06"
@@ -7695,8 +7761,8 @@
     {
       "id": "duelist.shield.12",
       "classId": "duelist",
-      "name": "Меч и щит · Порыв",
-      "description": "Усиливает направление «Меч и щит».",
+      "name": "Удар с опорой",
+      "description": "«Удар щитом» наносит ещё 2% урона за ранг.",
       "branch": "shield",
       "x": 1074.6,
       "y": -1380.6,
@@ -7705,7 +7771,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardDamagePercent_duelist_sword_shield_core": 0.02
       },
       "connections": [
         "duelist.shield.11"
@@ -7796,8 +7863,8 @@
     {
       "id": "duelist.shield.17",
       "classId": "duelist",
-      "name": "Меч и щит · Практика",
-      "description": "Усиливает направление «Меч и щит».",
+      "name": "Непробиваемая защита",
+      "description": "«Рипостный заслон» даёт ещё 1 броню за ранг.",
       "branch": "shield",
       "x": 577.8,
       "y": -2338.2,
@@ -7806,7 +7873,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "blockFlat": 1
+        "blockFlat": 1,
+        "cardBlock_duelist_sword_shield_utility": 1
       },
       "connections": [
         "duelist.shield.16"
@@ -7957,8 +8025,8 @@
     {
       "id": "duelist.rapier.02",
       "classId": "duelist",
-      "name": "Рапира · Отточенность",
-      "description": "Усиливает направление «Рапира».",
+      "name": "Точный надрез",
+      "description": "«Укол в уязвимость» накладывает +1 слабость за ранг.",
       "branch": "rapier",
       "x": 2241,
       "y": 491.4,
@@ -7966,7 +8034,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardWeak_duelist_rapier_edge": 1
       },
       "connections": [
         "duelist.rapier.01"
@@ -8053,8 +8122,8 @@
     {
       "id": "duelist.rapier.07",
       "classId": "duelist",
-      "name": "Рапира · Совершенство",
-      "description": "Усиливает направление «Рапира».",
+      "name": "Парирование темпа",
+      "description": "«Идеальное парирование» накладывает ещё +1 слабость за ранг.",
       "branch": "rapier",
       "x": 2565,
       "y": 693,
@@ -8062,7 +8131,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardWeak_duelist_rapier_mastery": 1
       },
       "connections": [
         "duelist.rapier.06"
@@ -8150,8 +8220,8 @@
     {
       "id": "duelist.rapier.12",
       "classId": "duelist",
-      "name": "Рапира · Порыв",
-      "description": "Усиливает направление «Рапира».",
+      "name": "Игла судьбы",
+      "description": "«Точный укол» наносит ещё 2% урона за ранг.",
       "branch": "rapier",
       "x": 3407.4,
       "y": 81,
@@ -8159,7 +8229,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardDamagePercent_duelist_rapier_core": 0.02
       },
       "connections": [
         "duelist.rapier.11"
@@ -8246,8 +8317,8 @@
     {
       "id": "duelist.rapier.17",
       "classId": "duelist",
-      "name": "Рапира · Практика",
-      "description": "Усиливает направление «Рапира».",
+      "name": "Уходящий выпад",
+      "description": "«Отводящий выпад» даёт ещё 1 броню за ранг.",
       "branch": "rapier",
       "x": 4098.6,
       "y": -754.2,
@@ -8255,7 +8326,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardBlock_duelist_rapier_utility": 1
       },
       "connections": [
         "duelist.rapier.16"
@@ -8423,8 +8495,8 @@
     {
       "id": "shaman.spirits.02",
       "classId": "shaman",
-      "name": "Духи · Отточенность",
-      "description": "Усиливает направление «Духи».",
+      "name": "Зов силы",
+      "description": "«Зов предков» наносит ещё 2% урона за ранг.",
       "branch": "spirits",
       "x": -257.4,
       "y": 750.6,
@@ -8433,7 +8505,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardDamagePercent_shaman_spirits_edge": 0.02
       },
       "connections": [
         "shaman.spirits.01"
@@ -8524,8 +8597,8 @@
     {
       "id": "shaman.spirits.07",
       "classId": "shaman",
-      "name": "Духи · Совершенство",
-      "description": "Усиливает направление «Духи».",
+      "name": "Духовный щит",
+      "description": "«Духовный резонанс» даёт ещё 1 броню за ранг.",
       "branch": "spirits",
       "x": -329.4,
       "y": 383.4,
@@ -8534,7 +8607,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.01,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardBlock_shaman_spirits_mastery": 1
       },
       "connections": [
         "shaman.spirits.06"
@@ -8626,8 +8700,8 @@
     {
       "id": "shaman.spirits.12",
       "classId": "shaman",
-      "name": "Духи · Порыв",
-      "description": "Усиливает направление «Духи».",
+      "name": "Удар духов",
+      "description": "«Удар предков» наносит ещё 2% урона за ранг.",
       "branch": "spirits",
       "x": -1474.2,
       "y": 189,
@@ -8636,7 +8710,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardDamagePercent_shaman_spirits_core": 0.02
       },
       "connections": [
         "shaman.spirits.11"
@@ -8727,8 +8802,8 @@
     {
       "id": "shaman.spirits.17",
       "classId": "shaman",
-      "name": "Духи · Практика",
-      "description": "Усиливает направление «Духи».",
+      "name": "Ядовитый покров",
+      "description": "«Духовный покров» накладывает +1 яд за ранг.",
       "branch": "spirits",
       "x": -2683.8,
       "y": 261,
@@ -8737,7 +8812,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardPoison_shaman_spirits_utility": 1
       },
       "connections": [
         "shaman.spirits.16"
@@ -8888,8 +8964,8 @@
     {
       "id": "shaman.gods.02",
       "classId": "shaman",
-      "name": "Тёмные боги · Отточенность",
-      "description": "Усиливает направление «Тёмные боги».",
+      "name": "Проклятие богов",
+      "description": "«Шёпот древних» накладывает +1 уязвимость за ранг.",
       "branch": "gods",
       "x": 988.2,
       "y": -149.4,
@@ -8897,7 +8973,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardVulnerable_shaman_dark_gods_edge": 1
       },
       "connections": [
         "shaman.gods.01"
@@ -8984,8 +9061,8 @@
     {
       "id": "shaman.gods.07",
       "classId": "shaman",
-      "name": "Тёмные боги · Совершенство",
-      "description": "Усиливает направление «Тёмные боги».",
+      "name": "Жертва силы",
+      "description": "«Жертва во имя бога» наносит ещё 2% урона за ранг.",
       "branch": "gods",
       "x": 1297.8,
       "y": -365.4,
@@ -8993,7 +9070,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.01
+        "damagePercent": 0.01,
+        "cardDamagePercent_shaman_dark_gods_mastery": 0.02
       },
       "connections": [
         "shaman.gods.06"
@@ -9081,8 +9159,8 @@
     {
       "id": "shaman.gods.12",
       "classId": "shaman",
-      "name": "Тёмные боги · Порыв",
-      "description": "Усиливает направление «Тёмные боги».",
+      "name": "Глас уязвимости",
+      "description": "«Глас бездны» накладывает +1 уязвимость за ранг.",
       "branch": "gods",
       "x": 1074.6,
       "y": -1380.6,
@@ -9090,7 +9168,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.016
+        "damagePercent": 0.016,
+        "cardVulnerable_shaman_dark_gods_core": 1
       },
       "connections": [
         "shaman.gods.11"
@@ -9177,8 +9256,8 @@
     {
       "id": "shaman.gods.17",
       "classId": "shaman",
-      "name": "Тёмные боги · Практика",
-      "description": "Усиливает направление «Тёмные боги».",
+      "name": "Обряд разрушения",
+      "description": "«Жертвенный обряд» наносит ещё 2% урона за ранг.",
       "branch": "gods",
       "x": 577.8,
       "y": -2338.2,
@@ -9186,7 +9265,8 @@
       "maxRank": 3,
       "requiredBranchPoints": 0,
       "effect": {
-        "damagePercent": 0.013000000000000001
+        "damagePercent": 0.013000000000000001,
+        "cardDamagePercent_shaman_dark_gods_utility": 0.02
       },
       "connections": [
         "shaman.gods.16"
@@ -9332,8 +9412,8 @@
     {
       "id": "shaman.nature.02",
       "classId": "shaman",
-      "name": "Природа · Отточенность",
-      "description": "Усиливает направление «Природа».",
+      "name": "Корни сковывают",
+      "description": "«Корни-ловушки» накладывают +1 слабость за ранг.",
       "branch": "nature",
       "x": 2241,
       "y": 491.4,
@@ -9342,7 +9422,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardWeak_shaman_nature_edge": 1
       },
       "connections": [
         "shaman.nature.01"
@@ -9433,8 +9514,8 @@
     {
       "id": "shaman.nature.07",
       "classId": "shaman",
-      "name": "Природа · Совершенство",
-      "description": "Усиливает направление «Природа».",
+      "name": "Природная защита",
+      "description": "«Живительный тотем» даёт ещё 1 броню за ранг.",
       "branch": "nature",
       "x": 2565,
       "y": 693,
@@ -9443,7 +9524,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.01,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardBlock_shaman_nature_mastery": 1
       },
       "connections": [
         "shaman.nature.06"
@@ -9535,8 +9617,8 @@
     {
       "id": "shaman.nature.12",
       "classId": "shaman",
-      "name": "Природа · Порыв",
-      "description": "Усиливает направление «Природа».",
+      "name": "Ядовитый шип",
+      "description": "«Ядовитые корни» наносят ещё 2% урона за ранг.",
       "branch": "nature",
       "x": 3407.4,
       "y": 81,
@@ -9545,7 +9627,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.016,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardDamagePercent_shaman_nature_core": 0.02
       },
       "connections": [
         "shaman.nature.11"
@@ -9636,8 +9719,8 @@
     {
       "id": "shaman.nature.17",
       "classId": "shaman",
-      "name": "Природа · Практика",
-      "description": "Усиливает направление «Природа».",
+      "name": "Тотем отравления",
+      "description": "«Живой тотем» накладывает +1 яд за ранг.",
       "branch": "nature",
       "x": 4098.6,
       "y": -754.2,
@@ -9646,7 +9729,8 @@
       "requiredBranchPoints": 0,
       "effect": {
         "damagePercent": 0.013000000000000001,
-        "healPercent": 0.01
+        "healPercent": 0.01,
+        "cardPoison_shaman_nature_utility": 1
       },
       "connections": [
         "shaman.nature.16"
