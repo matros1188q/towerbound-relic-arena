@@ -26,7 +26,7 @@ for(const [name,source,re] of [
 ['weekly reward confirmation uses Russian wording',ui,/Еженедельное задание: награда получена/],
 ['achievement cards show localized metric labels and explicit progress',ui,/a\.metric_label\|\|"Показатель"[\s\S]*Прогресс:/],
 ['achievement rewards include silver and diamonds in localized text',ui,/Награда:.*rewardLabel/],
-['talent cards identify the improved stat and current rank',ui,/Повышает.*Ранг.*maxRank/],
+['talent descriptions explain stat and rank-specific bonuses',ui,/Каждый ранг даёт[\s\S]*Текущий бонус:[\s\S]*Повышает вероятность критического попадания/],
 ['talent descriptions explain per-rank and accumulated stat bonuses',ui,/function talentBonusDescription[\s\S]*Увеличивает силу базовых ударов[\s\S]*Каждый ранг даёт[\s\S]*Текущий бонус:/],
 ['branch skills preserve passive/active type and are restricted to current branch',ui,/function branchSkills\(c\)[\s\S]*const passive=skill\.type==="passive"\|\|skill\.is_active===false/],
 ['all seven classes have detailed specialization descriptions',ui,/const specializationDescriptions=\{[\s\S]*assassin:\{[\s\S]*bishop:\{[\s\S]*dragonkin:\{[\s\S]*destroyer:\{[\s\S]*elemental:\{[\s\S]*duelist:\{[\s\S]*shaman:\{/],
