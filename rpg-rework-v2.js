@@ -1051,19 +1051,20 @@
    const damage=(target,raw,type,ignoreArmor)=>{if(!target?.alive||target.hp<=0)return 0;let value=Math.max(0,Math.round(raw*damageTypeMultiplier(target,type||"physical")*(target.vulnerable>0?1.5:1)));if(!ignoreArmor&&target.role==="tank"&&target.guardCharges>0){value=Math.round(value*(1-(balance.mobs.roles.tank.shield_fraction||.1)));target.guardCharges--;}if(target.type==="boss")value=capBossDamage(target,value,0);const dealt=Math.min(target.hp,value);target.hp=Math.max(0,target.hp-value);if(target.hp<=0)target.alive=false;if(dealt>0){if(target.role==="healer")target.provoked=true;character.run.playerHp=hp;applyVampirism(character.id,dealt);hp=character.run.playerHp;}return dealt;};
    const alive=()=>enemies.filter(enemy=>enemy.alive&&enemy.hp>0);
    const chooseTarget=()=>alive().sort((a,b)=>(a.type==="boss"?-1:b.type==="boss"?1:a.hp/a.maxHp-b.hp/b.maxHp))[0]||null;
-   const playScore=(card,target)=>{const e=card?.effects||{},cost=(card.isXCost||card.costX)?energy:Math.max(0,Number(card.cost)||0);let score=(Number(e.damage)||Number(e.damageAll)||0)+(Number(e.damagePerEnergy)||0)*((card.isXCost||card.costX)?energy:0)+(Number(e.damagePerPoison)||0)*(target?.poison||0)+(Number(e.damagePerBleed)||0)*(target?.bleed||0)+(Number(e.damageMissingHp)||0)*Math.max(0,maxHp(character)-hp);score*=Math.max(.1,stats.damageMultiplier||1);score+=Math.max(0,Number(e.poison)||0)*2+Math.max(0,Number(e.bleed)||0)*1.5+Math.max(0,Number(e.burn)||0)*1.5+Math.max(0,Number(e.vulnerable)||0)*3;score+=Math.max(0,Number(e.block)||0)*(hp<maxHp(character)*.65?1.8:.35);score+=Math.max(0,Number(e.heal)||0)*(hp<maxHp(character)*.85?2:0);score+=Math.max(0,Number(e.draw)||0)*2+Math.max(0,Number(e.energy)||0)*4;return{score,cost};};
+   const playScore=(card,target,freeCardAvailable)=>{const e=card?.effects||{},cost=freeCardAvailable?0:(card.isXCost||card.costX)?energy:Math.max(0,Number(card.cost)||0);let score=(Number(e.damage)||Number(e.damageAll)||0)+(Number(e.damagePerEnergy)||0)*((card.isXCost||card.costX)?energy:0)+(Number(e.damagePerPoison)||0)*(target?.poison||0)+(Number(e.damagePerBleed)||0)*(target?.bleed||0)+(Number(e.damageMissingHp)||0)*Math.max(0,maxHp(character)-hp);score*=Math.max(.1,stats.damageMultiplier||1);score+=Math.max(0,Number(e.poison)||0)*2+Math.max(0,Number(e.bleed)||0)*1.5+Math.max(0,Number(e.burn)||0)*1.5+Math.max(0,Number(e.vulnerable)||0)*3;score+=Math.max(0,Number(e.block)||0)*(hp<maxHp(character)*.65?1.8:.35);score+=Math.max(0,Number(e.heal)||0)*(hp<maxHp(character)*.85?2:0);score+=Math.max(0,Number(e.draw)||0)*2+Math.max(0,Number(e.energy)||0)*4;return{score,cost};};
    drawCards(Math.max(5,Number(character.cardDrawPerTurn)||5));
    while(turns<120&&hp>0&&alive().length){
     turns++;
-    let playedThisTurn=0;
+    if(character.classId==="shaman")character.totem=Math.min(3,(Number(character.totem)||0)+1);
+    let freeCardAvailable=character.classId==="shaman"&&Number(character.totem)>=3,playedThisTurn=0;
     while(playedThisTurn<20&&hp>0&&alive().length){
      const target=chooseTarget();if(!target)break;
-     const candidates=hand.map((card,index)=>({card,index,...playScore(card,target)}))
+     const candidates=hand.map((card,index)=>({card,index,...playScore(card,target,freeCardAvailable)}))
       .filter(item=>!item.card.effects?.unplayable&&!["curse","status"].includes(item.card.type)&&item.cost<=energy&&!(character.classId==="duelist"&&(item.card.finisher||item.card.effects?.finisher)&&Number(character.charges||0)<3))
       .sort((a,b)=>b.score-a.score);
      const best=candidates[0];if(!best||best.score<=0)break;
      const card=hand.splice(best.index,1)[0],effects=card.effects||{},xCost=!!(card.isXCost||card.costX),spent=xCost?energy:best.cost;
-     energy=Math.max(0,energy-best.cost);cardsPlayed++;playedThisTurn++;
+     if(freeCardAvailable){character.totem=Math.max(0,Number(character.totem)-3);freeCardAvailable=false;}else energy=Math.max(0,energy-best.cost);cardsPlayed++;playedThisTurn++;
      if(card.exhaust||card.upgradedExhaust)exhaust.push(card);else discard.push(card);
      const attack=Number(effects.damage)>0||Number(effects.damageAll)>0||Number(effects.damagePerEnergy)>0||card.type==="attack";
      const isMagic=!!effects.magic||card.type==="spell"||["fire","ice","dark","lightning","water","earth","arcane"].includes(String(effects.damageType||card.damageType||"").toLowerCase());
@@ -1087,6 +1088,8 @@
      if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);synergyProcs++;
      if(character.classId==="bishop"&&Number(effects.heal)>0)character.faith=Math.min(5,(Number(character.faith)||0)+1);
      if(character.classId==="elemental"&&isMagic&&!Number(effects.damagePerEnergy))character.magicCharge=Math.min(10,(Number(character.magicCharge)||0)+1);
+     const cardElement=String(effects.element||effects.damageType||card.damageType||"");if(character.classId==="dragonkin"&&cardElement&&cardElement!==String(character.element||"fire")){character.element=cardElement;block+=5;blockGenerated+=5;}
+     if(character.classId==="shaman"&&Number(effects.totem)>0)character.totem=Math.min(3,(Number(character.totem)||0)+Number(effects.totem));
      const targets=Number(effects.damageAll)>0?alive():[target];
      for(const enemy of targets)for(const key of ["poison","bleed","burn","weak","vulnerable"])if(Number(effects[key])>0)enemy[key]=Math.max(0,Number(enemy[key])||0)+Math.floor(Number(effects[key]));
      if(Number(effects.conditionalBleed)>0&&target.poison>0)target.bleed+=Number(effects.conditionalBleed);
@@ -1118,7 +1121,7 @@
      enemy.weak=Math.max(0,(Number(enemy.weak)||0)-1);enemy.vulnerable=Math.max(0,(Number(enemy.vulnerable)||0)-1);
      if(hp<=0)break;
     }
-    energy=Math.max(1,Math.min(6,Number(character.energy)||3));character.run.playerHp=hp;
+    energy=Math.max(1,Math.min(6,Number(character.energy)||3));block=0;character.run.playerHp=hp;
     for(const card of hand)if(!card.retain){if(card.ethereal)exhaust.push(card);else discard.push(card);}
     hand=hand.filter(card=>card.retain);
     drawCards(5);
