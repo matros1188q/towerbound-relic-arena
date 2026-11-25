@@ -27,6 +27,7 @@ jobs:
           node --check juice-pwa.js
           node --check rpg-rework-v2.js
           node --check rpg-rework-ui.js
+          node --check tests/talent-card-specialization.test.cjs
           node --check towerbound-polish.js
           node --check tests/polish-onboarding.test.cjs
           node --check tests/progression-math.test.cjs
@@ -57,6 +58,8 @@ jobs:
         run: node tests/full-250-build-balance.test.cjs
       - name: Run full 21-build balance progression simulation
         run: node tests/balance-simulation.test.cjs
+      - name: Run talent and card specialization assertions
+        run: node tests/talent-card-specialization.test.cjs
       - name: Run card-driven automatic battle regression
         run: node tests/auto-battle-card-synergy.test.cjs
       - name: Compare real card decks across 21 specializations and tower ranges
