@@ -4,6 +4,21 @@
  if(!root)return;
  let towerMapOpen=false;
  let towerMapScrollTop=0;
+ let towerMapPageLock=null;
+ function lockTowerMapPage(){
+  if(towerMapPageLock)return;
+  const body=document.body,html=document.documentElement,y=window.scrollY||window.pageYOffset||0;
+  towerMapPageLock={y,position:body.style.position,top:body.style.top,left:body.style.left,right:body.style.right,width:body.style.width,height:body.style.height,overflow:html.style.overflow};
+  body.classList.add("tb-tower-map-lock");html.classList.add("tb-tower-map-lock");
+  body.style.position="fixed";body.style.top="-"+y+"px";body.style.left="0";body.style.right="0";body.style.width="100%";body.style.height="100dvh";html.style.overflow="hidden";
+ }
+ function unlockTowerMapPage(){
+  if(!towerMapPageLock)return;
+  const saved=towerMapPageLock,body=document.body,html=document.documentElement;towerMapPageLock=null;
+  body.classList.remove("tb-tower-map-lock");html.classList.remove("tb-tower-map-lock");
+  body.style.position=saved.position;body.style.top=saved.top;body.style.left=saved.left;body.style.right=saved.right;body.style.width=saved.width;body.style.height=saved.height;html.style.overflow=saved.overflow;
+  window.scrollTo(0,saved.y);
+ }
  const nativeRandom=Math.random.bind(Math);
  function gameRandom(){const c=live();if(!c?.run?.dailyChallengeActive)return nativeRandom();let x=(Number(c.run.dailyChallengeSeedState)||Number(c.run.dailyChallengeSeed)||1)>>>0;x^=x<<13;x^=x>>>17;x^=x<<5;c.run.dailyChallengeSeedState=x>>>0;return (x>>>0)/4294967296;}
  window.TowerboundDailyRandom=gameRandom;
@@ -2290,8 +2305,7 @@ function profileRelicShopMarkup(c){
   syncMusic();
   const isBattle=screen==="battle"&&!!battle;
   document.body.classList.toggle("tb-battle-lock",isBattle);
-  document.body.classList.toggle("tb-tower-map-lock",towerMapOpen);
-  document.documentElement.classList.toggle("tb-tower-map-lock",towerMapOpen);
+  if(screen==="map"&&towerMapOpen)lockTowerMapPage();else unlockTowerMapPage();
   document.documentElement.classList.toggle("tb-battle-lock",isBattle);
   if(isBattle){
    const existing=root.querySelector(".new-battle-wrap"),key=battleRenderKey();
