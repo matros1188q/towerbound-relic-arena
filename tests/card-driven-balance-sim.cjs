@@ -9,7 +9,7 @@ const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 const start=ui.indexOf('const CARD_DATABASE=Object.freeze(');
 const art=ui.indexOf('const ART_MAPPING',start);
 assert.ok(start>=0&&art>start,'live card database is available for the simulation');
-const literal=ui.slice(start+'const CARD_DATABASE=Object.freeze('.length,art).replace(/\n\s*\)\s*$/,'').trim();
+const literal=ui.slice(start+'const CARD_DATABASE=Object.freeze('.length,art).replace(/\)\s*$/,'').trim();
 const cardDb=vm.runInNewContext('('+literal+')');
 const configDir=path.join(__dirname,'../configs/balance');
 const balance=Object.fromEntries(fs.readdirSync(configDir).filter(file=>file.endsWith('.json')).map(file=>[file.slice(0,-5),JSON.parse(fs.readFileSync(path.join(configDir,file),'utf8'))]));
