@@ -23,6 +23,16 @@ style.textContent=[
 '#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-block{--tb-proc-color:#80ddff;filter:drop-shadow(0 0 22px #61cfff)}',
 '#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-magic{--tb-proc-color:#c5a2ff;filter:drop-shadow(0 0 24px #aa7bff)}',
 '#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc .tb-ancient-orbit{animation:tb-ancient-proc-orbit .82s ease-out}',
+'#tbRpg .tb-v2 .tb-ancient-proc-burst{position:absolute;z-index:8;left:50%;top:42%;width:100%;height:100%;transform:translate(-50%,-50%);pointer-events:none;color:var(--tb-proc-color);filter:drop-shadow(0 0 12px var(--tb-proc-color));animation:tb-ancient-burst-in var(--tb-proc-duration,850ms) ease-out forwards}',
+'#tbRpg .tb-v2 .tb-ancient-proc-burst b{position:absolute;left:50%;top:42%;font:900 calc(27px + var(--tb-proc-tier)*5px)/1 Georgia;transform:translate(-50%,-50%);animation:tb-ancient-glyph var(--tb-proc-duration,850ms) ease-out forwards}',
+'#tbRpg .tb-v2 .tb-ancient-proc-burst small{position:absolute;left:50%;top:62%;white-space:nowrap;font:900 8px/1 system-ui;letter-spacing:.2em;color:var(--tb-proc-color);text-shadow:0 2px 8px #000;transform:translateX(-50%);animation:tb-ancient-label var(--tb-proc-duration,850ms) ease-out forwards}',
+'#tbRpg .tb-v2 .tb-ancient-proc-ring{position:absolute;left:50%;top:44%;width:58%;aspect-ratio:1;border:2px solid var(--tb-proc-color);border-radius:50%;box-shadow:0 0 16px var(--tb-proc-color),inset 0 0 12px var(--tb-proc-color);transform:translate(-50%,-50%) scale(.25);animation:tb-ancient-ring-burst var(--tb-proc-duration,850ms) cubic-bezier(.12,.8,.2,1) forwards}',
+'#tbRpg .tb-v2 .tb-ancient-proc-ring:nth-child(2){width:78%;border-style:dashed;animation-delay:65ms}',
+'@keyframes tb-ancient-burst-in{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.16)}}',
+'@keyframes tb-ancient-glyph{0%{opacity:0;transform:translate(-50%,-20%) scale(.3) rotate(-25deg)}28%{opacity:1;transform:translate(-50%,-50%) scale(1.2) rotate(0)}100%{opacity:0;transform:translate(-50%,-100%) scale(.82)}}',
+'@keyframes tb-ancient-label{0%,25%{opacity:0;transform:translate(-50%,8px)}45%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}',
+'@keyframes tb-ancient-ring-burst{0%{opacity:0;transform:translate(-50%,-50%) scale(.22) rotate(0)}22%{opacity:.95}100%{opacity:0;transform:translate(-50%,-50%) scale(1.65) rotate(125deg)}}',
+'@media(prefers-reduced-motion:reduce){#tbRpg .tb-v2 .tb-ancient-proc-burst,#tbRpg .tb-v2 .tb-ancient-proc-burst *{animation:none!important;opacity:0!important}}',
 '@keyframes tb-ultimate-dim{0%{opacity:0}18%{opacity:1}100%{opacity:0}}',
 '@keyframes tb-ancient-proc-pulse{0%{transform:scale(1);filter:brightness(1)}24%{transform:scale(1.055);filter:brightness(1.8) drop-shadow(0 0 18px var(--tb-proc-color,#fff))}100%{transform:scale(1);filter:brightness(1)} }',
 '@keyframes tb-ancient-proc-orbit{0%{opacity:.65;transform:scale(.8) rotate(0)}45%{opacity:1;transform:scale(1.28) rotate(110deg)}100%{opacity:.85;transform:scale(1) rotate(220deg)}}',
@@ -38,6 +48,21 @@ style.textContent=[
 let stageSeen=0,bossSeen='',lastHp='';
 function ancientProc(event){const root=getRoot();if(!root)return;const hero=root.querySelector(".new-hero-side.tb-ancient-awakened");if(!hero)return;const kind=String(event.detail?.kind||"magic"),tier=Math.min(4,Math.max(2,Number(event.detail?.tier)||2)),className="tb-ancient-proc-"+kind;hero.classList.remove("tb-ancient-proc", "tb-ancient-proc-critical","tb-ancient-proc-block","tb-ancient-proc-magic");void hero.offsetWidth;hero.classList.add("tb-ancient-proc",className);setTimeout(()=>hero.classList.remove("tb-ancient-proc",className),900);const labels={critical:"✦ КРИТИЧЕСКИЙ УДАР",block:"◈ ЩИТ ДРЕВНИХ",magic:"✧ РЕЗОНАНС СТИХИЙ"};window.TowerboundCombatVisuals?.status(labels[kind]||"✧ ПРОБУЖДЕНИЕ");}
 document.addEventListener("tb:ancient-relic-proc",ancientProc);
+
+function ancientBurst(event){
+ const root=getRoot(),hero=root?.querySelector(".new-hero-side.tb-ancient-awakened");if(!hero)return;
+ const kind=String(event.detail?.kind||"magic"),tier=Math.min(4,Math.max(2,Number(event.detail?.tier)||2));
+ const config={critical:{glyph:"✦",label:"ПРОРЫВ",color:"#fff0a5"},block:{glyph:"◈",label:"БАРЬЕР",color:"#80ddff"},magic:{glyph:"✧",label:"РЕЗОНАНС",color:"#c5a2ff"}},fx=config[kind]||config.magic;
+ const burst=document.createElement("span");burst.className="tb-ancient-proc-burst";burst.setAttribute("aria-hidden","true");
+ burst.style.setProperty("--tb-proc-color",fx.color);burst.style.setProperty("--tb-proc-tier",String(tier));
+ burst.innerHTML='<i class="tb-ancient-proc-ring"></i><i class="tb-ancient-proc-ring"></i><b></b><small></small>';
+ burst.querySelector("b").textContent=fx.glyph;burst.querySelector("small").textContent=fx.label;
+ hero.querySelector(".tb-ancient-proc-burst")?.remove();hero.appendChild(burst);
+ const duration=tier===4?1150:tier===3?950:780;burst.style.setProperty("--tb-proc-duration",duration+"ms");
+ setTimeout(()=>burst.remove(),duration+80);
+}
+document.addEventListener("tb:ancient-relic-proc",ancientBurst);
+
 function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){if(root.classList.contains('tb-low-hp'))root.classList.remove('tb-low-hp');return;}
 const match=(root.querySelector('.tb-arena-top')?.textContent||'').match(/ЭТАП\s+(\d+)/i);const stage=Number(match?.[1]||0);
 if(stage){const chapter=Math.floor((stage-1)/50)%3;if(arena.dataset.tbWeatherChapter!==String(chapter)){arena.querySelector('.tb-weather')?.remove();const layer=document.createElement('div');layer.className='tb-weather';const icons=chapter===0?['❄','✧']:chapter===1?['◆','✦']:['╱','💧'];for(let i=0;i<16;i++){const p=document.createElement('i');p.textContent=icons[i%icons.length];p.style.setProperty('--x',Math.random()*100+'%');p.style.setProperty('--s',8+Math.random()*12+'px');p.style.setProperty('--o',String(.12+Math.random()*.3));p.style.setProperty('--d',3+Math.random()*5+'s');p.style.animationDelay=-Math.random()*7+'s';layer.appendChild(p);}arena.appendChild(layer);arena.dataset.tbWeatherChapter=String(chapter);}
