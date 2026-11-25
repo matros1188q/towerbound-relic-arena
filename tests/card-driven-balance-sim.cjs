@@ -22,7 +22,7 @@ const baseDecks={
  duelist:['strike','strike','strike','strike','defend','defend','dash','duelist_parry','duelist_riposte','backstab'],
  shaman:['strike','strike','defend','defend','defend','dash','dash','shaman_totem','shaman_spirit','shaman_nature']
 };
-const windows=[{label:'start',start:1,end:9},{label:'mid',start:91,end:99},{label:'end',start:241,end:249}];
+const windows=[{label:'start',start:1,end:9},{label:'mid',start:91,end:99},{label:'end',start:231,end:239}];
 const classes=Object.entries(balance.classes.classes).flatMap(([classId,definition])=>(definition.branches||[]).map(branch=>({classId,className:definition.name,branchId:branch.id,branchName:branch.name})));
 assert.equal(classes.length,21);
 const makeCard=(id,index)=>{
