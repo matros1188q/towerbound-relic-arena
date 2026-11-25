@@ -87,3 +87,23 @@ assert.match(ui,/function enemyIntentDamage\(target\)[\s\S]*engine\.mitigationMu
 assert.match(ui,/if\(applied&&!battle\.guildRaid\)planEnemyIntents\(\)/,'enemy intent refreshes immediately when a card applies a status outside guild raids');
 assert.match(ui,/root\.addEventListener\("pointerdown",event=>\{const card=event\.target\.closest\("\[data-card-play\]"\);if\(card\)showCardDamagePreview/,'damage preview also appears on touch press');
 assert.match(ui,/root\.addEventListener\("focusout",event=>\{const card=event\.target\.closest\("\[data-card-play\]"\)/,'keyboard focus leaving a card clears the old damage preview');
+
+
+// Mobile card drag, combat impact feedback, synthesized combat audio and boss lore reward.
+assert.match(ui,/function startCardDrag\(event,touch\)/,'cards support touch and mouse drag start');
+assert.match(ui,/function moveCardDrag\(event,touch\)/,'dragged cards follow finger or cursor');
+assert.match(ui,/dropY<window\.innerHeight\*\.5/,'dropping in the upper screen half plays the card');
+assert.match(ui,/translate3d\(0,0,0\) scale\(1\)/,'cards dropped in the lower half return to hand');
+assert.match(ui,/navigator\.vibrate\(10\)/,'card pickup and successful play use short haptic feedback');
+assert.match(ui,/fxKind=kind==="poison"\?"is-poison":kind==="bleed"\?"is-bleed"/,'poison and bleed use dedicated damage colors');
+assert.match(ui,/function shakeBattleArena\(\)/,'critical hits and kills shake the battle arena');
+assert.match(ui,/function showPlayerDamageFlash\(\)/,'player damage triggers a red screen-edge flash');
+assert.match(ui,/noiseBurst\(\.13,\.19,850,"highpass"\)/,'critical hits add a synthesized glass/explosion burst');
+assert.match(ui,/playSfx\("endturn"\)/,'ending the player turn plays a synthesized swing sound');
+assert.match(ui,/function showEchoOfPastScreen\(character,stage\)/,'the Echo of the Past story screen exists');
+assert.match(ui,/completedBossStage%10===0&&echoEntry/,'the story screen is queued after every tenth-floor boss');
+assert.match(ui,/c\.silver=\(Number\(c\.silver\)\|\|0\)\+100/,'reading the story grants 100 silver');
+assert.match(css,/tbBattleImpactShake/,'battle shake animation is styled');
+assert.match(css,/inset 0 0 50px rgba\(255,0,0/,'player damage uses a red inset edge flash');
+assert.match(css,/tb-echo-past-card/,'Echo of the Past has a dedicated dark story card');
+console.log('Card drag, impact feedback and boss lore regression checks passed.');

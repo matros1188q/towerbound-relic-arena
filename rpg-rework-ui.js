@@ -788,12 +788,14 @@ function createDialog(){
    const AudioCtor=window.AudioContext||window.webkitAudioContext;if(!AudioCtor)return;
    if(!audioContext)audioContext=new AudioCtor();
    if(audioContext.state==="suspended")audioContext.resume();
-   const presets={click:{wave:"triangle",from:720,to:500,duration:0.045,level:0.12},hit:{wave:"sawtooth",from:155,to:58,duration:0.11,level:0.2},crit:{wave:"square",from:620,to:170,duration:0.19,level:0.24},hurt:{wave:"sawtooth",from:105,to:42,duration:0.17,level:0.22}};
+   const presets={click:{wave:"triangle",from:720,to:500,duration:0.045,level:0.12},card:{wave:"triangle",from:1250,to:690,duration:0.075,level:0.075},endturn:{wave:"sawtooth",from:245,to:58,duration:0.2,level:0.16},hit:{wave:"sawtooth",from:155,to:42,duration:0.13,level:0.23},crit:{wave:"square",from:920,to:115,duration:0.2,level:0.25},hurt:{wave:"sawtooth",from:105,to:42,duration:0.17,level:0.22}};
    const p=presets[kind]||presets.click,ctx=audioContext,now=ctx.currentTime;
    const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=p.wave;osc.frequency.setValueAtTime(p.from,now);osc.frequency.exponentialRampToValueAtTime(Math.max(25,p.to),now+p.duration);
    gain.gain.setValueAtTime(0.0001,now);gain.gain.exponentialRampToValueAtTime(Math.max(0.0002,volume*p.level),now+0.008);gain.gain.exponentialRampToValueAtTime(0.0001,now+p.duration);
    osc.connect(gain);gain.connect(ctx.destination);osc.start(now);osc.stop(now+p.duration+0.02);
-   if(kind==="crit"){const chime=ctx.createOscillator(),cg=ctx.createGain();chime.type="sine";chime.frequency.setValueAtTime(980,now);chime.frequency.exponentialRampToValueAtTime(440,now+0.16);cg.gain.setValueAtTime(0.0001,now);cg.gain.exponentialRampToValueAtTime(volume*0.09,now+0.01);cg.gain.exponentialRampToValueAtTime(0.0001,now+0.16);chime.connect(cg);cg.connect(ctx.destination);chime.start(now);chime.stop(now+0.17);}
+   const noiseBurst=(duration,level,frequency,type)=>{const length=Math.max(1,Math.floor(ctx.sampleRate*duration)),buffer=ctx.createBuffer(1,length,ctx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*(1-i/length);const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),g=ctx.createGain();source.buffer=buffer;filter.type=type;filter.frequency.value=frequency;g.gain.setValueAtTime(Math.max(.0001,volume*level),now);g.gain.exponentialRampToValueAtTime(.0001,now+duration);source.connect(filter);filter.connect(g);g.connect(ctx.destination);source.start(now);source.stop(now+duration);};
+   if(kind==="card")noiseBurst(.055,.055,1500,"highpass");
+   if(kind==="crit"){const chime=ctx.createOscillator(),cg=ctx.createGain();chime.type="sine";chime.frequency.setValueAtTime(1480,now);chime.frequency.exponentialRampToValueAtTime(430,now+0.16);cg.gain.setValueAtTime(0.0001,now);cg.gain.exponentialRampToValueAtTime(volume*0.11,now+0.01);cg.gain.exponentialRampToValueAtTime(0.0001,now+0.16);chime.connect(cg);cg.connect(ctx.destination);chime.start(now);chime.stop(now+0.17);noiseBurst(.13,.19,850,"highpass");const boom=ctx.createOscillator(),bg=ctx.createGain();boom.type="sine";boom.frequency.setValueAtTime(92,now);boom.frequency.exponentialRampToValueAtTime(32,now+.17);bg.gain.setValueAtTime(.0001,now);bg.gain.exponentialRampToValueAtTime(volume*.24,now+.012);bg.gain.exponentialRampToValueAtTime(.0001,now+.19);boom.connect(bg);bg.connect(ctx.destination);boom.start(now);boom.stop(now+.2);}
   }catch(error){}
  }
  function syncMusic(){
@@ -927,7 +929,7 @@ function createDialog(){
   if(!battle||!enemy||enemy.alive!==true||Number(enemy.hp)<=0){if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}return;}
   const c=live();enemy.turnsTaken=(enemy.turnsTaken||0)+1;enemy.pendingAttack=false;if(enemy.type==="boss")logCombatEvent("Босс готовит атаку · фаза "+(enemy.phase||1),"#ffb36b");
   const poison=Math.max(0,Number(enemy.poison)||0),bleed=Math.max(0,Number(enemy.bleed)||0);
-  if(poison>0||bleed>0){const dotDamage=poison+bleed;enemy.hp=Math.max(0,enemy.hp-dotDamage);enemy.poison=Math.max(0,poison-1);enemy.bleed=Math.max(0,bleed-1);showFloatingText(enemy,"-"+dotDamage,"#a8e66b");notify("Яд/кровотечение · −"+dotDamage+" HP");if(enemy.type==="boss"){updateBossPhase(enemy);if(!battle)return;}if(enemy.hp<=0){enemy.alive=false;enemy.dead=true;finishCurrentEnemy();return;}}
+  if(poison>0||bleed>0){const dotDamage=poison+bleed;enemy.hp=Math.max(0,enemy.hp-dotDamage);enemy.poison=Math.max(0,poison-1);enemy.bleed=Math.max(0,bleed-1);if(poison>0)showFloatingText(enemy,"-"+poison,"#65e58b","poison");if(bleed>0)showFloatingText(enemy,"-"+bleed,"#ff5c61","bleed");notify("Яд/кровотечение · −"+dotDamage+" HP");if(enemy.type==="boss"){updateBossPhase(enemy);if(!battle)return;}if(enemy.hp<=0){enemy.alive=false;enemy.dead=true;shakeBattleArena();finishCurrentEnemy();return;}}
   if(enemy.type==="boss"){
    battle.bossTurns=(battle.bossTurns||0)+1;
    if(battle.bossTurns>15){c.run.playerHp=0;notify("ЯРОСТЬ БОССА · Время вышло");endFromDamage();return;}
@@ -1142,6 +1144,7 @@ function createDialog(){
   function playCard(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.isCardAnimating)return;
   const scheduledBattle=battle,cardNode=root.querySelector('[data-card-play="'+Number(cardIndex)+'"]');if(!live()?.hand?.[Number(cardIndex)])return;
+  try{if(navigator.vibrate)navigator.vibrate(10);}catch(_){}
   scheduledBattle.isCardAnimating=true;if(cardNode)cardNode.classList.add("tb-card-flyout");
   const delay=scheduledBattle.fastBattle?100:220;
   setTimeout(()=>{
@@ -1228,6 +1231,7 @@ function createDialog(){
  function endPlayerTurn(){
   if(battle?.guildRaid){notify("В рейде нужно разыграть ровно 3 карты");return;}
   if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating)return;
+  playSfx("endturn");
   try{
   const c=live();ensureCardDeck(c);const doubtWeak=c.hand.reduce((sum,card)=>sum+Math.max(0,Number(cardEffects(card).endTurnPlayerWeak)||0),0);if(doubtWeak){battle.playerWeakTurns=Math.max(Number(battle.playerWeakTurns)||0,doubtWeak);notify("Сомнение ослабляет героя: "+doubtWeak+" слабость");}const retained=[],discarded=[];for(const card of c.hand){if(card.retain)retained.push(card);else if(card.ethereal)c.exhaustPile.push(card);else discarded.push(card);}c.discard.push(...discarded);c.hand=retained;c.currentEnergy=0;
   battle.isPlayerTurn=false;clearPendingTurnTimer();battle.busy=false;battle.actionDamageLedger={};battle.actionIsPrimaryHit=false;battle.actionIsSkill=false;
@@ -1884,6 +1888,8 @@ function talentBonusDescription(talent,rank){
   if(!result){if(battle)battle.finishingEnemy=false;return;}
   if(allLoot.length)notify("Добыча: "+allLoot.map(x=>x.name||x.type).join(", "));
   if(result.stageComplete){
+   const completedBossStage=Number(battle.stage)||0,echoEntry=balance.lore.entries.find(entry=>Number(entry.unlock_stage)===completedBossStage);
+   if(completedBossStage>0&&completedBossStage%10===0&&echoEntry&&!(c.echoSilverClaimed||[]).includes(echoEntry.id)){const loreBoss=dead.find(enemy=>enemy.type==="boss")||defeated;c.run.pendingEchoStage=completedBossStage;c.run.pendingEchoBossName=String(loreBoss.name||loreBoss.mobId||"Страж Башни");}
    const activeTrial=c.run.pendingTrial&&Number(c.run.pendingTrial.stage)===Number(battle.stage)?c.run.pendingTrial:null;
    const activeChampion=c.run.pendingChampion&&Number(c.run.pendingChampion.stage)===Number(battle.stage)?c.run.pendingChampion:null;
    if(activeChampion){postBattleSummary.championCleared=true;postBattleSummary.championRewards=buildTrialRewardChoices(c,battle.stage);if(activeChampion.ancientGuardian){if(activeChampion.secretBoss){c.run.secretQuest={...(c.run.secretQuest||{}),phase:"completed",completedAtStage:Number(battle.stage)};c.silver=(Number(c.silver)||0)+250;}const ancientRelics={assassin:["ancient_assassin_eye","Око Безмолвной Охоты"],bishop:["ancient_bishop_chalice","Чаша Первого Света"],dragonkin:["ancient_dragon_heart","Сердце Древнего Дракона"],destroyer:["ancient_destroyer_gauntlet","Кулак Прародителя"],elemental:["ancient_elemental_prism","Призма Семи Истоков"],duelist:["ancient_duelist_mirror","Зеркало Последнего Выпада"],shaman:["ancient_shaman_totem","Тотем Корней Мира"]},ancient=ancientRelics[c.classId];if(ancient&&!(c.relics||[]).includes(ancient[0]))postBattleSummary.championRewards=[{id:"relic",name:ancient[1],description:"Гарантированная древняя реликвия твоего класса",relicId:ancient[0]},...postBattleSummary.championRewards.filter(choice=>choice.id!=="relic")].slice(0,3);}c.run.completedMapEvents=Array.isArray(c.run.completedMapEvents)?c.run.completedMapEvents:[];if(!c.run.completedMapEvents.includes(Number(battle.stage)))c.run.completedMapEvents.push(Number(battle.stage));c.run.pendingChampion=null;}
@@ -1899,7 +1905,7 @@ function talentBonusDescription(talent,rank){
    if(c.run.dailyChallengeActive)saveDailyChallengeResult(c);
    postBattleSummary.ready=true;
    if(routeChoice==="elite"){c.silver+=30;postBattleSummary.silver+=30;routeChoice="standard";}
-   battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();
+   battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();if(Number(c.run.pendingEchoStage)>0)showEchoOfPastScreen(c,c.run.pendingEchoStage);
   }else{
    const carryShield=battle.nextDamageShield||0;
    loadBattleEnemy(result.nextTargetIndex);
@@ -1953,14 +1959,25 @@ function talentBonusDescription(talent,rank){
   if(critical&&!settings().disable_screen_shake)battle.shakeUntil=Date.now()+300;
  }
  function pulseCombatActor(target,kind){const node=target==="player"?root.querySelector(".new-hero-side"):root.querySelector('.new-enemy-item[data-target="'+(target&&target.index!==undefined?target.index:battle?.targetIndex)+'"]');if(!node)return;const cls=kind==="heal"?"tb-heal-glow":kind==="armor"?"tb-armor-glow":"tb-hit-shake";node.classList.remove(cls);void node.offsetWidth;node.classList.add(cls);setTimeout(()=>node.classList.remove(cls),850);}
- function showFloatingText(target,text,color){
+ function showEchoOfPastScreen(character,stage){
+  const floor=Math.max(1,Number(stage)||0),entry=balance?.lore?.entries?.find(item=>Number(item.unlock_stage)===floor);if(!character||!entry||document.querySelector(".tb-echo-past-overlay"))return false;
+  const overlay=document.createElement("div");overlay.className="tb-echo-past-overlay";overlay.dataset.stage=String(floor);overlay.setAttribute("role","presentation");
+  const boss=String(character.run?.pendingEchoBossName||"Страж Башни"),bodyText="Этап "+floor+". Ты победил "+boss+". "+entry.text;
+  overlay.innerHTML='<section class="tb-echo-past-card" role="dialog" aria-modal="true" aria-labelledby="tbEchoPastTitle"><div class="tb-echo-past-kicker">TOWERBOUND · ХРОНИКИ БАШНИ</div><div class="tb-echo-past-mark" aria-hidden="true">✧</div><h2 id="tbEchoPastTitle">ЭХО ПРОШЛОГО</h2><div class="tb-echo-past-stage">ЭТАП '+floor+' · '+esc(entry.title)+'</div><div class="tb-echo-past-divider"></div><p>'+esc(bodyText)+'</p><div class="tb-echo-past-reward">✦ НАГРАДА ЗА ПРОЧТЕНИЕ <b>+100 СЕРЕБРА</b></div><button type="button" data-echo-read="1">ПРОЧИТАТЬ И ЗАБРАТЬ НАГРАДУ</button></section>';
+  document.body.appendChild(overlay);overlay.querySelector("[data-echo-read]")?.addEventListener("click",()=>{const c=live();if(!c)return;const lore=balance.lore.entries.find(item=>Number(item.unlock_stage)===floor);if(!lore)return;try{let xp=0;if(!(c.loreRead||[]).includes(lore.id)){const result=engine.readLore(c.id,lore.id);xp=Number(result.xp)||0;}c.echoSilverClaimed=Array.isArray(c.echoSilverClaimed)?c.echoSilverClaimed:[];if(!c.echoSilverClaimed.includes(lore.id)){c.silver=(Number(c.silver)||0)+100;c.echoSilverClaimed.push(lore.id);}c.run.pendingEchoStage=null;c.run.pendingEchoBossName=null;overlay.remove();save();render();notify("Эхо прочитано · +100 серебра"+(xp?" · +"+xp+" XP":""));}catch(error){notify(error.message);}});
+  return true;
+ }
+ function shakeBattleArena(){const arena=root.querySelector(".new-battle-wrap");if(!arena)return;arena.classList.remove("tb-shake");void arena.offsetWidth;arena.classList.add("tb-shake");setTimeout(()=>arena.classList.remove("tb-shake"),200);}
+ function showPlayerDamageFlash(){root.classList.remove("tb-player-damage-flash");void root.offsetWidth;root.classList.add("tb-player-damage-flash");setTimeout(()=>root.classList.remove("tb-player-damage-flash"),360);}
+ function showFloatingText(target,text,color,kind){
   const layer=root.querySelector(".tb-fx-layer");if(!layer)return;
   const number=document.createElement("span");number.className="tb-floating-damage";
-  number.classList.add(color==="#58e38b"?"is-heal":color==="#ffd34e"?"is-crit":"is-damage");
+  const fxKind=kind==="poison"?"is-poison":kind==="bleed"?"is-bleed":color==="#58e38b"?"is-heal":color==="#ffd34e"?"is-crit":"is-damage";number.classList.add(fxKind);
   number.textContent=String(text);number.style.color=color;
   const anchor=target==="player"?root.querySelector(".new-hero-side"):target&&typeof target==="object"?root.querySelector('.new-enemy-item[data-target="'+target.index+'"]'):root.querySelector(".new-enemy-item");
   if(anchor){const box=anchor.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top+Math.min(20,box.height*.12))+"px";}
   layer.appendChild(number);setTimeout(()=>number.remove(),1000);
+  if(target==="player"&&String(text).trim().startsWith("-"))showPlayerDamageFlash();
  }
  function applyTargetDamage(target,rawDamage,damageType,options){
   options=options||{};const c=live();
@@ -1982,9 +1999,10 @@ function talentBonusDescription(talent,rank){
   if(dealt>0&&target.mechanic==="reflect"){const reflected=Math.max(1,Math.round(dealt*(balance.elite_mechanics.reflect.damage_fraction||.15)));c.run.playerHp=Math.max(0,c.run.playerHp-reflected);showFloatingText("player","-"+reflected,"#d29cff");if(c.run.playerHp<=0)endFromDamage();}
   if(dealt>0&&target.type==="boss"&&Number(target.reflectTurns)>0){const reflected=Math.max(1,Math.round(dealt*.25));target.reflectTurns=0;c.run.playerHp=Math.max(0,c.run.playerHp-reflected);showFloatingText("player","-"+reflected,"#d29cff");notify("ЗЕРКАЛО БОССА · отражено "+reflected);if(c.run.playerHp<=0)endFromDamage();}
   if(dealt>0)engine.applyVampirism(c.id,dealt);if(dealt>0&&target.mutation==="vampirism"&&target.hp>0)target.hp=Math.min(target.maxHp,target.hp+Math.round(dealt*.06));if(dealt>0&&target.mutation==="thorns"){const thorn=Math.max(1,Math.round(dealt*.04));c.run.playerHp=Math.max(0,c.run.playerHp-thorn);if(c.classId==="destroyer")c.rage=Math.min(10,(Number(c.rage)||0)+1);showFloatingText("player","-"+thorn,"#ff596b");playSfx("hurt");}if(dealt>0&&battle.actionIsSkill&&battle.actionIsPrimaryHit&&rawDamage>2*hpBeforeHit)battle.overkillBonus=true;
-  if(dealt>0){pulseCombatActor(target,"hit");showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":"#ffffff");playSfx(options.critical?"crit":"hit");}
+  if(dealt>0){pulseCombatActor(target,"hit");const damageKind=String(damageType||"").toLowerCase(),fxKind=options.critical?"":damageKind==="poison"?"poison":damageKind==="bleed"?"bleed":"";showFloatingText(target,options.critical?"КРИТ -"+dealt:"-"+dealt,options.critical?"#ffd34e":fxKind==="poison"?"#65e58b":fxKind==="bleed"?"#ff5c61":"#ffffff",fxKind);playSfx(options.critical?"crit":"hit");}
   if(dealt>0&&target.type==="boss"&&target.phase>1)logCombatEvent("Удар по боссу · "+dealt+" урона · фаза "+target.phase,"#e9d5a5");
   if(options.critical){if(navigator.vibrate)navigator.vibrate(50);const arena=document.querySelector("#tbRpg .tb-v2");if(arena){arena.classList.add("hit-stop");setTimeout(()=>arena.classList.remove("hit-stop"),50);}}
+  if(options.critical||target.hp<=0)shakeBattleArena();
   if(target.hp<=0&&target.hp<hpBeforeHit&&navigator.vibrate)navigator.vibrate(100);
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};battle.actionDamageLedger[target.index]=(battle.actionDamageLedger[target.index]||0)+dealt;updateBossPhase();}
@@ -2565,6 +2583,14 @@ function talentBonusDescription(talent,rank){
  root.addEventListener("pointerup",function(event){if(event.target.closest(".tb-v2"))event.stopImmediatePropagation();},true);
  root.addEventListener("pointerover",event=>{const option=event.target.closest("[data-branch-preview]");const panel=root.querySelector("#tbBranchDescription");if(option&&panel)panel.textContent=option.dataset.branchPreview;const card=event.target.closest("[data-card-play]");if(card)showCardDamagePreview(Number(card.dataset.cardPlay));});
  root.addEventListener("pointerdown",event=>{const card=event.target.closest("[data-card-play]");if(card)showCardDamagePreview(Number(card.dataset.cardPlay));},{passive:true});
+ let activeCardDrag=null,lastCardTouchAt=0,suppressCardClickUntil=0;
+ function cardDragPoint(event,touch){const point=touch?(event.touches?.[0]||event.changedTouches?.[0]):event;return point?{x:Number(point.clientX)||0,y:Number(point.clientY)||0}:null;}
+ function startCardDrag(event,touch){const card=event.target?.closest?.("#tbRpg [data-card-play]");if(!card||card.disabled||!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating)return;if(!touch&&Date.now()-lastCardTouchAt<700)return;if(touch){lastCardTouchAt=Date.now();}else if(event.button!==0)return;const point=cardDragPoint(event,touch);if(!point)return;activeCardDrag={card,index:Number(card.dataset.cardPlay),startX:point.x,startY:point.y,lastX:point.x,lastY:point.y,moved:false,touch};card.classList.add("tb-card-dragging");card.style.transition="transform 90ms ease-out";card.style.transform="translate3d(0,-7px,0) scale(1.06)";playSfx("card");try{if(navigator.vibrate)navigator.vibrate(10);}catch(_){} }
+ function moveCardDrag(event,touch){if(!activeCardDrag||activeCardDrag.touch!==touch)return;const point=cardDragPoint(event,touch);if(!point)return;const drag=activeCardDrag,dx=point.x-drag.startX,dy=point.y-drag.startY;if(touch&&Math.abs(dx)>Math.abs(dy)*1.25&&!drag.moved&&drag.card.closest(".new-hand-row")){activeCardDrag=null;drag.card.classList.remove("tb-card-dragging");drag.card.style.removeProperty("transform");drag.card.style.removeProperty("transition");return;}if(touch)event.preventDefault();drag.lastX=point.x;drag.lastY=point.y;if(Math.abs(dx)+Math.abs(dy)>7)drag.moved=true;drag.card.style.transform="translate3d("+dx+"px,"+(dy-7)+"px,0) scale(1.08)";}
+ function finishCardDrag(event,touch,cancelled){if(!activeCardDrag||activeCardDrag.touch!==touch)return;const drag=activeCardDrag,point=cancelled?null:cardDragPoint(event,touch),dropY=point?.y??drag.lastY;activeCardDrag=null;drag.card.classList.remove("tb-card-dragging");if(drag.moved)suppressCardClickUntil=Date.now()+450;if(!cancelled&&drag.moved&&dropY<window.innerHeight*.5&&!drag.card.disabled){playCard(drag.index);return;}drag.card.classList.add("tb-card-return");drag.card.style.transition="transform 220ms cubic-bezier(.2,.8,.2,1)";drag.card.style.transform="translate3d(0,0,0) scale(1)";setTimeout(()=>{drag.card.classList.remove("tb-card-return");drag.card.style.removeProperty("transform");drag.card.style.removeProperty("transition");},240);}
+ root.addEventListener("touchstart",event=>startCardDrag(event,true),{passive:false});document.addEventListener("touchmove",event=>moveCardDrag(event,true),{passive:false});document.addEventListener("touchend",event=>finishCardDrag(event,true,false),{passive:false});document.addEventListener("touchcancel",event=>finishCardDrag(event,true,true),{passive:true});
+ root.addEventListener("mousedown",event=>startCardDrag(event,false));document.addEventListener("mousemove",event=>moveCardDrag(event,false));document.addEventListener("mouseup",event=>finishCardDrag(event,false,false));
+ root.addEventListener("pointerover",event=>{const card=event.target.closest?.("[data-card-play]");if(event.pointerType==="mouse"&&card&&!card.contains(event.relatedTarget))playSfx("card");});
  root.addEventListener("focusin",event=>{const card=event.target.closest("[data-card-play]");if(card)showCardDamagePreview(Number(card.dataset.cardPlay));});
  root.addEventListener("focusout",event=>{const card=event.target.closest("[data-card-play]");if(card&&!card.contains(event.relatedTarget))clearCardDamagePreview();});
  root.addEventListener("pointerout",event=>{const card=event.target.closest("[data-card-play]");if(card&&!card.contains(event.relatedTarget))clearCardDamagePreview();});
@@ -2573,7 +2599,7 @@ function talentBonusDescription(talent,rank){
  let cardLongPressTimer=null,cardLongPressTriggered=false;
  document.addEventListener("pointerdown",event=>{const card=event.target.closest("#tbRpg [data-card-play]");if(!card)return;cardLongPressTriggered=false;clearTimeout(cardLongPressTimer);cardLongPressTimer=setTimeout(()=>{cardLongPressTriggered=true;showCardInspect(Number(card.dataset.cardPlay));},480);},true);
  ["pointerup","pointercancel","pointerleave"].forEach(type=>document.addEventListener(type,()=>clearTimeout(cardLongPressTimer),true));
- document.addEventListener("click",event=>{if(cardLongPressTriggered&&event.target.closest("#tbRpg [data-card-play]")){event.preventDefault();event.stopImmediatePropagation();cardLongPressTriggered=false;}},true);
+ document.addEventListener("click",event=>{if((cardLongPressTriggered||Date.now()<suppressCardClickUntil)&&event.target.closest("#tbRpg [data-card-play]")){event.preventDefault();event.stopImmediatePropagation();cardLongPressTriggered=false;suppressCardClickUntil=0;}},true);
  document.addEventListener("click",handleClick);
  // Safety net for every in-game button, including navigation and controls without explicit save() calls.
  document.addEventListener("click",event=>{
@@ -2667,6 +2693,7 @@ function talentBonusDescription(talent,rank){
    }
    document.body.classList.toggle("tb-clean-ui",!!engine.state.account.settings?.clean_ui);
    render();
+   if(Number(active?.run?.pendingEchoStage)>0)showEchoOfPastScreen(active,active.run.pendingEchoStage);
    if(active?.pendingCardReward?.length)showCardRewardScreen(active.pendingCardReward);
   }).catch(error=>console.error("Towerbound rework UI failed",error));
  }
