@@ -305,7 +305,7 @@
    const rarity=String(relic.rarity||"ancient").toLowerCase(),classId=String(relic.classId||"").toLowerCase(),art=relicIconHtml(relic),ownedClassPieces=(live()?.relics||[]).filter(id=>engine?.RELICS_DATABASE?.[id]?.classId===live()?.classId).length,awakeningTier=relic.classId===live()?.classId&&ownedClassPieces>=2&&ownedClassPieces<=4?ownedClassPieces:0;
    const overlay=document.createElement("div");overlay.className="tb-relic-acquired-overlay rarity-"+esc(rarity);overlay.setAttribute("role","presentation");
    overlay.innerHTML='<section class="tb-relic-acquired-modal" role="dialog" aria-modal="true" aria-label="Получена реликвия"><div class="tb-relic-acquired-stars" aria-hidden="true">✦　✧　✦</div><span class="tb-eyebrow">'+esc(source)+'</span><div class="tb-relic-acquired-art class-'+esc(classId)+'"><i aria-hidden="true"></i>'+art+'</div><div class="tb-relic-acquired-kicker">НОВАЯ РЕЛИКВИЯ</div><h2>'+esc(relic.name||"Древний артефакт")+'</h2><span class="tb-relic-acquired-rarity">'+esc(String(relic.rarity||"ДРЕВНЯЯ").replace(/_/g," ").toUpperCase())+'</span><p>'+esc(relic.description||"Артефакт добавлен в коллекцию и будет усиливать персонажа.")+'</p><button type="button" data-relic-acquired-close'+(awakeningTier?' data-ancient-awakening="'+awakeningTier+'"':'')+'>ПРИНЯТЬ АРТЕФАКТ</button></section>';
-   document.body.appendChild(overlay);
+   root.appendChild(overlay);
   }
   function showAncientSetAwakeningScreen(tier,classId){
    const tierNumber=Math.max(2,Math.min(4,Number(tier)||2));
@@ -316,7 +316,7 @@
    overlay.className="tb-ancient-awakening-overlay tier-"+tierNumber+" class-"+esc(classId||"unknown");
    overlay.setAttribute("role","presentation");
    overlay.innerHTML='<section class="tb-ancient-awakening-modal" role="dialog" aria-modal="true" aria-label="'+esc(stage.title)+'"><div class="tb-ancient-awakening-runes" aria-hidden="true">✧　✦　✧　✦　✧</div><div class="tb-ancient-awakening-core" aria-hidden="true"><i></i><b>✦</b><span></span></div><span class="tb-ancient-awakening-kicker">ДРЕВНИЕ РЕЛИКВИИ · '+tierNumber+'/4</span><h2>'+esc(stage.title)+'</h2><strong class="tb-ancient-awakening-name">'+esc(stage.name)+'</strong><div class="tb-ancient-awakening-effect">'+esc(stage.effect)+'</div><p>'+(tierNumber===4?"Все четыре реликвии соединились. Истинная сила комплекта теперь с тобой.":"Новая ступень силы активирована. Собирай комплект дальше.")+'</p><div class="tb-ancient-awakening-progress" aria-label="'+tierNumber+' из 4 реликвий">'+[1,2,3,4].map(n=>'<i class="'+(n<=tierNumber?'is-lit':'')+'"></i>').join("")+'</div><button type="button" data-ancient-awakening-close>ПРОДОЛЖИТЬ</button></section>';
-   document.body.appendChild(overlay);
+   root.appendChild(overlay);
   }
   function showRelicRewardScreen(relicIds){
   if(document.querySelector(".tb-relic-reward-overlay"))return;
