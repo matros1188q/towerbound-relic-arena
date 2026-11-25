@@ -1129,3 +1129,19 @@
 @keyframes tbAncientCore{0%,100%{opacity:.18;transform:scale(.82)}50%{opacity:.55;transform:scale(1.12)}}
 @media(max-width:420px){#tbRpg .tb-ancient-awakening-modal{padding:19px 16px 16px}#tbRpg .tb-ancient-awakening-core{width:116px;height:116px}}
 @media(prefers-reduced-motion:reduce){#tbRpg .tb-ancient-awakening-overlay,#tbRpg .tb-ancient-awakening-modal,#tbRpg .tb-ancient-awakening-runes,#tbRpg .tb-ancient-awakening-core,#tbRpg .tb-ancient-awakening-core::before,#tbRpg .tb-ancient-awakening-core::after,#tbRpg .tb-ancient-awakening-core i{animation:none!important}}
+
+/* Distinct visual language for each ancient-set awakening milestone. */
+#tbRpg .tb-ancient-awakening-overlay.tier-2{background:radial-gradient(circle at 50% 43%,#70dce044 0,#10272cdd 30%,#020409f7 76%);--tb-awake:#83d8df}
+#tbRpg .tb-ancient-awakening-overlay.tier-2 .tb-ancient-awakening-core::before{border-width:2px;animation-duration:3.2s}
+#tbRpg .tb-ancient-awakening-overlay.tier-2 .tb-ancient-awakening-core i{animation:tbAncientCore 1.25s ease-in-out infinite}
+#tbRpg .tb-ancient-awakening-overlay.tier-3{background:radial-gradient(ellipse at 50% 43%,#e9c36f55 0,#382b18dd 34%,#020409f7 78%);--tb-awake:#e9c36f}
+#tbRpg .tb-ancient-awakening-overlay.tier-3 .tb-ancient-awakening-modal{animation:tbAncientAwakeModal .85s cubic-bezier(.12,.9,.2,1.2) both}
+#tbRpg .tb-ancient-awakening-overlay.tier-3 .tb-ancient-awakening-core::before{border-width:2px;transform:rotate(45deg);border-radius:24%;animation:tbAncientGoldSeal 7s linear infinite}
+#tbRpg .tb-ancient-awakening-overlay.tier-3 .tb-ancient-awakening-core::after{inset:-9px;border-style:double;border-width:3px;animation-duration:9s}
+#tbRpg .tb-ancient-awakening-overlay.tier-4{background:radial-gradient(ellipse at 50% 43%,#b78aff66 0,#30204cdd 35%,#020409f9 78%);--tb-awake:#c19aff}
+#tbRpg .tb-ancient-awakening-overlay.tier-4 .tb-ancient-awakening-modal{border-width:2px;box-shadow:0 24px 100px #000e,0 0 65px #b78aff55,inset 0 0 55px #b78aff22;animation:tbAncientAscend .95s cubic-bezier(.12,.9,.2,1.15) both}
+#tbRpg .tb-ancient-awakening-overlay.tier-4 .tb-ancient-awakening-core::before{inset:-7px;border-width:2px;animation-duration:2.8s}
+#tbRpg .tb-ancient-awakening-overlay.tier-4 .tb-ancient-awakening-core::after{inset:-17px;border-width:2px;animation-duration:7s}
+#tbRpg .tb-ancient-awakening-overlay.tier-4 .tb-ancient-awakening-core i{inset:18px;filter:blur(28px);animation-duration:1.1s}
+@keyframes tbAncientGoldSeal{to{transform:rotate(405deg)}}
+@keyframes tbAncientAscend{0%{opacity:0;transform:translateY(35px) scale(.68);filter:brightness(2.2)}45%{opacity:1;transform:translateY(-5px) scale(1.045);filter:brightness(1.35)}100%{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}}
