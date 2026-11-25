@@ -14,7 +14,7 @@ const ui = fs.readFileSync(path.join(root, 'rpg-rework-ui.js'), 'utf8');
 const prog = fs.readFileSync(path.join(root, 'progression-24.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const prog = fs.readFileSync(path.join(root, 'progression-24.js'), 'utf8');
+
 
 assert.equal(resources.max_resource_by_class.duelist, 100);
 assert.deepEqual(resources.class_costs.duelist, { attack_skill: 22, counter: 18, ultimate: 42 });
