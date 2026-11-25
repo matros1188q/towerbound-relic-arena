@@ -33,10 +33,11 @@ const bonusEngine=createEngine(balance,{random:()=>0.25,now:()=>Date.UTC(2026,10
 const bonusCharacter=bonusEngine.createCharacter('Rune Audit','assassin');
 const bonusState=bonusEngine.getChar(bonusCharacter.id);
 const xpBefore=bonusEngine.xpMultiplier(bonusState,1,{});
-bonusState.progression={permanentXpBonus:0.1,runewords:[{name:'Test rune',attack:0.1,defense:0.1,health:0.1}]};
+bonusState.progression={permanentXpBonus:0.1,runewords:[]};
 const xpAfter=bonusEngine.xpMultiplier(bonusState,1,{});
 assert.ok(Math.abs(xpAfter/xpBefore-1.1)<1e-9,'permanent XP bonus is applied exactly once by the core multiplier');
 const hpBefore=bonusEngine.maxHp(bonusState);
+bonusState.progression.runewords=[{name:'Test rune',attack:0.1,defense:0.1,health:0.1}];
 const expectedRuneHp=Math.round(hpBefore*1.1);
 assert.equal(bonusEngine.maxHp(bonusState),expectedRuneHp,'one 10% health runeword increases max HP by exactly 10%');
 assert.equal(bonusEngine.getCombatStats(bonusState).maxHp,expectedRuneHp,'combat stats and maxHp report the same single runeword health bonus');
