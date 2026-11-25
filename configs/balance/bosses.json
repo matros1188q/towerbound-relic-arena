@@ -61,5 +61,107 @@
         "strong_hit"
       ]
     }
+  ],
+  "archetypes": [
+    {
+      "id": "abyss-queen",
+      "name": "Королева Бездны",
+      "pattern": [
+        "poison",
+        "double",
+        "hex",
+        "heavy"
+      ]
+    },
+    {
+      "id": "ash-patriarch",
+      "name": "Пепельный патриарх",
+      "pattern": [
+        "heavy",
+        "quake",
+        "heavy",
+        "guard"
+      ]
+    },
+    {
+      "id": "bone-colossus",
+      "name": "Костяной колосс",
+      "pattern": [
+        "guard",
+        "heavy",
+        "double",
+        "guard"
+      ]
+    },
+    {
+      "id": "ice-abbot",
+      "name": "Ледяной аббат",
+      "pattern": [
+        "hex",
+        "heavy",
+        "double",
+        "hex"
+      ]
+    },
+    {
+      "id": "mirror-executioner",
+      "name": "Зеркальный палач",
+      "pattern": [
+        "mirror",
+        "heavy",
+        "mirror",
+        "double"
+      ]
+    },
+    {
+      "id": "root-titan",
+      "name": "Корневой титан",
+      "pattern": [
+        "guard",
+        "quake",
+        "heavy",
+        "guard"
+      ]
+    },
+    {
+      "id": "soul-devourer",
+      "name": "Пожиратель душ",
+      "pattern": [
+        "drain",
+        "hex",
+        "drain",
+        "heavy"
+      ]
+    },
+    {
+      "id": "void-hunter-boss",
+      "name": "Охотник Бездны",
+      "pattern": [
+        "double",
+        "poison",
+        "heavy",
+        "double"
+      ]
+    },
+    {
+      "id": "crimson-regent",
+      "name": "Багровый регент",
+      "pattern": [
+        "bleed",
+        "heavy",
+        "double",
+        "bleed"
+      ]
+    },
+    {
+      "id": "heart-of-tower",
+      "name": "Сердце Башни",
+      "pattern": [
+        "summon",
+        "heavy",
+        "quake",
+        "guard"
+      ]
+    }
   ]
 }
