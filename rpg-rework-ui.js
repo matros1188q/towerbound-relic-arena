@@ -1108,8 +1108,8 @@ function createDialog(){
   const isXCost=!!(card.isXCost||card.costX),energy=Number.isFinite(Number(energySpent))?Math.max(0,Number(energySpent)):(isXCost?Math.max(0,Number(character.currentEnergy)||0):0);
   const perEnergy=isXCost?Math.max(0,Number(effects.damagePerEnergy)||0)*energy:0;
   if(base<=0&&perEnergy<=0)return 0;
-  const conditional=Number(effects.bonusDamageIfBlock)>0&&(battle?.cardBlock||0)>0?Number(effects.bonusDamageIfBlock):0,treeDamageFlat=Number(treeCache.damageFlat)||0,treeDamagePercent=Number(treeCache.damagePercent)||0;
-  const treeCache=character._treeCache||rebuildTreeCache(character),branches=classData(character)?.branches||[],branch=branches.find(entry=>entry.id===character.branch);
+  const treeCache=character._treeCache||rebuildTreeCache(character),conditional=Number(effects.bonusDamageIfBlock)>0&&(battle?.cardBlock||0)>0?Number(effects.bonusDamageIfBlock):0,treeDamageFlat=Number(treeCache.damageFlat)||0,treeDamagePercent=Number(treeCache.damagePercent)||0;
+  const branches=classData(character)?.branches||[],branch=branches.find(entry=>entry.id===character.branch);
   const powerTalent=(branch?.talents||[]).find(talent=>/сила\s*$/i.test(String(talent.name||"")));
   const powerRank=Math.max(0,Number(character.talents?.[powerTalent?.id])||0);
   const talentBonus=powerRank*2,damageType=effects.damageType||card.damageType||"physical";
