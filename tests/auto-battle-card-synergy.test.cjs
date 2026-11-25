@@ -15,8 +15,9 @@ const branch=balance.classes.classes.assassin.branches[0].id;
 engine.chooseBranch(hero.id,branch,0);
 hero.progress.highestEver=11;
 hero.progress.currentStage=1;
-hero.run.playerHp=engine.maxHp(hero);
-hero.run.active=false;
+hero.run.playerHp=Math.round(engine.maxHp(hero)*0.25);
+hero.run.active=true;
+hero.bag.push({id:'qa-auto-potion',type:'healing_potion',quantity:1});
 hero.deck=Array.from({length:10},(_,index)=>({
  id:'qa-poison-'+index,name:'QA Poison Strike',type:'attack',cost:1,
  effects:{damage:3,poison:2,damagePerPoison:5},instanceId:'qa-poison-'+index
@@ -29,6 +30,7 @@ assert.ok(result.cardDamage>0,'card attacks contribute real damage');
 assert.ok(result.statusDamage>0,'poison/bleed/burn status ticks contribute damage');
 assert.ok(result.synergyProcs>0,'assassin attack-chain synergy activates');
 assert.ok(result.turns>0,'the fight is resolved over player/enemy turns');
+assert.equal(result.potionsUsed,1,'auto battle consumes an available healing potion when HP is critical');
 assert.equal(hero.progress.currentStage,2,'a successful card-driven auto stage advances progression');
 assert.equal(hero.stats.kills>=1,true,'auto battle records defeated enemies');
 assert.ok(Array.isArray(hero.deck)&&hero.deck.length===10,'the deck and its cards persist after auto battle');
