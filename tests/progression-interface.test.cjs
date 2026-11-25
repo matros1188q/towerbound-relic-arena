@@ -221,4 +221,4 @@ const handledActions=new Set([...actionHandler.matchAll(/case'([^']+)'/g)].map(m
 for(const action of renderedActions)assert.ok(handledActions.has(action),'rendered progression action '+action+' has a handler');
 assert.match(progression,/settings\.disable_telegraphs\?'Включить':'Отключить'/,'telegraph toggle reflects the global setting');
 assert.match(progression,/settings\.disable_particles\?'Включить частицы':'Отключить частицы'/,'particle toggle reflects the global setting');
-console.log('Towerbound progression interface checks passed: 4 tabs, mobile modal, real cloud sync, 42 serialized run cycles plus 126 real progression runs across all 21 specializations.');
+console.log('Towerbound progression interface checks passed: 4 tabs, mobile modal, real cloud sync, 42 serialized run cycles plus 126 real combat stages across 63 runs for all 21 specializations.');
