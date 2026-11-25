@@ -1622,3 +1622,16 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{
  position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;
  max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important;
 }
+
+
+/* TOWER MAP GRID OVERRIDE · 250 numbered floors, 10 × 25 snake */
+#tbRpg .tb-tower-map-scroll{position:relative!important;display:block!important;flex:1 1 0!important;min-height:0!important;height:0!important;width:100%!important;overflow:hidden!important;padding:3px 4px max(3px,env(safe-area-inset-bottom))!important;touch-action:none!important;overscroll-behavior:none!important}
+#tbRpg .tb-tower-map-segment{position:relative!important;display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr))!important;grid-template-rows:repeat(25,minmax(0,1fr))!important;gap:clamp(1px,.45vw,4px)!important;width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:clamp(2px,.5vw,5px)!important;overflow:hidden!important}
+#tbRpg .tb-tower-floor-node{position:relative!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;grid-column:var(--floor-col)!important;grid-row:var(--floor-row)!important;justify-self:center!important;align-self:center!important;display:grid!important;place-items:center!important;width:clamp(16px,5.4vw,24px)!important;height:clamp(16px,5.4vw,24px)!important;min-width:0!important;min-height:0!important;margin:0!important;padding:0!important;transform:none!important;border-radius:6px!important;z-index:3!important}
+#tbRpg .tb-tower-floor-node strong{font:900 clamp(6px,2.1vw,9px)/1 system-ui!important}
+#tbRpg .tb-tower-floor-node.is-current{width:clamp(19px,6vw,27px)!important;height:clamp(19px,6vw,27px)!important;transform:none!important;animation:none!important}
+#tbRpg .tb-tower-floor-node.is-boss{width:clamp(18px,5.8vw,26px)!important;height:clamp(18px,5.8vw,26px)!important}
+#tbRpg .tb-tower-route-lines{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:2!important;pointer-events:none!important}
+#tbRpg .tb-tower-route-lines polyline{fill:none!important;stroke:rgba(218,174,98,.55)!important;stroke-width:12!important;stroke-linecap:round!important;stroke-linejoin:round!important;vector-effect:non-scaling-stroke!important;filter:drop-shadow(0 1px 3px #000)!important}
+html.tb-tower-map-lock,body.tb-tower-map-lock{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
+body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
