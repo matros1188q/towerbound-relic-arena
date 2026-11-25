@@ -486,7 +486,7 @@ console.log('RPG balance/content checks passed: 30 configs, combat cadence, curv
  assert.ok(source.includes('function simulateAutoCardStage(character,stage,plan,stats)'),'auto battle resolves a real card-driven stage simulation');
 
  const autoStart=source.indexOf('function autoBattle(characterId,options){');
- const autoEnd=source.indexOf('\n  function mergeStones',autoStart);
+ const autoEnd=source.indexOf('function mergeStones',autoStart);
  assert.ok(autoStart>=0&&autoEnd>autoStart,'autoBattle implementation remains isolated for HP carry-over checks');
  const autoSource=source.slice(autoStart,autoEnd);
  assert.ok(autoSource.includes('simulateAutoCardStage(character,stage,plan,stats)'),'auto battle delegates each stage to the card simulator');
