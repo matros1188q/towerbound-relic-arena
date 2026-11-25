@@ -1952,7 +1952,7 @@ function talentBonusDescription(talent,rank){
   if(battle.phaseFlashUntil&&battle.phaseFlashUntil<=now){battle.phaseFlashUntil=0;battle.phaseNotice=null;changed=true;}
   if(changed){save();render();}
  }
- function triggerAncientRelicProc(kind){if(!battle||Number(battle.ancientSetPieces)<2)return;document.dispatchEvent(new CustomEvent("tb:ancient-relic-proc",{detail:{kind,tier:Math.min(4,Math.max(2,Number(battle.ancientSetPieces)||2))}}));}
+ function triggerAncientRelicProc(kind){if(!battle||Number(battle.ancientSetPieces)<2)return;document.dispatchEvent(new CustomEvent("tb:ancient-relic-proc",{detail:{kind,targetIndex:Number(battle.targetIndex)||0,tier:Math.min(4,Math.max(2,Number(battle.ancientSetPieces)||2))}}));}
  function triggerVfx(kind,damageType,critical){
   if(!battle)return;const colors={fire:"#ff713d",ice:"#73cfff",dark:"#bd83ff",physical:"#f0d18c"};
   if(!settings().disable_skill_flashes)battle.fx={kind,color:colors[damageType]||"#e8d7a8",until:Date.now()+520};

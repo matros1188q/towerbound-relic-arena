@@ -22,6 +22,9 @@ style.textContent=[
 '#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-critical{--tb-proc-color:#fff0a5;filter:drop-shadow(0 0 22px #ffe58c)}',
 '#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-block{--tb-proc-color:#80ddff;filter:drop-shadow(0 0 22px #61cfff)}',
 '#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-magic{--tb-proc-color:#c5a2ff;filter:drop-shadow(0 0 24px #aa7bff)}',
+'#tbRpg .tb-v2 .new-enemy-item.tb-ancient-target-proc{position:relative;z-index:6;animation:tb-ancient-target-hit .72s ease-out}',
+'#tbRpg .tb-v2 .new-enemy-item.tb-ancient-target-proc .tb-ancient-proc-burst{top:48%;width:115%;height:115%}',
+'@keyframes tb-ancient-target-hit{0%{transform:scale(1);filter:brightness(1)}22%{transform:scale(1.09);filter:brightness(2.2) drop-shadow(0 0 18px #fff0a5)}100%{transform:scale(1);filter:brightness(1)}}',
 '#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc .tb-ancient-orbit{animation:tb-ancient-proc-orbit .82s ease-out}',
 '#tbRpg .tb-v2 .tb-ancient-proc-burst{position:absolute;z-index:8;left:50%;top:42%;width:100%;height:100%;transform:translate(-50%,-50%);pointer-events:none;color:var(--tb-proc-color);filter:drop-shadow(0 0 12px var(--tb-proc-color));animation:tb-ancient-burst-in var(--tb-proc-duration,850ms) ease-out forwards}',
 '#tbRpg .tb-v2 .tb-ancient-proc-burst b{position:absolute;left:50%;top:42%;font:900 calc(27px + var(--tb-proc-tier)*5px)/1 Georgia;transform:translate(-50%,-50%);animation:tb-ancient-glyph var(--tb-proc-duration,850ms) ease-out forwards}',
@@ -52,12 +55,15 @@ document.addEventListener("tb:ancient-relic-proc",ancientProc);
 function ancientBurst(event){
  const root=getRoot(),hero=root?.querySelector(".new-hero-side.tb-ancient-awakened");if(!hero)return;
  const kind=String(event.detail?.kind||"magic"),tier=Math.min(4,Math.max(2,Number(event.detail?.tier)||2));
+ const targetIndex=Number(event.detail?.targetIndex),target=Number.isInteger(targetIndex)?root.querySelector('.new-enemy-item[data-target="'+targetIndex+'"]'):null;
+ const anchor=kind==="critical"&&target?target:hero;
  const config={critical:{glyph:"✦",label:"ПРОРЫВ",color:"#fff0a5"},block:{glyph:"◈",label:"БАРЬЕР",color:"#80ddff"},magic:{glyph:"✧",label:"РЕЗОНАНС",color:"#c5a2ff"}},fx=config[kind]||config.magic;
+ if(kind==="critical"&&target){target.classList.remove("tb-ancient-target-proc");void target.offsetWidth;target.classList.add("tb-ancient-target-proc");setTimeout(()=>target.classList.remove("tb-ancient-target-proc"),800);}
  const burst=document.createElement("span");burst.className="tb-ancient-proc-burst";burst.setAttribute("aria-hidden","true");
  burst.style.setProperty("--tb-proc-color",fx.color);burst.style.setProperty("--tb-proc-tier",String(tier));
  burst.innerHTML='<i class="tb-ancient-proc-ring"></i><i class="tb-ancient-proc-ring"></i><b></b><small></small>';
  burst.querySelector("b").textContent=fx.glyph;burst.querySelector("small").textContent=fx.label;
- hero.querySelector(".tb-ancient-proc-burst")?.remove();hero.appendChild(burst);
+ anchor.querySelector(".tb-ancient-proc-burst")?.remove();anchor.appendChild(burst);
  const duration=tier===4?1150:tier===3?950:780;burst.style.setProperty("--tb-proc-duration",duration+"ms");
  setTimeout(()=>burst.remove(),duration+80);
 }
