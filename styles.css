@@ -1010,3 +1010,10 @@
 /* TOWERBOUND CHAMPION ROOM VISUALS */
 #tbRpg .tb-v2 .tb-map-node.is-champion{border-color:#d8ad58!important;background:linear-gradient(155deg,#5a3c1d,#211827)!important;box-shadow:inset 0 0 20px #f3c66a22,0 0 13px #d8ad5844;color:#ffe2a1!important}
 #tbRpg .tb-v2 .tb-map-node.is-champion strong{background:#d8ad58!important;color:#241607!important}
+
+
+/* Secret chambers and ancient guardians */
+#tbRpg .tb-v2 .tb-map-node.is-secret{border-color:#8c83df!important;background:linear-gradient(155deg,#34305f,#171827)!important;box-shadow:inset 0 0 20px #a49aff22,0 0 14px #8c83df55;color:#e5e0ff!important}
+#tbRpg .tb-v2 .tb-map-node.is-secret strong{background:#9b91ec!important;color:#171426!important}
+#tbRpg .tb-v2 .tb-map-node.is-guardian{border-color:#7dc5bb!important;background:linear-gradient(155deg,#1e514c,#17232b)!important;box-shadow:inset 0 0 20px #8ce6d522,0 0 14px #6ed5c455;color:#c8fff0!important}
+#tbRpg .tb-v2 .tb-map-node.is-guardian strong{background:#78cdbd!important;color:#10201e!important}
