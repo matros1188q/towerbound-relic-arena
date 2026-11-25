@@ -1041,12 +1041,12 @@ function createDialog(){
    case "greatsword":if(cardIsAttack){add("damage",3+potency*2);effects.ignoreArmor=true;label="Разлом брони · +"+(3+potency*2)+" урона без брони";}else{add("block",2+potency);label="Стойка титана · дополнительная броня";}break;
    case "wand_shield":add("block",2+potency);add("nextAttackDamage",2);label="Арканический заслон · броня и усиление удара";break;
    case "darkness":add("vulnerable",potency);label="Метка тьмы · +"+potency+" уязвимости";break;
-   case "water":add("draw",1);add("energy",1);label="Прилив · добор карты и +1 энергия";break;
+   case "water":add("draw",potency);add("energy",1+Math.floor((potency-1)/2));label="Прилив · добор "+potency+" карты и +"+(1+Math.floor((potency-1)/2))+" энергия";break;
    case "earth":add("block",3+potency);add("weak",1);label="Каменный оплот · броня и слабость";break;
    case "dual_swords":if(cardIsAttack){add("damage",2+potency);label="Танец клинков · +"+(2+potency)+" урона";}else{add("nextAttackDamage",2+potency);label="Танец клинков · усиление следующей атаки";}add("draw",1);break;
    case "sword_shield":add("block",2+potency);add("nextAttackDamage",2);label="Стальная стойка · броня и контратака";break;
    case "rapier":add("vulnerable",1);add("nextAttackDamage",2+potency);label="Точный выпад · уязвимость и усиление атаки";break;
-   case "spirits":add("poison",1);add("bleed",1);label="Зов предков · яд и кровотечение";break;
+   case "spirits":add("poison",potency);add("bleed",potency);label="Зов предков · +"+potency+" яда и кровотечения";break;
    case "dark_gods":if(cardIsAttack){add("damage",2+potency);add("vulnerable",1);label="Дар тёмных богов · урон и уязвимость";}else{add("weak",1);add("heal",potency);label="Милость тёмных богов · слабость и лечение";}break;
    case "nature":add("poison",1);add("weak",1);add("heal",potency);label="Живые корни · яд, слабость и лечение";break;
    default:return null;
