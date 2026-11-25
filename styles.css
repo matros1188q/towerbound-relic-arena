@@ -1301,7 +1301,7 @@
   position:relative!important;isolation:isolate!important;
   padding:9px 10px 108px!important;
   background-color:#090d17!important;
-  background-image:linear-gradient(180deg,rgba(5,8,15,.30),rgba(5,8,15,.86)),var(--tb-map-scene,none)!important;
+  background-color:#090d17!important;
   background-size:cover!important;background-position:center top!important;
 }
 #tbRpg .tb-v2 .tb-map-screen:before{
