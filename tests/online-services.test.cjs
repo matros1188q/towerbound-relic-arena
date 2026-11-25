@@ -39,7 +39,7 @@ assert.ok(online.includes(".limit(100)"),'leaderboard must cap at 100');
 assert.ok(online.includes(".from('leaderboard').upsert"),'player leaderboard publication missing');
 assert.ok(online.includes(".from('pvp_ghosts').upsert"),'player ghost publication missing');
 assert.ok(ui.includes('function leaderboardScreen()'),'leaderboard screen missing');
-assert.ok(ui.includes('data-nav-tab="progress"')&&ui.includes('function progressScreen()'),'progress screen remains accessible from the bottom navigation');
+assert.ok(ui.includes('data-action="bottom-progress"')&&ui.includes('function progressScreen()'),'progress screen remains accessible from the bottom navigation');
 assert.ok(!ui.slice(ui.indexOf('function header(){'),ui.indexOf('function characterList()')).includes('ПРОГРЕССИЯ'),'progression is removed from the compact brand header');
 assert.ok(ui.includes('refreshOnlineLeaderboard()'),'leaderboard fetch action missing');
 assert.ok(ui.includes('findGhost(c,engine)'),'real ghost matchmaking not wired');
