@@ -19,7 +19,7 @@ assert.match(ui,/class="tb-brand-title">TowerBound Relic Arena</,'brand title fo
 const brandHeader=ui.slice(ui.indexOf('function header(){'),ui.indexOf('function characterList()'));
 assert.doesNotMatch(brandHeader,/data-nav-tab="progress"|ПРОГРЕССИЯ/,'compact brand header contains no progression button');
 assert.ok(ui.includes('data-nav-tab="progress"'),'progression page remains accessible from the main navigation');
-assert.match(ui,/button\("open-meta-progression"/,'extended progression systems remain accessible from account');
+assert.ok(ui.includes('data-action="open-meta-progression"')&&ui.includes('function progressScreen()'),'meta progression is accessible from the Progress screen');
 assert.match(ui,/case "open-meta-progression"/,'extended progression account action is wired');
 assert.match(ui,/case "bottom-progress":case "open-progress"/,'legacy progression action remains compatible');
 assert.match(css,/height:39px!important;min-height:39px!important;max-height:39px!important/,'header is the original 34px logo plus five pixels');
