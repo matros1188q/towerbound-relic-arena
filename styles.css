@@ -1445,3 +1445,16 @@
  #tbRpg .tb-v2 .tb-map-quick-panel button{font-size:8px!important;min-height:88px!important}
  #tbRpg .tb-v2 .tb-bottom-nav button>small{font-size:6px!important}
 }
+
+/* TOWERBOUND NAVIGATION ART ICONS V1 */
+#tbRpg .tb-v2 .tb-bottom-nav button>span{
+  color:transparent!important;font-size:0!important;text-shadow:none!important;
+  background-color:transparent!important;background-repeat:no-repeat!important;background-position:center!important;background-size:contain!important;
+  filter:drop-shadow(0 2px 3px #000b) drop-shadow(0 0 5px #d7a95c66)!important;
+}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="map"]>span{background-image:url('./assets/icons/sword.svg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="profile"]>span{background-image:url('./assets/characters/heroes/image-Photoroom.png')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="progress"]>span{background-image:url('./assets/chapters/image_5.jpeg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="community"]>span{background-image:url('./assets/characters/heroes/shaman.jpg')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="shop"]>span{background-image:url('./assets/relics/guardian.png')!important}
+#tbRpg .tb-v2 .tb-bottom-nav button[data-nav-tab="account"]>span{background-image:url('./assets/icons/oracle.svg')!important}
