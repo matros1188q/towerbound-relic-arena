@@ -74,4 +74,5 @@ assert.match(ui,/function rebuildTreeCache\(character\)/,'talent tree effects ha
 assert.match(ui,/const treeCache=rebuildTreeCache\(c\)/,'card resolution rebuilds the talent cache once before using it');
 assert.ok(ui.includes('description:"Урон 9 · Огонь"')&&ui.includes('description:"Урон 8 · Лёд · Слабость 2"'),'Dragonkin fire and ice labels are localized');
 assert.ok(ui.includes('assets/Fon/image_25.jpeg')&&!ui.includes('assets/Fon/image 25.jpeg'),'arena background paths use underscore filenames');
-\nconsole.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
+
+console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
