@@ -25,6 +25,14 @@ const baseDecks={
 const windows=[{label:'start',start:1,end:9},{label:'mid',start:91,end:99},{label:'end',start:231,end:239}];
 const classes=Object.entries(balance.classes.classes).flatMap(([classId,definition])=>(definition.branches||[]).map(branch=>({classId,className:definition.name,branchId:branch.id,branchName:branch.name})));
 assert.equal(classes.length,21);
+const equipmentCardIds=character=>(character.gear||[]).filter(Boolean).map(item=>{
+ const slot=String(item.slot||'');
+ const label=[item.name,item.weaponType,item.armorType].filter(Boolean).join(' ').toLowerCase();
+ if(slot==='weapon')return item.weaponType==='staff'||/посох|жезл|staff|wand/.test(label)||Number(item.stats?.spellPower)>0||(!item.weaponType&&['bishop','dragonkin','elemental','shaman'].includes(character.classId))?'gear_staff_bolt':'gear_sword_cleave';
+ if(['chest','head','legs','hands'].includes(slot))return item.armorType==='mantle'||/мантия|robe|mantle|одеяни/.test(label)||(!item.armorType&&['bishop','dragonkin','elemental','shaman'].includes(character.classId))?'gear_evasion':'gear_iron_wall';
+ if(slot==='accessory')return 'gear_power_surge';
+ return null;
+}).filter(Boolean);
 const makeCard=(id,index)=>{
  const definition=cardDb[id];
  assert.ok(definition,'missing live card definition '+id);
@@ -44,7 +52,7 @@ for(const [buildIndex,build] of classes.entries()){
    character.run.runModifierId='last_stand';
    const starterIds=baseDecks[build.classId];
    const specializationIds=Object.values(cardDb).filter(card=>card.classId===build.classId&&card.branchId===build.branchId&&card.starter).slice(0,2).map(card=>card.id);
-   character.deck=[...starterIds,...specializationIds].map(makeCard);
+   character.deck=[...starterIds,...specializationIds,...equipmentCardIds(character)].map(makeCard);
    character.hand=[];character.discard=[];character.exhaustPile=[];character.energy=3;character.currentEnergy=3;
    const result=engine.autoBattle(character.id,{maxStages:9});
    trials.push({seed,cleared:result.cleared,failedStage:result.failedStage,hpPct:Math.round((Number(character.run.playerHp)||0)/Math.max(1,engine.maxHp(character))*100),cardsPlayed:result.cardsPlayed,statusDamage:result.statusDamage,cardDamage:result.cardDamage,blockGenerated:result.blockGenerated,turns:result.turns});
