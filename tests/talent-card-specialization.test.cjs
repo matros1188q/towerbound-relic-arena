@@ -27,6 +27,10 @@ for(const [branch,nodes] of branches){
  assert.ok(count>=8,branch+' has eight card-linked talent nodes');
 }
 assert.equal(targeted.length,168,'each of the 84 specialization cards receives two individual talent bonuses');
+const bonusesPerCard=new Map();
+for(const item of targeted)bonusesPerCard.set(item.cardId,(bonusesPerCard.get(item.cardId)||0)+1);
+assert.equal(bonusesPerCard.size,84,'all specialization cards have a talent path');
+assert.ok([...bonusesPerCard.values()].every(count=>count===2),'every specialization card has exactly two talent mutations');
 assert.ok(ui.includes('function applyTreeCardBonuses'),'card-linked effects are applied by combat runtime');
 assert.ok(ui.includes('applyTreeCardBonuses(card,cardEffects(card),treeCache)'),'card-linked effects are applied when a card is played');
 assert.ok(ui.includes('treeCardBonusDescription(card,handTreeCache)'),'card-linked effects are shown on cards in hand');
