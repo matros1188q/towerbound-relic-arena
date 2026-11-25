@@ -498,8 +498,8 @@
 
  function cardPreviewDamage(card,target){
   if(!card||!target||!target.alive||target.hp<=0)return 0;
-  const c=live(),effects=cardEffects(card),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),isXCost=!!(card.isXCost||card.costX),energy=c.classId==="shaman"&&battle.shamanFreeMode&&Number(c.totem)>=3?0:c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"?Math.max(0,(isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0))-1):(isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0));
-  const total=getCardDamageWithTalents(card,c,energy)+Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0));
+  const c=live(),effects=previewCardEffects(card,c,target),stats=engine.getCombatStats(c),scale=Math.max(.1,Number(stats.damageMultiplier)||1),isXCost=!!(card.isXCost||card.costX),energy=c.classId==="shaman"&&battle.shamanFreeMode&&Number(c.totem)>=3?0:c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"?Math.max(0,(isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0))-1):(isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0));
+  const total=getCardDamageWithTalents(card,c,energy,effects)+Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0));
   if(total<=0)return 0;
   const attackCard=isAttackCard(card,effects),magicCard=isMagicCard(card,effects),finisher=!!(card.finisher||effects.finisher||(Array.isArray(card.tags)&&card.tags.includes("finisher")));
   const weaponRefine=Math.max(0,Number((c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0))?.refine)||0),refineBonus=attackCard?weaponRefine*2:0;
@@ -1020,9 +1020,57 @@ function createDialog(){
   }catch(error){recoverPlayerTurn(error);}
  }
 
- function getCardDamageWithTalents(card,character,energySpent){
+ function specializationSynergyPayload(character,card,target){
+  const branchId=String(character?.branch||"");
+  if(!branchId||String(card?.branchId||"")!==branchId)return null;
+  const branch=(classData(character)?.branches||[]).find(item=>item.id===branchId);
+  const invested=(branch?.talents||[]).reduce((sum,talent)=>sum+Math.max(0,Number(character?.talents?.[talent.id])||0),0);
+  const potency=1+Math.min(2,Math.floor(invested/10)),effects={},add=(key,value)=>{effects[key]=(Number(effects[key])||0)+value;};
+  let label="";
+  switch(branchId){
+   case "bleed":add("bleed",potency);label="Кровавый резонанс · +"+potency+" кровотечения";break;
+   case "poison":add("poison",potency);label="Токсичный резонанс · +"+potency+" яда";break;
+   case "execution":if(target&&Number(target.hp)<=Number(target.maxHp)*.5){add("damage",2+potency*2);label="Казнь · +"+(2+potency*2)+" урона по ослабленной цели";}else{add("vulnerable",1);label="Приговор · +1 уязвимость";}break;
+   case "exorcism":add("weak",potency);label="Очищение · +"+potency+" слабости";break;
+   case "healing":add("heal",2+potency*2);label="Благодать · +"+(2+potency*2)+" лечения";break;
+   case "buffs":add("fury",potency);label="Боевой псалом · +"+(potency*10)+"% силы";break;
+   case "fire_dragon":add("burn",potency);label="Пламенный резонанс · +"+potency+" горения";break;
+   case "ice_dragon":add("block",2+potency);add("weak",1);label="Ледяная крепость · +"+(2+potency)+" брони и слабость";break;
+   case "black_dragon":add("vulnerable",1);add("heal",potency);label="Поглощение пустоты · уязвимость и лечение "+potency;break;
+   case "fists":add("damage",2+potency);label="Шквал кулаков · +"+(2+potency)+" урона";break;
+   case "greatsword":add("damage",3+potency*2);effects.ignoreArmor=true;label="Разлом брони · +"+(3+potency*2)+" урона без брони";break;
+   case "wand_shield":add("block",2+potency);add("nextAttackDamage",2);label="Арканический заслон · броня и усиление удара";break;
+   case "darkness":add("vulnerable",potency);label="Метка тьмы · +"+potency+" уязвимости";break;
+   case "water":add("draw",1);add("energy",1);label="Прилив · добор карты и +1 энергия";break;
+   case "earth":add("block",3+potency);add("weak",1);label="Каменный оплот · броня и слабость";break;
+   case "dual_swords":add("damage",2+potency);add("draw",1);label="Танец клинков · урон и добор";break;
+   case "sword_shield":add("block",2+potency);add("nextAttackDamage",2);label="Стальная стойка · броня и контратака";break;
+   case "rapier":add("vulnerable",1);add("nextAttackDamage",2+potency);label="Точный выпад · уязвимость и усиление атаки";break;
+   case "spirits":add("poison",1);add("bleed",1);label="Зов предков · яд и кровотечение";break;
+   case "dark_gods":add("damage",2+potency);add("vulnerable",1);label="Дар тёмных богов · урон и уязвимость";break;
+   case "nature":add("poison",1);add("weak",1);add("heal",potency);label="Живые корни · яд, слабость и лечение";break;
+   default:return null;
+  }
+  return{effects,label};
+ }
+ function previewCardEffects(card,character,target){
+  const effects=cardEffects(card),next=(Number(battle?.specializationResonance)||0)+1;
+  if(next>=2){const payload=specializationSynergyPayload(character,card,target);if(payload)for(const [key,value] of Object.entries(payload.effects)){if(typeof value==="boolean")effects[key]=value;else effects[key]=(Number(effects[key])||0)+Number(value||0);}}
+  return effects;
+ }
+ function applySpecializationCardSynergy(character,card,effects,target){
+  if(!battle||!character||!card?.branchId||card.branchId!==character.branch)return null;
+  battle.specializationResonance=(Number(battle.specializationResonance)||0)+1;
+  if(battle.specializationResonance<2)return null;
+  battle.specializationResonance=0;
+  const payload=specializationSynergyPayload(character,card,target);
+  if(!payload)return null;
+  for(const [key,value] of Object.entries(payload.effects)){if(typeof value==="boolean")effects[key]=value;else effects[key]=(Number(effects[key])||0)+Number(value||0);}
+  return payload.label;
+ }
+ function getCardDamageWithTalents(card,character,energySpent,effectsOverride){
   if(!card||!character)return 0;
-  const effects=cardEffects(card),base=Number(effects.damage)||Number(effects.damageAll)||0;
+  const effects=effectsOverride||cardEffects(card),base=Number(effects.damage)||Number(effects.damageAll)||0;
   const isXCost=!!(card.isXCost||card.costX),energy=Number.isFinite(Number(energySpent))?Math.max(0,Number(energySpent)):(isXCost?Math.max(0,Number(character.currentEnergy)||0):0);
   const perEnergy=isXCost?Math.max(0,Number(effects.damagePerEnergy)||0)*energy:0;
   if(base<=0&&perEnergy<=0)return 0;
@@ -1043,8 +1091,9 @@ function createDialog(){
   const names={fire:"Огонь",ice:"Лёд",dark:"Тьма",lightning:"Молния",water:"Вода",earth:"Земля",arcane:"Аркана"};
   const text=d.key==="element"?(names[String(value).toLowerCase()]||String(value)):value+"/"+d.max;
   const armed=id==="shaman"&&!!battle?.shamanFreeMode;
+  const branch=(classData(c)?.branches||[]).find(item=>item.id===c.branch),resonance=Math.max(0,Number(battle?.specializationResonance)||0),branchLabel=branch?.name||"Специализация";
   return '<div class="tb-class-resource '+(armed?'is-armed':'')+'" id="classResourceDisplay"><span>'+d.icon+' '+d.label+': <b>'+esc(text)+'</b></span>'+
-   (id==="shaman"&&Number(c.totem)>=3?'<button type="button" class="tb-totem-toggle" data-shaman-free-mode>' +(armed?"ОТМЕНИТЬ БЕСПЛАТНУЮ КАРТУ":"3 ТОТЕМА · БЕСПЛАТНАЯ КАРТА")+'</button>':"")+'</div>';
+   (id==="shaman"&&Number(c.totem)>=3?'<button type="button" class="tb-totem-toggle" data-shaman-free-mode>' +(armed?"ОТМЕНИТЬ БЕСПЛАТНУЮ КАРТУ":"3 ТОТЕМА · БЕСПЛАТНАЯ КАРТА")+'</button>':"")+'</div>'+(branch?'<div class="tb-specialization-resonance"><span>'+esc(branchLabel)+' · РЕЗОНАНС</span><b>'+resonance+'/2</b></div>':"");
  }
  function updateClassResourceDOM(){const c=live(),node=root.querySelector("#classResourceDisplay");if(!c||!node)return;const wrap=document.createElement("div");wrap.innerHTML=classResourceMarkup(c);if(wrap.firstElementChild)node.replaceWith(wrap.firstElementChild);}
  function isAttackCard(card,effects){return Number(effects?.damage)>0||Number(effects?.damageAll)>0||Number(effects?.damagePerEnergy)>0||Number(effects?.damagePerPoison)>0||Number(effects?.damagePerBleed)>0||Number(effects?.damageMissingHp)>0;}
@@ -1096,6 +1145,7 @@ function createDialog(){
   if(!battle.guildRaid&&!freeTotem&&c.currentEnergy<cost){notify("Недостаточно энергии");return;}
   const isDuelistFinisher=c.classId==="duelist"&&!!(card.finisher||effects.finisher||(Array.isArray(card.tags)&&card.tags.includes("finisher")));if(isDuelistFinisher&&Number(c.charges)<3){notify("Для Смертельного выпада нужно 3 заряда");return;}
   const target=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);
+  const synergyLabel=applySpecializationCardSynergy(c,card,effects,target);if(synergyLabel)logCombatEvent("СИНЕРГИЯ · "+synergyLabel,"#e8c77e");
   if(/poison|яд|отрав/i.test([card.id,card.name,card.description].join(" "))&&treePoison>0)effects.poison=(Number(effects.poison)||0)+treePoison;if(/bleed|кров|рана/i.test([card.id,card.name,card.description].join(" "))&&treeBleed>0)effects.bleed=(Number(effects.bleed)||0)+treeBleed;const baseDamage=Number(effects.damage)||0,allDamage=Number(effects.damageAll)||0,dynamicCardDamage=target?Math.max(0,Number(effects.damagePerPoison)||0)*(Number(target.poison)||0)+Math.max(0,Number(effects.damagePerBleed)||0)*(Number(target.bleed)||0)+(Math.max(0,Number(effects.damageMissingHp)||0)*Math.max(0,engine.maxHp(c)-Number(c.run.playerHp||0))):0;
   if((baseDamage>0||allDamage>0||Number(effects.damagePerEnergy)>0||Number(effects.damagePerPoison)>0||Number(effects.damagePerBleed)>0||Number(effects.damageMissingHp)>0)&&!target){notify("Нет доступной цели");return;}
   if(freeTotem){c.totem=Math.max(0,Number(c.totem)-3);battle.shamanFreeMode=false;}else if(!battle.guildRaid)c.currentEnergy-=cost;if(!battle.guildRaid&&!freeTotem&&(Number(battle.nextCardCostReductionCards)||0)>0){battle.nextCardCostReductionCards--;if(battle.nextCardCostReductionCards<=0)battle.nextCardCostReduction=0;}battle.cardsPlayedThisTurn=(Number(battle.cardsPlayedThisTurn)||0)+1;if(battle.guildRaid&&guildRaid)guildRaid.cards.push(String(card.id||card.instanceId||"card"));c.hand.splice(index,1);
@@ -1112,7 +1162,7 @@ function createDialog(){
   if(magicChargeSpent){classMultiplier*=1+Math.min(10,Number(c.magicCharge)||0)*.1;c.magicCharge=0;}
   const refineWeapon=(c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0)),weaponRefine=Math.max(0,Number(refineWeapon?.refine)||0),armorRefine=(c.gear||[]).filter(item=>item&&["chest","head","legs","hands",1,2,3,4].includes(item.slot)).reduce((sum,item)=>sum+Math.max(0,Number(item.refine)||0),0);
   const guildCrit=1+Math.max(0,Number(c.guildBuffs?.crit_damage)||0)*.05,guildMagic=magicCard?1+Math.max(0,Number(c.guildBuffs?.magic_attack)||0)*.02:1,treeCritChance=treeEffect(c,"critChance"),treeCritBleed=treeEffect(c,"critCausesBleed"),rawFor=base=>{const critical=attackCard&&Math.random()<Math.min(.8,Math.max(0,Number(stats.critChance)||0)+treeCritChance);if(critical&&treeCritBleed>0&&target)target.bleed=Math.max(0,Number(target.bleed)||0)+treeCritBleed;return Math.max(1,Math.round((base+(attackCard?weaponRefine*2:0)+classFlat)*(1+Math.max(0,Number(stats.attack)||0)/100)*scale*weakScale*furyScale*classMultiplier*guildMagic*(battle.firstAttackDouble?2:1)*(critical?1.75*guildCrit:1)));},damageType=effects.damageType||card.damageType||"physical";
-  let killed=false;const calculatedDamage=getCardDamageWithTalents(card,c,battle.guildRaid&&isXCost?Math.max(1,Number(c.energy)||3):cost),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0||dynamicCardDamage>0)?calculatedDamage+dynamicCardDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
+  let killed=false;const calculatedDamage=getCardDamageWithTalents(card,c,battle.guildRaid&&isXCost?Math.max(1,Number(c.energy)||3):cost,effects),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0||dynamicCardDamage>0)?calculatedDamage+dynamicCardDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;logCombatEvent("Вы сыграли «"+card.name+"» · "+hit.dealt+" урона","#e9d5a5");killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
   if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
   if(Number(effects.hits)>1&&singleDamage>0&&target)for(let n=1;n<Number(effects.hits)&&c.run.playerHp>0;n++){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;killed=killed||!!hit.killed;}
