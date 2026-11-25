@@ -40,7 +40,7 @@ assert.match(css, /v2-card[\s\S]*?height:120px/);
 assert.match(css, /tb-map-grid[\s\S]*?min-width:374px/);
 console.log('UI polish regression checks passed.');
 
-assert.match(ui,/font:600 12px\\/1\\.2 system-ui,sans-serif/,"card descriptions use 12px text");
+assert.match(css,/font:600 12px\\/1\\.2 system-ui,sans-serif/,"card descriptions use 12px text");
 assert.match(css,/new-enemy-item\\{filter:drop-shadow\\(0px 8px 12px rgba\\(0,0,0,\\.9\\)\\)\\}/,"enemy shadow");
 assert.match(css,/new-hand-row\\{background:rgba\\(0,0,0,\\.6\\)/,"dark hand background");
 assert.match(css,/tb-end-turn\\{position:fixed!important/,"fixed end turn");
@@ -49,7 +49,7 @@ assert.match(ui,/data-action="push-notifications"/,"account convenience");
 assert.match(ui,/ДОЛГОСРОЧНЫЙ ПРОГРЕСС · МЕТА-ПРОГРЕССИЯ/,"meta progress on Progress");
 assert.match(ui,/data-action="open-workshop"/,"workshop button");
 assert.match(ui,/profileRelicShopMarkup\\(c\\)/,"relics in profile");
-assert.doesNotMatch(ui,/function accountScreen\\(\\)[\\s\\S]*?open-meta-progression/,"no meta button in account");
+const accountMarkup=ui.slice(ui.indexOf("function accountScreen()"),ui.indexOf("function systemsScreen()"));assert.doesNotMatch(accountMarkup,/open-meta-progression/,"no meta button in account");
 assert.doesNotMatch(prog,/data-progress-tab="economy"|data-progress-tab="ux"/,"meta tabs exclude economy and convenience");
 assert.match(prog,/function renderMetaProgress\\(\\)/,"meta renderer");
 assert.match(prog,/function renderWorkshop\\(\\)/,"workshop renderer");
