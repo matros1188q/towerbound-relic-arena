@@ -1118,7 +1118,7 @@
      enemy.weak=Math.max(0,(Number(enemy.weak)||0)-1);enemy.vulnerable=Math.max(0,(Number(enemy.vulnerable)||0)-1);
      if(hp<=0)break;
     }
-    energy=Math.min(5,energy+1);
+    energy=Math.max(1,Math.min(6,Number(character.energy)||3));character.run.playerHp=hp;
     for(const card of hand)if(!card.retain){if(card.ethereal)exhaust.push(card);else discard.push(card);}
     hand=hand.filter(card=>card.retain);
     drawCards(5);
