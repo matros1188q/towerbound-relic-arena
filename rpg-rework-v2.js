@@ -562,15 +562,19 @@
    const sumEffect=type=>relics.reduce((sum,relic)=>sum+(relic.effect?.type===type?Number(relic.effect.value)||0:0),0);
    const maxEffect=type=>relics.reduce((value,relic)=>relic.effect?.type===type?Math.max(value,Number(relic.effect.value)||0):value,0);
    const greed=relics.find(relic=>relic.effect?.type==="gold_and_hp_tradeoff");
-   character.run.stage.relicStartingBlock=sumEffect("start_block");
+   const classRelicPieces=relics.filter(relic=>relic.classId===character.classId).length;
+   character.run.stage.relicSetPieces=classRelicPieces;
+   character.run.stage.relicSetBonuses={two:classRelicPieces>=2,three:classRelicPieces>=3,four:classRelicPieces>=4};
+   character.run.stage.relicStartingBlock=sumEffect("start_block")+(classRelicPieces>=3?6:0);
    character.run.stage.relicStartDamage=sumEffect("start_damage_all");
-   character.run.stage.relicStartWeak=sumEffect("start_weak_all");
-   character.run.stage.relicStartingDraw=sumEffect("start_draw");
-   character.run.stage.relicStartHeal=sumEffect("start_heal");
-   character.run.stage.relicFirstAttackMultiplier=maxEffect("first_attack_multiplier");
-   character.run.stage.relicAttackBonus=sumEffect("card_attack_bonus");
-   character.run.stage.relicBlockBonus=sumEffect("card_block_bonus");
-   character.run.stage.relicSpellPower=sumEffect("card_spell_power");
+   character.run.stage.relicStartWeak=sumEffect("start_weak_all")+(classRelicPieces>=4&&character.classId==="shaman"?1:0);
+   character.run.stage.relicStartingDraw=sumEffect("start_draw")+(classRelicPieces>=2?1:0);
+   character.run.stage.relicStartHeal=sumEffect("start_heal")+(classRelicPieces>=4&&character.classId==="bishop"?8:0);
+   character.run.stage.relicFirstAttackMultiplier=Math.max(maxEffect("first_attack_multiplier"),classRelicPieces>=4&&character.classId==="assassin"?2:0);
+   character.run.stage.relicAttackBonus=sumEffect("card_attack_bonus")+(classRelicPieces>=4&&character.classId==="destroyer"?2:0);
+   character.run.stage.relicBlockBonus=sumEffect("card_block_bonus")+(classRelicPieces>=4&&character.classId==="duelist"?2:0);
+   character.run.stage.relicSpellPower=sumEffect("card_spell_power")+(classRelicPieces>=4&&character.classId==="elemental"?2:0);
+   if(classRelicPieces>=4&&character.classId==="dragonkin")character.run.stage.relicStartingBlock+=8;
    character.run.stage.relicBranchSynergyBonus=relics.reduce((sum,relic)=>sum+(relic.effect?.type==="branch_synergy_bonus"&&relic.classId===character.classId&&relic.branchId===character.branch?Math.max(0,Number(relic.effect.value)||0):0),0);
    character.run.stage.relicHpPenalty=Number(greed?.effect?.value?.hpPenalty)||0;
    if(character.run.stage.relicHpPenalty>0){
