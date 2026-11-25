@@ -143,10 +143,12 @@ deathState.gear=[{id:'checkpoint-gear',slot:0,type:'equipment',rarity:'Редк�
 deathState.relics=['bloodstone'];deathState.deck=[{id:'pre-death-card'}];
 deathState.run.active=true;deathState.run.playerHp=0;deathState.run.experience=0;deathState.run.lives=3;
 deathState.run.snapshot={stage:50,hp:123,silver:456,deck:[{id:'checkpoint-card'}],relics:['steel_heart'],gear:[{id:'saved-gear',slot:0,type:'equipment',rarity:'Редкая',stats:{attack:5}},null,null,null,null,null],createdAt:1};
+const checkpointRunsBefore=deathState.stats.runs_completed||0;
 const checkpointResult=bonusEngine.confirmDeath(deathCharacter.id);
 const afterCheckpoint=bonusEngine.state.characters.find(character=>character.id===deathCharacter.id);
 assert.equal(checkpointResult.checkpointRestored,true,'death with a checkpoint restores the checkpoint');
 assert.equal(checkpointResult.runEnded,false,'checkpoint recovery does not end the run');
+assert.equal(afterCheckpoint.stats.runs_completed||0,checkpointRunsBefore,'checkpoint recovery does not count as a completed run');
 assert.equal(afterCheckpoint.progress.currentStage,50,'checkpoint recovery returns to the saved stage');
 assert.equal(afterCheckpoint.silver,456,'checkpoint recovery restores checkpoint silver');
 assert.equal(afterCheckpoint.gear[0].id,'saved-gear','checkpoint recovery restores checkpoint gear');
@@ -156,9 +158,13 @@ assert.equal(afterCheckpoint.bag[0].id,'bag-kept','checkpoint recovery keeps the
 const terminalCharacter=bonusEngine.createCharacter('Terminal Audit','assassin');
 const terminalState=bonusEngine.state.characters.find(character=>character.id===terminalCharacter.id);
 terminalState.run.active=true;terminalState.run.playerHp=0;terminalState.run.experience=0;terminalState.run.snapshot=null;
+const terminalRunsBefore=terminalState.stats.runs_completed||0;
 const terminalResult=bonusEngine.confirmDeath(terminalCharacter.id);
 assert.equal(terminalResult.runEnded,true,'death without a checkpoint ends the run');
 assert.equal(terminalResult.checkpointRestored,false,'terminal death is distinct from checkpoint recovery');
+assert.equal(terminalState.stats.runs_completed,terminalRunsBefore+1,'terminal death counts the completed run exactly once');
+bonusEngine.confirmDeath(terminalCharacter.id);
+assert.equal(terminalState.stats.runs_completed,terminalRunsBefore+1,'repeated terminal-death handling cannot count the same run twice');
 
 
 
