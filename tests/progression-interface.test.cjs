@@ -97,7 +97,7 @@ for(const spec of specializationMatrix){
   const created=simEngine.createCharacter('Run '+spec.classId+' '+spec.branchId,spec.classId);
   let simHero=simEngine.state.characters.find(character=>character.id===created.id);
   simHero.level=10;
-  simHero.xp=simEngine.requiredXp(10);
+  simHero.xp=Array.from({length:9},(_,index)=>simEngine.requiredXp(index+1)).reduce((sum,value)=>sum+value,0);
   simHero.silver=100000;
   simHero.progression={permanentXpBonus:0.15,permanentAttackBonus:0.05,runewords:[{key:'multi-run-'+spec.classId+'-'+spec.branchId,name:'Multi-run rune',attack:0.1,defense:0.05,health:0.1}]};
   simHero.gear[0]={id:'multi-run-weapon-'+spec.classId+'-'+spec.branchId,slot:0,type:'equipment',rarity:'Редкая',stats:{attack:15,health:10}};
