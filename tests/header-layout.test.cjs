@@ -59,5 +59,5 @@ assert.ok(progression.includes("const bar=$('.tb-map-actions',r);"),'secret-room
 assert.match(ui,/root\.innerHTML='<div class="tb-v2">'\+battleScreen\(\)/,'battle screen uses its dedicated full-screen header and layout');
 assert.doesNotMatch(ui,/root\.innerHTML='<div class="tb-v2">'\+header\(\)\+characterList\(\)/,'character selection does not render a duplicate header');
 assert.doesNotMatch(ui,/return header\(\)\+\x60<div class="v2-battle-wrap/,'battle screen relies on the single outer header, not a duplicate');
-assert.equal((ui.match(/return header\\(/g)||[]).length,8,'eight standard non-battle screens render the compact header; fullscreen talents has its own header');
+assert.equal((ui.match(/return header\(/g)||[]).length,8,'eight standard non-battle screens render the compact header; fullscreen talents has its own header');
 console.log('Towerbound compact header and navigation checks passed.');
