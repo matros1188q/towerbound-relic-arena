@@ -652,6 +652,8 @@
    },1);
    const configuredInterval=Number(balance.combat.attack_interval);
    const baseInterval=Number.isFinite(configuredInterval)&&configuredInterval>0?configuredInterval:1;
+   hp=Math.max(1,Math.round(hp*Math.max(.1,Number(enemy?.trialHpMultiplier)||1)));
+   damage=Math.max(1,Math.round(damage*Math.max(.1,Number(enemy?.trialDamageMultiplier)||1)));
    const safeSpeedMultiplier=Number.isFinite(speedMultiplier)&&speedMultiplier>0?speedMultiplier:1;
    const attackInterval=baseInterval/safeSpeedMultiplier;
    const attackIntervalMs=Math.round(attackInterval*1000);
