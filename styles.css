@@ -1145,3 +1145,43 @@
 #tbRpg .tb-ancient-awakening-overlay.tier-4 .tb-ancient-awakening-core i{inset:18px;filter:blur(28px);animation-duration:1.1s}
 @keyframes tbAncientGoldSeal{to{transform:rotate(405deg)}}
 @keyframes tbAncientAscend{0%{opacity:0;transform:translateY(35px) scale(.68);filter:brightness(2.2)}45%{opacity:1;transform:translateY(-5px) scale(1.045);filter:brightness(1.35)}100%{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}}
+
+/* Persistent ancient-set portrait awakening: aura scales with 2/3/4 owned class relics. */
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened{overflow:visible!important;position:relative;isolation:isolate;--tb-set-glow:#83d8df}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened::before{inset:0 -10%;opacity:.25;filter:blur(17px);background:radial-gradient(ellipse at 50% 34%,var(--tb-set-glow) 0%,transparent 67%)}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened .new-hero-img{position:relative;z-index:1;filter:drop-shadow(0 0 5px var(--tb-set-glow)) drop-shadow(0 0 13px var(--tb-set-glow))}
+#tbRpg .tb-v2 .tb-ancient-orbit{display:none;position:absolute;z-index:0;pointer-events:none;top:8px;left:50%;width:min(88%,132px);aspect-ratio:1;transform:translateX(-50%);border:1px solid color-mix(in srgb,var(--tb-set-glow) 72%,transparent);border-radius:50%;box-shadow:0 0 16px color-mix(in srgb,var(--tb-set-glow) 30%,transparent),inset 0 0 17px color-mix(in srgb,var(--tb-set-glow) 15%,transparent)}
+#tbRpg .tb-v2 .tb-ancient-orbit::before,#tbRpg .tb-v2 .tb-ancient-orbit::after{content:"";position:absolute;inset:8px;border:1px dashed var(--tb-set-glow);border-radius:50%;opacity:.72;animation:tbAncientPortraitOrbit 12s linear infinite}
+#tbRpg .tb-v2 .tb-ancient-orbit::after{inset:-6px;border-style:double;border-width:2px;opacity:.42;animation-duration:19s;animation-direction:reverse}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened .tb-ancient-orbit{display:block}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-2{--tb-set-glow:#83d8df}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-3{--tb-set-glow:#e9c36f}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-4{--tb-set-glow:#c19aff}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-2::before{opacity:.16;animation-duration:4s}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-2 .tb-ancient-orbit{width:min(78%,116px);border-style:dotted;opacity:.72}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-2 .new-hero-img{animation:tbAncientPortraitSoft 4s ease-in-out infinite}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-3::before{opacity:.28;animation-duration:3.1s}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-3 .tb-ancient-orbit{width:min(88%,132px);border-width:2px;box-shadow:0 0 22px color-mix(in srgb,var(--tb-set-glow) 45%,transparent)}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-3 .new-hero-img{animation:tbAncientPortrait 3.2s ease-in-out infinite}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-4::before{inset:-4% -15%;opacity:.4;filter:blur(22px)}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-4 .tb-ancient-orbit{width:min(96%,145px);border-width:2px;box-shadow:0 0 30px color-mix(in srgb,var(--tb-set-glow) 58%,transparent),inset 0 0 24px color-mix(in srgb,var(--tb-set-glow) 25%,transparent)}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-4 .tb-ancient-orbit::before{border-style:solid;animation-duration:5s}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-tier-4 .new-hero-img{animation:tbAncientPortrait 2.2s ease-in-out infinite}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-assassin{--tb-set-glow:#b9e4d5}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-bishop{--tb-set-glow:#ffe7a0}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-dragonkin{--tb-set-glow:#ff8650}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-destroyer{--tb-set-glow:#f18a55}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-elemental{--tb-set-glow:#8fc9ff}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-duelist{--tb-set-glow:#d5b7ff}
+#tbRpg .tb-v2 .new-hero-side.tb-ancient-shaman{--tb-set-glow:#9edb8a}
+#tbRpg .tb-v2 .tb-battle-set-mark{position:relative;z-index:2;gap:7px}
+#tbRpg .tb-v2 .tb-battle-set-mark.is-gathering{border-color:#83d8df66;box-shadow:0 0 10px #83d8df1c}
+#tbRpg .tb-v2 .tb-battle-set-mark.is-awakened.tier-3{border-color:#e9c36f;box-shadow:0 0 16px #e9c36f44,inset 0 0 14px #e9c36f18}
+#tbRpg .tb-v2 .tb-battle-set-mark.is-awakened.tier-4{border-color:#c19aff;box-shadow:0 0 22px #c19aff66,inset 0 0 18px #c19aff22}
+#tbRpg .tb-v2 .tb-battle-set-copy{display:block;min-width:0;flex:1}
+#tbRpg .tb-v2 .tb-battle-set-progress{display:flex;gap:4px;margin-top:5px}
+#tbRpg .tb-v2 .tb-battle-set-progress i{display:block;flex:1;height:3px;border-radius:4px;background:#62616a88}
+#tbRpg .tb-v2 .tb-battle-set-progress i.is-lit{background:var(--tb-set-glow,#83d8df);box-shadow:0 0 8px var(--tb-set-glow,#83d8df)}
+@keyframes tbAncientPortraitOrbit{to{transform:rotate(360deg)}}
+@keyframes tbAncientPortraitSoft{0%,100%{filter:drop-shadow(0 0 3px var(--tb-set-glow)) drop-shadow(0 0 8px var(--tb-set-glow))}50%{filter:drop-shadow(0 0 6px var(--tb-set-glow)) drop-shadow(0 0 15px var(--tb-set-glow))}}
+@media(prefers-reduced-motion:reduce){#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened::before,#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened .new-hero-img,#tbRpg .tb-v2 .tb-ancient-orbit::before,#tbRpg .tb-v2 .tb-ancient-orbit::after{animation:none!important}}
