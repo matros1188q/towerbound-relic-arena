@@ -1060,3 +1060,32 @@
 @keyframes tbAncientAura{0%,100%{opacity:.13;transform:scale(.94)}50%{opacity:.32;transform:scale(1.07)}}
 @keyframes tbAncientPortrait{0%,100%{filter:drop-shadow(0 0 4px var(--tb-set-glow)) drop-shadow(0 0 9px var(--tb-set-glow))}50%{filter:drop-shadow(0 0 8px var(--tb-set-glow)) drop-shadow(0 0 20px var(--tb-set-glow))}}
 @media(prefers-reduced-motion:reduce){#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened::before,#tbRpg .tb-v2 .new-hero-side.tb-ancient-awakened .new-hero-img{animation:none}}
+
+
+/* Cinematic relic pickup reveal. */
+#tbRpg .tb-relic-acquired-overlay{position:fixed;inset:0;z-index:100500;display:grid;place-items:center;padding:18px;background:radial-gradient(ellipse at 50% 42%,#5c472b55 0%,#080b11ed 58%,#030509f5 100%);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:tbRelicBackdrop .35s ease-out both;box-sizing:border-box}
+#tbRpg .tb-relic-acquired-modal{position:relative;width:min(100%,390px);max-height:90dvh;overflow:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:25px 22px 22px;border:1px solid #c7a35d99;border-radius:22px;background:linear-gradient(155deg,#29251f 0%,#171b24 52%,#10151d 100%);box-shadow:0 22px 80px #000d,inset 0 0 38px #e6c77a12;box-sizing:border-box;animation:tbRelicModalIn .55s cubic-bezier(.18,.82,.24,1.15) both}
+#tbRpg .tb-relic-acquired-modal::before{content:"";position:absolute;inset:8px;border:1px solid #d7b66a30;border-radius:16px;pointer-events:none}
+#tbRpg .tb-relic-acquired-stars{color:#f4d58c;font-size:18px;letter-spacing:.18em;text-shadow:0 0 18px #f5d17b;animation:tbRelicStars 2.4s ease-in-out infinite}
+#tbRpg .tb-relic-acquired-modal>.tb-eyebrow{margin-top:9px;color:#d8bd83;font:900 9px/1.2 system-ui;letter-spacing:.2em}
+#tbRpg .tb-relic-acquired-art{--relic-glow:#d8b66d;position:relative;display:grid;place-items:center;width:156px;height:156px;margin:18px 0 12px;border-radius:50%;background:radial-gradient(circle,#f5d58b38 0%,#c79b4b16 43%,transparent 72%);animation:tbRelicFloat 3s ease-in-out infinite}
+#tbRpg .tb-relic-acquired-art::before,#tbRpg .tb-relic-acquired-art::after{content:"";position:absolute;inset:9px;border:1px solid color-mix(in srgb,var(--relic-glow) 65%,transparent);border-radius:50%;box-shadow:0 0 22px color-mix(in srgb,var(--relic-glow) 38%,transparent),inset 0 0 20px color-mix(in srgb,var(--relic-glow) 18%,transparent)}
+#tbRpg .tb-relic-acquired-art::after{inset:0;border-style:dashed;opacity:.55;animation:tbRelicOrbit 18s linear infinite}
+#tbRpg .tb-relic-acquired-art>i{position:absolute;inset:23px;border-radius:50%;background:var(--relic-glow);opacity:.13;filter:blur(22px)}
+#tbRpg .tb-relic-acquired-art .tb-relic-icon,#tbRpg .tb-relic-acquired-art img{position:relative;z-index:1;width:96px;height:96px;max-width:96px;max-height:96px;object-fit:contain;filter:drop-shadow(0 0 9px var(--relic-glow)) drop-shadow(0 7px 12px #000b)}
+#tbRpg .tb-relic-acquired-kicker{color:#e8cc8b;font:900 9px/1.2 system-ui;letter-spacing:.22em}
+#tbRpg .tb-relic-acquired-modal h2{margin:8px 0;color:#fff0c9;font:900 clamp(21px,6vw,27px)/1.15 Georgia,serif;text-shadow:0 2px 15px #e7c16a55}
+#tbRpg .tb-relic-acquired-rarity{padding:5px 10px;border:1px solid #c8a65c77;border-radius:99px;background:#c39a3b18;color:#f1d28e;font:900 8px/1 system-ui;letter-spacing:.16em}
+#tbRpg .tb-relic-acquired-modal p{max-width:300px;margin:13px 0 19px;color:#d1c8b8;font:600 12px/1.55 system-ui}
+#tbRpg .tb-relic-acquired-modal button{width:100%;min-height:48px;border:1px solid #f0d18a;border-radius:12px;background:linear-gradient(120deg,#8d6930,#d4ad60 52%,#947039);color:#1b160e;font:900 11px/1 system-ui;letter-spacing:.12em;box-shadow:0 5px 20px #0008;cursor:pointer}
+#tbRpg .tb-relic-acquired-overlay.rarity-legendary .tb-relic-acquired-art{--relic-glow:#f5bd55}
+#tbRpg .tb-relic-acquired-overlay.rarity-epic .tb-relic-acquired-art{--relic-glow:#bd91ff}
+#tbRpg .tb-relic-acquired-overlay.rarity-rare .tb-relic-acquired-art{--relic-glow:#75baff}
+#tbRpg .tb-relic-acquired-overlay.rarity-common .tb-relic-acquired-art{--relic-glow:#b8c4d1}
+@keyframes tbRelicBackdrop{from{opacity:0}to{opacity:1}}
+@keyframes tbRelicModalIn{0%{opacity:0;transform:translateY(24px) scale(.86)}70%{transform:translateY(-3px) scale(1.015)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes tbRelicFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.035)}}
+@keyframes tbRelicOrbit{to{transform:rotate(360deg)}}
+@keyframes tbRelicStars{0%,100%{opacity:.62;transform:scale(.96)}50%{opacity:1;transform:scale(1.05)}}
+@media(max-width:420px){#tbRpg .tb-relic-acquired-modal{padding:20px 17px 17px}#tbRpg .tb-relic-acquired-art{width:138px;height:138px}}
+@media(prefers-reduced-motion:reduce){#tbRpg .tb-relic-acquired-overlay,#tbRpg .tb-relic-acquired-modal,#tbRpg .tb-relic-acquired-stars,#tbRpg .tb-relic-acquired-art,#tbRpg .tb-relic-acquired-art::after{animation:none!important}}
