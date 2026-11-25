@@ -11,7 +11,7 @@ const pvp = readJson('configs/balance/pvp_store.json');
 const catalog = readJson('configs/skills/catalog.json');
 const skills = Array.isArray(catalog) ? catalog : catalog.skills;
 const ui = fs.readFileSync(path.join(root, 'rpg-rework-ui.js'), 'utf8');
-const prog = fs.readFileSync(path.join(root, 'progression-24.js'), 'utf8');
+const progressionSource = fs.readFileSync(path.join(root, 'progression-24.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
@@ -52,6 +52,6 @@ assert.ok(ui.includes('ДОЛГОСРОЧНЫЙ ПРОГРЕСС · МЕТА-П�
 assert.ok(ui.includes('data-action="open-workshop"'),'workshop button');
 assert.ok(ui.includes('profileRelicShopMarkup(c)'),'relics in profile');
 const accountMarkup=ui.slice(ui.indexOf("function accountScreen()"),ui.indexOf("function systemsScreen()"));assert.ok(!accountMarkup.includes('open-meta-progression'),'no meta button in account');
-assert.ok(!prog.includes('data-progress-tab="economy"')&&!prog.includes('data-progress-tab="ux"'),'meta tabs exclude economy and convenience');
-assert.ok(prog.includes('function renderMetaProgress()'),'meta renderer');
-assert.ok(prog.includes('function renderWorkshop()'),'workshop renderer');
+assert.ok(!progressionSource.includes('data-progress-tab="economy"')&&!progressionSource.includes('data-progress-tab="ux"'),'meta tabs exclude economy and convenience');
+assert.ok(progressionSource.includes('function renderMetaProgress()'),'meta renderer');
+assert.ok(progressionSource.includes('function renderWorkshop()'),'workshop renderer');
