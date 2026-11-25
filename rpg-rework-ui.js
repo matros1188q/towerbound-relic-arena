@@ -19,6 +19,9 @@
   body.style.position=saved.position;body.style.top=saved.top;body.style.left=saved.left;body.style.right=saved.right;body.style.width=saved.width;body.style.height=saved.height;html.style.overflow=saved.overflow;
   window.scrollTo(0,saved.y);
  }
+ document.addEventListener("touchmove",function(event){if(towerMapOpen)event.preventDefault();},{capture:true,passive:false});
+ document.addEventListener("wheel",function(event){if(towerMapOpen)event.preventDefault();},{capture:true,passive:false});
+ document.addEventListener("gesturestart",function(event){if(towerMapOpen)event.preventDefault();},{capture:true,passive:false});
  const nativeRandom=Math.random.bind(Math);
  function gameRandom(){const c=live();if(!c?.run?.dailyChallengeActive)return nativeRandom();let x=(Number(c.run.dailyChallengeSeedState)||Number(c.run.dailyChallengeSeed)||1)>>>0;x^=x<<13;x^=x>>>17;x^=x<<5;c.run.dailyChallengeSeedState=x>>>0;return (x>>>0)/4294967296;}
  window.TowerboundDailyRandom=gameRandom;
@@ -768,21 +771,21 @@ function createDialog(){
 
   const towerMapMarkup=towerMapOpen?(()=>{
    const currentFloor=Math.min(250,Math.max(1,Number(c.progress.currentStage)||1));
-   const centerIndex=124;
    let floorNodes="";
+   const routePoints=[];
    for(let index=0;index<250;index++){
-    const offset=index-centerIndex;
-    const stage=((currentFloor-1+offset+250*2)%250)+1;
+    const stage=index+1;
     const row=Math.floor(index/10),step=index%10,col=row%2===0?step:9-step;
+    routePoints.push((50+col*100)+","+(50+row*100));
     const accessible=stage<=c.progress.highestEver+1,cleared=stage<=c.progress.highestEver,isBoss=stage%balance.map.boss_every===0;
     const eventType=c.run.mapEvents?.[stage],isEvent=!isBoss&&!c.run.completedMapEvents.includes(stage)&&!!eventType;
     const selected=stage===selectedStage,isCurrent=stage===currentFloor;
     const isElite=["champion","guardian","secret_boss"].includes(eventType),isTrial=eventType==="trial",isSecret=["secret","secret_cache"].includes(eventType);
     const kind=isBoss?"БОСС":isElite?"ЭЛИТА":isTrial?"ИСПЫТАНИЕ":isSecret?"ТАЙНА":isEvent?"СОБЫТИЕ":cleared?"ПРОЙДЕН":"ЭТАЖ";
-    floorNodes+='<button type="button" class="tb-tower-floor-node '+(cleared?"is-cleared ":"")+(selected?"is-selected ":"")+(isCurrent?"is-current ":"")+(isBoss?"is-boss ":"")+(isElite?"is-elite ":"")+(isEvent?"is-event ":"")+'" data-stage="'+stage+'" style="--floor-col:'+(col+1)+';--floor-row:'+(row+1)+'" '+(!accessible?'disabled':'')+' aria-label="Этаж '+stage+' · '+kind+'"><strong>'+(isBoss?"♛":cleared?"✓":stage)+'</strong></button>';
+    floorNodes+='<button type="button" class="tb-tower-floor-node '+(cleared?"is-cleared ":"")+(selected?"is-selected ":"")+(isCurrent?"is-current ":"")+(isBoss?"is-boss ":"")+(isElite?"is-elite ":"")+(isEvent?"is-event ":"")+'" data-stage="'+stage+'" style="--floor-x:'+((col+.5)*10)+'%;--floor-y:'+((row+.5)*4)+'%" '+(!accessible?'disabled':'')+' aria-label="Этаж '+stage+' · '+kind+'"><strong>'+(isBoss?"♛":cleared?"✓":stage)+'</strong></button>';
    }
    const currentChapter=Math.floor((currentFloor-1)/50)+1;
-   return '<section class="tb-tower-map-overlay" role="dialog" aria-modal="true" aria-label="Карта всех этажей Башни"><header class="tb-tower-map-head"><div><small>TOWERBOUND · ВОСХОЖДЕНИЕ</small><strong>ЭТАЖ '+currentFloor+' <i>/ 250</i></strong><span>Пройдено '+c.progress.highestEver+' · Глава '+currentChapter+'</span></div><button type="button" data-action="tower-map-close" aria-label="Закрыть карту">×</button></header><div class="tb-tower-map-tools"><span><i class="done"></i> Пройдено <i class="active"></i> Текущий <i class="locked"></i> Закрыто <i class="boss"></i> Босс</span><span class="tb-map-layout-hint">250 ЭТАЖЕЙ · МАРШРУТ ЗМЕЙКОЙ</span></div><div class="tb-tower-map-scroll" id="tbTowerMapScroll"><section class="tb-tower-map-segment" data-chapter="'+currentChapter+'">'+floorNodes+'</section></div></section>';
+   return '<section class="tb-tower-map-overlay" role="dialog" aria-modal="true" aria-label="Карта всех этажей Башни"><header class="tb-tower-map-head"><div><small>TOWERBOUND · ВОСХОЖДЕНИЕ</small><strong>ЭТАЖ '+currentFloor+' <i>/ 250</i></strong><span>Пройдено '+c.progress.highestEver+' · Глава '+currentChapter+'</span></div><button type="button" data-action="tower-map-close" aria-label="Закрыть карту">×</button></header><div class="tb-tower-map-tools"><span><i class="done"></i> Пройдено <i class="active"></i> Текущий <i class="locked"></i> Закрыто <i class="boss"></i> Босс</span><span class="tb-map-layout-hint">250 ЭТАЖЕЙ · МАРШРУТ ЗМЕЙКОЙ</span></div><div class="tb-tower-map-scroll" id="tbTowerMapScroll"><section class="tb-tower-map-segment" data-chapter="'+currentChapter+'"><svg class="tb-tower-route-lines" viewBox="0 0 1000 2500" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+routePoints.join(" ")+'"/></svg>'+floorNodes+'</section></div></section>';
   })():"";
   return header("Карта 250 уровней",c.name+" · "+clsName(c)+" · Ур. "+c.level)+
    '<section class="tb-map-screen" style="background-image:linear-gradient(180deg,#090c18dd,#090c18aa),url('+chapterBackgroundPath(selectedStage).replace(/ /g,"%20")+');background-size:cover;background-position:center"><div class="tb-map-top"><div class="tb-map-identity"><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · '+esc(classData(c).resource)+': '+c.resource+'/'+c.resourceMax+'</small></div><div class="tb-currency"><span>◈ '+c.silver+' серебра</span><span>◆ '+engine.state.account.diamonds+' алмазов</span><span>Мощь '+engine.combatPower(c)+'</span><span>♥ Жизни: '+(c.run.lives||balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives)+'/'+balance.difficulty.modes[c.difficulty||balance.difficulty.default].lives+'</span></div></div>'+
