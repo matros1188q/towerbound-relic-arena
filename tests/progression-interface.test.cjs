@@ -65,6 +65,32 @@ assert.deepEqual(restarted.deck,[{id:'retained-card',cardId:'strike',upgraded:tr
 assert.deepEqual(restarted.unlockedCards,['strike','defend'],'voluntary restart preserves permanent card unlocks');
 assert.equal(restarted.progression.permanentXpBonus,0.2,'voluntary restart preserves permanent progression bonuses');
 assert.equal(restarted.progression.runewords[0].key,'persist','voluntary restart preserves runewords');
+const deathCharacter=bonusEngine.createCharacter('Checkpoint Audit','dragonkin');
+const deathState=bonusEngine.state.characters.find(character=>character.id===deathCharacter.id);
+deathState.level=35;deathState.xp=9000;deathState.silver=999;
+deathState.progress={highestEver:90,currentStage:91,checkpoints:[50]};
+deathState.bag=[{id:'bag-kept',type:'craft_material',quantity:8}];
+deathState.gear=[{id:'checkpoint-gear',slot:0,type:'equipment',rarity:'Редкая',stats:{attack:8}},null,null,null,null,null];
+deathState.relics=['bloodstone'];deathState.deck=[{id:'pre-death-card'}];
+deathState.run.active=true;deathState.run.playerHp=0;deathState.run.experience=0;deathState.run.lives=3;
+deathState.run.snapshot={stage:50,hp:123,silver:456,deck:[{id:'checkpoint-card'}],relics:['steel_heart'],gear:[{id:'saved-gear',slot:0,type:'equipment',rarity:'Редкая',stats:{attack:5}},null,null,null,null,null],createdAt:1};
+const checkpointResult=bonusEngine.confirmDeath(deathCharacter.id);
+const afterCheckpoint=bonusEngine.state.characters.find(character=>character.id===deathCharacter.id);
+assert.equal(checkpointResult.checkpointRestored,true,'death with a checkpoint restores the checkpoint');
+assert.equal(checkpointResult.runEnded,false,'checkpoint recovery does not end the run');
+assert.equal(afterCheckpoint.progress.currentStage,50,'checkpoint recovery returns to the saved stage');
+assert.equal(afterCheckpoint.silver,456,'checkpoint recovery restores checkpoint silver');
+assert.equal(afterCheckpoint.gear[0].id,'saved-gear','checkpoint recovery restores checkpoint gear');
+assert.deepEqual(afterCheckpoint.relics,['steel_heart'],'checkpoint recovery restores checkpoint relics');
+assert.deepEqual(afterCheckpoint.deck,[{id:'checkpoint-card'}],'checkpoint recovery restores checkpoint deck');
+assert.equal(afterCheckpoint.bag[0].id,'bag-kept','checkpoint recovery keeps the bag except for the configured death-loss roll');
+const terminalCharacter=bonusEngine.createCharacter('Terminal Audit','assassin');
+const terminalState=bonusEngine.state.characters.find(character=>character.id===terminalCharacter.id);
+terminalState.run.active=true;terminalState.run.playerHp=0;terminalState.run.experience=0;terminalState.run.snapshot=null;
+const terminalResult=bonusEngine.confirmDeath(terminalCharacter.id);
+assert.equal(terminalResult.runEnded,true,'death without a checkpoint ends the run');
+assert.equal(terminalResult.checkpointRestored,false,'terminal death is distinct from checkpoint recovery');
+
 
 
 
