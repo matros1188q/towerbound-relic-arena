@@ -1240,3 +1240,9 @@
 #tbRpg .tb-v2 .tb-seasonal-status p{margin:4px 0;color:#f4ead6;font-weight:800}
 #tbRpg .tb-v2 .tb-seasonal-status small{color:#aeb8c9;font-size:10px;line-height:1.35}
 @media(max-width:520px){#tbRpg .tb-v2 .new-end-turn{min-height:48px!important;font-size:13px!important}#tbRpg .tb-v2 .tb-seasonal-status{grid-template-columns:1fr}}
+
+#tbRpg .tb-v2 .tb-map-pvp{margin:10px 0 14px;padding:12px;background:rgba(5,10,18,.82);border:1px solid rgba(202,171,108,.32);border-radius:14px;backdrop-filter:blur(12px)}
+#tbRpg .tb-v2 .tb-map-pvp .tb-system-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+#tbRpg .tb-v2 .tb-map-pvp .tb-system-product{min-width:0;padding:9px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:9px}
+#tbRpg .tb-v2 .tb-map-pvp .tb-system-product small{display:block;color:#aeb8c9;font-size:10px;margin:4px 0}
+#tbRpg .tb-v2 .tb-map-pvp .tb-system-product button{width:100%;font-size:10px}
