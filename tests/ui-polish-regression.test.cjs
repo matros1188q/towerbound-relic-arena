@@ -44,7 +44,7 @@ console.log('UI polish regression checks passed.');
 assert.ok(css.includes('font:600 12px/1.2 system-ui,sans-serif'),'card descriptions use 12px text');
 assert.ok(css.includes('new-enemy-item{filter:drop-shadow(0px 8px 12px rgba(0,0,0,.9));'),'enemy shadow');
 assert.ok(css.includes('new-hand-row{background:rgba(0,0,0,.6)'),'dark hand background');
-assert.ok(css.includes('tb-end-turn{position:fixed!important'),'fixed end turn');
+assert.ok(css.includes('new-end-turn{position:fixed!important'),'fixed end turn');
 assert.ok(ui.includes('window.confirm("Вы уверены?")'),'talent reset confirmation');
 assert.ok(ui.includes('data-action="push-notifications"'),'account convenience');
 assert.ok(ui.includes('ДОЛГОСРОЧНЫЙ ПРОГРЕСС · МЕТА-ПРОГРЕССИЯ'),'meta progress on Progress');
