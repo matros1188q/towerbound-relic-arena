@@ -18,7 +18,14 @@ style.textContent=[
 '#tbRpg .tb-v2 .tb-weather i{position:absolute;top:-12%;left:var(--x);font-size:var(--s);opacity:var(--o);animation:tb-weather-fall var(--d) linear infinite}',
 '#tbRpg .tb-v2 .tb-combat-status{position:absolute;z-index:15;top:18%;left:50%;transform:translateX(-50%);font-size:22px;animation:tb-status-rise 1.1s ease-out forwards;pointer-events:none}',
 '#tbRpg .tb-v2 .tb-ultimate-dark{position:fixed;inset:0;z-index:999998;background:rgba(0,0,0,.78);pointer-events:none;animation:tb-ultimate-dim 1s ease-out forwards}',
+'#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc{z-index:4;animation:tb-ancient-proc-pulse .82s cubic-bezier(.2,.8,.2,1)}',
+'#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-critical{--tb-proc-color:#fff0a5;filter:drop-shadow(0 0 22px #ffe58c)}',
+'#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-block{--tb-proc-color:#80ddff;filter:drop-shadow(0 0 22px #61cfff)}',
+'#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc-magic{--tb-proc-color:#c5a2ff;filter:drop-shadow(0 0 24px #aa7bff)}',
+'#tbRpg .tb-v2 .new-hero-side.tb-ancient-proc .tb-ancient-orbit{animation:tb-ancient-proc-orbit .82s ease-out}',
 '@keyframes tb-ultimate-dim{0%{opacity:0}18%{opacity:1}100%{opacity:0}}',
+'@keyframes tb-ancient-proc-pulse{0%{transform:scale(1);filter:brightness(1)}24%{transform:scale(1.055);filter:brightness(1.8) drop-shadow(0 0 18px var(--tb-proc-color,#fff))}100%{transform:scale(1);filter:brightness(1)} }',
+'@keyframes tb-ancient-proc-orbit{0%{opacity:.65;transform:scale(.8) rotate(0)}45%{opacity:1;transform:scale(1.28) rotate(110deg)}100%{opacity:.85;transform:scale(1) rotate(220deg)}}',
 '@keyframes tb-hit-spark{0%{filter:brightness(1)}30%{filter:brightness(3) saturate(0);box-shadow:0 0 0 5px #fff,0 0 38px #fff}100%{filter:brightness(1)}}',
 '@keyframes tb-mob-death{to{opacity:0;transform:scale(.72) rotate(-4deg);filter:blur(4px)}}',
 '@keyframes tb-skill-ready{from{box-shadow:0 0 0 1px #e6c77c22}to{box-shadow:0 0 17px #e6c77c77}}',
@@ -29,6 +36,8 @@ style.textContent=[
 '@keyframes tb-status-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-48px) scale(1.1)}}'
 ].join(String.fromCharCode(10));document.head.appendChild(style);
 let stageSeen=0,bossSeen='',lastHp='';
+function ancientProc(event){const root=getRoot();if(!root)return;const hero=root.querySelector(".new-hero-side.tb-ancient-awakened");if(!hero)return;const kind=String(event.detail?.kind||"magic"),tier=Math.min(4,Math.max(2,Number(event.detail?.tier)||2)),className="tb-ancient-proc-"+kind;hero.classList.remove("tb-ancient-proc", "tb-ancient-proc-critical","tb-ancient-proc-block","tb-ancient-proc-magic");void hero.offsetWidth;hero.classList.add("tb-ancient-proc",className);setTimeout(()=>hero.classList.remove("tb-ancient-proc",className),900);const labels={critical:"✦ КРИТИЧЕСКИЙ УДАР",block:"◈ ЩИТ ДРЕВНИХ",magic:"✧ РЕЗОНАНС СТИХИЙ"};window.TowerboundCombatVisuals?.status(labels[kind]||"✧ ПРОБУЖДЕНИЕ");}
+document.addEventListener("tb:ancient-relic-proc",ancientProc);
 function update(){const root=getRoot();if(!root)return;const arena=root.querySelector('.tb-arena');if(!arena){if(root.classList.contains('tb-low-hp'))root.classList.remove('tb-low-hp');return;}
 const match=(root.querySelector('.tb-arena-top')?.textContent||'').match(/ЭТАП\s+(\d+)/i);const stage=Number(match?.[1]||0);
 if(stage){const chapter=Math.floor((stage-1)/50)%3;if(arena.dataset.tbWeatherChapter!==String(chapter)){arena.querySelector('.tb-weather')?.remove();const layer=document.createElement('div');layer.className='tb-weather';const icons=chapter===0?['❄','✧']:chapter===1?['◆','✦']:['╱','💧'];for(let i=0;i<16;i++){const p=document.createElement('i');p.textContent=icons[i%icons.length];p.style.setProperty('--x',Math.random()*100+'%');p.style.setProperty('--s',8+Math.random()*12+'px');p.style.setProperty('--o',String(.12+Math.random()*.3));p.style.setProperty('--d',3+Math.random()*5+'s');p.style.animationDelay=-Math.random()*7+'s';layer.appendChild(p);}arena.appendChild(layer);arena.dataset.tbWeatherChapter=String(chapter);}
