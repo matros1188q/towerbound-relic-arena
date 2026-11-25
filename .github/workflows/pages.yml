@@ -12,7 +12,20 @@ concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
+  progression-regression:
+    name: Permanent progression regression tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test permanent bonuses, restart persistence and checkpoint recovery
+        run: node tests/progression-interface.test.cjs
   deploy:
+    needs: progression-regression
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
