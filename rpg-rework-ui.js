@@ -257,10 +257,10 @@
   bishop_healing_utility:{id:"bishop_healing_utility",name:"Кара",classId:"bishop",branchId:"healing",type:"attack",rarity:"rare",cost:1,description:"Урон от недостающего HP 0.2 · Слабость 1",effects:{"damageMissingHp":0.2,"weak":1}},
   bishop_buffs_core:{id:"bishop_buffs_core",name:"Боевой настрой",classId:"bishop",branchId:"buffs",starter:true,type:"skill",rarity:"common",cost:1,description:"Усиление 2",effects:{"fury":2}},
   bishop_buffs_utility:{id:"bishop_buffs_utility",name:"Вдохновляющая молитва",classId:"bishop",branchId:"buffs",type:"attack",rarity:"rare",cost:1,description:"Урон 4 · Добор 2 · Энергия 1",effects:{"damage":4,"draw":2,"energy":1}},
-  dragonkin_fire_dragon_core:{id:"dragonkin_fire_dragon_core",name:"Огненный плевок",classId:"dragonkin",branchId:"fire_dragon",starter:true,type:"skill",rarity:"common",cost:1,description:"Урон 9 · undefined fire",effects:{"damage":9,"damageType":"fire"}},
+  dragonkin_fire_dragon_core:{id:"dragonkin_fire_dragon_core",name:"Огненный плевок",classId:"dragonkin",branchId:"fire_dragon",starter:true,type:"skill",rarity:"common",cost:1,description:"Урон 9 · Огонь",effects:{"damage":9,"damageType":"fire"}},
   dragonkin_fire_dragon_utility:{id:"dragonkin_fire_dragon_utility",name:"Пылающая чешуя",classId:"dragonkin",branchId:"fire_dragon",type:"attack",rarity:"rare",cost:1,description:"Броня 8 · Усиление 1",effects:{"block":8,"fury":1}},
   dragonkin_ice_dragon_core:{id:"dragonkin_ice_dragon_core",name:"Ледяной панцирь",classId:"dragonkin",branchId:"ice_dragon",starter:true,type:"skill",rarity:"common",cost:1,description:"Броня 12 · Слабость 1",effects:{"block":12,"weak":1}},
-  dragonkin_ice_dragon_utility:{id:"dragonkin_ice_dragon_utility",name:"Морозное копьё",classId:"dragonkin",branchId:"ice_dragon",type:"attack",rarity:"rare",cost:1,description:"Урон 8 · undefined ice · Слабость 2",effects:{"damage":8,"damageType":"ice","weak":2}},
+  dragonkin_ice_dragon_utility:{id:"dragonkin_ice_dragon_utility",name:"Морозное копьё",classId:"dragonkin",branchId:"ice_dragon",type:"attack",rarity:"rare",cost:1,description:"Урон 8 · Лёд · Слабость 2",effects:{"damage":8,"damageType":"ice","weak":2}},
   dragonkin_black_dragon_core:{id:"dragonkin_black_dragon_core",name:"Укус пустоты",classId:"dragonkin",branchId:"black_dragon",starter:true,type:"skill",rarity:"common",cost:1,description:"Урон 9 · Тёмный урон · Слабость 2",effects:{"damage":9,"damageType":"dark","weak":2}},
   dragonkin_black_dragon_utility:{id:"dragonkin_black_dragon_utility",name:"Поглощение души",classId:"dragonkin",branchId:"black_dragon",type:"attack",rarity:"rare",cost:1,description:"Урон 7 · Тёмный урон · Лечение 5",effects:{"damage":7,"damageType":"dark","heal":5}},
   destroyer_fists_core:{id:"destroyer_fists_core",name:"Шквал ударов",classId:"destroyer",branchId:"fists",starter:true,type:"skill",rarity:"common",cost:1,description:"Урон 3 · Удары 3",effects:{"damage":3,"hits":3}},
@@ -1108,14 +1108,14 @@ function createDialog(){
   const isXCost=!!(card.isXCost||card.costX),energy=Number.isFinite(Number(energySpent))?Math.max(0,Number(energySpent)):(isXCost?Math.max(0,Number(character.currentEnergy)||0):0);
   const perEnergy=isXCost?Math.max(0,Number(effects.damagePerEnergy)||0)*energy:0;
   if(base<=0&&perEnergy<=0)return 0;
-  const conditional=Number(effects.bonusDamageIfBlock)>0&&(battle?.cardBlock||0)>0?Number(effects.bonusDamageIfBlock):0,treeDamageFlat=treeEffect(character,"damageFlat"),treeDamagePercent=treeEffect(character,"damagePercent");
+  const conditional=Number(effects.bonusDamageIfBlock)>0&&(battle?.cardBlock||0)>0?Number(effects.bonusDamageIfBlock):0,treeCache=rebuildTreeCache(character),treeDamageFlat=Number(treeCache.damageFlat)||0,treeDamagePercent=Number(treeCache.damagePercent)||0;
   const branches=classData(character)?.branches||[],branch=branches.find(entry=>entry.id===character.branch);
   const powerTalent=(branch?.talents||[]).find(talent=>/сила\s*$/i.test(String(talent.name||"")));
   const powerRank=Math.max(0,Number(character.talents?.[powerTalent?.id])||0);
   const talentBonus=powerRank*2,damageType=effects.damageType||card.damageType||"physical";
-  const isMagic=isMagicCard(card,effects),spellBonus=isMagic?Math.max(0,Number(battle?.cardSpellPower)||0):0,guildMagicBonus=isMagic?Math.round((base+perEnergy)*Math.max(0,Number(character.guildBuffs?.magic_attack)||0)*.02):0;
+  const isMagic=isMagicCard(card,effects),guildMagicBonus=isMagic?Math.round((base+perEnergy)*Math.max(0,Number(character.guildBuffs?.magic_attack)||0)*.02):0;
   const specializationScale=card.branchId&&card.branchId===character.branch?1+Math.max(0,Number(engine.getCombatStats(character).specializationDamage)||0):1;
-  return Math.max(0,Math.round((base+perEnergy+conditional+talentBonus+spellBonus+guildMagicBonus+treeDamageFlat)*(1+treeDamagePercent)*specializationScale)+Math.max(0,Number(battle?.relicAttackBonus)||0)+Math.max(0,Number(battle?.nextAttackDamageBonus)||0));
+  return Math.max(0,Math.round((base+perEnergy+conditional+talentBonus+guildMagicBonus+treeDamageFlat)*(1+treeDamagePercent)*specializationScale)+Math.max(0,Number(battle?.relicAttackBonus)||0));
  }
  function classResourceMarkup(c){
   if(c){for(const [key,value] of Object.entries({combo:0,rage:0,charges:0,faith:0,element:"fire",magicCharge:0,totem:0}))if(c[key]===undefined||c[key]===null)c[key]=value;}
@@ -1146,17 +1146,18 @@ function createDialog(){
   const delay=scheduledBattle.fastBattle?100:220;
   setTimeout(()=>{
    if(!battle||battle!==scheduledBattle)return;
-   let stateBefore=null,battleBefore=null,summaryBefore=null,screenBefore=screen,stageBefore=selectedStage,routeBefore=routeChoice;
+   let savepoint=null,battleBefore=null,summaryBefore=null,screenBefore=screen,stageBefore=selectedStage,routeBefore=routeChoice;
    try{
-    // Snapshot creation must be guarded too; otherwise serialization errors leave the card lock stuck.
-    stateBefore=JSON.parse(JSON.stringify(engine.state));
+    // Persist a recovery point, then snapshot only the live battle instead of cloning the full RPG state.
+    save();savepoint=localStorage.getItem("tb-rpg-v2");
     battleBefore=JSON.parse(JSON.stringify(battle));
     summaryBefore=postBattleSummary?JSON.parse(JSON.stringify(postBattleSummary)):null;
     resolveCardPlay(cardIndex);
    }catch(error){
-    if(stateBefore&&battleBefore){
+    if(savepoint&&battleBefore){
+     const restoredState=JSON.parse(savepoint);
      for(const key of Object.keys(engine.state))delete engine.state[key];
-     Object.assign(engine.state,stateBefore);
+     Object.assign(engine.state,restoredState);
      battle=battleBefore;battle.enemies=Array.isArray(battle.enemies)?battle.enemies:[];
      battle.enemy=battle.enemies.find(enemy=>Number(enemy.index)===Number(battle.targetIndex))||battle.enemy;
      if(battle.enemy){battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;}
@@ -1173,9 +1174,9 @@ function createDialog(){
  function resolveCardPlay(cardIndex){
   if(!battle||battle.actor?.type!=="player"||battle.busy||battle.paused)return;
   if((Number(battle.cardsPlayedThisTurn)||0)>=20){notify("Лимит 20 карт за ход достигнут · ход завершён");endPlayerTurn();return;}
-  const c=live();ensureCardDeck(c);const index=Number(cardIndex),card=c.hand[index];
+  const c=live();ensureCardDeck(c);const treeCache=rebuildTreeCache(c),index=Number(cardIndex),card=c.hand[index];
   if(!Number.isInteger(index)||!card){notify("Карта больше не в руке");return;}
-  const effects=cardEffects(card),treePoison=treeEffect(c,"poisonStacks"),treeBleed=treeEffect(c,"bleedStacks"),freeTotem=c.classId==="shaman"&&battle.shamanFreeMode&&Number(c.totem)>=3,isXCost=!!(card.isXCost||card.costX),baseCost=isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0),cardDiscount=Math.max(0,Number(battle.nextCardCostReduction)||0),dailyDiscount=c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"?1:0,cost=battle.guildRaid?0:(freeTotem?0:Math.max(0,baseCost-dailyDiscount-cardDiscount));
+  const effects=cardEffects(card),treePoison=Number(treeCache.poisonStacks)||0,treeBleed=Number(treeCache.bleedStacks)||0,freeTotem=c.classId==="shaman"&&battle.shamanFreeMode&&Number(c.totem)>=3,isXCost=!!(card.isXCost||card.costX),baseCost=isXCost?c.currentEnergy:Math.max(0,Number(card.cost)||0),cardDiscount=Math.max(0,Number(battle.nextCardCostReduction)||0),dailyDiscount=c.run.dailyChallengeActive&&c.run.dailyChallengeModifier==="blood"?1:0,cost=battle.guildRaid?0:(freeTotem?0:Math.max(0,baseCost-dailyDiscount-cardDiscount));
   if(effects.unplayable||((card.type==="curse"||card.type==="status")&&card.id!=="status_slime")){notify("Эту карту нельзя разыграть");return;}
   if(!battle.guildRaid&&!freeTotem&&c.currentEnergy<cost){notify("Недостаточно энергии");return;}
   const isDuelistFinisher=c.classId==="duelist"&&!!(card.finisher||effects.finisher||(Array.isArray(card.tags)&&card.tags.includes("finisher")));if(isDuelistFinisher&&Number(c.charges)<3){notify("Для Смертельного выпада нужно 3 заряда");return;}
@@ -1196,15 +1197,15 @@ function createDialog(){
   if(c.classId==="duelist"&&attackCard&&finisher&&Number(c.charges)>=3){classMultiplier*=3;c.charges=Math.max(0,Number(c.charges)-3);}
   if(magicChargeSpent){classMultiplier*=1+Math.min(10,Number(c.magicCharge)||0)*.1;c.magicCharge=0;}
   const refineWeapon=(c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0)),weaponRefine=Math.max(0,Number(refineWeapon?.refine)||0),armorRefine=(c.gear||[]).filter(item=>item&&["chest","head","legs","hands",1,2,3,4].includes(item.slot)).reduce((sum,item)=>sum+Math.max(0,Number(item.refine)||0),0);
-  const guildCrit=1+Math.max(0,Number(c.guildBuffs?.crit_damage)||0)*.05,guildMagic=magicCard?1+Math.max(0,Number(c.guildBuffs?.magic_attack)||0)*.02:1,treeCritChance=treeEffect(c,"critChance"),treeCritBleed=treeEffect(c,"critCausesBleed"),rawFor=base=>{const critical=attackCard&&Math.random()<Math.min(.8,Math.max(0,Number(stats.critChance)||0)+treeCritChance);if(critical&&treeCritBleed>0&&target)target.bleed=Math.max(0,Number(target.bleed)||0)+treeCritBleed;return Math.max(1,Math.round((base+(attackCard?weaponRefine*2:0)+classFlat)*(1+Math.max(0,Number(stats.attack)||0)/100)*scale*weakScale*furyScale*classMultiplier*guildMagic*(battle.firstAttackDouble?2:1)*(critical?1.75*guildCrit:1)));},damageType=effects.damageType||card.damageType||"physical";
+  const guildCrit=1+Math.max(0,Number(c.guildBuffs?.crit_damage)||0)*.05,guildMagic=magicCard?1+Math.max(0,Number(c.guildBuffs?.magic_attack)||0)*.02:1,treeCritChance=treeEffect(c,"critChance"),treeCritBleed=treeEffect(c,"critCausesBleed"),rawFor=base=>{const critical=attackCard&&Math.random()<Math.min(.8,Math.max(0,Number(stats.critChance)||0)+treeCritChance);if(critical&&treeCritBleed>0&&target)target.bleed=Math.max(0,Number(target.bleed)||0)+treeCritBleed;const spellPower=magicCard?Math.max(0,Number(battle.cardSpellPower)||0):0,nextAttackBonus=Math.max(0,Number(battle.nextAttackDamageBonus)||0);return Math.max(1,Math.round((base+nextAttackBonus+(attackCard?weaponRefine*2:0)+classFlat)*(1+(Math.max(0,Number(stats.attack)||0)+spellPower)/100)*scale*weakScale*furyScale*classMultiplier*guildMagic*(battle.firstAttackDouble?2:1)*(critical?1.75*guildCrit:1)));},damageType=effects.damageType||card.damageType||"physical";
   let killed=false;const calculatedDamage=getCardDamageWithTalents(card,c,battle.guildRaid&&isXCost?Math.max(1,Number(c.energy)||3):cost,effects),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0||dynamicCardDamage>0)?calculatedDamage+dynamicCardDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;logCombatEvent("Вы сыграли «"+card.name+"» · "+hit.dealt+" урона","#e9d5a5");killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
-  if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;killed=killed||!!hit.killed;}battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
+  if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;killed=killed||!!hit.killed;}const defeatedByArea=(battle.enemies||[]).filter(enemy=>enemy&&Number(enemy.hp)<=0);if(defeatedByArea.length)killed=true;/* finishCurrentEnemy processes every dead enemy in its own queue loop below. */battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}
   if(Number(effects.hits)>1&&singleDamage>0&&target)for(let n=1;n<Number(effects.hits)&&c.run.playerHp>0;n++){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;killed=killed||!!hit.killed;}
   if(singleDamage>0||areaDamage>0){if(battle.firstAttackDouble){battle.firstAttackDouble=false;if(c.run.stage)c.run.stage.relicFirstAttackConsumed=true;}battle.nextAttackDamageBonus=0;}
   battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;if(c.run.playerHp<=0){endFromDamage();return;}
   if(Number(effects.block)>0){const block=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)+armorRefine*3+getCardBlockTalentBonus(c)+Math.max(0,Number(battle.relicBlockBonus)||0)));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");pulseCombatActor("player","armor");}
-  if(Number(effects.heal)>0||Number(effects.healPerBleed)>0||treeEffect(c,"bleedHealPerStack")>0){const before=c.run.playerHp,bleedStacks=target?Math.max(0,Number(target.bleed)||0):0,healing=(Math.max(0,Number(effects.heal)||0)+bleedStacks*(Math.max(0,Number(effects.healPerBleed)||0)+treeEffect(c,"bleedHealPerStack")))*(1+treeEffect(c,"healPercent"));c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(healing)));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");pulseCombatActor("player","heal");if(c.classId==="bishop")c.faith=Math.min(5,(Number(c.faith)||0)+1);}
+  if(Number(effects.heal)>0||Number(effects.healPerBleed)>0||(Number(treeCache.bleedHealPerStack)||0)>0){const before=c.run.playerHp,bleedStacks=target?Math.max(0,Number(target.bleed)||0):0,healing=(Math.max(0,Number(effects.heal)||0)+bleedStacks*(Math.max(0,Number(effects.healPerBleed)||0)+(Number(treeCache.bleedHealPerStack)||0)))*(1+(Number(treeCache.healPercent)||0));c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+Math.max(1,Math.round(healing)));showFloatingText("player","+"+(c.run.playerHp-before),"#58e38b");pulseCombatActor("player","heal");if(c.classId==="bishop")c.faith=Math.min(5,(Number(c.faith)||0)+1);}
   if(attackCard){if(c.classId==="assassin"){battle.assassinAttacksThisTurn=(battle.assassinAttacksThisTurn||0)+1;if(battle.assassinAttacksThisTurn>=3){c.combo=Math.min(3,(Number(c.combo)||0)+1);battle.assassinAttacksThisTurn=0;}}if(c.classId==="duelist")c.charges=Math.min(5,(Number(c.charges)||0)+1);}
   if(c.classId==="dragonkin"&&element&&element!==String(c.element||"fire")){c.element=element;battle.cardBlock=(Number(battle.cardBlock)||0)+5;showFloatingText("player","СТИХИЯ · ЩИТ +5","#78c9ff");}
   if(c.classId==="elemental"&&magicCard&&!magicChargeSpent)c.magicCharge=Math.min(10,(Number(c.magicCharge)||0)+1);
@@ -1299,12 +1300,13 @@ function talentBonusDescription(talent,rank){
  function treePointsEarned(level){const n=Math.max(1,Number(level)||1);return n<10?0:Math.min(101,n-9)+Math.max(0,Math.floor((n-110)/10));}
  function ensureTalentTreeState(c){if(!c.talentTree||typeof c.talentTree!=="object")c.talentTree={ranks:{}};if(!c.talentTree.ranks||typeof c.talentTree.ranks!=="object")c.talentTree.ranks={};return c.talentTree;}
  function treeNodes(c){return(talentTreeConfig?.nodes||[]).filter(n=>n.classId===c.classId);}
- function treeEffect(c,key){const ranks=ensureTalentTreeState(c).ranks;return treeNodes(c).reduce((v,n)=>v+(Number(n.effect?.[key])||0)*(Number(ranks[n.id])||0),0);}
+ function rebuildTreeCache(character){if(!character)return Object.create(null);const ranks=ensureTalentTreeState(character).ranks,cache=Object.create(null);for(const node of treeNodes(character)){const rank=Math.max(0,Number(ranks[node.id])||0);if(!rank||!node.effect)continue;for(const [key,value] of Object.entries(node.effect)){const amount=Number(value)||0;if(amount)cache[key]=(Number(cache[key])||0)+amount*rank;}}try{Object.defineProperty(character,"_treeCache",{value:cache,writable:true,configurable:true,enumerable:false});}catch(_){character._treeCache=cache;}return cache;}
+ function treeEffect(c,key){const cache=c?._treeCache;if(cache&&Object.prototype.hasOwnProperty.call(cache,key))return Number(cache[key])||0;if(cache)return 0;const ranks=ensureTalentTreeState(c).ranks;return treeNodes(c).reduce((v,n)=>v+(Number(n.effect?.[key])||0)*(Number(ranks[n.id])||0),0);}
   function applyTreePotionHealing(c,beforeHp){const modifier=treeEffect(c,"potionHealingMultiplier");const base=Math.round(engine.maxHp(c)*(Number(balance?.healing?.potion_heal_fraction)||0));const desired=Math.max(0,Math.round(base*Math.max(0,1+modifier)));c.run.playerHp=Math.min(engine.maxHp(c),Math.max(0,Number(beforeHp)||0)+desired);return Math.max(0,c.run.playerHp-(Number(beforeHp)||0));}
  function treeBranchSpent(c,branch){const ranks=ensureTalentTreeState(c).ranks;return treeNodes(c).filter(n=>n.branch===branch).reduce((v,n)=>v+(Number(ranks[n.id])||0),0);}
  function treeStatus(c,n){const ranks=ensureTalentTreeState(c).ranks,rank=Number(ranks[n.id])||0;if(rank>=n.maxRank)return"maxed";if(rank)return"owned";const totalSpent=Object.values(ranks).reduce((a,b)=>a+(Number(b)||0),0);return(n.branch==="core"||(n.connections||[]).some(id=>Number(ranks[id])>0))&&totalSpent>=(Number(n.requiredBranchPoints)||0)?"available":"locked";}
- function purchaseTreeNode(id){const c=live();if(!c||!talentTreeConfig)return;const n=treeNodes(c).find(x=>x.id===id);if(!n)return;const state=ensureTalentTreeState(c),rank=Number(state.ranks[id])||0,spent=Object.values(state.ranks).reduce((a,b)=>a+(Number(b)||0),0);if(c.level<10||treePointsEarned(c.level)<=spent||rank>=n.maxRank||treeStatus(c,n)==="locked"){notify("Узел пока недоступен");return;}state.ranks[id]=rank+1;save();render();notify("Талант улучшен: "+n.name);}
- function resetTalentTree(){const c=live();if(!c)return;const state=ensureTalentTreeState(c),spent=Object.values(state.ranks).reduce((a,b)=>a+(Number(b)||0),0),cost=Number(balance?.classes?.talent_reset_cost)||0;if(!spent)return;if((Number(c.silver)||0)<cost){notify("Недостаточно серебра для сброса");return;}c.silver-=cost;state.ranks={};save();render();}
+ function purchaseTreeNode(id){const c=live();if(!c||!talentTreeConfig)return;const n=treeNodes(c).find(x=>x.id===id);if(!n)return;const state=ensureTalentTreeState(c),rank=Number(state.ranks[id])||0,spent=Object.values(state.ranks).reduce((a,b)=>a+(Number(b)||0),0);if(c.level<10||treePointsEarned(c.level)<=spent||rank>=n.maxRank||treeStatus(c,n)==="locked"){notify("Узел пока недоступен");return;}state.ranks[id]=rank+1;rebuildTreeCache(c);save();render();notify("Талант улучшен: "+n.name);}
+ function resetTalentTree(){const c=live();if(!c)return;const state=ensureTalentTreeState(c),spent=Object.values(state.ranks).reduce((a,b)=>a+(Number(b)||0),0),cost=Number(balance?.classes?.talent_reset_cost)||0;if(!spent)return;if((Number(c.silver)||0)<cost){notify("Недостаточно серебра для сброса");return;}c.silver-=cost;state.ranks={};rebuildTreeCache(c);save();render();}
   function treeTransform(canvas){const dpr=Math.min(2,window.devicePixelRatio||1),w=canvas.width/dpr,h=canvas.height/dpr,base=Math.min(w,h)*.00042;return{dpr,w,h,base,ox:w/2+treeCamera.x,oy:h/2+treeCamera.y};}
   function treeIconImage(path){if(!path)return null;let img=treeIconCache.get(path);if(img)return img;if(typeof Image==="undefined")return null;img=new Image();treeIconCache.set(path,img);img.onload=()=>drawTalentTree();img.onerror=()=>treeIconCache.set(path,null);img.src=path;return img;}
   function drawTalentTree(){const canvas=root.querySelector("#talentTreeCanvas"),c=live();if(!canvas||!c||!talentTreeConfig)return;const ctx=canvas.getContext("2d"),t=treeTransform(canvas),list=treeNodes(c),ranks=ensureTalentTreeState(c).ranks,byId=new Map(list.map(n=>[n.id,n])),k=t.base*treeCamera.scale;if(!k)return;ctx.setTransform(t.dpr,0,0,t.dpr,0,0);ctx.clearRect(0,0,t.w,t.h);const bg=ctx.createRadialGradient(t.w*.5,t.h*.45,8,t.w*.5,t.h*.45,Math.max(t.w,t.h)*.78);bg.addColorStop(0,"#182335");bg.addColorStop(.56,"#0b1320");bg.addColorStop(1,"#050910");ctx.fillStyle=bg;ctx.fillRect(0,0,t.w,t.h);ctx.save();for(let i=0;i<72;i++){const x=(i*137.5)%t.w,y=(i*83.7)%t.h;ctx.fillStyle=i%4===0?"rgba(211,177,111,.16)":"rgba(151,177,205,.10)";ctx.fillRect(x,y,1.2,1.2);}ctx.translate(t.ox,t.oy);ctx.scale(k,k);ctx.translate(-1125,-1125);const edges=new Set();ctx.lineCap="round";ctx.lineJoin="round";for(const n of list){for(const id of n.connections||[]){const o=byId.get(id);if(!o)continue;const edge=[n.id,id].sort().join("|");if(edges.has(edge))continue;edges.add(edge);const learned=(Number(ranks[n.id])||0)>0&&(Number(ranks[id])||0)>0,active=(Number(ranks[n.id])||0)>0||(Number(ranks[id])||0)>0,color=TREE_COLORS[n.branch]||"#c9a96b";ctx.save();ctx.strokeStyle=learned?color:active?"rgba(190,155,100,.58)":"rgba(105,125,148,.32)";ctx.lineWidth=(learned?2.1:1.35)/k;ctx.shadowColor=learned?color:"transparent";ctx.shadowBlur=learned?7/k:0;const mx=(n.x+o.x)/2,my=(n.y+o.y)/2,dx=o.x-n.x,dy=o.y-n.y,len=Math.max(1,Math.hypot(dx,dy)),bend=(n.branch==="core"?0:Math.min(22,len*.08));ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.quadraticCurveTo(mx-(dy/len)*bend,my+(dx/len)*bend,o.x,o.y);ctx.stroke();ctx.restore();}}treeDrawn=[];for(const n of list){const status=treeStatus(c,n),rank=Number(ranks[n.id])||0,color=TREE_COLORS[n.branch]||"#d5b979",core=n.branch==="core",key=n.shape==="diamond"||n.shape==="square",radius=(core?36:key?20:15)/k,iconSize=(core?50:key?34:26)/k;ctx.save();ctx.translate(n.x,n.y);ctx.shadowColor=status==="owned"||status==="maxed"?"#e7bd62":status==="available"?color:"transparent";ctx.shadowBlur=(status==="owned"||status==="maxed"?10:status==="available"?5:0)/k;ctx.fillStyle=status==="locked"?"#17202b":status==="available"?"#20313b":"#211d19";ctx.beginPath();if(core){ctx.arc(0,0,radius,0,Math.PI*2);}else if(n.shape==="diamond"){ctx.moveTo(0,-radius);ctx.lineTo(radius,0);ctx.lineTo(0,radius);ctx.lineTo(-radius,0);ctx.closePath();}else if(n.shape==="square"){const r=radius*.72;ctx.roundRect(-r,-r,r*2,r*2,3/k);}else ctx.arc(0,0,radius,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle=status==="owned"||status==="maxed"?"#f3d17d":status==="available"?"#d8c18a":"#647184";ctx.lineWidth=(core?2.4:key?1.8:1.25)/k;ctx.stroke();const icon=treeIconImage(n.icon);if(icon&&icon.complete&&icon.naturalWidth){ctx.save();ctx.globalAlpha=status==="locked"?.42:status==="available"?.88:1;ctx.filter=status==="locked"?"grayscale(1) brightness(.62)":"none";ctx.drawImage(icon,-iconSize/2,-iconSize/2,iconSize,iconSize);ctx.restore();}else{ctx.fillStyle=status==="locked"?"#758092":"#f2d89c";ctx.font=(core?15:10)/k+"px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText((n.name||"✦").slice(0,1),0,0);}if(rank>0){ctx.fillStyle="#f4d58b";ctx.font="bold "+(8/k)+"px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(rank),radius*.72,radius*.72);}ctx.restore();treeDrawn.push({node:n,x:n.x,y:n.y,r:Math.max(18,iconSize*.78)/k});}ctx.restore();}
@@ -1658,24 +1660,24 @@ function talentBonusDescription(talent,rank){
   return '<span class="v2-skill-icon '+kind+'" aria-hidden="true"></span>';
  }
  const ARENA_BACKGROUND_LOCATIONS=[
-  {from:1,to:16,chapter:1,name:"Затопленный сток",src:"assets/Fon/image 25.jpeg"},
-  {from:17,to:33,chapter:1,name:"Тюрьма",src:"assets/Fon/image 26.jpeg"},
-  {from:34,to:50,chapter:1,name:"Разрушенная комната с колоннами",src:"assets/Fon/image 27.jpeg"},
-  {from:51,to:63,chapter:2,name:"Руины с деревьями",src:"assets/Fon/image 28.jpeg"},
-  {from:64,to:76,chapter:2,name:"Грибное болото",src:"assets/Fon/image 29.jpeg"},
-  {from:77,to:88,chapter:2,name:"Ледяная пещера",src:"assets/Fon/image 30.jpeg"},
-  {from:89,to:100,chapter:2,name:"Раскаленная кузня",src:"assets/Fon/image 31.jpeg"},
-  {from:101,to:112,chapter:3,name:"Библиотека",src:"assets/Fon/image 32.jpeg"},
-  {from:113,to:125,chapter:3,name:"Святилище Света",src:"assets/Fon/image 33.jpeg"},
-  {from:126,to:137,chapter:3,name:"Обсерватория с шестеренками",src:"assets/Fon/image 34.jpeg"},
-  {from:138,to:150,chapter:3,name:"Гнездо пауков",src:"assets/Fon/image 35.jpeg"},
-  {from:151,to:166,chapter:4,name:"Алтарь Крови",src:"assets/Fon/image 36.jpeg"},
-  {from:167,to:183,chapter:4,name:"Разлом Пустоты",src:"assets/Fon/image 37.jpeg"},
-  {from:184,to:200,chapter:4,name:"Тронный Зал Теней",src:"assets/Fon/image 38.jpeg"},
-  {from:201,to:212,chapter:5,name:"Сердце Башни",src:"assets/Fon/image 39.jpeg"},
-  {from:213,to:224,chapter:5,name:"Небесная Бездна",src:"assets/Fon/image 40.jpeg"},
-  {from:225,to:237,chapter:5,name:"Логово Дракона",src:"assets/Fon/image 42.jpeg"},
-  {from:238,to:250,chapter:5,name:"Финальные Врата",src:"assets/Fon/image 43.jpeg"}
+  {from:1,to:16,chapter:1,name:"Затопленный сток",src:"assets/Fon/image_25.jpeg"},
+  {from:17,to:33,chapter:1,name:"Тюрьма",src:"assets/Fon/image_26.jpeg"},
+  {from:34,to:50,chapter:1,name:"Разрушенная комната с колоннами",src:"assets/Fon/image_27.jpeg"},
+  {from:51,to:63,chapter:2,name:"Руины с деревьями",src:"assets/Fon/image_28.jpeg"},
+  {from:64,to:76,chapter:2,name:"Грибное болото",src:"assets/Fon/image_29.jpeg"},
+  {from:77,to:88,chapter:2,name:"Ледяная пещера",src:"assets/Fon/image_30.jpeg"},
+  {from:89,to:100,chapter:2,name:"Раскаленная кузня",src:"assets/Fon/image_31.jpeg"},
+  {from:101,to:112,chapter:3,name:"Библиотека",src:"assets/Fon/image_32.jpeg"},
+  {from:113,to:125,chapter:3,name:"Святилище Света",src:"assets/Fon/image_33.jpeg"},
+  {from:126,to:137,chapter:3,name:"Обсерватория с шестеренками",src:"assets/Fon/image_34.jpeg"},
+  {from:138,to:150,chapter:3,name:"Гнездо пауков",src:"assets/Fon/image_35.jpeg"},
+  {from:151,to:166,chapter:4,name:"Алтарь Крови",src:"assets/Fon/image_36.jpeg"},
+  {from:167,to:183,chapter:4,name:"Разлом Пустоты",src:"assets/Fon/image_37.jpeg"},
+  {from:184,to:200,chapter:4,name:"Тронный Зал Теней",src:"assets/Fon/image_38.jpeg"},
+  {from:201,to:212,chapter:5,name:"Сердце Башни",src:"assets/Fon/image_39.jpeg"},
+  {from:213,to:224,chapter:5,name:"Небесная Бездна",src:"assets/Fon/image_40.jpeg"},
+  {from:225,to:237,chapter:5,name:"Логово Дракона",src:"assets/Fon/image_42.jpeg"},
+  {from:238,to:250,chapter:5,name:"Финальные Врата",src:"assets/Fon/image_43.jpeg"}
  ];
  let arenaBackgroundChapter=0,arenaBackgroundPreloads=new Map(),arenaBackgroundRequest=0,arenaBackgroundCurrentSrc="";
  function arenaBackgroundForStage(stage){const value=Math.max(1,Math.min(250,Number(stage)||1));return ARENA_BACKGROUND_LOCATIONS.find(item=>value>=item.from&&value<=item.to)||ARENA_BACKGROUND_LOCATIONS[0];}
