@@ -11,7 +11,7 @@ assert.match(ui,/engine\.bossPhaseInfo\(target\.hp,target\.maxHp\)/,'boss phases
 assert.match(ui,/if\(enemy\.type==="boss"\)\{updateBossPhase\(enemy\);if\(!battle\)return;\}/,'boss phases update after enemy poison and bleed ticks');
 assert.match(ui,/turnOffset=battle\.actor\?\.type==="enemy"\?1:0/,'boss final-phase deadline accounts for an enemy-turn transition');
 assert.match(ui,/battle\.actor=\{type:state\.actorType==="enemy"\?"enemy":"player"/,'restored actor is known before boss phase recovery');
-assert.ok(ui.includes('isMagic=isMagicCard(card,effects),spellBonus=isMagic?Math.max(0,Number(battle?.cardSpellPower)||0):0'),'spell power applies to fire, ice, dark and other magical cards');
+assert.ok(ui.includes('spellPower=magicCard?Math.max(0,Number(battle.cardSpellPower)||0):0'),'spell power is applied to magical card attack scaling');
 assert.match(ui,/if\(nextPhase===2\)addSummonedBossMobs\(\)/,'phase two summons are connected');
 assert.match(ui,/phaseConfig\.immediate_attack/,'phase three immediate attack is connected');
 assert.match(ui,/player_turn_deadline/,'phase four deadline is configured');
@@ -32,8 +32,9 @@ assert.match(ui,/decayEnemyDebuffs\(enemy\);notify\("Враг оглушён/,'s
 assert.match(ui,/decayEnemyDebuffs\(enemy\);save\(\);render\(\);return;/,'sabotage advances debuff durations');
 assert.match(ui,/burn:"Горение: в конце хода игрока наносит урон, затем снимается\."/,'burn timing is explained');
 assert.match(ui,/\["burn","🔥"\]/,'burn is visible in live status');
-assert.ok(ui.includes('stateBefore=JSON.parse(JSON.stringify(engine.state))'),'card action captures a rollback snapshot');
-assert.match(ui,/Object\.assign\(engine\.state,stateBefore\)/,'card effect errors restore engine state');
+assert.ok(ui.includes('save();savepoint=localStorage.getItem("tb-rpg-v2")'),'card action persists a rollback savepoint before mutation');
+assert.ok(ui.includes('battleBefore=JSON.parse(JSON.stringify(battle))')&&!ui.includes('JSON.parse(JSON.stringify(engine.state))'),'card action snapshots only the live battle, not the full RPG state');
+assert.match(ui,/Object\.assign\(engine\.state,restoredState\)/,'card effect errors restore engine state from the persisted savepoint');
 assert.ok(ui.includes('battle=battleBefore;battle.enemies=Array.isArray(battle.enemies)?battle.enemies:[];')&&ui.includes('battle.enemy=battle.enemies.find(enemy=>Number(enemy.index)===Number(battle.targetIndex))||battle.enemy'),'card rollback rebinds the selected enemy to the restored enemy list');
 
 assert.match(sw,/towerbound-v[0-9]+/,'offline cache is invalidated');
@@ -65,4 +66,11 @@ assert.match(ui,/targetIndex:Number\(battle\.enemy\?\.index\?\?battle\.targetInd
 assert.match(ui,/Number\(x\.index\)===Number\(dot\.targetIndex\)/,'enemy DOTs tick only on the enemy they were applied to');
 assert.match(ui,/findIndex\(dot=>Number\(dot\?\.targetIndex\)===Number\(enemy\.index\)\)/,'tank cleanse removes only its own DOT');
 assert.doesNotMatch(ui,/battle\.enemy\.pendingCleanseDebuff=true;battle\.enemy\.debuffKind="debuff"/,'a non-DOT damage-reduction debuff cannot make a tank remove an unrelated DOT');
-console.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
+
+assert.match(ui,/nextAttackBonus=Math\.max\(0,Number\(battle\.nextAttackDamageBonus\)\|\|0\)/,'next-attack damage bonus is applied in raw card damage');
+assert.match(ui,/const defeatedByArea=\(battle\.enemies\|\|\[\]\)\.filter\(enemy=>enemy&&Number\(enemy\.hp\)<=0\);if\(defeatedByArea\.length\)killed=true/,'area damage collects every defeated enemy for the shared finish queue');
+assert.match(ui,/function rebuildTreeCache\(character\)/,'talent tree effects have a precomputed cache');
+assert.match(ui,/const treeCache=rebuildTreeCache\(c\)/,'card resolution rebuilds the talent cache once before using it');
+assert.ok(ui.includes('description:"Урон 9 · Огонь"')&&ui.includes('description:"Урон 8 · Лёд · Слабость 2"'),'Dragonkin fire and ice labels are localized');
+assert.ok(ui.includes('assets/Fon/image_25.jpeg')&&!ui.includes('assets/Fon/image 25.jpeg'),'arena background paths use underscore filenames');
+\nconsole.log('Deep combat regression passed: boss phases, turn restoration, statuses, card rollback and damage previews.');
