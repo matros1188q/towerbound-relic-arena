@@ -103,7 +103,7 @@
   function equipCosmetic(cosmeticId){const item=(balance.cosmetics?.items||[]).find(x=>x.id===cosmeticId);if(!item||!(state.account.cosmetics||[]).includes(cosmeticId))throw new Error("Cosmetic is not owned");state.account.activeCosmetics=state.account.activeCosmetics||{};state.account.activeCosmetics[item.type]=item.id;return clone(item);}
   const difficultyOf=character=>balance.difficulty.modes[character.difficulty||balance.difficulty.default]||balance.difficulty.modes.normal;
   const rarityKey=rarity=>({Обычная:"common",Редкая:"rare",Эпическая:"epic",Легендарная:"legendary",Богоподобная:"godlike"}[rarity]||String(rarity||"common").toLowerCase());
-  const stageSilver=stage=>(balance.mobs.silver_brackets||[]).find(x=>stage>=x.min&&stage<=x.max)?.amount||0;
+  const stageSilver=(stage,enemyType)=>{const rewards=balance.economy?.silver_drop||{},brackets=rewards.stage_brackets||balance.mobs.silver_brackets||[],base=brackets.find(x=>stage>=x.min&&stage<=x.max)?.amount||0,multiplier=Number(rewards[enemyType==="boss"?"boss":enemyType==="elite"?"elite":"normal"]??1);return Math.max(0,base*multiplier);};
   const resourceConfig=balance.resources||{starting_fraction:0.58,action_costs:{attack_skill:22,counter:18,ultimate:42},regeneration:{auto_attack:3,kill:5,potion:25}};
   const damageTypes=balance.mobs.damage_types||["fire","ice","dark","physical"];
   const damageTypeMultiplier=(target,type)=>{
@@ -857,7 +857,8 @@
     if(effect?.type==="elite_gold_multiplier"&&enemy.type==="elite")return value*Math.max(1,Number(effect.value)||1);
     return value;
    },1);
-   const silver=Math.round(stageSilver(stage)*accountBonus*(silverBuff?silverBuff.multiplier:1)*rewardMultiplier*relicGoldMultiplier);
+   const silverBase=stageSilver(stage,enemy.type),firstClearStageBonus=firstClear&&stageData.killedIndices.length+1>=stageData.mobs.length?stageSilver(stage,"normal")*Math.max(0,Number(balance.economy?.silver_drop?.first_clear_stage_bonus)||0):0;
+   const silver=Math.round((silverBase+firstClearStageBonus)*accountBonus*(silverBuff?silverBuff.multiplier:1)*rewardMultiplier*relicGoldMultiplier);
    character.silver+=silver;
    if(enemy.type==="elite"){recordDailyProgress(character.id,"elite_kills",1);recordWeeklyProgress(character,"elite_kills",1);}
    if(enemy.type==="boss")recordWeeklyProgress(character,"boss_kills",1);
