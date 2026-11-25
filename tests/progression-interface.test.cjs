@@ -40,6 +40,32 @@ const hpBefore=bonusEngine.maxHp(bonusState);
 const expectedRuneHp=Math.round(hpBefore*1.1);
 assert.equal(bonusEngine.maxHp(bonusState),expectedRuneHp,'one 10% health runeword increases max HP by exactly 10%');
 assert.equal(bonusEngine.getCombatStats(bonusState).maxHp,expectedRuneHp,'combat stats and maxHp report the same single runeword health bonus');
+const persistentCharacter=bonusEngine.createCharacter('Restart Audit','bishop');
+const persistentState=bonusEngine.state.characters.find(character=>character.id===persistentCharacter.id);
+persistentState.level=42;persistentState.xp=12345;persistentState.silver=2345;
+persistentState.progress={highestEver:90,currentStage:91,checkpoints:[50]};
+persistentState.bag=[{id:'retained-material',type:'craft_material',quantity:12}];
+persistentState.gear=[{id:'retained-weapon',slot:0,type:'equipment',rarity:'Редкая',stats:{attack:12}},null,null,null,null,null];
+persistentState.relics=['bloodstone'];
+persistentState.deck=[{id:'retained-card',cardId:'strike',upgraded:true}];
+persistentState.unlockedCards=['strike','defend'];
+persistentState.progression={permanentXpBonus:0.2,permanentAttackBonus:0.05,runewords:[{key:'persist',attack:0.1,health:0.1}]};
+persistentState.run.active=true;persistentState.run.stage=null;persistentState.run.experience=777;
+bonusEngine.voluntaryRestart(persistentCharacter.id);
+const restarted=bonusEngine.state.characters.find(character=>character.id===persistentCharacter.id);
+assert.equal(restarted.level,42,'voluntary restart preserves character level');
+assert.equal(restarted.xp,12345,'voluntary restart preserves permanent character XP');
+assert.equal(restarted.silver,2345,'voluntary restart preserves silver');
+assert.equal(restarted.progress.highestEver,90,'voluntary restart preserves highest-ever floor');
+assert.equal(restarted.progress.currentStage,balance.death.new_run_stage,'voluntary restart resets only the run floor');
+assert.deepEqual(restarted.bag,[{id:'retained-material',type:'craft_material',quantity:12}],'voluntary restart preserves bag items');
+assert.equal(restarted.gear[0].id,'retained-weapon','voluntary restart preserves equipped gear');
+assert.deepEqual(restarted.relics,['bloodstone'],'voluntary restart preserves relics');
+assert.deepEqual(restarted.deck,[{id:'retained-card',cardId:'strike',upgraded:true}],'voluntary restart preserves the current starter deck');
+assert.deepEqual(restarted.unlockedCards,['strike','defend'],'voluntary restart preserves permanent card unlocks');
+assert.equal(restarted.progression.permanentXpBonus,0.2,'voluntary restart preserves permanent progression bonuses');
+assert.equal(restarted.progression.runewords[0].key,'persist','voluntary restart preserves runewords');
+
 
 
 assert.doesNotMatch(progression,/secret\.addEventListener\('click'/,'secret-room reward is handled once by the overlay delegated click handler');
