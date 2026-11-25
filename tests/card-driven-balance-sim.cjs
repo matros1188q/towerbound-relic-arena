@@ -39,7 +39,7 @@ const makeCard=(id,index)=>{
  return{...definition,effects:{...(definition.effects||{})},isUpgraded:false,instanceId:'matrix-'+index+'-'+id};
 };
 const rows=[];
-let totalCleared=0,totalStages=0,totalCards=0,totalStatusDamage=0,totalBlock=0;
+let totalCleared=0,totalStages=0,totalCards=0,totalPotions=0,totalStatusDamage=0,totalBlock=0;
 for(const [buildIndex,build] of classes.entries()){
  for(const window of windows){
   const trials=[];
@@ -53,19 +53,19 @@ for(const [buildIndex,build] of classes.entries()){
    const starterIds=baseDecks[build.classId];
    const specializationIds=Object.values(cardDb).filter(card=>card.classId===build.classId&&card.branchId===build.branchId&&card.starter).slice(0,2).map(card=>card.id);
    character.deck=[...starterIds,...specializationIds,...equipmentCardIds(character)].map(makeCard);
-   character.hand=[];character.discard=[];character.exhaustPile=[];character.energy=3;character.currentEnergy=3;
+   character.hand=[];character.discard=[];character.exhaustPile=[];character.energy=3;character.currentEnergy=3;\n   character.bag.push({id:'qa-potion-a',type:'healing_potion',quantity:2},{id:'qa-potion-b',type:'healing_potion',quantity:2});
    const result=engine.autoBattle(character.id,{maxStages:9});
-   trials.push({seed,cleared:result.cleared,failedStage:result.failedStage,hpPct:Math.round((Number(character.run.playerHp)||0)/Math.max(1,engine.maxHp(character))*100),cardsPlayed:result.cardsPlayed,statusDamage:result.statusDamage,cardDamage:result.cardDamage,blockGenerated:result.blockGenerated,turns:result.turns});
+   trials.push({seed,cleared:result.cleared,failedStage:result.failedStage,hpPct:Math.round((Number(character.run.playerHp)||0)/Math.max(1,engine.maxHp(character))*100),cardsPlayed:result.cardsPlayed,potionsUsed:result.potionsUsed,statusDamage:result.statusDamage,cardDamage:result.cardDamage,blockGenerated:result.blockGenerated,turns:result.turns});
   }
   const cleared=trials.map(item=>item.cleared).sort((a,b)=>a-b),median=cleared[1],averageCards=trials.reduce((sum,item)=>sum+item.cardsPlayed,0)/trials.length,averageStatus=trials.reduce((sum,item)=>sum+item.statusDamage,0)/trials.length,averageBlock=trials.reduce((sum,item)=>sum+item.blockGenerated,0)/trials.length;
-  totalCleared+=trials.reduce((sum,item)=>sum+item.cleared,0);totalStages+=trials.length*9;totalCards+=trials.reduce((sum,item)=>sum+item.cardsPlayed,0);totalStatusDamage+=trials.reduce((sum,item)=>sum+item.statusDamage,0);totalBlock+=trials.reduce((sum,item)=>sum+item.blockGenerated,0);
-  rows.push({classId:build.classId,branchId:build.branchId,build:build.className+' · '+build.branchName,window:window.label,medianCleared:median,best:Math.max(...cleared),worst:Math.min(...cleared),averageCards:Number(averageCards.toFixed(1)),averageStatusDamage:Number(averageStatus.toFixed(1)),averageBlock:Number(averageBlock.toFixed(1)),trials});
+  totalCleared+=trials.reduce((sum,item)=>sum+item.cleared,0);totalStages+=trials.length*9;totalCards+=trials.reduce((sum,item)=>sum+item.cardsPlayed,0);totalPotions+=trials.reduce((sum,item)=>sum+item.potionsUsed,0);totalStatusDamage+=trials.reduce((sum,item)=>sum+item.statusDamage,0);totalBlock+=trials.reduce((sum,item)=>sum+item.blockGenerated,0);
+  rows.push({classId:build.classId,branchId:build.branchId,build:build.className+' · '+build.branchName,window:window.label,medianCleared:median,best:Math.max(...cleared),worst:Math.min(...cleared),averageCards:Number(averageCards.toFixed(1)),averagePotions:Number((trials.reduce((sum,item)=>sum+item.potionsUsed,0)/trials.length).toFixed(1)),averageStatusDamage:Number(averageStatus.toFixed(1)),averageBlock:Number(averageBlock.toFixed(1)),trials});
  }
 }
 console.log('CARD-DRIVEN AUTO-BATTLE MATRIX');
 console.log('BUILD\tWINDOW\tMEDIAN CLEARED / 9\tWORST\tBEST\tAVG CARDS\tAVG STATUS DAMAGE\tAVG BLOCK');
-for(const row of rows)console.log([row.build,row.window,row.medianCleared,row.worst,row.best,row.averageCards,row.averageStatusDamage,row.averageBlock].join('\t'));
-console.log(JSON.stringify({audit:'card-driven-auto-battle-balance',builds:21,windows:windows.length,seedsPerWindow:3,totalTrials:rows.length*3,totalStages,clearedStages:totalCleared,clearRatePct:Number((totalCleared/Math.max(1,totalStages)*100).toFixed(2)),cardsPlayed:totalCards,statusDamage:totalStatusDamage,blockGenerated:totalBlock}));
+for(const row of rows)console.log([row.build,row.window,row.medianCleared,row.worst,row.best,row.averageCards,row.averagePotions,row.averageStatusDamage,row.averageBlock].join('\t'));
+console.log(JSON.stringify({audit:'card-driven-auto-battle-balance',builds:21,windows:windows.length,seedsPerWindow:3,totalTrials:rows.length*3,totalStages,clearedStages:totalCleared,clearRatePct:Number((totalCleared/Math.max(1,totalStages)*100).toFixed(2)),cardsPlayed:totalCards,potionsUsed:totalPotions,statusDamage:totalStatusDamage,blockGenerated:totalBlock}));
 assert.ok(totalCards>0,'real deck cards must be played across the build matrix');
 assert.ok(totalStages>0&&totalCleared>=0,'card simulation returns bounded progression results');
 assert.ok(rows.every(row=>row.trials.length===3),'each specialization/window has three deterministic seeds');
