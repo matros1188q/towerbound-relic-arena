@@ -34,7 +34,28 @@
    mirror_shard:{id:"mirror_shard",name:"Осколок зеркала",description:"Все карты защиты дают на 2 брони больше.",icon:"🪞",effect:{type:"card_block_bonus",value:2}},
    arcane_prism:{id:"arcane_prism",name:"Чародейская призма",description:"Усиливает магические карты на 2 урона.",icon:"💠",effect:{type:"card_spell_power",value:2}},
    hunter_mark:{id:"hunter_mark",name:"Метка охотника",description:"За победу над элитным противником получаешь на 25% больше серебра.",icon:"🎯",effect:{type:"elite_gold_multiplier",value:1.25}},
-   lucky_coin:{id:"lucky_coin",name:"Счастливая монета",description:"В начале боя добирает 1 дополнительную карту.",icon:"🍀",effect:{type:"start_draw",value:1}}
+   lucky_coin:{id:"lucky_coin",name:"Счастливая монета",description:"В начале боя добирает 1 дополнительную карту.",icon:"🍀",effect:{type:"start_draw",value:1}},
+   assassin_bleed_relic:{id:"assassin_bleed_relic",name:"Клык алой жатвы",description:"Кровотечение: резонанс накладывает на 1 стак больше кровотечения.",icon:"🩸",classId:"assassin",branchId:"bleed",effect:{type:"branch_synergy_bonus",value:1}},
+   assassin_poison_relic:{id:"assassin_poison_relic",name:"Флакон чёрного миазма",description:"Яды: резонанс накладывает на 1 стак больше яда.",icon:"☠️",classId:"assassin",branchId:"poison",effect:{type:"branch_synergy_bonus",value:1}},
+   assassin_execution_relic:{id:"assassin_execution_relic",name:"Печать последнего приговора",description:"Уничтожение: резонанс усиливается на 1 ступень.",icon:"⚔️",classId:"assassin",branchId:"execution",effect:{type:"branch_synergy_bonus",value:1}},
+   bishop_exorcism_relic:{id:"bishop_exorcism_relic",name:"Кадило изгнания",description:"Изгнание: резонанс накладывает на 1 стак больше слабости.",icon:"✝️",classId:"bishop",branchId:"exorcism",effect:{type:"branch_synergy_bonus",value:1}},
+   bishop_healing_relic:{id:"bishop_healing_relic",name:"Чаша милосердия",description:"Лечение: резонанс восстанавливает дополнительно 1 HP.",icon:"💚",classId:"bishop",branchId:"healing",effect:{type:"branch_synergy_bonus",value:1}},
+   bishop_buffs_relic:{id:"bishop_buffs_relic",name:"Гимн вечной доблести",description:"Усиления: резонанс повышает силу ещё на 10%.",icon:"📜",classId:"bishop",branchId:"buffs",effect:{type:"branch_synergy_bonus",value:1}},
+   dragonkin_fire_relic:{id:"dragonkin_fire_relic",name:"Сердце первородного пламени",description:"Огненный дракон: резонанс накладывает на 1 стак больше горения.",icon:"🔥",classId:"dragonkin",branchId:"fire_dragon",effect:{type:"branch_synergy_bonus",value:1}},
+   dragonkin_ice_relic:{id:"dragonkin_ice_relic",name:"Осколок вечной мерзлоты",description:"Ледяной дракон: резонанс даёт дополнительную броню.",icon:"❄️",classId:"dragonkin",branchId:"ice_dragon",effect:{type:"branch_synergy_bonus",value:1}},
+   dragonkin_black_relic:{id:"dragonkin_black_relic",name:"Око чёрной кометы",description:"Чёрный дракон: резонанс усиливает поглощение жизненной силы.",icon:"🌑",classId:"dragonkin",branchId:"black_dragon",effect:{type:"branch_synergy_bonus",value:1}},
+   destroyer_fists_relic:{id:"destroyer_fists_relic",name:"Костяные кастеты титана",description:"Кастеты: резонанс усиливает удар или защитную стойку.",icon:"👊",classId:"destroyer",branchId:"fists",effect:{type:"branch_synergy_bonus",value:1}},
+   destroyer_greatsword_relic:{id:"destroyer_greatsword_relic",name:"Руна раскалывателя гор",description:"Двуручный меч: резонанс усиливает пробивающий удар.",icon:"🗡️",classId:"destroyer",branchId:"greatsword",effect:{type:"branch_synergy_bonus",value:1}},
+   destroyer_wand_shield_relic:{id:"destroyer_wand_shield_relic",name:"Сердцевина рунического бастиона",description:"Жезл и щит: резонанс усиливает броню и следующую атаку.",icon:"🛡️",classId:"destroyer",branchId:"wand_shield",effect:{type:"branch_synergy_bonus",value:1}},
+   elemental_darkness_relic:{id:"elemental_darkness_relic",name:"Слеза бездны",description:"Тьма: резонанс усиливает уязвимость противника.",icon:"🌘",classId:"elemental",branchId:"darkness",effect:{type:"branch_synergy_bonus",value:1}},
+   elemental_water_relic:{id:"elemental_water_relic",name:"Жемчужина прилива",description:"Вода: резонанс даёт дополнительный добор и энергию.",icon:"💧",classId:"elemental",branchId:"water",effect:{type:"branch_synergy_bonus",value:1}},
+   elemental_earth_relic:{id:"elemental_earth_relic",name:"Ядро древней горы",description:"Земля: резонанс укрепляет броню и ослабляет врага.",icon:"🪨",classId:"elemental",branchId:"earth",effect:{type:"branch_synergy_bonus",value:1}},
+   duelist_dual_swords_relic:{id:"duelist_dual_swords_relic",name:"Парные клинки ветра",description:"Парные мечи: резонанс усиливает удар и добор.",icon:"⚔️",classId:"duelist",branchId:"dual_swords",effect:{type:"branch_synergy_bonus",value:1}},
+   duelist_sword_shield_relic:{id:"duelist_sword_shield_relic",name:"Эгида последнего стража",description:"Меч и щит: резонанс укрепляет защиту и контратаку.",icon:"🛡️",classId:"duelist",branchId:"sword_shield",effect:{type:"branch_synergy_bonus",value:1}},
+   duelist_rapier_relic:{id:"duelist_rapier_relic",name:"Игла идеального рипоста",description:"Шпага: резонанс усиливает точный выпад.",icon:"🤺",classId:"duelist",branchId:"rapier",effect:{type:"branch_synergy_bonus",value:1}},
+   shaman_spirits_relic:{id:"shaman_spirits_relic",name:"Тотем тысячи голосов",description:"Духи: резонанс усиливает яд и кровотечение.",icon:"🪶",classId:"shaman",branchId:"spirits",effect:{type:"branch_synergy_bonus",value:1}},
+   shaman_dark_gods_relic:{id:"shaman_dark_gods_relic",name:"Идол голодного божества",description:"Тёмные боги: резонанс усиливает урон и уязвимость.",icon:"🗿",classId:"shaman",branchId:"dark_gods",effect:{type:"branch_synergy_bonus",value:1}},
+   shaman_nature_relic:{id:"shaman_nature_relic",name:"Сердце корневого леса",description:"Природа: резонанс усиливает яд, слабость и лечение.",icon:"🌿",classId:"shaman",branchId:"nature",effect:{type:"branch_synergy_bonus",value:1}},
   });
   const interpolation=(rows,value,xKey,yKey)=>{
    if(!Array.isArray(rows)||!rows.length)return 0;
@@ -301,7 +322,7 @@
    const equipped=(character.gear||[]).filter(item=>item&&item.branch===character.branch&&rarityRank[item.rarity]);
    const lowest=equipped.reduce((value,item)=>Math.min(value,rarityRank[item.rarity]),99);
    const tier=Object.keys(rarityRank).find(key=>rarityRank[key]===lowest)||null;
-   const pieces=equipped.length,total={damage:0,damageReduction:0,skillPower:0,attack:0,health:0,defense:0,crit:0,attackSpeed:0,pieces,rarity:tier,branch:character.branch,bonuses:[]};
+   const pieces=equipped.length,total={damage:0,damageReduction:0,skillPower:0,specializationDamage:0,specializationPower:0,attack:0,health:0,defense:0,crit:0,attackSpeed:0,pieces,rarity:tier,branch:character.branch,bonuses:[]};
    if(!tier||!character.branch)return total;
    const branchId=character.branch;
    const attackBranches=["bleed","poison","execution","fire_dragon","greatsword","dual_swords","nature","exorcism"];
@@ -317,7 +338,14 @@
     if(keyStat==="attack"||keyStat==="skillPower")total.damage=active.value;
     total.bonuses.push({pieces:active.pieces,value:active.value,keyStat,effect:active.pieces===6?"Уникальный эффект специализации":null});
    }
-   if(pieces>=6){total.damageReduction=.05;total.specialEffect="Полный сет: +20% к ключевому стату и +5% к снижению входящего урона";}
+   const branchConfig=(classTable[character.classId]?.branches||[]).find(item=>item.id===branchId),configuredBonuses=branchConfig?.set?.bonuses||[];
+   for(const bonus of configuredBonuses){if(pieces<Number(bonus.pieces||0))continue;const value=Math.max(0,Number(bonus.value)||0);
+    if(bonus.effect==="specialization_damage")total.specializationDamage=Math.max(total.specializationDamage,value);
+    if(bonus.effect==="incoming_damage_reduction")total.damageReduction=Math.max(total.damageReduction,value);
+    if(bonus.effect==="specialization_power")total.specializationPower=Math.max(total.specializationPower,value);
+    total.bonuses.push({pieces:Number(bonus.pieces)||0,value,effect:bonus.effect});
+   }
+   if(pieces>=6)total.specialEffect="Полный комплект специализации: активированы все бонусы сета";
    total.setId=character.classId+"."+branchId+".set."+rarityKey(tier);
    return total;
   }
@@ -358,7 +386,7 @@
    const earlyBonus=balance.combat.early_branch_bonuses||{},earlyTargets=earlyBonus.targets?.[character.classId]||[],bonusBranch=character.branch||character.simBranch,isEarlyBonusTarget=character.level<=Number(earlyBonus.max_level||0)&&(earlyTargets.includes(bonusBranch)||(!character.branch&&(earlyBonus.pre_branch_classes||[]).includes(character.classId)));
    const branchOverride=earlyBonus.branch_overrides?.[character.classId]?.[bonusBranch]||{},branchDamageBonus=isEarlyBonusTarget?Number(branchOverride.skill_damage_multiplier??earlyBonus.skill_damage_multiplier??1):1,basicAttackDamageMultiplier=isEarlyBonusTarget?Number(branchOverride.basic_attack_multiplier??earlyBonus.basic_attack_multiplier??1):1,branchKey=character.classId+"."+(character.branch||""),branchDamageMultiplier=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.damage_multiplier||1);
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),healingMultiplier:Number(branchStats.healing_multiplier||1),critChance,critMultiplier,
-    speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:(1+sets.damage+sets.skillPower+talent.skillPower)*branchDamageBonus*branchDamageMultiplier,basicAttackDamageMultiplier:basicAttackDamageMultiplier*branchDamageMultiplier,
+    speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:(1+sets.damage+sets.skillPower+talent.skillPower)*branchDamageBonus*branchDamageMultiplier,specializationDamage:Math.max(0,Number(sets.specializationDamage)||0),specializationPower:Math.max(0,Number(sets.specializationPower)||0),basicAttackDamageMultiplier:basicAttackDamageMultiplier*branchDamageMultiplier,
     damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
     iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,resists:{fire:gear.fireResist,ice:gear.iceResist,dark:gear.darkResist,physical:gear.physicalResist},
     setPieces:clone(gear.setPieces),glow:getRefinementGlow(character),itemLevelBonus:gear.itemLevelBonus};
@@ -536,6 +564,7 @@
    character.run.stage.relicAttackBonus=sumEffect("card_attack_bonus");
    character.run.stage.relicBlockBonus=sumEffect("card_block_bonus");
    character.run.stage.relicSpellPower=sumEffect("card_spell_power");
+   character.run.stage.relicBranchSynergyBonus=relics.reduce((sum,relic)=>sum+(relic.effect?.type==="branch_synergy_bonus"&&relic.classId===character.classId&&relic.branchId===character.branch?Math.max(0,Number(relic.effect.value)||0):0),0);
    character.run.stage.relicHpPenalty=Number(greed?.effect?.value?.hpPenalty)||0;
    if(character.run.stage.relicHpPenalty>0){
     const hpBase=Math.min(Number(character.run.playerHp)||maxHp(character),maxHp(character));
@@ -879,7 +908,7 @@
    let relicChoices=[];
    if(done&&enemy.type==="boss"){
     const ownedRelics=new Set(character.relics||[]);
-    const availableRelics=Object.values(RELICS_DATABASE).filter(relic=>!ownedRelics.has(relic.id));
+    const availableRelics=Object.values(RELICS_DATABASE).filter(relic=>!ownedRelics.has(relic.id)&&(!relic.classId||(relic.classId===character.classId&&relic.branchId===character.branch)));
     let relicSeed=0;
     for(const char of String(character.id)+":"+stage)relicSeed=(Math.imul(relicSeed,31)+char.charCodeAt(0))>>>0;
     while(relicChoices.length<3&&availableRelics.length){
@@ -1608,6 +1637,7 @@
   function purchaseRelic(characterId,relicId){
    const character=getChar(characterId),relic=RELICS_DATABASE[relicId];
    if(!relic)throw new Error("Реликвия не найдена");
+   if(relic.classId&&(relic.classId!==character.classId||relic.branchId!==character.branch))throw new Error("Эта реликвия предназначена для другой специализации");
    if((character.relics||[]).includes(relicId))throw new Error("Эта реликвия уже принадлежит персонажу");
    if(Number(character.silver)<300)throw new Error("Недостаточно серебра: нужно 300");
    character.silver-=300;character.relics.push(relicId);
@@ -1618,6 +1648,7 @@
    if(!choices.includes(relicId))throw new Error("Эта реликвия не входит в награду босса");
    if((character.relics||[]).includes(relicId))throw new Error("Эта реликвия уже принадлежит персонажу");
    const relic=RELICS_DATABASE[relicId];if(!relic)throw new Error("Реликвия не найдена");
+   if(relic.classId&&(relic.classId!==character.classId||relic.branchId!==character.branch))throw new Error("Эта реликвия предназначена для другой специализации");
    character.relics.push(relicId);character.run.pendingRelicChoices=null;
    if(character.run.snapshot&&Array.isArray(character.run.snapshot.relics))character.run.snapshot.relics=clone(character.relics);
    return clone(relic);
