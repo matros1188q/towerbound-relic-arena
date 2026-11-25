@@ -1045,7 +1045,7 @@ function createDialog(){
    (id==="shaman"&&Number(c.totem)>=3?'<button type="button" class="tb-totem-toggle" data-shaman-free-mode>' +(armed?"ОТМЕНИТЬ БЕСПЛАТНУЮ КАРТУ":"3 ТОТЕМА · БЕСПЛАТНАЯ КАРТА")+'</button>':"")+'</div>';
  }
  function updateClassResourceDOM(){const c=live(),node=root.querySelector("#classResourceDisplay");if(!c||!node)return;const wrap=document.createElement("div");wrap.innerHTML=classResourceMarkup(c);if(wrap.firstElementChild)node.replaceWith(wrap.firstElementChild);}
- function isAttackCard(card,effects){return Number(effects?.damage)>0||Number(effects?.damageAll)>0||Number(effects?.damagePerEnergy)>0||card?.type==="attack";}
+ function isAttackCard(card,effects){return Number(effects?.damage)>0||Number(effects?.damageAll)>0||Number(effects?.damagePerEnergy)>0||Number(effects?.damagePerPoison)>0||Number(effects?.damagePerBleed)>0||Number(effects?.damageMissingHp)>0;}
  function cardElement(card,effects){const raw=String(effects?.element||card?.element||effects?.damageType||card?.damageType||card?.name||card?.description||"").toLowerCase();return /fire|огн|плам/.test(raw)?"fire":/ice|frost|лёд|лед/.test(raw)?"ice":/dark|shadow|тьм/.test(raw)?"dark":/lightning|storm|молни/.test(raw)?"lightning":/water|вод/.test(raw)?"water":/earth|земл/.test(raw)?"earth":"";}
  function isMagicCard(card,effects){return !!(effects?.magic||card?.magic||card?.type==="spell"||["arcane","fire","ice","dark","lightning","water","earth"].includes(String(effects?.damageType||card?.damageType||"").toLowerCase()));}
  function getCardBlockTalentBonus(character){
