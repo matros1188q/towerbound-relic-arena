@@ -3,9 +3,9 @@
   "starting_potions": 3,
   "starting_premium_hours": 24,
   "silver_drop": {
-    "normal": 0,
-    "elite": 0,
-    "boss": 0,
+    "normal": 1,
+    "elite": 2.5,
+    "boss": 8,
     "stage_brackets": [
       {
         "min": 1,
@@ -32,7 +32,8 @@
         "max": 250,
         "amount": 16
       }
-    ]
+    ],
+    "first_clear_stage_bonus": 3
   },
   "bank_fee": 0.1,
   "bank_daily_donor_fraction": 0.5,
