@@ -1088,7 +1088,7 @@
      if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);synergyProcs++;
      if(character.classId==="bishop"&&Number(effects.heal)>0)character.faith=Math.min(5,(Number(character.faith)||0)+1);
      if(character.classId==="elemental"&&isMagic&&!Number(effects.damagePerEnergy))character.magicCharge=Math.min(10,(Number(character.magicCharge)||0)+1);
-     const cardElement=String(effects.element||effects.damageType||card.damageType||"");if(character.classId==="dragonkin"&&cardElement&&cardElement!==String(character.element||"fire")){character.element=cardElement;block+=5;blockGenerated+=5;}
+     const cardElement=String(effects.element||effects.damageType||card.damageType||"");if(character.classId==="dragonkin"&&["fire","ice","dark","lightning","water","earth"].includes(cardElement)&&cardElement!==String(character.element||"fire")){character.element=cardElement;block+=5;blockGenerated+=5;}
      if(character.classId==="shaman"&&Number(effects.totem)>0)character.totem=Math.min(3,(Number(character.totem)||0)+Number(effects.totem));
      const targets=Number(effects.damageAll)>0?alive():[target];
      for(const enemy of targets)for(const key of ["poison","bleed","burn","weak","vulnerable"])if(Number(effects[key])>0)enemy[key]=Math.max(0,Number(enemy[key])||0)+Math.floor(Number(effects[key]));
