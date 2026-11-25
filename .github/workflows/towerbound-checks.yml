@@ -57,5 +57,7 @@ jobs:
         run: node tests/full-250-build-balance.test.cjs
       - name: Run full 21-build balance progression simulation
         run: node tests/balance-simulation.test.cjs
+      - name: Run card-driven automatic battle regression
+        run: node tests/auto-battle-card-synergy.test.cjs
       - name: Run 250-stage economy simulation
         run: npm run economy
