@@ -1021,7 +1021,14 @@
   }
   function confirmDeath(characterId){
    const character=getChar(characterId),preview=deathPreview(characterId),difficulty=difficultyOf(character);
-   const checkpoint=character.run.snapshot&&typeof character.run.snapshot==="object"?clone(character.run.snapshot):null;
+   const deathStage=Math.max(1,Number(character.run.stage?.stage||character.progress.currentStage)||1);
+   const bossEvery=Math.max(1,Number(balance.map.boss_every)||10);
+   let checkpoint=character.run.snapshot&&typeof character.run.snapshot==="object"?clone(character.run.snapshot):null;
+   // Backfill a checkpoint for older saves that reached a boss before checkpoint snapshots were persisted.
+   if(!checkpoint&&difficulty.checkpoints){
+    const previousBossStage=Math.floor((deathStage-1)/bossEvery)*bossEvery;
+    if(previousBossStage>0)checkpoint={stage:previousBossStage+1,hp:maxHp(character),silver:character.silver,deck:clone(character.deck||[]),relics:clone(character.relics||[]),gear:clone(character.gear||[]),createdAt:now(),legacyFallback:true};
+   }
    const wasActive=!!character.run.active;
    const ghost=publishGhost(character,"death");
    character.xp=Math.max(0,character.xp-preview.experienceLoss);recalcLevel(character);
@@ -1051,7 +1058,8 @@
     character.silver=Math.max(0,Number(checkpoint.silver)||0);
     character.deck=Array.isArray(checkpoint.deck)?clone(checkpoint.deck):[];
     character.hand=[];character.discard=[];character.exhaustPile=[];character.cardDeckVersion=3;
-    character.run.snapshot=null;
+    // Keep the last defeated-boss checkpoint until a later boss replaces it.
+    character.run.snapshot=clone(checkpoint);
     character.run.lives=livesRemaining>0?livesRemaining:difficulty.lives;
     character.run.active=true;
     character.lastDeath={...character.lastDeath,livesRemaining:character.run.lives,runEnded:false,checkpointRestored:true,checkpointStage};
