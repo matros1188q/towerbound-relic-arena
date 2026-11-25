@@ -883,7 +883,7 @@
     if(character.difficulty==="hardcore")character.stats.hardcore_clears=(character.stats.hardcore_clears||0)+1;
     if(character.heroic)character.stats.heroic_clears=(character.stats.heroic_clears||0)+1;
     recordDailyProgress(character.id,"stages_cleared",1);recordWeeklyProgress(character,"stages_cleared",1);if(character.heroic)recordWeeklyProgress(character,"heroic_stages",1);submitWeeklyRating(character.id);
-    if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage))character.progress.checkpoints.push(stage);
+    if(difficultyOf(character).checkpoints&&balance.map.checkpoints.includes(stage)&&!character.progress.checkpoints.includes(stage)){character.progress.checkpoints.push(stage);const checkpointReward=balance.map.checkpoint_reward_silver||{base:250,per_stage:5};const checkpointSilver=Math.max(0,Math.round((Number(checkpointReward.base)||0)+(Number(checkpointReward.per_stage)||0)*stage));character.silver=(Number(character.silver)||0)+checkpointSilver;character.progress.checkpointRewards=Array.isArray(character.progress.checkpointRewards)?character.progress.checkpointRewards:[];character.progress.checkpointRewards.push({stage,silver:checkpointSilver,claimedAt:now()});}
     if(stage>character.progress.currentStage-1)character.progress.currentStage=stage+1;
     character.run.stage=null;
     if(stage>=balance.seasons.reward_first_clear_stage&&!character.run.seasonRewardClaimed&&firstClear){
