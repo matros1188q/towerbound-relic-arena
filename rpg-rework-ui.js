@@ -1880,8 +1880,10 @@ function profileRelicShopMarkup(c){
     current.run.dailyChallengeActive=false;current.run.dailyChallengeDate=null;current.run.dailyChallengeSeed=null;
     current.run.pendingTrial=null;current.run.pendingChampion=null;
     selectedStage=latest.targetStage;pendingSkipStage=latest.targetStage;skipFloorsPending=true;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
-    close();save();render();showStarterDeckModal();
-    notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
+    // Skipping is a direct start: do not leave the player on the reset floor or wait for a separate deck-modal click.
+    prepareStarterDeck(current,[]);
+    close();save();beginStage();
+    if(screen==="battle"&&battle?.stage===latest.targetStage)notify("Пропуск выполнен · начат этаж "+latest.targetStage);
    }catch(error){close();notify("Не удалось выполнить пропуск: "+(error?.message||String(error)));}
   });
  }
@@ -1889,7 +1891,7 @@ function profileRelicShopMarkup(c){
   const c=live();
   try{
    ensureCardDeck(c);syncEquipmentCards(c);
-   const requestedStage=pendingSkipStage||selectedStage;const plan=engine.beginStage(c.id,requestedStage,(pendingSkipStage||skipFloorsPending)?{skipFloors:true}:undefined);if(Number(plan.stage)!==Number(requestedStage))throw new Error("Не удалось запустить выбранный этаж: движок вернул этаж "+plan.stage+" вместо "+requestedStage);pendingSkipStage=0;skipFloorsPending=false;selectedStage=Number(plan.stage);ensureLoadout(c);
+   const requestedStage=pendingSkipStage||selectedStage;const plan=engine.beginStage(c.id,requestedStage,(pendingSkipStage||skipFloorsPending)?{skipFloors:true}:undefined);if(Number(plan.stage)!==Number(requestedStage))throw new Error("Не удалось запустить выбранный этаж: движок вернул этаж "+plan.stage+" вместо "+requestedStage);c.progress.currentStage=Number(plan.stage);pendingSkipStage=0;skipFloorsPending=false;selectedStage=Number(plan.stage);ensureLoadout(c);
    const activeTrial=c.run.pendingTrial&&Number(c.run.pendingTrial.stage)===Number(selectedStage)?c.run.pendingTrial:null;
    const activeChampion=c.run.pendingChampion&&Number(c.run.pendingChampion.stage)===Number(selectedStage)?c.run.pendingChampion:null;
    if(activeChampion&&!activeTrial&&c.run.stage?.mobs?.length){const champion=c.run.stage.mobs[0],profiles=activeChampion.secretBoss?[{role:"tank",mechanic:"reflect",name:"Эребор, Прародитель Стражей"}]:activeChampion.ancientGuardian?[{role:"tank",mechanic:"shield",name:"Астерион, Хранитель Печатей"}]:[{role:"tank",mechanic:"shield",name:"Хранитель Железной Клятвы"},{role:"poison",mechanic:"poison",name:"Чумной Палач"},{role:"normal",mechanic:"summon",name:"Повелитель Пепельных Прислужников"},{role:"bleed",mechanic:"berserk",name:"Кровавый Берсерк"},{role:"normal",mechanic:"teleport",name:"Призрачный Дуэлянт"},{role:"tank",mechanic:"reflect",name:"Зеркальный Страж"}],profile=profiles[Math.floor(gameRandom()*profiles.length)];c.run.stage.mobs=c.run.stage.mobs.slice(0,1);c.run.stage.count=1;plan.count=1;champion.type="elite";champion.role=profile.role;champion.mechanic=profile.mechanic;champion.name=profile.name;champion.champion=true;champion.trialHpMultiplier=activeChampion.secretBoss?2.25:1.65;champion.trialDamageMultiplier=activeChampion.secretBoss?1.5:1.28;plan.mobs=c.run.stage.mobs;}
