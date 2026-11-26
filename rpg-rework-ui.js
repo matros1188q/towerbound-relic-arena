@@ -2399,6 +2399,7 @@ function profileRelicShopMarkup(c){
   let skipButton=hero.querySelector('[data-action="skip-floors"]');
   if(!skipButton){skipButton=document.createElement("button");skipButton.type="button";skipButton.className="tb-skip-floors-button";skipButton.dataset.action="skip-floors";skipButton.textContent="ПРОПУСК ЭТАЖЕЙ";}
   if(skipButton.parentElement!==secondary)secondary.appendChild(skipButton);
+  if(!skipButton.dataset.skipFloorsBound){skipButton.dataset.skipFloorsBound="1";skipButton.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();if(skipButton.disabled)return;document.querySelector(".tb-skip-floors-overlay")?.remove();showSkipFloorsModal();});}
   if(mapButton.parentElement!==secondary)secondary.appendChild(mapButton);
   const c=live();
   skipButton.disabled=!c||(Number(c.progress?.highestEver)||0)<10||(screen==="battle"&&!!(battle||c.run?.stage));
