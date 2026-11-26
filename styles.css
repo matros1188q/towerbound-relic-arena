@@ -1671,3 +1671,30 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-v2 .tb-leaderboard-footnote{display:block!important;margin-top:13px!important;color:#8e96a5!important;font:10px/1.4 system-ui,sans-serif!important;white-space:normal!important}
 #tbRpg .tb-v2 .tb-leaderboard-empty{padding:18px 12px!important;border:1px dashed #6c604b!important;border-radius:10px!important;text-align:center!important;font:12px/1.45 system-ui,sans-serif!important}
 @media(max-width:390px){#tbRpg .tb-v2 .tb-leaderboard-toolbar{align-items:stretch!important;flex-direction:column!important;gap:9px!important}#tbRpg .tb-v2 .tb-leaderboard-toolbar>button{width:100%!important;max-width:none!important}#tbRpg .tb-v2 .tb-leaderboard-row{grid-template-columns:30px minmax(0,1fr) auto!important;gap:7px!important;padding:8px!important}#tbRpg .tb-v2 .tb-leaderboard-rank{width:27px!important;height:27px!important;font-size:11px!important}#tbRpg .tb-v2 .tb-leaderboard-player>b{font-size:12px!important}#tbRpg .tb-v2 .tb-leaderboard-power{font-size:10px!important}}
+
+
+/* Power-based floor skip: compact hero action and a clear mobile confirmation sheet. */
+#tbRpg .tb-v2 .tb-tower-hero-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;flex-wrap:wrap!important;min-width:0!important}
+#tbRpg .tb-v2 .tb-tower-hero-actions>button{min-width:0!important;white-space:normal!important;line-height:1.2!important}
+#tbRpg .tb-v2 .tb-tower-hero-actions>.tb-skip-floors-button{border-color:#a58b60!important;background:linear-gradient(145deg,#303c49,#1b2732)!important;color:#f0d7a5!important;font-weight:900!important;letter-spacing:.035em!important}
+#tbRpg .tb-v2 .tb-tower-hero-actions>.tb-skip-floors-button:disabled{opacity:.38!important;filter:saturate(.4)!important}
+.tb-skip-floors-overlay{position:fixed!important;inset:0!important;z-index:100120!important;display:grid!important;place-items:center!important;padding:16px!important;background:rgba(2,5,10,.84)!important;backdrop-filter:blur(9px)!important;box-sizing:border-box!important}
+.tb-skip-floors-modal{position:relative!important;box-sizing:border-box!important;width:min(100%,440px)!important;max-height:min(88dvh,760px)!important;overflow:auto!important;padding:clamp(16px,4vw,24px)!important;border:1px solid #b18b50!important;border-radius:18px!important;background:radial-gradient(ellipse at 50% 0%,#65502d55,transparent 52%),linear-gradient(155deg,#242e38,#10171f)!important;color:#f3ead8!important;box-shadow:0 24px 80px #000d!important;font-family:system-ui,-apple-system,sans-serif!important}
+.tb-skip-floors-modal .tb-eyebrow{font:800 9px/1.4 system-ui,sans-serif!important;letter-spacing:.18em!important;color:#d6b579!important}
+.tb-skip-floors-modal h2{margin:8px 0!important;font:800 clamp(22px,6vw,28px)/1.1 system-ui,sans-serif!important;color:#fff1d2!important}
+.tb-skip-floors-intro{margin:0 0 16px!important;color:#b8c0cb!important;font:12px/1.45 system-ui,sans-serif!important}
+.tb-skip-floors-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+.tb-skip-floors-stats>div{display:flex!important;flex-direction:column!important;gap:5px!important;min-width:0!important;padding:11px!important;border:1px solid #ffffff18!important;border-radius:10px!important;background:#ffffff08!important}
+.tb-skip-floors-stats small,.tb-skip-floors-target small{color:#9faab8!important;font:800 8px/1.3 system-ui,sans-serif!important;letter-spacing:.09em!important}
+.tb-skip-floors-stats b{color:#f0d39a!important;font:900 19px/1.1 system-ui,sans-serif!important;overflow-wrap:anywhere!important}
+.tb-skip-floors-reason{display:flex!important;flex-direction:column!important;gap:5px!important;margin-top:12px!important;padding:11px 12px!important;border-left:3px solid #b68b4a!important;border-radius:7px!important;background:#b68b4a14!important}
+.tb-skip-floors-reason b{color:#ecd19c!important;font:800 11px/1.3 system-ui,sans-serif!important}
+.tb-skip-floors-reason span{color:#b9c1ca!important;font:11px/1.4 system-ui,sans-serif!important}
+.tb-skip-floors-target{display:flex!important;align-items:baseline!important;justify-content:center!important;gap:8px!important;margin:14px 0!important;padding:13px!important;border:1px solid #c29a55!important;border-radius:12px!important;background:linear-gradient(130deg,#9d743326,#e0b76612)!important}
+.tb-skip-floors-target small{align-self:center!important}
+.tb-skip-floors-target strong{color:#ffdda0!important;font:900 42px/1 system-ui,sans-serif!important;text-shadow:0 0 22px #d9a94c55!important}
+.tb-skip-floors-target span{color:#aeb7c4!important;font:11px system-ui,sans-serif!important}
+.tb-skip-floors-actions{display:grid!important;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr)!important;gap:8px!important}
+.tb-skip-floors-actions button{min-width:0!important;min-height:44px!important;padding:9px 8px!important;border-radius:9px!important;font:900 10px/1.2 system-ui,sans-serif!important;white-space:normal!important}
+@media(max-width:380px){.tb-skip-floors-overlay{padding:10px!important}.tb-skip-floors-modal{padding:14px!important}.tb-skip-floors-stats>div{padding:9px!important}.tb-skip-floors-stats b{font-size:17px!important}.tb-skip-floors-target{gap:5px!important}.tb-skip-floors-target strong{font-size:36px!important}.tb-skip-floors-actions{grid-template-columns:1fr!important}}
+@media(max-width:560px){#tbRpg .tb-v2 .tb-tower-hero-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;gap:7px!important}#tbRpg .tb-v2 .tb-tower-hero-actions>button{width:100%!important;min-height:42px!important;padding:8px 6px!important;font-size:10px!important}#tbRpg .tb-v2 .tb-tower-hero-actions>[data-action="start"]{grid-column:1/-1!important}}
