@@ -1850,7 +1850,7 @@ function profileRelicShopMarkup(c){
   const stageFromPower=value=>Math.max(1,Math.min(balance.map.total_stages,Math.floor(65+(Number(value)-8000)*9/800)));
   const powerStageBeforeMargin=stageFromPower(currentPower),powerStage=stageFromPower(adjustedPower);
   const highest=Math.max(0,Number(character.progress?.highestEver)||0),bossEvery=Math.max(1,Number(balance.map?.boss_every)||10);
-  const fallbackStage=Math.max(1,Math.floor(highest/bossEvery)*bossEvery-(bossEvery-1));
+  const fallbackStage=Math.max(1,Math.floor(highest/bossEvery)*bossEvery+1);
   const cappedByRecord=powerStageBeforeMargin>highest;
   const targetStage=cappedByRecord?fallbackStage:Math.max(1,Math.min(powerStage,highest+1));
   return{currentPower,adjustedPower,powerStageBeforeMargin,powerStage,highest,fallbackStage,targetStage,cappedByRecord};
