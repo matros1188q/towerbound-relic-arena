@@ -1639,7 +1639,7 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 
 /* TOWER MAP: hide the floating navigation while the fullscreen map is open; restore it on close. */
 /* Keep the six-tab floating menu 50px lower on every game screen. */
-#tbRpg .tb-v2 .tb-bottom-nav{transform:translateY(35px)!important;}
+#tbRpg .tb-v2 .tb-bottom-nav{transform:translateY(25px)!important;}
 /* The fullscreen tower map owns the entire viewport; the menu must not cover its route or floor nodes. */
 #tbRpg .tb-v2:has(.tb-tower-map-overlay)>.tb-bottom-nav,
 #tbRpg .tb-v2:has(.tb-tower-map-overlay) .tb-bottom-nav{display:none!important;visibility:hidden!important;pointer-events:none!important;}
