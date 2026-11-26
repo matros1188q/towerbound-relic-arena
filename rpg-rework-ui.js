@@ -2393,21 +2393,20 @@ function profileRelicShopMarkup(c){
   const continueButton=hero.querySelector('[data-action="start"]');
   const mapButton=hero.querySelector('[data-action="tower-map-focus"]');
   if(continueButton&&continueButton.parentElement!==actions)actions.appendChild(continueButton);
-  if(!mapButton)return;
   let secondary=actions.querySelector(".tb-tower-secondary-actions");
   if(!secondary){secondary=document.createElement("div");secondary.className="tb-tower-secondary-actions";actions.appendChild(secondary);}
   let skipButton=hero.querySelector('[data-action="skip-floors"]');
   if(!skipButton){skipButton=document.createElement("button");skipButton.type="button";skipButton.className="tb-skip-floors-button";skipButton.dataset.action="skip-floors";skipButton.textContent="ПРОПУСК ЭТАЖЕЙ";}
   if(skipButton.parentElement!==secondary)secondary.appendChild(skipButton);
   if(!skipButton.dataset.skipFloorsBound){skipButton.dataset.skipFloorsBound="1";skipButton.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();if(skipButton.disabled)return;document.querySelector(".tb-skip-floors-overlay")?.remove();showSkipFloorsModal();});}
-  if(mapButton.parentElement!==secondary)secondary.appendChild(mapButton);
+  if(mapButton&&mapButton.parentElement!==secondary)secondary.appendChild(mapButton);
   const c=live();
   skipButton.disabled=!c||(Number(c.progress?.highestEver)||0)<10||(screen==="battle"&&!!(battle||c.run?.stage));
   actions.style.cssText+=";display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important;width:100%!important;min-width:0!important";
   secondary.style.cssText="display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;min-width:0!important;grid-column:1!important";
   if(continueButton)continueButton.style.cssText+=";display:flex!important;visibility:visible!important;grid-column:1!important;width:100%!important;min-width:0!important;justify-content:center";
   skipButton.style.cssText="display:flex!important;visibility:visible!important;opacity:"+(skipButton.disabled?".72":"1")+";align-items:center;justify-content:center;grid-column:1!important;min-width:0!important;width:100%!important;min-height:46px;padding:9px 5px;border:1px solid #b89a65;border-radius:10px;background:linear-gradient(145deg,#303c49,#1b2732);color:#f6dfad;font-size:clamp(9px,2.6vw,11px);font-weight:900;line-height:1.2;white-space:normal;overflow-wrap:anywhere";
-  mapButton.style.cssText+=";display:flex!important;visibility:visible!important;grid-column:2!important;min-width:0!important;width:100%!important;min-height:46px;align-items:center;justify-content:center;padding:9px 5px;font-size:clamp(9px,2.6vw,11px);white-space:normal;overflow-wrap:anywhere";
+  if(mapButton)mapButton.style.cssText+=";display:flex!important;visibility:visible!important;grid-column:2!important;min-width:0!important;width:100%!important;min-height:46px;align-items:center;justify-content:center;padding:9px 5px;font-size:clamp(9px,2.6vw,11px);white-space:normal;overflow-wrap:anywhere";
  }
  function renderWithScrollSave(){
   // A cloud restore can finish before or after the engine is constructed.
