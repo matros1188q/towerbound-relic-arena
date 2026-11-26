@@ -542,11 +542,13 @@
     checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,speed2:false,lives:difficulty.lives,playerHp:maxHp(character),
     difficulty:character.difficulty||balance.difficulty.default,season:clone(season),dailyModifier:dailyModifierForNow(),startedAt:now()};
   }
-  function beginStage(characterId,requestedStage){
+  function beginStage(characterId,requestedStage,options){
    const character=getChar(characterId);
    const stage=requestedStage||character.progress.currentStage;
    const highest=character.progress.highestEver;
-   if(stage>highest+1)throw new Error("Stage is locked until the previous stage is cleared");
+   const skipFloors=options?.skipFloors===true;
+   if(skipFloors&&(character.run.stage||stage>highest||stage<1))throw new Error("Invalid tower skip start");
+   if(!skipFloors&&stage>highest+1)throw new Error("Stage is locked until the previous stage is cleared");
    if(stage<1||stage>balance.map.total_stages)throw new Error("Invalid map stage");
    // A page refresh can leave the persisted run.stage in localStorage while
    // the UI battle object is recreated. Re-entering that same stage is a
