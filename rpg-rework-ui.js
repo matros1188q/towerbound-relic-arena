@@ -178,7 +178,7 @@
  const SKILL_UPGRADE_LEVELS=Object.freeze({1:1,2:20,3:50});
  let pendingSkillUpgradeId=null;
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver",lastRenderedScreen=null,lastRenderedProfileTab=null;
- let selectedId=null,selectedClass="assassin",selectedStage=1,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null,guildRaid=null;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,skipFloorsPending=false,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null,guildRaid=null;
 
  const CARD_DATABASE=Object.freeze({
  strike:{id:"strike",name:"Удар",classId:"common",type:"attack",rarity:"common",cost:1,description:"Наносит 6 урона",upgradedDescription:"Наносит 9 урона",effects:{damage:6},upgradedEffects:{damage:9}},
@@ -1879,7 +1879,7 @@ function profileRelicShopMarkup(c){
     current.run.playerHp=engine.maxHp(current);
     current.run.dailyChallengeActive=false;current.run.dailyChallengeDate=null;current.run.dailyChallengeSeed=null;
     current.run.pendingTrial=null;current.run.pendingChampion=null;
-    selectedStage=latest.targetStage;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
+    selectedStage=latest.targetStage;skipFloorsPending=true;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
     close();save();render();showStarterDeckModal();
     notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
    }catch(error){close();notify("Не удалось выполнить пропуск: "+(error?.message||String(error)));}
@@ -1889,7 +1889,7 @@ function profileRelicShopMarkup(c){
   const c=live();
   try{
    ensureCardDeck(c);syncEquipmentCards(c);
-   const plan=engine.beginStage(c.id,selectedStage);ensureLoadout(c);
+   const plan=engine.beginStage(c.id,selectedStage,skipFloorsPending?{skipFloors:true}:undefined);skipFloorsPending=false;ensureLoadout(c);
    const activeTrial=c.run.pendingTrial&&Number(c.run.pendingTrial.stage)===Number(selectedStage)?c.run.pendingTrial:null;
    const activeChampion=c.run.pendingChampion&&Number(c.run.pendingChampion.stage)===Number(selectedStage)?c.run.pendingChampion:null;
    if(activeChampion&&!activeTrial&&c.run.stage?.mobs?.length){const champion=c.run.stage.mobs[0],profiles=activeChampion.secretBoss?[{role:"tank",mechanic:"reflect",name:"Эребор, Прародитель Стражей"}]:activeChampion.ancientGuardian?[{role:"tank",mechanic:"shield",name:"Астерион, Хранитель Печатей"}]:[{role:"tank",mechanic:"shield",name:"Хранитель Железной Клятвы"},{role:"poison",mechanic:"poison",name:"Чумной Палач"},{role:"normal",mechanic:"summon",name:"Повелитель Пепельных Прислужников"},{role:"bleed",mechanic:"berserk",name:"Кровавый Берсерк"},{role:"normal",mechanic:"teleport",name:"Призрачный Дуэлянт"},{role:"tank",mechanic:"reflect",name:"Зеркальный Страж"}],profile=profiles[Math.floor(gameRandom()*profiles.length)];c.run.stage.mobs=c.run.stage.mobs.slice(0,1);c.run.stage.count=1;plan.count=1;champion.type="elite";champion.role=profile.role;champion.mechanic=profile.mechanic;champion.name=profile.name;champion.champion=true;champion.trialHpMultiplier=activeChampion.secretBoss?2.25:1.65;champion.trialDamageMultiplier=activeChampion.secretBoss?1.5:1.28;plan.mobs=c.run.stage.mobs;}
