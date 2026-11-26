@@ -1857,7 +1857,7 @@ function profileRelicShopMarkup(c){
  }
  function showSkipFloorsModal(){
   const c=live();if(!c)return;
-  if(c.run?.stage){notify("Сначала заверши текущий бой — пропуск доступен между этажами");return;}
+  if(screen==="battle"&&(battle||c.run?.stage)){notify("Сначала заверши текущий бой — пропуск доступен между этажами");return;}
   if((Number(c.progress?.highestEver)||0)<10){notify("Сначала пройди первого босса на 10-м этаже");return;}
   const plan=skipFloorsPowerPlan(c),overlay=document.createElement("div");
   overlay.className="tb-skip-floors-overlay";
@@ -1868,9 +1868,12 @@ function profileRelicShopMarkup(c){
    if(event.target===overlay||event.target.closest("[data-skip-floors-close]")){close();return;}
    if(event.target.closest("[data-skip-floors-confirm]")){
     const current=live();if(!current){close();return;}
-    if(current.run?.stage){close();notify("Сначала заверши текущий бой");return;}
+    if(screen==="battle"&&(battle||current.run?.stage)){close();notify("Сначала заверши текущий бой");return;}
     const latest=skipFloorsPowerPlan(current);
     try{
+     // On the map, a persisted stage can be a stale battle snapshot left by a page reload.
+     // Skipping explicitly abandons that unfinished encounter without awarding its rewards.
+     if(screen!=="battle")current.run.stage=null;
      engine.voluntaryRestart(current.id);
      current.progress.currentStage=latest.targetStage;
      current.run.playerHp=engine.maxHp(current);
@@ -2397,7 +2400,7 @@ function profileRelicShopMarkup(c){
   if(skipButton.parentElement!==secondary)secondary.appendChild(skipButton);
   if(mapButton.parentElement!==secondary)secondary.appendChild(mapButton);
   const c=live();
-  skipButton.disabled=!c||(Number(c.progress?.highestEver)||0)<10||!!c.run?.stage;
+  skipButton.disabled=!c||(Number(c.progress?.highestEver)||0)<10||(screen==="battle"&&!!(battle||c.run?.stage));
   actions.style.cssText+=";display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important;width:100%!important;min-width:0!important";
   secondary.style.cssText="display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;min-width:0!important;grid-column:1!important";
   if(continueButton)continueButton.style.cssText+=";display:flex!important;visibility:visible!important;grid-column:1!important;width:100%!important;min-width:0!important;justify-content:center";
