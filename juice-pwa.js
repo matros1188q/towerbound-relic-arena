@@ -23,7 +23,13 @@ function init(){ $('#tbSettingsOpen')?.addEventListener('click',()=>{openSetting
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http')){
  const UPDATE_CHECK_MS=60*60*1000;
- let updateToast=null,registrationRef=null;
+ let updateToast=null,registrationRef=null,controllerReloading=false;
+ // When a new worker activates, reload once so the player immediately sees the new game version.
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  if(controllerReloading)return;
+  controllerReloading=true;
+  window.location.reload();
+ });
  function offerReload(){
   if(updateToast||!document.body)return;
   const styleId='tb-pwa-update-style';
