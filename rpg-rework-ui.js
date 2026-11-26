@@ -1857,33 +1857,32 @@ function profileRelicShopMarkup(c){
  }
  function showSkipFloorsModal(){
   const c=live();if(!c)return;
-  if(screen==="battle"&&(battle||c.run?.stage)){notify("Сначала заверши текущий бой — пропуск доступен между этажами");return;}
+  if(screen==="battle"&&battle){notify("Сначала заверши текущий бой — пропуск доступен между этажами");return;}
   if((Number(c.progress?.highestEver)||0)<10){notify("Сначала пройди первого босса на 10-м этаже");return;}
   const plan=skipFloorsPowerPlan(c),overlay=document.createElement("div");
   overlay.className="tb-skip-floors-overlay";
   overlay.innerHTML='<section class="tb-skip-floors-modal" role="dialog" aria-modal="true" aria-labelledby="tbSkipFloorsTitle"><div class="tb-eyebrow">TOWERBOUND · УСКОРЕННОЕ ВОСХОЖДЕНИЕ</div><h2 id="tbSkipFloorsTitle">Пропуск этажей</h2><p class="tb-skip-floors-intro">Сначала определяем этаж по полной боевой мощи, затем применяем запас −10%. Если полная мощь выше твоего рекорда, стартуем с начала предыдущего десятиэтажного отрезка.</p><div class="tb-skip-floors-stats"><div><small>ТВОЯ МОЩЬ</small><b>'+plan.currentPower.toLocaleString("ru-RU")+'</b></div><div><small>С УЧЁТОМ −10%</small><b>'+plan.adjustedPower.toLocaleString("ru-RU")+'</b></div><div><small>РЕКОРД БАШНИ</small><b>'+plan.highest+'/250</b></div><div><small>ЭТАЖ БЕЗ ЗАПАСА</small><b>'+plan.powerStageBeforeMargin+'</b></div><div><small>ЭТАЖ ПО МОЩИ −10%</small><b>'+plan.powerStage+'</b></div></div>'+(plan.cappedByRecord?'<div class="tb-skip-floors-reason"><b>Мощи хватает выше рекорда</b><span>Чтобы не перескакивать непройденный босс-рубеж, вход будет с начала последнего открытого десятиэтажного отрезка.</span></div>':'<div class="tb-skip-floors-reason"><b>Этаж рассчитан по твоей мощи</b><span>Расчётный этаж находится в пределах уже открытого прогресса.</span></div>')+'<div class="tb-skip-floors-target"><small>ТЫ НАЧНЁШЬ С ЭТАЖА</small><strong>'+plan.targetStage+'</strong><span>из 250</span></div><div class="tb-skip-floors-actions"><button type="button" data-skip-floors-close>ОТМЕНА</button><button type="button" class="tb-primary" data-skip-floors-confirm>НАЧАТЬ С '+plan.targetStage+' ЭТАЖА</button></div></section>';
   document.body.appendChild(overlay);
-  const close=()=>overlay.remove();
-  overlay.addEventListener("click",event=>{
-   if(event.target===overlay||event.target.closest("[data-skip-floors-close]")){close();return;}
-   if(event.target.closest("[data-skip-floors-confirm]")){
-    const current=live();if(!current){close();return;}
-    if(screen==="battle"&&(battle||current.run?.stage)){close();notify("Сначала заверши текущий бой");return;}
-    const latest=skipFloorsPowerPlan(current);
-    try{
-     // On the map, a persisted stage can be a stale battle snapshot left by a page reload.
-     // Skipping explicitly abandons that unfinished encounter without awarding its rewards.
-     if(screen!=="battle")current.run.stage=null;
-     engine.voluntaryRestart(current.id);
-     current.progress.currentStage=latest.targetStage;
-     current.run.playerHp=engine.maxHp(current);
-     current.run.dailyChallengeActive=false;current.run.dailyChallengeDate=null;current.run.dailyChallengeSeed=null;
-     current.run.pendingTrial=null;current.run.pendingChampion=null;
-     selectedStage=latest.targetStage;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
-     close();save();render();showStarterDeckModal();
-     notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
-    }catch(error){close();notify(error.message||"Не удалось выполнить пропуск этажей");}
-   }
+  const close=()=>{overlay.remove();};
+  overlay.querySelector("[data-skip-floors-close]")?.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();close();});
+  overlay.addEventListener("click",event=>{if(event.target===overlay)close();});
+  overlay.querySelector("[data-skip-floors-confirm]")?.addEventListener("click",event=>{
+   event.preventDefault();event.stopPropagation();
+   const current=live();if(!current){close();notify("Персонаж не найден");return;}
+   if(screen==="battle"&&battle){close();notify("Сначала заверши текущий бой");return;}
+   const latest=skipFloorsPowerPlan(current);
+   try{
+    // A stage snapshot left in storage while the map is open is abandoned without rewards.
+    if(current.run?.stage)current.run.stage=null;
+    engine.voluntaryRestart(current.id);
+    current.progress.currentStage=latest.targetStage;
+    current.run.playerHp=engine.maxHp(current);
+    current.run.dailyChallengeActive=false;current.run.dailyChallengeDate=null;current.run.dailyChallengeSeed=null;
+    current.run.pendingTrial=null;current.run.pendingChampion=null;
+    selectedStage=latest.targetStage;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
+    close();save();render();showStarterDeckModal();
+    notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
+   }catch(error){close();notify("Не удалось выполнить пропуск: "+(error?.message||String(error)));}
   });
  }
  function beginStage(){postBattleSummary=null;
