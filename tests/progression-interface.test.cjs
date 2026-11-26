@@ -194,7 +194,7 @@ assert.deepEqual(afterCheckpoint.deck,[{id:'checkpoint-card'}],'checkpoint recov
 assert.equal(afterCheckpoint.bag[0].id,'bag-kept','checkpoint recovery keeps the bag except for the configured death-loss roll');
 const terminalCharacter=bonusEngine.createCharacter('Terminal Audit','assassin');
 const terminalState=bonusEngine.state.characters.find(character=>character.id===terminalCharacter.id);
-terminalState.run.active=true;terminalState.run.playerHp=0;terminalState.run.experience=0;terminalState.run.snapshot=null;
+terminalState.difficulty='hardcore';terminalState.run.active=true;terminalState.run.stage=null;terminalState.run.playerHp=0;terminalState.run.experience=0;terminalState.run.snapshot=null;
 const terminalRunsBefore=terminalState.stats.runs_completed||0;
 const terminalResult=bonusEngine.confirmDeath(terminalCharacter.id);
 assert.equal(terminalResult.runEnded,true,'death without a checkpoint ends the run');
