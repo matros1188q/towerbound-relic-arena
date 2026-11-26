@@ -334,7 +334,7 @@ self.addEventListener('fetch', event => {
 
   const path = url.pathname.toLowerCase();
   const isHtml = request.mode === 'navigate' || path.endsWith('/') || path.endsWith('/index.html');
-  const isCode = /\\.(?:js|mjs|css|json|webmanifest)$/.test(path);
+  const isCode = /\.(?:js|mjs|css|json|webmanifest)$/.test(path);
   const mustRevalidate = isHtml || isCode || url.search.length > 0;
 
   // Always revalidate the app shell and executable/style/data files against GitHub Pages.
