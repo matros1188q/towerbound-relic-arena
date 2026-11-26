@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v728';
+const CACHE = 'towerbound-v729';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './assets/MAPA.jpg',
@@ -331,30 +331,35 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  const isHtml = request.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
-  if (isHtml) {
-    event.respondWith(fetch(request).then(response => {
-      if (response && response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
-      return response;
-    }).catch(async () => {
-      const cached = await caches.match(request);
-      return cached || await caches.match('./index.html') || Response.error();
-    }));
+
+  const path = url.pathname.toLowerCase();
+  const isHtml = request.mode === 'navigate' || path.endsWith('/') || path.endsWith('/index.html');
+  const isCode = /\\.(?:js|mjs|css|json|webmanifest)$/.test(path);
+  const mustRevalidate = isHtml || isCode || url.search.length > 0;
+
+  // Always revalidate the app shell and executable/style/data files against GitHub Pages.
+  // cache:'no-store' bypasses Safari's HTTP cache; Cache Storage is retained only as an offline fallback.
+  if (mustRevalidate) {
+    event.respondWith((async () => {
+      try {
+        const freshRequest = new Request(request, { cache: 'no-store' });
+        const response = await fetch(freshRequest);
+        if (response && response.ok) {
+          const cache = await caches.open(CACHE);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      } catch (error) {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        if (isHtml) return await caches.match('./index.html') || Response.error();
+        return Response.error();
+      }
+    })());
     return;
   }
-  // Versioned assets are network-first: a new ?v= value must never receive an older cached script or stylesheet.
-  if (url.search.length > 0) {
-    event.respondWith(fetch(request).then(response => {
-      if (response && response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
-      return response;
-    }).catch(async () => {
-      const exact = await caches.match(request);
-      if (exact) return exact;
-      return Response.error();
-    }));
-    return;
-  }
-  // Unversioned assets remain cache-first for fast offline launches.
+
+  // Large media files stay cache-first for fast repeat launches and offline play.
   event.respondWith(caches.match(request).then(cached => {
     if (cached) return cached;
     return fetch(request).then(response => {
