@@ -1846,26 +1846,14 @@ function profileRelicShopMarkup(c){
 
  function skipFloorsPowerPlan(character){
   const currentPower=Math.max(0,Number(engine.combatPower(character))||0),adjustedPower=Math.floor(currentPower*.9);
-  const inverse=(value,anchors,xKey,yKey)=>{
-   const points=(Array.isArray(anchors)?anchors:[]).filter(point=>Number.isFinite(Number(point?.[xKey]))&&Number.isFinite(Number(point?.[yKey]))).slice().sort((a,b)=>Number(a[xKey])-Number(b[xKey]));
-   if(!points.length)return 1;
-   if(points.length===1)return Number(points[0][yKey])||1;
-   if(value<=Number(points[0][xKey]))return Number(points[0][yKey])||1;
-   for(let index=1;index<points.length;index++){
-    const left=points[index-1],right=points[index],x1=Number(left[xKey]),x2=Number(right[xKey]);
-    if(value<=x2){const ratio=x2===x1?0:(value-x1)/(x2-x1);return Number(left[yKey])+(Number(right[yKey])-Number(left[yKey]))*ratio;}
-   }
-   const left=points[points.length-2],right=points[points.length-1],x1=Number(left[xKey]),x2=Number(right[xKey]),ratio=x2===x1?0:(value-x1)/(x2-x1);
-   return Number(left[yKey])+(Number(right[yKey])-Number(left[yKey]))*ratio;
-  };
-  const effectiveLevel=inverse(adjustedPower,balance.bp?.base_by_level||[],"bp","level");
-  const rawPowerStage=inverse(effectiveLevel,balance.character_curves?.level_to_stage_anchors||[],"level","stage");
-  const powerStage=Math.max(1,Math.min(balance.map.total_stages,Math.floor(Number(rawPowerStage)||1)));
+  // Calibrated to the requested progression examples: 8,000 BP ≈ floor 65; 7,200 BP ≈ floor 56.
+  const stageFromPower=value=>Math.max(1,Math.min(balance.map.total_stages,Math.floor(65+(Number(value)-8000)*9/800)));
+  const powerStageBeforeMargin=stageFromPower(currentPower),powerStage=stageFromPower(adjustedPower);
   const highest=Math.max(0,Number(character.progress?.highestEver)||0),bossEvery=Math.max(1,Number(balance.map?.boss_every)||10);
   const fallbackStage=Math.max(1,Math.floor(highest/bossEvery)*bossEvery-(bossEvery-1));
   const cappedByRecord=powerStage>highest;
   const targetStage=cappedByRecord?fallbackStage:Math.max(1,Math.min(powerStage,highest+1));
-  return{currentPower,adjustedPower,effectiveLevel:Math.round(effectiveLevel*10)/10,powerStage,highest,fallbackStage,targetStage,cappedByRecord};
+  return{currentPower,adjustedPower,powerStageBeforeMargin,powerStage,highest,fallbackStage,targetStage,cappedByRecord};
  }
  function showSkipFloorsModal(){
   const c=live();if(!c)return;
@@ -1873,7 +1861,7 @@ function profileRelicShopMarkup(c){
   if((Number(c.progress?.highestEver)||0)<10){notify("Сначала пройди первого босса на 10-м этаже");return;}
   const plan=skipFloorsPowerPlan(c),overlay=document.createElement("div");
   overlay.className="tb-skip-floors-overlay";
-  overlay.innerHTML='<section class="tb-skip-floors-modal" role="dialog" aria-modal="true" aria-labelledby="tbSkipFloorsTitle"><div class="tb-eyebrow">TOWERBOUND · УСКОРЕННОЕ ВОСХОЖДЕНИЕ</div><h2 id="tbSkipFloorsTitle">Пропуск этажей</h2><p class="tb-skip-floors-intro">Сила героя пересчитана с запасом безопасности 10%. Вход доступен только в уже открытый прогресс.</p><div class="tb-skip-floors-stats"><div><small>ТВОЯ МОЩЬ</small><b>'+plan.currentPower.toLocaleString("ru-RU")+'</b></div><div><small>С УЧЁТОМ −10%</small><b>'+plan.adjustedPower.toLocaleString("ru-RU")+'</b></div><div><small>РЕКОРД БАШНИ</small><b>'+plan.highest+'/250</b></div><div><small>ЭТАЖ ПО МОЩИ</small><b>'+plan.powerStage+'</b></div></div>'+(plan.cappedByRecord?'<div class="tb-skip-floors-reason"><b>Мощи хватает выше рекорда</b><span>Чтобы не перескакивать непройденный босс-рубеж, вход будет с начала последнего открытого десятиэтажного отрезка.</span></div>':'<div class="tb-skip-floors-reason"><b>Этаж рассчитан по твоей мощи</b><span>Расчётный этаж находится в пределах уже открытого прогресса.</span></div>')+'<div class="tb-skip-floors-target"><small>ТЫ НАЧНЁШЬ С ЭТАЖА</small><strong>'+plan.targetStage+'</strong><span>из 250</span></div><div class="tb-skip-floors-actions"><button type="button" data-skip-floors-close>ОТМЕНА</button><button type="button" class="tb-primary" data-skip-floors-confirm>НАЧАТЬ С '+plan.targetStage+' ЭТАЖА</button></div></section>';
+  overlay.innerHTML='<section class="tb-skip-floors-modal" role="dialog" aria-modal="true" aria-labelledby="tbSkipFloorsTitle"><div class="tb-eyebrow">TOWERBOUND · УСКОРЕННОЕ ВОСХОЖДЕНИЕ</div><h2 id="tbSkipFloorsTitle">Пропуск этажей</h2><p class="tb-skip-floors-intro">Сила героя пересчитана с запасом безопасности 10%. Вход доступен только в уже открытый прогресс.</p><div class="tb-skip-floors-stats"><div><small>ТВОЯ МОЩЬ</small><b>'+plan.currentPower.toLocaleString("ru-RU")+'</b></div><div><small>С УЧЁТОМ −10%</small><b>'+plan.adjustedPower.toLocaleString("ru-RU")+'</b></div><div><small>РЕКОРД БАШНИ</small><b>'+plan.highest+'/250</b></div><div><small>ЭТАЖ БЕЗ ЗАПАСА</small><b>'+plan.powerStageBeforeMargin+'</b></div><div><small>ЭТАЖ ПО МОЩИ −10%</small><b>'+plan.powerStage+'</b></div></div>'+(plan.cappedByRecord?'<div class="tb-skip-floors-reason"><b>Мощи хватает выше рекорда</b><span>Чтобы не перескакивать непройденный босс-рубеж, вход будет с начала последнего открытого десятиэтажного отрезка.</span></div>':'<div class="tb-skip-floors-reason"><b>Этаж рассчитан по твоей мощи</b><span>Расчётный этаж находится в пределах уже открытого прогресса.</span></div>')+'<div class="tb-skip-floors-target"><small>ТЫ НАЧНЁШЬ С ЭТАЖА</small><strong>'+plan.targetStage+'</strong><span>из 250</span></div><div class="tb-skip-floors-actions"><button type="button" data-skip-floors-close>ОТМЕНА</button><button type="button" class="tb-primary" data-skip-floors-confirm>НАЧАТЬ С '+plan.targetStage+' ЭТАЖА</button></div></section>';
   document.body.appendChild(overlay);
   const close=()=>overlay.remove();
   overlay.addEventListener("click",event=>{
