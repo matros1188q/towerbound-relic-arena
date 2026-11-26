@@ -2404,8 +2404,9 @@ function profileRelicShopMarkup(c){
   renderView();
   /* Hard guarantee: keep the skip-floor control in the live tower home DOM.
      This fallback also repairs older cached markup and CSS on mobile Safari. */
-  if(screen==="map"){
-   const actions=root.querySelector(".tb-tower-hero-actions");
+  {
+   /* Attach to the visible Tower home action row itself; do not depend on the internal screen state. */
+   const actions=root.querySelector(".tb-tower-hero .tb-tower-hero-actions, .tb-tower-hero-actions");
    const mapButton=actions?.querySelector('[data-action="tower-map-focus"]');
    if(actions&&mapButton){
     let skipButton=actions.querySelector('[data-action="skip-floors"]');
