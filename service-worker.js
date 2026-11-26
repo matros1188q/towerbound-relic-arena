@@ -333,7 +333,7 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   const path = url.pathname.toLowerCase();
-  const isHtml = request.mode === 'navigate' || path.endsWith('/') || path.endsWith('/index.html');
+  const isHtml = request.mode === "navigate" || path.endsWith("/") || path.endsWith("/index.html");
   const isCode = /\.(?:js|mjs|css|json|webmanifest)$/.test(path);
   const mustRevalidate = isHtml || isCode || url.search.length > 0;
 
