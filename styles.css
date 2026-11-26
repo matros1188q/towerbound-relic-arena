@@ -1639,7 +1639,7 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 
 /* TOWER MAP: hide the floating navigation while the fullscreen map is open; restore it on close. */
 /* Keep the six-tab floating menu 50px lower on every game screen. */
-#tbRpg .tb-v2 .tb-bottom-nav{transform:translateY(25px)!important;}
+#tbRpg .tb-v2 .tb-bottom-nav{transform:translateY(15px)!important;}
 /* The fullscreen tower map owns the entire viewport; the menu must not cover its route or floor nodes. */
 #tbRpg .tb-v2:has(.tb-tower-map-overlay)>.tb-bottom-nav,
 #tbRpg .tb-v2:has(.tb-tower-map-overlay) .tb-bottom-nav{display:none!important;visibility:hidden!important;pointer-events:none!important;}
@@ -1743,3 +1743,14 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-v2 .tb-tower-hero .tb-tower-hero-actions>[data-action="start"]{grid-column:1/-1!important}
 #tbRpg .tb-v2 .tb-tower-hero .tb-tower-hero-actions>[data-action="skip-floors"]{display:flex!important;visibility:visible!important;opacity:1!important;grid-column:1!important;min-width:0!important;width:100%!important;min-height:46px!important;align-items:center!important;justify-content:center!important;border:1px solid #b89a65!important;border-radius:12px!important;background:linear-gradient(145deg,#303c49,#1b2732)!important;color:#f6dfad!important;font-size:clamp(9px,2.6vw,11px)!important;font-weight:900!important;line-height:1.2!important;white-space:normal!important}
 #tbRpg .tb-v2 .tb-tower-hero .tb-tower-hero-actions>[data-action="tower-map-focus"]{grid-column:2!important;display:flex!important;visibility:visible!important;opacity:1!important;min-width:0!important;width:100%!important;min-height:46px!important;align-items:center!important;justify-content:center!important}
+
+
+/* TOWER HOME MOBILE LAYOUT — keep every action inside the visible hero card. */
+@media(max-width:560px){
+ #tbRpg .tb-v2 .tb-tower-hero{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;min-height:0!important;}
+ #tbRpg .tb-v2 .tb-tower-hero-copy{grid-column:1!important;width:100%!important;}
+ #tbRpg .tb-v2 .tb-tower-hero-actions{grid-column:1!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;min-width:0!important;}
+ #tbRpg .tb-v2 .tb-tower-hero-actions>[data-action="start"]{grid-column:1/-1!important;}
+ #tbRpg .tb-v2 .tb-tower-hero-actions>[data-action="skip-floors"]{grid-column:1!important;display:flex!important;visibility:visible!important;opacity:1!important;}
+ #tbRpg .tb-v2 .tb-tower-hero-actions>[data-action="tower-map-focus"]{grid-column:2!important;display:flex!important;visibility:visible!important;opacity:1!important;}
+}
