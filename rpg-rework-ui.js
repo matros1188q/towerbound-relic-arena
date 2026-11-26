@@ -2402,6 +2402,30 @@ function profileRelicShopMarkup(c){
   const preserveScroll=lastRenderedScreen===screen&&(screen!=="profile"||lastRenderedProfileTab===profileTab);
   const scrollPos=preserveScroll?(scrollHost?scrollHost.scrollTop:(window.scrollY||0)):0;
   renderView();
+  /* Hard guarantee: keep the skip-floor control in the live tower home DOM.
+     This fallback also repairs older cached markup and CSS on mobile Safari. */
+  if(screen==="map"){
+   const actions=root.querySelector(".tb-tower-hero-actions");
+   const mapButton=actions?.querySelector('[data-action="tower-map-focus"]');
+   if(actions&&mapButton){
+    let skipButton=actions.querySelector('[data-action="skip-floors"]');
+    if(!skipButton){
+     skipButton=document.createElement("button");
+     skipButton.type="button";
+     skipButton.className="tb-skip-floors-button";
+     skipButton.dataset.action="skip-floors";
+     skipButton.textContent="ПРОПУСК ЭТАЖЕЙ";
+     actions.insertBefore(skipButton,mapButton);
+    }
+    const c=live();
+    skipButton.disabled=!c||(Number(c.progress?.highestEver)||0)<10||!!c.run?.stage;
+    skipButton.style.cssText="display:flex!important;visibility:visible!important;opacity:"+(skipButton.disabled?".48":"1")+";align-items:center;justify-content:center;grid-column:auto;min-width:0;width:100%;min-height:46px;padding:9px 6px;border:1px solid #b89a65;border-radius:10px;background:linear-gradient(145deg,#303c49,#1b2732);color:#f6dfad;font-size:clamp(9px,2.6vw,11px);font-weight:900;line-height:1.2;white-space:normal;overflow-wrap:anywhere";
+    mapButton.style.cssText+=";display:flex!important;visibility:visible!important;grid-column:auto;min-width:0;width:100%;min-height:46px;align-items:center;justify-content:center;padding:9px 6px;font-size:clamp(9px,2.6vw,11px);white-space:normal";
+    actions.style.cssText+=";display:grid!important;visibility:visible!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important";
+    const continueButton=actions.querySelector('[data-action="start"]');
+    if(continueButton)continueButton.style.cssText+=";display:flex!important;visibility:visible!important;grid-column:1/-1!important;width:100%;justify-content:center";
+   }
+  }
   lastRenderedScreen=screen;
   lastRenderedProfileTab=profileTab;
   if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);
