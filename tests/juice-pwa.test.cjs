@@ -9,11 +9,11 @@ assert(versionedHandler.includes("new Request(request, { cache: 'no-store' })"),
 assert(versionedHandler.indexOf('await fetch(freshRequest)')>=0&&versionedHandler.indexOf('await fetch(freshRequest)')<versionedHandler.indexOf('caches.match(request)'),'app shell and code must revalidate before offline fallback');
 assert(versionedHandler.includes('caches.match(request)'),'offline fallback must use the exact request URL including its query string');
 assert(!versionedHandler.includes("unversioned.search = ''"),'versioned assets must never fall back to an older unversioned cache entry');
-assert(html.includes('rpg-rework-ui.js?v=1086'),'app shell must load the current tower skip fix');
-assert(sw.includes("'./rpg-rework-ui.js?v=1086'"),'service worker must precache the current tower skip fix');
+assert(html.includes('rpg-rework-ui.js?v=1087'),'app shell must load the current tower skip fix');
+assert(sw.includes("'./rpg-rework-ui.js?v=1087'"),'service worker must precache the current tower skip fix');
 assert(!sw.includes('ignoreSearch: true'),'service worker must never ignore asset version query strings');
 assert(sw.includes(".catch(() => Response.error())"),'missing offline assets must fail instead of returning the HTML app shell');assert.equal((sw.match(/caches\.match\('\.\/index\.html'\)/g)||[]).length,1,'only failed page navigations may fall back to the cached HTML shell');assert(!sw.includes(".catch(error => console.warn('Towerbound shell cache:'"),'a failed precache must abort service-worker installation and preserve the previous worker');console.log('Juice/PWA static integration checks passed');
-assert(ui.includes('pendingSkipStage=0'),'tower skip must retain its selected floor through the starter deck screen');
+assert(ui.includes('skipButton.addEventListener("click"'), 'skip floors must bind its own click handler');assert(ui.includes('pendingSkipStage=0'),'tower skip must retain its selected floor through the starter deck screen');
 assert(ui.includes('const requestedStage=pendingSkipStage||selectedStage;'),'tower skip must pass the selected floor to the engine');
 assert(ui.includes('Number(plan.stage)!==Number(requestedStage)'),'tower skip must reject a silently substituted floor');
 assert(ui.includes('if(pendingSkipStage){selectedStage=pendingSkipStage;beginStage();}'),'tower skip must bypass optional map-event detours after starter deck confirmation');
