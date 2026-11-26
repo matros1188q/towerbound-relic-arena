@@ -2398,7 +2398,6 @@ function profileRelicShopMarkup(c){
   let skipButton=hero.querySelector('[data-action="skip-floors"]');
   if(!skipButton){skipButton=document.createElement("button");skipButton.type="button";skipButton.className="tb-skip-floors-button";skipButton.dataset.action="skip-floors";skipButton.textContent="ПРОПУСК ЭТАЖЕЙ";}
   if(skipButton.parentElement!==secondary)secondary.appendChild(skipButton);
-  if(!skipButton.dataset.skipFloorsBound){skipButton.dataset.skipFloorsBound="1";skipButton.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();if(skipButton.disabled)return;document.querySelector(".tb-skip-floors-overlay")?.remove();showSkipFloorsModal();});}
   if(mapButton&&mapButton.parentElement!==secondary)secondary.appendChild(mapButton);
   const c=live();
   skipButton.disabled=!c||(Number(c.progress?.highestEver)||0)<10||(screen==="battle"&&!!(battle||c.run?.stage));
@@ -2709,6 +2708,15 @@ function profileRelicShopMarkup(c){
  document.addEventListener("pointerdown",event=>{const card=event.target.closest("#tbRpg [data-card-play]");if(!card)return;cardLongPressTriggered=false;clearTimeout(cardLongPressTimer);cardLongPressTimer=setTimeout(()=>{cardLongPressTriggered=true;showCardInspect(Number(card.dataset.cardPlay));},480);},true);
  ["pointerup","pointercancel","pointerleave"].forEach(type=>document.addEventListener(type,()=>clearTimeout(cardLongPressTimer),true));
  document.addEventListener("click",event=>{if((cardLongPressTriggered||Date.now()<suppressCardClickUntil)&&event.target.closest("#tbRpg [data-card-play]")){event.preventDefault();event.stopImmediatePropagation();cardLongPressTriggered=false;suppressCardClickUntil=0;}},true);
+ // Capture skip before other game-level pointer/click handlers can swallow it.
+ document.addEventListener("click",event=>{
+  const button=event.target?.closest?.('#tbRpg [data-action="skip-floors"]');
+  if(!button)return;
+  event.preventDefault();event.stopImmediatePropagation();
+  if(button.disabled)return;
+  document.querySelector(".tb-skip-floors-overlay")?.remove();
+  try{showSkipFloorsModal();}catch(error){console.error("[Towerbound] skip floors modal failed",error);notify("Не удалось открыть пропуск этажей: "+(error?.message||String(error)));}
+ },true);
  document.addEventListener("click",handleClick);
  // Safety net for every in-game button, including navigation and controls without explicit save() calls.
  document.addEventListener("click",event=>{
