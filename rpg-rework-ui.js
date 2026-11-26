@@ -178,7 +178,7 @@
  const SKILL_UPGRADE_LEVELS=Object.freeze({1:1,2:20,3:50});
  let pendingSkillUpgradeId=null;
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",shopTab="silver",lastRenderedScreen=null,lastRenderedProfileTab=null;
- let selectedId=null,selectedClass="assassin",selectedStage=1,skipFloorsPending=false,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null,guildRaid=null;
+ let selectedId=null,selectedClass="assassin",selectedStage=1,skipFloorsPending=false,pendingSkipStage=0,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",collectionTab="collection",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null,guildRaid=null;
 
  const CARD_DATABASE=Object.freeze({
  strike:{id:"strike",name:"Удар",classId:"common",type:"attack",rarity:"common",cost:1,description:"Наносит 6 урона",upgradedDescription:"Наносит 9 урона",effects:{damage:6},upgradedEffects:{damage:9}},
@@ -373,7 +373,7 @@
   const c=live();if(!c)return;
   prepareStarterDeck(c,starterDeckSelection);
   document.querySelector(".tb-starter-deck-overlay")?.remove();
-  starterDeckSelection=[];save();if(eventTypeForStage(c,selectedStage)&&!c.run.completedMapEvents?.includes(Number(selectedStage)))showMapEventOverlay();else beginStage();
+  starterDeckSelection=[];save();if(pendingSkipStage){selectedStage=pendingSkipStage;beginStage();}else if(eventTypeForStage(c,selectedStage)&&!c.run.completedMapEvents?.includes(Number(selectedStage)))showMapEventOverlay();else beginStage();
  }
   function skipCardReward(){document.querySelector(".card-reward-overlay")?.remove();const c=live();if(c){c.pendingCardReward=null;save();}render();}
 
@@ -1879,7 +1879,7 @@ function profileRelicShopMarkup(c){
     current.run.playerHp=engine.maxHp(current);
     current.run.dailyChallengeActive=false;current.run.dailyChallengeDate=null;current.run.dailyChallengeSeed=null;
     current.run.pendingTrial=null;current.run.pendingChampion=null;
-    selectedStage=latest.targetStage;skipFloorsPending=true;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
+    selectedStage=latest.targetStage;pendingSkipStage=latest.targetStage;skipFloorsPending=true;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
     close();save();render();showStarterDeckModal();
     notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
    }catch(error){close();notify("Не удалось выполнить пропуск: "+(error?.message||String(error)));}
@@ -1889,7 +1889,7 @@ function profileRelicShopMarkup(c){
   const c=live();
   try{
    ensureCardDeck(c);syncEquipmentCards(c);
-   const plan=engine.beginStage(c.id,selectedStage,skipFloorsPending?{skipFloors:true}:undefined);skipFloorsPending=false;ensureLoadout(c);
+   const requestedStage=pendingSkipStage||selectedStage;const plan=engine.beginStage(c.id,requestedStage,(pendingSkipStage||skipFloorsPending)?{skipFloors:true}:undefined);if(Number(plan.stage)!==Number(requestedStage))throw new Error("Не удалось запустить выбранный этаж: движок вернул этаж "+plan.stage+" вместо "+requestedStage);pendingSkipStage=0;skipFloorsPending=false;selectedStage=Number(plan.stage);ensureLoadout(c);
    const activeTrial=c.run.pendingTrial&&Number(c.run.pendingTrial.stage)===Number(selectedStage)?c.run.pendingTrial:null;
    const activeChampion=c.run.pendingChampion&&Number(c.run.pendingChampion.stage)===Number(selectedStage)?c.run.pendingChampion:null;
    if(activeChampion&&!activeTrial&&c.run.stage?.mobs?.length){const champion=c.run.stage.mobs[0],profiles=activeChampion.secretBoss?[{role:"tank",mechanic:"reflect",name:"Эребор, Прародитель Стражей"}]:activeChampion.ancientGuardian?[{role:"tank",mechanic:"shield",name:"Астерион, Хранитель Печатей"}]:[{role:"tank",mechanic:"shield",name:"Хранитель Железной Клятвы"},{role:"poison",mechanic:"poison",name:"Чумной Палач"},{role:"normal",mechanic:"summon",name:"Повелитель Пепельных Прислужников"},{role:"bleed",mechanic:"berserk",name:"Кровавый Берсерк"},{role:"normal",mechanic:"teleport",name:"Призрачный Дуэлянт"},{role:"tank",mechanic:"reflect",name:"Зеркальный Страж"}],profile=profiles[Math.floor(gameRandom()*profiles.length)];c.run.stage.mobs=c.run.stage.mobs.slice(0,1);c.run.stage.count=1;plan.count=1;champion.type="elite";champion.role=profile.role;champion.mechanic=profile.mechanic;champion.name=profile.name;champion.champion=true;champion.trialHpMultiplier=activeChampion.secretBoss?2.25:1.65;champion.trialDamageMultiplier=activeChampion.secretBoss?1.5:1.28;plan.mobs=c.run.stage.mobs;}
@@ -2645,7 +2645,7 @@ function profileRelicShopMarkup(c){
    case "delete-character":{const c=live();if(!window.confirm("Удалить персонажа без возможности восстановления?")||!window.confirm("Подтверди удаление: все вещи и прогресс будут утрачены."))return;const typed=window.prompt("Введи имя персонажа:");try{engine.deleteCharacter(c.id,typed,true);selectedId=engine.state.characters[0]?.id||null;screen="characters";battle=null;save();render();notify("Персонаж удалён");}catch(error){notify(error.message);}break;}
    case "shop":screen="shop";render();break;
    case "skip-floors":showSkipFloorsModal();break; case "tower-map-focus":{selectedStage=live().progress.currentStage;towerMapOpen=true;render();break;} case "tower-map-close":towerMapOpen=false;towerMapScrollTop=0;render();break; case "tower-map-current":{selectedStage=live().progress.currentStage;render();break;}
-   case "start":{towerMapOpen=false;const c=live();if(c&&!c.run.active&&!c.run.stage){showStarterDeckModal();break;}if(c&&eventTypeForStage(c,selectedStage)&&!c.run.completedMapEvents?.includes(Number(selectedStage))){showMapEventOverlay();break;}beginStage();break;}
+   case "start":{towerMapOpen=false;const c=live();if(pendingSkipStage){selectedStage=pendingSkipStage;if(c&&!c.run.active&&!c.run.stage){showStarterDeckModal();break;}beginStage();break;}if(c&&!c.run.active&&!c.run.stage){showStarterDeckModal();break;}if(c&&eventTypeForStage(c,selectedStage)&&!c.run.completedMapEvents?.includes(Number(selectedStage))){showMapEventOverlay();break;}beginStage();break;}
    case "daily-challenge":try{const c=live();if(c.run.stage)throw new Error("Сначала заверши текущий бой");const daily=dailyChallengeInfo(),today=dailyChallengeDate();if(c.run.dailyChallengeCompletedDate===today)throw new Error("Ежедневный вызов уже завершён сегодня");if(c.run.dailyChallengeActive&&c.run.dailyChallengeDate===today){selectedStage=c.progress.currentStage;notify("Продолжаем сегодняшний забег · seed "+c.run.dailyChallengeSeed);beginStage();break;}c.run.dailyChallengeActive=true;c.run.dailyChallengeDate=today;c.run.dailyChallengeSeed=daily.seed;c.run.dailyChallengeSeedState=daily.seed;c.run.dailyChallengeModifier=daily.modifier.id;c.run.dailyChallengeCompletedDate=null;selectedStage=c.progress.currentStage;if(daily.modifier.id==="rage")c.rage=5;if(!c.run.active){showStarterDeckModal();break;}beginStage();notify("Вызов дня: "+daily.modifier.name+" · seed "+daily.seed);}catch(error){notify(error.message);}break;
    case "attack":basicAttack();break;
    case "end-turn":endTurnButton();break;
