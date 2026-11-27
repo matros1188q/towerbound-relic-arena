@@ -21,12 +21,12 @@ for(const [id,file] of Object.entries(bosses)){assert.ok(ui.includes('"'+id+'":"
 const chapterFiles=['assets/chapters/image_2.jpeg','assets/chapters/image_3.jpeg','assets/chapters/image_4.jpeg','assets/chapters/image_5.jpeg','assets/chapters/image.jpeg'];
 assert.equal(chapters.chapters.length,5);
 for(let i=0;i<5;i++){assert.equal(chapters.chapters[i].background,chapterFiles[i]);assert.ok(fs.existsSync(chapterFiles[i]));}
-const arenaBackgrounds=[...ui.matchAll(/"\.\/assets\/Fon\/(image_\d+\.jpeg)"/g)].map(match=>match[1]);
+const arenaBackgrounds=[...ui.matchAll(/src:"(assets\/Fon\/image_\d+\.jpeg)"/g)].map(match=>match[1].split('/').pop());
 assert.equal(arenaBackgrounds.length,18,"all 18 current chapter arena backgrounds are mapped");
 for(const file of arenaBackgrounds)assert.ok(fs.existsSync("assets/Fon/"+file),"arena background exists: "+file);
 assert.ok(ui.includes('function arenaBackgroundForStage(stage)'));
 for(const file of ['image_25.jpeg','image_26.jpeg','image_27.jpeg','image_28.jpeg','image_29.jpeg','image_30.jpeg','image_31.jpeg','image_32.jpeg','image_33.jpeg','image_34.jpeg','image_35.jpeg','image_36.jpeg','image_37.jpeg','image_38.jpeg','image_39.jpeg','image_40.jpeg','image_42.jpeg','image_43.jpeg'])assert.ok(fs.existsSync("assets/Fon/"+file),"chapter arena image exists: "+file);
-assert.ok(ui.includes('arena.style.backgroundImage=')&&ui.includes('arenaBackgroundForStage(battle.stage)'),'active arena background is applied directly to the live battle surface');
+assert.ok(ui.includes('function applyArenaBackground(arena,stage)')&&ui.includes('applyArenaBackground(arena,battle.stage)')&&ui.includes('layer.style.backgroundImage='),'active arena background is preloaded and crossfaded on the live battle surface');
 assert.ok(ui.includes('function enemyPortrait(target)')&&ui.includes('target?.mobId'));
 assert.ok(styles.includes('object-fit:contain')&&ui.includes('inventoryIconHtml(item,true)'));
 assert.ok(html.includes('./assets/ui/art-sprites.css'));
