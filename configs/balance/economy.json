@@ -91,6 +91,12 @@
         "name": "Футляр целителя",
         "price": 1800,
         "effect": "potion_capacity"
+      },
+      {
+        "id": "antidote",
+        "name": "Противоядие",
+        "price": 15,
+        "effect": "antidote"
       }
     ],
     "premium_7d": 20000,

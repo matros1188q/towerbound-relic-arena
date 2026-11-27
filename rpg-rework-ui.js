@@ -757,7 +757,7 @@
   refine_stone:"Расходуется при заточке экипировки в мастерской. Повышает уровень заточки предмета.",
   enhancement_stone:"Камень для гнезда экипировки. Даёт бонусы характеристик в зависимости от класса и специализации.",
   enchant_scroll:"Свиток для зачарования экипировки и усиления её свойств.",
-  antidote:"Снимает отравление и защищает от ядовитых эффектов."
+  antidote:"Автоматически обезвреживает ловушку на каждом 13-м этапе забега. Расходуется при срабатывании."
  };
  function itemTypeName(value){return itemTypeNames[value]||String(value||"Предмет").replace(/_/g," ");}
  function itemDisplayName(item){
@@ -1805,6 +1805,7 @@ function profileRelicShopMarkup(c){
   drop_50:{name:"Эликсир добычи · II",description:"+50% к шансу добычи на 60 минут",group:"Эликсиры опыта и добычи"},
   drop_75:{name:"Эликсир добычи · III",description:"+75% к шансу добычи на 60 минут",group:"Эликсиры опыта и добычи"},
   drop_100:{name:"Эликсир добычи · IV",description:"Удваивает шанс добычи на 60 минут",group:"Эликсиры опыта и добычи"},
+  antidote:{name:"Противоядие",description:"Автоматически обезвреживает ловушку на каждом 13-м этапе забега",group:"Подготовка к походу"},
   repair_kit:{name:"Походный набор восстановления",description:"Между боями восстанавливает 10% максимального здоровья",group:"Подготовка к походу"},
   silver_charm:{name:"Серебряный оберег",description:"+10% серебра за победы на 60 минут",group:"Подготовка к походу"},
   xp_hourglass:{name:"Песочные часы опыта",description:"Дополнительно +5% опыта на 60 минут",group:"Подготовка к походу"},
@@ -1833,6 +1834,7 @@ function profileRelicShopMarkup(c){
   "drop_50": "./art-inbox/10-materials/07-currency-treasures/C22_03_silver_coin.png",
   "drop_75": "./art-inbox/10-materials/07-currency-treasures/C22_01_gold_coin.png",
   "drop_100": "./art-inbox/10-materials/07-currency-treasures/C22_02_pile_of_gold_coins.png",
+  "antidote": "./art-inbox/09-consumables/01-potions/C11_07_antidote.png",
   "repair_kit": "./art-inbox/09-consumables/02-scrolls-mana-stones/C12_04_healing_scroll.png",
   "silver_charm": "./art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
   "xp_hourglass": "./art-inbox/09-consumables/02-scrolls-mana-stones/C12_09_magic_hourglass.png",
