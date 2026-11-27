@@ -16,12 +16,7 @@ function errorText(e){
 }
 async function rpc(name,args={}){const c=client();if(!cloud()?.signedIn||!c)throw new Error('AUTH_REQUIRED');const {data,error}=await c.rpc(name,args);if(error)throw error;return data;}
 function activeCharacter(){const e=game||window.TowerboundRework;return e?.state?.characters?.find(c=>c.id===e.state.activeCharacterId)||e?.state?.characters?.[0]||null;}
-function syncShortcut(){let b=$('#tbMyGuildShortcut');if(snapshot?.member){if(!b){b=document.createElement('button');b.id='tbMyGuildShortcut';b.type='button';b.textContent='⚜ Моя Гильдия';b.addEventListener('click',()=>{inside=true;view='overview';window.TowerboundSocial?.open?.();window.TowerboundSocial?.openTab?.('guild');});document.body.append(b);}}else if(b)b.remove();}
-function setRuntimeBuffs(){
- const e=game||window.TowerboundRework,characters=Array.isArray(e?.state?.characters)?e.state.characters:[activeCharacter()].filter(Boolean);
- const buffs=snapshot?.member?(snapshot.buffs||{}):{},daily=snapshot?.member?(snapshot.daily_bonus||{}):{};
- for(const c of characters){if(!c)continue;try{Object.defineProperty(c,'guildBuffs',{value:{...buffs},writable:true,configurable:true,enumerable:false});Object.defineProperty(c,'guildDailyBonus',{value:{exp_bonus_percent:Number(daily.exp_bonus_percent)||0,drop_bonus_percent:Number(daily.drop_bonus_percent)||0},writable:true,configurable:true,enumerable:false});}catch(_){c.guildBuffs={...buffs};c.guildDailyBonus={...daily};}}
-}
+function syncShortcut(){const button=$("#tbMyGuildShortcut");if(button)button.remove();}
 async function syncServerRevision(){
  const cl=cloud();if(!cl?.signedIn||!cl.loadGame)return;
  if(revisionCheckTask)return revisionCheckTask;
