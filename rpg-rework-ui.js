@@ -401,7 +401,7 @@
  }
  function loadBattleEnemy(index){
   const c=live(),stage=c.run.stage;
-  if(!battle.enemies){battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;return{...mob,index:i,id:"enemy-"+i,hp,maxHp:hp,alive:true,shield:mob.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,turnsTaken:0,poison:0,bleed:0,burn:0,weak:0,vulnerable:0};});index=stage.targetIndex??0;}
+  if(!battle.enemies){battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;return{...mob,index:i,id:"enemy-"+i,hp,maxHp:hp,alive:true,maxPhases:4,shield:mob.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,turnsTaken:0,poison:0,bleed:0,burn:0,weak:0,vulnerable:0};});index=stage.targetIndex??0;}
   if(index===undefined||index===null||!battle.enemies[index]?.alive)index=battle.enemies.findIndex(enemy=>enemy.alive&&enemy.hp>0);
   if(index<0)return;
   engine.selectTarget(c.id,index);battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase(battle.enemy):0;planEnemyIntents();
@@ -1434,7 +1434,7 @@ function createDialog(){
  }
  function updateBossPhase(target=battle?.enemy){
   if(!battle||target?.type!=="boss")return 1;
-  target.maxPhases=Math.max(2,(balance.bosses.phases||[]).length||4);
+  target.maxPhases=Math.max(4,(balance.bosses.phases||[]).length||4);
   const phase=Math.max(1,Number(engine.bossPhaseInfo(target.hp,target.maxHp).phase)||1),previous=Math.max(1,Number(target.phase)||1);
   if(phase>previous){
    for(let nextPhase=previous+1;nextPhase<=phase;nextPhase++){
