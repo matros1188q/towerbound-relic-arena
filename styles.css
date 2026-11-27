@@ -3296,3 +3296,29 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-v2 .tb-system-product-copy>b{font-size:10px!important}
  #tbRpg .tb-v2 .tb-system-product-copy>small{font-size:8px!important}
 }
+
+
+/* 2026-11-27 SHOP CATALOGUE REWORK: readable illustrated rows on phones */
+#tbRpg .tb-v2 .tb-shop-redesign .tb-product-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card{display:grid!important;grid-template-columns:68px minmax(0,1fr)!important;grid-template-rows:auto auto!important;align-items:center!important;gap:7px 11px!important;padding:10px!important;min-height:94px!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card .tb-product-icon{grid-column:1!important;grid-row:1/3!important;width:68px!important;height:68px!important;min-height:68px!important;padding:2px!important;border-radius:12px!important;background:radial-gradient(ellipse at 50% 70%,#d1b06b28,transparent 72%),#10181d!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card .tb-item-art-wrap{width:64px!important;height:64px!important;display:grid!important;place-items:center!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card .tb-shop-item-art{width:62px!important;height:62px!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;filter:drop-shadow(0 5px 8px #000b)!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-copy{grid-column:2!important;grid-row:1!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:4px!important;min-width:0!important;min-height:0!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-copy>b{color:#f2e3c5!important;font-size:12px!important;line-height:1.2!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-copy>small{color:#aeb9b5!important;font-size:10px!important;line-height:1.32!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-footer{grid-column:2!important;grid-row:2!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;min-width:0!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-footer .tb-product-price{color:#e7c98f!important;font-size:10px!important;font-weight:900!important;white-space:nowrap!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-footer button{width:auto!important;min-width:92px!important;min-height:34px!important;margin:0!important;padding:7px 10px!important;border-radius:9px!important;font-size:9px!important;font-weight:900!important;letter-spacing:.04em!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-group{gap:9px!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-shop-group-head h2{font-size:16px!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-daily-shop-chest{box-shadow:inset 0 1px #ffffff0a,0 8px 18px #0002!important}
+#tbRpg .tb-v2 .tb-shop-redesign .tb-cosmetic-chest-art img{filter:drop-shadow(0 5px 8px #000a)!important}
+@media(min-width:760px){#tbRpg .tb-v2 .tb-shop-redesign .tb-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:380px){
+ #tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card{grid-template-columns:58px minmax(0,1fr)!important;gap:6px 8px!important;padding:8px!important}
+ #tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card .tb-product-icon{width:58px!important;height:58px!important;min-height:58px!important}
+ #tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card .tb-item-art-wrap{width:54px!important;height:54px!important}
+ #tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card .tb-shop-item-art{width:52px!important;height:52px!important}
+ #tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-footer button{min-width:82px!important}
+}
