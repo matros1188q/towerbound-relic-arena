@@ -327,9 +327,75 @@
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",statsOverlayOpen=false,shopTab="silver",lastRenderedScreen=null,lastRenderedProfileTab=null;
  // The legacy RPG renderer is intentionally encapsulated in rpg-mode.js; expose its supported refresh API locally.
  function render(){
-  const legacy=window.TowerboundRPG;
-  if(legacy&&typeof legacy.refresh==="function"){legacy.refresh();return;}
-  throw new Error("Не найден модуль отрисовки игры (TowerboundRPG.refresh).");
+  if(!engine)return;
+  const isBattle=screen==="battle"&&!!battle;
+  document.body.classList.toggle("tb-battle-lock",isBattle);
+  document.documentElement.classList.toggle("tb-battle-lock",isBattle);
+  const markup=screen==="characters"?characterList():screen==="map"?mapScreen():screen==="profile"?profileScreen():isBattle?battleScreen():screen==="death"?deathScreen():characterList();
+  root.innerHTML='<div class="tb-v2">'+markup+'</div>';
+  if(toastMessage){let toast=root.querySelector(".tb-toast");if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2")?.appendChild(toast);}if(toast)toast.textContent=toastMessage;}
+  root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
+ }
+
+ function loadBattleEnemy(index){
+  const c=live(),stage=c.run.stage;
+  if(!battle.enemies){battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;return{...mob,index:i,id:"enemy-"+i,hp,maxHp:hp,alive:true,shield:mob.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,turnsTaken:0,poison:0,bleed:0,burn:0,weak:0,vulnerable:0};});index=stage.targetIndex??0;}
+  if(index===undefined||index===null||!battle.enemies[index]?.alive)index=battle.enemies.findIndex(enemy=>enemy.alive&&enemy.hp>0);
+  if(index<0)return;
+  engine.selectTarget(c.id,index);battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase(battle.enemy):0;planEnemyIntents();
+ }
+ function beginStage(){
+  const c=live();if(!c)return;
+  try{const plan=engine.beginStage(c.id,selectedStage);battle={stage:plan.stage,count:plan.count,enemies:null,targetIndex:0,enemy:null,enemyHp:0,enemyMax:0,shield:0,actor:{type:"player",id:"player",name:c.name},isPlayerTurn:true,playerTurnCount:0,round:1,cardsPlayedThisTurn:0,cardBlock:0,busy:false,paused:false,isCardAnimating:false,enemyQueueToken:0,enemyQueueState:null,actionDamageLedger:{},combatLog:[],comboProgress:{},bossDeadlineTurns:null};resetCardBattle(c);c.currentEnergy=Math.max(1,Number(c.energy)||3);drawCards(5);loadBattleEnemy();screen="battle";save();render();}
+  catch(error){notify(error.message);console.error("[Towerbound] stage start failed",error);}
+ }
+ function finishCurrentEnemy(){
+  if(!battle||battle.finishingEnemy)return;battle.finishingEnemy=true;clearPendingTurnTimer();const c=live(),defeated=battle.enemies?.find(enemy=>enemy.index===battle.targetIndex)||battle.enemy;if(!c||!defeated){battle.finishingEnemy=false;return;}
+  try{const result=engine.finishEnemy(c.id,{speed2:!!c.run.speed2,targetIndex:defeated.index});defeated.hp=0;defeated.alive=false;defeated.dead=true;
+   if(result.stageComplete){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этаж пройден · награды сохранены");if(result.relicChoices?.length)showRelicRewardScreen(result.relicChoices);return;}
+   battle.finishingEnemy=false;battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.busy=false;battle.actor={type:"player",id:"player",name:c.name};loadBattleEnemy(result.nextTargetIndex);save();render();if(result.relicChoices?.length)showRelicRewardScreen(result.relicChoices);
+  }catch(error){battle.finishingEnemy=false;recoverBattleControl(error,"Не удалось завершить противника");}
+ }
+ function endFromDamage(){clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="death";save();render();}
+ function battleScreen(){
+  const c=live(),enemy=battle.enemy,hp=Math.max(1,engine.maxHp(c)),heroHp=Math.max(0,Number(c.run.playerHp)||0);
+  const targets=(battle.enemies||[]).map(t=>'<button type="button" class="tb-target-card '+(t.index===battle.targetIndex?'selected ':'')+(!t.alive?'defeated':'')+'" data-target="'+t.index+'" '+(!t.alive?'disabled':'')+'><b>'+(t.type==="boss"?"БОСС":t.type==="elite"?"ЭЛИТА":"ВРАГ "+(t.index+1))+'</b><small>'+esc(balance.mobs.roles[t.role]?.name||t.role||"Противник")+'</small><span class="tb-target-hp"><i style="width:'+Math.max(0,Math.min(100,t.hp/Math.max(1,t.maxHp)*100))+'%"></i></span><small>'+Math.max(0,Math.ceil(t.hp))+' / '+t.maxHp+' HP</small><small>'+esc(t.intent?.label||"Готовится")+'</small></button>').join("");
+  return header("Башня · этаж "+battle.stage,c.name+" · раунд "+(battle.round||1))+'<section class="tb-arena tb-card-arena"><div class="tb-arena-top"><b>ПРОТИВНИКИ</b><span>'+((battle.enemies||[]).filter(x=>x.alive).length)+' осталось</span><button type="button" data-action="map">К КАРТЕ</button></div><div class="tb-target-grid">'+targets+'</div><div class="tb-battle-focus"><div class="tb-enemy-focus"><b>'+esc(enemy?.name||"Противник")+'</b><div class="tb-healthbar enemy"><span style="width:'+Math.max(0,Math.min(100,Number(enemy?.hp||0)/Math.max(1,Number(enemy?.maxHp)||1)*100))+'%"></span></div><small>'+Math.max(0,Math.ceil(enemy?.hp||0))+' / '+(enemy?.maxHp||0)+' HP</small><p>'+esc(enemy?.intent?.label||"Ожидание хода")+'</p></div><div class="tb-battle-hero"><div class="tb-hero-art"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+Math.max(0,Math.min(100,heroHp/hp*100))+'%"></span></div><small>'+Math.ceil(heroHp)+' / '+hp+' HP</small><b class="tb-energy">ЭНЕРГИЯ '+Math.max(0,c.currentEnergy||0)+' / '+Math.max(1,c.energy||3)+'</b><small>Блок: '+Math.max(0,battle.cardBlock||0)+'</small></div></div><div class="tb-hand-heading"><b>ТВОЯ РУКА</b><span>'+(c.hand||[]).length+' карт · колода '+(c.deck||[]).length+' · сброс '+(c.discard||[]).length+'</span></div><div class="tb-card-hand">'+renderHand()+'</div><button type="button" class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"||battle.busy||battle.paused||battle.isCardAnimating?'disabled':'')+'>КОНЕЦ ХОДА</button><div class="tb-combat-note">'+(battle.paused?"ПАУЗА":battle.busy?"Ход противников…":"Выбирай карты и цель, затем заверши ход")+'</div>'+combatLogMarkup()+'</section>';
+ }
+ function deathScreen(){const c=live();if(!c)return characterList();let p={};try{p=engine.deathPreview(c.id)||{};}catch(_){}return header("Забег завершён",c.name)+'<section class="tb-death"><div class="tb-eyebrow">ПОСЛЕДНИЙ ШАНС</div><h1>Персонаж погиб</h1><p>Забег завершён. Подтверди результат, чтобы вернуться к Башне.</p><div class="tb-death-losses"><div><small>ПОТЕРЯ ОПЫТА</small><b>'+Number(p.experienceLoss||0)+'</b></div><div><small>УРОВНЕЙ</small><b>'+Number(p.levelsLost||0)+'</b></div></div><button class="tb-danger" data-action="confirm-death">ПОДТВЕРДИТЬ СМЕРТЬ</button></section>';}
+ function createModernCharacter(){const name=root.querySelector("#name")?.value||"";try{const c=engine.createCharacter(name,selectedClass);selectedId=c.id;engine.state.activeCharacterId=c.id;dialogOpen=false;screen="characters";selectedStage=1;ensureCardDeck(c);syncEquipmentCards(c);save();render();notify("Персонаж создан");}catch(error){notify(error.message);}}
+ async function handleModernClick(event){
+  const t=event.target?.closest?.("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-card-play],[data-target],[data-cosmetic-buy],[data-cosmetic-equip],[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy]");
+  if(!t||!root.contains(t)||t.matches("input,textarea,select"))return;
+  if(t.dataset.pick){selectedId=t.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live()?.progress.currentStage||1;screen="characters";render();save();return;}
+  if(t.dataset.class){selectedClass=t.dataset.class;render();return;}
+  if(t.dataset.stage){selectedStage=Number(t.dataset.stage);render();return;}
+  if(t.dataset.tab){profileTab=t.dataset.tab;screen="profile";render();return;}
+  if(t.dataset.branch){try{engine.chooseBranch(live().id,t.dataset.branch,0);grantSpecializationCards(live(),t.dataset.branch);save();render();notify("Специализация выбрана");}catch(e){notify(e.message);}return;}
+  if(t.dataset.talent){try{engine.useTalentPoint(live().id,t.dataset.talent,3);save();render();}catch(e){notify(e.message);}return;}
+  if(t.dataset.target!==undefined){setBattleTarget(Number(t.dataset.target));return;}
+  if(t.dataset.cardPlay!==undefined){playCard(Number(t.dataset.cardPlay));return;}
+  if(t.dataset.shopOpen!==undefined||t.dataset.action==="shop"){shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());return;}
+  if(t.dataset.shopClose!==undefined){root.querySelector(".tb-shop-overlay")?.remove();return;}
+  if(t.dataset.shopCurrency){shopOverlayCurrency=t.dataset.shopCurrency==="diamond"?"diamond":"silver";const o=root.querySelector(".tb-shop-overlay");if(o)o.outerHTML=shopOverlayMarkup();return;}
+  if(t.dataset.shopBuy){try{engine.purchase(live().id,t.dataset.shopStore,t.dataset.shopBuy);save();render();notify("Покупка совершена");}catch(e){notify(e.message);}return;}
+  if(t.dataset.cosmeticBuy){try{engine.buyCosmeticChest(t.dataset.cosmeticBuy);save();render();notify("Косметика получена");}catch(e){notify(e.message);}return;}
+  if(t.dataset.cosmeticEquip){try{engine.equipCosmetic(t.dataset.cosmeticEquip);save();render();notify("Косметика применена");}catch(e){notify(e.message);}return;}
+  switch(t.dataset.action){
+   case "new":if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей");return;}dialogOpen=true;selectedClass="assassin";render();break;
+   case "close":dialogOpen=false;render();break;
+   case "confirm-create":createModernCharacter();break;
+   case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
+   case "characters":screen="characters";render();break;
+   case "map":if(battle){clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;}screen="map";render();save();break;
+   case "profile":profileTab="stats";screen="profile";render();break;
+   case "start":beginStage();break;
+   case "end-turn":endPlayerTurn();break;
+   case "confirm-death":try{engine.confirmDeath(live().id);battle=null;screen="map";selectedStage=live().progress.currentStage;save();render();}catch(e){notify(e.message);}break;
+   case "empty-login":case "empty-register":{const login=root.querySelector("#login")?.value||"",password=root.querySelector("#pass")?.value||"",remember=!!root.querySelector("#rememberMe")?.checked,msg=root.querySelector(".tb-login-message"),method=t.dataset.action==="empty-register"?"signUp":"signIn";try{if(!window.TowerboundCloud?.[method])throw new Error("Авторизация ещё загружается");await window.TowerboundCloud[method](login,password,remember);if(msg)msg.textContent="Успешно";}catch(e){if(msg)msg.textContent=e.message;notify(e.message);}break;}
+   case "cloud-retry":window.TowerboundCloud?.retryLoad?.().then(()=>{screen="characters";render();}).catch(e=>notify(e.message));break;
+   case "account-logout":window.TowerboundCloud?.signOut?.().catch(e=>notify(e.message));break;
+  }
  }
  let shopOverlayCurrency="silver";
  let selectedId=null,selectedClass="assassin",selectedStage=1,skipFloorsPending=false,pendingSkipStage=0,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",bagSort="power",collectionTab="equipment",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null,guildRaid=null;
@@ -1933,6 +1999,9 @@ function profileRelicShopMarkup(c){
   }).join("");
   return '<div class="tb-shop-overlay" role="dialog" aria-modal="true" aria-label="Магазин Башни"><div class="tb-shop-panel"><header class="tb-shop-hero"><div><small>ТОРГОВАЯ ЛАВКА · TOWERBOUND</small><h2>МАГАЗИН БАШНИ</h2><p>Подготовь героя к следующему восхождению</p></div><button type="button" data-shop-close aria-label="Закрыть магазин">×</button></header><div class="tb-shop-wallet"><span>ТВОЙ БАЛАНС</span><b>'+money.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</b></div><nav class="tb-shop-currencies"><button type="button" data-shop-currency="silver" class="'+(store==="silver"?"active":"")+'">СЕРЕБРО · '+(Number(c.silver)||0).toLocaleString("ru-RU")+'</button><button type="button" data-shop-currency="diamond" class="'+(store==="diamond"?"active":"")+'">АЛМАЗЫ · '+(Number(engine.state.account?.diamonds)||0).toLocaleString("ru-RU")+'</button></nav><div class="tb-shop-content">'+(groups||'<p class="tb-shop-empty">В этой лавке пока нет доступных товаров.</p>')+(store==="diamond"?cosmeticStoreMarkup():"")+'</div><footer class="tb-shop-footer">Зелья и усиления попадают в рюкзак — активируй их перед боем или заточкой. Материалы кузницы открывают реальные улучшения экипировки.</footer></div></div>';
  }
+
+ root.addEventListener("pointerup",event=>{if(event.target?.closest?.(".tb-v2"))event.stopImmediatePropagation();},true);
+ root.addEventListener("click",handleModernClick);
  root.addEventListener("click",event=>{
   const target=event.target?.closest?.("[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-pvp-buy],[data-cosmetic-buy],[data-cosmetic-equip]");
   if(!target)return;
