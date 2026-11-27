@@ -1867,8 +1867,8 @@ function createDialog(){
  function basicAttack(){
   const c=live();if(!battle||!c||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed)return false;
   const target=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);if(!target)return false;
-  battle.playerSkillUsed=true;const attack=Math.max(1,Math.round(Number(engine.getCombatStats(c).attack||engine.getCombatStats(c).dps)||1)),result=applyTargetDamage(target,attack,"physical");
-  c.resource=Math.min(Number(c.resourceMax)||100,(Number(c.resource)||0)+Number(balance.resources.regeneration.auto_attack||0));
+  battle.playerSkillUsed=true;const profile=engine.basicAttackStats(c.id),attack=Math.max(1,Math.round(Number(profile.damage)||1)),result=applyTargetDamage(target,attack,"physical");
+  engine.restoreResource(c.id,profile.resourceGain);
   logCombatEvent("Базовая атака · −"+result.dealt+" HP","#e9d4a0");
   if(result.killed){finishCurrentEnemy();if(!battle)return true;}
   save();render();return true;
