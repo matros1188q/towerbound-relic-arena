@@ -17,7 +17,7 @@
   state.account.unlockedCards=Array.isArray(state.account.unlockedCards)?state.account.unlockedCards:[];
   state.bank=state.bank||{silver:0,transfers:{}};
   state.characters=state.characters||[];
-  state.characters.forEach(character=>{character.run=character.run||{};if(!Object.prototype.hasOwnProperty.call(character.run,"snapshot"))character.run.snapshot=null;character.run.campStopsUsed=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];character.deck=Array.isArray(character.deck)?character.deck:[];character.unlockedCards=Array.isArray(character.unlockedCards)?character.unlockedCards:[];character.relics=Array.isArray(character.relics)?character.relics:[];character.hand=Array.isArray(character.hand)?character.hand:[];character.discard=Array.isArray(character.discard)?character.discard:[];character.exhaustPile=Array.isArray(character.exhaustPile)?character.exhaustPile:[];character.combo=Math.max(0,Number(character.combo)||0);character.rage=Math.max(0,Number(character.rage)||0);character.charges=Math.max(0,Number(character.charges)||0);});
+  state.characters.forEach(character=>{character.gear=Array.isArray(character.gear)?character.gear:[];character.gear=character.gear.slice(0,9);while(character.gear.length<9)character.gear.push(null);character.bag=Array.isArray(character.bag)?character.bag:[];character.bag.forEach(item=>{if(item&&item.slot==="accessory")item.slot="amulet";});character.gear.forEach(item=>{if(item&&item.slot==="accessory")item.slot="amulet";});character.run=character.run||{};if(!Object.prototype.hasOwnProperty.call(character.run,"snapshot"))character.run.snapshot=null;character.run.campStopsUsed=Array.isArray(character.run.campStopsUsed)?character.run.campStopsUsed:[];character.deck=Array.isArray(character.deck)?character.deck:[];character.unlockedCards=Array.isArray(character.unlockedCards)?character.unlockedCards:[];character.relics=Array.isArray(character.relics)?character.relics:[];character.hand=Array.isArray(character.hand)?character.hand:[];character.discard=Array.isArray(character.discard)?character.discard:[];character.exhaustPile=Array.isArray(character.exhaustPile)?character.exhaustPile:[];character.combo=Math.max(0,Number(character.combo)||0);character.rage=Math.max(0,Number(character.rage)||0);character.charges=Math.max(0,Number(character.charges)||0);});
   state.stash=Array.isArray(state.stash)?state.stash:[];
   state.season=state.season||null;
   state.weeklyRating=state.weeklyRating||[];
@@ -453,7 +453,7 @@
     id:id(),name:nickname,classId,level:1,xp:0,talentPoints:0,branch:null,talents:{},skillUpgrades:{},unlockedSkills:(classData.base_skills||[]).filter(skill=>skill.type==="active"&&skill.unlock_level<=1).map(skill=>skill.id),activeSkillId:(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1)?.id||null,skillLoadout:(()=>{const first=(classData.base_skills||[]).find(skill=>skill.type==="active"&&skill.unlock_level<=1);return first?[first.id]:[];})(),deck:[],hand:[],discard:[],energy:3,currentEnergy:3,cardDeckVersion:0,combo:0,rage:0,charges:0,faith:0,element:"fire",magicCharge:0,totem:0,resource:0,resourceMax:resourceConfig.max_resource_by_class?.[classId]||classTable[classId].resource_max||100,legacyBonus:legacyEligible?0.5:0,legacyBonusUntil:legacyEligible?50:0,legacyGranted:legacyEligible,
     silver:balance.account.starter_pack.silver??balance.economy.starting_silver,
     bag:[{id:id(),type:"healing_potion",quantity:balance.economy.starting_potions??balance.account.starter_pack.healing_potions??3}],
-    gear:[null,null,null,null,null,null],relics:[],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
+    gear:Array(9).fill(null),relics:[],heroic:false,buffs:{},potionCapacityBonus:0,daily:null,difficulty:balance.difficulty.default,
     potionBelt:Array(balance.healing.potion_belt_slots).fill(null),dailyChest:{lastOpenedAt:0},achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
     run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,pendingRelicChoices:null,campStopsUsed:[],checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,lastPotionStage:null,speed2:false,lives:mode.lives,buffs:{}},
@@ -751,13 +751,14 @@
    const label=[item?.name,item?.weaponType,item?.armorType,item?.typeName].filter(Boolean).join(" ").toLowerCase();
    if(slot==="weapon")return item?.weaponType==="staff"||/посох|жезл|staff|wand/.test(label)||Number(item?.stats?.spellPower)>0?"gear_staff_bolt":"gear_sword_cleave";
    if(["chest","head","legs","hands"].includes(slot))return item?.armorType==="mantle"||/мантия|robe|mantle|одеяни/.test(label)?"gear_evasion":"gear_iron_wall";
-   if(slot==="accessory")return "gear_power_surge";
+   if(["amulet","accessory","ring","belt"].includes(slot))return "gear_power_surge";
+   if(slot==="offhand")return "gear_iron_wall";
    return null;
   }
   function createDrop(character,rarity,options){
     options=options||{};
     const itemLevel=itemLevelForStage(options.itemLevel||character.progress.currentStage||1);
-    const slots=["weapon","chest","head","legs","hands","accessory"],slot=options.slot||slots[Math.floor(random()*slots.length)];
+    const slots=["weapon","chest","head","legs","hands","amulet","offhand","ring","belt"],slot=options.slot||slots[Math.floor(random()*slots.length)];
     const rarityScale={"Обычная":1,"Редкая":1.35,"Эпическая":1.8,"Легендарная":2.4,"Богоподобная":3.2}[rarity]||1;
     const scale=(2+itemLevel*.65)*rarityScale;
     const statProfiles={
@@ -766,9 +767,13 @@
      head:{defense:Math.max(1,Math.round(scale*.8)),health:Math.max(3,Math.round(scale*2.5))},
      legs:{defense:Math.max(1,Math.round(scale*.65)),health:Math.max(4,Math.round(scale*3.2))},
      hands:{attack:Math.max(1,Math.round(scale*.55)),defense:Math.max(1,Math.round(scale*.3)),crit:rarityScale>=1.8?.008:0},
+     amulet:{health:Math.max(2,Math.round(scale*1.5)),spellPower:Math.max(1,Math.round(scale*.8)),crit:Math.min(.08,.005*rarityScale)},
+     offhand:{defense:Math.max(1,Math.round(scale*.8)),health:Math.max(4,Math.round(scale*2.2))},
+     ring:{attack:Math.max(1,Math.round(scale*.65)),crit:Math.min(.1,.006*rarityScale),critDamage:Math.max(0,scale*.012)},
+     belt:{health:Math.max(5,Math.round(scale*3)),defense:Math.max(1,Math.round(scale*.45))},
      accessory:{attack:Math.max(1,Math.round(scale*.8)),health:Math.max(2,Math.round(scale*1.5)),crit:Math.min(.08,.005*rarityScale),spellPower:Math.max(0,Math.round(scale*.45))}
     };
-    const slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",accessory:"Аксессуар"};
+    const slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",amulet:"Амулет",offhand:"Вторая рука",ring:"Кольцо",belt:"Пояс",accessory:"Амулет"};
     const rarityNames={"Обычная":"Обычный","Редкая":"Редкий","Эпическая":"Эпический","Легендарная":"Легендарный","Богоподобная":"Богоподобный"};
     const branch=(classTable[character.classId]?.branches||[]).find(entry=>entry.id===character.branch);
     const branchName=branch?.set?.name||branch?.theme||branch?.name||"Специализация";
@@ -1623,8 +1628,8 @@
    character.silver-=cost;character.paragon.stats={};return clone(character.paragon);
   }
   function equipmentSlotIndex(item){
-   if(Number.isInteger(item?.slot))return Math.max(0,Math.min(5,item.slot));
-   return ({weapon:0,chest:1,head:2,legs:3,hands:4,accessory:5})[item?.slot]??-1;
+   if(Number.isInteger(item?.slot))return Math.max(0,Math.min(8,item.slot));
+   return ({weapon:0,chest:1,head:2,legs:3,hands:4,accessory:5,amulet:5,offhand:6,ring:7,belt:8})[item?.slot]??-1;
   }
   function equipmentScore(item){
    const s=item?.stats||{};return (s.attack||0)+(s.defense||0)*1.5+(s.health||0)*.08+(s.crit||0)*100+(s.critDamage||0)*30+(s.spellPower||0)*1.1+(s.fireDamage||0)+(s.iceDamage||0)+(s.darkDamage||0)+((s.fireResist||0)+(s.iceResist||0)+(s.darkResist||0)+(s.physicalResist||0))*.5;
@@ -1642,15 +1647,15 @@
    const character=getChar(characterId),isGear=item=>!!(item&&item.type==="equipment"&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0&&character.level>=10&&character.branch&&item.branch===character.branch);
    if(character.level<10||!character.branch)return{equipped:0,gear:clone(character.gear||[]),bag:character.bag.length,locked:true};
    const candidates=[...(character.gear||[]).filter(isGear),...(character.bag||[]).filter(isGear)],chosen=new Map();
-   for(let slot=0;slot<6;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
-   const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:6},(_,slot)=>chosen.get(slot)||null);
+   for(let slot=0;slot<9;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
+   const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:9},(_,slot)=>chosen.get(slot)||null);
    character.gear.forEach(item=>{if(item)item.cardId=item.cardId||equipmentCardId(item);});
    character.bag=(character.bag||[]).filter(item=>!isGear(item)).concat(candidates.filter(item=>!selected.has(item.id)));
    if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return{equipped:chosen.size,gear:clone(character.gear),bag:character.bag.length};
   }
   function unequipItem(characterId,slotValue){
    const character=getChar(characterId),slot=equipmentSlotIndex({slot:slotValue});
-   if(slot<0||slot>=6)throw new Error("Неизвестный слот экипировки");
+   if(slot<0||slot>=9)throw new Error("Неизвестный слот экипировки");
    const item=character.gear[slot];
    if(!item)throw new Error("В этом слоте нет предмета");
    item.cardId=item.cardId||equipmentCardId(item);
@@ -1763,7 +1768,7 @@ if(typeof window!=="undefined"){
       talents:{},legacyTalents:old.tal||{},unlockedSkills:[],resource:0,
       resourceMax:balance.classes.classes[classId].resource_max||100,
       silver:Math.max(0,old.silver||balance.economy.starting_silver),
-      bag,gear:gear.length?gear:[null,null,null,null,null,null],
+      bag,gear:gear.length?gear.concat(Array(Math.max(0,9-gear.length)).fill(null)).slice(0,9):Array(9).fill(null),
       heroic:!!old.heroic,progress:{highestEver:best,currentStage:Math.max(1,Math.min(250,old.stage||1)),checkpoints:[50,100,150,200,250].filter(stage=>best>=stage)},
       run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
        checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,lastPotionStage:null,speed2:false,lives:balance.death.lives_per_run||3,buffs:{}},
