@@ -50,7 +50,8 @@ async function journey(type,name,viewport,url){
   });
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework,{timeout:20000});
-  await page.waitForSelector('#tbRpg .tb-v2',{timeout:15000});
+  try{await page.waitForSelector('#tbRpg .tb-v2',{timeout:15000});}
+  catch(error){const diagnostic=await page.evaluate(()=>({startupError:document.querySelector('[data-startup-error]')?.textContent||null,root:document.querySelector('#tbRpg')?.innerText?.slice(0,1200)||null,ready:!!window.TowerboundReworkReady,ui:!!window.TowerboundRework}));process.stderr.write('STARTUP DIAGNOSTIC '+name+' '+JSON.stringify({diagnostic,errors,consoleErrors,failed})+'\\n');throw error;}
   await page.evaluate(()=>{localStorage.clear();document.querySelector('#titleScreen')?.classList.add('is-hidden');document.querySelector('#accountDialog')?.classList.remove('open');});
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>!!window.TowerboundReworkReady&&!!window.TowerboundRework);
