@@ -176,7 +176,8 @@
   let path="";
   if(key==="weapon"){
    const classId=String(item?.classId||item?.class_id||"").toLowerCase();
-   const branchValue=item?.branchId||item?.branch_id||(typeof item?.branch==="object"?item.branch?.id:item?.branch)||"";\n   const branch=String(branchValue).toLowerCase();
+   const branchValue=item?.branchId||item?.branch_id||(typeof item?.branch==="object"?item.branch?.id:item?.branch)||"";
+   const branch=String(branchValue).toLowerCase();
    const family=classId==="assassin"?"C05":classId==="destroyer"?"C02":classId==="duelist"?"C01":classId==="bishop"||classId==="dragonkin"||classId==="elemental"||classId==="shaman"?"C04":"C01";
    if(/fire|огн/.test(branch))path="01-weapons/C04_04_fire_staff.png";
    else if(/ice|frost|лед|лёд/.test(branch))path="01-weapons/C04_05_ice_staff.png";
