@@ -258,7 +258,7 @@
   const equipmentArt=equipmentArtPath(item,slot);
   if(equipmentArt)return '<img class="tb-relic-icon tb-equipment-item-art '+(extraClass||"")+'" src="'+equipmentArt+'" alt="" loading="lazy" decoding="async">';
   const itemArt=customItemArtPath(item);
-  if(itemArt)return customItemImageHtml(itemArt,"tb-relic-icon "+(extraClass||""),item);
+  if(itemArt)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+itemArt+'" alt="" loading="lazy" decoding="async">';
   const custom=customRelicArtPath(item);
   if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async">';
   const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
