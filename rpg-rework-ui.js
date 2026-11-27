@@ -343,6 +343,11 @@
   if(isBattle){const arena=root.querySelector(".new-battle-wrap"),art=arenaBackgroundForStage(battle.stage);if(arena&&art){arena.style.setProperty("--tb-arena-background",'url("'+art+'")');arena.style.setProperty("--tb-arena-bg",'url("'+art+'")');arena.style.backgroundImage='linear-gradient(180deg,rgba(5,9,16,.40),rgba(5,9,16,.78)),url("'+art+'")';arena.style.backgroundColor="#101722";}}
   if(screen==="profile"&&profileTab==="talents"&&talentTreeConfig)setTimeout(initTalentTreeCanvas,0);
  }
+ function renderWithScrollSave(){
+  const oldScreen=screen,oldTab=profileTab,host=root.querySelector(".tb-v2"),scrollTop=host?.scrollTop||0,pageX=window.scrollX||0,pageY=window.scrollY||0;
+  render();
+  if(oldScreen===screen&&oldTab===profileTab)requestAnimationFrame(()=>{const next=root.querySelector(".tb-v2");if(next)next.scrollTop=scrollTop;window.scrollTo(pageX,pageY);});
+ }
 
 
  function ensureBottomNav(){
@@ -530,10 +535,10 @@
   if(t.dataset.tab){profileTab=t.dataset.tab;statsOverlayOpen=t.dataset.tab==="stats";screen="profile";render();if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);return;}
   if(t.dataset.branch){try{engine.chooseBranch(live().id,t.dataset.branch,0);grantSpecializationCards(live(),t.dataset.branch);save();render();notify("Специализация выбрана");}catch(e){notify(e.message);}return;}
   if(t.dataset.talent){try{engine.useTalentPoint(live().id,t.dataset.talent,3);save();render();}catch(e){notify(e.message);}return;}
-  if(t.hasAttribute("data-item-select")){selectedItemId=t.dataset.itemSelect||null;stonePickerItemId=null;render();return;}
-  if(t.dataset.stonePicker){stonePickerItemId=stonePickerItemId===t.dataset.stonePicker?null:t.dataset.stonePicker;selectedItemId=t.dataset.stonePicker;render();return;}
-  if(t.dataset.stoneChoice){try{const c=live(),target=t;if(!c)throw new Error("Персонаж не найден");engine.insertGem(c.id,target.dataset.stoneItem,target.dataset.stoneChoice);selectedItemId=t.dataset.stoneItem;stonePickerItemId=null;save();render();notify("Камень установлен в гнездо");}catch(error){notify(error.message);}return;}
-  if(t.dataset.extractGem!==undefined){try{const returned=engine.extractGem(live().id,t.dataset.extractGem,Number(t.dataset.gemIndex));selectedItemId=t.dataset.extractGem;save();render();notify("Камень извлечён: "+(returned.stoneType?.name||"камень")+" · возвращён в рюкзак");}catch(error){notify(error.message);}return;}
+  if(t.hasAttribute("data-item-select")){selectedItemId=t.dataset.itemSelect||null;stonePickerItemId=null;renderWithScrollSave();return;}
+  if(t.dataset.stonePicker){stonePickerItemId=stonePickerItemId===t.dataset.stonePicker?null:t.dataset.stonePicker;selectedItemId=t.dataset.stonePicker;renderWithScrollSave();return;}
+  if(t.dataset.stoneChoice){try{const c=live(),target=t;if(!c)throw new Error("Персонаж не найден");engine.insertGem(c.id,target.dataset.stoneItem,target.dataset.stoneChoice);selectedItemId=t.dataset.stoneItem;stonePickerItemId=null;save();renderWithScrollSave();notify("Камень установлен в гнездо");}catch(error){notify(error.message);}return;}
+  if(t.dataset.extractGem!==undefined){try{const returned=engine.extractGem(live().id,t.dataset.extractGem,Number(t.dataset.gemIndex));selectedItemId=t.dataset.extractGem;save();renderWithScrollSave();notify("Камень извлечён: "+(returned.stoneType?.name||"камень")+" · возвращён в рюкзак");}catch(error){notify(error.message);}return;}
   if(t.dataset.inspectStone){const stone=(live()?.bag||[]).find(item=>item.id===t.dataset.inspectStone);if(stone)notify(stoneDescription(stone)||stone.description||"Уникальный камень специализации");return;}
   if(t.dataset.equip){try{engine.equipItem(live().id,t.dataset.equip);save();render();notify("Предмет надет");}catch(error){notify(error.message);}return;}
   if(t.dataset.unequipSlot!==undefined){try{engine.unequipItem(live().id,Number(t.dataset.unequipSlot));save();render();notify("Предмет снят");}catch(error){notify(error.message);}return;}
