@@ -2024,3 +2024,23 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(4) .tb-profile-hub-emoji img{object-position:center 48%}
 #tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(5) .tb-profile-hub-emoji img{object-position:center 40%}
 @media(max-width:520px){#tbRpg .tb-profile-hub .tb-profile-hub-emoji{min-height:70px}#tbRpg .tb-profile-hub .tb-profile-hub-emoji img{min-height:70px;max-height:76px}}
+
+
+/* Profile hub: use artwork as the icon tile background, not a nested img.
+   Fixed tile dimensions prevent the mobile grid from collapsing image height. */
+#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-emoji{
+ display:block!important;align-self:stretch!important;
+ width:100%!important;height:78px!important;min-height:78px!important;max-height:78px!important;
+ padding:0!important;overflow:hidden!important;position:relative!important;
+ border:1px solid rgba(224,188,122,.82)!important;border-radius:8px!important;
+ background-color:#101923!important;background-repeat:no-repeat!important;
+ background-size:cover!important;box-shadow:inset 0 0 0 2px rgba(5,9,14,.42),0 5px 16px rgba(0,0,0,.34)!important;
+ font-size:0!important;line-height:0!important;
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(1) .tb-profile-hub-emoji{background-image:url("./assets/ui/sections/profile-assassin-closeup.jpg")!important;background-position:center 28%!important}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(2) .tb-profile-hub-emoji{background-image:url("./assets/ui/sections/talents-hourglass.jpg")!important;background-position:center 48%!important}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(3) .tb-profile-hub-emoji{background-image:url("./assets/ui/sections/card-library-floating-cards.jpg")!important;background-position:center 48%!important}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(4) .tb-profile-hub-emoji{background-image:url("./assets/ui/sections/collection-armor-set.jpg")!important;background-position:center 48%!important}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(5) .tb-profile-hub-emoji{background-image:url("./assets/ui/sections/forge-blacksmith.jpg")!important;background-position:center 40%!important}
+@media(max-width:520px){#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-emoji{height:70px!important;min-height:70px!important;max-height:70px!important}}
+@media(max-width:380px){#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-emoji{height:60px!important;min-height:60px!important;max-height:60px!important}}
