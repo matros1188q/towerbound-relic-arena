@@ -31,6 +31,7 @@
  window.TowerboundDailyRandom=gameRandom;
  /* Runtime style injection removed: styles are loaded once from styles.css. */
  const CHARACTER_ART_ROOT="./assets/characters/";
+ const BATTLE_ARENA_BACKGROUNDS=["./assets/Fon/image_25.jpeg","./assets/Fon/image_26.jpeg","./assets/Fon/image_27.jpeg","./assets/Fon/image_28.jpeg","./assets/Fon/image_29.jpeg","./assets/Fon/image_30.jpeg","./assets/Fon/image_31.jpeg","./assets/Fon/image_32.jpeg","./assets/Fon/image_33.jpeg","./assets/Fon/image_34.jpeg","./assets/Fon/image_35.jpeg","./assets/Fon/image_36.jpeg","./assets/Fon/image_37.jpeg","./assets/Fon/image_38.jpeg","./assets/Fon/image_39.jpeg","./assets/Fon/image_40.jpeg","./assets/Fon/image_42.jpeg","./assets/Fon/image_43.jpeg"];
  const ARENA_LOCATIONS=Object.freeze([
   {from:1,to:16,chapter:1,name:"Затопленный сток",src:"assets/Fon/image_25.jpeg"},
   {from:17,to:33,chapter:1,name:"Тюрьма",src:"assets/Fon/image_26.jpeg"},
@@ -377,7 +378,7 @@
   if(toastMessage){let toast=root.querySelector(".tb-toast");if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2")?.appendChild(toast);}if(toast)toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
   ensureBottomNav();
-  if(isBattle)applyArenaBackground(root.querySelector(".new-battle-wrap"),battle.stage);
+  if(isBattle){const arena=root.querySelector(".new-battle-wrap");if(arena)applyArenaBackground(arena,battle.stage);}
   if(screen==="profile"&&profileTab==="talents"&&talentTreeConfig)setTimeout(initTalentTreeCanvas,0);
  }
  function render(){return renderWithScrollSave();}
@@ -2372,6 +2373,12 @@ function profileRelicShopMarkup(c){
 
  root.addEventListener("pointerup",event=>{if(event.target?.closest?.(".tb-v2"))event.stopImmediatePropagation();},true);
  root.addEventListener("click",handleModernClick);
+ // Safety net for every in-game button: persist the resulting local snapshot and queue cloud sync.
+ root.addEventListener("click",event=>{
+  const button=event.target?.closest?.(".tb-v2 button");
+  if(!button||!root.contains(button)||button.disabled)return;
+  queueMicrotask(()=>{if(engine?.state&&root.isConnected)save();});
+ });
  root.addEventListener("change",event=>{const input=event.target?.closest?.("[data-setting]");if(!input||!root.contains(input))return;try{engine.saveSettings({[input.dataset.setting]:!!input.checked});save();notify("Настройки сохранены");}catch(error){notify(error.message||"Не удалось сохранить настройку");}});
  root.addEventListener("click",event=>{
   const target=event.target?.closest?.("[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-pvp-buy],[data-cosmetic-buy],[data-cosmetic-equip]");
