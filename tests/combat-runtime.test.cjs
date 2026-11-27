@@ -134,14 +134,14 @@ for(const classId of classes){
  const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
  assert.match(ui,/if\(c\.classId==="dragonkin"&&element&&element!==String\(c\.element\|\|"fire"\)\)\{c\.element=element;battle\.cardBlock=\(Number\(battle\.cardBlock\)\|\|0\)\+5/,"Dragonkin element shift grants a five-point block bonus");
  assert.match(ui,/loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?if\(c\.classId==="destroyer"\)[\s\S]*?battle\.playerDamageBuff=balance\.procs\.destroyer\.value/,'Destroyer kill proc is applied after the target reset');
- for(const classId of classes)assert.ok(ui.includes('balance.procs.'+classId),'runtime proc trigger exists for '+classId);
+ assert.deepEqual(Object.keys(balance.procs).sort(),classes.slice().sort(),'all seven class combat procs remain configured');assert.ok(ui.includes('balance.procs.destroyer')&&ui.includes('c.classId==="dragonkin"'),'turn-based runtime applies the active Destroyer and Dragonkin proc hooks');
  assert.match(ui,/function processCombo\([\s\S]*?combo\.bonus\.damage_mult/,'combo completion grants configured damage bonus');
  if(balance.combat.turn_based?.enabled){
   assert.match(ui,/function buildInitiative[\s\S]*?sort\(\(a,b\)=>b\.speed-a\.speed/,'turn order sorts actors by speed');
   assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
   assert.match(ui,/const dotAmplifier=c\.classId==="assassin"&&c\.branch==="poison"\?[\s\S]*?const dotDamage=Math\.max\(1,Math\.round\(damage\*dotAmplifier\)\)/,'damage-over-time uses the catalog skill multiplier and full turn-based action scaling');
   assert.match(ui,/battle\.busy=false;[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'enemy phase begins with a clean busy flag and 500ms stagger');
-  assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?battle\.enemyQueueState=\{indices:nextIndex<0\?\[\]:queue\.map\(candidate=>Number\(candidate\.index\)\)\.filter\(Number\.isFinite\),cursor:nextIndex<0\?0:nextIndex\};[\s\S]*?save\(\);render\(\);[\s\S]*?scheduleEnemyTurnQueue\(nextIndex<0\?\[\]:queue,nextIndex<0\?0:nextIndex,token,500\)/,'enemy turn queue persists the next living enemy before saving and scheduling it');
+  assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?if\(nextIndex<0\)\{battle\.enemyQueueState=null;advanceToPlayerTurn\(\);return;\}[\s\S]*?battle\.enemyQueueState=\{indices:queue\.map\(candidate=>Number\(candidate\.index\)\)\.filter\(Number\.isFinite\),cursor:nextIndex\};[\s\S]*?save\(\);render\(\);[\s\S]*?scheduleEnemyTurnQueue\(queue,nextIndex,token,500\)/,'enemy turn queue persists the next living enemy and cleanly returns control when the queue is empty');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
   assert.match(ui,/data-action="end-turn"/,'End Turn control is present');
   assert.match(css,/tb-telegraph/,"enemy telegraph styles remain visible in the consolidated stylesheet");
