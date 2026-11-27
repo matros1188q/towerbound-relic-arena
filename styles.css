@@ -2088,7 +2088,7 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-stats-toolbar h2{margin:3px 0 0;font-size:clamp(17px,4.8vw,23px);letter-spacing:.1em;color:#f4dfb8}
 #tbRpg .tb-stats-level{padding:7px 9px;border:1px solid rgba(210,174,105,.35);border-radius:6px;color:#e6c68d;font-size:10px;font-weight:800;white-space:nowrap}
 #tbRpg .tb-stats-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 13px calc(28px + env(safe-area-inset-bottom));}
-#tbRpg .tb-stats-identity{position:relative;display:grid;grid-template-columns:94px minmax(0,1fr) 22px;align-items:center;gap:13px;min-height:122px;padding:10px;margin-bottom:15px;border:1px solid rgba(210,174,105,.45);border-radius:12px;background:linear-gradient(105deg,rgba(8,14,21,.78),rgba(20,29,37,.68)),url("./assets/ui/sections/profile-assassin-fullbody.jpg") center 35%/cover;box-shadow:inset 0 1px rgba(255,255,255,.07),0 12px 28px rgba(0,0,0,.28);overflow:hidden}
+#tbRpg .tb-stats-identity{position:relative;display:grid;grid-template-columns:94px minmax(0,1fr) 22px;align-items:center;gap:13px;min-height:122px;padding:10px;margin-bottom:15px;border:1px solid rgba(210,174,105,.45);border-radius:12px;background-image:linear-gradient(105deg,rgba(8,14,21,.78),rgba(20,29,37,.68)),var(--tb-stats-hero-art),url("./assets/ui/sections/profile-crystal-corridor.jpg");background-position:center,center 35%,center;background-size:cover,cover,cover;box-shadow:inset 0 1px rgba(255,255,255,.07),0 12px 28px rgba(0,0,0,.28);overflow:hidden}
 #tbRpg .tb-stats-portrait{height:108px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
 #tbRpg .tb-stats-portrait img{height:100%;width:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 5px 8px #000)}
 #tbRpg .tb-stats-identity-copy{display:flex;min-width:0;flex-direction:column;gap:3px}
@@ -2105,6 +2105,7 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-stats-main-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 #tbRpg .tb-stats-main-card{display:flex;align-items:center;gap:10px;min-width:0;min-height:79px;padding:10px;border:1px solid rgba(184,157,111,.23);border-radius:9px;background:linear-gradient(135deg,rgba(40,51,59,.9),rgba(12,19,26,.96));box-shadow:inset 0 1px rgba(255,255,255,.04)}
 #tbRpg .tb-stats-icon{flex:0 0 34px;display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(213,177,112,.32);border-radius:9px;color:#e5c17f;background:rgba(8,13,19,.7);font-size:21px}
+#tbRpg .tb-stats-icon img{display:block;width:22px;height:22px;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 2px 5px rgba(0,0,0,.65))}
 #tbRpg .tb-stats-main-card>div{display:flex;min-width:0;flex-direction:column;gap:3px}
 #tbRpg .tb-stats-main-card small{font-size:8px;letter-spacing:.08em;color:#c8b99d;font-weight:800}
 #tbRpg .tb-stats-main-card b{font-size:clamp(19px,5vw,25px);line-height:1.08;color:#f4dfb8;font-weight:800;font-variant-numeric:tabular-nums}
