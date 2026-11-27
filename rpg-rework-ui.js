@@ -416,6 +416,8 @@
   const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
   if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};battle.actionDamageLedger[target.index]=used+dealt;}
   if(dealt>0)engine.applyVampirism(c.id,dealt);
+  const reflectRate=Number(target.reflectTurns)>0?.25:(target.champion&&target.mechanic==="reflect"?.15:0);
+  if(dealt>0&&reflectRate>0){const reflected=Math.max(1,Math.round(dealt*reflectRate));c.run.playerHp=Math.max(0,Number(c.run.playerHp||0)-reflected);if(Number(target.reflectTurns)>0)target.reflectTurns=0;showFloatingText("player","-"+reflected,"#ff7b82");logCombatEvent("ОТРАЖЕНИЕ · "+reflected+" урона","#ff7b82");}
   if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span"),card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');number.className="tb-floating-damage";number.textContent="-"+dealt;if(card){const box=card.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top)+"px";}layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
   if(target.type==="boss")updateBossPhase(target);
@@ -1819,6 +1821,7 @@ function createDialog(){
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;cardDamageDealt+=Math.max(0,Number(hit.dealt)||0);logCombatEvent("Вы сыграли «"+card.name+"» · "+hit.dealt+" урона","#e9d5a5");killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
   if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;cardDamageDealt+=Math.max(0,Number(hit.dealt)||0);killed=killed||!!hit.killed;}const defeatedByArea=(battle.enemies||[]).filter(enemy=>enemy&&Number(enemy.hp)<=0);if(defeatedByArea.length)killed=true;/* finishCurrentEnemy processes every dead enemy in its own queue loop below. */battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}if(cardCritical){triggerAncientRelicProc("critical");if(c.classId==="assassin"){battle.nextHitDamageMultiplier=Number(balance.procs.assassin.value)||1.5;notify(balance.procs.assassin.name+" · следующий удар усилен");}}if(magicCard&&(singleDamage>0||areaDamage>0))triggerAncientRelicProc("magic");
   if(Number(effects.hits)>1&&singleDamage>0&&target)for(let n=1;n<Number(effects.hits)&&c.run.playerHp>0;n++){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;cardDamageDealt+=Math.max(0,Number(hit.dealt)||0);killed=killed||!!hit.killed;}
+  if(c.run.playerHp<=0){endFromDamage();return;}
   if(singleDamage>0||areaDamage>0){if(battle.firstAttackDouble){battle.firstAttackDouble=false;if(c.run.stage)c.run.stage.relicFirstAttackConsumed=true;}battle.nextAttackDamageBonus=0;}const leechRate=Math.min(.03,Math.max(0,Number(treeCache.lifestealPercent)||0));if(cardDamageDealt>0&&leechRate>0){const beforeLeech=c.run.playerHp,leech=Math.max(0,Math.round(cardDamageDealt*leechRate));c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+leech);const gained=c.run.playerHp-beforeLeech;if(gained>0){showFloatingText("player","+"+gained+" ПОГЛОЩЕНИЕ","#70dca0");pulseCombatActor("player","heal");logCombatEvent("ВАМПИРИЗМ · восстановлено "+gained+" здоровья","#70dca0");}}
   battle.actionIsSkill=false;battle.actionIsPrimaryHit=false;if(c.run.playerHp<=0){endFromDamage();return;}
   if(Number(effects.block)>0){const block=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)+armorRefine*3+getCardBlockTalentBonus(c)+Math.max(0,Number(battle.relicBlockBonus)||0)));battle.cardBlock=(battle.cardBlock||0)+block;showFloatingText("player","ЩИТ +"+block,"#78c9ff");pulseCombatActor("player","armor");triggerAncientRelicProc("block");}
@@ -1862,10 +1865,10 @@ function createDialog(){
   else if(type==="debuff"){target.weak=Math.max(Number(target.weak)||0,Number(effect.duration)||1);target.slowTurns=Math.max(Number(target.slowTurns)||0,Number(effect.duration)||1);logCombatEvent(skill.name+" · противник ослаблен","#9bd4ff");}
   else{
    const selected=type==="aoe"||type==="dot"&&effect.area?targets:[target];
-   for(const enemy of selected){const threshold=Number(effect.execute_threshold)||0,execute=threshold>0&&enemy.hp/enemy.maxHp<=threshold,raw=Math.max(1,Math.round(base*power*(execute?Number(effect.execute_multiplier)||1.5:1)));const result=applyTargetDamage(enemy,raw,effect.damage_type||skill.damage_type||"physical");dealt+=result.dealt;if(type==="dot"){if(effect.status==="poison")enemy.poison=(Number(enemy.poison)||0)+Math.max(1,Number(effect.stacks)||1);else enemy.bleed=(Number(enemy.bleed)||0)+Math.max(1,Number(effect.stacks)||1);}}
+   for(const enemy of selected){if(c.run.playerHp<=0)break;const threshold=Number(effect.execute_threshold)||0,execute=threshold>0&&enemy.hp/enemy.maxHp<=threshold,raw=Math.max(1,Math.round(base*power*(execute?Number(effect.execute_multiplier)||1.5:1)));const result=applyTargetDamage(enemy,raw,effect.damage_type||skill.damage_type||"physical");dealt+=result.dealt;if(type==="dot"){if(effect.status==="poison")enemy.poison=(Number(enemy.poison)||0)+Math.max(1,Number(effect.stacks)||1);else enemy.bleed=(Number(enemy.bleed)||0)+Math.max(1,Number(effect.stacks)||1);}}
    logCombatEvent(skill.name+" · нанесено "+dealt+" урона","#f1c47d");
   }
-  if(!battle)return true;processCombo(slotIndex);battle.busy=false;
+  if(!battle)return true;if(c.run.playerHp<=0){endFromDamage();return true;}processCombo(slotIndex);battle.busy=false;
   if((battle.enemies||[]).some(enemy=>enemy.hp<=0&&enemy.alive)){finishCurrentEnemy();if(!battle)return true;}
   save();render();return true;
  }
@@ -1875,6 +1878,7 @@ function createDialog(){
   battle.playerSkillUsed=true;const profile=engine.basicAttackStats(c.id),attack=Math.max(1,Math.round(Number(profile.damage)||1)),result=applyTargetDamage(target,attack,"physical");
   engine.restoreResource(c.id,profile.resourceGain);
   logCombatEvent("Базовая атака · −"+result.dealt+" HP","#e9d4a0");
+  if(c.run.playerHp<=0){endFromDamage();return true;}
   if(result.killed){finishCurrentEnemy();if(!battle)return true;}
   save();render();return true;
  }
@@ -1898,7 +1902,7 @@ function createDialog(){
   const effect=ultimate.effect||"single_burst",stats=engine.getCombatStats(c),configuredMultiplier=Math.max(0,Number(ultimate.damage_multiplier)||2),damage=stats.dps*configuredMultiplier/3;
   if(effect==="heal_shield"||effect==="heal_aoe"){const before=c.run.playerHp,heal=Math.max(1,Math.round(engine.maxHp(c)*Number(ultimate.heal_fraction||.25)));c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+heal);if(effect==="heal_shield")battle.cardBlock=(Number(battle.cardBlock)||0)+Math.max(1,Math.round(engine.maxHp(c)*Number(ultimate.shield_fraction||.2)));logCombatEvent(ultimate.name+" · лечение +"+(c.run.playerHp-before),"#8ee0b0");}
   if(effect!=="heal_shield"){const list=effect==="aoe_burst"||effect==="heal_aoe"?targets:[target];let total=0;for(const enemy of list){for(let hit=0;hit<3&&enemy.hp>0&&c.run.playerHp>0;hit++){const result=applyTargetDamage(enemy,Math.max(1,Math.round(damage)),ultimate.damage_type||"physical",{ultimate:true});total+=result.dealt;if(!battle||c.run.playerHp<=0)return true;}}logCombatEvent(ultimate.name+" · три удара · нанесено "+total+" урона","#f2ca78");}
-  if(!battle)return true;if((battle.enemies||[]).some(enemy=>enemy.hp<=0&&enemy.alive)){finishCurrentEnemy();if(!battle)return true;}
+  if(!battle)return true;if(c.run.playerHp<=0){endFromDamage();return true;}if((battle.enemies||[]).some(enemy=>enemy.hp<=0&&enemy.alive)){finishCurrentEnemy();if(!battle)return true;}
   save();render();return true;
  }
 
