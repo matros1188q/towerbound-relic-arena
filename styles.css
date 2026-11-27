@@ -3649,3 +3649,5 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-v2 .tb-profile-hub-subnav [data-tab]{position:relative!important;z-index:5!important;pointer-events:auto!important;cursor:pointer!important;}
 #tbRpg .tb-v2 .tb-stats-screen,#tbRpg .tb-v2 .tb-equipment-screen,#tbRpg .tb-v2 .tb-card-merchant-rebuild,#tbRpg .tb-v2 .tb-account-settings{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;}
 @media(max-width:600px){#tbRpg .tb-v2[data-screen="battle"] .new-stats-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;}#tbRpg .tb-v2[data-screen="battle"] .new-energy-summary{display:grid!important;grid-template-columns:minmax(0,1fr)!important;}#tbRpg .tb-v2[data-screen="battle"] .new-battle-wrap{min-height:100dvh!important;}}
+
+#tbRpg .tb-v2 .tb-map-quick-panel [data-action="auto-battle"]{grid-column:1/-1!important;min-height:48px!important;align-items:center!important;background:linear-gradient(105deg,rgba(115,82,37,.96),rgba(44,34,22,.96))!important;border-color:#e1bd79!important;}
