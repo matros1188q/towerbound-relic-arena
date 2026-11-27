@@ -86,10 +86,7 @@
         "price": 1800,
         "effect": "potion_capacity"
       }
-    ],
-    "premium_7d": 20000,
-    "premium_14d": 35000,
-    "premium_30d": 60000
+    ]
   },
   "diamond_store": {
     "heal_35": 5,
@@ -125,10 +122,7 @@
         "price": 99,
         "effect": "refine_guard"
       }
-    ],
-    "premium_7d": 99,
-    "premium_14d": 149,
-    "premium_30d": 249
+    ]
   },
   "consumables": {
     "xp_10": {

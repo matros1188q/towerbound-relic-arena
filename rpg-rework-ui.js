@@ -922,7 +922,7 @@ function createDialog(){
   const c=live();if(!c)return characterList();
   const daily=engine.dailySnapshot(c.id),chapter=engine.chapterForStage(selectedStage||c.progress.currentStage),modifierChoices=engine.runModifierOptions(c.id),weekly=engine.weeklySnapshot(c.id),account=engine.state.account||{};
   c.run.mapEvents=c.run.mapEvents&&typeof c.run.mapEvents==="object"?c.run.mapEvents:{};c.run.completedMapEvents=Array.isArray(c.run.completedMapEvents)?c.run.completedMapEvents:[];let mapEventsChanged=false;for(let n=1;n<=balance.map.total_stages;n++){if(n%balance.map.boss_every===0)continue;if(Object.prototype.hasOwnProperty.call(c.run.mapEvents,n)){if(c.run.mapEvents[n]===null&&gameRandom()<.035){c.run.mapEvents[n]=gameRandom()<.25?"champion":"trial";mapEventsChanged=true;}continue;}if(gameRandom()<.2){const roll=gameRandom();c.run.mapEvents[n]=roll<.035?"secret":roll<.075?"guardian":roll<.17?"champion":roll<.32?"trial":roll<.44?"altar":roll<.56?"chest":roll<.68?"wanderer":roll<.80?"cache":roll<.90?"healing":"merchant";}else c.run.mapEvents[n]=null;mapEventsChanged=true;}if(mapEventsChanged)save();
-  const chest=engine.dailyChestSnapshot(c.id),chestMinutes=Math.ceil(chest.remainingMs/60000),chestLabel=chest.available?"🎁 СУНДУК · ГОТОВ":"🎁 СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м",activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier,pendingPvp=account.pvpDaily?.pending,pvpCategoryNames={frame:"Рамка",title:"Титул",weapon_skin:"Облик оружия",relic:"Реликвия",class_epic:"Экипировка класса",consumable:"Расходник"},pvpStore=(balance.pvp_store?.items||[]).map(item=>{const owned=item.kind==="cosmetic"?(account.cosmetics||[]).includes(item.id):item.kind==="account_relic"?(account.relics||[]).includes(item.id):item.kind==="character_item"?(account.classEpics||[]).includes(item.classId):false,classBlocked=item.kind==="character_item"&&item.classId!==c.classId;return '<article class="tb-system-product"><div class="tb-system-product-art">'+shopProductIconHtml(item)+'</div><div class="tb-system-product-copy"><b>'+esc(item.name)+'</b><small>'+esc(pvpCategoryNames[item.category]||"Предмет")+' · '+item.price+' очков арены</small></div><button data-pvp-buy="'+item.id+'" '+(owned||classBlocked||(account.pvpPoints||0)<item.price?'disabled':'')+'>'+(owned?(item.kind==="character_item"?"УЖЕ ПОЛУЧЕНО":"УЖЕ КУПЛЕНО"):classBlocked?"ДРУГОЙ КЛАСС":"КУПИТЬ")+'</button></article>';}).join("");
+  const chest=engine.dailyChestSnapshot(c.id),chestMinutes=Math.ceil(chest.remainingMs/60000),chestLabel=chest.available?"🎁 СУНДУК · ГОТОВ":"🎁 СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м",activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier,pendingPvp=account.pvpDaily?.pending,pvpCategoryNames={class_epic:"Оружие класса",consumable:"Расходник"},pvpStore=(balance.pvp_store?.items||[]).map(item=>{const owned=item.kind==="character_item"?(account.classEpics||[]).includes(item.classId):false,classBlocked=item.kind==="character_item"&&item.classId!==c.classId;return '<article class="tb-system-product"><div class="tb-system-product-art">'+shopProductIconHtml(item)+'</div><div class="tb-system-product-copy"><b>'+esc(item.name)+'</b><small>'+esc(pvpCategoryNames[item.category]||"Предмет")+' · '+item.price+' очков арены</small></div><button data-pvp-buy="'+item.id+'" '+(owned||classBlocked||(account.pvpPoints||0)<item.price?'disabled':'')+'>'+(owned?(item.kind==="character_item"?"УЖЕ ПОЛУЧЕНО":"УЖЕ КУПЛЕНО"):classBlocked?"ДРУГОЙ КЛАСС":"КУПИТЬ")+'</button></article>';}).join("");
   const cp=c.progress.currentStage-1,healReady=balance.map.checkpoints.includes(cp)&&c.run.healingPenaltyUntil<c.progress.currentStage&&c.run.checkpointHeals<balance.healing.max_checkpoint_heals_per_run,trapStage=selectedStage%13===0,antidotes=(c.bag||[]).filter(x=>x.type==="antidote").reduce((n,x)=>n+(x.quantity||1),0);
   const penalty=(c.run.healingPenaltyFrom||0)>0&&c.progress.currentStage>=(c.run.healingPenaltyFrom||0)&&c.progress.currentStage<=c.run.healingPenaltyUntil;
   const remaining=penalty?c.run.healingPenaltyUntil-c.progress.currentStage+1:0;
@@ -1814,10 +1814,7 @@ function profileRelicShopMarkup(c){
   refine_guard:{name:"Оберег кузнеца",description:"Защищает экипировку от последствий одной неудачной заточки",group:"Мастерская кузнеца"},
   stone_cache:{name:"Сундук кристаллов",description:"Содержит 3 камня усиления. Для открытия нужна выбранная специализация",group:"Мастерская кузнеца"},
   extra_socket:{name:"Алмазное гнездо",description:"Добавляет одно гнездо первому надетому предмету, в котором ещё есть место для гнёзд",group:"Мастерская кузнеца"},
-  pity_token:{name:"Звёздный жетон судьбы",description:"Продвигает счётчик гарантированной легендарной добычи до последнего шага",group:"Редкие товары"},
-  premium_7d:{name:"Премиум · 7 дней",description:"Премиум-статус аккаунта на 7 дней",group:"Премиум"},
-  premium_14d:{name:"Премиум · 14 дней",description:"Премиум-статус аккаунта на 14 дней",group:"Премиум"},
-  premium_30d:{name:"Премиум · 30 дней",description:"Премиум-статус аккаунта на 30 дней",group:"Премиум"}
+  pity_token:{name:"Звёздный жетон судьбы",description:"Продвигает счётчик гарантированной легендарной добычи до последнего шага",group:"Благословения добычи"},
  });
  const SHOP_ACTIVE_IDS=new Set([
   "heal_10","heal_25","heal_35","heal_50",
@@ -1825,7 +1822,6 @@ function profileRelicShopMarkup(c){
   "drop_20","drop_50","drop_75","drop_100",
   "repair_kit","silver_charm","potion_case",
   "refine_10","refine_20","refine_guard","stone_cache","extra_socket","pity_token",
-  "premium_7d","premium_14d","premium_30d"
  ]);
  const SHOP_PRODUCT_ART=Object.freeze({
   "xp_10":"./art-inbox/09-consumables/01-potions/C11_08_stimulant.png",
@@ -1851,23 +1847,6 @@ function profileRelicShopMarkup(c){
   "extra_socket":"./art-inbox/10-materials/01-ores-gems/C15_14_diamond.png",
   "pity_token":"./art-inbox/08-equipment/05-jewelry/C09_08_star_pendant.png",
   "rescue_seal":"./art-inbox/10-materials/04-keys-chests/C19_07_seal_key.png",
-  "premium_7d":"./art-inbox/08-equipment/03-headwear/C07_07_hood.png",
-  "premium_14d":"./art-inbox/08-equipment/03-headwear/C07_16_prism_circlet.png",
-  "premium_30d":"./art-inbox/08-equipment/03-headwear/C07_08_crown.png",
-  "frame_iron":"./art-inbox/08-equipment/03-headwear/C07_02_iron_helmet.png",
-  "frame_ashen":"./art-inbox/08-equipment/03-headwear/C07_07_hood.png",
-  "frame_void":"./art-inbox/08-equipment/03-headwear/C07_16_prism_circlet.png",
-  "title_slayer":"./art-inbox/08-equipment/01-weapons/C05_03_poison_dagger.png",
-  "title_tower":"./art-inbox/08-equipment/03-headwear/C07_08_crown.png",
-  "title_eternal":"./art-inbox/10-materials/01-ores-gems/C15_14_diamond.png",
-  "skin_cinder":"./art-inbox/08-equipment/01-weapons/C01_16_ash_sword.png",
-  "skin_glacier":"./art-inbox/08-equipment/01-weapons/C01_10_frost_sword.png",
-  "skin_void":"./art-inbox/08-equipment/01-weapons/C01_13_cursed_blade.png",
-  "relic_mirror":"./art-inbox/10-materials/01-ores-gems/C15_14_diamond.png",
-  "relic_ember":"./art-inbox/10-materials/03-crystals/C18_01_red_crystal.png",
-  "relic_oath":"./art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
-  "relic_abyss":"./art-inbox/10-materials/03-crystals/C18_07_violet_crystal.png",
-  "relic_crown":"./art-inbox/08-equipment/03-headwear/C07_08_crown.png",
   "class_epic_assassin":"./art-inbox/08-equipment/01-weapons/C05_03_poison_dagger.png",
   "class_epic_bishop":"./art-inbox/08-equipment/01-weapons/C04_07_healing_staff.png",
   "class_epic_dragonkin":"./art-inbox/08-equipment/01-weapons/C01_09_flame_sword.png",
@@ -1895,7 +1874,6 @@ function profileRelicShopMarkup(c){
   if(id==="stone_cache")return "3 КАМНЯ";
   if(id==="extra_socket")return "1 ГНЕЗДО";
   if(id==="pity_token")return "ДО ГАРАНТИИ";
-  if(id.startsWith("premium_"))return "СТАТУС АККАУНТА";
   return "РАЗОВЫЙ ЭФФЕКТ";
  }
  function shopOverlayMarkup(){
@@ -1913,25 +1891,29 @@ function profileRelicShopMarkup(c){
   const groupDescriptions={
    "Зелья лечения":"Запас здоровья для сложных боёв",
    "Эликсиры опыта":"Ускоряют развитие героя на ограниченное время",
-   "Благословения добычи":"Повышают шанс найти экипировку и редкие трофеи",
+   "Благословения добычи":"Повышают шанс добычи и приближают гарантированную легендарную награду",
    "Мастерская кузнеца":"Материалы и защита для улучшения экипировки",
    "Подготовка к походу":"Полезные улучшения для следующих этажей",
-   "Редкие товары":"Редкие эффекты, которые меняют исход похода",
-   "Премиум":"Временные преимущества аккаунта"
   };
-  const groupOrder=["Зелья лечения","Эликсиры опыта","Благословения добычи","Мастерская кузнеца","Подготовка к походу","Редкие товары","Премиум"];
+  const groupOrder=["Зелья лечения","Эликсиры опыта","Благословения добычи","Мастерская кузнеца","Подготовка к походу"];
   const groups=Object.keys(grouped).sort((a,b)=>groupOrder.indexOf(a)-groupOrder.indexOf(b)).map(group=>{
    const items=grouped[group];
    return '<section class="tb-shop-group"><div class="tb-shop-group-heading"><div class="tb-shop-group-title"><h3>'+esc(group)+'</h3><p>'+esc(groupDescriptions[group]||"Товары торговой лавки")+'</p></div><small>'+items.length+' '+(items.length===1?'ТОВАР':items.length<5?'ТОВАРА':'ТОВАРОВ')+'</small></div><div class="tb-shop-grid">'+items.map(item=>'<article class="tb-shop-item"><div class="tb-shop-item-art">'+shopProductIconHtml({id:item.id,type:item.id})+'</div><div class="tb-shop-item-copy"><div class="tb-shop-item-title"><b>'+esc(item.meta.name)+'</b><span class="tb-shop-item-tag">'+esc(shopProductTag(item.id))+'</span></div><p>'+esc(item.meta.description)+'</p></div><div class="tb-shop-item-buy"><strong>'+item.price.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</strong><button type="button" data-shop-buy="'+esc(item.id)+'" data-shop-store="'+store+'" '+(money<item.price||item.stackFull?"disabled":"")+'>'+(item.stackFull?"СТОПКА ПОЛНА":money<item.price?"НЕ ХВАТАЕТ":"КУПИТЬ")+'</button></div></article>').join("")+'</div></section>';
   }).join("");
-  return '<div class="tb-shop-overlay" role="dialog" aria-modal="true" aria-label="Магазин Башни"><div class="tb-shop-panel"><header class="tb-shop-hero"><div><small>ТОРГОВАЯ ЛАВКА · TOWERBOUND</small><h2>МАГАЗИН БАШНИ</h2><p>Подготовь героя к следующему восхождению</p></div><button type="button" data-shop-close aria-label="Закрыть магазин">×</button></header><div class="tb-shop-wallet"><span>ТВОЙ БАЛАНС</span><b>'+money.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</b></div><nav class="tb-shop-currencies"><button type="button" data-shop-currency="silver" class="'+(store==="silver"?"active":"")+'">СЕРЕБРО · '+(Number(c.silver)||0).toLocaleString("ru-RU")+'</button><button type="button" data-shop-currency="diamond" class="'+(store==="diamond"?"active":"")+'">АЛМАЗЫ · '+(Number(engine.state.account?.diamonds)||0).toLocaleString("ru-RU")+'</button></nav><div class="tb-shop-content">'+(groups||'<p class="tb-shop-empty">В этой лавке пока нет доступных товаров.</p>')+'</div><footer class="tb-shop-footer">Каждый товар связан с действующей механикой Башни. Покупки сразу попадают в рюкзак или активируют статус аккаунта.</footer></div></div>';
+  return '<div class="tb-shop-overlay" role="dialog" aria-modal="true" aria-label="Магазин Башни"><div class="tb-shop-panel"><header class="tb-shop-hero"><div><small>ТОРГОВАЯ ЛАВКА · TOWERBOUND</small><h2>МАГАЗИН БАШНИ</h2><p>Подготовь героя к следующему восхождению</p></div><button type="button" data-shop-close aria-label="Закрыть магазин">×</button></header><div class="tb-shop-wallet"><span>ТВОЙ БАЛАНС</span><b>'+money.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</b></div><nav class="tb-shop-currencies"><button type="button" data-shop-currency="silver" class="'+(store==="silver"?"active":"")+'">СЕРЕБРО · '+(Number(c.silver)||0).toLocaleString("ru-RU")+'</button><button type="button" data-shop-currency="diamond" class="'+(store==="diamond"?"active":"")+'">АЛМАЗЫ · '+(Number(engine.state.account?.diamonds)||0).toLocaleString("ru-RU")+'</button></nav><div class="tb-shop-content">'+(groups||'<p class="tb-shop-empty">В этой лавке пока нет доступных товаров.</p>')+'</div><footer class="tb-shop-footer">Зелья и усиления попадают в рюкзак — активируй их перед боем или заточкой. Материалы кузницы открывают реальные улучшения экипировки.</footer></div></div>';
  }
  root.addEventListener("click",event=>{
-  const target=event.target?.closest?.("[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy]");
+  const target=event.target?.closest?.("[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-pvp-buy]");
   if(!target)return;
   if(target.hasAttribute("data-shop-open")){shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());return;}
   if(target.hasAttribute("data-shop-close")){root.querySelector(".tb-shop-overlay")?.remove();return;}
   if(target.dataset.shopCurrency){shopOverlayCurrency=target.dataset.shopCurrency==="diamond"?"diamond":"silver";const overlay=root.querySelector(".tb-shop-overlay");if(overlay)overlay.outerHTML=shopOverlayMarkup();return;}
+  if(target.dataset.pvpBuy){
+   const c=live();if(!c)return;
+   try{const result=engine.purchasePvpItem(c.id,target.dataset.pvpBuy);save();render();notify("Покупка совершена: "+(result?.item?.name||"награда арены"));}
+   catch(error){notify(error.message);}
+   return;
+  }
   if(target.dataset.shopBuy){
    const c=live();if(!c)return;
    try{engine.purchase(c.id,target.dataset.shopStore,target.dataset.shopBuy);save();const overlay=root.querySelector(".tb-shop-overlay");if(overlay)overlay.outerHTML=shopOverlayMarkup();notify("Покупка совершена: "+(SHOP_PRODUCT_META[target.dataset.shopBuy]?.name||target.dataset.shopBuy));}
