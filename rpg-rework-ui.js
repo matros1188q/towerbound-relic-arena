@@ -1712,6 +1712,64 @@ function createDialog(){
   if(killed&&battle){if(battle.guildRaid){finishGuildRaid();return;}finishCurrentEnemy();if(!battle)return;}
   if(Number(card.magicNumberIncrement)>0)card.magicNumber=Math.max(0,Number(card.magicNumber)||0)+Number(card.magicNumberIncrement);if(battle?.guildRaid&&Number(battle.cardsPlayedThisTurn)>=3)finishGuildRaid();
  }
+
+ function playerAction(skillId,slotIndex){
+  const c=live();if(!battle||!c||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed)return false;
+  const skill=resolveSkill(c,skillId);if(!skill||c.level<skill.unlock_level){notify("Навык ещё не изучен");return false;}
+  const stats=getSkillStats(c,skill),cooldowns=battle.skillCooldowns||(battle.skillCooldowns={}),cooldown=Math.max(0,Number(skill.cooldown_turns??balance.skill_effects[skill.effect_template]?.cooldown_turns)||0);
+  if((cooldowns[skill.id]||0)>0){notify("Навык перезаряжается · "+cooldowns[skill.id]+" х.");return false;}
+  if(Number(c.resource)<stats.cost){notify("Недостаточно ресурса");return false;}
+  const effect=balance.skill_effects[skill.effect_template]||{},type=effect.type||"strike",targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0),target=targets.find(enemy=>enemy.index===battle.targetIndex)||targets[0];
+  if(!target){finishCurrentEnemy();return false;}
+  c.resource=Math.max(0,Number(c.resource)-stats.cost);battle.playerSkillUsed=true;battle.busy=true;cooldowns[skill.id]=cooldown;
+  const power=Math.max(.1,Number(skill.damage_multiplier)||1)*stats.powerMultiplier,base=Math.max(1,Number(engine.getCombatStats(c).attack||engine.getCombatStats(c).dps)||1);
+  let dealt=0;
+  if(type==="heal"||type==="hot"){const heal=Math.max(1,Math.round(engine.maxHp(c)*Number(effect.heal_multiplier||.2)));const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+heal);dealt= c.run.playerHp-before;logCombatEvent(skill.name+" · лечение +"+dealt,"#76d7a0");}
+  else if(type==="shield"){const shield=Math.max(1,Math.round(engine.maxHp(c)*Number(effect.shield_fraction||.2)));battle.cardBlock=(Number(battle.cardBlock)||0)+shield;logCombatEvent(skill.name+" · щит "+shield,"#8acfff");}
+  else if(type==="buff"){battle.nextAttackDamageBonus=Math.max(Number(battle.nextAttackDamageBonus)||0,Math.max(1,Math.round(base*(Number(effect.power_multiplier)||.2))));battle.playerDamageBuffTurns=Math.max(1,Number(effect.duration)||1);logCombatEvent(skill.name+" · усиление атаки","#d8b8ff");}
+  else if(type==="debuff"||type==="control"){target.weak=Math.max(Number(target.weak)||0,Number(effect.duration)||1);target.slowTurns=Math.max(Number(target.slowTurns)||0,Number(effect.duration)||1);logCombatEvent(skill.name+" · противник ослаблен","#9bd4ff");}
+  else{
+   const selected=type==="aoe"||type==="dot"&&effect.area?targets:[target];
+   for(const enemy of selected){const threshold=Number(effect.execute_threshold)||0,execute=threshold>0&&enemy.hp/enemy.maxHp<=threshold,raw=Math.max(1,Math.round(base*power*(execute?Number(effect.execute_multiplier)||1.5:1)));const result=applyTargetDamage(enemy,raw,effect.damage_type||skill.damage_type||"physical");dealt+=result.dealt;if(type==="dot"){if(effect.status==="poison")enemy.poison=(Number(enemy.poison)||0)+Math.max(1,Number(effect.stacks)||1);else enemy.bleed=(Number(enemy.bleed)||0)+Math.max(1,Number(effect.stacks)||1);}}
+   logCombatEvent(skill.name+" · нанесено "+dealt+" урона","#f1c47d");
+  }
+  if(!battle)return true;battle.busy=false;
+  if((battle.enemies||[]).some(enemy=>enemy.hp<=0&&enemy.alive)){finishCurrentEnemy();if(!battle)return true;}
+  save();render();return true;
+ }
+ function basicAttack(){
+  const c=live();if(!battle||!c||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed)return false;
+  const target=(battle.enemies||[]).find(enemy=>enemy.index===battle.targetIndex&&enemy.alive&&enemy.hp>0);if(!target)return false;
+  battle.playerSkillUsed=true;const attack=Math.max(1,Math.round(Number(engine.getCombatStats(c).attack||engine.getCombatStats(c).dps)||1)),result=applyTargetDamage(target,attack,"physical");
+  c.resource=Math.min(Number(c.resourceMax)||100,(Number(c.resource)||0)+Number(balance.resources.regeneration.auto_attack||0));
+  logCombatEvent("Базовая атака · −"+result.dealt+" HP","#e9d4a0");
+  if(result.killed){finishCurrentEnemy();if(!battle)return true;}
+  save();render();return true;
+ }
+ function useCounterSkill(){
+  const c=live();if(!battle||!c||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed||battle.counterPrimed)return false;
+  const counter=counterAbility(c);if(!counter)return false;
+  const cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.counter??counter.resource_cost??18):Number(counter.resource_cost??balance.resources.action_costs.counter??18);
+  if((Number(battle.counterCooldownTurns)||0)>0){notify("Ответное умение перезаряжается · "+battle.counterCooldownTurns+" х.");return false;}
+  if(Number(c.resource)<cost){notify("Недостаточно ресурса для "+counter.name);return false;}
+  c.resource=Math.max(0,Number(c.resource)-cost);battle.counterPrimed=true;battle.counterConsumed=false;battle.counterAction=counter;battle.counterTargetIndex=undefined;battle.counterCooldownTurns=Math.max(0,Number(counter.cooldown_turns)||0);battle.playerSkillUsed=true;
+  logCombatEvent(counter.name+" · готовность к ответу","#9ed8ff");save();render();return true;
+ }
+ function useUltimate(){
+  const c=live();if(!battle||!c||battle.actor?.type!=="player"||battle.busy||battle.paused||battle.playerSkillUsed)return false;
+  const ultimate=ultimateAbility(c);if(!ultimate)return false;
+  const cost=c.classId==="duelist"?(balance.resources.class_costs?.duelist?.ultimate??ultimate.resource_cost??42):Number(ultimate.resource_cost??balance.resources.action_costs.ultimate??42);
+  if((Number(battle.ultimateCooldownTurns)||0)>0){notify("Абсолютное умение перезаряжается · "+battle.ultimateCooldownTurns+" х.");return false;}
+  if(Number(c.resource)<cost){notify("Недостаточно ресурса для "+ultimate.name);return false;}
+  const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0),target=targets.find(enemy=>enemy.index===battle.targetIndex)||targets[0];if(!target)return false;
+  c.resource=Math.max(0,Number(c.resource)-cost);battle.playerSkillUsed=true;battle.ultimateCooldownTurns=Math.max(0,Number(ultimate.cooldown_turns)||0);
+  const effect=ultimate.effect||"single_burst",multiplier=Math.max(.1,Number(ultimate.damage_multiplier)||1),attack=Math.max(1,Number(engine.getCombatStats(c).attack||engine.getCombatStats(c).dps)||1);
+  if(effect==="heal_shield"||effect==="heal_aoe"){const before=c.run.playerHp,heal=Math.max(1,Math.round(engine.maxHp(c)*Number(ultimate.heal_fraction||.25)));c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+heal);if(effect==="heal_shield")battle.cardBlock=(Number(battle.cardBlock)||0)+Math.max(1,Math.round(engine.maxHp(c)*Number(ultimate.shield_fraction||.2)));logCombatEvent(ultimate.name+" · лечение +"+(c.run.playerHp-before),"#8ee0b0");}
+  if(effect!=="heal_shield"){const list=effect==="aoe_burst"||effect==="heal_aoe"?targets:[target];let total=0;for(const enemy of list){const result=applyTargetDamage(enemy,Math.max(1,Math.round(attack*multiplier)),ultimate.damage_type||"physical");total+=result.dealt;}logCombatEvent(ultimate.name+" · нанесено "+total+" урона","#f2ca78");}
+  if(!battle)return true;if((battle.enemies||[]).some(enemy=>enemy.hp<=0&&enemy.alive)){finishCurrentEnemy();if(!battle)return true;}
+  save();render();return true;
+ }
+
  function endPlayerTurn(){
   if(battle?.guildRaid){notify("В рейде нужно разыграть ровно 3 карты");return;}
   if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating)return;
