@@ -2044,3 +2044,26 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(5) .tb-profile-hub-emoji{background-image:url("./assets/ui/sections/forge-blacksmith.jpg")!important;background-position:center 40%!important}
 @media(max-width:520px){#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-emoji{height:70px!important;min-height:70px!important;max-height:70px!important}}
 @media(max-width:380px){#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-emoji{height:60px!important;min-height:60px!important;max-height:60px!important}}
+
+
+/* Profile hero portrait: enlarge the full-body character to use the entire art column. */
+#tbRpg .tb-profile-hub .tb-profile-hero{align-items:stretch}
+#tbRpg .tb-profile-hub .tb-profile-hero-art{
+ display:flex!important;align-items:flex-end!important;justify-content:center!important;
+ align-self:stretch!important;min-height:250px!important;height:100%!important;
+ overflow:hidden!important;
+}
+#tbRpg .tb-profile-hub .tb-profile-hero-art img{
+ display:block!important;width:100%!important;height:100%!important;
+ min-height:250px!important;max-height:none!important;
+ object-fit:contain!important;object-position:center bottom!important;
+ transform:scale(1.24)!important;transform-origin:center bottom!important;
+}
+@media(max-width:520px){
+ #tbRpg .tb-profile-hub .tb-profile-hero-art{min-height:218px!important}
+ #tbRpg .tb-profile-hub .tb-profile-hero-art img{min-height:218px!important;transform:scale(1.22)!important}
+}
+@media(max-width:380px){
+ #tbRpg .tb-profile-hub .tb-profile-hero-art{min-height:184px!important}
+ #tbRpg .tb-profile-hub .tb-profile-hero-art img{min-height:184px!important;transform:scale(1.18)!important}
+}
