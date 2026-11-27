@@ -107,6 +107,22 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ live.branch="bleed";
+ const uniques=balance.classes.classes.assassin.unique_items;
+ assert.equal(uniques.length,3,"each class retains its three boss-only unique items");
+ assert.ok(uniques.every(item=>item.effects&&Object.keys(item.effects).length),"every class unique item has a configured combat effect");
+ live.gear=[{id:"unique-weapon",uniqueId:uniques.find(item=>item.slot==="weapon").id,uniqueEffects:uniques.find(item=>item.slot==="weapon").effects,slot:"weapon",stats:{}},
+  {id:"unique-armor",uniqueId:uniques.find(item=>item.slot==="chest").id,uniqueEffects:uniques.find(item=>item.slot==="chest").effects,slot:"chest",stats:{}},
+  {id:"unique-charm",uniqueId:uniques.find(item=>item.slot==="accessory").id,uniqueEffects:uniques.find(item=>item.slot==="accessory").effects,slot:"accessory",stats:{}}];
+ const stats=e.getCombatStats(live);
+ assert.equal(stats.specializationDamage,.06,"unique weapon boosts specialization-tagged card damage");
+ assert.equal(stats.specializationPower,.08,"unique charm boosts specialization card power");
+ assert.equal(stats.damageReduction,.04,"unique armor reduces incoming damage");
+ assert.deepEqual(stats.uniqueItemEffects,{specializationDamage:.06,specializationPower:.08,damageReduction:.04});
+ for(const cls of Object.values(balance.classes.classes))assert.equal(cls.unique_items.length,3,"all seven classes retain three unique boss drops");
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=20;live.branch="bleed";live.talents={};
  const before=e.getCombatStats(live),beforePower=e.combatPower(live);
  const branch=balance.classes.classes.assassin.branches.find(item=>item.id==="bleed");

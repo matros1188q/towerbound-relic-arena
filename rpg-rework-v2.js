@@ -294,7 +294,7 @@
    return level;
   }
   function equipmentTotals(character){
-   const result={attack:0,defense:0,health:0,crit:0,critDamage:0,spellPower:0,fireDamage:0,iceDamage:0,darkDamage:0,fireResist:0,iceResist:0,darkResist:0,physicalResist:0,attackSpeed:0,setPieces:{},itemLevelBonus:0};
+   const result={attack:0,defense:0,health:0,crit:0,critDamage:0,spellPower:0,fireDamage:0,iceDamage:0,darkDamage:0,fireResist:0,iceResist:0,darkResist:0,physicalResist:0,attackSpeed:0,setPieces:{},itemLevelBonus:0,uniqueSpecializationDamage:0,uniqueSpecializationPower:0,uniqueDamageReduction:0};
    for(const item of character.gear||[]){
     if(!item)continue;
     result.itemLevelBonus+=Math.min(balance.item_level.max,item.itemLevel||item.item_level||0)*balance.item_level.stat_bonus_per_level;
@@ -319,6 +319,12 @@
      result.attackSpeed+=bonus.attack_speed||0;result.crit+=bonus.critical_chance||0;
      result.critDamage+=bonus.critical_damage||0;result.fireDamage+=bonus.magic_damage||0;result.iceDamage+=bonus.physical_damage||0;
      result.defense+=Math.round((item.stats?.defense||0)*((bonus.magic_defense||0)+(bonus.physical_defense||0)));
+    }
+    if(item.uniqueId){
+     const effects=item.uniqueEffects||item.effects||{};
+     result.uniqueSpecializationDamage+=Math.max(0,Number(effects.specializationDamage)||0);
+     result.uniqueSpecializationPower+=Math.max(0,Number(effects.specializationPower)||0);
+     result.uniqueDamageReduction+=Math.max(0,Number(effects.damageReduction)||0);
     }
     if(item.setId)result.setPieces[item.setId]=(result.setPieces[item.setId]||0)+1;
    }
@@ -393,8 +399,8 @@
    const earlyBonus=balance.combat.early_branch_bonuses||{},earlyTargets=earlyBonus.targets?.[character.classId]||[],bonusBranch=character.branch||character.simBranch,isEarlyBonusTarget=character.level<=Number(earlyBonus.max_level||0)&&(earlyTargets.includes(bonusBranch)||(!character.branch&&(earlyBonus.pre_branch_classes||[]).includes(character.classId)));
    const branchOverride=earlyBonus.branch_overrides?.[character.classId]?.[bonusBranch]||{},branchDamageBonus=isEarlyBonusTarget?Number(branchOverride.skill_damage_multiplier??earlyBonus.skill_damage_multiplier??1):1,basicAttackDamageMultiplier=isEarlyBonusTarget?Number(branchOverride.basic_attack_multiplier??earlyBonus.basic_attack_multiplier??1):1,branchKey=character.classId+"."+(character.branch||""),branchDamageMultiplier=Number(balance.classes.branch_stat_bonuses?.[branchKey]?.damage_multiplier||1);
    return{attack,dps,defense,armor:defense,maxHp:maxHp(character),healingMultiplier:Number(branchStats.healing_multiplier||1),critChance,critMultiplier,
-    speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:(1+sets.damage+sets.skillPower+talent.skillPower)*branchDamageBonus*branchDamageMultiplier,specializationDamage:Math.max(0,Number(sets.specializationDamage)||0),specializationPower:Math.max(0,Number(sets.specializationPower)||0),basicAttackDamageMultiplier:basicAttackDamageMultiplier*branchDamageMultiplier,
-    damageReduction:Math.min(0.75,sets.damageReduction),spellPower:gear.spellPower,fireDamage:gear.fireDamage,
+    speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,speed:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,attackSpeedMultiplier:1+talent.attackSpeed+gear.attackSpeed+sets.attackSpeed,damageMultiplier:(1+sets.damage+sets.skillPower+talent.skillPower)*branchDamageBonus*branchDamageMultiplier,specializationDamage:Math.min(.25,Math.max(0,Number(sets.specializationDamage)||0)+gear.uniqueSpecializationDamage),specializationPower:Math.min(.30,Math.max(0,Number(sets.specializationPower)||0)+gear.uniqueSpecializationPower),basicAttackDamageMultiplier:basicAttackDamageMultiplier*branchDamageMultiplier,
+    damageReduction:Math.min(0.75,sets.damageReduction+gear.uniqueDamageReduction),uniqueItemEffects:{specializationDamage:gear.uniqueSpecializationDamage,specializationPower:gear.uniqueSpecializationPower,damageReduction:gear.uniqueDamageReduction},spellPower:gear.spellPower,fireDamage:gear.fireDamage,
     iceDamage:gear.iceDamage,darkDamage:gear.darkDamage,resists:{fire:gear.fireResist,ice:gear.iceResist,dark:gear.darkResist,physical:gear.physicalResist},
     setPieces:clone(gear.setPieces),glow:getRefinementGlow(character),itemLevelBonus:gear.itemLevelBonus};
   }
@@ -785,7 +791,7 @@
     const offhandType=slot==="offhand"?((character.branch==="dual_swords"||character.branch==="fists")?"weapon":(["sword_shield","wand_shield","ice_dragon"].includes(character.branch)?"shield":"focus")):null;
     const item={id:id(),type:"equipment",name:options.name||rarityNames[rarity]+" · "+branchName+" · "+slotNames[slot],rarity,branch:character.branch||null,branchName,setId,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,twoHanded,offhandType,
      itemLevel,slot,weaponType:slot==="weapon"?(options.weaponType||defaultWeaponType):undefined,armorType:["chest","head","legs","hands"].includes(slot)?(options.armorType||defaultArmorType):undefined,
-     stats,cardId:options.cardId||null,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
+     stats,uniqueEffects:options.effects?clone(options.effects):null,cardId:options.cardId||null,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
     item.cardId=item.cardId||equipmentCardId(item);
     const prefs=state.account.settings||{},threshold=Number(prefs.autoSalvageBelow||0),auto=!!prefs.autoSalvage&&["Обычная","Редкая"].includes(rarity)&&itemLevel<threshold&&!item.bossLoot;
     if(auto){const quantity=balance.materials.salvage[rarity]||0,stack=character.bag.find(x=>x.type==="craft_material");if(stack)stack.quantity=(stack.quantity||0)+quantity;else character.bag.push({id:id(),type:"craft_material",quantity});character.stats.items_salvaged=(character.stats.items_salvaged||0)+1;item.autoSalvaged=true;item.type="auto_salvage";item.quantity=quantity;item.name="Авто-разбор · "+rarity;recordWeeklyProgress(character,"items_salvaged",1);}else character.bag.push(item);
@@ -802,7 +808,7 @@
     const available=configured.filter(item=>!owned.has(item.id));
     if(!available.length)return createDrop(character,rarity,{bossLoot:true,itemLevel:stage});
     const item=available[Math.floor(random()*available.length)];
-    return createDrop(character,rarity,{bossLoot:true,uniqueId:item.id,name:item.name,slot:item.slot,stats:item.stats,itemLevel:stage});
+    return createDrop(character,rarity,{bossLoot:true,uniqueId:item.id,name:item.name,slot:item.slot,stats:item.stats,effects:item.effects,itemLevel:stage});
    };
    if(enemy.type==="boss"){
     if(firstClear&&drops.guaranteed_epic_first_clear_boss)items.push(createDrop(character,"Эпическая",{bossLoot:true,itemLevel:stage,slot:"weapon"}));

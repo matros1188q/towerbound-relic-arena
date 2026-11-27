@@ -407,7 +407,10 @@
             "crit": 0.015
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationDamage": 0.06
+          }
         },
         {
           "id": "assassin.unique.armor",
@@ -421,7 +424,10 @@
             "crit": 0
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "damageReduction": 0.04
+          }
         },
         {
           "id": "assassin.unique.charm",
@@ -435,7 +441,10 @@
             "crit": 0.025
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationPower": 0.08
+          }
         }
       ],
       "resource_gain_per_attack": 15,
@@ -836,7 +845,10 @@
             "crit": 0.015
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationDamage": 0.06
+          }
         },
         {
           "id": "bishop.unique.armor",
@@ -850,7 +862,10 @@
             "crit": 0
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "damageReduction": 0.04
+          }
         },
         {
           "id": "bishop.unique.charm",
@@ -864,7 +879,10 @@
             "crit": 0.025
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationPower": 0.08
+          }
         }
       ],
       "resource_gain_per_attack": 15,
@@ -1266,7 +1284,10 @@
             "crit": 0.015
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationDamage": 0.06
+          }
         },
         {
           "id": "dragonkin.unique.armor",
@@ -1280,7 +1301,10 @@
             "crit": 0
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "damageReduction": 0.04
+          }
         },
         {
           "id": "dragonkin.unique.charm",
@@ -1294,7 +1318,10 @@
             "crit": 0.025
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationPower": 0.08
+          }
         }
       ],
       "resource_gain_per_attack": 15,
@@ -1696,7 +1723,10 @@
             "crit": 0.015
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationDamage": 0.06
+          }
         },
         {
           "id": "destroyer.unique.armor",
@@ -1710,7 +1740,10 @@
             "crit": 0
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "damageReduction": 0.04
+          }
         },
         {
           "id": "destroyer.unique.charm",
@@ -1724,7 +1757,10 @@
             "crit": 0.025
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationPower": 0.08
+          }
         }
       ],
       "resource_gain_per_attack": 15,
@@ -2126,7 +2162,10 @@
             "crit": 0.015
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationDamage": 0.06
+          }
         },
         {
           "id": "elemental.unique.armor",
@@ -2140,7 +2179,10 @@
             "crit": 0
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "damageReduction": 0.04
+          }
         },
         {
           "id": "elemental.unique.charm",
@@ -2154,7 +2196,10 @@
             "crit": 0.025
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationPower": 0.08
+          }
         }
       ],
       "resource_gain_per_attack": 15,
@@ -2556,7 +2601,10 @@
             "crit": 0.015
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationDamage": 0.06
+          }
         },
         {
           "id": "duelist.unique.armor",
@@ -2570,7 +2618,10 @@
             "crit": 0
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "damageReduction": 0.04
+          }
         },
         {
           "id": "duelist.unique.charm",
@@ -2584,7 +2635,10 @@
             "crit": 0.025
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationPower": 0.08
+          }
         }
       ],
       "resource_gain_per_attack": 15,
@@ -2985,7 +3039,10 @@
             "crit": 0.015
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationDamage": 0.06
+          }
         },
         {
           "id": "shaman.unique.armor",
@@ -2999,7 +3056,10 @@
             "crit": 0
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "damageReduction": 0.04
+          }
         },
         {
           "id": "shaman.unique.charm",
@@ -3013,7 +3073,10 @@
             "crit": 0.025
           },
           "unique": true,
-          "boss_only": true
+          "boss_only": true,
+          "effects": {
+            "specializationPower": 0.08
+          }
         }
       ],
       "resource_gain_per_attack": 15,
