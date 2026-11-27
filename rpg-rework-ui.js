@@ -176,7 +176,7 @@
   let path="";
   if(key==="weapon"){
    const classId=String(item?.classId||item?.class_id||"").toLowerCase();
-   const branch=String(item?.branchId||item?.branch_id||item?.branch||"").toLowerCase();
+   const branchValue=item?.branchId||item?.branch_id||(typeof item?.branch==="object"?item.branch?.id:item?.branch)||"";\n   const branch=String(branchValue).toLowerCase();
    const family=classId==="assassin"?"C05":classId==="destroyer"?"C02":classId==="duelist"?"C01":classId==="bishop"||classId==="dragonkin"||classId==="elemental"||classId==="shaman"?"C04":"C01";
    if(/fire|огн/.test(branch))path="01-weapons/C04_04_fire_staff.png";
    else if(/ice|frost|лед|лёд/.test(branch))path="01-weapons/C04_05_ice_staff.png";
@@ -2418,7 +2418,7 @@ function profileRelicShopMarkup(c){
     const entries=catalog.filter(item=>item.classId===classId&&item.branchId===branch.id);
     return '<section class="tb-collection-branch"><h4>'+esc(branch.set?.name||branch.name||branch.id)+' <small>'+entries.filter(item=>item.owned).length+'/45</small></h4>'+
      rarities.map(rarity=>{
-      const cards=entries.filter(item=>item.rarity===rarity).map(item=>'<button type="button" class="tb-collection-item rarity-'+rarityClass(item.rarity)+(item.owned?" is-owned":" is-locked")+'" data-collection-item="'+esc(item.key)+'"><span class="tb-collection-art">'+(item.owned?relicIconHtml(item.item,item.slot):relicIconHtml({rarity:item.rarity,slot:item.slot,name:item.itemName},item.slot))+'</span><b>'+esc(item.item?.name||item.itemName||"Неизвестный предмет")+'</b><small>'+esc(item.description||"Неизвестный предмет")+'</small></button>').join("");
+      const cards=entries.filter(item=>item.rarity===rarity).map(item=>'<button type="button" class="tb-collection-item rarity-'+rarityClass(item.rarity)+(item.owned?" is-owned":" is-locked")+'" data-collection-item="'+esc(item.key)+'"><span class="tb-collection-art">'+(item.owned?relicIconHtml(item.item,item.slot):relicIconHtml({rarity:item.rarity,slot:item.slot,name:item.itemName,classId:item.classId,branchId:item.branchId},item.slot))+'</span><b>'+esc(item.item?.name||item.itemName||"Неизвестный предмет")+'</b><small>'+esc(item.description||"Неизвестный предмет")+'</small></button>').join("");
       return '<section class="tb-collection-rarity"><h5>'+esc(rarity)+' <small>'+entries.filter(item=>item.rarity===rarity&&item.owned).length+'/9</small></h5><div class="tb-collection-grid">'+cards+'</div></section>';
      }).join("")+'</section>';
    }).join("")+'</section>').join("");
