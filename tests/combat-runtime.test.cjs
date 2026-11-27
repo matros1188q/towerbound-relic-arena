@@ -139,7 +139,7 @@ for(const classId of classes){
  if(balance.combat.turn_based?.enabled){
   assert.match(ui,/function buildInitiative[\s\S]*?sort\(\(a,b\)=>b\.speed-a\.speed/,'turn order sorts actors by speed');
   assert.match(ui,/function endPlayerTurn/,'player can explicitly end a turn');
-  assert.match(ui,/const power=Math\.max\(\.1,Number\(skill\.damage_multiplier\)\|\|1\)\*stats\.powerMultiplier,[\s\S]*?const raw=Math\.max\(1,Math\.round\(base\*power/,'active DoT skills use the catalog multiplier and player combat scaling');
+  assert.match(ui,/const power=Math\.max\(\.1,Number\(skill\.damage_multiplier\)\|\|1\)\*stats\.powerMultiplier,[\s\S]*?raw=Math\.max\(1,Math\.round\(base\*power/,'active DoT skills use the catalog multiplier and player combat scaling');
   assert.match(ui,/battle\.busy=false;[\s\S]*?scheduleEnemyTurnQueue\(queue,0,queueToken,500\)/,'enemy phase begins with a clean busy flag and 500ms stagger');
   assert.match(ui,/const nextIndex=queue\.findIndex\(\(candidate,i\)=>i>index&&candidate\.alive===true&&Number\(candidate\.hp\)>0\);[\s\S]*?if\(nextIndex<0\)\{battle\.enemyQueueState=null;advanceToPlayerTurn\(\);return;\}[\s\S]*?battle\.enemyQueueState=\{indices:queue\.map\(candidate=>Number\(candidate\.index\)\)\.filter\(Number\.isFinite\),cursor:nextIndex\};[\s\S]*?save\(\);render\(\);[\s\S]*?scheduleEnemyTurnQueue\(queue,nextIndex,token,500\)/,'enemy turn queue persists the next living enemy and cleanly returns control when the queue is empty');
   assert.match(ui,/function enemyTurn/,'enemies resolve their turns');
