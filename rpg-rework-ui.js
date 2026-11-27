@@ -1807,20 +1807,26 @@ function profileRelicShopMarkup(c){
   drop_75:{name:"Знак удачи · III",description:"+75% к шансу получения предметов на 60 минут",group:"Благословения добычи"},
   drop_100:{name:"Знак удачи · IV",description:"Удваивает шанс получения предметов на 60 минут",group:"Благословения добычи"},
   repair_kit:{name:"Походный ремонтный набор",description:"Между боями восстанавливает 10% максимального здоровья",group:"Подготовка к походу"},
-  silver_charm:{name:"Серебряный оберег",description:"+10% серебра за победы на 60 минут",group:"Подготовка к походу"},
-  xp_hourglass:{name:"Хроника мудреца",description:"Дополнительно +5% опыта на 60 минут",group:"Подготовка к походу"},
-  potion_case:{name:"Пояс целителя",description:"Навсегда увеличивает максимальный размер стопки зелий на 5",group:"Подготовка к походу"},
+  silver_charm:{name:"Серебряный оберег",description:"+10% серебра за победы в течение 60 минут",group:"Подготовка к походу"},
+  potion_case:{name:"Пояс целителя",description:"Постоянно увеличивает лимит стопки лечебных зелий на 5",group:"Подготовка к походу"},
   refine_10:{name:"Точильный камень · I",description:"+10 процентных пунктов к шансу заточки на 60 минут",group:"Мастерская кузнеца"},
   refine_20:{name:"Кристалл точности · II",description:"+20 процентных пунктов к шансу заточки на 60 минут",group:"Мастерская кузнеца"},
   refine_guard:{name:"Оберег кузнеца",description:"Защищает экипировку от последствий одной неудачной заточки",group:"Мастерская кузнеца"},
   stone_cache:{name:"Сундук кристаллов",description:"Содержит 3 камня усиления. Для открытия нужна выбранная специализация",group:"Мастерская кузнеца"},
-  extra_socket:{name:"Алмазное гнездо",description:"Добавляет одно гнездо экипированному предмету, если есть свободный слот",group:"Мастерская кузнеца"},
-  pity_token:{name:"Звёздный жетон судьбы",description:"Подводит счётчик легендарной добычи на один промах до гарантии",group:"Редкие товары"},
-  rescue_seal:{name:"Печать спасения",description:"Даёт один дополнительный шанс пережить гибель героя",group:"Редкие товары"},
+  extra_socket:{name:"Алмазное гнездо",description:"Добавляет одно гнездо первому надетому предмету, в котором ещё есть место для гнёзд",group:"Мастерская кузнеца"},
+  pity_token:{name:"Звёздный жетон судьбы",description:"Продвигает счётчик гарантированной легендарной добычи до последнего шага",group:"Редкие товары"},
   premium_7d:{name:"Премиум · 7 дней",description:"Премиум-статус аккаунта на 7 дней",group:"Премиум"},
   premium_14d:{name:"Премиум · 14 дней",description:"Премиум-статус аккаунта на 14 дней",group:"Премиум"},
   premium_30d:{name:"Премиум · 30 дней",description:"Премиум-статус аккаунта на 30 дней",group:"Премиум"}
  });
+ const SHOP_ACTIVE_IDS=new Set([
+  "heal_10","heal_25","heal_35","heal_50",
+  "xp_10","xp_20","xp_50","xp_100",
+  "drop_20","drop_50","drop_75","drop_100",
+  "repair_kit","silver_charm","potion_case",
+  "refine_10","refine_20","refine_guard","stone_cache","extra_socket","pity_token",
+  "premium_7d","premium_14d","premium_30d"
+ ]);
  const SHOP_PRODUCT_ART=Object.freeze({
   "xp_10":"./art-inbox/09-consumables/01-potions/C11_08_stimulant.png",
   "xp_20":"./art-inbox/09-consumables/01-potions/C11_09_elixir.png",
@@ -1899,7 +1905,7 @@ function profileRelicShopMarkup(c){
   const grouped={};
   entries.forEach(([id,entry])=>{
    const meta=SHOP_PRODUCT_META[id],price=typeof entry==="number"?entry:Number(entry?.price),art=SHOP_PRODUCT_ART[id];
-   if(!meta||!art||!Number.isFinite(price))return;
+   if(!SHOP_ACTIVE_IDS.has(id)||!meta||!art||!Number.isFinite(price))return;
    const healing=id.startsWith("heal_"),fraction=healing?Number(id.split("_")[1])/100:0,stack=healing?(c.bag||[]).find(item=>item.type==="healing_potion"&&Number(item.healFraction||0)===fraction):null;
    const stackFull=!!(stack&&Number(stack.quantity||1)>=Number(balance.healing.potion_stack_limit||1)+Number(c.potionCapacityBonus||0));
    (grouped[meta.group]||(grouped[meta.group]=[])).push({id,meta,price,art,stackFull});
