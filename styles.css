@@ -3564,3 +3564,11 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-v2 .tb-card-merchant-rebuild,#tbRpg .tb-v2 .tb-equipment-screen{display:block!important;min-width:0!important;width:100%!important;box-sizing:border-box!important;}
 #tbRpg .tb-v2 .tb-equipment-screen .tb-equipped-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 @media(max-width:520px){#tbRpg .tb-v2 .tb-tree-shell{height:calc(100dvh - 104px)!important;}#tbRpg .tb-v2 .tb-tree-viewport,#tbRpg .tb-v2 #talentTreeCanvas{min-height:190px!important;}#tbRpg .tb-v2 .tb-equipment-screen .tb-equipped-grid{grid-template-columns:minmax(0,1fr)!important;}}
+
+/* Installed gem controls: readable on narrow mobile inventory sheets. */
+#tbRpg .tb-installed-gems{display:grid;gap:8px;margin:12px 0;padding:10px;border:1px solid rgba(212,180,118,.2);border-radius:12px;background:rgba(9,14,22,.55)}
+#tbRpg .tb-installed-gems> b{font-size:10px;letter-spacing:.12em;color:#d9bd83}
+#tbRpg .tb-installed-gem{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:8px 0;border-top:1px solid rgba(255,255,255,.07)}
+#tbRpg .tb-installed-gem>span{display:grid;gap:3px;min-width:0;overflow-wrap:anywhere}
+#tbRpg .tb-installed-gem small{font-size:10px;line-height:1.35;color:#b9b1a2}
+#tbRpg .tb-installed-gem button{flex:0 0 auto;min-height:34px;padding:6px 9px;font-size:10px}
