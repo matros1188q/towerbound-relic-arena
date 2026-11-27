@@ -1616,7 +1616,20 @@ function createDialog(){
    const enemy=queue[index];
    if(enemy&&enemy.alive===true&&Number(enemy.hp)>0)enemyTurn(enemy);
    else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}
-   if(!battle||token!==battle.enemyQueueToken)return;
+   if(!battle)return;
+   if(token!==battle.enemyQueueToken){
+    /* A counter or damage-over-time kill can finish an enemy mid-queue and rotate the token.
+       Resume the remaining living enemies instead of leaving the hero locked between turns. */
+    if(battle.actor?.type==="player"&&!battle.isPlayerTurn&&!battle.finishingEnemy){
+     const resumeIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
+     if(resumeIndex<0){advanceToPlayerTurn();return;}
+     const resumeToken=battle.enemyQueueToken;
+     battle.busy=true;battle.isPlayerTurn=false;battle.actor={type:"enemy",id:"enemy-phase",name:"Ход противников"};
+     battle.enemyQueueState={indices:queue.map(candidate=>Number(candidate.index)).filter(Number.isFinite),cursor:resumeIndex};
+     save();render();scheduleEnemyTurnQueue(queue,resumeIndex,resumeToken,300);
+    }
+    return;
+   }
    if(Number(live()?.run?.playerHp)<=0){endFromDamage();return;}
    if(reconcileBattleCompletion())return;
    const nextIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
