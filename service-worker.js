@@ -306,7 +306,7 @@ const SHELL = [
   './assets/Castoms/image%2022.jpeg',
   './endgame-systems.js',
   './assets/pwa/icon-192.png',
-  './assets/pwa/icon-512.png'
+  './assets/pwa/icon-512.png',
   // Shop product art (cached for offline shop browsing)
   './art-inbox/09-consumables/01-potions/C11_08_stimulant.png',
   './art-inbox/09-consumables/01-potions/C11_09_elixir.png',
