@@ -45,6 +45,7 @@
   eye:"image%2017.jpeg",feather:"image%2018.jpeg",ring:"image%2019.jpeg",crown:"image%2020.jpeg",
   cup:"image%2021.jpeg",hammer:"image%2022.jpeg"
  });
+ const NEW_ITEM_ART_ROOT="./art-inbox/";
  const ITEM_ART_BY_ID=Object.freeze({
   xp_10:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_08_stimulant.png",
   xp_20:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_09_elixir.png",
@@ -87,8 +88,7 @@
   premium_7d:NEW_ITEM_ART_ROOT+"08-equipment/03-headwear/C07_08_crown.png",
   premium_14d:NEW_ITEM_ART_ROOT+"08-equipment/03-headwear/C07_08_crown.png",
   premium_30d:NEW_ITEM_ART_ROOT+"08-equipment/03-headwear/C07_08_crown.png"
- });;
- const NEW_ITEM_ART_ROOT="./art-inbox/";
+ });
  const NEW_ITEM_ART=Object.freeze({
   healingPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_02_healing_potion.png",
   smallHealingPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_01_small_healing_potion.png",
