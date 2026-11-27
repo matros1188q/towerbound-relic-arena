@@ -55,3 +55,8 @@
 #tbRpg .tb-tree-legend-item small{display:none;color:#b9c3d0;font:700 7px/1 system-ui,sans-serif}
 #tbRpg #talentTreeCanvas{flex:1 1 auto;min-height:0}
 @media(max-width:390px){#tbRpg .tb-tree-legend{gap:4px}#tbRpg .tb-tree-legend-item{gap:4px;padding:6px 2px}#tbRpg .tb-tree-legend-item b{font-size:8px}}
+
+/* Talent canvas must receive a real flex height; canvas sizing alone cannot size its wrapper. */
+#tbRpg .tb-tree-viewport{display:flex!important;position:relative!important;flex:1 1 0!important;min-width:0!important;min-height:180px!important;width:100%!important;height:0!important;overflow:hidden!important;}
+#tbRpg .tb-tree-viewport #talentTreeCanvas{display:block!important;flex:1 1 auto!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;}
+@media(max-height:620px){#tbRpg .tb-tree-viewport{min-height:120px!important;}}

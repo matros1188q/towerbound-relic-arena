@@ -3,11 +3,13 @@
  "use strict";
  var cssText = [
  '#tbRpg .tb-v2:has(.new-battle-wrap){box-sizing:border-box;width:100%;max-width:none;height:100dvh;min-height:0;margin:0;padding:0;overflow:hidden}',
- '#tbRpg .new-battle-wrap{box-sizing:border-box;position:relative;display:flex!important;flex-direction:column!important;width:100%;height:100dvh!important;min-height:0;overflow:hidden!important;background:#0a0c10!important;color:#fff;padding:10px 10px calc(10px + env(safe-area-inset-bottom))!important;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
+ '#tbRpg .new-battle-wrap{box-sizing:border-box;position:relative;display:flex!important;flex-direction:column!important;width:100%;height:100dvh!important;min-height:0;overflow:hidden!important;background-color:#0a0c10!important;background-image:linear-gradient(180deg,rgba(5,9,16,.38),rgba(5,9,16,.76)),var(--tb-arena-background,none)!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;color:#fff;padding:10px 10px calc(10px + env(safe-area-inset-bottom))!important;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
  '#tbRpg .new-battle-top{display:flex!important;align-items:center;justify-content:space-between;gap:8px;flex:0 0 auto;padding:0 0 10px;color:#fff;font-size:12px;border-bottom:1px solid #333}',
  '#tbRpg .new-round-label{font-weight:800;white-space:nowrap}#tbRpg .new-battle-relics{display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}#tbRpg .new-battle-relic{font-size:16px}#tbRpg .new-battle-actions{display:flex;align-items:center;gap:6px}',
  '#tbRpg .new-battle-actions button{min-height:32px;padding:5px 9px;border:1px solid #555;border-radius:7px;background:#1a1e26;color:#fff;font-weight:800}',
  '#tbRpg .new-battle-middle{display:flex!important;flex:1 1 auto!important;min-height:0;gap:10px;overflow:hidden;margin-top:10px}',
+  '#tbRpg .tb-arena-bg-layer{position:absolute;inset:0;z-index:0;pointer-events:none;background-image:var(--tb-arena-background);background-size:cover;background-position:center;opacity:1}',
+  '#tbRpg .new-battle-wrap>*:not(.tb-arena-bg-layer){position:relative;z-index:1}',
  '#tbRpg .new-hero-side{box-sizing:border-box;width:35%;min-width:0;flex:0 0 35%;display:flex!important;flex-direction:column!important;align-items:center;justify-content:center;gap:5px;border-right:1px solid #333;padding:4px 10px 4px 0;overflow:hidden}',
  '#tbRpg .new-hero-img{display:block;width:100%;height:150px;max-height:38%;object-fit:contain;flex:0 1 auto}#tbRpg .new-hero-name{color:#fff;font-size:13px;font-weight:900;text-align:center;overflow-wrap:anywhere}',
  '#tbRpg .new-hp-bar,#tbRpg .new-enemy-hp-bar{display:block;width:100%;height:7px;flex:0 0 7px;overflow:hidden;border-radius:8px;background:#343434}#tbRpg .new-hp-bar>div{height:100%;background:#36bd72}',
