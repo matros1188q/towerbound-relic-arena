@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const source=fs.readFileSync('social-endgame.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
-const mode=fs.readFileSync('rpg-mode.js','utf8');
+
 const online=fs.readFileSync('towerbound-online.js','utf8');
 const cloud=fs.readFileSync('towerbound-cloud.js','utf8');
 for(const marker of ['createChallenge:challenge','attackGuildBoss:hit','sendGift:gift','leaderboard:top','function accept(ch)','function guild()','function gift(to)','function topReplay()','function buy(id)'])assert.ok(source.includes(marker),'missing social API: '+marker);
@@ -28,7 +28,7 @@ assert.ok(source.includes('refresh:()=>{if($(\'#socPanel\'))render()}'),'shared 
 assert.ok(source.includes("window.addEventListener('towerbound-cloud-restore'")&&source.includes('const restored=JSON.parse(localStorage.getItem(K)||\'{}\')'),'social data refreshes after cloud restore');
 assert.ok(source.includes('window.TowerboundEndgame?.handleCommunityAction?.(b.dataset.eg,b)'),'community panel forwards Guild and Pass actions to Endgame');
 assert.ok(!source.includes('Эволюция')&&!source.includes('open-evolution'),'evolution removed from community');
-assert.ok(mode.includes(':not(#socPanel)'),'rpg-open body isolation must keep the community panel visible');
+assert.ok(source.includes("p.id='socPanel'")&&source.includes('document.body.append(p)')&&source.includes('#socPanel{position:fixed;inset:0;z-index:2147483600'),'community panel is mounted as a body-level overlay above the fixed game root');
 assert.ok(cloud.includes("'tb-endgame-v1'")&&cloud.includes("'tb-social-v1'"),'both social and endgame save keys are included in cloud saves');
 assert.ok(online.includes(".from('leaderboard').select('user_id,nickname,class,battle_power,max_stage,updated_at')"),'live global leaderboard reads the published player rows');
 console.log('social endgame static checks: OK');
