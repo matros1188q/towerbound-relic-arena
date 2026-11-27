@@ -631,6 +631,7 @@
    case "cloud-recover-local":try{const cloud=window.TowerboundCloud;if(!cloud?.restoreLocalBackup)throw new Error("Восстановление облачной копии недоступно");await cloud.restoreLocalBackup();window.location.reload();}catch(error){notify(error.message||"Не удалось восстановить резервную копию");}break;
    case "cloud-retry":window.TowerboundCloud?.retryLoad?.().then(()=>{screen="characters";render();}).catch(e=>notify(e.message));break;
    case "account-login":case "account-register":{const login=root.querySelector("#tbAccountLogin")?.value||"",password=root.querySelector("#tbAccountPassword")?.value||"",remember=!!root.querySelector("#tbAccountRemember")?.checked,method=t.dataset.action==="account-register"?"signUp":"signIn";try{if(!window.TowerboundCloud?.[method])throw new Error("Авторизация ещё загружается");await window.TowerboundCloud[method](login,password,remember);save();render();notify(method==="signUp"?"Аккаунт создан":"Вход выполнен");}catch(error){const message=root.querySelector(".tb-account-message");if(message)message.textContent=error.message;notify(error.message);}break;}
+   case "toggle-mute":{const enable=settings().sound_enabled===false;engine.saveSettings({sound_enabled:enable});save();render();notify(enable?"Звук включён":"Звук выключен");break;}
    case "account-sync":try{await window.TowerboundCloud?.syncNow?.();notify("Облако синхронизировано");}catch(error){notify(error.message);}break;
    case "account-logout":window.TowerboundCloud?.signOut?.().catch(e=>notify(e.message));break;
   }
@@ -2136,7 +2137,7 @@ function profileRelicShopMarkup(c){
  }
  function accountSettingsMarkup(){
   const prefs=settings(),toggle=(key,label,description)=>'<label class="tb-account-setting"><span><b>'+label+'</b><small>'+description+'</small></span><input type="checkbox" data-setting="'+key+'" '+(prefs[key]===false?'':'checked')+'></label>';
-  return '<section class="tb-account-settings"><header><small>ПЕРСОНАЛИЗАЦИЯ</small><h3>НАСТРОЙКИ ИГРЫ</h3><p>Параметры сохраняются вместе с аккаунтом и прогрессом.</p></header>'+toggle("sound_enabled","Звуковые эффекты","Звуки карт, ударов и действий")+toggle("music_enabled","Музыка","Фоновая музыка башни")+toggle("auto_pause_on_blur","Пауза при сворачивании","Автоматически приостанавливать бой при выходе из игры")+toggle("disable_screen_shake","Без тряски экрана","Отключить тряску при сильных ударах")+toggle("clean_ui","Компактный интерфейс","Уменьшить декоративные элементы")+'</section>';
+  return '<section class="tb-account-settings"><header><small>ПЕРСОНАЛИЗАЦИЯ</small><h3>НАСТРОЙКИ ИГРЫ</h3><p>Параметры сохраняются вместе с аккаунтом и прогрессом.</p></header><label class="tb-account-setting"><span><b>Общая громкость</b><small>Уровень звука игры от 0 до 1</small></span><input type="number" min="0" max="1" step="0.05" data-setting="volume_master" value="'+Math.max(0,Math.min(1,Number(prefs.volume_master??1)))+'"></label><button type="button" class="tb-mute-toggle" data-action="toggle-mute">'+(prefs.sound_enabled===false?'ЗВУК ВЫКЛ':'ЗВУК ВКЛ')+'</button>'+toggle("sound_enabled","Звуковые эффекты","Звуки карт, ударов и действий")+toggle("music_enabled","Музыка","Фоновая музыка башни")+toggle("auto_pause_on_blur","Пауза при сворачивании","Автоматически приостанавливать бой при выходе из игры")+toggle("disable_screen_shake","Без тряски экрана","Отключить тряску при сильных ударах")+toggle("clean_ui","Компактный интерфейс","Уменьшить декоративные элементы")+'</section>';
  }
 
  function profileScreen(){
@@ -2413,7 +2414,7 @@ function profileRelicShopMarkup(c){
   if(!button||!root.contains(button)||button.disabled)return;
   queueMicrotask(()=>{if(engine?.state&&root.isConnected)save();});
  });
- root.addEventListener("change",event=>{const input=event.target?.closest?.("[data-setting]");if(!input||!root.contains(input))return;try{engine.saveSettings({[input.dataset.setting]:!!input.checked});save();notify("Настройки сохранены");}catch(error){notify(error.message||"Не удалось сохранить настройку");}});
+ root.addEventListener("change",event=>{const input=event.target?.closest?.("[data-setting]");if(!input||!root.contains(input))return;try{const key=input.dataset.setting,value=key.startsWith("volume_")?Math.max(0,Math.min(1,Number(input.value)||0)):!!input.checked;engine.saveSettings({[key]:value});if(key.startsWith("volume_"))syncMusic();save();notify("Настройки сохранены");}catch(error){notify(error.message||"Не удалось сохранить настройку");}});
  root.addEventListener("click",event=>{
   const target=event.target?.closest?.("[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-pvp-buy],[data-cosmetic-buy],[data-cosmetic-equip]");
   if(!target)return;
