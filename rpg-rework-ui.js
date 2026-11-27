@@ -2564,11 +2564,10 @@ function profileRelicShopMarkup(c){
    try{const raw=localStorage.getItem('tb-rpg-v2'),restored=raw?JSON.parse(raw):null;if(restored&&Array.isArray(restored.characters)){for(const key of Object.keys(engine.state))delete engine.state[key];Object.assign(engine.state,restored);}}catch(error){console.error('[Towerbound] local save hydration failed',error);}
    const unlockedBefore=Array.isArray(engine.state.account?.unlockedCards)?engine.state.account.unlockedCards.length:0;unlockedCardIds();if(engine.state.account.unlockedCards.length!==unlockedBefore)save();window.TowerboundLevelUpModal=(level,points)=>{if(!window.__TB_BALANCE_TEST_MODE)showLevelUpModal(level,points);};
    skills=[]; // Card-first combat: legacy skill catalogue is not loaded into the active UI.
-   let active=null;
+   let active=null,resumedBattle=false;
    if(engine.state.characters.length){
     selectedId=engine.state.activeCharacterId||engine.state.characters[0].id;
     active=engine.state.characters.find(character=>character.id===selectedId);
-    let resumedBattle=false;
     if(active?.run?.stage){
      const repaired=engine.sanitizeActiveStage(active.id);
      if(repaired.processed?.length||repaired.completed){save();console.info("[Towerbound] repaired saved combat state",repaired);}
