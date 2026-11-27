@@ -325,6 +325,12 @@
  const SKILL_UPGRADE_LEVELS=Object.freeze({1:1,2:20,3:50});
  let pendingSkillUpgradeId=null;
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",statsOverlayOpen=false,shopTab="silver",lastRenderedScreen=null,lastRenderedProfileTab=null;
+ // The legacy RPG renderer is intentionally encapsulated in rpg-mode.js; expose its supported refresh API locally.
+ function render(){
+  const legacy=window.TowerboundRPG;
+  if(legacy&&typeof legacy.refresh==="function"){legacy.refresh();return;}
+  throw new Error("Не найден модуль отрисовки игры (TowerboundRPG.refresh).");
+ }
  let shopOverlayCurrency="silver";
  let selectedId=null,selectedClass="assassin",selectedStage=1,skipFloorsPending=false,pendingSkipStage=0,dialogOpen=false,battle=null,postBattleSummary=null,bagFilter="all",bagSort="power",collectionTab="equipment",selectedItemId=null,stonePickerItemId=null,collectionSelection=null,pendingBranchId=null,toastTimer=null,toastMessage="",preferredSpeed2=localStorage.getItem("tb-rpg-speed-v2")==="2",pendingTimer=null,statusTimer=null,audioContext=null,musicNodes=null,routeChoice="standard",onlineLeaderboardRows=[],onlineLeaderboardError="",onlineBusy=false,cardRemovalOpen=false,starterDeckSelection=[],campStopStage=null,guildRaid=null;
 
