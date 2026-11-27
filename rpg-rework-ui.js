@@ -1839,7 +1839,7 @@ function profileRelicShopMarkup(c){
   "xp_hourglass":"./art-inbox/10-materials/06-documents/C21_02_old_book.png",
   "potion_case":"./art-inbox/08-equipment/06-boots-cloaks-belts-gloves/C10_10_belt_with_pouches.png",
   "refine_10":"./art-inbox/10-materials/05-tools/C20_14_whetstone.png",
-  "refine_20":"./art-inbox/10-materials/03-crystals/C18_09_rainbow_crystal.png",
+  "refine_20":"./art-inbox/10-materials/03-crystals/C18_08_white_crystal.png",
   "refine_guard":"./art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
   "stone_cache":"./art-inbox/10-materials/04-keys-chests/C19_10_golden_chest.png",
   "extra_socket":"./art-inbox/10-materials/01-ores-gems/C15_14_diamond.png",
@@ -1877,6 +1877,21 @@ function profileRelicShopMarkup(c){
   const custom=SHOP_PRODUCT_ART[item?.id];
   return custom?customItemImageHtml(custom,"tb-shop-item-art",item):'<span class="tb-shop-art-fallback">✦</span>';
  }
+ function shopProductTag(id){
+  if(id.startsWith("heal_"))return "ВОССТАНОВЛЕНИЕ";
+  if(id.startsWith("xp_"))return "60 МИНУТ";
+  if(id.startsWith("drop_"))return "60 МИНУТ";
+  if(id.startsWith("refine_")&&id!=="refine_guard")return "60 МИНУТ";
+  if(id==="refine_guard")return "1 ЗАТОЧКА";
+  if(id==="repair_kit")return "МЕЖДУ БОЯМИ";
+  if(id==="silver_charm")return "60 МИНУТ";
+  if(id==="potion_case")return "НАВСЕГДА";
+  if(id==="stone_cache")return "3 КАМНЯ";
+  if(id==="extra_socket")return "1 ГНЕЗДО";
+  if(id==="pity_token")return "ДО ГАРАНТИИ";
+  if(id.startsWith("premium_"))return "СТАТУС АККАУНТА";
+  return "РАЗОВЫЙ ЭФФЕКТ";
+ }
  function shopOverlayMarkup(){
   const c=live();if(!c)return "";
   const store=shopOverlayCurrency,cfg=balance.economy?.[store+"_store"]||{},money=store==="silver"?(Number(c.silver)||0):(Number(engine.state.account?.diamonds)||0);
@@ -1889,7 +1904,20 @@ function profileRelicShopMarkup(c){
    const stackFull=!!(stack&&Number(stack.quantity||1)>=Number(balance.healing.potion_stack_limit||1)+Number(c.potionCapacityBonus||0));
    (grouped[meta.group]||(grouped[meta.group]=[])).push({id,meta,price,art,stackFull});
   });
-  const groups=Object.entries(grouped).map(([group,items])=>'<section class="tb-shop-group"><div class="tb-shop-group-heading"><h3>'+esc(group)+'</h3><small>'+items.length+' '+(items.length===1?'товар':items.length<5?'товара':'товаров')+'</small></div><div class="tb-shop-grid">'+items.map(item=>'<article class="tb-shop-item"><div class="tb-shop-item-art">'+shopProductIconHtml({id:item.id,type:item.id})+'</div><div class="tb-shop-item-copy"><b>'+esc(item.meta.name)+'</b><p>'+esc(item.meta.description)+'</p></div><div class="tb-shop-item-buy"><strong>'+item.price.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</strong><button type="button" data-shop-buy="'+esc(item.id)+'" data-shop-store="'+store+'" '+(money<item.price||item.stackFull?"disabled":"")+'>'+(item.stackFull?"СТОПКА ПОЛНА":money<item.price?"НЕ ХВАТАЕТ":"КУПИТЬ")+'</button></div></article>').join("")+'</div></section>').join("");
+  const groupDescriptions={
+   "Зелья лечения":"Запас здоровья для сложных боёв",
+   "Эликсиры опыта":"Ускоряют развитие героя на ограниченное время",
+   "Благословения добычи":"Повышают шанс найти экипировку и редкие трофеи",
+   "Мастерская кузнеца":"Материалы и защита для улучшения экипировки",
+   "Подготовка к походу":"Полезные улучшения для следующих этажей",
+   "Редкие товары":"Редкие эффекты, которые меняют исход похода",
+   "Премиум":"Временные преимущества аккаунта"
+  };
+  const groupOrder=["Зелья лечения","Эликсиры опыта","Благословения добычи","Мастерская кузнеца","Подготовка к походу","Редкие товары","Премиум"];
+  const groups=Object.keys(grouped).sort((a,b)=>groupOrder.indexOf(a)-groupOrder.indexOf(b)).map(group=>{
+   const items=grouped[group];
+   return '<section class="tb-shop-group"><div class="tb-shop-group-heading"><div class="tb-shop-group-title"><h3>'+esc(group)+'</h3><p>'+esc(groupDescriptions[group]||"Товары торговой лавки")+'</p></div><small>'+items.length+' '+(items.length===1?'ТОВАР':items.length<5?'ТОВАРА':'ТОВАРОВ')+'</small></div><div class="tb-shop-grid">'+items.map(item=>'<article class="tb-shop-item"><div class="tb-shop-item-art">'+shopProductIconHtml({id:item.id,type:item.id})+'</div><div class="tb-shop-item-copy"><div class="tb-shop-item-title"><b>'+esc(item.meta.name)+'</b><span class="tb-shop-item-tag">'+esc(shopProductTag(item.id))+'</span></div><p>'+esc(item.meta.description)+'</p></div><div class="tb-shop-item-buy"><strong>'+item.price.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</strong><button type="button" data-shop-buy="'+esc(item.id)+'" data-shop-store="'+store+'" '+(money<item.price||item.stackFull?"disabled":"")+'>'+(item.stackFull?"СТОПКА ПОЛНА":money<item.price?"НЕ ХВАТАЕТ":"КУПИТЬ")+'</button></div></article>').join("")+'</div></section>';
+  }).join("");
   return '<div class="tb-shop-overlay" role="dialog" aria-modal="true" aria-label="Магазин Башни"><div class="tb-shop-panel"><header class="tb-shop-hero"><div><small>ТОРГОВАЯ ЛАВКА · TOWERBOUND</small><h2>МАГАЗИН БАШНИ</h2><p>Подготовь героя к следующему восхождению</p></div><button type="button" data-shop-close aria-label="Закрыть магазин">×</button></header><div class="tb-shop-wallet"><span>ТВОЙ БАЛАНС</span><b>'+money.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</b></div><nav class="tb-shop-currencies"><button type="button" data-shop-currency="silver" class="'+(store==="silver"?"active":"")+'">СЕРЕБРО · '+(Number(c.silver)||0).toLocaleString("ru-RU")+'</button><button type="button" data-shop-currency="diamond" class="'+(store==="diamond"?"active":"")+'">АЛМАЗЫ · '+(Number(engine.state.account?.diamonds)||0).toLocaleString("ru-RU")+'</button></nav><div class="tb-shop-content">'+(groups||'<p class="tb-shop-empty">В этой лавке пока нет доступных товаров.</p>')+'</div><footer class="tb-shop-footer">Каждый товар связан с действующей механикой Башни. Покупки сразу попадают в рюкзак или активируют статус аккаунта.</footer></div></div>';
  }
  root.addEventListener("click",event=>{

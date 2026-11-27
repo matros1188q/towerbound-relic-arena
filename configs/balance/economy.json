@@ -81,12 +81,6 @@
         "effect": "silver_bonus"
       },
       {
-        "id": "xp_hourglass",
-        "name": "Песочные часы",
-        "price": 1500,
-        "effect": "xp_hourglass"
-      },
-      {
         "id": "potion_case",
         "name": "Футляр целителя",
         "price": 1800,
@@ -107,12 +101,6 @@
     "refine_10": 50,
     "refine_20": 100,
     "extra": [
-      {
-        "id": "rescue_seal",
-        "name": "Печать спасения",
-        "price": 29,
-        "effect": "one_rescue"
-      },
       {
         "id": "stone_cache",
         "name": "Сундук камней",
