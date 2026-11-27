@@ -463,7 +463,7 @@
     potionBelt:Array(balance.healing.potion_belt_slots).fill(null),dailyChest:{lastOpenedAt:0},achievements:[],loreRead:[],tutorial:{completed:false,step:0,rewardClaimed:false},
     progress:{highestEver:0,currentStage:1,checkpoints:[]},
     run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:0,snapshot:null,pendingRelicChoices:null,campStopsUsed:[],checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,lastPotionStage:null,speed2:false,lives:mode.lives,buffs:{}},
-    paragon:{level:0,xp:0,stats:{}},pity:{normalMisses:0,eliteMisses:0,legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
+    paragon:{level:0,xp:0,stats:{}},pity:{legendaryMisses:0,godlikeMisses:0},stats:{kills:0,elapsedMs:0,completionMs:0,pvpWins:0}
    };
    if(legacyEligible)character.gear=["weapon","chest","head","legs","hands","accessory"].map((slot,i)=>({id:"legacy-"+character.id+"-"+slot,name:"Наследие · "+slot,slot,itemLevel:50,rarity:"Эпическая",stats:{attack:i===0?18:4,defense:i===0?2:8,health:18},refine:0,sockets:[],socketsAvailable:0,bossLoot:false}));
    character.run.playerHp=maxHp(character);
@@ -801,7 +801,7 @@
    }
   function rollLoot(character,enemy,stage,firstClear,automatic){
    if(automatic||character.level<10||!character.branch)return[];
-   const drops=balance.drop_tables,items=[],tier=(drops.floor_tiers||[]).find(entry=>stage>=entry.min&&stage<=entry.max)||{},pity=character.pity||(character.pity={}),buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*(1+Math.max(0,Number(character.guildDailyBonus?.drop_bonus_percent)||0)/100)*(1+Math.max(0,Number(character.guildBuffs?.drop)||0)*.02)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
+   const drops=balance.drop_tables,items=[],buff=activeBuff(character,"drop"),dropMultiplier=(buff?buff.multiplier:1)*(1+Math.max(0,Number(character.guildDailyBonus?.drop_bonus_percent)||0)/100)*(1+Math.max(0,Number(character.guildBuffs?.drop)||0)*.02)*runModifiers(character).reduce((v,m)=>v*(enemy.type==="elite"?(m.elite_loot_multiplier||1):enemy.type==="normal"?(m.normal_loot_multiplier||1):1),1);
    const uniqueBossDrop=rarity=>{
     const configured=classTable[character.classId].unique_items||[];
     const owned=new Set([...(character.bag||[]),...(character.gear||[]).filter(Boolean)].map(item=>item.uniqueId).filter(Boolean));
@@ -827,18 +827,13 @@
      else character.pity.legendaryMisses++;
     }
    }else if(enemy.type==="elite"){
-    const guaranteed=(pity.eliteMisses||0)>=(drops.elite_pity_misses??2),chance=Math.min(1,(tier.elite_epic_chance??drops.elite_epic_chance)*dropMultiplier);
-    if(guaranteed||random()<chance){
+    if(random()<Math.min(1,drops.elite_epic_chance*dropMultiplier)){
      const branches=classTable[character.classId].branches||[],branch=branches.find(entry=>entry.id===character.branch)||branches[0];
      const slot=["weapon","chest","head","accessory"][Math.floor(random()*4)];
-     items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,itemLevel:stage}));pity.eliteMisses=0;
-    }else pity.eliteMisses=(pity.eliteMisses||0)+1;
-   }else{
-    const guaranteed=(pity.normalMisses||0)>=(drops.normal_pity_misses??5),chance=Math.min(1,drops.normal_item_chance*dropMultiplier);
-    if(guaranteed||random()<chance){
-     const rareWeight=tier.normal_rare_weight??drops.normal_rare_weight;
-     items.push(createDrop(character,random()<rareWeight?"Редкая":"Обычная",{itemLevel:stage}));pity.normalMisses=0;
-    }else pity.normalMisses=(pity.normalMisses||0)+1;
+     items.push(createDrop(character,"Эпическая",{setId:branch?.set?.id||null,slot,itemLevel:stage}));
+    }
+   }else if(random()<Math.min(1,drops.normal_item_chance*dropMultiplier)){
+    items.push(createDrop(character,random()<drops.normal_rare_weight?"Редкая":"Обычная",{itemLevel:stage}));
    }
    return items;
   }
@@ -1667,7 +1662,7 @@
    const character=getChar(characterId),isGear=item=>!!(item&&item.type==="equipment"&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0&&character.level>=10&&character.branch&&item.branch===character.branch);
    if(character.level<10||!character.branch)return{equipped:0,gear:clone(character.gear||[]),bag:character.bag.length,locked:true};
    const candidates=[...(character.gear||[]).filter(isGear),...(character.bag||[]).filter(isGear)],chosen=new Map();
-   for(let slot=0;slot<9;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot&&!item.locked).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
+   for(let slot=0;slot<9;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
    if(chosen.get(0)?.twoHanded)chosen.delete(6);
    const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:9},(_,slot)=>chosen.get(slot)||null);
    character.gear.forEach(item=>{if(item)item.cardId=item.cardId||equipmentCardId(item);});
@@ -1713,7 +1708,6 @@
   function salvageItem(characterId,itemId){
    const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
    if(!item||!item.rarity)throw new Error("Only equipment can be salvaged");
-   if(item.locked)throw new Error("Locked equipment cannot be salvaged");
    if(item.bossLoot)throw new Error("Boss loot cannot be salvaged");
    const quantity=balance.materials.salvage[item.rarity];
    if(!Number.isFinite(quantity))throw new Error("This rarity cannot be salvaged");
@@ -1794,7 +1788,7 @@ if(typeof window!=="undefined"){
       heroic:!!old.heroic,progress:{highestEver:best,currentStage:Math.max(1,Math.min(250,old.stage||1)),checkpoints:[50,100,150,200,250].filter(stage=>best>=stage)},
       run:{active:false,id:null,experience:0,foundItemIds:[],stage:null,playerHp:balance.classes.base_stats.base_health,
        checkpointHeals:0,healingPenaltyFrom:0,healingPenaltyUntil:0,lastPotionStage:null,speed2:false,lives:balance.death.lives_per_run||3,buffs:{}},
-      pity:{normalMisses:old.normalMisses||0,eliteMisses:old.eliteMisses||0,legendaryMisses:old.legendaryMisses||0,godlikeMisses:old.godlikeMisses||0},
+      pity:{legendaryMisses:old.legendaryMisses||0,godlikeMisses:old.godlikeMisses||0},
       stats:{kills:old.kills||0,elapsedMs:0,completionMs:0}
      };
     }).filter(Boolean);
