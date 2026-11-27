@@ -26,7 +26,7 @@ assert.ok(cloud.includes('Never make login wait for a write RPC')&&cloud.include
 assert.ok(cloud.includes("retryAfter=Date.now()+30000;dirty=true;")&&cloud.includes('Облачная запись столкнулась с параллельным изменением'),'save conflicts are throttled after the first detected conflict');
 assert.ok(cloud.includes('Date.now()<retryAfter')&&cloud.includes('retryAfter=Date.now()+30000'),'save conflicts use bounded backoff');
 assert.ok(!cloud.includes("say('Облако подключено. Сохранение готово к синхронизации.');queueSave();"),'login does not force a no-op save');
-assert.ok(ui.includes('data-action=\"cloud-recover-local\"')&&ui.includes('restoreLocalBackup()'),'character select exposes explicit local recovery');
+assert.ok(ui.includes('data-action=\"cloud-recover-local\"')&&ui.includes('restoreLocalBackup?.()'),'character select exposes explicit local recovery');
 assert.ok(cloud.includes("from('player_save_history')")&&cloud.includes('recoveredFromHistory:true'),'cloud loader automatically recovers the best progression snapshot from private history');
 assert.ok(cloud.includes('Защита сохранения: облачная версия пуста'));
 assert.ok(cloud.includes('SAVE_GUARD_BLOCKED'));
