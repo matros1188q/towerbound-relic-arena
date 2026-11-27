@@ -70,12 +70,6 @@
     "premium_7d": 20000,
     "extra": [
       {
-        "id": "map_compass",
-        "name": "Компас картографа",
-        "price": 600,
-        "effect": "map_hint"
-      },
-      {
         "id": "repair_kit",
         "name": "Набор ремонтника",
         "price": 900,
@@ -118,7 +112,6 @@
     "drop_100": 7,
     "refine_10": 50,
     "refine_20": 100,
-    "safe_refine": 199,
     "premium_7d": 99,
     "premium_14d": 149,
     "premium_30d": 249,
