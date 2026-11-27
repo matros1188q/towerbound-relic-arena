@@ -531,7 +531,7 @@
   if(t.dataset.talent){try{engine.useTalentPoint(live().id,t.dataset.talent,3);save();render();}catch(e){notify(e.message);}return;}
   if(t.hasAttribute("data-item-select")){selectedItemId=t.dataset.itemSelect||null;stonePickerItemId=null;render();return;}
   if(t.dataset.stonePicker){stonePickerItemId=stonePickerItemId===t.dataset.stonePicker?null:t.dataset.stonePicker;selectedItemId=t.dataset.stonePicker;render();return;}
-  if(t.dataset.stoneChoice){try{engine.insertGem(live().id,t.dataset.stoneItem,t.dataset.stoneChoice);selectedItemId=t.dataset.stoneItem;stonePickerItemId=null;save();render();notify("Камень установлен в гнездо");}catch(error){notify(error.message);}return;}
+  if(t.dataset.stoneChoice){try{const c=live();if(!c)throw new Error("Персонаж не найден");engine.insertGem(c.id,t.dataset.stoneItem,t.dataset.stoneChoice);selectedItemId=t.dataset.stoneItem;stonePickerItemId=null;save();render();notify("Камень установлен в гнездо");}catch(error){notify(error.message);}return;}
   if(t.dataset.extractGem!==undefined){try{const returned=engine.extractGem(live().id,t.dataset.extractGem,Number(t.dataset.gemIndex));selectedItemId=t.dataset.extractGem;save();render();notify("Камень извлечён: "+(returned.stoneType?.name||"камень")+" · возвращён в рюкзак");}catch(error){notify(error.message);}return;}
   if(t.dataset.inspectStone){const stone=(live()?.bag||[]).find(item=>item.id===t.dataset.inspectStone);if(stone)notify(stoneDescription(stone)||stone.description||"Уникальный камень специализации");return;}
   if(t.dataset.equip){try{engine.equipItem(live().id,t.dataset.equip);save();render();notify("Предмет надет");}catch(error){notify(error.message);}return;}
