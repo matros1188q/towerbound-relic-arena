@@ -410,8 +410,11 @@
   options=options||{};const c=live();let multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
   if(target.role==="tank"&&target.alive)multiplier*=1-balance.mobs.roles.tank.damage_reduction;
   let damage=Math.max(0,Math.round(rawDamage*multiplier));
+  const used=Number(battle.actionDamageLedger?.[target.index])||0;
+  if(target.type==="boss")damage=engine.capBossDamage(target,damage,used,options.ultimate?"ultimate":undefined);
   if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
   const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
+  if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};battle.actionDamageLedger[target.index]=used+dealt;}
   if(dealt>0)engine.applyVampirism(c.id,dealt);
   if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span"),card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');number.className="tb-floating-damage";number.textContent="-"+dealt;if(card){const box=card.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top)+"px";}layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
