@@ -14,5 +14,35 @@
     "heal_50": "art-inbox/09-consumables/01-potions/C11_16_revival_potion.png"
   },
   "semanticLookup": "Also recognizes named ores, gems, elemental scrolls, keys, chests, compass, coins and blueprints if present in item data.",
-  "unmapped": "No current runtime item consumes the remaining mana stones, star fragments, most ore/gem types, keys, chests, journal, letter, star chart or bell. Their art is retained for future matching."
+  "unmapped": "No current runtime item consumes the remaining mana stones, star fragments, most ore/gem types, keys, chests, journal, letter, star chart or bell. Their art is retained for future matching.",
+  "shopRuntimeMappings": {
+    "xp_10": "art-inbox/09-consumables/01-potions/C11_08_stimulant.png",
+    "xp_20": "art-inbox/09-consumables/01-potions/C11_09_elixir.png",
+    "xp_50": "art-inbox/09-consumables/01-potions/C11_09_elixir.png",
+    "xp_100": "art-inbox/09-consumables/01-potions/C11_10_rainbow_elixir.png",
+    "heal_10": "art-inbox/09-consumables/01-potions/C11_01_small_healing_potion.png",
+    "heal_25": "art-inbox/09-consumables/01-potions/C11_02_healing_potion.png",
+    "heal_35": "art-inbox/09-consumables/01-potions/C11_03_large_healing_potion.png",
+    "heal_50": "art-inbox/09-consumables/01-potions/C11_16_revival_potion.png",
+    "drop_20": "art-inbox/10-materials/07-currency-treasures/C22_04_copper_coin.png",
+    "drop_50": "art-inbox/10-materials/07-currency-treasures/C22_03_silver_coin.png",
+    "drop_75": "art-inbox/10-materials/07-currency-treasures/C22_01_gold_coin.png",
+    "drop_100": "art-inbox/10-materials/07-currency-treasures/C22_02_pile_of_gold_coins.png",
+    "antidote": "art-inbox/09-consumables/01-potions/C11_07_antidote.png",
+    "repair_kit": "art-inbox/10-materials/05-tools/C20_14_whetstone.png",
+    "silver_charm": "art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
+    "xp_hourglass": "art-inbox/09-consumables/02-scrolls-mana-stones/C12_09_magic_hourglass.png",
+    "potion_case": "art-inbox/10-materials/04-keys-chests/C19_13_jewelry_box.png",
+    "refine_10": "art-inbox/10-materials/03-crystals/C18_02_orange_crystal.png",
+    "refine_20": "art-inbox/10-materials/03-crystals/C18_09_rainbow_crystal.png",
+    "refine_guard": "art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
+    "stone_cache": "art-inbox/10-materials/04-keys-chests/C19_11_open_treasure_chest.png",
+    "extra_socket": "art-inbox/10-materials/01-ores-gems/C15_14_diamond.png",
+    "pity_token": "art-inbox/10-materials/01-ores-gems/C15_16_amber.png",
+    "rescue_seal": "art-inbox/10-materials/04-keys-chests/C19_07_seal_key.png",
+    "premium": "art-inbox/08-equipment/03-headwear/C07_08_crown.png"
+  },
+  "notes": [
+    "Shop audit 2026-11-27: removed the unused map-compass offer and consolidated duplicate safe-refine offers; retained antidote because floor traps consume it. All shop products now have named descriptions and art-inbox illustrations."
+  ]
 }
