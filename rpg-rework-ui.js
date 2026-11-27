@@ -79,7 +79,8 @@
   refine_10:NEW_ITEM_ART_ROOT+"10-materials/03-crystals/C18_02_orange_crystal.png",
   refine_20:NEW_ITEM_ART_ROOT+"10-materials/03-crystals/C18_09_rainbow_crystal.png",
   safe_refine:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
-  craft_material:NEW_ITEM_ART_ROOT+"10-materials/02-monster-drops/C17_12_monster_core.png",
+  craft_material:"./assets/relics/image_6.png", // legacy fallback; semantic resolver above uses the dedicated art-inbox core
+
   enhancement_stone:NEW_ITEM_ART_ROOT+"10-materials/03-crystals/C18_01_red_crystal.png",
   refine_stone:NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_14_whetstone.png",
   enchant_scroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_06_sealing_scroll.png",
