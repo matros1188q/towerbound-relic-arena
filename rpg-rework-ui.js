@@ -402,9 +402,12 @@
    if(event.target===overlay||event.target.closest("[data-skip-floors-close]")){close();return;}
    if(event.target.closest("[data-skip-floors-confirm]")){
     const current=live();if(!current){close();return;}
-    if(current.run?.stage){close();notify("Сначала заверши текущий бой");return;}
     const latest=skipFloorsPowerPlan(current);
     try{
+     clearPendingTurnTimer();
+     if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;
+     battle=null;
+     if(current.run?.stage)current.run.stage=null;
      engine.voluntaryRestart(current.id);
      current.progress.currentStage=latest.targetStage;
      current.run.playerHp=engine.maxHp(current);
@@ -412,7 +415,7 @@
      current.run.pendingTrial=null;current.run.pendingChampion=null;
      selectedStage=latest.targetStage;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
      close();save();ensureCardDeck(current);syncEquipmentCards(current);beginStage();
-     notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
+     if(battle)notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
     }catch(error){close();notify(error.message||"Не удалось выполнить пропуск этажей");}
    }
   });
