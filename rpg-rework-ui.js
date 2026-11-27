@@ -335,11 +335,11 @@
   document.body.classList.toggle("tb-battle-lock",isBattle);
   document.documentElement.classList.toggle("tb-battle-lock",isBattle);
   const markup=screen==="characters"?characterList():screen==="map"?mapScreen():screen==="profile"?profileScreen():isBattle?battleScreen():screen==="death"?deathScreen():characterList();
-  root.innerHTML='<div class="tb-v2">'+markup+'</div>';
+  root.innerHTML='<div class="tb-v2" data-screen="'+esc(screen)+'">'+markup+'</div>';
   if(toastMessage){let toast=root.querySelector(".tb-toast");if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2")?.appendChild(toast);}if(toast)toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
   ensureBottomNav();
-  if(isBattle){const arena=root.querySelector(".new-battle-wrap"),art=BATTLE_ARENA_BACKGROUNDS[(Math.max(1,Number(battle.stage)||1)-1)%BATTLE_ARENA_BACKGROUNDS.length];if(arena&&art)arena.style.setProperty("--tb-arena-background",'url("'+art+'")');}
+  if(isBattle){const arena=root.querySelector(".new-battle-wrap"),art=BATTLE_ARENA_BACKGROUNDS[(Math.max(1,Number(battle.stage)||1)-1)%BATTLE_ARENA_BACKGROUNDS.length];if(arena&&art){arena.style.setProperty("--tb-arena-background",'url("'+art+'")');arena.style.setProperty("--tb-arena-bg",'url("'+art+'")');}}
   if(screen==="profile"&&profileTab==="talents"&&talentTreeConfig)setTimeout(initTalentTreeCanvas,0);
  }
 
@@ -492,7 +492,7 @@
   const hpWarningMarkup=hpPct<=30?'<div class="new-hero-warning '+(hpPct<=15?"critical":"") +'" role="status" aria-live="polite">'+(hpPct<=15?"⚠ КРИТИЧЕСКИ МАЛО ЗДОРОВЬЯ":"⚠ ЗДОРОВЬЕ НИЗКОЕ")+' · '+(healingPotionCount>0&&potionCooldown===0?"Зелье готово — используй его в свой ход":healingPotionCount>0?"Зелье на перезарядке · разыграй защиту":"Зелья нет · разыграй карты защиты")+'</div>':"";
   const relicMarkup=(c.relics||[]).map(id=>engine.RELICS_DATABASE?.[id]).filter(Boolean).map(relic=>'<span class="new-battle-relic" title="'+esc(relic.name+": "+relic.description)+'">'+esc(relic.icon||"✦")+'</span>').join("");
   const potionMarkup=(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span>🧪</span><b>'+Number(item.quantity)+'</b></button>').join("");
-  return '<div class="new-battle-wrap'+(battle.fastBattle?" tb-fast-battle":"")+'">'+
+  return '<div class="new-battle-wrap tb-arena'+(battle.fastBattle?" tb-fast-battle":"")+'"><div class="tb-arena-top" aria-hidden="true">ЭТАП '+Number(battle.stage||selectedStage||1)+'</div>'+
    '<div class="new-battle-top"><span class="new-round-label">'+(battle.trialObjective?'ИСПЫТАНИЕ · '+esc(battle.trialObjective.label)+' · ':'')+'РАУНД '+battle.round+' · ИНИЦИАТИВА</span><div class="new-battle-relics" aria-label="Активные реликвии">'+relicMarkup+'</div>'+
    '<div class="new-battle-actions"><button type="button" class="tb-fast-battle-btn" data-action="toggle-fast-battle">'+(battle.fastBattle?"⚡ ×2":"⚡ ×1")+'</button><button type="button" class="new-pause-btn" data-action="pause">'+(battle.paused?"▶":"Ⅱ")+'</button></div></div>'+
    '<div class="new-battle-middle"><div class="new-hero-side'+(ancientSetAwakened?' tb-ancient-awakened tb-ancient-'+ancientSetTierClass+' tb-ancient-'+esc(c.classId):'')+'"><span class="tb-ancient-orbit" aria-hidden="true"></span><img src="'+esc(portrait(c.classId))+'" class="new-hero-img" alt="">'+ancientSetMarkup+

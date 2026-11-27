@@ -3484,7 +3484,7 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-v2:has(.tb-tower-map-overlay) .tb-bottom-nav{display:none!important;}
 
 /* Towerbound recovery pass: visible battle art, non-overlapping labels and compact mobile panels. */
-#tbRpg .new-battle-wrap{position:relative!important;isolation:isolate!important;min-height:100dvh!important;background-color:#101722!important;background-image:linear-gradient(180deg,rgba(5,9,16,.48),rgba(5,9,16,.84)),var(--tb-arena-background)!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important;background-attachment:scroll!important;overflow-x:hidden!important;}
+#tbRpg .new-battle-wrap{position:relative!important;isolation:isolate!important;min-height:100dvh!important;background-color:#101722!important;background-image:linear-gradient(180deg,rgba(5,9,16,.48),rgba(5,9,16,.84)),var(--tb-arena-background, url("./assets/backgrounds/dungeons/D01_capital_sewers_2dark.jpg"))!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important;background-attachment:scroll!important;overflow-x:hidden!important;}
 #tbRpg .new-battle-wrap:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 35%,rgba(17,29,44,.04),rgba(3,7,13,.38) 78%);}
 #tbRpg .tb-battle-set-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:4px!important;min-width:0!important;line-height:1.25!important;white-space:normal!important;}
 #tbRpg .tb-battle-set-copy b,#tbRpg .tb-battle-set-copy small{position:static!important;display:block!important;max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.25!important;}
@@ -3534,3 +3534,12 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-stats-detail-row b{flex:0 0 auto!important;white-space:nowrap!important}
 #tbRpg .tb-equipment-screen,#tbRpg .tb-card-merchant-rebuild,#tbRpg .tb-account-settings{max-width:100%!important;overflow:hidden!important}
 @media(max-width:390px){#tbRpg .tb-stats-main-grid{gap:7px!important}#tbRpg .tb-stats-main-card{padding:9px!important}#tbRpg .tb-stats-main-card b{font-size:18px!important}}
+
+/* Long specialization names and resonance labels stay separated on iPhone. */
+#tbRpg .tb-v2 .tb-stats-specialization .tb-branch-options{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;align-items:stretch!important}
+#tbRpg .tb-v2 .tb-stats-specialization .tb-branch-options>button{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;min-height:46px!important;padding:7px 4px!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.2!important;text-align:center!important}
+#tbRpg .tb-v2 .tb-stats-specialization .tb-branch-label{display:block!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.2!important;font-size:clamp(9px,2.6vw,12px)!important}
+#tbRpg .tb-v2 .tb-specialization-resonance{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;min-width:0!important;flex-wrap:wrap!important;line-height:1.3!important}
+#tbRpg .tb-v2 .tb-specialization-resonance>*{min-width:0!important;max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .new-battle-wrap>.tb-arena-top{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important}
+@media(max-width:560px){#tbRpg .tb-v2 .tb-stats-specialization .tb-branch-options{grid-template-columns:1fr!important;gap:6px!important}#tbRpg .tb-v2 .tb-stats-specialization .tb-branch-options>button{min-height:40px!important}}
