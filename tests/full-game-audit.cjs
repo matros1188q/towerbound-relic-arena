@@ -182,7 +182,7 @@ for(const phrase of ['самолечение','проклятия, поража�
 assert.ok(uiSource.includes('tb-branch-description'),'selected specialization description is visible below branch choices');
 assert.ok(uiSource.includes('tb-tower-hero')&&uiSource.includes('data-action="tower-map-focus"'),'tower home screen exposes the full-screen floor map');
 assert.ok(uiSource.includes('tb-map-quick-panel')&&uiSource.includes('data-action="start"'),'tower home screen exposes continue and quick actions');
-assert.ok(nativeCss.includes('.tb-tower-hero')||nativeCss.includes('.tb-tower-secondary-actions'),'tower home actions have dedicated responsive styling');
+assert.ok(nativeCss.includes('.tb-tower-hero')||nativeCss.includes('.tb-tower-secondary-actions')||uiCssSource.includes('.tb-tower-hero')||uiCssSource.includes('.tb-tower-secondary-actions'),'tower home actions have dedicated responsive styling');
 
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
 assert.ok(uiSource.includes('slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",accessory:"Аксессуар"}'),'equipment collection uses localized names for all six slots');
