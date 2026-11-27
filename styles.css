@@ -2143,3 +2143,38 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-stats-icon{width:29px;height:29px;flex-basis:29px}
  #tbRpg .tb-stats-main-card small{font-size:7px}
 }
+
+
+/* Towerbound stats viewport fit fix */
+#tbRpg .tb-stats-screen{box-sizing:border-box;height:100vh;height:100dvh;max-height:100dvh;min-height:0;overflow:hidden}
+#tbRpg .tb-stats-toolbar{position:relative;z-index:2;flex-shrink:0}
+#tbRpg .tb-stats-scroll{box-sizing:border-box;flex:1 1 0%;height:0;min-height:0;max-height:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y;padding-bottom:calc(32px + env(safe-area-inset-bottom))}
+@media(max-width:600px){
+ #tbRpg .tb-stats-toolbar{gap:8px;padding-left:10px;padding-right:10px}
+ #tbRpg .tb-stats-scroll{padding-top:9px;padding-left:9px;padding-right:9px}
+ #tbRpg .tb-stats-identity{grid-template-columns:72px minmax(0,1fr) 16px;gap:9px;min-height:88px;padding:7px;margin-bottom:9px}
+ #tbRpg .tb-stats-portrait{height:78px}
+ #tbRpg .tb-stats-identity-copy strong{font-size:clamp(25px,7vw,34px)}
+ #tbRpg .tb-stats-section{margin-bottom:8px;padding:9px}
+ #tbRpg .tb-stats-section-heading{margin-bottom:7px}
+ #tbRpg .tb-stats-section-heading h3{font-size:14px}
+ #tbRpg .tb-stats-main-grid{gap:6px}
+ #tbRpg .tb-stats-main-card{min-height:62px;gap:7px;padding:7px}
+ #tbRpg .tb-stats-icon{width:29px;height:29px;flex-basis:29px;font-size:17px}
+ #tbRpg .tb-stats-main-card small{font-size:7px;line-height:1.15}
+ #tbRpg .tb-stats-main-card b{font-size:clamp(17px,4.8vw,21px)}
+ #tbRpg .tb-stats-main-card em{display:none}
+ #tbRpg .tb-stats-detail-row{gap:8px;padding:7px 1px}
+ #tbRpg .tb-stats-detail-row span{font-size:10px}
+ #tbRpg .tb-stats-detail-row b{font-size:11px}
+ #tbRpg .tb-stats-source-grid{gap:6px}
+ #tbRpg .tb-stats-source-grid>div{padding:8px}
+}
+@media(max-height:720px){
+ #tbRpg .tb-stats-toolbar{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:7px}
+ #tbRpg .tb-stats-back{width:38px;height:38px}
+ #tbRpg .tb-stats-identity{min-height:76px}
+ #tbRpg .tb-stats-portrait{height:66px}
+ #tbRpg .tb-stats-section{margin-bottom:6px;padding:8px}
+ #tbRpg .tb-stats-main-card{min-height:56px}
+}
