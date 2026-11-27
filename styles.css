@@ -3388,3 +3388,14 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-shop-item-buy button:disabled{border-color:#50545a;background:#272d33;box-shadow:none}
 #tbRpg .tb-shop-footer{border-color:#76604466;background:linear-gradient(110deg,#171f27,#11171e);color:#b5b0a4}
 @media(max-width:390px){#tbRpg .tb-shop-overlay{padding-left:9px;padding-right:9px}#tbRpg .tb-shop-item{padding:8px;gap:7px}#tbRpg .tb-shop-item-art{min-height:82px}#tbRpg .tb-shop-item-art .tb-item-art-wrap{width:76px;height:76px}#tbRpg .tb-shop-item-copy b{font-size:11px}#tbRpg .tb-shop-item-copy p{font-size:9px}}
+
+
+/* 2026-11-27 · Store polish: clearer category hierarchy and legible compact product cards. */
+#tbRpg .tb-shop-group>h3{font-size:15px;letter-spacing:.055em;text-shadow:0 1px 8px #0008}
+#tbRpg .tb-shop-item-art{position:relative;isolation:isolate}
+#tbRpg .tb-shop-item-art:after{content:"";position:absolute;inset:8px;border:1px solid #d6b36b20;border-radius:8px;pointer-events:none}
+#tbRpg .tb-shop-item-art .tb-item-art-wrap{filter:drop-shadow(0 7px 12px #000b)}
+#tbRpg .tb-shop-item-copy{min-height:64px}
+#tbRpg .tb-shop-item-copy b,#tbRpg .tb-shop-item-copy p{overflow-wrap:anywhere}
+#tbRpg .tb-shop-item-buy button:not(:disabled):active{transform:translateY(1px);filter:brightness(1.12)}
+@media(max-width:390px){#tbRpg .tb-shop-item-art{min-height:78px}#tbRpg .tb-shop-item-art .tb-item-art-wrap{width:72px;height:72px}#tbRpg .tb-shop-item-copy{min-height:70px}}
