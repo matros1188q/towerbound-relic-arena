@@ -523,7 +523,7 @@
    '<div class="tb-fx-layer" aria-hidden="true"></div></div>';
  }
  function deathScreen(){const c=live();if(!c)return characterList();let p={};try{p=engine.deathPreview(c.id)||{};}catch(_){}return header("Забег завершён",c.name)+'<section class="tb-death"><div class="tb-eyebrow">ПОСЛЕДНИЙ ШАНС</div><h1>Персонаж погиб</h1><p>Забег завершён. Подтверди результат, чтобы вернуться к Башне.</p><div class="tb-death-losses"><div><small>ПОТЕРЯ ОПЫТА</small><b>'+Number(p.experienceLoss||0)+'</b></div><div><small>УРОВНЕЙ</small><b>'+Number(p.levelsLost||0)+'</b></div></div><button class="tb-danger" data-action="confirm-death">ПОДТВЕРДИТЬ СМЕРТЬ</button></section>';}
- function createModernCharacter(){const name=root.querySelector("#name")?.value||"";try{const c=engine.createCharacter(name,selectedClass);selectedId=c.id;engine.state.activeCharacterId=c.id;dialogOpen=false;screen="characters";selectedStage=1;ensureCardDeck(c);syncEquipmentCards(c);save();render();notify("Персонаж создан");}catch(error){notify(error.message);}}
+ function createModernCharacter(){if(!window.TowerboundCloud?.signedIn){notify("Сначала войди в игровой аккаунт");return;}const name=root.querySelector("#name")?.value||"";try{const c=engine.createCharacter(name,selectedClass);selectedId=c.id;engine.state.activeCharacterId=c.id;dialogOpen=false;screen="characters";selectedStage=1;ensureCardDeck(c);syncEquipmentCards(c);save();render();notify("Персонаж создан");}catch(error){notify(error.message);}}
  async function handleModernClick(event){
   const t=event.target?.closest?.("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-card-play],[data-target],[data-equip],[data-unequip-slot],[data-card-purchase],[data-replace-skill],[data-cosmetic-buy],[data-cosmetic-equip],[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-battle-potion],[data-deck-viewer],[data-deck-viewer-close],[data-item-select],[data-stone-picker],[data-stone-choice],[data-inspect-stone],[data-extract-gem]");
   if(!t||!root.contains(t)||t.matches("input,textarea,select"))return;
@@ -573,7 +573,7 @@
    case "toggle-fast-battle":if(battle){battle.fastBattle=!battle.fastBattle;save();render();}break;
    case "pause":if(battle){battle.paused=!battle.paused;if(battle.paused)clearPendingTurnTimer();save();render();}break;
    case "potion":try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано");}catch(error){notify(error.message);}break;
-   case "new":if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей");return;}dialogOpen=true;selectedClass="assassin";render();break;
+   case "new":if(!window.TowerboundCloud?.signedIn){notify("Сначала войди в игровой аккаунт");return;}if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей");return;}dialogOpen=true;selectedClass="assassin";render();break;
    case "close":dialogOpen=false;render();break;
    case "confirm-create":createModernCharacter();break;
    case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
