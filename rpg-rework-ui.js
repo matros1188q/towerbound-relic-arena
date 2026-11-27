@@ -571,7 +571,7 @@
    case "empty-login":case "empty-register":{const login=root.querySelector("#login")?.value||"",password=root.querySelector("#pass")?.value||"",remember=!!root.querySelector("#rememberMe")?.checked,msg=root.querySelector(".tb-login-message"),method=t.dataset.action==="empty-register"?"signUp":"signIn";try{if(!window.TowerboundCloud?.[method])throw new Error("Авторизация ещё загружается");await window.TowerboundCloud[method](login,password,remember);if(msg)msg.textContent="Успешно";}catch(e){if(msg)msg.textContent=e.message;notify(e.message);}break;}
    case "cloud-retry":window.TowerboundCloud?.retryLoad?.().then(()=>{screen="characters";render();}).catch(e=>notify(e.message));break;
    case "account-login":case "account-register":{const login=root.querySelector("#tbAccountLogin")?.value||"",password=root.querySelector("#tbAccountPassword")?.value||"",remember=!!root.querySelector("#tbAccountRemember")?.checked,method=t.dataset.action==="account-register"?"signUp":"signIn";try{if(!window.TowerboundCloud?.[method])throw new Error("Авторизация ещё загружается");await window.TowerboundCloud[method](login,password,remember);save();render();notify(method==="signUp"?"Аккаунт создан":"Вход выполнен");}catch(error){const message=root.querySelector(".tb-account-message");if(message)message.textContent=error.message;notify(error.message);}break;}
-   case "account-sync":try{await window.TowerboundCloud?.flushSave?.();notify("Синхронизация запрошена");}catch(error){notify(error.message);}break;
+   case "account-sync":try{await window.TowerboundCloud?.syncNow?.();notify("Облако синхронизировано");}catch(error){notify(error.message);}break;
    case "account-logout":window.TowerboundCloud?.signOut?.().catch(e=>notify(e.message));break;
   }
  }
