@@ -136,6 +136,8 @@
   if(parts.includes("craft material")||parts.includes("material")||parts.includes("материал")||parts.includes("craft"))return "image_15.png";
   if(parts.includes("bundle")||parts.includes("cache")||parts.includes("набор")||parts.includes("сундук"))return relicArtFiles.bundle;
   if(parts.includes("amulet")||parts.includes("neck")||parts.includes("амул"))return relicArtFiles.amulet;
+  if(parts.includes("shield")||slot==="offhand")return relicArtFiles.chest;
+  if(parts.includes("belt")||parts.includes("пояс")||slot==="belt")return relicArtFiles.accessory;
   if(parts.includes("ring")||parts.includes("accessory")||parts.includes("кольц"))return relicArtFiles.ring;
   if(parts.includes("head")||parts.includes("helmet")||parts.includes("helm")||parts.includes("шлем")||slot==="head")return relicArtFiles.head;
   if(parts.includes("chest")||parts.includes("armor")||parts.includes("breast")||parts.includes("нагруд")||slot==="chest"||slot==="legs")return relicArtFiles.chest;
@@ -2407,7 +2409,7 @@ function profileRelicShopMarkup(c){
   const statsOf=item=>Object.entries(effectiveEquipmentStats(item)).filter(([,v])=>Number(v)!==0).slice(0,3).map(([k,v])=>esc(names[k]||k)+" +"+esc(String(Number(v).toFixed(k==="crit"||k==="critDamage"?2:0)))).join(" · ");
   const tileMarkup=slots.map(slot=>{
    const item=gear[slot.index];
-   return '<article class="tb-paper-slot '+(item?'is-filled rarity-'+rarityClass(item.rarity):'is-empty')+'"><div class="tb-paper-slot-art">'+(item?relicIconHtml(item,slot.key):'<span>'+slot.icon+'</span>')+'</div><small>'+slot.label+'</small><b>'+(item?esc(item.name||slot.label):"Пусто")+'</b>'+(item?'<em>'+esc(item.rarity)+' · ур. '+(Number(item.itemLevel)||1)+'</em><span class="tb-paper-slot-stats">'+statsOf(item)+'</span><button type="button" data-unequip="'+slot.key+'">СНЯТЬ</button>':'<em>Ячейка свободна</em>')+'</article>';
+   return '<article class="tb-paper-slot '+(item?'is-filled rarity-'+rarityClass(item.rarity):'is-empty')+'"><div class="tb-paper-slot-art">'+(item?relicIconHtml(item,slot.key):relicIconHtml({rarity:"Обычная",slot:slot.key,name:slot.label},slot.key))+'</div><small>'+slot.label+'</small><b>'+(item?esc(item.name||slot.label):"Пусто")+'</b>'+(item?'<em>'+esc(item.rarity)+' · ур. '+(Number(item.itemLevel)||1)+'</em><span class="tb-paper-slot-stats">'+statsOf(item)+'</span><button type="button" data-unequip="'+slot.key+'">СНЯТЬ</button>':'<em>Ячейка свободна</em>')+'</article>';
   });
   tileMarkup.splice(4,0,'<div class="tb-paper-hero"><img src="'+esc(portrait(c.classId))+'" alt="'+esc(clsName(c))+'"><small>'+esc(c.name)+'</small></div>');
   const tiles=tileMarkup.join("");
