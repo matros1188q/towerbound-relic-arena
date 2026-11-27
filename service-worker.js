@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v839-deathfx';
+const CACHE = 'towerbound-v840';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './assets/Fon/image_25.jpeg',
