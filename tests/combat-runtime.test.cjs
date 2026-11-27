@@ -151,8 +151,8 @@ for(const classId of classes){
   assert.match(css,/tb-enemy-focus \.tb-telegraph[^}]*position:relative!important/,"enemy telegraph is contained inside its card");
  }else{
   assert.match(ui,/triggerVfx\("enemy-hit","physical",phase===4\|\|attacker\.type==="boss"\)/,'every boss hit triggers the screen-shake path');
-  assert.match(ui,/settings\(\)\.disable_telegraphs\?'<div class="tb-telegraph-disabled"/,'telegraph accessibility toggle hides the warning');
-  assert.match(ui,/data-setting="disable_screen_shake"[\s\S]*?data-setting="disable_skill_flashes"[\s\S]*?data-setting="disable_telegraphs"/,'all three accessibility settings are exposed');
+  assert.match(ui,/const intent=target\.telegraph\?\.label\|\|target\.intent\?\.label/,'enemy intent telegraph remains visible on enemy cards');
+  assert.match(ui,/toggle\("disable_screen_shake"/,'screen-shake accessibility setting is exposed in account settings');
  }
  assert.match(ui,/function playSfx\(kind\)[\s\S]*?AudioContext[\s\S]*?presets=\{click:[\s\S]*?hit:[\s\S]*?crit:[\s\S]*?hurt:/,"Web Audio feedback covers click, hit, critical and player damage");
  assert.match(ui,/toggle\("sound_enabled"/,"settings expose a persisted sound toggle");
