@@ -46,19 +46,12 @@
  #tbRpg .tb-tree-bottom-hint{font-size:7px}
 }
 
-/* Three-branch specialization selector and focused mobile tree */
-#tbRpg .tb-tree-branches{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;flex:0 0 auto;min-width:0}
-#tbRpg .tb-tree-branch{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:48px;padding:7px 4px!important;border:1px solid rgba(185,199,218,.22)!important;border-radius:11px!important;background:linear-gradient(155deg,rgba(37,49,66,.96),rgba(12,20,31,.98))!important;color:#b9c5d5!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 4px 12px #0005!important;text-align:center;touch-action:manipulation}
-#tbRpg .tb-tree-branch span{display:block;max-width:100%;font:800 clamp(10px,2.7vw,12px)/1.15 Inter,system-ui,sans-serif;letter-spacing:.01em;white-space:normal;overflow-wrap:anywhere}
-#tbRpg .tb-tree-branch small{display:block;color:#9eacc0;font:700 7px/1 system-ui,sans-serif;letter-spacing:.07em;white-space:nowrap}
-#tbRpg .tb-tree-branch.is-active{border-color:var(--branch-color)!important;background:linear-gradient(150deg,color-mix(in srgb,var(--branch-color) 25%,#202b3b),#101824)!important;color:#fff4d8!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--branch-color) 35%,transparent),0 0 18px color-mix(in srgb,var(--branch-color) 28%,transparent)!important}
-#tbRpg .tb-tree-branch.is-active small{color:#f2d89b}
-#tbRpg .tb-tree-toolbar p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#tbRpg .tb-tree-node-popup{position:absolute;left:0;top:0;width:min(290px,calc(100% - 24px));padding:13px;border:1px solid #d5b36c88;border-radius:14px;background:linear-gradient(145deg,#202c3bfa,#0b121dfc);box-shadow:0 14px 40px #000c;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .14s,transform .14s}
-#tbRpg .tb-tree-node-popup.is-visible{opacity:1;pointer-events:auto;transform:none}
-#tbRpg .tb-tree-popup-title{display:block;color:#ffe3a3;font:800 14px/1.25 Cinzel,Georgia,serif}
-#tbRpg .tb-tree-node-popup p{margin:7px 0;color:#d4deeb;font-size:11px;line-height:1.4}
-#tbRpg .tb-tree-node-popup small{display:block;color:#b5c3d4;font-size:9px;line-height:1.4}
-#tbRpg .tb-tree-popup-rank{margin-top:8px;color:#d7c08f;font-size:10px}
-#tbRpg .tb-tree-node-popup button{width:100%;min-height:42px;margin-top:9px;border:1px solid #e6c77e;border-radius:10px;background:linear-gradient(135deg,#9d7739,#e0bd70);color:#17120a;font-weight:900}
-@media(max-width:390px){#tbRpg .tb-tree-branches{gap:5px}#tbRpg .tb-tree-branch{min-height:46px;padding:6px 2px!important}#tbRpg .tb-tree-branch span{font-size:10px}#tbRpg .tb-tree-branch small{font-size:6px}}
+
+/* Static specialization legend for the unified radial talent tree */
+#tbRpg .tb-tree-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex:0 0 auto;min-width:0;padding:1px 2px 3px}
+#tbRpg .tb-tree-legend-item{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;padding:6px 3px;border:1px solid color-mix(in srgb,var(--branch-color) 36%,transparent);border-radius:9px;background:linear-gradient(145deg,color-mix(in srgb,var(--branch-color) 12%,#1b2635),#0d1521);color:#e8e1d3;white-space:nowrap;overflow:hidden}
+#tbRpg .tb-tree-legend-item i{display:block;flex:0 0 7px;width:7px;height:7px;border-radius:50%;background:var(--branch-color);box-shadow:0 0 9px var(--branch-color)}
+#tbRpg .tb-tree-legend-item b{min-width:0;overflow:hidden;text-overflow:ellipsis;font:800 clamp(8px,2.4vw,10px)/1.1 Inter,system-ui,sans-serif}
+#tbRpg .tb-tree-legend-item small{display:none;color:#b9c3d0;font:700 7px/1 system-ui,sans-serif}
+#tbRpg #talentTreeCanvas{flex:1 1 auto;min-height:0}
+@media(max-width:390px){#tbRpg .tb-tree-legend{gap:4px}#tbRpg .tb-tree-legend-item{gap:4px;padding:6px 2px}#tbRpg .tb-tree-legend-item b{font-size:8px}}
