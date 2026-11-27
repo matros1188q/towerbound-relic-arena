@@ -421,7 +421,9 @@ if(balance.combat.turn_based?.enabled){
  const e=makeEngine(),c=makeCharacter(e);
  assert.equal(balance.economy.silver_store.heal_10,20);
  assert.equal(balance.economy.silver_store.heal_25,60);
- assert.deepEqual([balance.economy.silver_store.premium_7d,balance.economy.silver_store.premium_14d,balance.economy.silver_store.premium_30d],[20000,35000,60000]);
+ assert.equal(balance.economy.silver_store.premium_7d,undefined,'legacy timed premium purchases are not in the current silver shop');
+ assert.equal(balance.economy.silver_store.premium_14d,undefined,'legacy timed premium purchases are not in the current silver shop');
+ assert.equal(balance.economy.silver_store.premium_30d,undefined,'legacy timed premium purchases are not in the current silver shop');
  assert.deepEqual(balance.mobs.silver_brackets.map(x=>x.amount),[4,6,9,12,16]);
  assert.equal(balance.xp_curve.post_75_xp_per_level,2500000);
  assert.equal(balance.xp_curve.post_75_levels,25);
