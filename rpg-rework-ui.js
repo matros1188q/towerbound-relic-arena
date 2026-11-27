@@ -2528,8 +2528,7 @@ function profileRelicShopMarkup(c){
    targetIndex:Number(snapshot.targetIndex)||0,
    enemy:null,enemyStats:null,enemyHp:0,enemyMax:0,shield:0,
    round:Math.max(1,Number(snapshot.round)||1),
-   actor:{type:state.actorType,id:state.actorType==="enemy"?"enemy-phase":"player",name:state.actorType==="enemy"?"Ход противников":character.name},
-   isPlayerTurn:actorType!=="enemy",playerTurnCount:0,cardsPlayedThisTurn:0,
+   playerTurnCount:0,cardsPlayedThisTurn:0,
    cardBlock:Math.max(0,Number(card.cardBlock)||0),busy:actorType==="enemy",paused:false,isCardAnimating:false,
    enemyQueueToken:0,enemyQueueState:snapshot.enemyQueueState?JSON.parse(JSON.stringify(snapshot.enemyQueueState)):null,
    actionDamageLedger:{},combatLog:[],comboStacks:Number(snapshot.comboStacks)||0,
@@ -2537,6 +2536,9 @@ function profileRelicShopMarkup(c){
    skillCooldowns:snapshot.skillCooldowns?JSON.parse(JSON.stringify(snapshot.skillCooldowns)): {},
    ...combat
   };
+  battle.actor={type:state.actorType,id:state.actorType==="enemy"?"enemy-phase":"player",name:state.actorType==="enemy"?"Ход противников":character.name};
+  battle.isPlayerTurn=state.actorType!=="enemy";
+  battle.busy=state.actorType==="enemy";
   if(actorType==="enemy"&&!battle.enemyQueueState){battle.actor={type:"player",id:"player",name:character.name};battle.isPlayerTurn=true;battle.busy=false;}
   if(actorType!=="enemy")battle.enemyQueueState=null;
   loadBattleEnemy(battle.targetIndex);
