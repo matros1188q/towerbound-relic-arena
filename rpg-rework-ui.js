@@ -641,7 +641,7 @@
   const parts=[];
   for(const [key,label,percent] of [["attack_per_level","к атаке",false],["defense_per_level","к защите",false],["health_per_level","к здоровью",false],["crit_per_level","к критическому шансу",true],["spell_power_per_level","к силе магии",false],["fire_damage_per_level","к урону огнём",true],["ice_damage_per_level","к урону льдом",true],["dark_damage_per_level","к урону тьмой",true]]){
    const value=Number(t[key]||0)*level;
-   if(value)parts.push("+"+(percent?(value*100).toFixed(1).replace(/\\.0$/,"")+"%":Number(value.toFixed(2)))+" "+label);
+   if(value)parts.push("+"+(percent?(value*100).toFixed(1).replace(/\.0$/,"")+"%":Number(value.toFixed(2)))+" "+label);
   }
   return parts.join(", ")||"Уникальный бонус специализации";
  }
@@ -1523,7 +1523,7 @@ function profileRelicShopMarkup(c){
  
   if(profileTab==="stats"&&statsOverlayOpen){
    const gear=(c.gear||[]).filter(Boolean),gearCount=gear.length,combat=engine.getCombatStats(c),resists=combat.resists||{};
-   const pct=v=>(Math.max(0,Number(v)||0)*100).toFixed(1).replace(/\\.0$/,"")+"%";
+   const pct=v=>(Math.max(0,Number(v)||0)*100).toFixed(1).replace(/\.0$/,"")+"%";
    const number=v=>Math.round(Number(v)||0).toLocaleString("ru-RU");
    const statCard=(icon,label,value,sub,tone)=>'<article class="tb-stats-main-card '+(tone||'')+'"><span class="tb-stats-icon">'+icon+'</span><div><small>'+label+'</small><b>'+value+'</b><em>'+sub+'</em></div></article>';
    const detailRow=(label,value)=>'<div class="tb-stats-detail-row"><span>'+label+'</span><b>'+value+'</b></div>';
@@ -1534,7 +1534,7 @@ function profileRelicShopMarkup(c){
     statCard("⬟","ЗАЩИТА",number(combat.defense),"Снижение входящего урона","defense"),
     statCard("✧","КРИТИЧЕСКИЙ ШАНС",pct(combat.critChance),"Вероятность критического удара","crit"),
     statCard("✹","КРИТИЧЕСКИЙ УРОН",Math.round((Number(combat.critMultiplier)||1)*100)+"%","Множитель критического удара","critdamage"),
-    statCard("➤","СКОРОСТЬ",Number(combat.speed||1).toFixed(2).replace(/\\.00$/,""),"Коэффициент скорости героя","speed")
+    statCard("➤","СКОРОСТЬ",Number(combat.speed||1).toFixed(2).replace(/\.00$/,""),"Коэффициент скорости героя","speed")
    ].join("");
    const damageBonus=Math.max(0,(Number(combat.damageMultiplier)||1)-1);
    const detailStats=[
