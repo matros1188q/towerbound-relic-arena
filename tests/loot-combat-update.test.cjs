@@ -104,7 +104,7 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.match(ui,/battle\.isPlayerTurn=true;[\s\S]*?battle\.actor=\{type:"player"/,'enemy turn exceptions restore player control');
  assert.match(ui,/ПОДТВЕРДИТЬ ВЫБОР/,'specialization selection requires explicit confirmation');
  assert.match(ui,/data-action="confirm-branch"/,'specialization confirmation has a dedicated action');
- assert.doesNotMatch(fs.readFileSync(path.join(__dirname,'../rpg-mode.js'),'utf8'),/id="tbExtraBar"/,'legacy duplicate top navigation is removed');
+ assert.ok(!fs.existsSync(path.join(__dirname,'../rpg-mode.js')),'retired legacy RPG entry point is removed');
  assert.match(fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8'),/tb-chapter-card\{display:block!important;width:100%;min-width:0/,'chapter lore card uses a stable full-width layout');
 }
 console.log('Loot/combat update: all assertions passed.');
