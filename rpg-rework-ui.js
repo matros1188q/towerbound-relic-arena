@@ -46,18 +46,47 @@
   cup:"image%2021.jpeg",hammer:"image%2022.jpeg"
  });
  const ITEM_ART_BY_ID=Object.freeze({
-  xp_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.xp,xp_20:"./assets/relics/oracle.png",xp_50:"./assets/relics/starfall.png",xp_100:"./assets/relics/echo.png",
-  heal_10:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,heal_25:"./assets/relics/heart.png",heal_35:"./assets/relics/phoenix.png",heal_50:"./assets/relics/laststand.png",healing_potion:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.heal,
-  drop_20:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.drop,drop_50:"./assets/relics/luckycoin.png",drop_75:"./assets/relics/moon.png",drop_100:"./assets/relics/meteor.png",
-  pity_token:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye,pity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.eye,
-  antidote:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.antidote,map_compass:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,map_hint:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.compass,
-  silver_charm:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,silver_bonus:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.talisman,xp_hourglass:"./assets/relics/hourglass.png",
-  repair_kit:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer,potion_case:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,potion_capacity:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup,
-  rescue_seal:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,one_rescue:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.skull,stone_cache:"./assets/relics/rune.png",
-  extra_socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,socket:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.ring,refine_guard:CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.shield,
-  refine_10:"./assets/relics/riftsigil.png",refine_20:"./assets/relics/stormglass.png",safe_refine:"./assets/relics/guardian.png",
-  craft_material:"./assets/relics/image_6.png",enhancement_stone:"./assets/relics/image_7.png",refine_stone:"./assets/relics/image_8.png",enchant_scroll:"./assets/relics/image_9.png"
- });
+  xp_10:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_08_stimulant.png",
+  xp_20:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_09_elixir.png",
+  xp_50:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_09_elixir.png",
+  xp_100:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_10_rainbow_elixir.png",
+  heal_10:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_01_small_healing_potion.png",
+  heal_25:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_02_healing_potion.png",
+  heal_35:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_03_large_healing_potion.png",
+  heal_50:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_16_revival_potion.png",
+  healing_potion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_02_healing_potion.png",
+  drop_20:NEW_ITEM_ART_ROOT+"10-materials/07-currency-treasures/C22_04_copper_coin.png",
+  drop_50:NEW_ITEM_ART_ROOT+"10-materials/07-currency-treasures/C22_03_silver_coin.png",
+  drop_75:NEW_ITEM_ART_ROOT+"10-materials/07-currency-treasures/C22_01_gold_coin.png",
+  drop_100:NEW_ITEM_ART_ROOT+"10-materials/07-currency-treasures/C22_02_pile_of_gold_coins.png",
+  pity_token:NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_16_amber.png",
+  pity:NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_16_amber.png",
+  antidote:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_07_antidote.png",
+  map_compass:NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_11_compass.png",
+  map_hint:NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_11_compass.png",
+  silver_charm:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
+  silver_bonus:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
+  xp_hourglass:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_09_magic_hourglass.png",
+  repair_kit:NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_14_whetstone.png",
+  potion_case:NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_13_jewelry_box.png",
+  potion_capacity:NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_13_jewelry_box.png",
+  rescue_seal:NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_07_seal_key.png",
+  one_rescue:NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_07_seal_key.png",
+  stone_cache:NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_11_open_treasure_chest.png",
+  extra_socket:NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_14_diamond.png",
+  socket:NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_14_diamond.png",
+  refine_guard:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
+  refine_10:NEW_ITEM_ART_ROOT+"10-materials/03-crystals/C18_02_orange_crystal.png",
+  refine_20:NEW_ITEM_ART_ROOT+"10-materials/03-crystals/C18_09_rainbow_crystal.png",
+  safe_refine:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png",
+  craft_material:NEW_ITEM_ART_ROOT+"10-materials/02-monster-drops/C17_12_monster_core.png",
+  enhancement_stone:NEW_ITEM_ART_ROOT+"10-materials/03-crystals/C18_01_red_crystal.png",
+  refine_stone:NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_14_whetstone.png",
+  enchant_scroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_06_sealing_scroll.png",
+  premium_7d:NEW_ITEM_ART_ROOT+"08-equipment/03-headwear/C07_08_crown.png",
+  premium_14d:NEW_ITEM_ART_ROOT+"08-equipment/03-headwear/C07_08_crown.png",
+  premium_30d:NEW_ITEM_ART_ROOT+"08-equipment/03-headwear/C07_08_crown.png"
+ });;
  const NEW_ITEM_ART_ROOT="./art-inbox/";
  const NEW_ITEM_ART=Object.freeze({
   healingPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_02_healing_potion.png",
@@ -131,7 +160,7 @@
   for(const key of ids){if(ITEM_ART_BY_ID[key])return ITEM_ART_BY_ID[key];}
   const id=String(item?.itemId||item?.id||item?.type||"").toLowerCase();
   const value=[item?.type,item?.itemId,item?.id,item?.name,item?.effect,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
-  if(id.startsWith("premium")||value.includes("премиум")||value.includes("premium account"))return "";
+  if(id.startsWith("premium")||value.includes("премиум")||value.includes("premium account"))return NEW_ITEM_ART_ROOT+"08-equipment/03-headwear/C07_08_crown.png";
   if(value.includes("hourglass")||value.includes("песоч"))return "./assets/relics/hourglass.png";
   if(value.includes("potion case")||value.includes("healer kit")||value.includes("футляр целителя")||value.includes("набор целителя"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.cup;
   if(value.includes("antidote")||value.includes("противояд"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.antidote;
@@ -1761,6 +1790,41 @@ function profileRelicShopMarkup(c){
    const upgradeModal="";
   return header("Профиль героя",c.name+" · "+clsName(c))+'<section class="tb-profile tb-profile-hub"><div class="tb-profile-hero"><div class="tb-profile-hero-art"><img src="' + portrait(c.classId) + '" alt="' + esc(clsName(c)) + " — " + esc(c.name) + '" loading="eager"></div><div class="tb-profile-hero-info"><div class="tb-eyebrow">ПЕРСОНАЖ</div><h1>'+esc(c.name)+'</h1><p>'+esc(clsName(c))+' · Уровень '+c.level+'</p><div class="tb-profile-power">⚔️ <strong>'+engine.combatPower(c)+'</strong><span>МОЩЬ</span></div><div class="tb-profile-hero-stats"><span>❤️ '+engine.maxHp(c)+'<small>Здоровье</small></span><span>⚔️ '+combatStats.attack+'<small>Атака</small></span><span>🛡️ '+combatStats.defense+'<small>Защита</small></span><span>✨ '+Math.round(combatStats.critChance*100)+'%<small>Крит</small></span></div></div></div><div class="tb-profile-hub-links"><button type="button" class="tb-profile-hub-card" data-tab="stats"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>ХАРАКТЕРИСТИКИ</b><small>Параметры, специализация и сила героя</small></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="talents"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>ТАЛАНТЫ</b><small>Древо талантов и развитие способностей</small></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="skills"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>КОЛОДА</b><small>Библиотека карт и боевые комбинации</small></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="gear"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>ЭКИПИРОВКА</b><small>Снаряжение героя, каталог предметов, рюкзак и реликвии</small><span class="tb-profile-hub-subnav"><span data-tab="bag">Рюкзак</span><span data-tab="relics">Реликвии</span><span data-tab="stash">Стеш</span><span data-tab="merchant">Торговец картами</span></span></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="craft"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>РАЗВИТИЕ</b><small>Крафт, улучшения и мастерская</small><span class="tb-profile-hub-subnav"><span data-tab="speedrun">Спидран</span></span></span><span class="tb-profile-hub-arrow">›</span></button></div><div class="tb-profile-content">'+body+'</div></section>';
  }
+ const SHOP_PRODUCT_META=Object.freeze({
+  xp_10:{name:"Эликсир опыта · I",description:"+10% к получаемому опыту на 60 минут",group:"Эликсиры и расходники"},
+  xp_20:{name:"Эликсир опыта · II",description:"+20% к получаемому опыту на 60 минут",group:"Эликсиры и расходники"},
+  xp_50:{name:"Эликсир опыта · III",description:"+50% к получаемому опыту на 60 минут",group:"Эликсиры и расходники"},
+  xp_100:{name:"Эликсир опыта · IV",description:"Удваивает получаемый опыт на 60 минут",group:"Эликсиры и расходники"},
+  heal_10:{name:"Малое зелье лечения",description:"Восстанавливает 10% максимального здоровья",group:"Эликсиры и расходники"},
+  heal_25:{name:"Зелье лечения",description:"Восстанавливает 25% максимального здоровья",group:"Эликсиры и расходники"},
+  heal_35:{name:"Большое зелье лечения",description:"Восстанавливает 35% максимального здоровья",group:"Эликсиры и расходники"},
+  heal_50:{name:"Зелье возрождения",description:"Восстанавливает 50% максимального здоровья",group:"Эликсиры и расходники"},
+  drop_20:{name:"Эликсир добычи · I",description:"+20% к шансу добычи на 60 минут",group:"Эликсиры и расходники"},
+  drop_50:{name:"Эликсир добычи · II",description:"+50% к шансу добычи на 60 минут",group:"Эликсиры и расходники"},
+  drop_75:{name:"Эликсир добычи · III",description:"+75% к шансу добычи на 60 минут",group:"Эликсиры и расходники"},
+  drop_100:{name:"Эликсир добычи · IV",description:"Удваивает шанс добычи на 60 минут",group:"Эликсиры и расходники"},
+  antidote:{name:"Противоядие",description:"Одноразово обезвреживает ловушку на каждом 13-м этапе",group:"Эликсиры и расходники"},
+  repair_kit:{name:"Набор ремонтника",description:"Между боями восстанавливает 10% максимального здоровья",group:"Подготовка к забегу"},
+  silver_charm:{name:"Серебряный оберег",description:"+10% серебра за победы на 60 минут",group:"Подготовка к забегу"},
+  xp_hourglass:{name:"Песочные часы опыта",description:"Дополнительно +5% опыта на 60 минут",group:"Подготовка к забегу"},
+  potion_case:{name:"Футляр целителя",description:"Навсегда увеличивает вместимость стопки зелий на 5",group:"Подготовка к забегу"},
+  refine_10:{name:"Настой точильщика · I",description:"+10 процентных пунктов к шансу заточки на 60 минут",group:"Мастерская"},
+  refine_20:{name:"Настой точильщика · II",description:"+20 процентных пунктов к шансу заточки на 60 минут",group:"Мастерская"},
+  refine_guard:{name:"Оберег кузнеца",description:"Защищает экипировку от потери при одной неудачной заточке",group:"Мастерская"},
+  stone_cache:{name:"Сундук кристаллов",description:"Содержит 3 камня усиления для твоей специализации",group:"Мастерская"},
+  extra_socket:{name:"Алмазное гнездо",description:"Добавляет одно гнездо первому подходящему предмету экипировки",group:"Мастерская"},
+  pity_token:{name:"Жетон судьбы",description:"Подводит счётчик гарантированной легендарной добычи к следующему боссу",group:"Мастерская"},
+  rescue_seal:{name:"Печать спасения",description:"Даёт один дополнительный шанс пережить гибель героя",group:"Редкие реликтовые товары"},
+  premium_7d:{name:"Премиум · 7 дней",description:"Премиум-статус аккаунта на 7 дней",group:"Премиум"},
+  premium_14d:{name:"Премиум · 14 дней",description:"Премиум-статус аккаунта на 14 дней",group:"Премиум"},
+  premium_30d:{name:"Премиум · 30 дней",description:"Премиум-статус аккаунта на 30 дней",group:"Премиум"}
+ });
+ function shopProductMeta(item){
+  const id=String(item?.id||"");
+  const known=SHOP_PRODUCT_META[id];
+  if(known)return known;
+  return{name:String(item?.name||id.replace(/_/g," ")),description:"Игровой предмет с действующим эффектом.",group:"Особые товары"};
+ }
  function shopProductSprite(item){const id=String(item?.id||"").toLowerCase();if(id.startsWith("heal")||id.includes("potion"))return "shop-potion";if(id.startsWith("premium")||id.includes("rescue"))return "shop-premium";if(id.includes("refine")||id.includes("chisel")||id.includes("socket"))return "shop-refine";if(id.startsWith("xp"))return "shop-xp";if(id.startsWith("drop"))return "shop-drop";return "shop-item";}
  function shopProductIconHtml(item){
   const custom=customItemArtPath(item);
@@ -1775,23 +1839,26 @@ function profileRelicShopMarkup(c){
   const account=engine.state.account||(engine.state.account={});
   account.diamonds=Math.max(0,Number(account.diamonds)||0);
   if(!["silver","diamond"].includes(shopTab))shopTab="silver";
-  c.bag=Array.isArray(c.bag)?c.bag:[];
-  c.relics=Array.isArray(c.relics)?c.relics:[];
-  c.run=c.run&&typeof c.run==="object"?c.run:{};
-  c.progress=c.progress&&typeof c.progress==="object"?c.progress:{};
-  c.stats=c.stats&&typeof c.stats==="object"?c.stats:{};
   const store=balance.economy?.[shopTab+"_store"]||{};
-  const products=Object.entries(store).filter(([key,value])=>typeof value==="number").map(([id,price])=>({id,price,name:id.replace(/_/g," ")})).concat((Array.isArray(store.extra)?store.extra:[]).map(item=>({id:item.id,price:item.price,name:item.name})));
-  const label=shopTab==="silver"?"серебра":"алм.";
-  let chest={available:false,remainingMs:0};try{if(typeof engine.dailyChestSnapshot==="function")chest=engine.dailyChestSnapshot(c.id)||chest;}catch(error){console.warn("[Towerbound] daily shop chest unavailable",error);}
+  const products=Object.entries(store).filter(([key,value])=>typeof value==="number").map(([id,price])=>({id,price})).concat((Array.isArray(store.extra)?store.extra:[]).map(item=>({id:item.id,price:item.price})));
+  const label=shopTab==="silver"?"серебра":"алмазов";
+  const chest=(()=>{try{return typeof engine.dailyChestSnapshot==="function"?(engine.dailyChestSnapshot(c.id)||{available:false,remainingMs:0}):{available:false,remainingMs:0};}catch(error){console.warn("[Towerbound] daily shop chest unavailable",error);return{available:false,remainingMs:0};}})();
   const chestMinutes=Math.max(0,Math.ceil((Number(chest.remainingMs)||0)/60000));
-  const chestLabel=chest.available?"🎁 БЕСПЛАТНЫЙ ЕЖЕДНЕВНЫЙ СУНДУК · ЗАБРАТЬ":"🎁 СЛЕДУЮЩИЙ СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м";
-  const dailyChestMarkup='<section class="tb-daily-shop-chest"><div><b>ЕЖЕДНЕВНАЯ НАГРАДА</b><small>Бесплатный сундук обновляется раз в сутки</small></div>'+button("daily-chest",chestLabel,chest.available?"":"disabled")+'</section>';
-  const relics=Object.values(engine.RELICS_DATABASE||{}).filter(relic=>!relic.classId||(relic.classId===c.classId&&relic.branchId===c.branch)),ownedRelics=new Set(c.relics||[]);
-  const relicShopMarkup='<section class="tb-relic-shop"><div class="tb-relic-shop-layout"><div class="tb-relic-shop-head"><span class="tb-eyebrow">ПАССИВНЫЕ АРТЕФАКТЫ</span><h2>РЕЛИКВИИ БАШНИ</h2><p>Реликвии усиливают карточную колоду и действуют в каждом бою</p><strong>'+relics.filter(relic=>ownedRelics.has(relic.id)).length+' / '+relics.length+'</strong></div><div class="tb-relic-shop-grid">'+relics.map(relic=>'<article class="tb-relic-shop-card '+(ownedRelics.has(relic.id)?"is-owned":"")+'"><span class="tb-relic-shop-icon">'+(customRelicArtPath(relic)?customItemImageHtml(customRelicArtPath(relic),"tb-relic-shop-art"):esc(relic.icon||"✦"))+'</span><b>'+esc(relic.name||"Неизвестная реликвия")+'</b><small>'+esc(relic.description||"Описание реликвии пока отсутствует.")+'</small><span class="tb-relic-price">300 серебра</span><button type="button" data-relic-buy="'+esc(relic.id)+'" '+(ownedRelics.has(relic.id)||Number(c.silver)<300?"disabled":"")+'>'+(ownedRelics.has(relic.id)?"УЖЕ ЕСТЬ":"КУПИТЬ · 300")+'</button></article>').join("")+'</div></div></section>';
-  return header("Магазин","Зелья · материалы · косметика")+'<section class="tb-shop">'+'<div class="tb-shop-top"><h1>Магазин башни</h1></div><div class="tb-shop-balances"><span>◈ '+c.silver+' серебра персонажа</span><span>◆ '+account.diamonds+' алмазов аккаунта</span><span>Премиум до '+(account.premiumUntil?new Date(engine.state.account.premiumUntil).toLocaleDateString("ru-RU"):"—")+'</span></div><nav class="tb-tabs"><button data-shop-tab="silver" class="'+(shopTab==="silver"?"active":"")+'">ЗА СЕРЕБРО</button><button data-shop-tab="diamond" class="'+(shopTab==="diamond"?"active":"")+'">ЗА АЛМАЗЫ</button></nav><div class="tb-product-grid">'+products.map(item=>'<article class="tb-product"><div class="tb-product-icon">'+shopProductIconHtml(item)+'</div><b>'+esc(item.name.toUpperCase())+'</b><small>'+(item.id.startsWith("premium")?"Премиум аккаунт":item.id.startsWith("heal")?"Зелье исцеления":item.id.startsWith("xp")?"Зелье опыта":item.id.startsWith("drop")?"Зелье шанса дропа":"Улучшение экипировки")+'</small><span class="tb-product-price">'+item.price+' '+label+'</span><button data-buy="'+item.id+'" '+(shopTab==="silver"?(c.silver<item.price?"disabled":""):(account.diamonds<item.price?"disabled":""))+'>КУПИТЬ</button></article>').join("")+'</div>'+
-   (shopTab==="diamond"?'<div class="tb-packages"><h3>Пакеты алмазов</h3><div class="tb-package-grid">'+(Array.isArray(balance.economy?.diamond_packages)?balance.economy.diamond_packages:[]).map(pack=>'<div><b>'+pack[0]+' алмазов</b><span>'+pack[1]+' ₽</span></div>').join("")+'</div><small>1 алмаз = 1 ₽ · платежи не подключены в браузерной версии</small></div>':'')+
-   (shopTab==="diamond"?'<div class="tb-cosmetic-chests"><h2>Косметика за алмазы</h2><p>Только внешний вид · без влияния на характеристики.</p>'+(balance.cosmetics?.chests||[]).map(ch=>'<article><b>'+esc(ch.name)+'</b><small>'+ch.price+' ◆ · случайный предмет из коллекции</small><button data-cosmetic-chest="'+ch.id+'" '+(account.diamonds<ch.price?'disabled':'')+'>ОТКРЫТЬ СУНДУК</button></article>').join("")+'</div>':'')+'<p class="tb-note">Алмазы и премиум принадлежат аккаунту. Платёжный провайдер в браузерной версии не подключён.</p></section>';
+  const chestLabel=chest.available?"ЗАБРАТЬ ЕЖЕДНЕВНЫЙ СУНДУК":"СЛЕДУЮЩИЙ СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м";
+  const dailyChestMarkup='<section class="tb-daily-shop-chest"><div class="tb-daily-shop-art"><img src="./art-inbox/10-materials/04-keys-chests/C19_11_open_treasure_chest.png" alt="" loading="lazy"></div><div class="tb-daily-shop-copy"><b>ЕЖЕДНЕВНАЯ НАГРАДА</b><small>Бесплатный сундук: серебро, зелье или материалы</small></div>'+button("daily-chest",chestLabel,chest.available?"":"disabled")+'</section>';
+  const groups=[...new Set(products.map(item=>shopProductMeta(item).group))];
+  const productMarkup=groups.map(group=>{
+   const items=products.filter(item=>shopProductMeta(item).group===group);
+   return '<section class="tb-shop-group"><div class="tb-shop-group-head"><div><span class="tb-eyebrow">'+(shopTab==="silver"?"АРСЕНАЛ БАШНИ":"РЕДКИЕ ПРИПАСЫ")+'</span><h2>'+esc(group)+'</h2></div><small>'+items.length+' '+(items.length===1?"предмет":"предмета")+'</small></div><div class="tb-product-grid">'+items.map(item=>{
+    const meta=shopProductMeta(item),affordable=shopTab==="silver"?Number(c.silver)>=item.price:Number(account.diamonds)>=item.price;
+    return '<article class="tb-product tb-shop-card"><div class="tb-product-icon">'+shopProductIconHtml({id:item.id,name:meta.name})+'</div><div class="tb-shop-card-copy"><b>'+esc(meta.name)+'</b><small>'+esc(meta.description)+'</small></div><div class="tb-shop-card-footer"><span class="tb-product-price">'+Number(item.price).toLocaleString("ru-RU")+' '+label+'</span><button type="button" data-buy="'+esc(item.id)+'" '+(affordable?"":"disabled")+'>'+(affordable?"КУПИТЬ":"НЕ ХВАТАЕТ")+'</button></div></article>';
+   }).join("")+'</div></section>';
+  }).join("");
+  const cosmeticChests=shopTab==="diamond"?(balance.cosmetics?.chests||[]).map(ch=>{
+   const art=ch.id==="weapon"?"./art-inbox/08-equipment/01-weapons/C01_09_flame_sword.png":ch.id==="frame"?"./art-inbox/08-equipment/03-headwear/C07_08_crown.png":"./art-inbox/10-materials/04-keys-chests/C19_10_golden_chest.png";
+   return '<article class="tb-cosmetic-chest-card"><div class="tb-cosmetic-chest-art"><img src="'+art+'" alt="" loading="lazy"></div><div><b>'+esc(ch.name)+'</b><small>Случайный косметический предмет · без влияния на характеристики</small><span>'+Number(ch.price).toLocaleString("ru-RU")+' ◆</span></div><button type="button" data-cosmetic-chest="'+esc(ch.id)+'" '+(account.diamonds<ch.price?"disabled":"")+'>'+(account.diamonds<ch.price?"НЕ ХВАТАЕТ":"ОТКРЫТЬ")+'</button></article>';
+  }).join(""):"";
+  return header("Магазин","Припасы · мастерская · премиум")+'<section class="tb-shop tb-shop-redesign"><div class="tb-shop-hero"><div><span class="tb-eyebrow">ТОРГОВАЯ ГИЛЬДИЯ БАШНИ</span><h1>Магазин</h1><p>Только предметы с действующими игровыми эффектами</p></div><div class="tb-shop-premium-state"><small>ПРЕМИУМ АККАУНТА</small><b>'+(account.premiumUntil&&account.premiumUntil>Date.now()?new Date(account.premiumUntil).toLocaleDateString("ru-RU"):"Не активен")+'</b></div></div><div class="tb-shop-balances"><span><i class="tb-currency-silver"></i>'+Number(c.silver||0).toLocaleString("ru-RU")+' <small>серебра героя</small></span><span><i class="tb-currency-diamond"></i>'+Number(account.diamonds||0).toLocaleString("ru-RU")+' <small>алмазов аккаунта</small></span></div><nav class="tb-tabs tb-shop-tabs"><button data-shop-tab="silver" class="'+(shopTab==="silver"?"active":"")+'">ЗА СЕРЕБРО</button><button data-shop-tab="diamond" class="'+(shopTab==="diamond"?"active":"")+'">ЗА АЛМАЗЫ</button></nav>'+dailyChestMarkup+productMarkup+(shopTab==="diamond"?'<section class="tb-shop-group tb-shop-cosmetics"><div class="tb-shop-group-head"><div><span class="tb-eyebrow">ВНЕШНИЙ ВИД</span><h2>Косметические сундуки</h2></div><small>Без бонусов к силе</small></div><div class="tb-cosmetic-chest-list">'+(cosmeticChests||'<p class="tb-shop-empty">Косметика скоро появится.</p>')+'</div><p class="tb-shop-payment-note">Пополнение алмазов через платёжную систему пока не подключено. Неактивные пакеты пополнения скрыты.</p></section>':'')+'<p class="tb-note">Алмазы принадлежат аккаунту, серебро — выбранному герою. Все цены указаны до покупки.</p></section>';
  }
  function progressScreen(){
  const c=live();if(!c)return characterList();
