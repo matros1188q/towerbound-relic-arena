@@ -59,7 +59,7 @@ assert.equal(hero.run.playerHp,expectedHp);
 assert.equal(hero.silver,expectedSilver);
 assert.deepEqual(hero.deck,expectedDeck,'cards acquired after the boss are discarded on rollback');
 assert.deepEqual(hero.gear,expectedGear);
-assert.equal(hero.run.snapshot,null,'restoring a checkpoint consumes it');
+assert.deepEqual(hero.run.snapshot,snapshot,'the last boss checkpoint remains available until a later boss replaces it');
 assert.equal(hero.run.active,true,'the player can resume at the checkpoint');
 
 const engine2=makeEngine();
