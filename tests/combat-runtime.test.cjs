@@ -155,7 +155,8 @@ for(const classId of classes){
   assert.match(ui,/data-setting="disable_screen_shake"[\s\S]*?data-setting="disable_skill_flashes"[\s\S]*?data-setting="disable_telegraphs"/,'all three accessibility settings are exposed');
  }
  assert.match(ui,/function playSfx\(kind\)[\s\S]*?AudioContext[\s\S]*?presets=\{click:[\s\S]*?hit:[\s\S]*?crit:[\s\S]*?hurt:/,"Web Audio feedback covers click, hit, critical and player damage");
- assert.match(ui,/data-action="toggle-mute"/,"settings expose an explicit mute button");
+ assert.match(ui,/data-setting="sound_enabled"/,"settings expose a persisted sound toggle");
+ assert.match(ui,/data-setting="music_enabled"/,"settings expose a persisted music toggle");
  assert.match(ui,/showFloatingText\("player","-"\+incoming,"#ff596b"\);playSfx\("hurt"\)/,"enemy attacks display player damage and play a hurt sound");
  assert.match(css,/tb-floating-damage\.is-damage\{color:#fff!important/,"ordinary floating damage is white");
  assert.match(ui,/root\.classList\.add\("tb-death-shaking"\)/,'death applies screen shake unless disabled');
