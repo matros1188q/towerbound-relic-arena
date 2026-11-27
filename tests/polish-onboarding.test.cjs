@@ -18,7 +18,7 @@ assert.ok(ui.includes('CARD_DATABASE')&&ui.includes('function drawCards(amount)'
 assert.ok(polish.includes('250 этапов'),'new character guide explains the 250-stage goal');
 assert.ok(polish.includes('на 10 уровне выбери одну из трёх веток'),'new character guide explains specialization unlock');
 assert.ok(!polish.includes('const tutorialSteps=[')&&!polish.includes('function tutorialClick'),'blocking first-battle tutorial controller is absent');
-assert.ok(ui.includes('showTutorial:false'),'new battles do not request the full-screen battle tutorial');
+assert.ok(!ui.includes('showBattleTutorial')&&!ui.includes('showTutorial:true'),'new battles do not request the full-screen battle tutorial');
 assert.ok(!ui.includes('class="tb-turn-tutorial"'),'battle markup contains no full-screen tutorial overlay');
 assert.ok(!polish.includes('Шаг 1 из 4'),'old guided battle steps are not reintroduced');
 assert.ok(polish.includes('БОЕВАЯ МОЩЬ')&&polish.includes('ЗАЩИТА')&&polish.includes('КРИТ'),'stat info buttons explain power, armor and critical chance');
