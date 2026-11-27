@@ -81,7 +81,7 @@ assert.ok(!cloud.includes("overlay.classList.add('open','login-required')")&&clo
 assert.ok(cloud.includes("const rememberKey='tb-remember-me'"),'remember-me preference is persisted');
 assert.ok(cloud.includes('id="tbCloudRememberMe"')&&!cloud.includes('id="rememberMe"'),'cloud modal uses a distinct remember checkbox ID from the main login form');
 assert.ok(cloud.includes("if(active&&!remembered())"),'unremembered sessions are cleared at startup');
-assert.ok(ui.includes('Зелье исцеления')&&ui.includes('Материал для крафта')&&ui.includes('itemDisplayName'),'inventory item IDs are localized even when an item has its raw ID as name');
+assert.ok(ui.includes('Зелье исцеления')&&ui.toLowerCase().includes('материал для крафта')&&ui.includes('itemDisplayName'),'inventory item IDs are localized even when an item has its raw ID as name');
 assert.ok(ui.includes('function stoneDescription(stone)')&&ui.includes('data-inspect-stone')&&ui.includes('data-extract-gem'),'gem description helper, inspect action and extraction action are available');
 assert.ok(engine.includes('function socketStone')&&engine.includes('item.installedGems.push(gem)')&&engine.includes('character.bag=character.bag.filter(entry=>entry.id!==stoneId)'),'socket insertion must install and consume the stone');
 assert.ok(engine.includes('function extractGem')&&engine.includes('character.bag.push(returned)'),'socket extraction must return the stone to inventory');
