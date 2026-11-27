@@ -70,7 +70,7 @@ assert.ok(cloud.includes("window.addEventListener('online',()=>{if(session&&!con
 assert.ok(cloud.includes('loadGame,refreshFromServer,reloadAuthoritative,saveGame,queueSave,flushSave,syncNow'),'cloud save/load/sync APIs are public to the game UI');
 assert.ok(!cloud.includes('Storage.prototype.setItem')&&!cloud.includes('const originalSet=Storage.prototype.setItem'),'cloud module does not patch the global Storage prototype');
 assert.ok(ui.includes('window.TowerboundCloud?.queueSave?.()'),'game save explicitly queues cloud synchronization');
-assert.ok(ui.includes('title="Авто-бой разыгрывает карты колоды и учитывает классовые эффекты"'),'auto battle button explains the limitations of the simplified simulation');
+assert.ok(!ui.includes('data-action="auto"'),'legacy simplified auto-battle control is not exposed in card-driven combat');
 assert.ok(ui.includes('data-action="account-sync"')&&ui.includes('data-action="account-login"')&&ui.includes('data-action="account-register"'),'account screen exposes Supabase login, registration and manual cloud sync controls');
 assert.ok(cloud.includes("const AUTH_EMAIL_DOMAIN='towerbound.com'")&&cloud.includes("const authEmail=login=>String(login||'').trim().toLowerCase()+'@'+AUTH_EMAIL_DOMAIN"),'new game logins map to a valid .com synthetic Supabase email');
 assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("legacy=await withTimeout(client.auth.signInWithPassword({email:clean+'@towerbound.game'"),'sign-in uses the new email, bounded timeout and legacy .game fallback');
