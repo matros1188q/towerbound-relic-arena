@@ -39,7 +39,7 @@ assert.ok(result.loot.some(item=>['Редкая','Эпическая'].includes(
 const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
 const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
 const nativeCss=fs.readFileSync(path.join(__dirname,'../native-pwa.css'),'utf8');
-assert.match(ui,/function showFloatingText\(/);
+assert.match(ui,/function applyTargetDamage\([\s\S]*?number\.className="tb-floating-damage"[\s\S]*?number\.textContent="-"\+dealt/,'damage feedback floats above the targeted enemy card');
 assert.match(ui,/AudioContext\|\|window\.webkitAudioContext/);
 assert.match(ui,/data-setting="sound_enabled"/);
 assert.match(nativeCss,/\.tb-battle-enemy-grid \.tb-target-card\.selected/,'selected enemy targets use the active battle-card highlight');
