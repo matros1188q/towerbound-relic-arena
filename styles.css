@@ -3137,3 +3137,13 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-gear-loot-card>.tb-gear-loot-art>.tb-item-art-wrap,
  #tbRpg .tb-gear-loot-card>.tb-gear-loot-art>.tb-relic-atlas{width:36px!important;height:36px!important;max-width:36px!important;max-height:36px!important}
 }
+
+/* Semantic item art in crafting and battle consumable slots */
+#tbRpg .tb-battle-potion-art{display:flex;align-items:center;justify-content:center;width:24px;height:24px;overflow:hidden}
+#tbRpg .tb-battle-potion-art img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 3px #0008)}
+#tbRpg .tb-craft-material-summary{display:flex;align-items:center;gap:9px;min-width:0}
+#tbRpg .tb-craft-resource-art{display:inline-flex;align-items:center;justify-content:center;flex:0 0 38px;width:38px;height:38px;overflow:hidden;border:1px solid rgba(220,190,130,.22);border-radius:9px;background:rgba(7,12,20,.62)}
+#tbRpg .tb-craft-resource-art .tb-item-art-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+#tbRpg .tb-craft-resource-art img{display:block;width:31px;height:31px;object-fit:contain}
+#tbRpg .tb-system-row{display:flex;align-items:center;gap:9px}
+#tbRpg .tb-system-row>div{flex:1;min-width:0}
