@@ -46,7 +46,7 @@ const {chromium}=require('playwright');
  assert.match(battleUiSource,/hurt:\{wave:/,"Web Audio player damage effect is configured");
  assert.match(battleCssSource,/max-height:150px/,"all mob and boss art frames have a 150px cap in the consolidated stylesheet");
  assert.match(battleUiSource,/function resolveSkill\(c,skillId\)/,"battle actions resolve class base skills and catalog skills");
- assert.match(battleUiSource,/\[data-stone\],\[data-extract-gem\],\[data-inspect-stone\]/,"gem insert, extract and inspect controls are included in delegated click handling");
+ assert.ok(battleUiSource.includes("[data-stone-choice],[data-inspect-stone],[data-extract-gem]"),"gem insert, extract and inspect controls are included in delegated click handling");
   assert.match(battleUiSource,/function skillIconMarkup\(skill,classId\)/,"combat skill buttons resolve their own class or skill icon");
   assert.match(battleUiSource,/const icon=skill\?\.icon/,"skill icons use the configured skill asset before class fallback");
  assert.ok(!battleUiSource.includes("evolvedSkill")&&!battleUiSource.includes("getSkillEvolution"),"skill evolution is removed from combat UI");
