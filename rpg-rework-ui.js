@@ -194,7 +194,7 @@
  }
  function customItemImageHtml(path,classes,item){
   const badge=itemArtVariantLabel(item);
-  return '<div class="tb-item-art-wrap"><img class="tb-custom-item-art '+(classes||'')+'" src="'+path+'" alt="" loading="lazy" decoding="async">'+(badge?'<span class="tb-item-art-badge">'+badge+'</span>':'')+'</div>';
+  return '<div class="tb-item-art-wrap"><img class="tb-custom-item-art '+(classes||'')+'" src="'+path+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">'+(badge?'<span class="tb-item-art-badge">'+badge+'</span>':'')+'</div>';
  }
 
  const relicArtFiles={head:"image_2.png",chest:"image_3.png",ring:"image_4.png",accessory:"image_4.png",amulet:"image_12.png",weapon:"image_10.png",hands:"image_12.png",potion:"image_5.png",scroll:"image_9.png",redGem:"image_7.png",blueGem:"image_8.png",potionStack:"image_5.png",bundle:"rune.png"};
@@ -256,22 +256,22 @@
  }
  function relicIconHtml(item,slot,extraClass){
   const equipmentArt=equipmentArtPath(item,slot);
-  if(equipmentArt)return '<img class="tb-relic-icon tb-equipment-item-art '+(extraClass||"")+'" src="'+equipmentArt+'" alt="" loading="lazy" decoding="async">';
+  if(equipmentArt)return '<img class="tb-relic-icon tb-equipment-item-art '+(extraClass||"")+'" src="'+equipmentArt+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">';
   const itemArt=customItemArtPath(item);
-  if(itemArt)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+itemArt+'" alt="" loading="lazy" decoding="async">';
+  if(itemArt)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+itemArt+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">';
   const custom=customRelicArtPath(item);
-  if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async">';
+  if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">';
   const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
   const kitSlots={head:"equip_helm.png",helmet:"equip_helm.png",chest:"equip_chest.png",hands:"equip_gloves.png",gloves:"equip_gloves.png",weapon:"equip_weapon.png",offhand:"equip_shield.png",shield:"equip_shield.png",belt:"equip_belt.png",boots:"equip_boots.png",boot:"equip_boots.png",feet:"equip_boots.png",amulet:"equip_amulet.png",ring:"equip_ring.png"};
   const kitName=kitSlots[slot]||(parts.includes("shield")?"equip_shield.png":parts.includes("belt")||parts.includes("пояс")?"equip_belt.png":parts.includes("boot")||parts.includes("сапог")||parts.includes("обув")?"equip_boots.png":"");
-  if(kitName&&(slot==="offhand"||slot==="shield"||slot==="belt"||slot==="boots"||slot==="boot"||slot==="feet"||parts.includes("shield")||parts.includes("belt")||parts.includes("пояс")||parts.includes("boot")||parts.includes("сапог")||parts.includes("обув")))return '<img class="tb-relic-icon tb-equipment-slot-art '+(extraClass||"")+'" src="./assets/ui/kit/'+kitName+'" alt="" loading="lazy" decoding="async">';
-  if(!item&&slot&&kitSlots[slot])return '<img class="tb-relic-icon tb-equipment-slot-art '+(extraClass||"")+'" src="./assets/ui/kit/'+kitSlots[slot]+'" alt="" loading="lazy" decoding="async">';
+  if(kitName&&(slot==="offhand"||slot==="shield"||slot==="belt"||slot==="boots"||slot==="boot"||slot==="feet"||parts.includes("shield")||parts.includes("belt")||parts.includes("пояс")||parts.includes("boot")||parts.includes("сапог")||parts.includes("обув")))return '<img class="tb-relic-icon tb-equipment-slot-art '+(extraClass||"")+'" src="./assets/ui/kit/'+kitName+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">';
+  if(!item&&slot&&kitSlots[slot])return '<img class="tb-relic-icon tb-equipment-slot-art '+(extraClass||"")+'" src="./assets/ui/kit/'+kitSlots[slot]+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">';
   let crop="";
   if(slot==="hands"||parts.includes("glove")||parts.includes("перчат"))crop="tb-relic-glove";
   else if(slot==="amulet"||parts.includes("amulet")||parts.includes("амул"))crop="tb-relic-amulet";
   else if(parts.includes("bundle")||parts.includes("cache")||parts.includes("набор")||parts.includes("сундук"))crop="tb-relic-bundle";
   if(crop)return '<span class="tb-relic-icon tb-relic-atlas '+crop+' '+(extraClass||"")+'" aria-hidden="true"></span>';
-  return '<img class="tb-relic-icon '+(extraClass||"")+'" src="./assets/relics/'+relicArtPath(item,slot)+'" alt="" loading="lazy" decoding="async">';
+  return '<img class="tb-relic-icon '+(extraClass||"")+'" src="./assets/relics/'+relicArtPath(item,slot)+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">';
  }
  function skillSpriteClass(skill){const value=String(skill?.damage_type||skill?.element||skill?.effect_template||skill?.name||"").toLowerCase();if(value.includes("fire")||value.includes("огн"))return "skill-fire";if(value.includes("ice")||value.includes("лед")||value.includes("лёд"))return "skill-ice";if(value.includes("poison")||value.includes("яд"))return "skill-poison";if(value.includes("physical")||value.includes("strike")||value.includes("удар"))return "skill-phys";return "skill-arcane";}
  function talentSpriteClass(effect){const key=String(effect||"").toLowerCase();if(key.includes("health")||key.includes("hp")||key.includes("здоров"))return "talent-hp";if(key.includes("crit")||key.includes("critical")||key.includes("крит"))return "talent-crit";if(key.includes("defense")||key.includes("armor")||key.includes("защит"))return "talent-def";if(key.includes("speed")||key.includes("evasion")||key.includes("ловк")||key.includes("скор"))return "talent-agi";return "talent-atk";}
@@ -300,7 +300,7 @@
   else if(value.includes("belt")||value.includes("пояс"))icon="support-belt";
   else if(value.includes("amulet")||value.includes("амулет"))icon="support-amulet";
   else if(value.includes("orb")||value.includes("crystal")||value.includes("сфер")||value.includes("крист"))icon="support-orb";
-  return wrap(icon?'<span class="tb-support-icon '+icon+'" aria-hidden="true"></span>':relicIconHtml(item));
+  return wrap(relicIconHtml(item));
  }
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabGroups=[["ГЕРОЙ",[["stats","Характеристики"],["talents","Древо талантов"]]],["КОЛОДА",[["skills","Библиотека карт"]]],["КОЛЛЕКЦИЯ",[["gear","Экипировка"],["bag","Рюкзак"],["stash","Общий стеш"],["merchant","Торговец картами"],["relics","Реликвии"]]],["РАЗВИТИЕ",[["craft","Крафт"],["speedrun","Спидран"]]]];const tabs=tabGroups.flatMap(group=>group[1]);
@@ -1950,7 +1950,7 @@ function profileRelicShopMarkup(c){
   if(hpPct<=30&&!battle.lowHpWarningLogged){battle.lowHpWarningLogged=true;logExpeditionEvent("Здоровье ниже 30% · "+Math.ceil(c.run.playerHp)+" / "+hp+" HP","#ff7777");}
   const hpWarningMarkup=hpPct<=30?'<div class="new-hero-warning '+(hpPct<=15?"critical":"") +'" role="status" aria-live="polite">'+(hpPct<=15?"⚠ КРИТИЧЕСКИ МАЛО ЗДОРОВЬЯ":"⚠ ЗДОРОВЬЕ НИЗКОЕ")+' · '+(healingPotionCount>0&&potionCooldown===0?"Зелье готово — используй его в свой ход":healingPotionCount>0?"Зелье на перезарядке · разыграй защиту":"Зелья нет · разыграй карты защиты")+'</div>':"";
   const relicMarkup=(c.relics||[]).map(id=>engine.RELICS_DATABASE?.[id]).filter(Boolean).map(relic=>'<span class="new-battle-relic" title="'+esc(relic.name+": "+relic.description)+'">'+esc(relic.icon||"✦")+'</span>').join("");
-  const potionMarkup=(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span class="tb-battle-potion-art"><img src="'+esc(customItemArtPath(item))+'" alt="" loading="lazy" decoding="async"></span><b>'+Number(item.quantity)+'</b></button>').join("");
+  const potionMarkup=(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span class="tb-battle-potion-art"><img src="'+esc(customItemArtPath(item))+'" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;"></span><b>'+Number(item.quantity)+'</b></button>').join("");
   return '<div class="new-battle-wrap'+(battle.fastBattle?" tb-fast-battle":"")+'">'+
    '<div class="new-battle-top"><span class="new-round-label">'+(battle.trialObjective?'ИСПЫТАНИЕ · '+esc(battle.trialObjective.label)+' · ':'')+'РАУНД '+battle.round+' · ИНИЦИАТИВА</span><div class="new-battle-relics" aria-label="Активные реликвии">'+relicMarkup+'</div>'+
    '<div class="new-battle-actions"><button type="button" class="tb-fast-battle-btn" data-action="toggle-fast-battle">'+(battle.fastBattle?"⚡ ×2":"⚡ ×1")+'</button><button type="button" class="new-pause-btn" data-action="pause">'+(battle.paused?"▶":"Ⅱ")+'</button></div></div>'+
