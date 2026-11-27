@@ -752,7 +752,7 @@
    if(slot==="weapon")return item?.weaponType==="staff"||/посох|жезл|staff|wand/.test(label)||Number(item?.stats?.spellPower)>0?"gear_staff_bolt":"gear_sword_cleave";
    if(["chest","head","legs","hands"].includes(slot))return item?.armorType==="mantle"||/мантия|robe|mantle|одеяни/.test(label)?"gear_evasion":"gear_iron_wall";
    if(["amulet","accessory","ring","belt"].includes(slot))return "gear_power_surge";
-   if(slot==="offhand")return "gear_iron_wall";
+   if(slot==="offhand")return item?.offhandType==="weapon"?"gear_sword_cleave":"gear_iron_wall";
    return null;
   }
   function createDrop(character,rarity,options){
@@ -781,7 +781,9 @@
     const setId=character.branch?character.classId+"."+character.branch+".set."+rarityKey(rarity):null;
     const defaultWeaponType=["bishop","elemental","shaman"].includes(character.classId)?"staff":"sword";
     const defaultArmorType=["bishop","dragonkin","elemental","shaman"].includes(character.classId)?"mantle":"heavy";
-    const item={id:id(),type:"equipment",name:options.name||rarityNames[rarity]+" · "+branchName+" · "+slotNames[slot],rarity,branch:character.branch||null,branchName,setId,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,
+    const twoHanded=slot==="weapon"&&character.classId==="destroyer"&&character.branch==="greatsword";
+    const offhandType=slot==="offhand"?((character.branch==="dual_swords"||character.branch==="fists")?"weapon":(["sword_shield","wand_shield","ice_dragon"].includes(character.branch)?"shield":"focus")):null;
+    const item={id:id(),type:"equipment",name:options.name||rarityNames[rarity]+" · "+branchName+" · "+slotNames[slot],rarity,branch:character.branch||null,branchName,setId,uniqueId:options.uniqueId||null,unique:!!options.uniqueId,twoHanded,offhandType,
      itemLevel,slot,weaponType:slot==="weapon"?(options.weaponType||defaultWeaponType):undefined,armorType:["chest","head","legs","hands"].includes(slot)?(options.armorType||defaultArmorType):undefined,
      stats,cardId:options.cardId||null,refine:0,sockets:[],socketsAvailable:0,enchant:null,bossLoot:!!options.bossLoot,foundRunId:character.run.id};
     item.cardId=item.cardId||equipmentCardId(item);
@@ -1638,8 +1640,10 @@
    const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
    if(!item||!item.stats||!item.rarity)throw new Error("Этот предмет нельзя надеть");
    const slot=equipmentSlotIndex(item);if(slot<0)throw new Error("Неизвестный слот экипировки");
+   if(slot===6&&character.gear[0]?.twoHanded)throw new Error("Двуручное оружие занимает вторую руку");
    item.cardId=item.cardId||equipmentCardId(item);
    bindItemOnUse(characterId,itemId);const old=character.gear[slot];character.gear[slot]=item;character.bag=character.bag.filter(entry=>entry.id!==itemId);if(old){old.cardId=old.cardId||equipmentCardId(old);character.bag.push(old);}
+   if(slot===0&&item.twoHanded&&character.gear[6]){character.bag.push(character.gear[6]);character.gear[6]=null;}
    if(character.run.playerHp>0)character.run.playerHp=Math.min(character.run.playerHp,maxHp(character));return clone(item);
   }
   function equipmentRarityScore(item){return({"Обычная":1,"Редкая":2,"Эпическая":3,"Легендарная":4,"Богоподобная":5}[item?.rarity]||0);}
@@ -1648,6 +1652,7 @@
    if(character.level<10||!character.branch)return{equipped:0,gear:clone(character.gear||[]),bag:character.bag.length,locked:true};
    const candidates=[...(character.gear||[]).filter(isGear),...(character.bag||[]).filter(isGear)],chosen=new Map();
    for(let slot=0;slot<9;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
+   if(chosen.get(0)?.twoHanded)chosen.delete(6);
    const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:9},(_,slot)=>chosen.get(slot)||null);
    character.gear.forEach(item=>{if(item)item.cardId=item.cardId||equipmentCardId(item);});
    character.bag=(character.bag||[]).filter(item=>!isGear(item)).concat(candidates.filter(item=>!selected.has(item.id)));
