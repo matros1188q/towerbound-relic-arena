@@ -31,8 +31,45 @@
  window.TowerboundDailyRandom=gameRandom;
  /* Runtime style injection removed: styles are loaded once from styles.css. */
  const CHARACTER_ART_ROOT="./assets/characters/";
- const BATTLE_ARENA_BACKGROUNDS=["./assets/Fon/image_25.jpeg","./assets/Fon/image_26.jpeg","./assets/Fon/image_27.jpeg","./assets/Fon/image_28.jpeg","./assets/Fon/image_29.jpeg","./assets/Fon/image_30.jpeg","./assets/Fon/image_31.jpeg","./assets/Fon/image_32.jpeg","./assets/Fon/image_33.jpeg","./assets/Fon/image_34.jpeg","./assets/Fon/image_35.jpeg","./assets/Fon/image_36.jpeg","./assets/Fon/image_37.jpeg","./assets/Fon/image_38.jpeg","./assets/Fon/image_39.jpeg","./assets/Fon/image_40.jpeg","./assets/Fon/image_42.jpeg","./assets/Fon/image_43.jpeg"];
- function arenaBackgroundForStage(stage){const n=Math.max(1,Math.min(250,Number(stage)||1)),ranges=[[1,16],[17,33],[34,50],[51,63],[64,76],[77,88],[89,100],[101,112],[113,125],[126,137],[138,150],[151,166],[167,183],[184,200],[201,212],[213,224],[225,237],[238,250]];const index=ranges.findIndex(([from,to])=>n>=from&&n<=to);return BATTLE_ARENA_BACKGROUNDS[Math.max(0,index)]||BATTLE_ARENA_BACKGROUNDS[0];}
+ const ARENA_LOCATIONS=Object.freeze([
+  {from:1,to:16,chapter:1,name:"Затопленный сток",src:"assets/Fon/image_25.jpeg"},
+  {from:17,to:33,chapter:1,name:"Тюрьма",src:"assets/Fon/image_26.jpeg"},
+  {from:34,to:50,chapter:1,name:"Разрушенная комната с колоннами",src:"assets/Fon/image_27.jpeg"},
+  {from:51,to:63,chapter:2,name:"Руины с деревьями",src:"assets/Fon/image_28.jpeg"},
+  {from:64,to:76,chapter:2,name:"Грибное болото",src:"assets/Fon/image_29.jpeg"},
+  {from:77,to:88,chapter:2,name:"Ледяная пещера",src:"assets/Fon/image_30.jpeg"},
+  {from:89,to:100,chapter:2,name:"Раскалённая кузня",src:"assets/Fon/image_31.jpeg"},
+  {from:101,to:112,chapter:3,name:"Библиотека",src:"assets/Fon/image_32.jpeg"},
+  {from:113,to:125,chapter:3,name:"Святилище Света",src:"assets/Fon/image_33.jpeg"},
+  {from:126,to:137,chapter:3,name:"Обсерватория с шестернями",src:"assets/Fon/image_34.jpeg"},
+  {from:138,to:150,chapter:3,name:"Гнездо пауков",src:"assets/Fon/image_35.jpeg"},
+  {from:151,to:166,chapter:4,name:"Алтарь Крови",src:"assets/Fon/image_36.jpeg"},
+  {from:167,to:183,chapter:4,name:"Разлом Пустоты",src:"assets/Fon/image_37.jpeg"},
+  {from:184,to:200,chapter:4,name:"Тронный Зал Теней",src:"assets/Fon/image_38.jpeg"},
+  {from:201,to:212,chapter:5,name:"Сердце Башни",src:"assets/Fon/image_39.jpeg"},
+  {from:213,to:224,chapter:5,name:"Небесная Бездна",src:"assets/Fon/image_40.jpeg"},
+  {from:225,to:237,chapter:5,name:"Логово Дракона",src:"assets/Fon/image_42.jpeg"},
+  {from:238,to:250,chapter:5,name:"Финальные Врата",src:"assets/Fon/image_43.jpeg"}
+ ]);
+ const arenaImageCache=new Map();
+ function arenaLocationForStage(stage){const n=Math.max(1,Math.min(250,Number(stage)||1));return ARENA_LOCATIONS.find(item=>n>=item.from&&n<=item.to)||ARENA_LOCATIONS[0];}
+ function arenaBackgroundForStage(stage){return arenaLocationForStage(stage).src;}
+ function preloadArenaChapter(location){ARENA_LOCATIONS.filter(item=>item.chapter===location.chapter).forEach(item=>{if(arenaImageCache.has(item.src))return;const image=new Image();arenaImageCache.set(item.src,image);image.src=item.src;});}
+ function applyArenaBackground(arena,stage){
+  if(!arena)return;
+  const location=arenaLocationForStage(stage),src=location.src;
+  let layer=arena.querySelector(":scope > .tb-arena-bg-layer");
+  if(!layer){layer=document.createElement("div");layer.className="tb-arena-bg-layer";layer.setAttribute("aria-hidden","true");arena.prepend(layer);}
+  if(layer.dataset.src===src&&layer.classList.contains("is-visible"))return;
+  layer.dataset.src=src;layer.classList.remove("is-visible");
+  const apply=()=>{if(!layer.isConnected||layer.dataset.src!==src)return;layer.style.backgroundImage='url("'+src+'")';layer.classList.add("is-visible");arena.style.setProperty("--tb-arena-background",'url("'+src+'")');arena.style.setProperty("--tb-arena-bg",'url("'+src+'")');arena.style.backgroundColor="#101722";};
+  const image=new Image();
+  image.addEventListener('load',apply,{once:true});
+  image.addEventListener('error',()=>{if(!layer.isConnected||layer.dataset.src!==src)return;const fallback="assets/backgrounds/dungeons/D01_capital_sewers_2dark.jpg";layer.style.backgroundImage='url("'+fallback+'")';layer.classList.add("is-visible");arena.style.setProperty("--tb-arena-background",'url("'+fallback+'")');arena.style.backgroundColor="#101722";}, {once:true});
+  image.src=src;
+  if(image.complete&&image.naturalWidth>0)apply();
+  preloadArenaChapter(location);
+ }
  const classPortraits={assassin:"heroes/image-Photoroom.png",bishop:"heroes/image_2-Photoroom(1).png",dragonkin:"heroes/image_3-Photoroom.png",destroyer:"heroes/image_4-Photoroom.png",elemental:"heroes/image_5-Photoroom.png",shaman:"heroes/image_6-Photoroom.png",duelist:"heroes/image_7-Photoroom.png"};
  const mobPortraits={"swamp-reaper":"enemies/image_2.png","cursed-knight":"enemies/image_3.png","shadow-goblin":"enemies/image_4.png","phantom-duelist":"enemies/image_5.png","abyss-knight":"enemies/image_6.png","ash-wolf":"enemies/image_7.png","rune-golem":"enemies/image_8.png","crimson-executioner":"enemies/image_9.png","plague-witch":"enemies/image_10.png","ash-imp":"enemies/image_11.png","forest-horror":"enemies/image_12.png","bone-warden":"enemies/image_13.png","spider-matron":"enemies/image_14.png","soul-harvester":"enemies/image_15.png","void-hunter":"enemies/image_16.png","blind-monk":"enemies/image_17.png","stone-minotaur":"enemies/image_18.png","cursed-alchemist":"enemies/image_20.png","root-colossus":"enemies/image.png","grave-archer":"enemies/grave-archer.png"};
  const rolePortraits={healer:"enemies/image_17.png",poison:"enemies/image_10.png",tank:"enemies/image_8.png",normal:"enemies/image_4.png"};
@@ -340,7 +377,7 @@
   if(toastMessage){let toast=root.querySelector(".tb-toast");if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2")?.appendChild(toast);}if(toast)toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
   ensureBottomNav();
-  if(isBattle){const arena=root.querySelector(".new-battle-wrap"),art=arenaBackgroundForStage(battle.stage);if(arena&&art){let layer=arena.querySelector(":scope > .tb-arena-bg-layer");if(!layer){layer=document.createElement("div");layer.className="tb-arena-bg-layer is-visible";layer.setAttribute("aria-hidden","true");arena.prepend(layer);}layer.style.backgroundImage='url("'+art+'")';arena.style.setProperty("--tb-arena-background",'url("'+art+'")');arena.style.setProperty("--tb-arena-bg",'url("'+art+'")');arena.style.backgroundImage='linear-gradient(180deg,rgba(5,9,16,.40),rgba(5,9,16,.78)),url("'+art+'")';arena.style.backgroundColor="#101722";}}
+  if(isBattle)applyArenaBackground(root.querySelector(".new-battle-wrap"),battle.stage);
   if(screen==="profile"&&profileTab==="talents"&&talentTreeConfig)setTimeout(initTalentTreeCanvas,0);
  }
  function render(){return renderWithScrollSave();}
