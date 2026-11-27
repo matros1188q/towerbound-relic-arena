@@ -149,6 +149,12 @@ assert.ok(uiSource.includes('id="cardHand"')&&uiSource.includes('id="energyDispl
 assert.ok(uiSource.includes('function syncMusic()')&&uiSource.includes('function unlockAudioAndMusic()'),'Web Audio ambient music and iOS gesture unlock are implemented');
 assert.ok(uiSource.includes('prefs.music_enabled!==false')&&uiSource.includes('screen==="battle"?[73.42,110]:[55,82.41]'),'music switches between map ambience and battle ambience');
 assert.ok(uiSource.includes('data-setting="music_enabled"')&&uiSource.includes('data-setting="sound_enabled"'),'music and sound effects have independent settings');
+assert.ok(uiSource.includes('root.addEventListener("change",event=>{const input=event.target?.closest?.("[data-setting]")'),'account setting toggles persist through the delegated change handler');
+assert.ok(uiSource.includes('case "bottom-profile":profileTab="stats";statsOverlayOpen=true;'),'profile navigation opens the full-screen stats page');
+assert.ok(uiSource.includes('case "daily-chest":')&&uiSource.includes('engine.claimDailyChest(c.id)'),'daily chest button claims and saves its reward');
+assert.ok(uiSource.includes('case "skip-floors":showSkipFloorsModal();'),'skip-floor control opens its confirmation workflow');
+assert.ok(uiSource.includes('function arenaBackgroundForStage(stage)')&&uiSource.includes('assets/Fon/image_25.jpeg'),'arena backgrounds use the current 18 chapter art set');
+
 assert.ok(uiSource.includes('case "reset-current-battle"')&&uiSource.includes('function ensureBottomNav()'),'recovery action and tab navigation are wired into the app');
 assert.ok(engineSource.includes('function sanitizeActiveStage')&&engineSource.includes('selectTarget'),'saved dead-target states are sanitized before resuming combat');
 const achievementsConfig=read('configs/balance/achievements.json').achievements;
