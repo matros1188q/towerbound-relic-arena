@@ -1,23 +1,43 @@
 # Towerbound Art Inbox
 
-Temporary staging area for newly generated game artwork.
+Временная библиотека новых изображений игры. Файлы здесь ещё не подключены к игровому интерфейсу, пока не перенесены в рабочие каталоги и не проверены в игре.
 
-Upload original images here before they are renamed or integrated into the live game.
+## Каталоги
 
-## Folders
+- `01-characters/` — персонажи, монстры и боссы (33 новых JPG ожидают точной привязки к именам).
+- `02-relics/` — изображения реликвий.
+- `03-synergies/` — эмблемы синергий.
+- `04-skills/` — изображения навыков; в `archives/` сохранён исходный ZIP с 126 иконками и bbox_manifest.csv.
+- `05-backgrounds/` — биомы и окружение.
+- `06-other/` — UI, вспомогательные изображения, исходные наборы интерфейса.
+- `07-unclassified/` — материалы, которые нельзя безопасно классифицировать или использовать без дополнительной проверки.
+- `08-equipment/` — предметы экипировки, разложенные по типам.
+- `09-consumables/` — зелья, свитки и магические расходники.
+- `10-materials/` — руды, кристаллы, ключи, сундуки, инструменты и трофеи.
 
-- `01-characters/` — heroes, ordinary enemies, bosses
-- `02-relics/` — relic artwork
-- `03-synergies/` — synergy emblems
-- `04-skills/` — skill artwork
-- `05-backgrounds/` — biome and environment backgrounds
-- `06-other/` — UI icons, map icons, room art, title art, visual effects, and any unclassified images
+## Новая библиотека предметов
 
-## Upload rules
+227 PNG, все 128×128 RGBA с прозрачностью:
+- `08-equipment/01-weapons/` — мечи, топоры, древковое оружие, посохи, фолианты и кинжалы.
+- `08-equipment/02-shields/` — щиты.
+- `08-equipment/03-headwear/` — шлемы, капюшоны, шляпы и короны.
+- `08-equipment/04-armor-robes/` — одежда, броня и мантии.
+- `08-equipment/05-jewelry/` — кольца, амулеты и украшения.
+- `08-equipment/06-boots-cloaks-belts-gloves/` — обувь, плащи, пояса, перчатки и наплечники.
+- `09-consumables/` — 29 зелий, свитков и магических камней.
+- `10-materials/` — 56 материалов, кристаллов, ключей, сундуков, инструментов, документов и сокровищ.
 
-- Keep original filenames and generation order where possible.
-- Do not overwrite existing files; use numbered names for new uploads.
-- ZIP archives are acceptable when a batch contains many images.
-- Do not upload API keys, tokens, or other secrets.
+## Архивы
 
-Files in this folder are staging assets only. They are not used by the game until reviewed and deliberately integrated.
+- `06-other/ui-kits/Classic-Dark-Fantasy-RPG-UI-Kit.zip` — CC0 UI kit: 114 PNG, 98 SVG, шрифты SIL OFL 1.1 и Godot theme. Это интерфейсные элементы, не иконки экипировки.
+- `04-skills/archives/images_126_cropped.zip` — 126 PNG-иконок и CSV с координатами исходной нарезки; предварительно отнесены к навыкам/эффектам.
+- `07-unclassified/previews/fantasy_icons_preview_only.zip` — содержит только JPG-превью, не готовый набор отдельных предметов.
+- `07-unclassified/quarantine/AllMightCreator_Free_Sampler_Publishing_Kit.zip` — архив не прошёл проверку ZIP (отсутствует центральный каталог); не распаковывать и не использовать до повторной загрузки.
+
+Дубликат ZIP UI Kit удалён: оба исходных файла имели одинаковый Git blob SHA.
+
+## Правила
+
+- Сохранять оригинальные имена файлов и исходные архивы.
+- Не подключать изображения в игру автоматически: сначала проверять соответствие слотам, стиль, прозрачность и лицензию.
+- Не перезаписывать существующие файлы.
