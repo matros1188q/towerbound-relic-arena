@@ -1146,7 +1146,12 @@
      if(character.classId==="elemental"&&isMagic&&Number(character.magicCharge)>0){classMultiplier*=1+Math.min(10,Number(character.magicCharge)||0)*.1;character.magicCharge=0;}
      const dynamic=(Number(effects.damagePerPoison)||0)*(target.poison||0)+(Number(effects.damagePerBleed)||0)*(target.bleed||0)+(Number(effects.damageMissingHp)||0)*Math.max(0,maxHp(character)-hp);
      const base=(Number(effects.damage)||Number(effects.damageAll)||0)+(xCost?(Number(effects.damagePerEnergy)||0)*spent:0)+dynamic+(Number(effects.bonusDamageIfBlock)>0&&block>0?Number(effects.bonusDamageIfBlock):0)+(Number(effects.damageFlat)||0);
-     const raw=Math.max(0,Math.round((base+classFlat+(attack?nextAttackDamage:0)+(isMagic?spellPowerBonus:0))*(1+Math.max(0,Number(stats.attack)||0)/100)*Math.max(.1,Number(stats.damageMultiplier)||1)*classMultiplier));if(attack)nextAttackDamage=0;
+     // Keep simulated auto-battles in parity with the live card UI: specialization set bonuses
+     // only amplify cards explicitly tagged for the active branch.
+     const specializationCard=!!character.branch&&(card.branchId===character.branch||card.specializationId===character.branch);
+     const specializationDamage=specializationCard?Math.max(0,Number(stats.specializationDamage)||0):0;
+     const specializationPower=specializationCard?Math.max(0,Number(stats.specializationPower)||0):0;
+     const raw=Math.max(0,Math.round((base+classFlat+(attack?nextAttackDamage:0)+(isMagic?spellPowerBonus:0))*(1+Math.max(0,Number(stats.attack)||0)/100)*Math.max(.1,Number(stats.damageMultiplier)||1)*(1+specializationDamage)*(1+specializationPower)*classMultiplier));if(attack)nextAttackDamage=0;
      const type=effects.damageType||card.damageType||"physical";
      if(Number(effects.damageAll)>0){for(const enemy of alive())cardDamage+=damage(enemy,raw,type,!!effects.ignoreArmor);}
      else if(raw>0)cardDamage+=damage(target,raw,type,!!effects.ignoreArmor);
@@ -1155,7 +1160,7 @@
       if(character.classId==="assassin"){character.autoAssassinAttacks=(Number(character.autoAssassinAttacks)||0)+1;if(character.autoAssassinAttacks>=3){character.combo=Math.min(3,(Number(character.combo)||0)+1);character.autoAssassinAttacks=0;synergyProcs++;}}
       if(character.classId==="duelist")character.charges=Math.min(5,(Number(character.charges)||0)+1);
      }
-     if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);if(Number(effects.fury)>0&&character.classId==="destroyer")character.rage=Math.min(10,(Number(character.rage)||0)+Number(effects.fury));if(Number(effects.spellPower)>0)spellPowerBonus+=Number(effects.spellPower);if(Number(effects.nextAttackDamage)>0)nextAttackDamage+=Number(effects.nextAttackDamage);synergyProcs++;
+     if(character.classId==="destroyer"&&attack)character.rage=Math.min(10,(Number(character.rage)||0)+1);if(Number(effects.fury)>0&&character.classId==="destroyer")character.rage=Math.min(10,(Number(character.rage)||0)+Number(effects.fury));if(Number(effects.spellPower)>0)spellPowerBonus+=Number(effects.spellPower);if(Number(effects.nextAttackDamage)>0)nextAttackDamage+=Math.round(Number(effects.nextAttackDamage)*(1+specializationPower));synergyProcs++;
      if(character.classId==="bishop"&&Number(effects.heal)>0)character.faith=Math.min(5,(Number(character.faith)||0)+1);
      if(character.classId==="elemental"&&isMagic&&!Number(effects.damagePerEnergy))character.magicCharge=Math.min(10,(Number(character.magicCharge)||0)+1);
      const cardElement=String(effects.element||effects.damageType||card.damageType||"");if(character.classId==="dragonkin"&&["fire","ice","dark","lightning","water","earth"].includes(cardElement)&&cardElement!==String(character.element||"fire")){character.element=cardElement;block+=5;blockGenerated+=5;}
@@ -1164,8 +1169,8 @@
      for(const enemy of targets)for(const key of ["poison","bleed","burn","weak","vulnerable"])if(Number(effects[key])>0)enemy[key]=Math.max(0,Number(enemy[key])||0)+Math.floor(Number(effects[key]));
      if(Number(effects.conditionalBleed)>0&&target.poison>0)target.bleed+=Number(effects.conditionalBleed);
      if(Number(effects.stun)>0)target.stun=Math.max(Number(target.stun)||0,Number(effects.stun));
-     if(Number(effects.block)>0){const value=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)));block+=value;blockGenerated+=value;}
-     if(Number(effects.heal)>0)hp=Math.min(maxHp(character),hp+Math.max(1,Math.round(Number(effects.heal))));
+     if(Number(effects.block)>0){const value=Math.max(0,Math.round(Number(effects.block)*(1+Math.max(0,Number(stats.defense)||0)/100)*(1+specializationPower)));block+=value;blockGenerated+=value;}
+     if(Number(effects.heal)>0)hp=Math.min(maxHp(character),hp+Math.max(1,Math.round(Number(effects.heal)*(1+specializationPower))));
      if(Number(effects.energy)>0)energy=Math.min(5,energy+Math.floor(Number(effects.energy)));
      if(Number(effects.draw)>0)drawCards(effects.draw);if(effects.statuses&&typeof effects.statuses==="object")for(const enemy of targets)for(const [key,value] of Object.entries(effects.statuses))if(["poison","bleed","burn","weak","vulnerable"].includes(key)&&Number(value)>0)enemy[key]=(Number(enemy[key])||0)+Math.floor(Number(value));
      const generators=Array.isArray(card.generateCards)?card.generateCards:(card.generate?[{id:card.generate,count:1}]:[]);

@@ -86,6 +86,28 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
  live.level=20;live.branch="bleed";live.talents={};
+ const slots=["weapon","chest","head","legs","hands","accessory","offhand","ring","belt"];
+ const makePiece=index=>({id:"set-piece-"+index,type:"equipment",slot:slots[index],branch:"bleed",setId:"assassin.bleed.set.legendary",rarity:"Легендарная",itemLevel:0,stats:{attack:0,defense:0,health:0}});
+ live.gear=Array(9).fill(null);live.gear[0]=makePiece(0);live.gear[1]=makePiece(1);
+ let set=e.getSetBonuses(c.id),stats=e.getCombatStats(live);
+ assert.equal(set.pieces,2,"two matching specialization pieces activate the first set threshold");
+ assert.equal(set.specializationDamage,.05,"2-piece bonus adds 5% specialization damage");
+ assert.equal(stats.specializationDamage,.05,"2-piece bonus is exposed to live card combat");
+ live.gear[2]=makePiece(2);live.gear[3]=makePiece(3);
+ set=e.getSetBonuses(c.id);stats=e.getCombatStats(live);
+ assert.equal(set.pieces,4,"four matching specialization pieces activate the second threshold");
+ assert.equal(set.damageReduction,.1,"4-piece bonus grants 10% incoming damage reduction");
+ assert.equal(stats.damageReduction,.1,"4-piece reduction is exposed to combat calculations");
+ live.gear[4]=makePiece(4);live.gear[5]=makePiece(5);
+ set=e.getSetBonuses(c.id);stats=e.getCombatStats(live);
+ assert.equal(set.pieces,6,"six matching specialization pieces activate the final threshold");
+ assert.equal(set.specializationPower,.15,"6-piece bonus grants 15% specialization power");
+ assert.equal(stats.specializationPower,.15,"6-piece power is exposed to live card combat");
+ assert.match(fs.readFileSync(path.join(__dirname,"../rpg-rework-v2.js"),"utf8"),/specializationCard[\\s\\S]*specializationDamage[\\s\\S]*specializationPower/,"auto-battle applies specialization set bonuses to tagged cards");
+}
+{
+ const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
+ live.level=20;live.branch="bleed";live.talents={};
  const before=e.getCombatStats(live),beforePower=e.combatPower(live);
  const branch=balance.classes.classes.assassin.branches.find(item=>item.id==="bleed");
  const attackTalent=branch.talents.find(item=>item.effect_template==="attack");
