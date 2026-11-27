@@ -237,7 +237,7 @@
  });
  function equipmentArtPath(item,slot){
   const key=String(slot||item?.slot||"").toLowerCase();
-  if(!EQUIPMENT_ART_FILES[key])return "";
+  const artKey=key==="weapon"?"weapons":key;if(!EQUIPMENT_ART_FILES[artKey])return "";
   const rarity=String(item?.rarity||"Обычная").toLowerCase();
   const tier=rarity.includes("бог")||rarity.includes("god")?4:rarity.includes("леген")||rarity.includes("legend")?3:rarity.includes("эпич")||rarity.includes("epic")?2:rarity.includes("редк")||rarity.includes("rare")?1:0;
   let path="";
@@ -251,7 +251,7 @@
    else if(/dark|shadow|тьм|мрак/.test(branch))path="01-weapons/C04_08_shadow_staff.png";
    else if(/heal|healing|исцел|свет|holy/.test(branch))path="01-weapons/C04_07_healing_staff.png";
    else path=EQUIPMENT_ART_FILES.weapons[family][tier];
-  }else path=EQUIPMENT_ART_FILES[key][tier];
+  }else path=EQUIPMENT_ART_FILES[artKey][tier];
   return path?EQUIPMENT_ART_ROOT+path:"";
  }
  function relicIconHtml(item,slot,extraClass){
@@ -285,22 +285,9 @@
   return "achievement-star";
  }
  function inventoryIconHtml(item,equipment){
-  const wrap=content=>'<div class="tb-item-art-wrap">'+content+'</div>';
-  if(equipment){const art=relicIconHtml(item,item?.slot,"tb-bag-item-art-img");return wrap(art.includes("<img")?art:'<img class="tb-relic-icon tb-bag-item-art-img" src="./assets/relics/rune.png" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">' );}
-  const custom=customItemArtPath(item);
-  if(custom)return customItemImageHtml(custom,"tb-bag-item-art-img",item);
-  const value=String(item?.type||item?.id||item?.name||"").toLowerCase();
-  let icon="";
-  if(value.includes("craft_material")||value.includes("craft material")||value.includes("материал")||value.includes("enhancement_stone")||value.includes("enhancement stone")||value.includes("камень усиления"))icon="support-orb";
-  else if(value.includes("helmet")||value.includes("helm")||value.includes("шлем"))icon="support-helmet";
-  else if(value.includes("coin")||value.includes("silver")||value.includes("монет")||value.includes("сереб"))icon="support-purse";
-  else if(value.includes("boot")||value.includes("shoe")||value.includes("обув")||value.includes("сапог"))icon="support-boot";
-  else if(value.includes("shield")||value.includes("щит")||value.includes("offhand"))icon="support-shield";
-  else if(value.includes("ring")||value.includes("кольц"))icon="support-ring";
-  else if(value.includes("belt")||value.includes("пояс"))icon="support-belt";
-  else if(value.includes("amulet")||value.includes("амулет"))icon="support-amulet";
-  else if(value.includes("orb")||value.includes("crystal")||value.includes("сфер")||value.includes("крист"))icon="support-orb";
-  return wrap(relicIconHtml(item));
+  const path=equipment?(equipmentArtPath(item,item?.slot)||"./assets/relics/rune.png"):(customItemArtPath(item)||"./assets/relics/rune.png");
+  const label=String(item?.name||item?.title||item?.type||"Предмет").replace(/[&<>\"]/g,"");
+  return '<div class="tb-item-art-wrap" style="display:grid!important;place-items:center!important;width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;overflow:visible!important"><img class="tb-relic-icon tb-bag-item-art-img" src="'+path+'" alt="'+label+'" loading="eager" decoding="async" style="display:block!important;visibility:visible!important;opacity:1!important;width:62px!important;height:62px!important;max-width:62px!important;max-height:62px!important;object-fit:contain!important;object-position:center!important" onerror="this.onerror=null;this.src=\'./assets/relics/rune.png\'"></div>';
  }
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabGroups=[["ГЕРОЙ",[["stats","Характеристики"],["talents","Древо талантов"]]],["КОЛОДА",[["skills","Библиотека карт"]]],["КОЛЛЕКЦИЯ",[["gear","Экипировка"],["bag","Рюкзак"],["stash","Общий стеш"],["merchant","Торговец картами"],["relics","Реликвии"]]],["РАЗВИТИЕ",[["craft","Крафт"],["speedrun","Спидран"]]]];const tabs=tabGroups.flatMap(group=>group[1]);
