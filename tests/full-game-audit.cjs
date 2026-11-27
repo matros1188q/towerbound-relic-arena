@@ -185,7 +185,7 @@ assert.ok(uiSource.includes('tb-map-quick-panel')&&uiSource.includes('data-actio
 assert.ok(nativeCss.includes('.tb-tower-hero')||nativeCss.includes('.tb-tower-secondary-actions')||uiCssSource.includes('.tb-tower-hero')||uiCssSource.includes('.tb-tower-secondary-actions'),'tower home actions have dedicated responsive styling');
 
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
-assert.ok(uiSource.includes('slotNames={weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",accessory:"Аксессуар"}'),'equipment collection uses localized names for all six slots');
+assert.ok(uiSource.includes('gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"]')&&uiSource.includes('gearSlotKeys=["weapon","chest","head","legs","hands","accessory"]'),'equipment collection uses localized names for all six slots');
 assert.ok(uiSource.includes('is-locked')&&uiSource.includes('is-owned')&&uiSource.includes('data-collection-item='),'equipment collection distinguishes locked and owned entries');
 
 assert.ok(nativeCss.includes('padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))'),'modal panels reserve space for the iPhone home indicator');
