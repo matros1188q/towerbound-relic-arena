@@ -1667,7 +1667,7 @@
    const character=getChar(characterId),isGear=item=>!!(item&&item.type==="equipment"&&item.stats&&item.rarity&&equipmentSlotIndex(item)>=0&&character.level>=10&&character.branch&&item.branch===character.branch);
    if(character.level<10||!character.branch)return{equipped:0,gear:clone(character.gear||[]),bag:character.bag.length,locked:true};
    const candidates=[...(character.gear||[]).filter(isGear),...(character.bag||[]).filter(isGear)],chosen=new Map();
-   for(let slot=0;slot<9;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
+   for(let slot=0;slot<9;slot++){const options=candidates.filter(item=>equipmentSlotIndex(item)===slot&&!item.locked).sort((a,b)=>equipmentRarityScore(b)-equipmentRarityScore(a)||equipmentScore(b)-equipmentScore(a));if(options[0])chosen.set(slot,options[0]);}
    if(chosen.get(0)?.twoHanded)chosen.delete(6);
    const selected=new Set([...chosen.values()].map(item=>item.id));character.gear=Array.from({length:9},(_,slot)=>chosen.get(slot)||null);
    character.gear.forEach(item=>{if(item)item.cardId=item.cardId||equipmentCardId(item);});
@@ -1713,6 +1713,7 @@
   function salvageItem(characterId,itemId){
    const character=getChar(characterId),item=character.bag.find(entry=>entry.id===itemId);
    if(!item||!item.rarity)throw new Error("Only equipment can be salvaged");
+   if(item.locked)throw new Error("Locked equipment cannot be salvaged");
    if(item.bossLoot)throw new Error("Boss loot cannot be salvaged");
    const quantity=balance.materials.salvage[item.rarity];
    if(!Number.isFinite(quantity))throw new Error("This rarity cannot be salvaged");

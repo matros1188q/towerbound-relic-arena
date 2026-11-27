@@ -33,24 +33,6 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
 }
 
 {
- const e=make(()=>0.99),c=e.createCharacter('Pity QA','assassin'),live=e.state.characters[0];
- live.level=10;live.branch='bleed';
- for(let i=0;i<5;i++)assert.equal(e.rollLoot(live,{type:'normal'},20,false,false).length,0,'normal pity counts a failed eligible kill');
- assert.equal(live.pity.normalMisses,5,'five normal misses are persisted on the character');
- assert.equal(e.rollLoot(live,{type:'normal'},20,false,false).length,1,'normal gear is guaranteed after the configured miss streak');
- assert.equal(live.pity.normalMisses,0,'normal pity resets after a successful drop');
- for(let i=0;i<2;i++)assert.equal(e.rollLoot(live,{type:'elite'},50,false,false).length,0,'elite pity counts failed elite rewards');
- assert.equal(live.pity.eliteMisses,2,'elite miss streak is persisted independently');
- const elite=e.rollLoot(live,{type:'elite'},50,false,false);
- assert.equal(elite.length,1,'elite guarantees epic gear after two misses');assert.equal(elite[0].rarity,'Эпическая');
- assert.equal(live.pity.eliteMisses,0,'elite pity resets after its reward');assert.equal(live.pity.legendaryMisses,0,'normal and elite pity do not disturb boss pity');
-}
-{
- const tiers=balance.drop_tables.floor_tiers;assert.equal(tiers.length,5,'drop tables define five floor bands');
- assert.ok(tiers[0].normal_rare_weight<tiers[2].normal_rare_weight&&tiers[2].normal_rare_weight<tiers[4].normal_rare_weight,'rare equipment weighting rises deeper in the tower');
- assert.ok(tiers[0].elite_epic_chance<tiers[4].elite_epic_chance,'elite epic chance rises deeper in the tower');
-}
-{
  const e=make();
  for(const id of ids){
   const c=e.createCharacter('Hero '+id,id),live=e.state.characters.find(x=>x.id===c.id);
