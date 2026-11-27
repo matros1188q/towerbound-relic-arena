@@ -571,7 +571,7 @@
    case "tower-map-close":towerMapOpen=false;render();break;
    case "tower-map-current":selectedStage=live()?.progress.currentStage||1;towerMapOpen=false;render();break;
    case "toggle-fast-battle":if(battle){battle.fastBattle=!battle.fastBattle;save();render();}break;
-   case "pause":if(battle){battle.paused=!battle.paused;if(battle.paused)clearPendingTurnTimer();save();render();}break;
+   case "pause":if(battle){battle.paused=!battle.paused;if(battle.paused)clearPendingTurnTimer();else if(battle.enemyQueueState)resumeEnemyTurnQueue(120);save();render();}break;
    case "potion":try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано");}catch(error){notify(error.message);}break;
    case "new":if(!window.TowerboundCloud?.signedIn){notify("Сначала войди в игровой аккаунт");return;}if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей");return;}dialogOpen=true;selectedClass="assassin";render();break;
    case "close":dialogOpen=false;render();break;
