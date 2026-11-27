@@ -37,5 +37,5 @@ assert.ok(source.includes("bonuses:{2:'+5% профильного урона',3:
 const equipment=JSON.parse(fs.readFileSync('configs/balance/equipment.json','utf8'));
 const classBalance=JSON.parse(fs.readFileSync('configs/balance/classes.json','utf8'));
 assert.deepEqual(equipment.set_bonus_thresholds,[2,3,5],'shared set thresholds are 2/3/5');
-for(const cls of Object.values(classBalance.classes))for(const branch of cls.branches)assert.deepEqual(branch.set.bonuses.map(x=>x.pieces),[2,3,5],cls.id+'/'+branch.id+' set bonuses match thresholds');
+for(const cls of Object.values(classBalance.classes))for(const branch of cls.branches)assert.deepEqual(branch.set.bonuses.map(x=>x.pieces),[2,4,6],cls.id+'/'+branch.id+' class set bonuses match specialization thresholds');
 console.log('RPG expansion static checks passed: 7 classes, 21 branches, talents, sets, sockets, refinement, enchantments and economy.');
