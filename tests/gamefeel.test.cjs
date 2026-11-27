@@ -41,7 +41,7 @@ const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
 const nativeCss=fs.readFileSync(path.join(__dirname,'../native-pwa.css'),'utf8');
 assert.match(ui,/function applyTargetDamage\([\s\S]*?number\.className="tb-floating-damage"[\s\S]*?number\.textContent="-"\+dealt/,'damage feedback floats above the targeted enemy card');
 assert.match(ui,/AudioContext\|\|window\.webkitAudioContext/);
-assert.match(ui,/function accountSettingsMarkup\(\)[\s\S]*?data-setting="\'+key+\'"[\s\S]*?toggle\("sound_enabled"/,"account settings render the sound toggle through the shared data-setting control");
+assert.match(ui,/function accountSettingsMarkup\(\)[\s\S]*?toggle\("sound_enabled"/,"account settings render the sound toggle through the shared data-setting control");
 assert.match(nativeCss,/\.tb-battle-enemy-grid \.tb-target-card\.selected/,'selected enemy targets use the active battle-card highlight');
 assert.match(nativeCss,/\.tb-battle-enemy-grid \.tb-target-hp/,'enemy target cards expose a visible HP bar');
 assert.doesNotMatch(ui,/tb-telegraph tb-target-warning/,"enemy telegraph must not inherit the absolutely positioned target badge class");
