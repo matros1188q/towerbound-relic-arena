@@ -1620,10 +1620,9 @@ function createDialog(){
    if(Number(live()?.run?.playerHp)<=0){endFromDamage();return;}
    if(reconcileBattleCompletion())return;
    const nextIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
-   const nextCursor=nextIndex<0?queue.length:nextIndex;
-   battle.enemyQueueState={indices:queue.map(candidate=>Number(candidate.index)).filter(Number.isFinite),cursor:nextCursor};
-   if(battle.paused){save();return;}
    if(nextIndex<0){battle.enemyQueueState=null;advanceToPlayerTurn();return;}
+   battle.enemyQueueState={indices:queue.map(candidate=>Number(candidate.index)).filter(Number.isFinite),cursor:nextIndex};
+   if(battle.paused){save();return;}
    save();render();
    scheduleEnemyTurnQueue(queue,nextIndex,token,500);
   }catch(error){recoverPlayerTurn(error);}
