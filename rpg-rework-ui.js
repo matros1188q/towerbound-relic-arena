@@ -330,7 +330,7 @@
  let pendingSkillUpgradeId=null;
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",statsOverlayOpen=false,shopTab="silver",lastRenderedScreen=null,lastRenderedProfileTab=null;
  // This is the sole active screen renderer. Retired legacy RPG overlays are never invoked.
- function render(){
+ function renderView(){
   if(!engine)return;
   const isBattle=screen==="battle"&&!!battle;
   document.body.classList.toggle("tb-battle-lock",isBattle);
@@ -343,10 +343,12 @@
   if(isBattle){const arena=root.querySelector(".new-battle-wrap"),art=arenaBackgroundForStage(battle.stage);if(arena&&art){arena.style.setProperty("--tb-arena-background",'url("'+art+'")');arena.style.setProperty("--tb-arena-bg",'url("'+art+'")');arena.style.backgroundImage='linear-gradient(180deg,rgba(5,9,16,.40),rgba(5,9,16,.78)),url("'+art+'")';arena.style.backgroundColor="#101722";}}
   if(screen==="profile"&&profileTab==="talents"&&talentTreeConfig)setTimeout(initTalentTreeCanvas,0);
  }
+ function render(){return renderWithScrollSave();}
  function renderWithScrollSave(){
   const oldScreen=screen,oldTab=profileTab,host=root.querySelector(".tb-v2"),scrollTop=host?.scrollTop||0,pageX=window.scrollX||0,pageY=window.scrollY||0;
-  render();
-  if(oldScreen===screen&&oldTab===profileTab)requestAnimationFrame(()=>{const next=root.querySelector(".tb-v2");if(next)next.scrollTop=scrollTop;window.scrollTo(pageX,pageY);});
+  const restore=()=>{if(oldScreen!==screen||oldTab!==profileTab)return;const next=root.querySelector(".tb-v2");if(next)next.scrollTop=scrollTop;if(screen!=="battle")window.scrollTo(pageX,pageY);};
+  renderView();
+  if(oldScreen===screen&&oldTab===profileTab)requestAnimationFrame(restore);
  }
 
 
