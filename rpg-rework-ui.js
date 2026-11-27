@@ -922,7 +922,7 @@ function createDialog(){
   const c=live();if(!c)return characterList();
   const daily=engine.dailySnapshot(c.id),chapter=engine.chapterForStage(selectedStage||c.progress.currentStage),modifierChoices=engine.runModifierOptions(c.id),weekly=engine.weeklySnapshot(c.id),account=engine.state.account||{};
   c.run.mapEvents=c.run.mapEvents&&typeof c.run.mapEvents==="object"?c.run.mapEvents:{};c.run.completedMapEvents=Array.isArray(c.run.completedMapEvents)?c.run.completedMapEvents:[];let mapEventsChanged=false;for(let n=1;n<=balance.map.total_stages;n++){if(n%balance.map.boss_every===0)continue;if(Object.prototype.hasOwnProperty.call(c.run.mapEvents,n)){if(c.run.mapEvents[n]===null&&gameRandom()<.035){c.run.mapEvents[n]=gameRandom()<.25?"champion":"trial";mapEventsChanged=true;}continue;}if(gameRandom()<.2){const roll=gameRandom();c.run.mapEvents[n]=roll<.035?"secret":roll<.075?"guardian":roll<.17?"champion":roll<.32?"trial":roll<.44?"altar":roll<.56?"chest":roll<.68?"wanderer":roll<.80?"cache":roll<.90?"healing":"merchant";}else c.run.mapEvents[n]=null;mapEventsChanged=true;}if(mapEventsChanged)save();
-  const chest=engine.dailyChestSnapshot(c.id),chestMinutes=Math.ceil(chest.remainingMs/60000),chestLabel=chest.available?"🎁 СУНДУК · ГОТОВ":"🎁 СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м",activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier,pendingPvp=account.pvpDaily?.pending,pvpCategoryNames={class_epic:"Оружие класса",consumable:"Расходник"},pvpStore=(balance.pvp_store?.items||[]).map(item=>{const owned=item.kind==="character_item"?(account.classEpics||[]).includes(item.classId):false,classBlocked=item.kind==="character_item"&&item.classId!==c.classId;return '<article class="tb-system-product"><div class="tb-system-product-art">'+shopProductIconHtml(item)+'</div><div class="tb-system-product-copy"><b>'+esc(item.name)+'</b><small>'+esc(pvpCategoryNames[item.category]||"Предмет")+' · '+item.price+' очков арены</small></div><button data-pvp-buy="'+item.id+'" '+(owned||classBlocked||(account.pvpPoints||0)<item.price?'disabled':'')+'>'+(owned?(item.kind==="character_item"?"УЖЕ ПОЛУЧЕНО":"УЖЕ КУПЛЕНО"):classBlocked?"ДРУГОЙ КЛАСС":"КУПИТЬ")+'</button></article>';}).join("");
+  const chest=engine.dailyChestSnapshot(c.id),chestMinutes=Math.ceil(chest.remainingMs/60000),chestLabel=chest.available?"🎁 СУНДУК · ГОТОВ":"🎁 СУНДУК · "+Math.floor(chestMinutes/60)+"ч "+(chestMinutes%60)+"м",activeSeason=c.run.season?.modifier||engine.state.season?.modifier,activeDaily=c.run.dailyModifier||daily.modifier,pendingPvp=account.pvpDaily?.pending,pvpCategoryNames={frame:"Рамка профиля",title:"Титул",weapon_skin:"Облик оружия",relic:"Реликвия аккаунта",class_epic:"Эпическое оружие класса",consumable:"Расходник"},pvpStore=(balance.pvp_store?.items||[]).map(item=>{const owned=item.kind==="character_item"?(account.classEpics||[]).includes(item.classId):false,classBlocked=item.kind==="character_item"&&item.classId!==c.classId;return '<article class="tb-system-product"><div class="tb-system-product-art">'+shopProductIconHtml(item)+'</div><div class="tb-system-product-copy"><b>'+esc(item.name)+'</b><small>'+esc(pvpCategoryNames[item.category]||"Предмет")+' · '+item.price+' очков арены</small></div><button data-pvp-buy="'+item.id+'" '+(owned||classBlocked||(account.pvpPoints||0)<item.price?'disabled':'')+'>'+(owned?(item.kind==="character_item"?"УЖЕ ПОЛУЧЕНО":"УЖЕ КУПЛЕНО"):classBlocked?"ДРУГОЙ КЛАСС":"КУПИТЬ")+'</button></article>';}).join("");
   const cp=c.progress.currentStage-1,healReady=balance.map.checkpoints.includes(cp)&&c.run.healingPenaltyUntil<c.progress.currentStage&&c.run.checkpointHeals<balance.healing.max_checkpoint_heals_per_run,trapStage=selectedStage%13===0,antidotes=(c.bag||[]).filter(x=>x.type==="antidote").reduce((n,x)=>n+(x.quantity||1),0);
   const penalty=(c.run.healingPenaltyFrom||0)>0&&c.progress.currentStage>=(c.run.healingPenaltyFrom||0)&&c.progress.currentStage<=c.run.healingPenaltyUntil;
   const remaining=penalty?c.run.healingPenaltyUntil-c.progress.currentStage+1:0;
@@ -1794,27 +1794,27 @@ function profileRelicShopMarkup(c){
   return header("Профиль героя",c.name+" · "+clsName(c))+'<section class="tb-profile tb-profile-hub"><div class="tb-profile-hero"><div class="tb-profile-hero-art"><img src="' + portrait(c.classId) + '" alt="' + esc(clsName(c)) + " — " + esc(c.name) + '" loading="eager"></div><div class="tb-profile-hero-info"><div class="tb-eyebrow">ПЕРСОНАЖ</div><h1>'+esc(c.name)+'</h1><p>'+esc(clsName(c))+' · Уровень '+c.level+'</p><div class="tb-profile-power">⚔️ <strong>'+engine.combatPower(c)+'</strong><span>МОЩЬ</span></div><div class="tb-profile-hero-stats"><span>❤️ '+engine.maxHp(c)+'<small>Здоровье</small></span><span>⚔️ '+combatStats.attack+'<small>Атака</small></span><span>🛡️ '+combatStats.defense+'<small>Защита</small></span><span>✨ '+Math.round(combatStats.critChance*100)+'%<small>Крит</small></span></div></div></div><div class="tb-profile-hub-links"><button type="button" class="tb-profile-hub-card" data-tab="stats"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>ХАРАКТЕРИСТИКИ</b><small>Параметры, специализация и сила героя</small></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="talents"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>ТАЛАНТЫ</b><small>Древо талантов и развитие способностей</small></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="skills"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>КОЛОДА</b><small>Библиотека карт и боевые комбинации</small></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="gear"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>ЭКИПИРОВКА</b><small>Снаряжение героя, каталог предметов, рюкзак и реликвии</small><span class="tb-profile-hub-subnav"><span data-tab="bag">Рюкзак</span><span data-tab="relics">Реликвии</span><span data-tab="stash">Стеш</span><span data-tab="merchant">Торговец картами</span></span></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-tab="craft"><span class="tb-profile-hub-emoji" aria-hidden="true"></span><span class="tb-profile-hub-copy"><b>РАЗВИТИЕ</b><small>Крафт, улучшения и мастерская</small><span class="tb-profile-hub-subnav"><span data-tab="speedrun">Спидран</span></span></span><span class="tb-profile-hub-arrow">›</span></button><button type="button" class="tb-profile-hub-card" data-shop-open><span class="tb-profile-hub-emoji" aria-hidden="true">✦</span><span class="tb-profile-hub-copy"><b>МАГАЗИН БАШНИ</b><small>Зелья, усиления, материалы для кузницы и редкие товары</small></span><span class="tb-profile-hub-arrow">›</span></button></div><div class="tb-profile-content">'+body+'</div></section>';
  }
  const SHOP_PRODUCT_META=Object.freeze({
-  xp_10:{name:"Стимулятор опыта · I",description:"+10% к получаемому опыту на 60 минут",group:"Эликсиры опыта"},
-  xp_20:{name:"Эликсир опыта · II",description:"+20% к получаемому опыту на 60 минут",group:"Эликсиры опыта"},
+  xp_10:{name:"Настой знания",description:"+10% к получаемому опыту на 60 минут",group:"Эликсиры опыта"},
+  xp_20:{name:"Эликсир знания",description:"+20% к получаемому опыту на 60 минут",group:"Эликсиры опыта"},
   xp_50:{name:"Радужный эликсир опыта · III",description:"+50% к получаемому опыту на 60 минут",group:"Эликсиры опыта"},
   xp_100:{name:"Песочные часы опыта · IV",description:"Удваивают получаемый опыт на 60 минут",group:"Эликсиры опыта"},
   heal_10:{name:"Малое зелье лечения",description:"Восстанавливает 10% максимального здоровья",group:"Зелья лечения"},
   heal_25:{name:"Зелье лечения",description:"Восстанавливает 25% максимального здоровья",group:"Зелья лечения"},
   heal_35:{name:"Большое зелье лечения",description:"Восстанавливает 35% максимального здоровья",group:"Зелья лечения"},
   heal_50:{name:"Свиток большого исцеления",description:"Восстанавливает 50% максимального здоровья",group:"Зелья лечения"},
-  drop_20:{name:"Знак удачи · I",description:"+20% к шансу получения предметов на 60 минут",group:"Благословения добычи"},
-  drop_50:{name:"Знак удачи · II",description:"+50% к шансу получения предметов на 60 минут",group:"Благословения добычи"},
-  drop_75:{name:"Знак удачи · III",description:"+75% к шансу получения предметов на 60 минут",group:"Благословения добычи"},
-  drop_100:{name:"Знак удачи · IV",description:"Удваивает шанс получения предметов на 60 минут",group:"Благословения добычи"},
-  repair_kit:{name:"Походный ремонтный набор",description:"Между боями восстанавливает 10% максимального здоровья",group:"Подготовка к походу"},
-  silver_charm:{name:"Серебряный оберег",description:"+10% серебра за победы в течение 60 минут",group:"Подготовка к походу"},
-  potion_case:{name:"Пояс целителя",description:"Постоянно увеличивает лимит стопки лечебных зелий на 5",group:"Подготовка к походу"},
+  drop_20:{name:"Знак искателя",description:"+20% к шансу добычи экипировки и трофеев на 60 минут",group:"Благословения добычи"},
+  drop_50:{name:"Звёздный компас",description:"+50% к шансу добычи экипировки и трофеев на 60 минут",group:"Благословения добычи"},
+  drop_75:{name:"Чаша удачи",description:"+75% к шансу добычи экипировки и трофеев на 60 минут",group:"Благословения добычи"},
+  drop_100:{name:"Сундук удачи",description:"Удваивает шанс добычи экипировки и трофеев на 60 минут",group:"Благословения добычи"},
+  repair_kit:{name:"Набор полевого кузнеца",description:"Между боями восстанавливает 10% максимального здоровья",group:"Подготовка к походу"},
+  silver_charm:{name:"Амулет серебряной жилы",description:"+10% серебра за победы в течение 60 минут",group:"Подготовка к походу"},
+  potion_case:{name:"Пояс алхимика",description:"Навсегда увеличивает максимальный размер стопки лечебных зелий на 5",group:"Подготовка к походу"},
   refine_10:{name:"Точильный камень · I",description:"+10 процентных пунктов к шансу заточки на 60 минут",group:"Мастерская кузнеца"},
-  refine_20:{name:"Кристалл точности · II",description:"+20 процентных пунктов к шансу заточки на 60 минут",group:"Мастерская кузнеца"},
-  refine_guard:{name:"Оберег кузнеца",description:"Защищает экипировку от последствий одной неудачной заточки",group:"Мастерская кузнеца"},
-  stone_cache:{name:"Сундук кристаллов",description:"Содержит 3 камня усиления. Для открытия нужна выбранная специализация",group:"Мастерская кузнеца"},
-  extra_socket:{name:"Алмазное гнездо",description:"Добавляет одно гнездо первому надетому предмету, в котором ещё есть место для гнёзд",group:"Мастерская кузнеца"},
-  pity_token:{name:"Звёздный жетон судьбы",description:"Продвигает счётчик гарантированной легендарной добычи до последнего шага",group:"Благословения добычи"},
+  refine_20:{name:"Кристалл мастерства",description:"+20 процентных пунктов к шансу заточки на 60 минут",group:"Мастерская кузнеца"},
+  refine_guard:{name:"Печать кузнеца",description:"Сохраняет уровень предмета при одной неудачной заточке",group:"Мастерская кузнеца"},
+  stone_cache:{name:"Сундук камней усиления",description:"Даёт 3 камня усиления для выбранной специализации. Сначала выбери ветку",group:"Мастерская кузнеца"},
+  extra_socket:{name:"Алмазный резец",description:"Добавляет 1 гнездо первому надетому предмету, у которого есть свободное место",group:"Мастерская кузнеца"},
+  pity_token:{name:"Звезда судьбы",description:"Подводит счётчик гарантии к следующему боссу: его легендарная добыча становится гарантированной",group:"Благословения добычи"},
  });
  const SHOP_ACTIVE_IDS=new Set([
   "heal_10","heal_25","heal_35","heal_50",
@@ -1838,7 +1838,6 @@ function profileRelicShopMarkup(c){
   "drop_100":"./art-inbox/10-materials/04-keys-chests/C19_11_open_treasure_chest.png",
   "repair_kit":"./art-inbox/08-equipment/01-weapons/C02_06_smith_s_hammer.png",
   "silver_charm":"./art-inbox/08-equipment/05-jewelry/C09_07_amulet.png",
-  "xp_hourglass":"./art-inbox/10-materials/06-documents/C21_02_old_book.png",
   "potion_case":"./art-inbox/08-equipment/06-boots-cloaks-belts-gloves/C10_10_belt_with_pouches.png",
   "refine_10":"./art-inbox/10-materials/05-tools/C20_14_whetstone.png",
   "refine_20":"./art-inbox/10-materials/03-crystals/C18_08_white_crystal.png",
@@ -1846,7 +1845,6 @@ function profileRelicShopMarkup(c){
   "stone_cache":"./art-inbox/10-materials/04-keys-chests/C19_10_golden_chest.png",
   "extra_socket":"./art-inbox/10-materials/01-ores-gems/C15_14_diamond.png",
   "pity_token":"./art-inbox/08-equipment/05-jewelry/C09_08_star_pendant.png",
-  "rescue_seal":"./art-inbox/10-materials/04-keys-chests/C19_07_seal_key.png",
   "class_epic_assassin":"./art-inbox/08-equipment/01-weapons/C05_03_poison_dagger.png",
   "class_epic_bishop":"./art-inbox/08-equipment/01-weapons/C04_07_healing_staff.png",
   "class_epic_dragonkin":"./art-inbox/08-equipment/01-weapons/C01_09_flame_sword.png",
