@@ -285,9 +285,8 @@
   return "achievement-star";
  }
  function inventoryIconHtml(item,equipment){
-  const path=equipment?(equipmentArtPath(item,item?.slot)||"./assets/relics/rune.png"):(customItemArtPath(item)||"./assets/relics/rune.png");
-  const label=String(item?.name||item?.title||item?.type||"Предмет").replace(/[&<>\"]/g,"");
-  return '<div class="tb-item-art-wrap" style="display:grid!important;place-items:center!important;width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;overflow:visible!important"><img class="tb-relic-icon tb-bag-item-art-img" src="'+path+'" alt="'+label+'" loading="eager" decoding="async" style="display:block!important;visibility:visible!important;opacity:1!important;width:62px!important;height:62px!important;max-width:62px!important;max-height:62px!important;object-fit:contain!important;object-position:center!important" onerror="this.onerror=null;this.src=\'./assets/relics/rune.png\'"></div>';
+  // Backpack and equipped slots share one renderer: identical item art, rarity tier and class/branch variant.
+  return '<div class="tb-item-art-wrap">'+relicIconHtml(item,item?.slot,"tb-bag-item-art-img")+'</div>';
  }
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
  const tabGroups=[["ГЕРОЙ",[["stats","Характеристики"],["talents","Древо талантов"]]],["КОЛОДА",[["skills","Библиотека карт"]]],["КОЛЛЕКЦИЯ",[["gear","Экипировка"],["bag","Рюкзак"],["stash","Общий стеш"],["merchant","Торговец картами"],["relics","Реликвии"]]],["РАЗВИТИЕ",[["craft","Крафт"],["speedrun","Спидран"]]]];const tabs=tabGroups.flatMap(group=>group[1]);
