@@ -446,8 +446,13 @@
    }
    if(last?.stageComplete){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этаж пройден · награды сохранены");if(relicIds.length)showRelicRewardScreen(relicIds);return;}
    battle.finishingEnemy=false;battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.busy=false;battle.actor={type:"player",id:"player",name:c.name};
-   const next=last?.nextTargetIndex??(battle.enemies||[]).findIndex(enemy=>enemy.alive&&enemy.hp>0);
-   loadBattleEnemy(next);save();render();if(relicIds.length)showRelicRewardScreen(relicIds);
+   const result=last||{};
+   result.nextTargetIndex=result.nextTargetIndex??(battle.enemies||[]).findIndex(enemy=>enemy.alive&&enemy.hp>0);
+   const carryShield=battle.nextDamageShield||0;
+   loadBattleEnemy(result.nextTargetIndex);
+   if(!battle)return;
+   battle.nextDamageShield=carryShield;
+   save();render();if(relicIds.length)showRelicRewardScreen(relicIds);
   }catch(error){battle.finishingEnemy=false;recoverBattleControl(error,"Не удалось завершить противника");}
  }
  function reconcileBattleCompletion(){
