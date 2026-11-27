@@ -2565,3 +2565,10 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-stats-source-copy{display:block!important;min-width:0!important;overflow:visible!important}
 #tbRpg .tb-stats-source-copy b{display:block!important;width:auto!important;max-width:none!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:10px!important;letter-spacing:-.045em!important;line-height:1.2!important}
 @media(max-width:380px){#tbRpg .tb-stats-source-item{grid-template-columns:23px minmax(0,1fr) max-content!important;gap:5px!important;padding-left:6px!important;padding-right:6px!important}#tbRpg .tb-stats-source-copy b{font-size:9px!important;letter-spacing:-.055em!important}}
+
+
+/* XP counter label must never collide with its numeric value. */
+#tbRpg .tb-stats-source-item{grid-template-columns:24px minmax(0,1fr) max-content!important;column-gap:6px!important}
+#tbRpg .tb-stats-source-copy{min-width:0!important;overflow:hidden!important}
+#tbRpg .tb-stats-source-copy b{font-size:10px!important;letter-spacing:0!important}
+#tbRpg .tb-stats-source-item>strong{position:relative!important;z-index:1!important;justify-self:end!important;margin-left:2px!important;padding:4px 5px!important;font-size:12px!important}
