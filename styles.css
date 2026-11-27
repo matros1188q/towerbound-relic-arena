@@ -2713,3 +2713,116 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-paper-slot.is-blocked{border-style:solid;border-color:#bd986155;background:linear-gradient(150deg,#302820,#171a1d);opacity:.78}
 #tbRpg .tb-paper-slot.is-blocked> b{color:#d8b979}
 #tbRpg .tb-paper-slot.is-blocked>em{color:#c3a16d}
+
+
+/* FINAL iPhone fit: equipment screen must stay inside the profile viewport */
+#tbRpg .tb-v2,
+#tbRpg .tb-v2 section.tb-profile,
+#tbRpg .tb-v2 section.tb-profile > .tb-profile-content,
+#tbRpg .tb-v2 .tb-equipment-screen {
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+#tbRpg .tb-v2 section.tb-profile {overflow-x:hidden!important;min-width:0!important}
+#tbRpg .tb-v2 section.tb-profile > .tb-profile-content {
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+  padding-left:8px!important;
+  padding-right:8px!important;
+}
+#tbRpg .tb-v2 .tb-equipment-screen {
+  display:block!important;
+  margin:0 auto!important;
+  padding:8px 0 calc(120px + env(safe-area-inset-bottom))!important;
+  overflow-x:hidden!important;
+}
+#tbRpg .tb-v2 .tb-equipment-screen * {box-sizing:border-box}
+#tbRpg .tb-v2 .tb-collection-subtabs {
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:4px!important;
+  margin:0 0 10px!important;
+}
+#tbRpg .tb-v2 .tb-collection-subtabs button {
+  min-width:0!important;
+  padding:9px 2px!important;
+  font-size:clamp(7px,2.1vw,9px)!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#tbRpg .tb-v2 .tb-equipment-heading {
+  width:100%!important;
+  min-width:0!important;
+  flex-wrap:wrap!important;
+  padding:12px!important;
+  gap:8px!important;
+}
+#tbRpg .tb-v2 .tb-equipment-heading>div {flex:1 1 190px!important;min-width:0!important}
+#tbRpg .tb-v2 .tb-equipment-heading h2 {
+  font-size:clamp(19px,6vw,27px)!important;
+  overflow-wrap:anywhere!important;
+}
+#tbRpg .tb-v2 .tb-equipment-heading p {overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-equipment-heading>strong {font-size:20px!important}
+#tbRpg .tb-v2 .tb-equipment-overview {
+  width:100%!important;
+  min-width:0!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  padding:7px!important;
+}
+#tbRpg .tb-v2 .tb-equipment-overview>div {min-width:0!important;padding:4px 2px!important}
+#tbRpg .tb-v2 .tb-equipment-overview small {font-size:7px!important;letter-spacing:.04em!important;overflow-wrap:anywhere}
+#tbRpg .tb-v2 .tb-equipment-overview b {font-size:12px!important}
+#tbRpg .tb-v2 .tb-equipment-overview button {grid-column:1/-1!important;width:100%!important;min-width:0!important}
+#tbRpg .tb-v2 .tb-paper-doll-grid {
+  width:100%!important;
+  min-width:0!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+  padding:7px!important;
+}
+#tbRpg .tb-v2 .tb-paper-slot,
+#tbRpg .tb-v2 .tb-paper-hero {
+  min-width:0!important;
+  width:100%!important;
+  min-height:112px!important;
+  padding:6px 3px!important;
+}
+#tbRpg .tb-v2 .tb-paper-slot>small {font-size:7px!important;letter-spacing:.04em!important}
+#tbRpg .tb-v2 .tb-paper-slot>b {font-size:9px!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-paper-slot-stats {font-size:7px!important}
+#tbRpg .tb-v2 .tb-paper-slot button {font-size:7px!important}
+#tbRpg .tb-v2 .tb-paper-hero {grid-column:2!important;grid-row:2!important}
+#tbRpg .tb-v2 .tb-paper-hero img {max-width:100%!important;height:82px!important}
+#tbRpg .tb-v2 .tb-gear-set-progress,
+#tbRpg .tb-v2 .tb-gear-loot {width:100%!important;min-width:0!important;padding:9px!important}
+#tbRpg .tb-v2 .tb-gear-set-progress>header,
+#tbRpg .tb-v2 .tb-gear-loot>header {min-width:0!important;flex-wrap:wrap!important}
+#tbRpg .tb-v2 .tb-gear-set-steps {grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+#tbRpg .tb-v2 .tb-gear-set-step {min-width:0!important;padding:6px 4px!important}
+#tbRpg .tb-v2 .tb-gear-set-step b,
+#tbRpg .tb-v2 .tb-gear-set-step span,
+#tbRpg .tb-v2 .tb-gear-set-step small {overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-gear-loot-card {
+  width:100%!important;
+  min-width:0!important;
+  grid-template-columns:38px minmax(0,1fr) auto!important;
+  gap:6px!important;
+  padding:6px!important;
+}
+#tbRpg .tb-v2 .tb-gear-loot-copy {min-width:0!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-gear-loot-card>button {min-width:0!important;padding:6px 5px!important;font-size:7px!important}
+#tbRpg .tb-v2 .tb-equipment-footer,
+#tbRpg .tb-v2 .tb-equipment-footer button {width:100%!important;min-width:0!important}
+@media(max-width:360px) {
+  #tbRpg .tb-v2 section.tb-profile>.tb-profile-content {padding-left:5px!important;padding-right:5px!important}
+  #tbRpg .tb-v2 .tb-paper-doll-grid {gap:4px!important;padding:5px!important}
+  #tbRpg .tb-v2 .tb-paper-slot,
+  #tbRpg .tb-v2 .tb-paper-hero {min-height:104px!important}
+  #tbRpg .tb-v2 .tb-gear-set-step span {font-size:7px!important}
+}
