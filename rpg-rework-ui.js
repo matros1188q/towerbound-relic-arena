@@ -416,7 +416,7 @@
   const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
   if(target.type==="boss"){battle.actionDamageLedger=battle.actionDamageLedger||{};battle.actionDamageLedger[target.index]=used+dealt;}
   if(dealt>0)engine.applyVampirism(c.id,dealt);
-  const reflectRate=Number(target.reflectTurns)>0?.25:(target.champion&&target.mechanic==="reflect"?.15:0);
+  const reflectRate=Number(target.reflectTurns)>0 ? 0.25 : (target.champion&&target.mechanic==="reflect" ? 0.15 : 0);
   if(dealt>0&&reflectRate>0){const reflected=Math.max(1,Math.round(dealt*reflectRate));c.run.playerHp=Math.max(0,Number(c.run.playerHp||0)-reflected);if(Number(target.reflectTurns)>0)target.reflectTurns=0;showFloatingText("player","-"+reflected,"#ff7b82");logCombatEvent("ОТРАЖЕНИЕ · "+reflected+" урона","#ff7b82");}
   if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span"),card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');number.className="tb-floating-damage";number.textContent="-"+dealt;if(card){const box=card.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top)+"px";}layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
   if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
