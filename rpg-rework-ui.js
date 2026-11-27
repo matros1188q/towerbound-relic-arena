@@ -2362,10 +2362,10 @@ function profileRelicShopMarkup(c){
   const grouped=Object.entries(classes).map(([classId,classInfo])=>'<section class="tb-collection-class"><h3>'+esc(classInfo.name||classId)+'</h3>'+
    (classInfo.branches||[]).map(branch=>{
     const entries=catalog.filter(item=>item.classId===classId&&item.branchId===branch.id);
-    return '<section class="tb-collection-branch"><h4>'+esc(branch.set?.name||branch.name||branch.id)+' <small>'+entries.filter(item=>item.owned).length+'/30</small></h4>'+
+    return '<section class="tb-collection-branch"><h4>'+esc(branch.set?.name||branch.name||branch.id)+' <small>'+entries.filter(item=>item.owned).length+'/45</small></h4>'+
      rarities.map(rarity=>{
       const cards=entries.filter(item=>item.rarity===rarity).map(item=>'<button type="button" class="tb-collection-item rarity-'+rarityClass(item.rarity)+(item.owned?" is-owned":" is-locked")+'" data-collection-item="'+esc(item.key)+'"><span class="tb-collection-art">'+(item.owned?relicIconHtml(item.item,item.slot):relicIconHtml({rarity:item.rarity,slot:item.slot,name:item.itemName},item.slot))+'</span><b>'+esc(item.item?.name||item.itemName||"Неизвестный предмет")+'</b><small>'+esc(item.description||"Неизвестный предмет")+'</small></button>').join("");
-      return '<section class="tb-collection-rarity"><h5>'+esc(rarity)+' <small>'+entries.filter(item=>item.rarity===rarity&&item.owned).length+'/6</small></h5><div class="tb-collection-grid">'+cards+'</div></section>';
+      return '<section class="tb-collection-rarity"><h5>'+esc(rarity)+' <small>'+entries.filter(item=>item.rarity===rarity&&item.owned).length+'/9</small></h5><div class="tb-collection-grid">'+cards+'</div></section>';
      }).join("")+'</section>';
    }).join("")+'</section>').join("");
   const currentClassRelics=Object.values(engine.RELICS_DATABASE||{}).filter(relic=>relic.classId===currentClassId);
