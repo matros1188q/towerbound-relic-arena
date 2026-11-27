@@ -550,7 +550,7 @@
    case "bottom-map":screen=battle?"battle":"map";render();save();break;
    case "bottom-profile":profileTab="stats";statsOverlayOpen=true;screen="profile";render();break;
    case "bottom-progress":if(window.TowerboundProgression?.open)window.TowerboundProgression.open();else notify("Модуль прогрессии ещё загружается");break;
-   case "bottom-community":if(window.TowerboundSocial?.open)window.TowerboundSocial.open();else notify("Сообщество ещё загружается");break;
+   case "bottom-community":{const social=window.TowerboundSocial;if(social?.open)social.open();else notify("Сообщество ещё загружается");break;}
    case "bottom-shop":shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());break;
    case "bottom-account":profileTab="account";statsOverlayOpen=false;screen="profile";render();break;
    case "skip-floors":showSkipFloorsModal();break;
