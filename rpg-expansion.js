@@ -21,10 +21,10 @@ const stoneTypes=Object.keys(meta).flatMap(k=>branches[k].flatMap((b,i)=>[{id:k+
 const silver=[
  ['Малое зелье лечения','Восстанавливает 10% максимального здоровья во время похода',500,'heal',.1,'./art-inbox/09-consumables/01-potions/C11_01_small_healing_potion.png'],
  ['Зелье лечения','Восстанавливает 25% максимального здоровья во время похода',1400,'heal',.25,'./art-inbox/09-consumables/01-potions/C11_02_healing_potion.png'],
- ['Защитный эликсир','Снижает получаемый урон на 5% на время похода',900,'def',.05,'./art-inbox/09-consumables/01-potions/C11_12_defense_potion.png'],
+ ['Защитный эликсир','Постоянно снижает получаемый урон на 5% для этого героя',900,'def',.05,'./art-inbox/09-consumables/01-potions/C11_12_defense_potion.png'],
  ['Эликсир добычи · I','Увеличивает шанс находок на 20% на 1 час',1800,'drop',.2,'./art-inbox/09-consumables/01-potions/C11_08_stimulant.png'],
  ['Эликсир добычи · II','Увеличивает шанс находок на 50% на 1 час',4200,'drop',.5,'./art-inbox/09-consumables/01-potions/C11_09_elixir.png'],
- ['Полевой рацион','Восстанавливает 5% здоровья после каждой победы до конца похода',1000,'afterheal',.05,'./art-inbox/09-consumables/02-scrolls-mana-stones/C12_04_healing_scroll.png'],
+ ['Полевой рацион','После каждой победы восстанавливает 5% максимального здоровья героя',1000,'afterheal',.05,'./art-inbox/09-consumables/02-scrolls-mana-stones/C12_04_healing_scroll.png'],
  ['Настой точности','Следующие 5 атак получают шанс нанести критический удар',1700,'crit',.03,'./art-inbox/09-consumables/01-potions/C11_11_strength_potion.png'],
  ['Оберег кузнеца','Защищает предмет от потери уровня или разрушения при одной неудачной заточке',3200,'repair',1,'./art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png'],
  ['Премиум · 7 дней','На 7 дней даёт +5% серебра за победы',25000,'premium',7,'./art-inbox/08-equipment/03-headwear/C07_08_crown.png']
