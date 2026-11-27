@@ -1875,8 +1875,8 @@ function profileRelicShopMarkup(c){
  });;
 
  function shopProductIconHtml(item){
-  const path=SHOP_PRODUCT_ART[item?.id];
-  return path?customItemImageHtml(path,"tb-system-product-image",item):'<span class="tb-shop-art-fallback">✦</span>';
+  const custom=SHOP_PRODUCT_ART[item?.id];
+  return custom?customItemImageHtml(custom,"tb-shop-item-art",item):'<span class="tb-shop-art-fallback">✦</span>';
  }
  function shopOverlayMarkup(){
   const c=live();if(!c)return "";
@@ -1890,7 +1890,7 @@ function profileRelicShopMarkup(c){
    const stackFull=!!(stack&&Number(stack.quantity||1)>=Number(balance.healing.potion_stack_limit||1)+Number(c.potionCapacityBonus||0));
    (grouped[meta.group]||(grouped[meta.group]=[])).push({id,meta,price,art,stackFull});
   });
-  const groups=Object.entries(grouped).map(([group,items])=>'<section class="tb-shop-group"><h3>'+esc(group)+'</h3><div class="tb-shop-grid">'+items.map(item=>'<article class="tb-shop-item"><div class="tb-shop-item-art">'+customItemImageHtml(item.art,"tb-shop-product-art",{id:item.id,type:item.id})+'</div><div class="tb-shop-item-copy"><b>'+esc(item.meta.name)+'</b><p>'+esc(item.meta.description)+'</p></div><div class="tb-shop-item-buy"><strong>'+item.price.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</strong><button type="button" data-shop-buy="'+esc(item.id)+'" data-shop-store="'+store+'" '+(money<item.price||item.stackFull?"disabled":"")+'>'+(item.stackFull?"СТОПКА ПОЛНА":money<item.price?"НЕ ХВАТАЕТ":"КУПИТЬ")+'</button></div></article>').join("")+'</div></section>').join("");
+  const groups=Object.entries(grouped).map(([group,items])=>'<section class="tb-shop-group"><h3>'+esc(group)+'</h3><div class="tb-shop-grid">'+items.map(item=>'<article class="tb-shop-item"><div class="tb-shop-item-art">'+shopProductIconHtml({id:item.id,type:item.id})+'</div><div class="tb-shop-item-copy"><b>'+esc(item.meta.name)+'</b><p>'+esc(item.meta.description)+'</p></div><div class="tb-shop-item-buy"><strong>'+item.price.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</strong><button type="button" data-shop-buy="'+esc(item.id)+'" data-shop-store="'+store+'" '+(money<item.price||item.stackFull?"disabled":"")+'>'+(item.stackFull?"СТОПКА ПОЛНА":money<item.price?"НЕ ХВАТАЕТ":"КУПИТЬ")+'</button></div></article>').join("")+'</div></section>').join("");
   return '<div class="tb-shop-overlay" role="dialog" aria-modal="true" aria-label="Магазин Башни"><div class="tb-shop-panel"><header class="tb-shop-hero"><div><small>ТОРГОВАЯ ЛАВКА · TOWERBOUND</small><h2>МАГАЗИН БАШНИ</h2><p>Подготовь героя к следующему восхождению</p></div><button type="button" data-shop-close aria-label="Закрыть магазин">×</button></header><div class="tb-shop-wallet"><span>ТВОЙ БАЛАНС</span><b>'+money.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</b></div><nav class="tb-shop-currencies"><button type="button" data-shop-currency="silver" class="'+(store==="silver"?"active":"")+'">СЕРЕБРО · '+(Number(c.silver)||0).toLocaleString("ru-RU")+'</button><button type="button" data-shop-currency="diamond" class="'+(store==="diamond"?"active":"")+'">АЛМАЗЫ · '+(Number(engine.state.account?.diamonds)||0).toLocaleString("ru-RU")+'</button></nav><div class="tb-shop-content">'+(groups||'<p class="tb-shop-empty">В этой лавке пока нет доступных товаров.</p>')+'</div><footer class="tb-shop-footer">Покупки сразу попадают в рюкзак или активируют статус аккаунта. Эффекты предметов работают по правилам текущей версии игры.</footer></div></div>';
  }
  root.addEventListener("click",event=>{
