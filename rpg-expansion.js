@@ -19,19 +19,25 @@ const passives={"assassin":[["Глубокие раны: кровотечени�
 const talentNames=Object.fromEntries(Object.entries(skills).map(([k,v])=>[k,v.map((a)=>a.map((x,i)=>['Усиление '+x,'Мастерство '+x,'Вершина '+x]))]));
 const stoneTypes=Object.keys(meta).flatMap(k=>branches[k].flatMap((b,i)=>[{id:k+'-'+i+'-weapon',kind:'weapon',classId:k,branch:i,name:b+' · оружие',weapon:{atk:3+i*2,crit:i===2?2:0,element:b}},{id:k+'-'+i+'-armor',kind:'armor',classId:k,branch:i,name:b+' · броня',armor:{def:2+i,hp:10+i*5,resist:b}}]));
 const silver=[
- ['Малое зелье лечения','Восстанавливает 10% максимального здоровья во время похода',500,'heal',.1,'./art-inbox/09-consumables/01-potions/C11_01_small_healing_potion.png'],
- ['Зелье лечения','Восстанавливает 25% максимального здоровья во время похода',1400,'heal',.25,'./art-inbox/09-consumables/01-potions/C11_02_healing_potion.png'],
+ ['Малое зелье лечения','Восстанавливает 10% максимального здоровья один раз за поход',500,'heal',.1,'./art-inbox/09-consumables/01-potions/C11_01_small_healing_potion.png'],
+ ['Зелье лечения','Восстанавливает 25% максимального здоровья один раз за поход',1400,'heal',.25,'./art-inbox/09-consumables/01-potions/C11_02_healing_potion.png'],
+ ['Тоник восстановления','Восстанавливает 20% здоровья вне боя',700,'rest',.2,'./art-inbox/09-consumables/01-potions/C11_02_healing_potion.png'],
  ['Защитный эликсир','Постоянно снижает получаемый урон на 5% для этого героя',900,'def',.05,'./art-inbox/09-consumables/01-potions/C11_12_defense_potion.png'],
+ ['Эликсир опыта · I','Увеличивает получаемый опыт на 10% на 1 час',1200,'xp',.1,'./art-inbox/09-consumables/01-potions/C11_08_stimulant.png'],
+ ['Эликсир опыта · II','Увеличивает получаемый опыт на 20% на 1 час',2600,'xp',.2,'./art-inbox/09-consumables/01-potions/C11_09_elixir.png'],
  ['Эликсир добычи · I','Увеличивает шанс находок на 20% на 1 час',1800,'drop',.2,'./art-inbox/09-consumables/01-potions/C11_08_stimulant.png'],
  ['Эликсир добычи · II','Увеличивает шанс находок на 50% на 1 час',4200,'drop',.5,'./art-inbox/09-consumables/01-potions/C11_09_elixir.png'],
  ['Полевой рацион','После каждой победы восстанавливает 5% максимального здоровья героя',1000,'afterheal',.05,'./art-inbox/09-consumables/02-scrolls-mana-stones/C12_04_healing_scroll.png'],
  ['Настой точности','Следующие 5 атак получают шанс нанести критический удар',1700,'crit',.03,'./art-inbox/09-consumables/01-potions/C11_11_strength_potion.png'],
+ ['Монета удачи','Следующая победа принесёт на 5% больше серебра',2800,'map',1,'./art-inbox/10-materials/07-currency-treasures/C22_01_gold_coin.png'],
  ['Оберег кузнеца','Защищает предмет от потери уровня или разрушения при одной неудачной заточке',3200,'repair',1,'./art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png'],
- ['Премиум · 7 дней','На 7 дней даёт +5% серебра за победы',25000,'premium',7,'./art-inbox/08-equipment/03-headwear/C07_08_crown.png']
+ ['Премиум · 7 дней','На 7 дней даёт +5% серебра за победы и +5% опыта',25000,'premium',7,'./art-inbox/08-equipment/03-headwear/C07_08_crown.png']
 ];
 const diamond=[
- ['Большое зелье лечения','Восстанавливает 35% максимального здоровья во время похода',5,'heal',.35,'./art-inbox/09-consumables/01-potions/C11_03_large_healing_potion.png'],
- ['Мощное зелье лечения','Восстанавливает 50% максимального здоровья во время похода',7,'heal',.5,'./art-inbox/09-consumables/01-potions/C11_03_large_healing_potion.png'],
+ ['Большое зелье лечения','Восстанавливает 35% максимального здоровья один раз за поход',5,'heal',.35,'./art-inbox/09-consumables/01-potions/C11_03_large_healing_potion.png'],
+ ['Мощное зелье лечения','Восстанавливает 50% максимального здоровья один раз за поход',7,'heal',.5,'./art-inbox/09-consumables/01-potions/C11_03_large_healing_potion.png'],
+ ['Эликсир опыта · III','Увеличивает получаемый опыт на 50% на 1 час',10,'xp',.5,'./art-inbox/09-consumables/02-scrolls-mana-stones/C12_09_magic_hourglass.png'],
+ ['Эликсир опыта · IV','Удваивает получаемый опыт на 1 час',20,'xp',1,'./art-inbox/09-consumables/01-potions/C11_10_rainbow_elixir.png'],
  ['Эликсир добычи · III','Увеличивает шанс находок на 75% на 1 час',5,'drop',.75,'./art-inbox/09-consumables/01-potions/C11_09_elixir.png'],
  ['Эликсир добычи · IV','Увеличивает шанс находок на 100% на 1 час',7,'drop',1,'./art-inbox/09-consumables/01-potions/C11_10_rainbow_elixir.png'],
  ['Точильный камень · I','Добавляет 10 процентных пунктов к шансу заточки на следующую попытку',50,'refine',.1,'./art-inbox/10-materials/05-tools/C20_14_whetstone.png'],
@@ -42,8 +48,8 @@ const diamond=[
  ['Бесплатная заточка','Даёт одну попытку заточки без расхода камня',35,'freeRefine',1,'./art-inbox/10-materials/05-tools/C20_14_whetstone.png'],
  ['Знак возрождения','Возвращает одну жизнь, максимум 3',45,'life',1,'./art-inbox/09-consumables/01-potions/C11_16_revival_potion.png'],
  ['Свиток перераспределения','Сбрасывает вложенные таланты, чтобы распределить их заново',30,'respec',1,'./art-inbox/09-consumables/02-scrolls-mana-stones/C12_08_remove_curse_scroll.png'],
- ['Премиум · 14 дней','На 14 дней даёт +5% серебра за победы',149,'premium',14,'./art-inbox/08-equipment/03-headwear/C07_08_crown.png'],
- ['Премиум · 30 дней','На 30 дней даёт +5% серебра за победы',249,'premium',30,'./art-inbox/08-equipment/03-headwear/C07_08_crown.png']
+ ['Премиум · 14 дней','На 14 дней даёт +5% серебра за победы и +5% опыта',149,'premium',14,'./art-inbox/08-equipment/03-headwear/C07_08_crown.png'],
+ ['Премиум · 30 дней','На 30 дней даёт +5% серебра за победы и +5% опыта',249,'premium',30,'./art-inbox/08-equipment/03-headwear/C07_08_crown.png']
 ];
 const packs=[];
 const slots=['Оружие','Шлем','Нагрудник','Перчатки','Поножи','Амулет'];
