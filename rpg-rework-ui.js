@@ -340,7 +340,7 @@
   if(toastMessage){let toast=root.querySelector(".tb-toast");if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2")?.appendChild(toast);}if(toast)toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
   ensureBottomNav();
-  if(isBattle){const arena=root.querySelector(".new-battle-wrap"),art=arenaBackgroundForStage(battle.stage);if(arena&&art){arena.style.setProperty("--tb-arena-background",'url("'+art+'")');arena.style.setProperty("--tb-arena-bg",'url("'+art+'")');arena.style.backgroundImage='linear-gradient(180deg,rgba(5,9,16,.40),rgba(5,9,16,.78)),url("'+art+'")';arena.style.backgroundColor="#101722";}}
+  if(isBattle){const arena=root.querySelector(".new-battle-wrap"),art=arenaBackgroundForStage(battle.stage);if(arena&&art){let layer=arena.querySelector(":scope > .tb-arena-bg-layer");if(!layer){layer=document.createElement("div");layer.className="tb-arena-bg-layer is-visible";layer.setAttribute("aria-hidden","true");arena.prepend(layer);}layer.style.backgroundImage='url("'+art+'")';arena.style.setProperty("--tb-arena-background",'url("'+art+'")');arena.style.setProperty("--tb-arena-bg",'url("'+art+'")');arena.style.backgroundImage='linear-gradient(180deg,rgba(5,9,16,.40),rgba(5,9,16,.78)),url("'+art+'")';arena.style.backgroundColor="#101722";}}
   if(screen==="profile"&&profileTab==="talents"&&talentTreeConfig)setTimeout(initTalentTreeCanvas,0);
  }
  function render(){return renderWithScrollSave();}
@@ -2396,8 +2396,9 @@ function profileRelicShopMarkup(c){
    save();render();
   }catch(error){notify(error.message);render();}
  });
- function pauseForFocusLoss(){if(battle?.guildRaid)return;if((engine.state.account.settings||{}).auto_pause_on_blur===false)return;if(screen==="battle"&&battle&&!battle.paused){battle.paused=true;clearPendingTurnTimer();battle.timerRemainingMs=0;battle.timerStartedAt=0;if(battle.telegraph)battle.remainingResponseMs=Math.max(0,(battle.telegraph.until||Date.now())-Date.now());save();render();}}
- document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseForFocusLoss();});window.addEventListener("blur",pauseForFocusLoss);
+ function pauseForFocusLoss(){if(battle?.guildRaid)return;if((engine.state.account.settings||{}).auto_pause_on_blur===false)return;if(screen==="battle"&&battle&&!battle.paused){battle.paused=true;battle.autoPausedForBlur=true;clearPendingTurnTimer();battle.timerRemainingMs=0;battle.timerStartedAt=0;if(battle.telegraph)battle.remainingResponseMs=Math.max(0,(battle.telegraph.until||Date.now())-Date.now());save();render();}}
+ function resumeAfterFocusLoss(){if(screen!=="battle"||!battle||!battle.autoPausedForBlur)return;battle.autoPausedForBlur=false;battle.paused=false;if(battle.enemyQueueState){resumeEnemyTurnQueue(140);save();render();return;}battle.busy=false;battle.isPlayerTurn=true;battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};battle.telegraph=null;save();render();}
+ document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseForFocusLoss();else resumeAfterFocusLoss();});window.addEventListener("blur",pauseForFocusLoss);window.addEventListener("focus",resumeAfterFocusLoss);window.addEventListener("pageshow",resumeAfterFocusLoss);
  window.addEventListener("pagehide",()=>{try{if(engine&&live()){engine.publishGhostSnapshot(live().id,"exit");save();window.TowerboundCloud?.flushSave?.();}}catch(error){console.warn("Ghost snapshot on exit failed",error);}});
  function boot(){
   root.innerHTML='<div style="min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;color:#e9dfca;background:radial-gradient(ellipse at 50% 0,#263447,#080d15 72%)"><div><div style="font:800 12px system-ui;letter-spacing:.24em;color:#d8b978">TOWERBOUND</div><div style="margin-top:10px;font:700 20px Georgia">ЗАГРУЗКА БАШНИ…</div><div style="margin-top:8px;color:#aebbd0;font:12px system-ui">Подготавливаем персонажей и игровой мир</div></div></div>';

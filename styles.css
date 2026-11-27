@@ -3572,3 +3572,11 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-installed-gem>span{display:grid;gap:3px;min-width:0;overflow-wrap:anywhere}
 #tbRpg .tb-installed-gem small{font-size:10px;line-height:1.35;color:#b9b1a2}
 #tbRpg .tb-installed-gem button{flex:0 0 auto;min-height:34px;padding:6px 9px;font-size:10px}
+
+/* Battle HUD recovery: separate class resource and specialization resonance rows. */
+#tbRpg .tb-v2[data-screen="battle"] .new-energy-summary{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch!important;justify-items:stretch!important;gap:7px!important;width:100%!important;min-width:0!important;}
+#tbRpg .tb-v2[data-screen="battle"] .tb-class-resource,#tbRpg .tb-v2[data-screen="battle"] .tb-specialization-resonance{display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:wrap!important;gap:6px!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.35!important;}
+#tbRpg .tb-v2[data-screen="battle"] .tb-class-resource>span,#tbRpg .tb-v2[data-screen="battle"] .tb-specialization-resonance>*{min-width:0!important;max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;}
+#tbRpg .tb-v2[data-screen="battle"] .new-battle-relics{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:5px!important;min-width:0!important;max-width:100%!important;}
+#tbRpg .tb-v2[data-screen="battle"] .new-battle-relic{flex:0 0 auto!important;}
+#tbRpg .tb-v2[data-screen="battle"] .tb-arena-bg-layer{z-index:0!important;opacity:1!important;filter:brightness(.52) saturate(.88)!important;}
