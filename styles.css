@@ -3095,3 +3095,45 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-gear-loot-copy b{font-size:10px!important}
  #tbRpg .tb-gear-loot-copy small,#tbRpg .tb-gear-loot-copy p{font-size:7px!important}
 }
+
+
+/* FIX: backpack item artwork stays in the LEFT thumbnail column */
+#tbRpg .tb-gear-loot-card{
+  display:grid!important;
+  grid-template-columns:46px minmax(0,1fr) 64px!important;
+  grid-template-areas:"art copy action"!important;
+  align-items:center!important;
+  justify-items:stretch!important;
+}
+#tbRpg .tb-gear-loot-card>.tb-gear-loot-art{
+  grid-area:art!important;position:relative!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  justify-self:start!important;align-self:center!important;
+  width:44px!important;height:44px!important;min-width:44px!important;
+  max-width:44px!important;margin:0!important;padding:0!important;
+  transform:none!important;inset:auto!important;overflow:hidden!important;
+}
+#tbRpg .tb-gear-loot-card>.tb-gear-loot-art>img,
+#tbRpg .tb-gear-loot-card>.tb-gear-loot-art>.tb-item-art-wrap,
+#tbRpg .tb-gear-loot-card>.tb-gear-loot-art>.tb-relic-atlas{
+  position:relative!important;display:block!important;
+  width:42px!important;height:42px!important;min-width:0!important;min-height:0!important;
+  max-width:42px!important;max-height:42px!important;
+  margin:0!important;padding:0!important;inset:auto!important;
+  transform:none!important;object-fit:contain!important;object-position:center!important;
+}
+#tbRpg .tb-gear-loot-card>.tb-gear-loot-copy{
+  grid-area:copy!important;position:relative!important;
+  justify-self:stretch!important;align-self:center!important;
+  width:100%!important;margin:0!important;transform:none!important;
+}
+#tbRpg .tb-gear-loot-card>button[data-equip]{
+  grid-area:action!important;justify-self:end!important;align-self:center!important;
+}
+@media(max-width:380px){
+ #tbRpg .tb-gear-loot-card{grid-template-columns:40px minmax(0,1fr) 58px!important}
+ #tbRpg .tb-gear-loot-card>.tb-gear-loot-art{width:38px!important;height:38px!important;min-width:38px!important;max-width:38px!important}
+ #tbRpg .tb-gear-loot-card>.tb-gear-loot-art>img,
+ #tbRpg .tb-gear-loot-card>.tb-gear-loot-art>.tb-item-art-wrap,
+ #tbRpg .tb-gear-loot-card>.tb-gear-loot-art>.tb-relic-atlas{width:36px!important;height:36px!important;max-width:36px!important;max-height:36px!important}
+}
