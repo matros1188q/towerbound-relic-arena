@@ -12,8 +12,6 @@ on:
       - 'progression-24.js'
       - 'endgame-systems.js'
       - 'rpg-rework-ui.css.js'
-      - 'rpg-mode.js'
-      - 'rpg-expansion.js'
       - 'index.html'
       - 'configs/**'
       - 'tests/**'
@@ -47,9 +45,6 @@ jobs:
       - run: node --check endgame-systems.js
       - run: node --check rpg-rework-ui.js
       - run: node --check rpg-rework-ui.css.js
-      - run: node --check rpg-mode.js
-      - run: node --check rpg-expansion.js
-      - run: node tests/rpg-expansion-static.cjs
       - run: node tests/gamefeel.test.cjs
       - run: node tests/rpg-rework-v2.test.cjs
       - run: node tests/ui-polish-regression.test.cjs

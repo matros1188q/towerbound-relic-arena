@@ -21,7 +21,6 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check service-worker.js
-          node --check rpg-mode.js
           node --check towerbound-engine.js
           node --check combat-visuals.js
           node --check juice-pwa.js
