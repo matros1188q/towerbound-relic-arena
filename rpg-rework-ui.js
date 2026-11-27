@@ -337,8 +337,19 @@
   root.innerHTML='<div class="tb-v2">'+markup+'</div>';
   if(toastMessage){let toast=root.querySelector(".tb-toast");if(!toast){toast=document.createElement("div");toast.className="tb-toast";root.querySelector(".tb-v2")?.appendChild(toast);}if(toast)toast.textContent=toastMessage;}
   root.querySelectorAll(".tb-map-node").forEach(node=>{if(Number(node.dataset.stage)===selectedStage)node.classList.add("selected");});
+  ensureBottomNav();
  }
 
+
+ function ensureBottomNav(){
+  const host=root.querySelector(".tb-v2");if(!host)return;
+  let nav=host.querySelector(".tb-bottom-nav");
+  if(!live()||["characters","death","battle"].includes(screen)||host.querySelector(".tb-turn-tutorial")){nav?.remove();return;}
+  if(!nav){nav=document.createElement("nav");nav.className="tb-bottom-nav";nav.setAttribute("aria-label","Основная навигация");host.appendChild(nav);}
+  nav.innerHTML='<button type="button" data-action="bottom-map" data-nav-tab="map" aria-label="Бой и карта"><span aria-hidden="true"></span><small>БОЙ / КАРТА</small></button><button type="button" data-action="bottom-profile" data-nav-tab="profile" aria-label="Персонаж"><span aria-hidden="true"></span><small>ПЕРСОНАЖ</small></button><button type="button" data-action="bottom-progress" data-nav-tab="progress" aria-label="Прогресс"><span aria-hidden="true"></span><small>ПРОГРЕСС</small></button><button type="button" data-action="bottom-community" data-nav-tab="community" aria-label="Сообщество"><span aria-hidden="true"></span><small>СООБЩЕСТВО</small></button><button type="button" data-action="bottom-shop" data-nav-tab="shop" aria-label="Магазин"><span aria-hidden="true"></span><small>МАГАЗИН</small></button><button type="button" data-action="bottom-account" data-nav-tab="account" aria-label="Аккаунт"><span aria-hidden="true"></span><small>АККАУНТ</small></button>';
+  const active=screen==="map"?"map":screen==="profile"?(profileTab==="account"?"account":"profile"):"map";
+  nav.querySelectorAll("[data-nav-tab]").forEach(button=>{const on=button.dataset.navTab===active;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});
+ }
  function loadBattleEnemy(index){
   const c=live(),stage=c.run.stage;
   if(!battle.enemies){battle.enemies=stage.mobs.map((mob,i)=>{const stats=engine.getEnemyStats(c.id,battle.stage,mob),hp=stats.hp;return{...mob,index:i,id:"enemy-"+i,hp,maxHp:hp,alive:true,shield:mob.mechanic==="shield"?Math.round(hp*balance.elite_mechanics.shield.absorb_fraction):0,turnsTaken:0,poison:0,bleed:0,burn:0,weak:0,vulnerable:0};});index=stage.targetIndex??0;}
@@ -358,6 +369,55 @@
   if(target.type==="boss")updateBossPhase(target);
   return{damage,dealt,multiplier,killed:target.hp<=0};
  }
+ function showEchoOfPastScreen(character,stage){
+  const floor=Math.max(1,Number(stage)||0),entry=balance?.lore?.entries?.find(item=>Number(item.unlock_stage)===floor);if(!character||!entry||document.querySelector(".tb-echo-past-overlay"))return false;
+  const overlay=document.createElement("div");overlay.className="tb-echo-past-overlay";overlay.dataset.stage=String(floor);overlay.setAttribute("role","presentation");
+  const boss=String(character.run?.pendingEchoBossName||"Страж Башни"),bodyText="Этап "+floor+". Ты победил "+boss+". "+entry.text;
+  overlay.innerHTML='<section class="tb-echo-past-card" role="dialog" aria-modal="true" aria-labelledby="tbEchoPastTitle"><div class="tb-echo-past-kicker">TOWERBOUND · ХРОНИКИ БАШНИ</div><div class="tb-echo-past-mark" aria-hidden="true">✧</div><h2 id="tbEchoPastTitle">ЭХО ПРОШЛОГО</h2><div class="tb-echo-past-stage">ЭТАП '+floor+' · '+esc(entry.title)+'</div><div class="tb-echo-past-divider"></div><p>'+esc(bodyText)+'</p><div class="tb-echo-past-reward">✦ НАГРАДА ЗА ПРОЧТЕНИЕ <b>+100 СЕРЕБРА</b></div><button type="button" data-echo-read="1">ПРОЧИТАТЬ И ЗАБРАТЬ НАГРАДУ</button></section>';
+  document.body.appendChild(overlay);overlay.querySelector("[data-echo-read]")?.addEventListener("click",()=>{const c=live();if(!c)return;const lore=balance.lore.entries.find(item=>Number(item.unlock_stage)===floor);if(!lore)return;try{let xp=0;if(!(c.loreRead||[]).includes(lore.id)){const result=engine.readLore(c.id,lore.id);xp=Number(result.xp)||0;}c.echoSilverClaimed=Array.isArray(c.echoSilverClaimed)?c.echoSilverClaimed:[];if(!c.echoSilverClaimed.includes(lore.id)){c.silver=(Number(c.silver)||0)+100;c.echoSilverClaimed.push(lore.id);}c.run.pendingEchoStage=null;c.run.pendingEchoBossName=null;overlay.remove();save();render();notify("Эхо прочитано · +100 серебра"+(xp?" · +"+xp+" XP":""));}catch(error){notify(error.message);}});
+  return true;
+ }
+
+ function skipFloorsPowerPlan(character){
+  const currentPower=Math.max(0,Number(engine.combatPower(character))||0),adjustedPower=Math.floor(currentPower*.9);
+  // Calibrated to the requested progression examples: 8,000 BP ≈ floor 65; 7,200 BP ≈ floor 56.
+  const stageFromPower=value=>Math.max(1,Math.min(balance.map.total_stages,Math.floor(65+(Number(value)-8000)*9/800)));
+  const powerStageBeforeMargin=stageFromPower(currentPower),powerStage=stageFromPower(adjustedPower);
+  const highest=Math.max(0,Number(character.progress?.highestEver)||0),bossEvery=Math.max(1,Number(balance.map?.boss_every)||10);
+  const fallbackStage=Math.max(1,Math.floor(highest/bossEvery)*bossEvery-(bossEvery-1));
+  const cappedByRecord=powerStageBeforeMargin>highest;
+  const targetStage=cappedByRecord?fallbackStage:Math.max(1,Math.min(powerStage,highest+1));
+  return{currentPower,adjustedPower,powerStageBeforeMargin,powerStage,highest,fallbackStage,targetStage,cappedByRecord};
+ }
+ function showSkipFloorsModal(){
+  const c=live();if(!c)return;
+  if(c.run?.stage){notify("Сначала заверши текущий бой — пропуск доступен между этажами");return;}
+  if((Number(c.progress?.highestEver)||0)<10){notify("Сначала пройди первого босса на 10-м этаже");return;}
+  const plan=skipFloorsPowerPlan(c),overlay=document.createElement("div");
+  overlay.className="tb-skip-floors-overlay";
+  overlay.innerHTML='<section class="tb-skip-floors-modal" role="dialog" aria-modal="true" aria-labelledby="tbSkipFloorsTitle"><div class="tb-eyebrow">TOWERBOUND · УСКОРЕННОЕ ВОСХОЖДЕНИЕ</div><h2 id="tbSkipFloorsTitle">Пропуск этажей</h2><p class="tb-skip-floors-intro">Сначала определяем этаж по полной боевой мощи, затем применяем запас −10%. Если полная мощь выше твоего рекорда, стартуем с начала предыдущего десятиэтажного отрезка.</p><div class="tb-skip-floors-stats"><div><small>ТВОЯ МОЩЬ</small><b>'+plan.currentPower.toLocaleString("ru-RU")+'</b></div><div><small>С УЧЁТОМ −10%</small><b>'+plan.adjustedPower.toLocaleString("ru-RU")+'</b></div><div><small>РЕКОРД БАШНИ</small><b>'+plan.highest+'/250</b></div><div><small>ЭТАЖ БЕЗ ЗАПАСА</small><b>'+plan.powerStageBeforeMargin+'</b></div><div><small>ЭТАЖ ПО МОЩИ −10%</small><b>'+plan.powerStage+'</b></div></div>'+(plan.cappedByRecord?'<div class="tb-skip-floors-reason"><b>Мощи хватает выше рекорда</b><span>Чтобы не перескакивать непройденный босс-рубеж, вход будет с начала последнего открытого десятиэтажного отрезка.</span></div>':'<div class="tb-skip-floors-reason"><b>Этаж рассчитан по твоей мощи</b><span>Расчётный этаж находится в пределах уже открытого прогресса.</span></div>')+'<div class="tb-skip-floors-target"><small>ТЫ НАЧНЁШЬ С ЭТАЖА</small><strong>'+plan.targetStage+'</strong><span>из 250</span></div><div class="tb-skip-floors-actions"><button type="button" data-skip-floors-close>ОТМЕНА</button><button type="button" class="tb-primary" data-skip-floors-confirm>НАЧАТЬ С '+plan.targetStage+' ЭТАЖА</button></div></section>';
+  document.body.appendChild(overlay);
+  const close=()=>overlay.remove();
+  overlay.addEventListener("click",event=>{
+   if(event.target===overlay||event.target.closest("[data-skip-floors-close]")){close();return;}
+   if(event.target.closest("[data-skip-floors-confirm]")){
+    const current=live();if(!current){close();return;}
+    if(current.run?.stage){close();notify("Сначала заверши текущий бой");return;}
+    const latest=skipFloorsPowerPlan(current);
+    try{
+     engine.voluntaryRestart(current.id);
+     current.progress.currentStage=latest.targetStage;
+     current.run.playerHp=engine.maxHp(current);
+     current.run.dailyChallengeActive=false;current.run.dailyChallengeDate=null;current.run.dailyChallengeSeed=null;
+     current.run.pendingTrial=null;current.run.pendingChampion=null;
+     selectedStage=latest.targetStage;towerMapOpen=false;screen="map";battle=null;postBattleSummary=null;
+     close();save();ensureCardDeck(current);syncEquipmentCards(current);beginStage();
+     notify("Пропуск выполнен · старт с этажа "+latest.targetStage);
+    }catch(error){close();notify(error.message||"Не удалось выполнить пропуск этажей");}
+   }
+  });
+ }
+
  function beginStage(){
   const c=live();if(!c)return;
   try{const plan=engine.beginStage(c.id,selectedStage);battle={stage:plan.stage,count:plan.count,enemies:null,targetIndex:0,enemy:null,enemyHp:0,enemyMax:0,shield:0,actor:{type:"player",id:"player",name:c.name},isPlayerTurn:true,playerTurnCount:0,round:1,cardsPlayedThisTurn:0,cardBlock:0,busy:false,paused:false,isCardAnimating:false,enemyQueueToken:0,enemyQueueState:null,actionDamageLedger:{},combatLog:[],comboProgress:{},bossDeadlineTurns:null};resetCardBattle(c);c.currentEnergy=Math.max(1,Number(c.energy)||3);drawCards(5);loadBattleEnemy();screen="battle";save();render();}
@@ -392,15 +452,64 @@
  }
  function endFromDamage(){clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="death";save();render();}
  function battleScreen(){
-  const c=live(),enemy=battle.enemy,hp=Math.max(1,engine.maxHp(c)),heroHp=Math.max(0,Number(c.run.playerHp)||0);
-  const targets=(battle.enemies||[]).map(t=>'<button type="button" class="tb-target-card '+(t.index===battle.targetIndex?'selected ':'')+(!t.alive?'defeated':'')+'" data-target="'+t.index+'" '+(!t.alive?'disabled':'')+'><b>'+(t.type==="boss"?"БОСС":t.type==="elite"?"ЭЛИТА":"ВРАГ "+(t.index+1))+'</b><small>'+esc(balance.mobs.roles[t.role]?.name||t.role||"Противник")+'</small><span class="tb-target-hp"><i style="width:'+Math.max(0,Math.min(100,t.hp/Math.max(1,t.maxHp)*100))+'%"></i></span><small>'+Math.max(0,Math.ceil(t.hp))+' / '+t.maxHp+' HP</small><small>'+esc(t.intent?.label||"Готовится")+'</small></button>').join("");
-  return header("Башня · этаж "+battle.stage,c.name+" · раунд "+(battle.round||1))+'<section class="tb-arena tb-card-arena"><div class="tb-arena-top"><b>ПРОТИВНИКИ</b><span>'+((battle.enemies||[]).filter(x=>x.alive).length)+' осталось</span><button type="button" data-action="map">К КАРТЕ</button></div><div class="tb-target-grid">'+targets+'</div><div class="tb-battle-focus"><div class="tb-enemy-focus"><b>'+esc(enemy?.name||"Противник")+'</b><div class="tb-healthbar enemy"><span style="width:'+Math.max(0,Math.min(100,Number(enemy?.hp||0)/Math.max(1,Number(enemy?.maxHp)||1)*100))+'%"></span></div><small>'+Math.max(0,Math.ceil(enemy?.hp||0))+' / '+(enemy?.maxHp||0)+' HP</small><p>'+esc(enemy?.intent?.label||"Ожидание хода")+'</p></div><div class="tb-battle-hero"><div class="tb-hero-art"><img src="'+portrait(c.classId)+'" alt=""></div><b>'+esc(c.name)+'</b><small>'+esc(clsName(c))+' · ур. '+c.level+'</small><div class="tb-healthbar hero"><span style="width:'+Math.max(0,Math.min(100,heroHp/hp*100))+'%"></span></div><small>'+Math.ceil(heroHp)+' / '+hp+' HP</small><b class="tb-energy">ЭНЕРГИЯ '+Math.max(0,c.currentEnergy||0)+' / '+Math.max(1,c.energy||3)+'</b><small>Блок: '+Math.max(0,battle.cardBlock||0)+'</small></div></div><div class="tb-hand-heading"><b>ТВОЯ РУКА</b><span>'+(c.hand||[]).length+' карт · колода '+(c.deck||[]).length+' · сброс '+(c.discard||[]).length+'</span></div><div class="tb-card-hand">'+renderHand()+'</div><button type="button" class="tb-end-turn" data-action="end-turn" '+(battle.actor?.type!=="player"||battle.busy||battle.paused||battle.isCardAnimating?'disabled':'')+'>КОНЕЦ ХОДА</button><div class="tb-combat-note">'+(battle.paused?"ПАУЗА":battle.busy?"Ход противников…":"Выбирай карты и цель, затем заверши ход")+'</div>'+combatLogMarkup()+'</section>';
+  const c=live(),hp=engine.maxHp(live());
+  const hpPct=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
+  const currentPotionStage=Math.max(1,Number(c.progress?.currentStage)||1),lastPotionStage=c.run?.lastPotionStage;
+  const potionCooldown=lastPotionStage===null||lastPotionStage===undefined||!Number.isFinite(Number(lastPotionStage))?0:Math.max(0,5-(currentPotionStage-Number(lastPotionStage)));
+  const ancientSetPieces=Math.max(0,Math.min(4,Number(battle.ancientSetPieces)||0)),ancientSetAwakened=ancientSetPieces>=2,ancientSetTierClass=ancientSetPieces>=4?"tier-4":ancientSetPieces>=3?"tier-3":ancientSetPieces>=2?"tier-2":"tier-0";
+  const ancientSetNames={assassin:"Око Безмолвной Охоты",bishop:"Первый Свет",dragonkin:"Сердце Древнего Дракона",destroyer:"Кулак Прародителя",elemental:"Призма Семи Истоков",duelist:"Зеркало Последнего Выпада",shaman:"Тотем Корней Мира"};
+  const ancientSetEffects={assassin:"ПЕРВАЯ АТАКА ×2",bishop:"+8 ЗДОРОВЬЯ",dragonkin:"+14 СТАРТОВОЙ БРОНИ",destroyer:"+2 УРОНА АТАК",elemental:"+2 СИЛЫ МАГИИ",duelist:"+2 БРОНИ ЗАЩИТЫ",shaman:"+1 СЛАБОСТЬ ВСЕМ ВРАГАМ"};
+  const ancientSetMarkup=ancientSetPieces>0?'<div class="tb-battle-set-mark '+(ancientSetAwakened?'is-awakened '+ancientSetTierClass:'is-gathering')+'"><span class="tb-battle-set-sigil">'+(ancientSetPieces>=4?'✦':ancientSetPieces===3?'✧':'◇')+'</span><span class="tb-battle-set-copy"><b>'+(ancientSetPieces>=4?'ПОЛНОЕ ПРОБУЖДЕНИЕ':ancientSetPieces===3?'РЕЗОНАНС · II СТУПЕНЬ':'РЕЗОНАНС · I СТУПЕНЬ')+'</b><small>'+ancientSetPieces+'/4 · '+(ancientSetPieces>=4?(ancientSetNames[c.classId]||"Древний комплект")+' · '+(ancientSetEffects[c.classId]||"Сила комплекта"):ancientSetPieces===3?'Золотая аура · сила ордена растёт':'Пробуждающаяся печать · сила ордена растёт')+'</small><span class="tb-battle-set-progress" aria-label="'+ancientSetPieces+' из 4 реликвий">'+[1,2,3,4].map(n=>'<i class="'+(n<=ancientSetPieces?'is-lit':'')+'"></i>').join("")+'</span></span></div>':'';
+  ensureLoadout(c);
+  const enemies=battle.enemies.filter(enemy=>enemy&&enemy.alive&&Number(enemy.hp)>0);
+  const enemyMarkup=enemies.map(target=>{
+   const targetIndex=Number.isInteger(target.index)?target.index:battle.enemies.indexOf(target);
+   const enemyHpPct=Math.max(0,Math.min(100,Number(target.hp)/Math.max(1,Number(target.maxHp)||1)*100));
+   const intent=target.telegraph?.label||target.intent?.label||(battle.telegraph&&targetIndex===battle.targetIndex?battle.telegraph.label:enemyIntentText(target));
+   const weaknessIcons={fire:"🔥",ice:"❄️",dark:"💀",physical:"⚔️"},weaknessIcon=weaknessIcons[String(target.weakness||"").toLowerCase()]||"";
+   const attackInterval=Math.max(1,Number(target.attackIntervalTurns||target.turnInterval||(target.type==="boss"?2:3)));
+   const attackCountdown=Math.max(1,attackInterval-((Number(target.turnsTaken)||0)%attackInterval));
+   const countdownMarkup=(target.type==="boss"||target.type==="elite")?'<div class="new-enemy-countdown">Атака через: '+attackCountdown+'</div>':"";
+   const phaseMarkup=target.type==="boss"?'<div class="tb-boss-phase">ФАЗА '+Math.min(target.maxPhases||4,target.phase||1)+' / '+(target.maxPhases||4)+'</div>':"";
+   const threatMarkup=target.type==="boss"?'<div class="new-enemy-threat boss">☠ БОСС · ВЫСОКАЯ УГРОЗА</div>':target.champion?'<div class="new-enemy-threat elite">♛ ЧЕМПИОН БАШНИ · ОСОБАЯ МЕХАНИКА</div>':target.type==="elite"?'<div class="new-enemy-threat elite">✦ ЭЛИТНЫЙ ПРОТИВНИК</div>':"";
+   const statuses=["poison","bleed","burn","weak","vulnerable","shield"].filter(key=>Number(target[key])>0).map(key=>'<span class="new-enemy-status">'+({poison:"☠️ Яд",bleed:"🩸 Кровь",burn:"🔥 Горение",weak:"💨 Слабость",vulnerable:"🎯 Уязвимость",shield:"🛡 Барьер"}[key])+' '+target[key]+'</span>').join("")+(target.champion&&target.mechanic==="reflect"?'<span class="new-enemy-status">🪞 Отражает 15% урона</span>':target.champion&&target.mechanic==="teleport"&&Number(target.teleportCharges??1)>0?'<span class="new-enemy-status">✧ Уклонится от следующего удара</span>':target.champion&&target.mechanic==="summon"&&!target.eliteSummoned?'<span class="new-enemy-status">☠ Готовит призыв прислужников</span>':target.champion&&target.mechanic==="berserk"?'<span class="new-enemy-status">🔥 Ярость при HP ниже 30%</span>':target.champion&&target.mechanic==="poison"?'<span class="new-enemy-status">☠ Ядовитые атаки</span>':"");
+   return '<div class="new-enemy-item'+(targetIndex===battle.targetIndex?" selected":"")+'" data-target="'+targetIndex+'" role="button" tabindex="0" aria-pressed="'+(targetIndex===battle.targetIndex?'true':'false')+'">'+
+    '<img src="'+esc(enemyPortrait(target))+'" class="new-enemy-img" alt="'+esc(target.name||"Враг")+'">'+
+    '<div class="new-enemy-name">'+(weaknessIcon?'<span aria-label="Уязвимость">'+weaknessIcon+'</span>':"")+esc(target.name||balance.mobs.roles[target.role]?.name||"Враг")+'</div>'+
+    threatMarkup+countdownMarkup+phaseMarkup+'<div class="new-enemy-intent">'+esc(intent)+'</div>'+
+    '<div class="new-enemy-statuses">'+statuses+'</div><div class="new-enemy-hp-bar"><div style="width:'+enemyHpPct+'%"></div></div>'+
+    '<div class="new-enemy-hp-text">'+Math.ceil(target.hp)+' HP</div></div>';
+  }).join("");
+  const handMarkup=renderHand();
+  const healingPotionCount=(c.bag||[]).filter(item=>item&&item.type==="healing_potion").reduce((sum,item)=>sum+Math.max(0,Number(item.quantity)||0),0);
+  if(hpPct<=30&&!battle.lowHpWarningLogged){battle.lowHpWarningLogged=true;logExpeditionEvent("Здоровье ниже 30% · "+Math.ceil(c.run.playerHp)+" / "+hp+" HP","#ff7777");}
+  const hpWarningMarkup=hpPct<=30?'<div class="new-hero-warning '+(hpPct<=15?"critical":"") +'" role="status" aria-live="polite">'+(hpPct<=15?"⚠ КРИТИЧЕСКИ МАЛО ЗДОРОВЬЯ":"⚠ ЗДОРОВЬЕ НИЗКОЕ")+' · '+(healingPotionCount>0&&potionCooldown===0?"Зелье готово — используй его в свой ход":healingPotionCount>0?"Зелье на перезарядке · разыграй защиту":"Зелья нет · разыграй карты защиты")+'</div>':"";
+  const relicMarkup=(c.relics||[]).map(id=>engine.RELICS_DATABASE?.[id]).filter(Boolean).map(relic=>'<span class="new-battle-relic" title="'+esc(relic.name+": "+relic.description)+'">'+esc(relic.icon||"✦")+'</span>').join("");
+  const potionMarkup=(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span>🧪</span><b>'+Number(item.quantity)+'</b></button>').join("");
+  return '<div class="new-battle-wrap'+(battle.fastBattle?" tb-fast-battle":"")+'">'+
+   '<div class="new-battle-top"><span class="new-round-label">'+(battle.trialObjective?'ИСПЫТАНИЕ · '+esc(battle.trialObjective.label)+' · ':'')+'РАУНД '+battle.round+' · ИНИЦИАТИВА</span><div class="new-battle-relics" aria-label="Активные реликвии">'+relicMarkup+'</div>'+
+   '<div class="new-battle-actions"><button type="button" class="tb-fast-battle-btn" data-action="toggle-fast-battle">'+(battle.fastBattle?"⚡ ×2":"⚡ ×1")+'</button><button type="button" class="new-pause-btn" data-action="pause">'+(battle.paused?"▶":"Ⅱ")+'</button></div></div>'+
+   '<div class="new-battle-middle"><div class="new-hero-side'+(ancientSetAwakened?' tb-ancient-awakened tb-ancient-'+ancientSetTierClass+' tb-ancient-'+esc(c.classId):'')+'"><span class="tb-ancient-orbit" aria-hidden="true"></span><img src="'+esc(portrait(c.classId))+'" class="new-hero-img" alt="">'+ancientSetMarkup+
+   '<div class="new-hero-name">'+esc(c.name)+'</div><div class="new-hp-bar"><div style="width:'+hpPct+'%"></div></div>'+
+   '<div class="new-hero-hp-text">'+Math.ceil(c.run.playerHp)+' / '+hp+' HP</div>'+hpWarningMarkup+'<div class="new-hero-resource-text">'+esc(classData(c).resource)+' · '+Math.round(c.resource)+' / '+Math.round(c.resourceMax)+'</div>'+
+   '<div class="new-hero-potions"><span class="tb-potion-cooldown">'+(potionCooldown>0?'Через '+potionCooldown+' этажей':'Готово')+'</span>'+potionMarkup+'</div></div>'+
+   '<div class="new-enemies-side">'+enemyMarkup+'</div></div>'+
+   '<div class="new-battle-bottom"><div class="new-turn-guidance" aria-live="polite">'+(battle.guildRaid?"РЕЙД · РАЗЫГРАЙ 3 КАРТЫ · "+Number(battle.cardsPlayedThisTurn||0)+"/3":(battle.actor?.type==="player"?"Твой ход. Выбери действие или заверши ход.":"Противники атакуют..."))+'</div>'+
+   '<div class="new-stats-row"><div class="new-energy-summary"><span id="energyDisplay">'+(battle.guildRaid?'КАРТЫ: '+Number(battle.cardsPlayedThisTurn||0)+'/3':'ЭНЕРГИЯ: '+c.currentEnergy+'/'+c.energy)+'</span>'+classResourceMarkup(c)+'</div>'+
+   '<div class="new-deck-controls"><button type="button" class="tb-deck-viewer-trigger" data-deck-viewer>▤ КОЛОДА <b id="deckViewerCount">'+collectDeckCards(c).length+'</b></button>'+
+   '<span class="new-deck-counts">ДОБОР: <b id="deckCount">'+c.deck.length+'</b> · СБРОС: <b id="discardCount">'+c.discard.length+'</b></span></div></div>'+
+   '<div class="new-hand-row" id="cardHand">'+handMarkup+'</div><div class="new-log-row">'+combatLogMarkup()+'</div>'+
+   (battle.guildRaid?'<div class="new-end-turn" aria-live="polite">КАРТЫ РЕЙДА · '+Number(battle.cardsPlayedThisTurn||0)+' / 3</div>':'<button type="button" class="new-end-turn" id="endturn" data-action="end-turn" '+(battle.actor?.type!=="player"||battle.paused?"disabled":"")+'>'+(battle.actor?.type==="player"?"ЗАВЕРШИТЬ ХОД":"ХОД ПРОТИВНИКА…")+'</button>')+'</div>'+
+   '<div class="tb-fx-layer" aria-hidden="true"></div></div>';
  }
  function deathScreen(){const c=live();if(!c)return characterList();let p={};try{p=engine.deathPreview(c.id)||{};}catch(_){}return header("Забег завершён",c.name)+'<section class="tb-death"><div class="tb-eyebrow">ПОСЛЕДНИЙ ШАНС</div><h1>Персонаж погиб</h1><p>Забег завершён. Подтверди результат, чтобы вернуться к Башне.</p><div class="tb-death-losses"><div><small>ПОТЕРЯ ОПЫТА</small><b>'+Number(p.experienceLoss||0)+'</b></div><div><small>УРОВНЕЙ</small><b>'+Number(p.levelsLost||0)+'</b></div></div><button class="tb-danger" data-action="confirm-death">ПОДТВЕРДИТЬ СМЕРТЬ</button></section>';}
  function createModernCharacter(){const name=root.querySelector("#name")?.value||"";try{const c=engine.createCharacter(name,selectedClass);selectedId=c.id;engine.state.activeCharacterId=c.id;dialogOpen=false;screen="characters";selectedStage=1;ensureCardDeck(c);syncEquipmentCards(c);save();render();notify("Персонаж создан");}catch(error){notify(error.message);}}
  async function handleModernClick(event){
-  const t=event.target?.closest?.("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-card-play],[data-target],[data-cosmetic-buy],[data-cosmetic-equip],[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy]");
+  const t=event.target?.closest?.("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-card-play],[data-target],[data-cosmetic-buy],[data-cosmetic-equip],[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-battle-potion],[data-deck-viewer],[data-deck-viewer-close]");
   if(!t||!root.contains(t)||t.matches("input,textarea,select"))return;
+  if(t.dataset.battlePotion){try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано");}catch(error){notify(error.message);}return;}
+  if(t.hasAttribute("data-deck-viewer")){showDeckViewer();return;}
+  if(t.hasAttribute("data-deck-viewer-close")){document.querySelector(".tb-deck-viewer-overlay")?.remove();return;}
   if(t.dataset.pick){selectedId=t.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live()?.progress.currentStage||1;screen="characters";render();save();return;}
   if(t.dataset.class){selectedClass=t.dataset.class;render();return;}
   if(t.dataset.stage){selectedStage=Number(t.dataset.stage);render();return;}
@@ -416,6 +525,19 @@
   if(t.dataset.cosmeticBuy){try{engine.buyCosmeticChest(t.dataset.cosmeticBuy);save();render();notify("Косметика получена");}catch(e){notify(e.message);}return;}
   if(t.dataset.cosmeticEquip){try{engine.equipCosmetic(t.dataset.cosmeticEquip);save();render();notify("Косметика применена");}catch(e){notify(e.message);}return;}
   switch(t.dataset.action){
+   case "bottom-map":screen=battle?"battle":"map";render();save();break;
+   case "bottom-profile":profileTab="stats";screen="profile";render();break;
+   case "bottom-progress":if(window.TowerboundProgression?.open)window.TowerboundProgression.open();else notify("Модуль прогрессии ещё загружается");break;
+   case "bottom-community":if(window.TowerboundSocial?.open)window.TowerboundSocial.open();else notify("Сообщество ещё загружается");break;
+   case "bottom-shop":shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());break;
+   case "bottom-account":profileTab="account";screen="profile";render();break;
+   case "skip-floors":showSkipFloorsModal();break;
+   case "tower-map-focus":towerMapOpen=true;render();break;
+   case "tower-map-close":towerMapOpen=false;render();break;
+   case "tower-map-current":selectedStage=live()?.progress.currentStage||1;towerMapOpen=false;render();break;
+   case "toggle-fast-battle":if(battle){battle.fastBattle=!battle.fastBattle;save();render();}break;
+   case "pause":if(battle){battle.paused=!battle.paused;if(battle.paused)clearPendingTurnTimer();save();render();}break;
+   case "potion":try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано");}catch(error){notify(error.message);}break;
    case "new":if(engine.state.characters.length>=balance.account.max_characters){notify("Достигнут лимит персонажей");return;}dialogOpen=true;selectedClass="assassin";render();break;
    case "close":dialogOpen=false;render();break;
    case "confirm-create":createModernCharacter();break;
