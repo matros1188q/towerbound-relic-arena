@@ -1,7 +1,9 @@
 (function(){
  "use strict";
- const root=document.getElementById("tbRpg");
- if(!root)return;
+ let root=document.getElementById("tbRpg");
+ if(!root){root=document.createElement("div");root.id="tbRpg";document.body.appendChild(root);}
+ document.body.classList.add("rpg-open");
+ root.style.cssText+=";position:fixed;inset:0;z-index:999999;width:100vw;height:100dvh;min-height:100vh;overflow:hidden;background:#080d15;color:#eee;font-family:system-ui,sans-serif";
  let towerMapOpen=false;
  let towerMapScrollTop=0;
  let towerMapPageLock=null;
