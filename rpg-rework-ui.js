@@ -362,11 +362,31 @@
   catch(error){notify(error.message);console.error("[Towerbound] stage start failed",error);}
  }
  function finishCurrentEnemy(){
-  if(!battle||battle.finishingEnemy)return;battle.finishingEnemy=true;clearPendingTurnTimer();const c=live(),defeated=battle.enemies?.find(enemy=>enemy.index===battle.targetIndex)||battle.enemy;if(!c||!defeated){battle.finishingEnemy=false;return;}
-  try{const result=engine.finishEnemy(c.id,{speed2:!!c.run.speed2,targetIndex:defeated.index});defeated.hp=0;defeated.alive=false;defeated.dead=true;
-   if(result.stageComplete){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этаж пройден · награды сохранены");if(result.relicChoices?.length)showRelicRewardScreen(result.relicChoices);return;}
-   battle.finishingEnemy=false;battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.busy=false;battle.actor={type:"player",id:"player",name:c.name};loadBattleEnemy(result.nextTargetIndex);save();render();if(result.relicChoices?.length)showRelicRewardScreen(result.relicChoices);
+  if(!battle||battle.finishingEnemy)return;battle.finishingEnemy=true;clearPendingTurnTimer();
+  const c=live();if(!c){battle.finishingEnemy=false;return;}
+  try{
+   const defeated=(battle.enemies||[]).filter(enemy=>enemy&&Number(enemy.hp)<=0&&!engine.getChar(c.id).run.stage.killedIndices.includes(enemy.index));
+   const queue=defeated.length?defeated:[battle.enemies?.find(enemy=>enemy.index===battle.targetIndex)||battle.enemy].filter(Boolean);
+   let last=null,relicIds=[];
+   for(const enemy of queue){
+    if(!engine.getChar(c.id).run.stage)break;
+    last=engine.finishEnemy(c.id,{speed2:!!c.run.speed2,targetIndex:enemy.index});
+    enemy.hp=0;enemy.alive=false;enemy.dead=true;
+    if(last.relicChoices?.length)relicIds=last.relicChoices.map(item=>typeof item==="string"?item:item.id);
+    if(last.stageComplete)break;
+   }
+   if(last?.stageComplete){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этаж пройден · награды сохранены");if(relicIds.length)showRelicRewardScreen(relicIds);return;}
+   battle.finishingEnemy=false;battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.busy=false;battle.actor={type:"player",id:"player",name:c.name};
+   const next=last?.nextTargetIndex??(battle.enemies||[]).findIndex(enemy=>enemy.alive&&enemy.hp>0);
+   loadBattleEnemy(next);save();render();if(relicIds.length)showRelicRewardScreen(relicIds);
   }catch(error){battle.finishingEnemy=false;recoverBattleControl(error,"Не удалось завершить противника");}
+ }
+ function reconcileBattleCompletion(){
+  if(!battle)return true;
+  const dead=(battle.enemies||[]).some(enemy=>enemy&&enemy.alive&&Number(enemy.hp)<=0);
+  if(dead){finishCurrentEnemy();return true;}
+  if(!(battle.enemies||[]).some(enemy=>enemy&&enemy.alive&&Number(enemy.hp)>0)){finishCurrentEnemy();return true;}
+  return false;
  }
  function endFromDamage(){clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="death";save();render();}
  function battleScreen(){
@@ -1330,7 +1350,8 @@ function createDialog(){
  function advanceToPlayerTurn(){
   if(!battle)return;
   clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.enemyQueueState=null;
-  battle.busy=false;battle.actor={type:"player",id:"player",name:live().name};battle.telegraph=null;
+  const c=live();battle.busy=false;battle.isPlayerTurn=true;battle.actor={type:"player",id:"player",name:c.name};battle.telegraph=null;
+  c.currentEnergy=Math.max(1,Number(c.energy)||3);battle.cardsPlayedThisTurn=0;battle.cardBlock=0;drawCards(5);
   showPlayerTurn();save();render();
  }
  function runEnemyTurnQueue(queue,index,token){
