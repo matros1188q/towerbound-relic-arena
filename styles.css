@@ -3451,3 +3451,24 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-system-product-copy b{display:block!important;color:#f0dfc0!important;font-size:11px!important;line-height:1.25!important}
 #tbRpg .tb-system-product-copy small{display:block!important;margin-top:4px!important;color:#b9b4a9!important;font-size:9px!important;line-height:1.3!important}
 @media(max-width:520px){#tbRpg .tb-system-products{grid-template-columns:1fr!important}}
+
+/* Towerbound · cosmetic shop collection */
+#tbRpg .tb-cosmetic-store{margin:18px 0 8px;padding:14px;border:1px solid #b89a5b55;border-radius:14px;background:linear-gradient(145deg,rgba(42,36,29,.72),rgba(12,20,27,.88))}
+#tbRpg .tb-cosmetic-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+#tbRpg .tb-cosmetic-heading h3,#tbRpg .tb-cosmetic-collection h4{margin:0;color:#f0d7a5;font:800 12px/1.2 system-ui;letter-spacing:.12em}
+#tbRpg .tb-cosmetic-heading p{margin:4px 0 0;color:#b9b4a9;font-size:10px}
+#tbRpg .tb-cosmetic-heading>span{color:#e6c77e;font-size:11px;font-weight:800;white-space:nowrap}
+#tbRpg .tb-cosmetic-grid,#tbRpg .tb-cosmetic-owned-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#tbRpg .tb-cosmetic-chest,#tbRpg .tb-cosmetic-owned{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:9px;min-width:0;padding:9px;border:1px solid #a68b5638;border-radius:11px;background:rgba(6,12,18,.62)}
+#tbRpg .tb-cosmetic-art{display:grid;place-items:center;width:48px;height:48px;overflow:hidden;border-radius:9px;background:radial-gradient(circle,#9b78452b,transparent 72%)}
+#tbRpg .tb-cosmetic-art img{width:100%;height:100%;object-fit:contain}
+#tbRpg .tb-cosmetic-copy{display:grid;gap:4px;min-width:0}
+#tbRpg .tb-cosmetic-copy b{color:#f0dfc0;font-size:10px;line-height:1.25}
+#tbRpg .tb-cosmetic-copy small{color:#b9b4a9;font-size:9px;line-height:1.3}
+#tbRpg .tb-cosmetic-copy span{color:#e7c77a;font-size:10px;font-weight:800}
+#tbRpg .tb-cosmetic-chest button,#tbRpg .tb-cosmetic-owned button{min-height:32px;padding:6px 9px;border:1px solid #c5a36388;border-radius:8px;background:linear-gradient(135deg,#594326,#30261f);color:#ffe8b5;font-size:8px;font-weight:900;letter-spacing:.04em}
+#tbRpg .tb-cosmetic-chest button:disabled,#tbRpg .tb-cosmetic-owned button:disabled{opacity:.55}
+#tbRpg .tb-cosmetic-collection{margin-top:14px;padding-top:12px;border-top:1px solid #b89a5b33}
+#tbRpg .tb-cosmetic-collection h4{margin-bottom:9px;font-size:10px}
+#tbRpg .tb-cosmetic-empty{margin:12px 0 0;color:#b9b4a9;font-size:10px;line-height:1.45}
+@media(max-width:520px){#tbRpg .tb-cosmetic-store{padding:10px;margin-top:12px}#tbRpg .tb-cosmetic-grid,#tbRpg .tb-cosmetic-owned-grid{grid-template-columns:1fr}#tbRpg .tb-cosmetic-chest,#tbRpg .tb-cosmetic-owned{grid-template-columns:44px minmax(0,1fr) auto;gap:7px;padding:8px}#tbRpg .tb-cosmetic-art{width:44px;height:44px}#tbRpg .tb-cosmetic-chest button,#tbRpg .tb-cosmetic-owned button{font-size:7px;padding:6px}}
