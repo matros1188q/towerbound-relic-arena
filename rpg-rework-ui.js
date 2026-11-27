@@ -1168,9 +1168,9 @@
  function characterList(){
   const chars=engine.state.characters;
   const selected=chars.find(c=>c.id===selectedId)||chars[0];
-  const cloud=window.TowerboundCloud,authenticated=!!cloud?.signedIn,cloudReady=!!cloud?.savesReady,cloudStatus=cloud?.status?.()||{},remoteHasCharacters=!!cloudStatus.remoteHasCharacters,engineHasCharacters=!!engine?.state?.characters?.length,localBackup=cloudStatus.localBackup;
+  const cloud=window.TowerboundCloud,authenticated=!!cloud?.signedIn,cloudReady=!!cloud?.savesReady,cloudStatus=cloud?.status?.()||{},remoteHasCharacters=!!cloudStatus.remoteHasCharacters,hasCloudOnlyCharacter=cloudStatus.remoteHasCharacters&&!engine.state.characters?.length,engineHasCharacters=!!engine?.state?.characters?.length,localBackup=cloudStatus.localBackup;
   if(selected&&!selectedId)selectedId=selected.id;
-  /* Local characters remain playable while cloud refresh runs; only an empty profile waits for the first cloud response. */const emptyContent=authenticated&&!engineHasCharacters&&(!cloudReady||remoteHasCharacters)
+  /* Local characters remain playable while cloud refresh runs; only an empty profile waits for the first cloud response. */const emptyContent=authenticated&&!engineHasCharacters&&(!cloudReady||hasCloudOnlyCharacter)
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Синхронизация сохранения</h2><p>В облаке есть персонаж, но игра ещё не подтвердила его загрузку. Создание нового персонажа заблокировано, чтобы не затереть прогресс.</p><button type="button" data-action="cloud-retry" class="tb-primary">ПОВТОРИТЬ ЗАГРУЗКУ</button>'+(localBackup?.available?'<button type="button" data-action="cloud-recover-local" class="tb-secondary">ПРОВЕРИТЬ РЕЗЕРВНУЮ КОПИЮ</button>':'')+'</div>'
    : authenticated
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button type="button" data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>'
@@ -1619,9 +1619,10 @@ function createDialog(){
    if(Number(live()?.run?.playerHp)<=0){endFromDamage();return;}
    if(reconcileBattleCompletion())return;
    const nextIndex=queue.findIndex((candidate,i)=>i>index&&candidate.alive===true&&Number(candidate.hp)>0);
-   if(nextIndex<0){battle.enemyQueueState=null;advanceToPlayerTurn();return;}
-   battle.enemyQueueState={indices:queue.map(candidate=>Number(candidate.index)).filter(Number.isFinite),cursor:nextIndex};
+   const nextCursor=nextIndex<0?queue.length:nextIndex;
+   battle.enemyQueueState={indices:queue.map(candidate=>Number(candidate.index)).filter(Number.isFinite),cursor:nextCursor};
    if(battle.paused){save();return;}
+   if(nextIndex<0){battle.enemyQueueState=null;advanceToPlayerTurn();return;}
    save();render();
    scheduleEnemyTurnQueue(queue,nextIndex,token,500);
   }catch(error){recoverPlayerTurn(error);}
