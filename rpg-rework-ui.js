@@ -976,7 +976,7 @@
   return header("Выбор персонажа", authenticated ? "Аккаунт · " + (engine.state.account.diamonds || 0) + " алмазов" : "Войди, чтобы начать") +
     '<section class="fix-char-section">' +
     '<div class="fix-char-title"><h1>Персонажи</h1><p>Твой путь в Башне начинается с аккаунта</p></div>' +
-    (chars.length ? 
+    (authenticated && chars.length ? 
       '<div class="fix-char-grid">' + 
       chars.map(c => {
         const d = balance.classes.classes[c.classId];
