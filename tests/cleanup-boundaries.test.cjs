@@ -15,7 +15,7 @@ for(const icon of referencedTalentIcons)assert.ok(fs.existsSync(path.join(root,i
 const archiveDir=path.join(root,'art-inbox/06-other/talent-atlas-slices');
 assert.ok(fs.existsSync(archiveDir),'talent atlas work-material note remains available');
 assert.equal(fs.readdirSync(archiveDir).filter(name=>name.toLowerCase().endsWith('.png')).length,0,'active talent PNGs are not duplicated in the art inbox');
-assert.ok(fs.existsSync(path.join(root,'art-inbox/06-other/images_126_cropped.zip')),'unused source ZIP is preserved in the work-material inbox');
+assert.ok(fs.existsSync(path.join(root,'art-inbox/04-skills/archives/images_126_cropped.zip')),'unused source ZIP is preserved in the work-material inbox');
 assert.ok(!fs.existsSync(path.join(root,'assets/Castoms/images_126_cropped.zip')),'source ZIP is not mixed into the live custom item art folder');
 const runtimeFiles=[
  'index.html','service-worker.js','styles.css','assets/ui/art-sprites.css',
@@ -26,7 +26,9 @@ const runtimeFiles=[
 ];
 for(const file of runtimeFiles){
  const source=read(file);
- assert.ok(!source.includes('art-inbox/'),'work-material inbox must not be imported into runtime: '+file);
+ // Curated, classified equipment/consumable/material illustrations are served as static runtime assets.
+ // Unclassified previews, archives and work notes must never be imported by the game.
+ assert.ok(!/art-inbox\/(?:04-skills|06-other|07-unclassified)\//.test(source),'unclassified work material must not be imported into runtime: '+file);
 }
 const itemManifest=JSON.parse(read('assets/Castoms/item-art-manifest.json'));
 for(const sectionName of ['shop','relics']){
