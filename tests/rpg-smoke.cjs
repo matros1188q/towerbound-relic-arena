@@ -112,7 +112,7 @@ const {chromium}=require('playwright');
  });
  try{
   await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'networkidle'});
-  await page.waitForSelector('#tbRpg .tb-login-gate');
+  try{await page.waitForSelector('#tbRpg .tb-login-gate',{timeout:30000});}catch(error){const startup=await page.evaluate(()=>({rootExists:!!document.querySelector('#tbRpg'),rootText:document.querySelector('#tbRpg')?.innerText?.slice(0,1200),rootHtml:document.querySelector('#tbRpg')?.innerHTML?.slice(0,2400),ready:!!window.TowerboundReworkReady,engine:!!window.TowerboundRework,loadError:window.TowerboundReworkLoadError?.message,cloud:!!window.TowerboundCloud,cloudSignedIn:window.TowerboundCloud?.signedIn,bodyText:document.body.innerText.slice(0,1600)}));console.error('LOGIN GATE STARTUP DIAGNOSTIC',JSON.stringify({startup,errors,consoleErrors}));throw error;}
   assert.equal(await page.locator('.tb-login-gate h2').innerText(),'Вход в игру','unauthenticated launch shows the centered login form');
   assert.equal(await page.locator('.tb-login-gate #login').count(),1,'login field is in the character selection screen');
   assert.equal(await page.locator('.tb-login-gate #pass').count(),1,'password field is in the character selection screen');
