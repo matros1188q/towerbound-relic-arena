@@ -150,7 +150,21 @@
   if(slot==="accessory")return relicArtFiles.accessory;
   return relicArtFiles.potionStack;
  }
- function relicIconHtml(item,slot,extraClass){const custom=customRelicArtPath(item);if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async">';const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");let crop="";if(slot==="hands"||parts.includes("glove")||parts.includes("перчат"))crop="tb-relic-glove";else if(slot==="amulet"||parts.includes("amulet")||parts.includes("амул"))crop="tb-relic-amulet";else if(parts.includes("bundle")||parts.includes("cache")||parts.includes("набор")||parts.includes("сундук"))crop="tb-relic-bundle";if(crop)return '<span class="tb-relic-icon tb-relic-atlas '+crop+' '+(extraClass||"")+'" aria-hidden="true"></span>';return '<img class="tb-relic-icon '+(extraClass||"")+'" src="./assets/relics/'+relicArtPath(item,slot)+'" alt="" loading="lazy" decoding="async">';}
+ function relicIconHtml(item,slot,extraClass){
+  const custom=customRelicArtPath(item);
+  if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async">';
+  const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
+  const kitSlots={head:"equip_helm.png",helmet:"equip_helm.png",chest:"equip_chest.png",hands:"equip_gloves.png",gloves:"equip_gloves.png",weapon:"equip_weapon.png",offhand:"equip_shield.png",shield:"equip_shield.png",belt:"equip_belt.png",boots:"equip_boots.png",boot:"equip_boots.png",feet:"equip_boots.png",amulet:"equip_amulet.png",ring:"equip_ring.png"};
+  const kitName=kitSlots[slot]||(parts.includes("shield")?"equip_shield.png":parts.includes("belt")||parts.includes("пояс")?"equip_belt.png":parts.includes("boot")||parts.includes("сапог")||parts.includes("обув")?"equip_boots.png":"");
+  if(kitName&&(slot==="offhand"||slot==="shield"||slot==="belt"||slot==="boots"||slot==="boot"||slot==="feet"||parts.includes("shield")||parts.includes("belt")||parts.includes("пояс")||parts.includes("boot")||parts.includes("сапог")||parts.includes("обув")))return '<img class="tb-relic-icon tb-equipment-slot-art '+(extraClass||"")+'" src="./assets/ui/kit/'+kitName+'" alt="" loading="lazy" decoding="async">';
+  if(!item&&slot&&kitSlots[slot])return '<img class="tb-relic-icon tb-equipment-slot-art '+(extraClass||"")+'" src="./assets/ui/kit/'+kitSlots[slot]+'" alt="" loading="lazy" decoding="async">';
+  let crop="";
+  if(slot==="hands"||parts.includes("glove")||parts.includes("перчат"))crop="tb-relic-glove";
+  else if(slot==="amulet"||parts.includes("amulet")||parts.includes("амул"))crop="tb-relic-amulet";
+  else if(parts.includes("bundle")||parts.includes("cache")||parts.includes("набор")||parts.includes("сундук"))crop="tb-relic-bundle";
+  if(crop)return '<span class="tb-relic-icon tb-relic-atlas '+crop+' '+(extraClass||"")+'" aria-hidden="true"></span>';
+  return '<img class="tb-relic-icon '+(extraClass||"")+'" src="./assets/relics/'+relicArtPath(item,slot)+'" alt="" loading="lazy" decoding="async">';
+ }
  function skillSpriteClass(skill){const value=String(skill?.damage_type||skill?.element||skill?.effect_template||skill?.name||"").toLowerCase();if(value.includes("fire")||value.includes("огн"))return "skill-fire";if(value.includes("ice")||value.includes("лед")||value.includes("лёд"))return "skill-ice";if(value.includes("poison")||value.includes("яд"))return "skill-poison";if(value.includes("physical")||value.includes("strike")||value.includes("удар"))return "skill-phys";return "skill-arcane";}
  function talentSpriteClass(effect){const key=String(effect||"").toLowerCase();if(key.includes("health")||key.includes("hp")||key.includes("здоров"))return "talent-hp";if(key.includes("crit")||key.includes("critical")||key.includes("крит"))return "talent-crit";if(key.includes("defense")||key.includes("armor")||key.includes("защит"))return "talent-def";if(key.includes("speed")||key.includes("evasion")||key.includes("ловк")||key.includes("скор"))return "talent-agi";return "talent-atk";}
  function achievementSpriteClass(achievement){
