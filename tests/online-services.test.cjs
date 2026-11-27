@@ -41,7 +41,7 @@ assert.ok(online.includes(".from('pvp_ghosts').upsert"),'player ghost publicatio
 assert.ok(online.includes('async function getLeaderboard()')&&online.includes('window.TowerboundOnline={publishCurrent,queuePublish,getLeaderboard,findGhost'),'online leaderboard API remains available');
 assert.ok(ui.includes('data-action="bottom-progress"')&&ui.includes('window.TowerboundProgression?.open'),'progression module remains accessible from the bottom navigation');
 assert.ok(!ui.slice(ui.indexOf('function header(){'),ui.indexOf('function characterList()')).includes('ПРОГРЕССИЯ'),'progression is removed from the compact brand header');
-assert.ok(ui.includes('Серверный рейтинг пока не начисляется'),'unsafe client result must not claim global rating');
+assert.ok(!online.includes(".from('pvp_ratings').upsert"),'browser must not write trusted global rating');
 assert.ok(html.includes('./towerbound-online.js?v=1'),'online module not loaded');
 assert.ok(/\.\/towerbound-cloud\.js\?v=\d+/.test(html),'cloud module cache is versioned');
 assert.ok(/\.\/rpg-rework-v2\.js\?v=\d+/.test(html),'engine cache is versioned for gem socket support');
