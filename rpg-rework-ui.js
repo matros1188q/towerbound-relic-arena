@@ -58,7 +58,74 @@
   refine_10:"./assets/relics/riftsigil.png",refine_20:"./assets/relics/stormglass.png",safe_refine:"./assets/relics/guardian.png",
   craft_material:"./assets/relics/image_6.png",enhancement_stone:"./assets/relics/image_7.png",refine_stone:"./assets/relics/image_8.png",enchant_scroll:"./assets/relics/image_9.png"
  });
+ const NEW_ITEM_ART_ROOT="./art-inbox/";
+ const NEW_ITEM_ART=Object.freeze({
+  healingPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_02_healing_potion.png",
+  smallHealingPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_01_small_healing_potion.png",
+  largeHealingPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_03_large_healing_potion.png",
+  antidote:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_07_antidote.png",
+  revivalPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_16_revival_potion.png",
+  craftMaterial:NEW_ITEM_ART_ROOT+"10-materials/02-monster-drops/C17_12_monster_core.png",
+  refineStone:NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_14_whetstone.png",
+  enchantScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_07_identify_scroll.png",
+  fireScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_01_fire_scroll.png",
+  iceScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_02_ice_scroll.png",
+  thunderScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_03_thunder_scroll.png",
+  healingScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_04_healing_scroll.png",
+  removeCurseScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_08_remove_curse_scroll.png"
+ });
+ function enhancementStoneArtPath(item){
+  const stone=item?.stoneType||item?.stone_type||{},branch=String(stone.branch_id||stone.branchId||item?.branchId||"").toLowerCase(),classId=String(stone.class_id||stone.classId||item?.classId||"").toLowerCase();
+  const color=classId==="dragonkin"?(branch==="fire_dragon"?"red":branch==="ice_dragon"?"blue":"violet"):
+   classId==="assassin"?(branch==="bleed"?"red":branch==="poison"?"green":"yellow"):
+   classId==="bishop"?(branch==="exorcism"?"white":branch==="healing"?"green":"yellow"):
+   classId==="destroyer"?(branch==="fists"?"orange":branch==="greatsword"?"red":"indigo"):
+   classId==="elemental"?(branch==="darkness"?"indigo":branch==="water"?"blue":"orange"):
+   classId==="duelist"?(branch==="dual_swords"?"yellow":branch==="rapier"?"white":"blue"):
+   classId==="shaman"?(branch==="spirits"?"violet":branch==="dark_gods"?"indigo":"green"):"blue";
+  const files={red:"C18_01_red_crystal.png",orange:"C18_02_orange_crystal.png",yellow:"C18_03_yellow_crystal.png",green:"C18_04_green_crystal.png",blue:"C18_05_blue_crystal.png",indigo:"C18_06_indigo_crystal.png",violet:"C18_07_violet_crystal.png",white:"C18_08_white_crystal.png"};
+  return NEW_ITEM_ART_ROOT+"10-materials/03-crystals/"+(files[color]||files.blue);
+ }
+ function newSemanticItemArtPath(item){
+  const type=String(item?.type||item?.itemId||item?.id||"").toLowerCase(),value=[type,item?.name,item?.title,item?.description].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
+  if(type==="enhancement_stone"||value.includes("камень усиления"))return enhancementStoneArtPath(item);
+  if(type==="healing_potion"||type==="heal_25"||value.includes("зелье исцеления"))return NEW_ITEM_ART.healingPotion;
+  if(type==="heal_10"||value.includes("малое зелье лечения"))return NEW_ITEM_ART.smallHealingPotion;
+  if(type==="heal_35"||value.includes("большое зелье лечения"))return NEW_ITEM_ART.largeHealingPotion;
+  if(type==="heal_50"||value.includes("зелье воскрешения"))return NEW_ITEM_ART.revivalPotion;
+  if(type==="antidote"||value.includes("противояд"))return NEW_ITEM_ART.antidote;
+  if(type==="craft_material"||value.includes("материал для крафта")||value.includes("ядро монстра"))return NEW_ITEM_ART.craftMaterial;
+  if(type==="refine_stone"||value.includes("камень заточки")||value.includes("точильный камень"))return NEW_ITEM_ART.refineStone;
+  if(type==="enchant_scroll"||value.includes("свиток зачарования"))return NEW_ITEM_ART.enchantScroll;
+  if(value.includes("свиток огня")||value.includes("fire scroll"))return NEW_ITEM_ART.fireScroll;
+  if(value.includes("свиток льда")||value.includes("ice scroll"))return NEW_ITEM_ART.iceScroll;
+  if(value.includes("свиток молнии")||value.includes("thunder scroll"))return NEW_ITEM_ART.thunderScroll;
+  if(value.includes("свиток исцеления")||value.includes("healing scroll"))return NEW_ITEM_ART.healingScroll;
+  if(value.includes("свиток снятия проклятия")||value.includes("remove curse scroll"))return NEW_ITEM_ART.removeCurseScroll;
+  if(value.includes("медная руда")||value.includes("copper ore"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_01_copper_ore.png";
+  if(value.includes("железная руда")||value.includes("iron ore"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_02_iron_ore.png";
+  if(value.includes("серебряная руда")||value.includes("silver ore"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_03_silver_ore.png";
+  if(value.includes("золотая руда")||value.includes("gold ore"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_04_gold_ore.png";
+  if(value.includes("обсидиан")||value.includes("obsidian"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_06_obsidian.png";
+  if(value.includes("рубин")||value.includes("ruby"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_09_ruby.png";
+  if(value.includes("сапфир")||value.includes("sapphire"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_10_sapphire.png";
+  if(value.includes("изумруд")||value.includes("emerald"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_11_emerald.png";
+  if(value.includes("топаз")||value.includes("topaz"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_12_topaz.png";
+  if(value.includes("аметист")||value.includes("amethyst"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_13_amethyst.png";
+  if(value.includes("алмаз")||value.includes("diamond"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_14_diamond.png";
+  if(value.includes("жемчуг")||value.includes("pearl"))return NEW_ITEM_ART_ROOT+"10-materials/01-ores-gems/C15_15_pearl.png";
+  if(value.includes("медный ключ")||value.includes("copper key"))return NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_01_copper_key.png";
+  if(value.includes("серебряный ключ")||value.includes("silver key"))return NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_02_silver_key.png";
+  if(value.includes("золотой ключ")||value.includes("golden key"))return NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_03_golden_key.png";
+  if(value.includes("кристальный ключ")||value.includes("crystal key"))return NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_05_crystal_key.png";
+  if(value.includes("сундук")||value.includes("chest"))return NEW_ITEM_ART_ROOT+"10-materials/04-keys-chests/C19_10_golden_chest.png";
+  if(value.includes("компас")||value.includes("compass"))return NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_11_compass.png";
+  if(value.includes("монет")||value.includes("gold coin")||value.includes("silver coin"))return NEW_ITEM_ART_ROOT+"10-materials/07-currency-treasures/C22_01_gold_coin.png";
+  if(value.includes("чертёж")||value.includes("чертеж")||value.includes("blueprint"))return NEW_ITEM_ART_ROOT+"10-materials/06-documents/C21_13_blueprint.png";
+  return "";
+ }
  function customItemArtPath(item){
+  const semantic=newSemanticItemArtPath(item);if(semantic)return semantic;
   const ids=[item?.itemId,item?.id,item?.type,item?.effect,item?.kind].filter(Boolean).map(value=>String(value).toLowerCase());
   for(const key of ids){if(ITEM_ART_BY_ID[key])return ITEM_ART_BY_ID[key];}
   const id=String(item?.itemId||item?.id||item?.type||"").toLowerCase();
@@ -190,6 +257,8 @@
  function relicIconHtml(item,slot,extraClass){
   const equipmentArt=equipmentArtPath(item,slot);
   if(equipmentArt)return '<img class="tb-relic-icon tb-equipment-item-art '+(extraClass||"")+'" src="'+equipmentArt+'" alt="" loading="lazy" decoding="async">';
+  const itemArt=customItemArtPath(item);
+  if(itemArt)return customItemImageHtml(itemArt,"tb-relic-icon "+(extraClass||""),item);
   const custom=customRelicArtPath(item);
   if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async">';
   const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");

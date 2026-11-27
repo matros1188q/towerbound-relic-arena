@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "source": "art-inbox/09-consumables + art-inbox/10-materials",
+  "scope": "Existing item types only; no new gameplay items, recipes, currencies or balance changes.",
+  "runtimeMappings": {
+    "healing_potion": "art-inbox/09-consumables/01-potions/C11_02_healing_potion.png",
+    "antidote": "art-inbox/09-consumables/01-potions/C11_07_antidote.png",
+    "craft_material": "art-inbox/10-materials/02-monster-drops/C17_12_monster_core.png",
+    "enhancement_stone": "art-inbox/10-materials/03-crystals/C18_*_crystal.png (color selected by class specialization)",
+    "refine_stone": "art-inbox/10-materials/05-tools/C20_14_whetstone.png",
+    "enchant_scroll": "art-inbox/09-consumables/02-scrolls-mana-stones/C12_07_identify_scroll.png",
+    "heal_10": "art-inbox/09-consumables/01-potions/C11_01_small_healing_potion.png",
+    "heal_35": "art-inbox/09-consumables/01-potions/C11_03_large_healing_potion.png",
+    "heal_50": "art-inbox/09-consumables/01-potions/C11_16_revival_potion.png"
+  },
+  "semanticLookup": "Also recognizes named ores, gems, elemental scrolls, keys, chests, compass, coins and blueprints if present in item data.",
+  "unmapped": "No current runtime item consumes the remaining mana stones, star fragments, most ore/gem types, keys, chests, journal, letter, star chart or bell. Their art is retained for future matching."
+}
