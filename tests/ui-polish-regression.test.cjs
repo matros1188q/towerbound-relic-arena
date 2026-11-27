@@ -48,7 +48,7 @@ assert.ok(css.includes('new-hand-row{background:rgba(0,0,0,.6)'),'dark hand back
 assert.ok(css.includes('new-end-turn{position:fixed!important'),'fixed end turn');
 assert.ok(ui.includes('window.confirm("Вы уверены?")'),'talent reset confirmation');
 assert.ok(ui.includes('function accountSettingsMarkup()')&&ui.includes('toggle("sound_enabled"')&&ui.includes('toggle("music_enabled"'),'account convenience settings are available from the profile account tab');
-assert.ok(ui.includes('ДОЛГОСРОЧНЫЙ ПРОГРЕСС · МЕТА-ПРОГРЕССИЯ'),'meta progress on Progress');
+assert.ok(progressionSource.includes('Прогрессия и хроники'),'meta progress is rendered by the progression overlay');
 assert.ok(ui.includes('data-action="open-workshop"'),'workshop button');
 assert.ok(ui.includes('profileRelicShopMarkup(c)'),'relics in profile');
 const accountMarkup=ui.slice(ui.indexOf("function accountScreen()"),ui.indexOf("function systemsScreen()"));assert.ok(!accountMarkup.includes('open-meta-progression'),'no meta button in account');
