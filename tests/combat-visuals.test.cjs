@@ -68,7 +68,7 @@ for(const [name,source,re] of [
 ['boss rage',ui,/bossTurns>15/],
 ['phase-four boss deadline preserves the configured window after enemy-turn transitions',ui,/if\(nextPhase===4\)\{const phaseConfig=.*?player_turn_deadline.*?battle\.bossDeadlineTurns=\(Number\(battle\.playerTurnCount\)\|\|0\)\+deadline\+turnOffset;/],
 ['phase-four boss deadline uses strict timeout and configured enrage damage',ui,/playerTurnCount>=Number\(battle\.bossDeadlineTurns\)[\s\S]{0,320}playerHp=Math\.max\(0,c\.run\.playerHp-enrageDamage\)/],['heroic mutations',ui,/mutation==="vampirism"/],['speedrun',ui,/speedrun/],
-['companion strike',ui,/stats\.attack\*\.5/],['antidote trap',ui,/type==="antidote"/],['branch route',ui,/data-route="elite"/]
+['companion strike',ui,/stats\.attack\*\.5/],['antidote trap',ui,/type==="antidote"/],['tower floor nodes',ui,/data-stage=/]
 ])assert.match(source,re,name);
 assert.ok(!ui.includes('getSkillEvolution')&&!ui.includes('evolvedSkill'),'skill evolution is absent from combat UI');
 console.log('Combat visual/tactical static checks passed.');
