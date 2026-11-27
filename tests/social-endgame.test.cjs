@@ -33,7 +33,7 @@ assert.ok(cloud.includes("'tb-endgame-v1'")&&cloud.includes("'tb-social-v1'"),'b
 assert.ok(online.includes(".from('leaderboard').select('user_id,nickname,class,battle_power,max_stage,updated_at')"),'live global leaderboard reads the published player rows');
 console.log('social endgame static checks: OK');
 assert.match(fs.readFileSync('rpg-rework-ui.js','utf8'),/bottom-progress[\s\S]*?bottom-community[\s\S]*?bottom-shop/,'community belongs between progress and shop in the primary floating navigation');
-assert.ok(fs.readFileSync('rpg-rework-ui.js','utf8').includes('case "bottom-community":{const social=window.TowerboundSocial;'),'community navigation action uses a guarded social-module handler');
+assert.ok(fs.readFileSync('rpg-rework-ui.js','utf8').includes('case "bottom-community":if(window.TowerboundSocial?.open)window.TowerboundSocial.open();'),'community navigation action uses the current guarded social-module API');
 assert.match(source,/writing-mode:horizontal-tb!important/,'community panel normalizes inherited vertical text layout');
 assert.match(source,/TowerboundSocial=\{refresh:[\s\S]*?open:/,'community panel exposes refresh and open methods for primary navigation');
 assert.ok(!source.includes("launcher.id='socLauncher'"),'standalone floating community launcher is removed');
