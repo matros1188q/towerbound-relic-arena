@@ -103,7 +103,7 @@ for(const name of configNames)assert.ok(balance[name]&&typeof balance[name]==='o
  assert.equal(set.pieces,6,"six matching specialization pieces activate the final threshold");
  assert.equal(set.specializationPower,.15,"6-piece bonus grants 15% specialization power");
  assert.equal(stats.specializationPower,.15,"6-piece power is exposed to live card combat");
- assert.match(fs.readFileSync(path.join(__dirname,"../rpg-rework-v2.js"),"utf8"),/specializationCard[\\s\\S]*specializationDamage[\\s\\S]*specializationPower/,"auto-battle applies specialization set bonuses to tagged cards");
+ assert.match(fs.readFileSync(path.join(__dirname,"../rpg-rework-v2.js"),"utf8"),/specializationCard[\s\S]*specializationDamage[\s\S]*specializationPower/,"auto-battle applies specialization set bonuses to tagged cards");
 }
 {
  const e=makeEngine(),c=makeCharacter(e),live=e.state.characters[0];
