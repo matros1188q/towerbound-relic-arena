@@ -3322,3 +3322,39 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card .tb-shop-item-art{width:52px!important;height:52px!important}
  #tbRpg .tb-v2 .tb-shop-redesign .tb-shop-card-footer button{min-width:82px!important}
 }
+
+
+/* 2026-11-27: Towerbound shop rebuild — illustrated, compact, iPhone-first */
+#tbRpg .tb-shop-overlay{position:absolute;inset:0;z-index:1000;overflow-y:auto;overscroll-behavior:contain;padding:calc(12px + env(safe-area-inset-top)) 12px calc(22px + env(safe-area-inset-bottom));background:rgba(4,8,13,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+#tbRpg .tb-shop-panel{width:100%;max-width:980px;min-height:100%;margin:0 auto;color:#eee5d3}
+#tbRpg .tb-shop-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;min-height:128px;padding:20px;border:1px solid #a9814b66;border-radius:14px;background:linear-gradient(90deg,rgba(8,13,19,.97),rgba(8,13,19,.58)),url('./assets/ui/sections/merchant-emerald-coins.jpg') center 48%/cover}
+#tbRpg .tb-shop-hero small{color:#d8b978;font-size:9px;font-weight:900;letter-spacing:.18em}
+#tbRpg .tb-shop-hero h2{margin:8px 0 4px;color:#f1d49a;font:800 24px/1.1 Georgia,serif;letter-spacing:.06em}
+#tbRpg .tb-shop-hero p{margin:0;color:#d0c7b6;font-size:12px}
+#tbRpg .tb-shop-hero>button{flex:0 0 38px;width:38px;height:38px;border:1px solid #d5b77c88;border-radius:50%;background:#111923dd;color:#f5dfb2;font-size:26px;line-height:1}
+#tbRpg .tb-shop-wallet{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0;padding:11px 14px;border:1px solid #80633b66;border-radius:10px;background:linear-gradient(100deg,#202a2d,#171d25)}
+#tbRpg .tb-shop-wallet span{color:#b6aa94;font-size:10px;font-weight:900;letter-spacing:.12em}
+#tbRpg .tb-shop-wallet b{color:#f2d18e;font-size:14px;font-variant-numeric:tabular-nums}
+#tbRpg .tb-shop-currencies{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:7px;border:1px solid #5b4b36;border-radius:11px;background:rgba(11,17,24,.96);backdrop-filter:blur(12px)}
+#tbRpg .tb-shop-currencies button{min-width:0;padding:11px 5px;border:1px solid #675438;border-radius:8px;background:#1a222b;color:#c5b99f;font-size:10px;font-weight:900}
+#tbRpg .tb-shop-currencies button.active{border-color:#d6ad69;background:linear-gradient(180deg,#58452c,#30271e);color:#ffe2a8;box-shadow:inset 0 0 0 1px #e8c88933}
+#tbRpg .tb-shop-content{padding:5px 0 14px}
+#tbRpg .tb-shop-group{margin:15px 0 19px}
+#tbRpg .tb-shop-group>h3{margin:0 0 9px;padding:0 2px 7px;border-bottom:1px solid #b18b554d;color:#e5c78f;font:800 14px/1.2 Georgia,serif;letter-spacing:.04em}
+#tbRpg .tb-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#tbRpg .tb-shop-item{display:flex;min-width:0;flex-direction:column;gap:7px;padding:10px;border:1px solid #39414a;border-radius:11px;background:linear-gradient(145deg,#202a32,#111821 76%);box-shadow:inset 0 1px #ffffff08,0 6px 16px #0003}
+#tbRpg .tb-shop-item-art{display:grid;place-items:center;min-height:88px;border:1px solid #8e754333;border-radius:8px;background:radial-gradient(circle at 50% 40%,#9c7a3d22,transparent 70%),#0c131b}
+#tbRpg .tb-shop-item-art .tb-item-art-wrap{width:82px;height:82px;margin:0}
+#tbRpg .tb-shop-item-art img.tb-shop-product-art{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 5px 8px #0009)}
+#tbRpg .tb-shop-item-copy{min-width:0}
+#tbRpg .tb-shop-item-copy b{display:block;color:#f0dfc0;font-size:12px;line-height:1.25}
+#tbRpg .tb-shop-item-copy p{margin:5px 0 0;color:#b9b4a9;font-size:10px;line-height:1.35}
+#tbRpg .tb-shop-item-buy{display:flex;flex-direction:column;gap:6px;margin-top:auto}
+#tbRpg .tb-shop-item-buy strong{color:#e6c17f;font-size:11px;font-variant-numeric:tabular-nums}
+#tbRpg .tb-shop-item-buy button{width:100%;min-height:34px;padding:8px 5px;border:1px solid #a27e4b;border-radius:7px;background:linear-gradient(180deg,#72542f,#47331f);color:#ffebc5;font-size:9px;font-weight:900;letter-spacing:.06em}
+#tbRpg .tb-shop-item-buy button:disabled{border-color:#45484a;background:#272b30;color:#858585;opacity:.8}
+#tbRpg .tb-shop-footer{margin:4px 0 12px;padding:12px;border:1px solid #45423a;border-radius:9px;background:#151b22;color:#9e9b91;font-size:10px;line-height:1.45}
+#tbRpg .tb-shop-empty{padding:24px;text-align:center;color:#bdb29e}
+#tbRpg .tb-profile-hub .tb-profile-hub-card[data-shop-open] .tb-profile-hub-emoji{background:radial-gradient(circle,#a57c3b55,#0c131b)}
+@media(min-width:700px){#tbRpg .tb-shop-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#tbRpg .tb-shop-hero{min-height:160px;padding:25px}#tbRpg .tb-shop-hero h2{font-size:30px}}
+@media(max-width:360px){#tbRpg .tb-shop-overlay{padding-left:8px;padding-right:8px}#tbRpg .tb-shop-grid{gap:6px}#tbRpg .tb-shop-item{padding:7px}#tbRpg .tb-shop-item-copy b{font-size:11px}#tbRpg .tb-shop-item-copy p{font-size:9px}}
