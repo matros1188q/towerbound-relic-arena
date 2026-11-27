@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v794';
+const CACHE = 'towerbound-v795';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './assets/MAPA.jpg',
@@ -307,6 +307,47 @@ const SHELL = [
   './endgame-systems.js',
   './assets/pwa/icon-192.png',
   './assets/pwa/icon-512.png'
+  // Shop product art (cached for offline shop browsing)
+  './art-inbox/09-consumables/01-potions/C11_08_stimulant.png',
+  './art-inbox/09-consumables/01-potions/C11_09_elixir.png',
+  './art-inbox/09-consumables/01-potions/C11_10_rainbow_elixir.png',
+  './art-inbox/09-consumables/02-scrolls-mana-stones/C12_09_magic_hourglass.png',
+  './art-inbox/09-consumables/01-potions/C11_01_small_healing_potion.png',
+  './art-inbox/09-consumables/01-potions/C11_02_healing_potion.png',
+  './art-inbox/09-consumables/01-potions/C11_03_large_healing_potion.png',
+  './art-inbox/10-materials/07-currency-treasures/C22_04_copper_coin.png',
+  './art-inbox/10-materials/07-currency-treasures/C22_03_silver_coin.png',
+  './art-inbox/10-materials/07-currency-treasures/C22_01_gold_coin.png',
+  './art-inbox/10-materials/07-currency-treasures/C22_02_pile_of_gold_coins.png',
+  './art-inbox/08-equipment/01-weapons/C02_06_smith_s_hammer.png',
+  './art-inbox/08-equipment/05-jewelry/C09_07_amulet.png',
+  './art-inbox/10-materials/06-documents/C21_02_old_book.png',
+  './art-inbox/08-equipment/06-boots-cloaks-belts-gloves/C10_10_belt_with_pouches.png',
+  './art-inbox/10-materials/05-tools/C20_14_whetstone.png',
+  './art-inbox/10-materials/03-crystals/C18_08_white_crystal.png',
+  './art-inbox/09-consumables/02-scrolls-mana-stones/C12_10_ward_charm.png',
+  './art-inbox/10-materials/04-keys-chests/C19_10_golden_chest.png',
+  './art-inbox/10-materials/01-ores-gems/C15_14_diamond.png',
+  './art-inbox/09-consumables/02-scrolls-mana-stones/C12_15_star_fragment.png',
+  './art-inbox/10-materials/04-keys-chests/C19_07_seal_key.png',
+  './art-inbox/08-equipment/03-headwear/C07_07_hood.png',
+  './art-inbox/08-equipment/03-headwear/C07_16_prism_circlet.png',
+  './art-inbox/08-equipment/03-headwear/C07_08_crown.png',
+  './art-inbox/08-equipment/03-headwear/C07_02_iron_helmet.png',
+  './art-inbox/08-equipment/01-weapons/C05_03_poison_dagger.png',
+  './art-inbox/08-equipment/01-weapons/C01_16_ash_sword.png',
+  './art-inbox/08-equipment/01-weapons/C01_10_frost_sword.png',
+  './art-inbox/08-equipment/01-weapons/C01_13_cursed_blade.png',
+  './art-inbox/10-materials/03-crystals/C18_01_red_crystal.png',
+  './art-inbox/10-materials/03-crystals/C18_07_violet_crystal.png',
+  './art-inbox/08-equipment/01-weapons/C04_07_healing_staff.png',
+  './art-inbox/08-equipment/01-weapons/C01_09_flame_sword.png',
+  './art-inbox/08-equipment/01-weapons/C02_07_war_hammer.png',
+  './art-inbox/08-equipment/01-weapons/C04_08_shadow_staff.png',
+  './art-inbox/08-equipment/01-weapons/C01_07_rapier.png',
+  './art-inbox/08-equipment/01-weapons/C04_13_green_grimoire.png',
+  './art-inbox/09-consumables/02-scrolls-mana-stones/C12_08_remove_curse_scroll.png',
+
 ];
 
 self.addEventListener('install', event => {
