@@ -2512,7 +2512,7 @@ function profileRelicShopMarkup(c){
  function restoreSavedBattle(character){
   const stage=character?.run?.stage,snapshot=stage?.uiBattleSnapshot;
   if(!stage||!snapshot||!Array.isArray(snapshot.enemies)||!snapshot.enemies.length)return false;
-  const card=snapshot.cardState||{},combat=snapshot.combatState||{},actorType=card.actorType==="enemy"?"enemy":"player";
+  const card=snapshot.cardState||{},combat=snapshot.combatState||{},state={actorType:card.actorType==="enemy"?"enemy":"player"},actorType=state.actorType;
   if(Array.isArray(card.deck))character.deck=JSON.parse(JSON.stringify(card.deck));
   if(Array.isArray(card.hand))character.hand=JSON.parse(JSON.stringify(card.hand));
   if(Array.isArray(card.discard))character.discard=JSON.parse(JSON.stringify(card.discard));
@@ -2525,7 +2525,7 @@ function profileRelicShopMarkup(c){
    targetIndex:Number(snapshot.targetIndex)||0,
    enemy:null,enemyStats:null,enemyHp:0,enemyMax:0,shield:0,
    round:Math.max(1,Number(snapshot.round)||1),
-   actor:{type:actorType,id:actorType==="enemy"?"enemy-phase":"player",name:actorType==="enemy"?"Ход противников":character.name},
+   actor:{type:state.actorType,id:state.actorType==="enemy"?"enemy-phase":"player",name:state.actorType==="enemy"?"Ход противников":character.name},
    isPlayerTurn:actorType!=="enemy",playerTurnCount:0,cardsPlayedThisTurn:0,
    cardBlock:Math.max(0,Number(card.cardBlock)||0),busy:actorType==="enemy",paused:false,isCardAnimating:false,
    enemyQueueToken:0,enemyQueueState:snapshot.enemyQueueState?JSON.parse(JSON.stringify(snapshot.enemyQueueState)):null,
