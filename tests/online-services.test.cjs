@@ -75,7 +75,7 @@ assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("legacy=await
 assert.ok(cloud.includes("email:authEmail(clean)")&&cloud.includes("client.auth.signUp({email:authEmail(clean)"),'registration and login share the new synthetic email domain');
 assert.ok(cloud.includes('Неверный логин или пароль')&&cloud.includes('Ошибка регистрации. Попробуйте другой логин')&&cloud.includes('Этот логин уже занят')&&cloud.includes('Пароль должен быть не менее 6 символов'),'Supabase auth errors are translated to Russian');
 assert.ok(cloud.includes('#tbCloudMessage[data-kind="error"]')&&cloud.includes('id="tbCloudHint"')&&cloud.includes('Зарегистрироваться'),'login errors are red and registration guidance is visible');
-assert.ok(!cloud.includes("overlay.classList.add('open','login-required')")&&cloud.includes('const showLoginGate=(force=false)'), 'startup keeps the login flow in the character screen instead of covering it with a modal');
+assert.ok(cloud.includes("overlay.classList.add('login-required','open')")&&cloud.includes('const showLoginGate=(_force=false)')&&cloud.includes("$('#tbCloudClose').hidden=true"), 'first launch requires login and prevents dismissing the login gate');
 assert.ok(cloud.includes("const rememberKey='tb-remember-me'"),'remember-me preference is persisted');
 assert.ok(cloud.includes('id="tbCloudRememberMe"')&&!cloud.includes('id="rememberMe"'),'cloud modal uses a distinct remember checkbox ID from the main login form');
 assert.ok(cloud.includes("if(active&&!remembered())"),'unremembered sessions are cleared at startup');
