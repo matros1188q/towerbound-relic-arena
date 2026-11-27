@@ -10,7 +10,7 @@ assert.match(ui,/function updateBossPhase\(target=battle\?\.enemy\)/,'boss phase
 assert.match(ui,/engine\.bossPhaseInfo\(target\.hp,target\.maxHp\)/,'boss phases use engine thresholds');
 assert.match(ui,/if\(enemy\.type==="boss"\)\{updateBossPhase\(enemy\);if\(!battle\)return;\}/,'boss phases update after enemy poison and bleed ticks');
 assert.match(ui,/turnOffset=battle\.actor\?\.type==="enemy"\?1:0/,'boss final-phase deadline accounts for an enemy-turn transition');
-assert.match(ui,/function restoreSavedBattle\(character\)[\s\S]*?battle\.actor=\{type:state\.actorType==="enemy"\?"enemy":"player"/,"restored actor is assigned after persisted combat state is merged");
+assert.match(ui,/function restoreSavedBattle\(character\)[\s\S]*?battle\.actor=\{type:state\.actorType,id:state\.actorType==="enemy"\?"enemy-phase":"player"/,"restored actor is assigned after persisted combat state is merged");
 assert.ok(ui.includes('spellPower=magicCard?Math.max(0,Number(battle.cardSpellPower)||0):0'),'spell power is applied to magical card attack scaling');
 assert.match(ui,/if\(nextPhase===2\)addSummonedBossMobs\(\)/,'phase two summons are connected');
 assert.match(ui,/phaseConfig\.immediate_attack/,'phase three immediate attack is connected');
