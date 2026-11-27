@@ -520,9 +520,12 @@
   if(t.dataset.pick){selectedId=t.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live()?.progress.currentStage||1;screen="characters";render();save();return;}
   if(t.dataset.class){selectedClass=t.dataset.class;render();return;}
   if(t.dataset.stage){selectedStage=Number(t.dataset.stage);render();return;}
-  if(t.dataset.tab){profileTab=t.dataset.tab;screen="profile";render();return;}
+  if(t.dataset.tab){profileTab=t.dataset.tab;statsOverlayOpen=t.dataset.tab==="stats";screen="profile";render();if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);return;}
   if(t.dataset.branch){try{engine.chooseBranch(live().id,t.dataset.branch,0);grantSpecializationCards(live(),t.dataset.branch);save();render();notify("Специализация выбрана");}catch(e){notify(e.message);}return;}
   if(t.dataset.talent){try{engine.useTalentPoint(live().id,t.dataset.talent,3);save();render();}catch(e){notify(e.message);}return;}
+  if(t.dataset.equip){try{engine.equipItem(live().id,t.dataset.equip);save();render();notify("Предмет надет");}catch(error){notify(error.message);}return;}
+  if(t.dataset.unequipSlot!==undefined){try{engine.unequipItem(live().id,Number(t.dataset.unequipSlot));save();render();notify("Предмет снят");}catch(error){notify(error.message);}return;}
+  if(t.dataset.cardPurchase){const c=live(),card=CARD_DATABASE[t.dataset.cardPurchase];if(!c||!card)return;const price=cardMerchantPrice(card);if(unlockedCardIds().includes(card.id)){notify("Эта карта уже открыта");return;}if(Number(c.silver)<price){notify("Недостаточно серебра · нужно "+price);return;}c.silver-=price;unlockCardPermanently(card.id);save();render();notify("Карта открыта: "+card.name);return;}
   if(t.dataset.target!==undefined){setBattleTarget(Number(t.dataset.target));return;}
   if(t.dataset.cardPlay!==undefined){playCard(Number(t.dataset.cardPlay));return;}
   if(t.dataset.shopOpen!==undefined||t.dataset.action==="shop"){shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());return;}
@@ -537,8 +540,13 @@
    case "bottom-progress":if(window.TowerboundProgression?.open)window.TowerboundProgression.open();else notify("Модуль прогрессии ещё загружается");break;
    case "bottom-community":if(window.TowerboundSocial?.open)window.TowerboundSocial.open();else notify("Сообщество ещё загружается");break;
    case "bottom-shop":shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());break;
-   case "bottom-account":if(window.TowerboundCloud?.open)window.TowerboundCloud.open();else{profileTab="stats";screen="profile";render();}break;
+   case "bottom-account":profileTab="account";statsOverlayOpen=false;screen="profile";render();break;
    case "skip-floors":showSkipFloorsModal();break;
+   case "daily-chest":{const c=live();if(!c)break;try{const reward=engine.claimDailyChest(c.id);save();render();notify(reward.type==="silver"?"Сундук открыт · +"+reward.amount+" серебра":reward.type==="potion"?"Сундук открыт · зелье лечения × "+reward.amount:"Сундук открыт · материалы × "+reward.amount);}catch(error){notify(error.message);}break;}
+   case "stats-close":statsOverlayOpen=false;profileTab="stats";screen="profile";render();break;
+   case "tree-close":profileTab="stats";statsOverlayOpen=false;render();break;
+   case "tree-center":centerTalentTreeOnCore();break;
+   case "equip-best":try{const result=engine.equipBest(live().id);save();render();notify("Автоэкипировка · надето предметов: "+Number(result.equipped||0));}catch(error){notify(error.message);}break;
    case "tower-map-focus":towerMapOpen=true;render();break;
    case "tower-map-close":towerMapOpen=false;render();break;
    case "tower-map-current":selectedStage=live()?.progress.currentStage||1;towerMapOpen=false;render();break;
@@ -562,6 +570,8 @@
    case "confirm-death":try{engine.confirmDeath(live().id);battle=null;screen="map";selectedStage=live().progress.currentStage;save();render();}catch(e){notify(e.message);}break;
    case "empty-login":case "empty-register":{const login=root.querySelector("#login")?.value||"",password=root.querySelector("#pass")?.value||"",remember=!!root.querySelector("#rememberMe")?.checked,msg=root.querySelector(".tb-login-message"),method=t.dataset.action==="empty-register"?"signUp":"signIn";try{if(!window.TowerboundCloud?.[method])throw new Error("Авторизация ещё загружается");await window.TowerboundCloud[method](login,password,remember);if(msg)msg.textContent="Успешно";}catch(e){if(msg)msg.textContent=e.message;notify(e.message);}break;}
    case "cloud-retry":window.TowerboundCloud?.retryLoad?.().then(()=>{screen="characters";render();}).catch(e=>notify(e.message));break;
+   case "account-login":case "account-register":{const login=root.querySelector("#tbAccountLogin")?.value||"",password=root.querySelector("#tbAccountPassword")?.value||"",remember=!!root.querySelector("#tbAccountRemember")?.checked,method=t.dataset.action==="account-register"?"signUp":"signIn";try{if(!window.TowerboundCloud?.[method])throw new Error("Авторизация ещё загружается");await window.TowerboundCloud[method](login,password,remember);save();render();notify(method==="signUp"?"Аккаунт создан":"Вход выполнен");}catch(error){const message=root.querySelector(".tb-account-message");if(message)message.textContent=error.message;notify(error.message);}break;}
+   case "account-sync":try{await window.TowerboundCloud?.flushSave?.();notify("Синхронизация запрошена");}catch(error){notify(error.message);}break;
    case "account-logout":window.TowerboundCloud?.signOut?.().catch(e=>notify(e.message));break;
   }
  }
@@ -1928,6 +1938,25 @@ function profileRelicShopMarkup(c){
  const relics=Object.values(engine.RELICS_DATABASE||{}).filter(relic=>!relic.classId||(relic.classId===c.classId&&relic.branchId===c.branch)),owned=new Set(c.relics||[]);
  return '<section class="tb-relic-shop"><div class="tb-relic-shop-layout"><div class="tb-relic-shop-head"><span class="tb-eyebrow">ПАССИВНЫЕ АРТЕФАКТЫ</span><h2>РЕЛИКВИИ БАШНИ</h2><p>Реликвии усиливают карточную колоду и действуют в каждом бою</p><strong>'+relics.filter(relic=>owned.has(relic.id)).length+' / '+relics.length+'</strong></div><div class="tb-relic-shop-grid">'+relics.map(relic=>'<article class="tb-relic-shop-card '+(owned.has(relic.id)?"is-owned":"")+'"><span class="tb-relic-shop-icon">'+(customRelicArtPath(relic)?customItemImageHtml(customRelicArtPath(relic),"tb-relic-shop-art"):esc(relic.icon||"✦"))+'</span><b>'+esc(relic.name||"Неизвестная реликвия")+'</b><small>'+esc(relic.description||"Описание реликвии пока отсутствует.")+'</small><span class="tb-relic-price">300 серебра</span><button type="button" data-relic-buy="'+esc(relic.id)+'" '+(owned.has(relic.id)||Number(c.silver)<300?"disabled":"")+'>'+(owned.has(relic.id)?"УЖЕ ЕСТЬ":"КУПИТЬ · 300")+'</button></article>').join("")+'</div></div></section>';
 }
+
+ function equipmentCollectionMarkup(c){
+  const names=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар","Вторая рука","Кольцо","Пояс"],slots=(c.gear||[]).slice(0,9);
+  const slotMarkup=names.map((name,index)=>{const item=slots[index];return '<article class="tb-equipped-slot '+(item?'is-filled':'is-empty')+'"><div class="tb-equipped-slot-art">'+(item?inventoryIconHtml(item,true):'<span class="tb-equipped-empty-mark">＋</span>')+'</div><div class="tb-equipped-slot-copy"><small>'+name+'</small><b>'+(item?esc(itemBagTitle(item)):"Слот свободен")+'</b><span>'+(item?esc(item.rarity||"Экипировка")+' · ур. '+Number(item.itemLevel||1):"Подбери предмет из рюкзака")+'</span></div>'+(item?'<button type="button" data-unequip-slot="'+index+'">СНЯТЬ</button>':'')+'</article>';}).join("");
+  const candidates=(c.bag||[]).filter(item=>item&&item.type==="equipment"&&item.stats&&item.rarity&&Number(c.level)>=10&&!!c.branch);
+  const bagMarkup=candidates.length?candidates.map(item=>'<article class="tb-equipment-choice"><div class="tb-equipment-choice-art">'+inventoryIconHtml(item,true)+'</div><div><b>'+esc(itemBagTitle(item))+'</b><small>'+esc(item.rarity)+' · ур. '+Number(item.itemLevel||1)+' · '+esc(item.slot||"экипировка")+'</small></div><button type="button" data-equip="'+esc(item.id)+'">НАДЕТЬ</button></article>').join(""):'<p class="tb-equipment-empty">'+(c.level<10?"Экипировка откроется после 10 уровня и выбора специализации.":"В рюкзаке пока нет подходящих предметов.")+'</p>';
+  return '<section class="tb-equipment-screen"><header class="tb-equipment-heading"><div><small>СНАРЯЖЕНИЕ ГЕРОЯ</small><h2>ЭКИПИРОВКА</h2><p>Все девять слотов и предметы, доступные для надевания</p></div><button type="button" data-action="equip-best" '+(c.level<10||!c.branch?"disabled":"")+'>АВТОЭКИПИРОВКА</button></header><div class="tb-equipped-grid">'+slotMarkup+'</div><section class="tb-equipment-bag"><h3>ПРЕДМЕТЫ ДЛЯ ЭКИПИРОВКИ <span>'+candidates.length+'</span></h3>'+bagMarkup+'</section><button type="button" class="tb-equipment-open-bag" data-tab="bag">ОТКРЫТЬ ВЕСЬ РЮКЗАК</button></section>';
+ }
+ function cardMerchantPrice(card){return ({common:100,rare:180,epic:300,legendary:500})[String(card?.rarity||"common").toLowerCase()]||100;}
+ function cardMerchantMarkup(c){
+  const unlocked=new Set(unlockedCardIds());
+  const cards=Object.values(CARD_DATABASE).filter(card=>card&&card.type!=="curse"&&!card.effects?.unplayable&&(card.classId==="common"||!card.classId||card.classId===c.classId)).sort((a,b)=>({common:0,rare:1,epic:2,legendary:3}[a.rarity]??0)-({common:0,rare:1,epic:2,legendary:3}[b.rarity]??0)||String(a.name).localeCompare(String(b.name),"ru"));
+  return '<section class="tb-card-merchant-rebuild"><header><div><small>ТОРГОВЕЦ БАШНИ</small><h3>КАРТЫ ДЛЯ КОЛОДЫ</h3><p>Покупай постоянные открытия для своего класса. Уже открытые карты доступны в библиотеке.</p></div><strong>'+Number(c.silver||0)+'<small>СЕРЕБРА</small></strong></header><div class="tb-card-merchant-grid">'+cards.map(card=>{const owned=unlocked.has(card.id),price=cardMerchantPrice(card),image=card.image||CARD_ART_ROOT+(ART_MAPPING[card.id]||"strike.png");return '<article class="tb-card-merchant-item '+(owned?'is-owned':'')+'"><div class="tb-card-merchant-art"><img src="'+esc(image)+'" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'./assets/cards/strike.png\'"></div><div class="tb-card-merchant-copy"><b>'+esc(card.name)+'</b><small>'+esc(String(card.rarity||"common").toUpperCase())+' · '+esc(card.classId==="common"?"ОБЩАЯ":clsName(c))+'</small><p>'+esc(card.description||"Боевой приём для колоды")+'</p></div><button type="button" data-card-purchase="'+esc(card.id)+'" '+(owned||Number(c.silver)<price?"disabled":"")+'>'+(owned?"УЖЕ ОТКРЫТА":"КУПИТЬ · "+price)+'</button></article>';}).join("")+'</div></section>';
+ }
+ function accountSettingsMarkup(){
+  const prefs=settings(),toggle=(key,label,description)=>'<label class="tb-account-setting"><span><b>'+label+'</b><small>'+description+'</small></span><input type="checkbox" data-setting="'+key+'" '+(prefs[key]===false?'':'checked')+'></label>';
+  return '<section class="tb-account-settings"><header><small>ПЕРСОНАЛИЗАЦИЯ</small><h3>НАСТРОЙКИ ИГРЫ</h3><p>Параметры сохраняются вместе с аккаунтом и прогрессом.</p></header>'+toggle("sound_enabled","Звуковые эффекты","Звуки карт, ударов и действий")+toggle("music_enabled","Музыка","Фоновая музыка башни")+toggle("auto_pause_on_blur","Пауза при сворачивании","Автоматически приостанавливать бой при выходе из игры")+toggle("disable_screen_shake","Без тряски экрана","Отключить тряску при сильных ударах")+toggle("clean_ui","Компактный интерфейс","Уменьшить декоративные элементы")+'</section>';
+ }
+
  function profileScreen(){
   const c=live();if(!c)return characterList();
   const def=classData(c),branch=(def.branches||[]).find(b=>b.id===c.branch),stats=balance.classes.base_stats,combatStats=engine.getCombatStats(c),gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"],gearSlotKeys=["weapon","chest","head","legs","hands","accessory"];
@@ -1993,7 +2022,7 @@ function profileRelicShopMarkup(c){
    const refineCount=(c.bag||[]).filter(item=>item.type==="refine_stone").reduce((sum,item)=>sum+(Number(item.quantity)||1),0),chiselCount=(c.bag||[]).filter(item=>item.type==="chisel").reduce((sum,item)=>sum+(Number(item.quantity)||1),0);
    body='<div class="tb-system-actions"><button type="button" data-action="open-workshop">МАСТЕРСКАЯ · РУНЫ · ЧЁРНЫЙ РЫНОК · АПГРЕЙДЫ</button></div><section class="tb-craft-rebuild"><section class="tb-craft-main-card"><h3>Крафт и улучшение</h3><div class="tb-craft-material-summary"><span class="tb-craft-resource-art">'+inventoryIconHtml({type:"craft_material"},false)+'</span><p class="tb-craft-material-count">Материалы для крафта: '+materials+' / 20</p></div><button type="button" class="tb-forge-button" data-craft-stone="1" '+(materials<20?'disabled':'')+'>КОВАТЬ КАМЕНЬ</button></section><section class="tb-system-card"><h3>Слияние камней</h3>'+(stoneRows||'<small>Камней усиления пока нет.</small>')+'</section><section class="tb-system-card"><h3>Камни заточки и инструменты</h3><div class="tb-craft-material-summary"><span class="tb-craft-resource-art">'+inventoryIconHtml({type:"refine_stone"},false)+'</span><p>Камни заточки: '+refineCount+'</p></div><p>Долота: '+chiselCount+' · открывают гнёзда в экипировке.</p></section></section>';
   }else if(profileTab==="account"){
-   body=accountAuthPanel()+'<div class="tb-profile-account">'+systemsScreen()+'</div>';
+   body=accountAuthPanel()+accountSettingsMarkup();
   }else if(profileTab==="speedrun"){
    const speedRuns=Number(c.stats?.speed_runs||0),bestStage=Number(c.progress?.highestEver||0);
    body='<section class="speedrun-container"><div class="speedrun-eyebrow">ИСПЫТАНИЕ СКОРОСТИ</div><h2 class="speedrun-title">Спидран Башни</h2><div class="speedrun-record-row"><div class="speedrun-record"><small>РЕКОРД ЭТАПА</small><strong>'+bestStage+' / 250</strong><small>Ускоренные бои ×2: '+speedRuns+'</small></div><button class="speedrun-status" type="button" disabled>В ПРОЦЕССЕ</button></div><p class="speedrun-description">Отслеживание быстрых забегов и прогресса. Ускоренные бои ×2 учитываются отдельно.</p><p class="speedrun-note">Результаты обновляются по событиям игры; отдельный таймер не запускается в фоне.</p></section>';
@@ -2005,7 +2034,7 @@ function profileRelicShopMarkup(c){
   }else if(profileTab==="relics"){
    body=profileRelicShopMarkup(c);
   }else if(profileTab==="gear"){
-   body=renderCollection(c);
+   body=equipmentCollectionMarkup(c);
   }else{
    const tools='<div class="tb-bag-tools"><button data-action="equip-best">АВТО-ЭКИПИРОВКА</button><button data-action="salvage-gray">РАЗОБРАТЬ СЕРЫЙ МУСОР</button></div>';
    const labels={attack:"АТК",defense:"ЗАЩ",health:"HP",crit:"КРИТ",critDamage:"КРИТ. УРОН",evasion:"УКЛОН",dodge:"УКЛОН",spellPower:"СИЛА МАГИИ",fireDamage:"ОГОНЬ",iceDamage:"ЛЁД",darkDamage:"ТЬМА"};
