@@ -64,9 +64,10 @@ jobs:
             fi
             sleep 5
           done
-          grep -q 'rpg-mode.js' /tmp/towerbound-index.html
-          for asset in rpg-mode.js rpg-rework-v2.js rpg-rework-ui.js native-pwa.css service-worker.js; do
+          grep -q 'rpg-rework-ui.js' /tmp/towerbound-index.html
+          ! grep -q 'rpg-mode.js' /tmp/towerbound-index.html
+          for asset in rpg-rework-v2.js rpg-rework-ui.js towerbound-engine.js native-pwa.css styles.css specialization-panel.css talent-tree-mobile.css towerbound-cloud.js service-worker.js; do
             curl --fail --silent --show-error --location "${PAGE_URL}${asset}" -o /dev/null
-            echo "Verified published asset: $asset"
+            echo "Verified published active asset: ${asset}"
           done
           echo "Published GitHub Pages site is reachable and critical RPG assets are served."
