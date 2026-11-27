@@ -2202,3 +2202,8 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-stats-section,#tbRpg .tb-stats-identity{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
  #tbRpg .tb-stats-main-grid,#tbRpg .tb-stats-source-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+
+/* Character stats: visible illustrated stat emblems, embedded inline (no emoji or external-image placeholders). */
+#tbRpg .tb-stats-icon{font-size:0!important;line-height:0!important;overflow:visible!important}
+#tbRpg .tb-stats-icon svg{display:block!important;width:27px!important;height:27px!important;max-width:100%!important;max-height:100%!important;overflow:visible!important;filter:drop-shadow(0 2px 5px rgba(0,0,0,.7))}
+@media(max-width:600px){#tbRpg .tb-stats-icon svg{width:24px!important;height:24px!important}}
