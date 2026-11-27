@@ -132,7 +132,7 @@ for(const classId of classes){
 {
  const ui=fs.readFileSync(path.join(__dirname,'../rpg-rework-ui.js'),'utf8');
  const css=fs.readFileSync(path.join(__dirname,'../styles.css'),'utf8');
- assert.match(ui,/const carryShield=battle\.nextDamageShield\|\|0;[\s\S]*?loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?battle\.nextDamageShield=carryShield/,'Dragonkin shield proc survives target handoff');
+ assert.match(ui,/if\(c\.classId==="dragonkin"&&element&&element!==String\(c\.element\|\|"fire"\)\)\{c\.element=element;battle\.cardBlock=\(Number\(battle\.cardBlock\)\|\|0\)\+5/,"Dragonkin element shift grants a five-point block bonus");
  assert.match(ui,/loadBattleEnemy\(result\.nextTargetIndex\);[\s\S]*?if\(c\.classId==="destroyer"\)[\s\S]*?battle\.playerDamageBuff=balance\.procs\.destroyer\.value/,'Destroyer kill proc is applied after the target reset');
  for(const classId of classes)assert.ok(ui.includes('balance.procs.'+classId),'runtime proc trigger exists for '+classId);
  assert.match(ui,/function processCombo\([\s\S]*?combo\.bonus\.damage_mult/,'combo completion grants configured damage bonus');
