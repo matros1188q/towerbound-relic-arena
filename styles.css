@@ -3278,3 +3278,21 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-v2 .tb-cosmetic-chest-art{width:52px!important;height:52px!important}
  #tbRpg .tb-v2 .tb-cosmetic-chest-card button{grid-column:1/-1!important;width:100%!important}
 }
+
+/* 2026-11-27 SHOP PASS: illustrated PvP catalogue cards, compact and readable on iPhone */
+#tbRpg .tb-v2 .tb-system-products{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px!important}
+#tbRpg .tb-v2 .tb-system-product{display:grid!important;grid-template-columns:52px minmax(0,1fr)!important;grid-template-rows:auto auto!important;align-items:center!important;gap:8px 10px!important;min-width:0!important;padding:10px!important;border:1px solid rgba(201,169,105,.26)!important;border-radius:13px!important;background:linear-gradient(145deg,#273139,#151d23)!important}
+#tbRpg .tb-v2 .tb-system-product-art{grid-column:1;grid-row:1/3;width:52px!important;height:52px!important;display:grid!important;place-items:center!important;overflow:hidden!important;border-radius:10px!important;background:radial-gradient(ellipse at center,#d4b16a22,transparent 72%),#0e171c!important}
+#tbRpg .tb-v2 .tb-system-product-art .tb-shop-item-art{width:50px!important;height:50px!important;max-width:100%!important;object-fit:contain!important;filter:drop-shadow(0 4px 7px #000b)!important}
+#tbRpg .tb-v2 .tb-system-product-copy{display:flex!important;flex-direction:column!important;gap:4px!important;min-width:0!important}
+#tbRpg .tb-v2 .tb-system-product-copy>b{color:#f0dfc0!important;font-size:11px!important;line-height:1.25!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-v2 .tb-system-product-copy>small{color:#b0b9b8!important;font-size:9px!important;line-height:1.3!important}
+#tbRpg .tb-v2 .tb-system-product>button{grid-column:1/-1!important;width:100%!important;min-height:36px!important;margin:0!important;padding:7px!important;border-radius:9px!important;font-size:10px!important;font-weight:900!important}
+@media(max-width:520px){
+ #tbRpg .tb-v2 .tb-system-products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+ #tbRpg .tb-v2 .tb-system-product{grid-template-columns:42px minmax(0,1fr)!important;gap:7px!important;padding:8px!important}
+ #tbRpg .tb-v2 .tb-system-product-art{width:42px!important;height:42px!important}
+ #tbRpg .tb-v2 .tb-system-product-art .tb-shop-item-art{width:40px!important;height:40px!important}
+ #tbRpg .tb-v2 .tb-system-product-copy>b{font-size:10px!important}
+ #tbRpg .tb-v2 .tb-system-product-copy>small{font-size:8px!important}
+}

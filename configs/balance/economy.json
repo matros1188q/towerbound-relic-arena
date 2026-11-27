@@ -61,13 +61,12 @@
     ]
   ],
   "silver_store": {
-    "xp_10": 900,
-    "xp_20": 1800,
     "heal_10": 20,
     "heal_25": 60,
+    "xp_10": 900,
+    "xp_20": 1800,
     "drop_20": 2400,
     "drop_50": 5200,
-    "premium_7d": 20000,
     "extra": [
       {
         "id": "repair_kit",
@@ -92,29 +91,21 @@
         "name": "Футляр целителя",
         "price": 1800,
         "effect": "potion_capacity"
-      },
-      {
-        "id": "antidote",
-        "name": "Противоядие",
-        "price": 15,
-        "effect": "antidote"
       }
     ],
+    "premium_7d": 20000,
     "premium_14d": 35000,
     "premium_30d": 60000
   },
   "diamond_store": {
-    "xp_50": 10,
-    "xp_100": 20,
     "heal_35": 5,
     "heal_50": 7,
+    "xp_50": 10,
+    "xp_100": 20,
     "drop_75": 5,
     "drop_100": 7,
     "refine_10": 50,
     "refine_20": 100,
-    "premium_7d": 99,
-    "premium_14d": 149,
-    "premium_30d": 249,
     "extra": [
       {
         "id": "rescue_seal",
@@ -146,7 +137,10 @@
         "price": 99,
         "effect": "refine_guard"
       }
-    ]
+    ],
+    "premium_7d": 99,
+    "premium_14d": 149,
+    "premium_30d": 249
   },
   "consumables": {
     "xp_10": {
