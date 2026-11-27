@@ -162,7 +162,7 @@ assert.ok(characterGate.includes('cloud?.signedIn')&&characterGate.includes('В�
 assert.ok(characterGate.includes('data-action="empty-login"')&&characterGate.includes('data-action="empty-register"')&&characterGate.includes('Зарегистрироваться'),'embedded login and registration actions are present');
 assert.ok(characterGate.includes('СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА'),'authenticated empty state has its primary create action');
 assert.ok(ui.includes('Сначала войди в игровой аккаунт'),'new-character action is guarded by Supabase session');
-assert.ok(ui.includes('towerbound-auth-change')&&ui.includes('cloud.signIn(login,password,remember)'),'successful auth refreshes the character screen');
+assert.ok(ui.includes('towerbound-auth-change')&&ui.includes('window.TowerboundCloud.signIn(login,password,remember)'),'successful auth refreshes the character screen');
 assert.ok(cloud.includes('void onSession(data.session)')&&cloud.includes('async function onSession(next,force=false)')&&cloud.includes("window.dispatchEvent(new Event('towerbound-auth-change'))"),'Supabase sign-in starts cloud restore without blocking login and emits auth state changes after hydration');
 
 assert.ok(cloud.includes('let sessionTask=Promise.resolve()')&&cloud.includes('if(sessionKey===handledSessionKey&&(sessionBusy||!force))return sessionTask;')&&cloud.includes('return sessionTask;'),'duplicate Supabase auth events await the in-flight cloud-restore promise; forced retry remains available after a failed restore');
