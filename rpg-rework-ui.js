@@ -88,6 +88,7 @@
  }
  function newSemanticItemArtPath(item){
   const type=String(item?.type||item?.itemId||item?.id||"").toLowerCase(),value=[type,item?.name,item?.title,item?.description].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
+  if(type==="chisel"||value.includes("долото")||value.includes("socket chisel"))return CUSTOM_ITEM_ART_ROOT+CUSTOM_ITEM_ART.hammer;
   if(type==="enhancement_stone"||value.includes("камень усиления"))return enhancementStoneArtPath(item);
   if(type==="healing_potion"||type==="heal_25"||value.includes("зелье исцеления"))return NEW_ITEM_ART.healingPotion;
   if(type==="heal_10"||value.includes("малое зелье лечения"))return NEW_ITEM_ART.smallHealingPotion;
