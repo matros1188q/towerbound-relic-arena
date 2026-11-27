@@ -3028,3 +3028,70 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
   stroke-linecap:round!important;stroke-linejoin:round!important;
 }
 #tbRpg .tb-paper-slot>button[data-unequip]:active{transform:scale(.92)!important}
+
+
+/* EQUIPMENT BACKPACK READABILITY · compact horizontal item rows */
+#tbRpg .tb-gear-loot{
+  display:block!important;width:100%!important;max-width:100%!important;
+  box-sizing:border-box!important;padding:12px!important;overflow:hidden!important;
+}
+#tbRpg .tb-gear-loot>header{
+  display:flex!important;flex-direction:row!important;align-items:center!important;
+  justify-content:space-between!important;gap:8px!important;margin:0 0 10px!important;
+}
+#tbRpg .tb-gear-loot>header>div{flex:1 1 auto!important;min-width:0!important}
+#tbRpg .tb-gear-loot>header h3{
+  font-size:clamp(13px,3.8vw,16px)!important;line-height:1.2!important;
+  white-space:normal!important;overflow-wrap:normal!important;word-break:normal!important;
+}
+#tbRpg .tb-gear-loot>header>span{
+  flex:0 0 auto!important;white-space:nowrap!important;font-size:9px!important;
+}
+#tbRpg .tb-gear-loot-card{
+  display:grid!important;grid-template-columns:46px minmax(0,1fr) 64px!important;
+  align-items:center!important;gap:9px!important;width:100%!important;
+  min-width:0!important;box-sizing:border-box!important;
+  min-height:66px!important;margin:7px 0 0!important;padding:8px!important;
+  border-radius:11px!important;overflow:hidden!important;
+}
+#tbRpg .tb-gear-loot-art{
+  width:44px!important;height:44px!important;min-width:44px!important;
+  display:grid!important;place-items:center!important;overflow:hidden!important;
+}
+#tbRpg .tb-gear-loot-art img{width:100%!important;height:100%!important;object-fit:contain!important}
+#tbRpg .tb-gear-loot-copy{
+  display:flex!important;flex-direction:column!important;justify-content:center!important;
+  gap:3px!important;min-width:0!important;width:100%!important;overflow:hidden!important;
+}
+#tbRpg .tb-gear-loot-copy b{
+  display:block!important;font:600 11px/1.25 Georgia,serif!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+  max-height:2.5em!important;overflow:hidden!important;
+}
+#tbRpg .tb-gear-loot-copy small{
+  display:block!important;margin:0!important;font:8px/1.25 Arial,sans-serif!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;
+}
+#tbRpg .tb-gear-loot-copy p{
+  display:block!important;margin:0!important;font:8px/1.25 Arial,sans-serif!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+}
+#tbRpg .tb-gear-loot-card>button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:64px!important;min-width:64px!important;max-width:64px!important;
+  min-height:30px!important;padding:5px 3px!important;margin:0!important;
+  font:800 8px/1 Arial,sans-serif!important;white-space:nowrap!important;
+}
+#tbRpg .tb-equipment-footer{margin:8px 0 0!important;padding:4px 0!important}
+#tbRpg .tb-equipment-footer button{
+  min-height:38px!important;font-size:9px!important;line-height:1.2!important;
+  white-space:normal!important;padding:8px!important;
+}
+@media(max-width:380px){
+ #tbRpg .tb-gear-loot{padding:9px!important}
+ #tbRpg .tb-gear-loot-card{grid-template-columns:40px minmax(0,1fr) 58px!important;gap:7px!important;padding:7px!important}
+ #tbRpg .tb-gear-loot-art{width:38px!important;height:38px!important;min-width:38px!important}
+ #tbRpg .tb-gear-loot-card>button{width:58px!important;min-width:58px!important;max-width:58px!important;font-size:7px!important}
+ #tbRpg .tb-gear-loot-copy b{font-size:10px!important}
+ #tbRpg .tb-gear-loot-copy small,#tbRpg .tb-gear-loot-copy p{font-size:7px!important}
+}
