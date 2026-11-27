@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'towerbound-v805';
+const CACHE = 'towerbound-v806';
 /* Three-zone card battle arena and post-battle loot layout */
 const SHELL = [
   './assets/MAPA.jpg',
@@ -42,7 +42,7 @@ const SHELL = [
   './endgame-systems.js?v=225',
   './juice-pwa.js?v=2',
   './supabase-config.js?v=1',
-  './towerbound-cloud.js?v=38',
+  './towerbound-cloud.js?v=39',
   './towerbound-online.js?v=1',
   './towerbound-guild.css?v=5',
   './towerbound-guild.js?v=17',
