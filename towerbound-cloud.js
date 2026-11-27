@@ -15,10 +15,10 @@ const CLOUD_TIMEOUT_MS=15000;
 function withTimeout(promise,label,ms=CLOUD_TIMEOUT_MS){let timerId;return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>{timerId=setTimeout(()=>reject(new Error(label+' · превышено время ожидания')),ms);})]).finally(()=>clearTimeout(timerId));}
 const status={text:'Локальное сохранение',kind:'local'};
 const style=document.createElement('style');style.id='tb-cloud-styles';style.textContent=`
-#tbCloudButton{position:fixed;z-index:9998;right:12px;top:calc(env(safe-area-inset-top) + 10px);max-width:46vw;padding:8px 11px;border:1px solid #b99760;border-radius:8px;background:#211a20ed;color:#f2d9a3;font:700 10px/1.2 system-ui;letter-spacing:.04em;box-shadow:0 4px 18px #0008;backdrop-filter:blur(12px)}
+#tbCloudButton{position:fixed;z-index:1000002;right:12px;top:calc(env(safe-area-inset-top) + 10px);max-width:46vw;padding:8px 11px;border:1px solid #b99760;border-radius:8px;background:#211a20ed;color:#f2d9a3;font:700 10px/1.2 system-ui;letter-spacing:.04em;box-shadow:0 4px 18px #0008;backdrop-filter:blur(12px)}
 #tbCloudButton[data-state="online"]{border-color:#73c9a1;color:#a9f0ca}
 #tbCloudButton[data-state="error"]{border-color:#e58a83;color:#ffc0b8}
-#tbCloudOverlay{position:fixed;inset:0;z-index:10000;display:none;place-items:center;padding:18px;background:#05040be8;backdrop-filter:blur(10px)}
+#tbCloudOverlay{position:fixed;inset:0;z-index:1000001;display:none;place-items:center;padding:18px;background:#05040be8;backdrop-filter:blur(10px)}
 #tbCloudOverlay.open{display:grid}
 #tbCloudDialog{width:min(440px,100%);max-height:88dvh;overflow:auto;padding:22px;border:1px solid #b99760;border-radius:14px;background:linear-gradient(145deg,#30272a,#15121a);box-shadow:0 25px 90px #000c;color:#f1e4ca;font:14px/1.5 system-ui}
 #tbCloudDialog h2{margin:0 0 8px;color:#f4d79c;font:700 19px Georgia,serif}
