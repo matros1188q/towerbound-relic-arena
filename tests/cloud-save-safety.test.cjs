@@ -12,8 +12,8 @@ assert.ok(cloud.includes('ignoreSignedOutEvents=0')&&cloud.includes("event==='SI
 assert.ok(cloud.includes('sessionGeneration=0')&&cloud.includes('const generation=++sessionGeneration,isCurrent=()=>generation===sessionGeneration')&&cloud.includes('if(!isCurrent())return'),'stale cloud hydration cannot overwrite a newer account session');
 assert.ok(cloud.includes('const userId=session?.user?.id;')&&cloud.includes(".eq('user_id',userId)"),'remote reads bind queries to a captured authenticated user id');
 assert.ok(cloud.includes('if(session?.user?.id!==userId)throw new Error(\'Сессия аккаунта изменилась; запись отменена\')')&&cloud.includes("localStorage.setItem('tb-cloud-user-id',userId)"),'cloud writes cannot be attributed to a different account after a session switch');
-assert.ok(ui.includes('if(window.TowerboundCloudReady)await window.TowerboundCloudReady;'));
-assert.ok(ui.includes('post-cloud engine hydration failed')&&ui.includes("localStorage.getItem('tb-rpg-v2')"),'engine state is rehydrated from cloud-restored storage after the cloud bootstrap');
+assert.ok(ui.includes('window.addEventListener("towerbound-cloud-restore"')&&ui.includes('cloud save applied without page reload'),'cloud restore event is applied directly to the live game state');
+assert.ok(ui.includes('window.addEventListener("towerbound-cloud-restore"')&&ui.includes('localStorage.getItem("tb-rpg-v2")'),'engine state is rehydrated from cloud-restored local storage after the cloud bootstrap');
 assert.ok(ui.includes('auth restore hydration failed')&&ui.includes('towerbound-auth-change'),'engine state is rehydrated again after the completed authenticated cloud restore');
 assert.ok(cloud.includes('retryLoad:async()=>{if(!session)throw new Error')&&cloud.includes('await onSession(session,true)')&&cloud.includes('if(!savesReady)throw new Error(lastCloudError'),'failed cloud loads can be retried without signing out and retry confirms cloud restoration before continuing');
 assert.ok(ui.includes('Синхронизация сохранения')&&ui.includes('data-action=\"cloud-retry\"'),'empty character list is blocked until cloud loading is confirmed');
