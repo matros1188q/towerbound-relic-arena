@@ -91,7 +91,7 @@ const ids=['assassin','duelist','destroyer','bishop','elemental','dragonkin','sh
  assert.match(ui,/CARD_DATABASE[\s\S]*function drawCards\(amount\)[\s\S]*function playCard\(cardIndex\)/,'battle UI uses a draw pile, hand, discard pile and energy-costed card actions');
  assert.match(ui,/engine\.restoreResource\(c\.id,profile\.resourceGain\)/,'basic attack restores resource on a successful hit');
  assert.match(ui,/function useUltimate\(\)[\s\S]*?for\(const enemy of list\)\{for\(let hit=0;hit<3&&enemy\.hp>0&&c\.run\.playerHp>0;hit\+\+\)\{const result=applyTargetDamage\(enemy,[\s\S]*?ultimate\.damage_type\|\|"physical",\{ultimate:true\}\);total\+=result\.dealt;if\(!battle\|\|c\.run\.playerHp<=0\)return true;/,"single-target ultimate resolves three capped hits and stops when the player dies or the battle ends");
- assert.match(ui,/engine\.capBossDamage\(target,damage,used,options\.ultimate\?"ultimate":undefined\)/,'ordinary and ultimate boss hits use their separate per-hit caps');
+ assert.match(ui,/engine\.capBossDamage\(target,damage,used,options\.ultimate\?"ultimate":undefined\)/,'direct, ordinary and ultimate boss hits use their separate per-hit caps');
  assert.match(ui,/data-action="equip-best"/,'inventory exposes equip best');
  assert.match(ui,/data-action="salvage-gray"/,'inventory exposes bulk gray salvage');
  assert.match(ui,/is-better/,'gear comparison renders better stats in green');
