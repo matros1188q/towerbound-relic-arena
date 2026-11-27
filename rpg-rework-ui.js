@@ -150,7 +150,45 @@
   if(slot==="accessory")return relicArtFiles.accessory;
   return relicArtFiles.potionStack;
  }
+ const EQUIPMENT_ART_ROOT="./art-inbox/08-equipment/";
+ const EQUIPMENT_ART_FILES=Object.freeze({
+  weapons:{
+   C01:["01-weapons/C01_01_bronze_sword.png","01-weapons/C01_03_steel_longsword.png","01-weapons/C01_09_flame_sword.png","01-weapons/C01_15_prism_sword.png","01-weapons/C01_16_ash_sword.png"],
+   C02:["01-weapons/C02_01_hand_axe.png","01-weapons/C02_05_great_axe.png","01-weapons/C02_11_flame_axe.png","01-weapons/C02_15_prism_hammer.png","01-weapons/C02_16_ash_axe.png"],
+   C03:["01-weapons/C03_02_iron_spear.png","01-weapons/C03_06_halberd.png","01-weapons/C03_10_longbow.png","01-weapons/C03_14_spirit_bow.png","01-weapons/C03_15_prism_bow.png"],
+   C04:["01-weapons/C04_01_wooden_staff.png","01-weapons/C04_02_wizard_staff.png","01-weapons/C04_04_fire_staff.png","01-weapons/C04_10_star_staff.png","01-weapons/C04_16_prism_tome.png"],
+   C05:["01-weapons/C05_01_knife.png","01-weapons/C05_02_dagger.png","01-weapons/C05_03_poison_dagger.png","01-weapons/C05_05_twin_daggers.png","01-weapons/C05_14_chakram.png"]
+  },
+  head:["03-headwear/C07_01_leather_cap.png","03-headwear/C07_02_iron_helmet.png","03-headwear/C07_03_closed_knight_helmet.png","03-headwear/C07_15_dragon_helmet.png","03-headwear/C07_16_prism_circlet.png"],
+  chest:["04-armor-robes/C08_01_cloth_tunic.png","04-armor-robes/C08_03_leather_armor.png","04-armor-robes/C08_05_iron_breastplate.png","04-armor-robes/C08_13_dragon_scale_armor.png","04-armor-robes/C08_15_prism_robe.png"],
+  legs:["06-boots-cloaks-belts-gloves/C10_01_leather_boots.png","06-boots-cloaks-belts-gloves/C10_02_iron_greaves.png","06-boots-cloaks-belts-gloves/C10_03_winged_boots.png","06-boots-cloaks-belts-gloves/C10_04_snow_boots.png","06-boots-cloaks-belts-gloves/C10_05_sandals.png"],
+  hands:["06-boots-cloaks-belts-gloves/C10_11_leather_gloves.png","06-boots-cloaks-belts-gloves/C10_12_gauntlets.png","06-boots-cloaks-belts-gloves/C10_12_gauntlets.png","06-boots-cloaks-belts-gloves/C10_12_gauntlets.png","06-boots-cloaks-belts-gloves/C10_12_gauntlets.png"],
+  amulet:["05-jewelry/C09_06_pearl_necklace.png","05-jewelry/C09_07_amulet.png","05-jewelry/C09_08_star_pendant.png","05-jewelry/C09_15_prism_pendant.png","05-jewelry/C09_15_prism_pendant.png"],
+  offhand:["02-shields/C06_01_wooden_shield.png","02-shields/C06_04_kite_shield.png","02-shields/C06_06_knight_s_shield.png","02-shields/C06_07_dragon_scale_shield.png","02-shields/C06_15_prism_shield.png"],
+  ring:["05-jewelry/C09_01_silver_ring.png","05-jewelry/C09_02_gold_ring.png","05-jewelry/C09_03_ruby_ring.png","05-jewelry/C09_04_sapphire_ring.png","05-jewelry/C09_16_ash_ring.png"],
+  belt:["06-boots-cloaks-belts-gloves/C10_09_leather_belt.png","06-boots-cloaks-belts-gloves/C10_10_belt_with_pouches.png","06-boots-cloaks-belts-gloves/C10_10_belt_with_pouches.png","06-boots-cloaks-belts-gloves/C10_10_belt_with_pouches.png","06-boots-cloaks-belts-gloves/C10_10_belt_with_pouches.png"]
+ });
+ function equipmentArtPath(item,slot){
+  const key=String(slot||item?.slot||"").toLowerCase();
+  if(!EQUIPMENT_ART_FILES[key])return "";
+  const rarity=String(item?.rarity||"Обычная").toLowerCase();
+  const tier=rarity.includes("бог")||rarity.includes("god")?4:rarity.includes("леген")||rarity.includes("legend")?3:rarity.includes("эпич")||rarity.includes("epic")?2:rarity.includes("редк")||rarity.includes("rare")?1:0;
+  let path="";
+  if(key==="weapon"){
+   const classId=String(item?.classId||item?.class_id||"").toLowerCase();
+   const branch=String(item?.branchId||item?.branch_id||item?.branch||"").toLowerCase();
+   const family=classId==="assassin"?"C05":classId==="destroyer"?"C02":classId==="duelist"?"C01":classId==="bishop"||classId==="dragonkin"||classId==="elemental"||classId==="shaman"?"C04":"C01";
+   if(/fire|огн/.test(branch))path="01-weapons/C04_04_fire_staff.png";
+   else if(/ice|frost|лед|лёд/.test(branch))path="01-weapons/C04_05_ice_staff.png";
+   else if(/dark|shadow|тьм|мрак/.test(branch))path="01-weapons/C04_08_shadow_staff.png";
+   else if(/heal|healing|исцел|свет|holy/.test(branch))path="01-weapons/C04_07_healing_staff.png";
+   else path=EQUIPMENT_ART_FILES.weapons[family][tier];
+  }else path=EQUIPMENT_ART_FILES[key][tier];
+  return path?EQUIPMENT_ART_ROOT+path:"";
+ }
  function relicIconHtml(item,slot,extraClass){
+  const equipmentArt=equipmentArtPath(item,slot);
+  if(equipmentArt)return '<img class="tb-relic-icon tb-equipment-item-art '+(extraClass||"")+'" src="'+equipmentArt+'" alt="" loading="lazy" decoding="async">';
   const custom=customRelicArtPath(item);
   if(custom)return '<img class="tb-relic-icon tb-custom-item-art '+(extraClass||"")+'" src="'+custom+'" alt="" loading="lazy" decoding="async">';
   const parts=[item?.type,item?.id,item?.name,item?.slot,slot,item?.category,item?.kind].filter(Boolean).join(" ").toLowerCase().replace(/[_-]/g," ");
@@ -2412,7 +2450,7 @@ function profileRelicShopMarkup(c){
    currentGems.map((gem,index)=>'<div class="tb-collection-gem-row"><span>'+esc(gem.stoneType?.name||"Камень усиления")+' · ур. '+Math.max(1,Number(gem.level)||1)+'</span><button type="button" class="tb-collection-action" data-extract-gem="'+esc(currentItem.id)+'" data-gem-index="'+index+'">ИЗВЛЕЧЬ КАМЕНЬ</button></div>').join("")
   ].join("");
   const detail=current?'<div class="tb-collection-detail-overlay"><section class="tb-collection-detail" role="dialog" aria-modal="true"><button type="button" class="tb-item-detail-close" data-collection-close>×</button><div class="tb-collection-detail-art">'+(current.owned?relicIconHtml(current.item,current.slot):relicIconHtml({rarity:current.rarity,slot:current.slot,name:current.itemName},current.slot))+'</div><h3>'+esc(current.item?.name||current.itemName)+'</h3><p>'+esc(current.className)+' · '+esc(current.branchName)+' · '+esc(slotNames[current.slot])+'</p><p>'+esc(current.rarity)+(current.item?.itemLevel?' · ур. '+current.item.itemLevel:'')+'</p><div class="tb-collection-stats">'+statMarkup(current.item||current)+'</div><div class="tb-collection-actions">'+detailActions+'</div></section></div>':'';
-  return subnav+'<header class="tb-collection-header"><div><h2>КОЛЛЕКЦИЯ</h2><p>Текущий класс · все его специализации · 6 слотов · 5 редкостей</p></div><strong>'+catalog.filter(item=>item.owned).length+' / '+catalog.length+'</strong></header>'+grouped+detail;
+  return subnav+'<header class="tb-collection-header"><div><h2>КОЛЛЕКЦИЯ</h2><p>Текущий класс · все его специализации · 9 слотов · 5 редкостей</p></div><strong>'+catalog.filter(item=>item.owned).length+' / '+catalog.length+'</strong></header>'+grouped+detail;
  }
 
  function renderEquipmentScreen(c){
