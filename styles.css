@@ -1830,3 +1830,102 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-craft-main-card{background-image:linear-gradient(180deg,rgba(8,13,20,.82),rgba(8,13,20,.91)),url("./assets/ui/sections/forge-blacksmith.jpg");background-size:cover;background-position:center 38%}
 #tbRpg .tb-craft-main-card .tb-forge-button{background-image:linear-gradient(90deg,rgba(25,18,12,.62),rgba(25,18,12,.78)),url("./assets/ui/sections/forge-glowing-ingot.jpg");background-size:cover;background-position:center 55%}
 #tbRpg .tb-craft-rebuild .tb-system-card{background-image:linear-gradient(180deg,rgba(8,13,20,.82),rgba(8,13,20,.92)),url("./assets/ui/sections/forge-lava-hall.jpg");background-size:cover;background-position:center}
+
+
+/* Mobile character hub refinement · 2026-11-27
+   Presentation-only: preserve navigation, data and game logic. */
+#tbRpg .tb-profile-hub .tb-profile-hub-card{
+ position:relative;isolation:isolate;overflow:hidden;
+ min-width:0;border-color:rgba(213,177,112,.38);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -22px 38px rgba(0,0,0,.18),0 8px 22px rgba(0,0,0,.24);
+ transition:border-color .18s ease,filter .18s ease,transform .18s ease;
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:focus-visible,
+#tbRpg .tb-profile-hub .tb-profile-hub-tabs button:focus-visible{
+ outline:2px solid #e8c47e;outline-offset:2px;z-index:2;
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-copy,
+#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-arrow,
+#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-emoji{position:relative;z-index:1}
+#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-copy>b{
+ color:#fff1d5;text-shadow:0 2px 8px rgba(0,0,0,.8);letter-spacing:.045em;
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-copy>small{
+ max-width:42ch;color:#e0d8c9;text-shadow:0 1px 5px rgba(0,0,0,.95);line-height:1.35;
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-subnav{gap:5px}
+#tbRpg .tb-profile-hub .tb-profile-hub-subnav>span{
+ border:1px solid rgba(226,192,130,.28);border-radius:999px;
+ background:rgba(4,9,14,.72);color:#f0d8aa;padding:4px 8px;
+ font-size:10px;line-height:1.2;white-space:nowrap;
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-tabs button{
+ min-height:62px;padding:7px 3px;color:#d8c9ae;
+ background:linear-gradient(180deg,rgba(255,255,255,.025),transparent);
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-tabs button.active{
+ color:#ffe0a2;background:linear-gradient(180deg,rgba(194,147,77,.22),rgba(125,84,36,.09));
+ box-shadow:inset 0 -2px 0 #d9ad68,inset 0 1px rgba(255,255,255,.06);
+}
+#tbRpg .tb-profile-hub .tb-profile-hero-art{position:relative;overflow:hidden}
+#tbRpg .tb-profile-hub .tb-profile-hero-art img{
+ display:block;width:100%;height:100%;min-height:inherit;max-height:100%;
+ object-fit:contain;object-position:center bottom;filter:drop-shadow(0 9px 14px rgba(0,0,0,.55));
+}
+#tbRpg .tb-profile-content{border:1px solid rgba(190,151,91,.20);border-radius:12px}
+#tbRpg .tb-profile-content :is(.tb-codex-hero,.tb-card-merchant-heading,.tb-relic-shop-head){
+ box-shadow:inset 0 1px rgba(255,255,255,.07),0 8px 22px rgba(0,0,0,.20);
+}
+@media(max-width:520px){
+ #tbRpg .tb-profile-hub{gap:10px}
+ #tbRpg .tb-profile-hub .tb-profile-hero{
+  grid-template-columns:minmax(92px,31%) minmax(0,1fr);min-height:194px;
+  border-radius:13px;background-position:center 38%;
+ }
+ #tbRpg .tb-profile-hub .tb-profile-hero-art{min-height:194px}
+ #tbRpg .tb-profile-hub .tb-profile-hero-info{padding:12px 9px}
+ #tbRpg .tb-profile-hub .tb-profile-hero-info h1{font-size:clamp(19px,5.8vw,24px);line-height:1.12}
+ #tbRpg .tb-profile-hub .tb-profile-hero-info>p{font-size:12px;line-height:1.35}
+ #tbRpg .tb-profile-hub .tb-profile-power{gap:5px;margin:11px 0 9px}
+ #tbRpg .tb-profile-hub .tb-profile-power strong{font-size:clamp(24px,7vw,31px)}
+ #tbRpg .tb-profile-hub .tb-profile-hero-stats{gap:7px 4px;padding-top:9px}
+ #tbRpg .tb-profile-hub .tb-profile-hero-stats span{font-size:11px}
+ #tbRpg .tb-profile-hub .tb-profile-hero-stats small{font-size:9px;margin-left:17px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-tabs button{min-height:56px;font-size:9px;letter-spacing:.025em}
+ #tbRpg .tb-profile-hub .tb-profile-hub-tabs button>span{font-size:16px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-card{
+  grid-template-columns:54px minmax(0,1fr) 16px;gap:8px;min-height:88px;padding:8px;
+  border-radius:11px;background-position:center 44%;
+ }
+ #tbRpg .tb-profile-hub .tb-profile-hub-emoji{min-height:66px;font-size:27px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-copy{gap:4px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-copy>b{font-size:11px;line-height:1.25}
+ #tbRpg .tb-profile-hub .tb-profile-hub-copy>small{font-size:10px;line-height:1.28}
+ #tbRpg .tb-profile-hub .tb-profile-hub-subnav{gap:4px;margin-top:3px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-subnav>span{font-size:9px;padding:3px 6px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-arrow{font-size:21px}
+ #tbRpg .tb-profile-content{padding-top:9px!important;border-radius:10px}
+ #tbRpg .tb-profile-content :is(.tb-codex-hero,.tb-card-merchant-heading,.tb-relic-shop-head){padding:11px}
+ #tbRpg .tb-profile-content .tb-codex-hero h2,
+ #tbRpg .tb-profile-content .tb-card-merchant-heading h2{font-size:clamp(17px,5vw,21px);line-height:1.18}
+ #tbRpg .tb-profile-content .tb-codex-hero p,
+ #tbRpg .tb-profile-content .tb-card-merchant-heading p{font-size:11px;line-height:1.4}
+ #tbRpg .tb-profile-content .tb-craft-rebuild{padding:7px}
+}
+@media(max-width:380px){
+ #tbRpg .tb-profile-hub .tb-profile-hero{grid-template-columns:86px minmax(0,1fr);min-height:184px}
+ #tbRpg .tb-profile-hub .tb-profile-hero-art{min-height:184px}
+ #tbRpg .tb-profile-hub .tb-profile-hero-info{padding:10px 7px}
+ #tbRpg .tb-profile-hub .tb-profile-hero-stats{gap:6px 2px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-card{grid-template-columns:48px minmax(0,1fr) 14px;gap:7px;padding:7px;min-height:84px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-emoji{min-height:60px;font-size:24px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-copy>b{font-size:10px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-copy>small{font-size:9px}
+ #tbRpg .tb-profile-hub .tb-profile-hub-subnav>span{font-size:8px;padding:3px 5px}
+}
+@media(hover:hover) and (pointer:fine){
+ #tbRpg .tb-profile-hub .tb-profile-hub-card:hover{border-color:rgba(235,197,127,.78);filter:brightness(1.08);transform:translateY(-1px)}
+}
+@media(prefers-reduced-motion:reduce){
+ #tbRpg .tb-profile-hub .tb-profile-hub-card{transition:none}
+}
