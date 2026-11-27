@@ -1417,7 +1417,7 @@
      if(store==="silver")character.silver+=price;else state.account.diamonds+=price;
      throw new Error("Healing potion stack is full");
     }
-    if(stack)stack.quantity=Math.min(balance.healing.potion_stack_limit,stack.quantity+1);
+    if(stack)stack.quantity=Math.min(balance.healing.potion_stack_limit+character.potionCapacityBonus,stack.quantity+1);
     else character.bag.push({id:id(),type:"healing_potion",healFraction:fraction,quantity:1});
    }else if(catalogItem.startsWith("premium_")){
     const days=Number(catalogItem.split("_")[1].replace("d",""))||7;
