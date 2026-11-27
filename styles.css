@@ -2709,3 +2709,7 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-paper-hero small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 8px Arial,sans-serif;color:#f0d7a2}
 #tbRpg .tb-paper-slot:nth-child(10){grid-column:2}
 @media(max-width:390px){#tbRpg .tb-paper-hero{min-height:116px}#tbRpg .tb-paper-hero img{height:86px}}
+
+#tbRpg .tb-paper-slot.is-blocked{border-style:solid;border-color:#bd986155;background:linear-gradient(150deg,#302820,#171a1d);opacity:.78}
+#tbRpg .tb-paper-slot.is-blocked> b{color:#d8b979}
+#tbRpg .tb-paper-slot.is-blocked>em{color:#c3a16d}
