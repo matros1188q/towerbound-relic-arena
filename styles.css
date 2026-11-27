@@ -3519,3 +3519,18 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-v2 .new-enemy-statuses{display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:flex-start!important;gap:4px!important;min-width:0!important;max-width:100%!important;white-space:normal!important;}
 #tbRpg .tb-v2 .new-enemy-status{position:static!important;display:inline-flex!important;align-items:center!important;max-width:100%!important;min-width:0!important;height:auto!important;line-height:1.25!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;padding:3px 6px!important;}
 #tbRpg .tb-v2 .new-enemy-intent{position:static!important;max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.3!important;}
+
+/* Towerbound recovery: visible talent canvas and non-overlapping mobile stats. */
+#tbRpg .tb-tree-shell{min-height:calc(100dvh - 112px)!important;height:calc(100dvh - 112px)!important;max-height:calc(100dvh - 112px)!important;box-sizing:border-box!important;overflow:hidden!important}
+#tbRpg .tb-tree-viewport{position:relative!important;display:block!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;min-height:280px!important;height:auto!important;max-height:none!important;overflow:hidden!important}
+#tbRpg #talentTreeCanvas{width:100%!important;height:100%!important;min-height:280px!important;display:block!important}
+#tbRpg .tb-profile-hub-subnav [data-tab]{cursor:pointer!important;pointer-events:auto!important;position:relative!important;z-index:2!important}
+#tbRpg .tb-stats-screen{box-sizing:border-box!important;max-width:100vw!important}
+#tbRpg .tb-stats-main-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#tbRpg .tb-stats-main-card,#tbRpg .tb-stats-main-card>div{min-width:0!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-stats-main-card b,#tbRpg .tb-stats-main-card em,#tbRpg .tb-stats-main-card small{display:block!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.25!important}
+#tbRpg .tb-stats-detail-row{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;min-width:0!important}
+#tbRpg .tb-stats-detail-row span{min-width:0!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#tbRpg .tb-stats-detail-row b{flex:0 0 auto!important;white-space:nowrap!important}
+#tbRpg .tb-equipment-screen,#tbRpg .tb-card-merchant-rebuild,#tbRpg .tb-account-settings{max-width:100%!important;overflow:hidden!important}
+@media(max-width:390px){#tbRpg .tb-stats-main-grid{gap:7px!important}#tbRpg .tb-stats-main-card{padding:9px!important}#tbRpg .tb-stats-main-card b{font-size:18px!important}}
