@@ -344,6 +344,18 @@
   if(index<0)return;
   engine.selectTarget(c.id,index);battle.targetIndex=index;battle.enemy=battle.enemies[index];battle.enemyStats=engine.getEnemyStats(c.id,battle.stage,battle.enemy);battle.enemyMax=battle.enemy.maxHp;battle.enemyHp=battle.enemy.hp;battle.shield=battle.enemy.shield||0;battle.bossPhase=battle.enemy.type==="boss"?updateBossPhase(battle.enemy):0;planEnemyIntents();
  }
+ function applyTargetDamage(target,rawDamage,damageType,options){
+  options=options||{};const c=live();let multiplier=engine.damageTypeMultiplier(target,damageType||"physical");
+  if(target.role==="tank"&&target.alive)multiplier*=1-balance.mobs.roles.tank.damage_reduction;
+  let damage=Math.max(0,Math.round(rawDamage*multiplier));
+  if(target.shield>0){const absorbed=Math.min(target.shield,damage);target.shield-=absorbed;damage-=absorbed;}
+  const dealt=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
+  if(dealt>0)engine.applyVampirism(c.id,dealt);
+  if(dealt>0){const layer=root.querySelector(".tb-fx-layer");if(layer){const number=document.createElement("span"),card=root.querySelector('.tb-target-card[data-target="'+target.index+'"]');number.className="tb-floating-damage";number.textContent="-"+dealt;if(card){const box=card.getBoundingClientRect(),base=layer.getBoundingClientRect();number.style.left=(box.left+box.width/2-base.left)+"px";number.style.top=(box.top-base.top)+"px";}layer.appendChild(number);setTimeout(()=>number.remove(),900);}}
+  if(target.index===battle.targetIndex){battle.enemyHp=target.hp;battle.shield=target.shield||0;}
+  if(target.type==="boss")updateBossPhase(target);
+  return{damage,dealt,multiplier,killed:target.hp<=0};
+ }
  function beginStage(){
   const c=live();if(!c)return;
   try{const plan=engine.beginStage(c.id,selectedStage);battle={stage:plan.stage,count:plan.count,enemies:null,targetIndex:0,enemy:null,enemyHp:0,enemyMax:0,shield:0,actor:{type:"player",id:"player",name:c.name},isPlayerTurn:true,playerTurnCount:0,round:1,cardsPlayedThisTurn:0,cardBlock:0,busy:false,paused:false,isCardAnimating:false,enemyQueueToken:0,enemyQueueState:null,actionDamageLedger:{},combatLog:[],comboProgress:{},bossDeadlineTurns:null};resetCardBattle(c);c.currentEnergy=Math.max(1,Number(c.energy)||3);drawCards(5);loadBattleEnemy();screen="battle";save();render();}
@@ -938,7 +950,7 @@
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Синхронизация сохранения</h2><p>В облаке есть персонаж, но игра ещё не подтвердила его загрузку. Создание нового персонажа заблокировано, чтобы не затереть прогресс.</p><button type="button" data-action="cloud-retry" class="tb-primary">ПОВТОРИТЬ ЗАГРУЗКУ</button>'+(localBackup?.available?'<button type="button" data-action="cloud-recover-local" class="tb-secondary">ПРОВЕРИТЬ РЕЗЕРВНУЮ КОПИЮ</button>':'')+'</div>'
    : authenticated
    ? '<div class="tb-empty"><div class="tb-empty-crest">✦</div><h2>Башня ждёт своего героя</h2><p>Создай персонажа одного из семи классов. Прогресс персонажа сохраняется между забегами.</p><button type="button" data-action="new" class="tb-primary">СОЗДАТЬ ПЕРВОГО ПЕРСОНАЖА</button></div>'
-   : '<div class="tb-empty tb-login-gate"><div class="tb-empty-crest">✦</div><h2>Вход в игру</h2><p>Войди в аккаунт или зарегистрируйся, чтобы создать персонажа и сохранить прогресс.</p><form class="tb-character-login" novalidate><label for="login">Логин</label><input id="login" name="login" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Логин"><label for="pass">Пароль</label><input id="pass" name="password" type="password" autocomplete="current-password" placeholder="Пароль"><label class="tb-login-remember"><input id="rememberMe" type="checkbox" checked> Запомнить меня</label><button type="button" data-action="empty-login" class="tb-primary tb-login-submit">ВОЙТИ</button><button type="button" data-action="empty-register" class="tb-text-link">Зарегистрироваться</button><p class="tb-login-message" role="status" aria-live="polite"></p></form></div>';
+   : '<div class="tb-empty tb-login-gate"><div class="tb-empty-crest">✦</div><h2>Вход в игру</h2><p>Войди в аккаунт или зарегистрируйся, чтобы создать персонажа и сохранить прогресс.</p><form class="tb-character-login" novalidate><label for="login">Логин</label><input id="login" name="login" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Логин"><label for="pass">Пароль</label><input id="pass" name="password" type="password" autocomplete="current-password" placeholder="Пароль"><label class="tb-login-remember"><input id="rememberMe" type="checkbox"> Запомнить меня</label><button type="button" data-action="empty-login" class="tb-primary tb-login-submit">ВОЙТИ</button><button type="button" data-action="empty-register" class="tb-text-link">Зарегистрироваться</button><p class="tb-login-message" role="status" aria-live="polite"></p></form></div>';
   return header("Выбор персонажа", authenticated ? "Аккаунт · " + (engine.state.account.diamonds || 0) + " алмазов" : "Войди, чтобы начать") +
     '<section class="fix-char-section">' +
     '<div class="fix-char-title"><h1>Персонажи</h1><p>Твой путь в Башне начинается с аккаунта</p></div>' +
