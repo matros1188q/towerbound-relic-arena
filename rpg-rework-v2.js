@@ -1714,7 +1714,7 @@
   return{state,balance,accountLevel,dropEligibility,damageTypeMultiplier,bossPhaseInfo,resolveReaction,createCharacter,getChar:(idValue)=>clone(getChar(idValue)),requiredXp,levelForXp,maxHp,combatPower,getCombatStats,getRefinementGlow,recalcLevel,
    getSkillUnlocks,skillAvailable,stagePlan,beginStage,currentEnemy,selectTarget,sanitizeActiveStage,getEnemyStats,mitigationMultiplier,resistanceMultiplier,capBossDamage,basicAttackStats,restoreResource,applyVampirism,combatIntervalMs,finishEnemy,useHealingPotion,potionBeltSnapshot,assignPotionBelt,usePotionBelt,setDifficulty,checkpointHeal,
    speed2Allowed,setSpeed2,xpMultiplier,awardXp,deathPreview,confirmDeath,voluntaryRestart,autoBattle,
-   rollLoot,mergeStones,craftStone,equipItem,equipBest,unequipItem,purchaseRelic,claimRelic,RELICS_DATABASE,salvageGrayItems,salvageItem,addSocket,insertGem,socketStone,extractGem,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
+   rollLoot,mergeStones,craftStone,equipItem,equipBest,unequipItem,getSetBonuses,purchaseRelic,claimRelic,RELICS_DATABASE,salvageGrayItems,salvageItem,addSocket,insertGem,socketStone,extractGem,refine,rollEnchantScroll,applyEnchant,purchase,transferSilver,bindItemOnUse,
    chooseBranch,resetTalents,useTalentPoint,canUseCampStop,useCampRest,claimCampForge,leaderboard,saveSnapshot,activateItem,
    recordDailyProgress,dailySnapshot,claimDailyQuest,dailyChestSnapshot,claimDailyChest,startDailyBoss,completeDailyBoss,pvpSnapshot,
    ensurePvpDaily,matchmakePvp,resolvePvpDuel,simulatePvpDuel,purchasePvpItem,publishGhostSnapshot,submitWeeklyRating,weeklyLeaderboard,stashDeposit,stashWithdraw,deleteCharacter,resetCharacter,
