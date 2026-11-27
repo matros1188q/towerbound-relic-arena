@@ -14,7 +14,7 @@ assert(sw.includes("'./"+currentUiRef+"'"),'service worker must precache the exa
 assert(!sw.includes('ignoreSearch: true'),'service worker must never ignore asset version query strings');
 assert(sw.includes(".catch(() => Response.error())"),'missing offline assets must fail instead of returning the HTML app shell');assert.equal((sw.match(/caches\.match\('\.\/index\.html'\)/g)||[]).length,1,'only failed page navigations may fall back to the cached HTML shell');assert(!sw.includes(".catch(error => console.warn('Towerbound shell cache:'"),'a failed precache must abort service-worker installation and preserve the previous worker');console.log('Juice/PWA static integration checks passed');
 assert(!ui.includes('TowerboundSkipFloorsOpen'), 'skip floors must use one confirmation workflow, not competing inline/global handlers');
-assert(activeCss.includes('.tb-skip-floors-overlay{position:fixed!important;inset:0!important;z-index:100120!important;'), 'skip confirmation must render above the fixed RPG root');
+assert(activeCss.includes('.tb-skip-floors-overlay{position:fixed!important;inset:0!important;z-index:1000002!important;'), 'skip confirmation must render above the fixed RPG root');
 assert(ui.includes('data-skip-floors-confirm')&&ui.includes('data-skip-floors-close'), 'skip confirmation exposes explicit confirm and cancel actions');
 assert(ui.includes('engine.voluntaryRestart(current.id)')&&ui.includes('selectedStage=latest.targetStage')&&ui.includes('beginStage();'), 'skip confirmation starts the computed floor through the active run engine');
 assert(ui.includes('if(pendingSkipStage){selectedStage=pendingSkipStage;beginStage();}'),'skip flow resumes the selected stage after starter deck confirmation');
