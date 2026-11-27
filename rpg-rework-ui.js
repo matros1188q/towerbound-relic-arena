@@ -1632,9 +1632,10 @@ function createDialog(){
     advanceToPlayerTurn();return;
    }
    const enemy=queue[index];
-   try{if(enemy&&enemy.alive===true&&Number(enemy.hp)>0)enemyTurn(enemy);}
-   catch(enemyError){recoverPlayerTurn(enemyError);return;}
-   else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}
+   if(enemy&&enemy.alive===true&&Number(enemy.hp)>0){
+    try{enemyTurn(enemy);}
+    catch(enemyError){recoverPlayerTurn(enemyError);return;}
+   }else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}
    if(!battle)return;
    if(token!==battle.enemyQueueToken){
     /* A counter or damage-over-time kill can finish an enemy mid-queue and rotate the token.
