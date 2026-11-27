@@ -67,7 +67,7 @@
   revivalPotion:NEW_ITEM_ART_ROOT+"09-consumables/01-potions/C11_16_revival_potion.png",
   craftMaterial:NEW_ITEM_ART_ROOT+"10-materials/02-monster-drops/C17_12_monster_core.png",
   refineStone:NEW_ITEM_ART_ROOT+"10-materials/05-tools/C20_14_whetstone.png",
-  enchantScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_07_identify_scroll.png",
+  enchantScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_06_sealing_scroll.png",
   fireScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_01_fire_scroll.png",
   iceScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_02_ice_scroll.png",
   thunderScroll:NEW_ITEM_ART_ROOT+"09-consumables/02-scrolls-mana-stones/C12_03_thunder_scroll.png",
