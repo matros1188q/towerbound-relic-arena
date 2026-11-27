@@ -92,16 +92,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -182,16 +196,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -272,16 +300,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         }
       ],
@@ -482,16 +524,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -572,16 +628,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -662,16 +732,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         }
       ],
@@ -869,16 +953,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -959,16 +1057,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -1049,16 +1161,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         }
       ],
@@ -1257,16 +1383,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -1347,16 +1487,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -1437,16 +1591,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         }
       ],
@@ -1645,16 +1813,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -1735,16 +1917,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -1825,16 +2021,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         }
       ],
@@ -2033,16 +2243,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -2123,16 +2347,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -2213,16 +2451,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         }
       ],
@@ -2421,16 +2673,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -2511,16 +2777,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         },
         {
@@ -2601,16 +2881,30 @@
                 "value": 0.05
               },
               {
-                "pieces": 3,
+                "pieces": 4,
                 "effect": "incoming_damage_reduction",
                 "value": 0.1
               },
               {
-                "pieces": 5,
+                "pieces": 6,
                 "effect": "specialization_power",
                 "value": 0.15
               }
-            ]
+            ],
+            "milestones": {
+              "2": {
+                "title": "Пробуждение",
+                "description": "+5% к профильному параметру и дополнительный урон специализации"
+              },
+              "4": {
+                "title": "Резонанс",
+                "description": "+10% к профильному параметру и снижение входящего урона"
+              },
+              "6": {
+                "title": "Полный комплект",
+                "description": "+20% к профильному параметру и +15% к силе специализации"
+              }
+            }
           }
         }
       ],
