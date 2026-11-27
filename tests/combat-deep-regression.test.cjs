@@ -31,7 +31,7 @@ assert.match(ui,/legacyStunTarget=battle\.enemies\.find[\s\S]*?legacyStunTarget\
 assert.match(ui,/decayEnemyDebuffs\(enemy\);notify\("Враг оглушён/,'stun advances debuff durations');
 assert.match(ui,/decayEnemyDebuffs\(enemy\);save\(\);render\(\);return;/,'sabotage advances debuff durations');
 assert.match(ui,/burn:"Горение: в конце хода игрока наносит урон, затем снимается\."/,'burn timing is explained');
-assert.match(ui,/\["burn","🔥"\]/,'burn is visible in live status');
+assert.match(ui,/burn:"🔥 Горение"/,"burn is visible in live status");
 assert.ok(ui.includes('save();savepoint=localStorage.getItem("tb-rpg-v2")'),'card action persists a rollback savepoint before mutation');
 const playCardStart=ui.indexOf("function playCard(cardIndex){"),playCardEnd=ui.indexOf("function resolveCardPlay(",playCardStart),playCardSource=ui.slice(playCardStart,playCardEnd);
 assert.ok(playCardSource.includes('battleBefore=JSON.parse(JSON.stringify(battle))')&&!playCardSource.includes('JSON.parse(JSON.stringify(engine.state))'),'card action snapshots only the live battle, not the full RPG state');
