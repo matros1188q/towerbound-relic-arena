@@ -2285,6 +2285,7 @@ function profileRelicShopMarkup(c){
 
  root.addEventListener("pointerup",event=>{if(event.target?.closest?.(".tb-v2"))event.stopImmediatePropagation();},true);
  root.addEventListener("click",handleModernClick);
+ root.addEventListener("change",event=>{const input=event.target?.closest?.("[data-setting]");if(!input||!root.contains(input))return;try{engine.saveSettings({[input.dataset.setting]:!!input.checked});save();notify("Настройки сохранены");}catch(error){notify(error.message||"Не удалось сохранить настройку");}});
  root.addEventListener("click",event=>{
   const target=event.target?.closest?.("[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-pvp-buy],[data-cosmetic-buy],[data-cosmetic-equip]");
   if(!target)return;
