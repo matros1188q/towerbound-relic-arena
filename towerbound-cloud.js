@@ -316,7 +316,7 @@ async function onSession(next,force=false){
  sessionTask=(async()=>{
   conflict=false;session=next;savesReady=false;remoteHasCharacters=false;
   if(!session){
-   dirty=false;setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';showLoginGate();
+   dirty=false;setStatus('АККАУНТ · НУЖЕН ВХОД','local');$('#tbCloudAuth').hidden=false;$('#tbCloudChoices').hidden=true;$('#tbCloudSignedIn').hidden=true;$('#tbCloudAccount').textContent='';hideLoginGate();
    if(isCurrent()){sessionBusy=false;window.dispatchEvent(new Event('towerbound-auth-change'));}
    return;
   }
@@ -462,16 +462,16 @@ function init(){
   setStatus('АККАУНТ · НУЖНА НАСТРОЙКА','local');
   button.title='Нужно создать Supabase-проект и заполнить supabase-config.js';
   $('#tbCloudIntro').textContent='Облачный модуль установлен, но ещё не подключён к Supabase. Локальное сохранение продолжает работать.';
-  say('Для входа нужен URL проекта и publishable key Supabase.');showLoginGate();$('#tbCloudSignIn').disabled=$('#tbCloudSignUp').disabled=true;resolveCloudBootstrap({ready:false,reason:'missing-config'});window.dispatchEvent(new Event('towerbound-cloud-ready'));return;
+  say('Для входа нужен URL проекта и publishable key Supabase.');$('#tbCloudSignIn').disabled=$('#tbCloudSignUp').disabled=true;resolveCloudBootstrap({ready:false,reason:'missing-config'});window.dispatchEvent(new Event('towerbound-cloud-ready'));return;
  }
  if(!window.supabase?.createClient){
   setStatus('ОБЛАКО · SDK НЕДОСТУПЕН','error');
   $('#tbCloudIntro').textContent='Не удалось загрузить клиент Supabase с CDN. Локальное сохранение продолжает работать.';
-  say('Проверь подключение к интернету и доступность cdn.jsdelivr.net.');showLoginGate();$('#tbCloudSignIn').disabled=$('#tbCloudSignUp').disabled=true;resolveCloudBootstrap({ready:false,reason:'sdk-unavailable'});window.dispatchEvent(new Event('towerbound-cloud-ready'));return;
+  say('Проверь подключение к интернету и доступность cdn.jsdelivr.net.');$('#tbCloudSignIn').disabled=$('#tbCloudSignUp').disabled=true;resolveCloudBootstrap({ready:false,reason:'sdk-unavailable'});window.dispatchEvent(new Event('towerbound-cloud-ready'));return;
  }
  client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  client.auth.onAuthStateChange((event,next)=>{if(!authInitialized)return;if(event==='SIGNED_OUT'&&ignoreSignedOutEvents>0){ignoreSignedOutEvents--;return;}const sequence=++authEventSequence;setTimeout(()=>{if(sequence===authEventSequence)void onSession(next);},0);});
- withTimeout(client.auth.getSession(),'Проверка сессии').then(async({data,error})=>{if(error)throw error;let active=data.session;if(active&&!remembered()){await client.auth.signOut();active=null;}authInitialized=true;handledSessionKey='';if(active){session=active;setStatus('ОБЛАКО · ЗАГРУЗКА В ФОНЕ','pending');/* Release the game engine as soon as the locally persisted auth session is known. Cloud save hydration runs independently. */resolveCloudBootstrap({ready:true,signedIn:true,cloudLoading:true});window.dispatchEvent(new Event('towerbound-cloud-ready'));setTimeout(()=>{void onSession(active);},0);}else{session=null;showLoginGate();setStatus('АККАУНТ · НУЖЕН ВХОД','local');resolveCloudBootstrap({ready:true,signedIn:false,cloudLoading:false});window.dispatchEvent(new Event('towerbound-cloud-ready'));}}).catch(e=>{console.error('[Towerbound cloud] bootstrap failed',e);authInitialized=true;showLoginGate();setStatus('ОБЛАКО · ОШИБКА','error');say((e.message||'Не удалось проверить сессию')+' · локальные данные не затронуты','error');resolveCloudBootstrap({ready:false,error:e.message||String(e)});window.dispatchEvent(new Event('towerbound-cloud-ready'));});
+ withTimeout(client.auth.getSession(),'Проверка сессии').then(async({data,error})=>{if(error)throw error;let active=data.session;if(active&&!remembered()){await client.auth.signOut();active=null;}authInitialized=true;handledSessionKey='';if(active){session=active;setStatus('ОБЛАКО · ЗАГРУЗКА В ФОНЕ','pending');/* Release the game engine as soon as the locally persisted auth session is known. Cloud save hydration runs independently. */resolveCloudBootstrap({ready:true,signedIn:true,cloudLoading:true});window.dispatchEvent(new Event('towerbound-cloud-ready'));setTimeout(()=>{void onSession(active);},0);}else{session=null;showLoginGate();setStatus('АККАУНТ · НУЖЕН ВХОД','local');resolveCloudBootstrap({ready:true,signedIn:false,cloudLoading:false});window.dispatchEvent(new Event('towerbound-cloud-ready'));}}).catch(e=>{console.error('[Towerbound cloud] bootstrap failed',e);authInitialized=true;hideLoginGate();setStatus('ОБЛАКО · ОШИБКА','error');say((e.message||'Не удалось проверить сессию')+' · локальные данные не затронуты','error');resolveCloudBootstrap({ready:false,error:e.message||String(e)});window.dispatchEvent(new Event('towerbound-cloud-ready'));});
 }
 $('#tbCloudSignUp').disabled=$('#tbCloudSignIn').disabled=$('#tbCloudGoogle').disabled=!cfg.url||!cfg.publishableKey;
 init();
