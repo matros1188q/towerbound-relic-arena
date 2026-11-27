@@ -316,7 +316,8 @@
   return "achievement-star";
  }
  function inventoryIconHtml(item,equipment){
-  // Backpack and equipped slots share one renderer: identical item art, rarity tier and class/branch variant.
+  // Equipment uses its slot-aware renderer; consumables share the exact image wrapper and tier badges used in the shop.
+  if(!equipment){const custom=customItemArtPath(item);if(custom)return customItemImageHtml(custom,"tb-bag-item-art-img",item);}
   return '<div class="tb-item-art-wrap">'+relicIconHtml(item,item?.slot,"tb-bag-item-art-img")+'</div>';
  }
  const classFallback={assassin:"Ас",bishop:"Еп",dragonkin:"Др",destroyer:"Ра",elemental:"Ма",duelist:"Ду",shaman:"Ша"};
