@@ -18,7 +18,7 @@ assert.match(ui,/player_turn_deadline/,'phase four deadline is configured');
 assert.doesNotMatch(ui,/const threshold=target\.maxPhases>=3/,'legacy conflicting phase thresholds are removed');
 assert.match(ui,/combatState:Object\.fromEntries\(PERSISTED_BATTLE_FIELDS/,'battle snapshot stores combat state');
 assert.match(ui,/function restoreSavedBattle\(character\)[\s\S]*?\.\.\.combat/,'battle snapshot restores persisted combat state');
-assert.match(ui,/savedSnapshot\?\.cardState\?\.actorType==="player"[\s\S]*?battle\.actor=\{type:"player"/,'reload preserves the current player turn');
+assert.match(ui,/function restoreSavedBattle\(character\)[\s\S]*?state=\{actorType:card\.actorType==="enemy"\?"enemy":"player"\}[\s\S]*?battle\.actor=\{type:state\.actorType/,'reload restores the saved actor and preserves the current player turn');
 assert.match(ui,/function decayEnemyDebuffs\(enemy\)/,'enemy debuffs use shared duration handling');
 assert.match(ui,/if\(enemy\.stunned\)\{enemy\.stunned=false;decayEnemyDebuffs\(enemy\);notify\("Враг оглушён · ход пропущен"\);return;\}/,'stun is consumed by the exact enemy whose turn is active');
 const enemyTurnStart=ui.indexOf("function enemyTurn(enemy){");
