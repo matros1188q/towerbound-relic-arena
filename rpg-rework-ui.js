@@ -2432,6 +2432,37 @@ function profileRelicShopMarkup(c){
  function resumeAfterFocusLoss(){if(screen!=="battle"||!battle||!battle.autoPausedForBlur)return;battle.autoPausedForBlur=false;battle.paused=false;if(battle.enemyQueueState&&battle.actor?.type==="enemy"){resumeEnemyTurnQueue(140);save();render();return;}battle.busy=false;battle.isPlayerTurn=true;battle.actor={type:"player",id:"player",name:live()?.name||"Игрок"};battle.telegraph=null;save();render();}
  document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseForFocusLoss();else resumeAfterFocusLoss();});window.addEventListener("blur",pauseForFocusLoss);window.addEventListener("focus",resumeAfterFocusLoss);window.addEventListener("pageshow",resumeAfterFocusLoss);
  window.addEventListener("pagehide",()=>{try{if(engine&&live()){engine.publishGhostSnapshot(live().id,"exit");save();window.TowerboundCloud?.flushSave?.();}}catch(error){console.warn("Ghost snapshot on exit failed",error);}});
+ function restoreSavedBattle(character){
+  const stage=character?.run?.stage,snapshot=stage?.uiBattleSnapshot;
+  if(!stage||!snapshot||!Array.isArray(snapshot.enemies)||!snapshot.enemies.length)return false;
+  const card=snapshot.cardState||{},combat=snapshot.combatState||{},actorType=card.actorType==="enemy"?"enemy":"player";
+  if(Array.isArray(card.deck))character.deck=JSON.parse(JSON.stringify(card.deck));
+  if(Array.isArray(card.hand))character.hand=JSON.parse(JSON.stringify(card.hand));
+  if(Array.isArray(card.discard))character.discard=JSON.parse(JSON.stringify(card.discard));
+  if(Array.isArray(card.exhaustPile))character.exhaustPile=JSON.parse(JSON.stringify(card.exhaustPile));
+  if(Number.isFinite(Number(card.currentEnergy)))character.currentEnergy=Number(card.currentEnergy);
+  battle={
+   stage:Number(stage.stage)||Number(character.progress?.currentStage)||1,
+   count:Number(stage.count)||stage.mobs?.length||snapshot.enemies.length,
+   enemies:JSON.parse(JSON.stringify(snapshot.enemies)),
+   targetIndex:Number(snapshot.targetIndex)||0,
+   enemy:null,enemyStats:null,enemyHp:0,enemyMax:0,shield:0,
+   round:Math.max(1,Number(snapshot.round)||1),
+   actor:{type:actorType,id:actorType==="enemy"?"enemy-phase":"player",name:actorType==="enemy"?"Ход противников":character.name},
+   isPlayerTurn:actorType!=="enemy",playerTurnCount:0,cardsPlayedThisTurn:0,
+   cardBlock:Math.max(0,Number(card.cardBlock)||0),busy:actorType==="enemy",paused:false,isCardAnimating:false,
+   enemyQueueToken:0,enemyQueueState:snapshot.enemyQueueState?JSON.parse(JSON.stringify(snapshot.enemyQueueState)):null,
+   actionDamageLedger:{},combatLog:[],comboStacks:Number(snapshot.comboStacks)||0,
+   comboProgress:snapshot.comboProgress?JSON.parse(JSON.stringify(snapshot.comboProgress)): {},
+   skillCooldowns:snapshot.skillCooldowns?JSON.parse(JSON.stringify(snapshot.skillCooldowns)): {},
+   ...combat
+  };
+  if(actorType==="enemy"&&!battle.enemyQueueState){battle.actor={type:"player",id:"player",name:character.name};battle.isPlayerTurn=true;battle.busy=false;}
+  if(actorType!=="enemy")battle.enemyQueueState=null;
+  loadBattleEnemy(battle.targetIndex);
+  return true;
+ }
+
  function boot(){
   root.innerHTML='<div style="min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;color:#e9dfca;background:radial-gradient(ellipse at 50% 0,#263447,#080d15 72%)"><div><div style="font:800 12px system-ui;letter-spacing:.24em;color:#d8b978">TOWERBOUND</div><div style="margin-top:10px;font:700 20px Georgia">ЗАГРУЗКА БАШНИ…</div><div style="margin-top:8px;color:#aebbd0;font:12px system-ui">Подготавливаем персонажей и игровой мир</div></div></div>';
   const showFailure=error=>{
@@ -2453,15 +2484,18 @@ function profileRelicShopMarkup(c){
    if(engine.state.characters.length){
     selectedId=engine.state.activeCharacterId||engine.state.characters[0].id;
     active=engine.state.characters.find(character=>character.id===selectedId);
+    let resumedBattle=false;
     if(active?.run?.stage){
      const repaired=engine.sanitizeActiveStage(active.id);
      if(repaired.processed?.length||repaired.completed){save();console.info("[Towerbound] repaired saved combat state",repaired);}
      if(repaired.completed)notify("Сохранённый бой завершён · награды начислены, возвращаемся на карту");
+     else resumedBattle=restoreSavedBattle(active);
     }
-    screen="characters";
+    screen=resumedBattle?"battle":"characters";
    }
    document.body.classList.toggle("tb-clean-ui",!!engine.state.account.settings?.clean_ui);
    render();
+   if(resumedBattle&&battle?.actor?.type==="enemy"&&battle.enemyQueueState){resumeEnemyTurnQueue(250);save();render();}
    if(Number(active?.run?.pendingEchoStage)>0)showEchoOfPastScreen(active,active.run.pendingEchoStage);
    if(active?.pendingCardReward?.length)showCardRewardScreen(active.pendingCardReward);
   }).catch(showFailure);
