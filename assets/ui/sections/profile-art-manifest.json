@@ -1,0 +1,194 @@
+{
+  "pack": "towerbound-character-menu-art-v1",
+  "date": "2026-11-27",
+  "root": "assets/ui/sections/",
+  "assets": [
+    {
+      "id": "reward-treasure-chest",
+      "filename": "reward-treasure-chest.jpg",
+      "path": "assets/ui/sections/reward-treasure-chest.jpg",
+      "format": "jpg",
+      "source_filename": "1G2S8BZi.jpg",
+      "visual_description": "Treasure chest with green gems",
+      "intended_usage": "Reward and treasure illustration",
+      "original_blob_sha": "6a792e29f9ae906c6bdf4a65060df9d5aed556ec",
+      "bytes": 339530
+    },
+    {
+      "id": "profile-assassin-closeup",
+      "filename": "profile-assassin-closeup.jpg",
+      "path": "assets/ui/sections/profile-assassin-closeup.jpg",
+      "format": "jpg",
+      "source_filename": "37HfEvut.jpg",
+      "visual_description": "Hooded assassin close-up portrait",
+      "intended_usage": "Character category card art",
+      "original_blob_sha": "273c2d19404abcb4c7d7f1d478d27e66e1dafcba",
+      "bytes": 209564
+    },
+    {
+      "id": "talents-hourglass",
+      "filename": "talents-hourglass.jpg",
+      "path": "assets/ui/sections/talents-hourglass.jpg",
+      "format": "jpg",
+      "source_filename": "Aev1tEPr.jpg",
+      "visual_description": "Hourglass surrounded by green magic",
+      "intended_usage": "Talent tree / progression screen art",
+      "original_blob_sha": "bcfc628072f100af030f63a17bc7481c3dd3d7d5",
+      "bytes": 437680
+    },
+    {
+      "id": "forge-lava-hall",
+      "filename": "forge-lava-hall.jpg",
+      "path": "assets/ui/sections/forge-lava-hall.jpg",
+      "format": "jpg",
+      "source_filename": "BGpuyqPv.jpg",
+      "visual_description": "Wide forge hall with glowing lava floor",
+      "intended_usage": "Crafting screen background",
+      "original_blob_sha": "adb4c66bf6937af3757ff344a990f0a2c0c2ea4c",
+      "bytes": 319937
+    },
+    {
+      "id": "profile-armored-knight",
+      "filename": "profile-armored-knight.jpg",
+      "path": "assets/ui/sections/profile-armored-knight.jpg",
+      "format": "jpg",
+      "source_filename": "DmfJXdrQ.jpg",
+      "visual_description": "Armored hooded knight beneath a moonlit castle",
+      "intended_usage": "Secondary hero/profile illustration",
+      "original_blob_sha": "964b5d63dcfbb8a804ebadcab0ff0a70ed82bf92",
+      "bytes": 240229
+    },
+    {
+      "id": "talents-crystal-tree",
+      "filename": "talents-crystal-tree.jpg",
+      "path": "assets/ui/sections/talents-crystal-tree.jpg",
+      "format": "jpg",
+      "source_filename": "EhWKk0b0.jpg",
+      "visual_description": "Tree with golden and emerald crystal leaves",
+      "intended_usage": "Talent and growth category art",
+      "original_blob_sha": "68782dd2b93fc7983dd26dc405f5054cc4af5935",
+      "bytes": 398645
+    },
+    {
+      "id": "merchant-emerald-coins",
+      "filename": "merchant-emerald-coins.jpg",
+      "path": "assets/ui/sections/merchant-emerald-coins.jpg",
+      "format": "jpg",
+      "source_filename": "NGauz7WC.jpg",
+      "visual_description": "Pile of gold coins with green gems",
+      "intended_usage": "Card merchant / currency section art",
+      "original_blob_sha": "788d32596e51febebeadff7ba40cae4f3a1c8d66",
+      "bytes": 410666
+    },
+    {
+      "id": "profile-crystal-corridor",
+      "filename": "profile-crystal-corridor.jpg",
+      "path": "assets/ui/sections/profile-crystal-corridor.jpg",
+      "format": "jpg",
+      "source_filename": "NWUxxMZw.jpg",
+      "visual_description": "Stone corridor illuminated by crystal clusters",
+      "intended_usage": "Character stats screen backdrop",
+      "original_blob_sha": "1a9bde6bc6b06ed681940755c27b4fa56b22350a",
+      "bytes": 285951
+    },
+    {
+      "id": "talents-archivist",
+      "filename": "talents-archivist.jpg",
+      "path": "assets/ui/sections/talents-archivist.jpg",
+      "format": "jpg",
+      "source_filename": "R0tkxaFu.jpg",
+      "visual_description": "Hooded archivist studying a map",
+      "intended_usage": "Talent lore / progression secondary art",
+      "original_blob_sha": "9e21823bfc436e9b55f8bc917a2d03bea63f2eaf",
+      "bytes": 387404
+    },
+    {
+      "id": "forge-workshop-wide",
+      "filename": "forge-workshop-wide.jpg",
+      "path": "assets/ui/sections/forge-workshop-wide.jpg",
+      "format": "jpg",
+      "source_filename": "U_--z4Lm.jpg",
+      "visual_description": "Wide blacksmith workshop with anvils",
+      "intended_usage": "Crafting section backdrop",
+      "original_blob_sha": "980b73a3bc2b82e4e2749c5edbb87376ee09b568",
+      "bytes": 292707
+    },
+    {
+      "id": "forge-blacksmith",
+      "filename": "forge-blacksmith.jpg",
+      "path": "assets/ui/sections/forge-blacksmith.jpg",
+      "format": "jpg",
+      "source_filename": "ZIq0c9fH.jpg",
+      "visual_description": "Blacksmith hammering a glowing blade",
+      "intended_usage": "Crafting feature illustration",
+      "original_blob_sha": "8105097e077ea7d9d0ae39f990096c3c839ae818",
+      "bytes": 313439
+    },
+    {
+      "id": "stash-gold-vault",
+      "filename": "stash-gold-vault.jpg",
+      "path": "assets/ui/sections/stash-gold-vault.jpg",
+      "format": "jpg",
+      "source_filename": "af48huQS.jpg",
+      "visual_description": "Open vault filled with gold",
+      "intended_usage": "Stash / treasury screen art",
+      "original_blob_sha": "60f42ffd37b43b03c0ebc3ee918a5b08ae63c92a",
+      "bytes": 692654
+    },
+    {
+      "id": "forge-glowing-ingot",
+      "filename": "forge-glowing-ingot.jpg",
+      "path": "assets/ui/sections/forge-glowing-ingot.jpg",
+      "format": "jpg",
+      "source_filename": "ciWM_KKB.jpg",
+      "visual_description": "Glowing hot ingot on an anvil",
+      "intended_usage": "Forge action illustration",
+      "original_blob_sha": "b7357fdcc0d76c849f231a50f6012daffa2cd10f",
+      "bytes": 329295
+    },
+    {
+      "id": "inventory-adventurer-pack",
+      "filename": "inventory-adventurer-pack.jpg",
+      "path": "assets/ui/sections/inventory-adventurer-pack.jpg",
+      "format": "jpg",
+      "source_filename": "dt3P0T47.jpg",
+      "visual_description": "Leather backpack with green potions and maps",
+      "intended_usage": "Inventory / backpack screen art",
+      "original_blob_sha": "aac607aede42c01b6c64d8a19c94c731d2af8216",
+      "bytes": 366484
+    },
+    {
+      "id": "collection-armor-set",
+      "filename": "collection-armor-set.jpg",
+      "path": "assets/ui/sections/collection-armor-set.jpg",
+      "format": "jpg",
+      "source_filename": "jgF_NtaW.jpg",
+      "visual_description": "Complete dark steel armor set laid out",
+      "intended_usage": "Collection / equipment category art",
+      "original_blob_sha": "830114550708da48fc142424804760f5b78b9160",
+      "bytes": 459015
+    },
+    {
+      "id": "profile-assassin-fullbody",
+      "filename": "profile-assassin-fullbody.jpg",
+      "path": "assets/ui/sections/profile-assassin-fullbody.jpg",
+      "format": "jpg",
+      "source_filename": "n9o3QqrZ.jpg",
+      "visual_description": "Hooded dual-blade fighter with green spectral blades",
+      "intended_usage": "Full-body assassin illustration",
+      "original_blob_sha": "c1258591d9ef5612dc5044118653bb6fc3c63ba9",
+      "bytes": 236074
+    },
+    {
+      "id": "card-library-floating-cards",
+      "filename": "card-library-floating-cards.jpg",
+      "path": "assets/ui/sections/card-library-floating-cards.jpg",
+      "format": "jpg",
+      "source_filename": "uSiAKHL2.jpg",
+      "visual_description": "Four magical cards floating in a library",
+      "intended_usage": "Card library category art",
+      "original_blob_sha": "5d2bb6caa990e2f6aa16fb768381b28fa8068620",
+      "bytes": 331093
+    }
+  ]
+}

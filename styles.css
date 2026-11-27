@@ -1807,3 +1807,26 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-profile-hub .tb-profile-hub-copy>b{font-size:13px}
  #tbRpg .tb-profile-hub .tb-profile-hub-copy>small{font-size:11px}
 }
+
+
+/* Character menu art pack · 2026-11-27. Decorative only; no game-state changes. */
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(1){background-image:linear-gradient(90deg,rgba(5,10,16,.92),rgba(5,10,16,.72) 54%,rgba(5,10,16,.48)),url("./assets/ui/sections/profile-assassin-closeup.jpg");background-size:cover;background-position:center 38%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(2){background-image:linear-gradient(90deg,rgba(5,10,16,.92),rgba(5,10,16,.68) 58%,rgba(5,10,16,.42)),url("./assets/ui/sections/talents-crystal-tree.jpg");background-size:cover;background-position:center 42%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(3){background-image:linear-gradient(90deg,rgba(5,10,16,.94),rgba(5,10,16,.70) 58%,rgba(5,10,16,.42)),url("./assets/ui/sections/card-library-floating-cards.jpg");background-size:cover;background-position:center 48%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(4){background-image:linear-gradient(90deg,rgba(5,10,16,.94),rgba(5,10,16,.72) 58%,rgba(5,10,16,.44)),url("./assets/ui/sections/collection-armor-set.jpg");background-size:cover;background-position:center 48%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(5){background-image:linear-gradient(90deg,rgba(5,10,16,.94),rgba(5,10,16,.72) 58%,rgba(5,10,16,.44)),url("./assets/ui/sections/forge-lava-hall.jpg");background-size:cover;background-position:center 52%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card .tb-profile-hub-emoji{background:linear-gradient(145deg,rgba(8,13,20,.72),rgba(8,13,20,.38));border-color:rgba(214,177,111,.55);text-shadow:0 2px 12px #000}
+#tbRpg .tb-profile-hub .tb-profile-hero{background-image:linear-gradient(90deg,rgba(8,13,20,.28),rgba(8,13,20,.88)),url("./assets/ui/sections/profile-armored-knight.jpg");background-size:cover;background-position:center 42%}
+#tbRpg .tb-profile-content:has(.tb-character-stats){background-image:linear-gradient(180deg,rgba(7,12,18,.90),rgba(7,12,18,.94)),url("./assets/ui/sections/profile-crystal-corridor.jpg");background-size:cover;background-position:center}
+#tbRpg .tb-tree-shell{background-image:linear-gradient(180deg,rgba(7,12,20,.84),rgba(7,12,20,.91)),url("./assets/ui/sections/talents-hourglass.jpg");background-size:cover;background-position:center 42%}
+#tbRpg .tb-tree-toolbar{padding:10px;border:1px solid rgba(201,169,108,.25);border-radius:10px;background:linear-gradient(90deg,rgba(8,13,20,.84),rgba(8,13,20,.54)),url("./assets/ui/sections/talents-archivist.jpg") center 38%/cover}
+#tbRpg .tb-codex-hero{background-image:linear-gradient(90deg,rgba(8,13,20,.92),rgba(8,13,20,.62)),url("./assets/ui/sections/card-library-floating-cards.jpg");background-size:cover;background-position:center 45%}
+#tbRpg .tb-profile-content:has(.tb-gear-grid){background-image:linear-gradient(180deg,rgba(7,12,18,.91),rgba(7,12,18,.94)),url("./assets/ui/sections/collection-armor-set.jpg");background-size:cover;background-position:center}
+#tbRpg .tb-profile-content:has(.tb-item-grid)>h3{padding:18px 12px;border:1px solid rgba(190,151,91,.34);border-radius:10px;background:linear-gradient(90deg,rgba(7,12,18,.92),rgba(7,12,18,.48)),url("./assets/ui/sections/inventory-adventurer-pack.jpg") center 48%/cover}
+#tbRpg .tb-relic-shop-head{padding:14px;border:1px solid rgba(196,163,105,.25);border-radius:12px;background:linear-gradient(90deg,rgba(8,13,20,.92),rgba(8,13,20,.54)),url("./assets/ui/sections/talents-crystal-tree.jpg") center 42%/cover}
+#tbRpg .tb-card-merchant-heading{padding:14px;border:1px solid rgba(196,163,105,.25);border-radius:12px;background:linear-gradient(90deg,rgba(8,13,20,.94),rgba(8,13,20,.56)),url("./assets/ui/sections/merchant-emerald-coins.jpg") center 48%/cover}
+#tbRpg .tb-profile-content:has(>.tb-system-card h2)>.tb-system-card{background-image:linear-gradient(180deg,rgba(8,13,20,.86),rgba(8,13,20,.93)),url("./assets/ui/sections/stash-gold-vault.jpg");background-size:cover;background-position:center 44%}
+#tbRpg .tb-craft-rebuild{padding:10px;border-radius:14px;background:linear-gradient(180deg,rgba(7,12,18,.80),rgba(7,12,18,.90)),url("./assets/ui/sections/forge-workshop-wide.jpg") center/cover}
+#tbRpg .tb-craft-main-card{background-image:linear-gradient(180deg,rgba(8,13,20,.82),rgba(8,13,20,.91)),url("./assets/ui/sections/forge-blacksmith.jpg");background-size:cover;background-position:center 38%}
+#tbRpg .tb-craft-main-card .tb-forge-button{background-image:linear-gradient(90deg,rgba(25,18,12,.62),rgba(25,18,12,.78)),url("./assets/ui/sections/forge-glowing-ingot.jpg");background-size:cover;background-position:center 55%}
+#tbRpg .tb-craft-rebuild .tb-system-card{background-image:linear-gradient(180deg,rgba(8,13,20,.82),rgba(8,13,20,.92)),url("./assets/ui/sections/forge-lava-hall.jpg");background-size:cover;background-position:center}
