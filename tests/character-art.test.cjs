@@ -21,10 +21,9 @@ for(const [id,file] of Object.entries(bosses)){assert.ok(ui.includes('"'+id+'":"
 const chapterFiles=['assets/chapters/image_2.jpeg','assets/chapters/image_3.jpeg','assets/chapters/image_4.jpeg','assets/chapters/image_5.jpeg','assets/chapters/image.jpeg'];
 assert.equal(chapters.chapters.length,5);
 for(let i=0;i<5;i++){assert.equal(chapters.chapters[i].background,chapterFiles[i]);assert.ok(fs.existsSync(chapterFiles[i]));}
-const arenaBackgrounds=[...ui.matchAll(/\{from:(\d+),to:(\d+),chapter:(\d+),name:"([^"]+)",src:"assets\/Fon\/([^"]+)"\}/g)].map(match=>({from:Number(match[1]),to:Number(match[2]),chapter:Number(match[3]),name:match[4],file:match[5]}));
-assert.equal(arenaBackgrounds.length,18,'all 18 arena location backgrounds are mapped');
-assert.equal(arenaBackgrounds[0].from,1);assert.equal(arenaBackgrounds[arenaBackgrounds.length-1].to,250);
-for(let i=0;i<arenaBackgrounds.length;i++){const item=arenaBackgrounds[i];assert.ok(fs.existsSync('assets/Fon/'+item.file),'arena background exists: '+item.file);if(i)assert.equal(item.from,arenaBackgrounds[i-1].to+1,'arena background ranges have no gaps or overlaps');}
+const arenaBackgrounds=[...ui.matchAll(/"\.\/assets\/backgrounds\/dungeons\/([^"]+)"/g)].map(match=>match[1]);
+assert.equal(arenaBackgrounds.length,80,"all 80 active dungeon arena backgrounds are mapped");
+for(const file of arenaBackgrounds)assert.ok(fs.existsSync("assets/backgrounds/dungeons/"+file),"arena background exists: "+file);
 assert.ok(ui.includes('function chapterBackgroundPath(stage)'));assert.ok(ui.includes('background-size:cover;background-position:center'));
 assert.ok(ui.includes('function enemyPortrait(target)')&&ui.includes('target?.mobId'));
 assert.ok(styles.includes('object-fit:contain')&&ui.includes('inventoryIconHtml(item,true)'));

@@ -1765,9 +1765,9 @@ function createDialog(){
   if(Number(c.resource)<cost){notify("Недостаточно ресурса для "+ultimate.name);return false;}
   const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0),target=targets.find(enemy=>enemy.index===battle.targetIndex)||targets[0];if(!target)return false;
   c.resource=Math.max(0,Number(c.resource)-cost);battle.playerSkillUsed=true;battle.ultimateCooldownTurns=Math.max(0,Number(ultimate.cooldown_turns)||0);
-  const effect=ultimate.effect||"single_burst",multiplier=Math.max(.1,Number(ultimate.damage_multiplier)||1),attack=Math.max(1,Number(engine.getCombatStats(c).attack||engine.getCombatStats(c).dps)||1);
+  const effect=ultimate.effect||"single_burst",stats=engine.getCombatStats(c),configuredMultiplier=Math.max(0,Number(ultimate.damage_multiplier)||2),damage=stats.dps*configuredMultiplier/3;
   if(effect==="heal_shield"||effect==="heal_aoe"){const before=c.run.playerHp,heal=Math.max(1,Math.round(engine.maxHp(c)*Number(ultimate.heal_fraction||.25)));c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+heal);if(effect==="heal_shield")battle.cardBlock=(Number(battle.cardBlock)||0)+Math.max(1,Math.round(engine.maxHp(c)*Number(ultimate.shield_fraction||.2)));logCombatEvent(ultimate.name+" · лечение +"+(c.run.playerHp-before),"#8ee0b0");}
-  if(effect!=="heal_shield"){const list=effect==="aoe_burst"||effect==="heal_aoe"?targets:[target];let total=0;for(const enemy of list){const result=applyTargetDamage(enemy,Math.max(1,Math.round(attack*multiplier)),ultimate.damage_type||"physical");total+=result.dealt;}logCombatEvent(ultimate.name+" · нанесено "+total+" урона","#f2ca78");}
+  if(effect!=="heal_shield"){const list=effect==="aoe_burst"||effect==="heal_aoe"?targets:[target];let total=0;for(const enemy of list){for(let hit=0;hit<3&&enemy.hp>0;hit++){const result=applyTargetDamage(enemy,Math.max(1,Math.round(damage)),ultimate.damage_type||"physical");total+=result.dealt;if(!battle)return true;}}logCombatEvent(ultimate.name+" · три удара · нанесено "+total+" урона","#f2ca78");}
   if(!battle)return true;if((battle.enemies||[]).some(enemy=>enemy.hp<=0&&enemy.alive)){finishCurrentEnemy();if(!battle)return true;}
   save();render();return true;
  }
