@@ -1336,6 +1336,24 @@ function createDialog(){
   battle.enemyHp=battle.enemy.hp;battle.enemyMax=battle.enemy.maxHp;battle.shield=battle.enemy.shield||0;
   save();render();
  }
+ function processCombo(slotIndex){
+  if(!battle||!Number.isInteger(Number(slotIndex)))return;
+  const c=live(),slot="slot"+(Number(slotIndex)+1),configs=(balance.combos?.combos||[]).filter(combo=>combo.class===c.classId);
+  battle.comboProgress=battle.comboProgress||{};
+  for(const combo of configs){
+   const progress=Math.max(0,Number(battle.comboProgress[combo.id])||0),expected=combo.chain[progress];
+   if(expected===slot){
+    const next=progress+1;
+    if(next>=combo.chain.length){
+     const multiplier=Math.max(1,Number(combo.bonus.damage_mult)||1);
+     battle.nextHitDamageMultiplier=Math.max(Number(battle.nextHitDamageMultiplier)||1,multiplier);
+     if(combo.bonus.guaranteed_crit)battle.nextHitGuaranteedCrit=true;
+     battle.comboProgress[combo.id]=0;
+     logCombatEvent(combo.label+" · следующая атака ×"+multiplier+(combo.bonus.guaranteed_crit?" · гарантированный крит":"") ,"#e6c27f");
+    }else battle.comboProgress[combo.id]=next;
+   }else battle.comboProgress[combo.id]=combo.chain[0]===slot?1:0;
+  }
+ }
  function activeComboNextSlots(){
   if(!battle)return[];const configs=(balance.combos?.combos||[]).filter(combo=>combo.class===live().classId),slots=[];
   for(const combo of configs){const progress=battle.comboProgress?.[combo.id]||0,next=combo.chain[progress];if(next)slots.push({combo,slot:Number(String(next).replace("slot",""))-1,progress});}
@@ -1704,7 +1722,7 @@ function createDialog(){
   if(c.classId==="duelist"&&attackCard&&finisher&&Number(c.charges)>=3){classMultiplier*=3;c.charges=Math.max(0,Number(c.charges)-3);}
   if(magicChargeSpent){classMultiplier*=1+Math.min(10,Number(c.magicCharge)||0)*.1;c.magicCharge=0;}
   const refineWeapon=(c.gear||[]).find(item=>item&&(item.slot==="weapon"||item.slot===0)),weaponRefine=Math.max(0,Number(refineWeapon?.refine)||0),armorRefine=(c.gear||[]).filter(item=>item&&["chest","head","legs","hands",1,2,3,4].includes(item.slot)).reduce((sum,item)=>sum+Math.max(0,Number(item.refine)||0),0);
-  const guildCrit=1+Math.max(0,Number(c.guildBuffs?.crit_damage)||0)*.05,guildMagic=magicCard?1+Math.max(0,Number(c.guildBuffs?.magic_attack)||0)*.02:1,treeCritChance=Number(treeCache.critChance)||0,treeCritBleed=Number(treeCache.critCausesBleed)||0;let cardCritical=false;const rawFor=base=>{const critical=attackCard&&Math.random()<Math.min(.8,Math.max(0,Number(stats.critChance)||0)+treeCritChance);if(critical){cardCritical=true;if(treeCritBleed>0&&target)target.bleed=Math.max(0,Number(target.bleed)||0)+treeCritBleed;}const spellPower=magicCard?Math.max(0,Number(battle.cardSpellPower)||0):0,nextAttackBonus=Math.max(0,Number(battle.nextAttackDamageBonus)||0);const procMultiplier=(attackCard?Math.max(1,Number(battle.nextHitDamageMultiplier)||1):1)*(magicCard?Math.max(1,Number(battle.nextSkillDamageMultiplier)||1):1),result=Math.max(1,Math.round((base+nextAttackBonus+(attackCard?weaponRefine*2:0)+classFlat)*(1+(Math.max(0,Number(stats.attack)||0)+spellPower)/100)*scale*weakScale*furyScale*classMultiplier*guildMagic*(battle.firstAttackDouble?2:1)*(critical?1.75*guildCrit:1)*procMultiplier));if(attackCard&&Number(battle.nextHitDamageMultiplier)>1)battle.nextHitDamageMultiplier=1;if(magicCard&&Number(battle.nextSkillDamageMultiplier)>1)battle.nextSkillDamageMultiplier=1;return result;},damageType=effects.damageType||card.damageType||"physical";
+  const guildCrit=1+Math.max(0,Number(c.guildBuffs?.crit_damage)||0)*.05,guildMagic=magicCard?1+Math.max(0,Number(c.guildBuffs?.magic_attack)||0)*.02:1,treeCritChance=Number(treeCache.critChance)||0,treeCritBleed=Number(treeCache.critCausesBleed)||0;let cardCritical=false;const rawFor=base=>{const guaranteedCrit=attackCard&&!!battle.nextHitGuaranteedCrit,critical=attackCard&&(guaranteedCrit||Math.random()<Math.min(.8,Math.max(0,Number(stats.critChance)||0)+treeCritChance));if(guaranteedCrit)battle.nextHitGuaranteedCrit=false;if(critical){cardCritical=true;if(treeCritBleed>0&&target)target.bleed=Math.max(0,Number(target.bleed)||0)+treeCritBleed;}const spellPower=magicCard?Math.max(0,Number(battle.cardSpellPower)||0):0,nextAttackBonus=Math.max(0,Number(battle.nextAttackDamageBonus)||0);const procMultiplier=(attackCard?Math.max(1,Number(battle.nextHitDamageMultiplier)||1):1)*(magicCard?Math.max(1,Number(battle.nextSkillDamageMultiplier)||1):1),result=Math.max(1,Math.round((base+nextAttackBonus+(attackCard?weaponRefine*2:0)+classFlat)*(1+(Math.max(0,Number(stats.attack)||0)+spellPower)/100)*scale*weakScale*furyScale*classMultiplier*guildMagic*(battle.firstAttackDouble?2:1)*(critical?1.75*guildCrit:1)*procMultiplier));if(attackCard&&Number(battle.nextHitDamageMultiplier)>1)battle.nextHitDamageMultiplier=1;if(magicCard&&Number(battle.nextSkillDamageMultiplier)>1)battle.nextSkillDamageMultiplier=1;return result;},damageType=effects.damageType||card.damageType||"physical";
   let killed=false,cardDamageDealt=0;const calculatedDamage=getCardDamageWithTalents(card,c,battle.guildRaid&&isXCost?Math.max(1,Number(c.energy)||3):cost,effects),singleDamage=(baseDamage>0||Number(effects.damagePerEnergy)>0||dynamicCardDamage>0)?calculatedDamage+dynamicCardDamage:0,areaDamage=allDamage>0?calculatedDamage:0;
   if(singleDamage>0&&target){const hit=applyTargetDamage(target,rawFor(singleDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;cardDamageDealt+=Math.max(0,Number(hit.dealt)||0);logCombatEvent("Вы сыграли «"+card.name+"» · "+hit.dealt+" урона","#e9d5a5");killed=killed||!!hit.killed;battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+1;engine.logCombatEvent(c.id,"Карта: "+card.name);}
   if(areaDamage>0){const targets=(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0);for(const enemy of targets){if(c.run.playerHp<=0)break;const hit=applyTargetDamage(enemy,rawFor(areaDamage),damageType,{ignoreArmor:!!effects.ignoreArmor});if(!battle)return;cardDamageDealt+=Math.max(0,Number(hit.dealt)||0);killed=killed||!!hit.killed;}const defeatedByArea=(battle.enemies||[]).filter(enemy=>enemy&&Number(enemy.hp)<=0);if(defeatedByArea.length)killed=true;/* finishCurrentEnemy processes every dead enemy in its own queue loop below. */battle.actionIsPrimaryHit=false;battle.attacksThisFight=(battle.attacksThisFight||0)+targets.length;}if(cardCritical){triggerAncientRelicProc("critical");if(c.classId==="assassin"){battle.nextHitDamageMultiplier=Number(balance.procs.assassin.value)||1.5;notify(balance.procs.assassin.name+" · следующий удар усилен");}}if(magicCard&&(singleDamage>0||areaDamage>0))triggerAncientRelicProc("magic");
@@ -1753,7 +1771,7 @@ function createDialog(){
    for(const enemy of selected){const threshold=Number(effect.execute_threshold)||0,execute=threshold>0&&enemy.hp/enemy.maxHp<=threshold,raw=Math.max(1,Math.round(base*power*(execute?Number(effect.execute_multiplier)||1.5:1)));const result=applyTargetDamage(enemy,raw,effect.damage_type||skill.damage_type||"physical");dealt+=result.dealt;if(type==="dot"){if(effect.status==="poison")enemy.poison=(Number(enemy.poison)||0)+Math.max(1,Number(effect.stacks)||1);else enemy.bleed=(Number(enemy.bleed)||0)+Math.max(1,Number(effect.stacks)||1);}}
    logCombatEvent(skill.name+" · нанесено "+dealt+" урона","#f1c47d");
   }
-  if(!battle)return true;battle.busy=false;
+  if(!battle)return true;processCombo(slotIndex);battle.busy=false;
   if((battle.enemies||[]).some(enemy=>enemy.hp<=0&&enemy.alive)){finishCurrentEnemy();if(!battle)return true;}
   save();render();return true;
  }
