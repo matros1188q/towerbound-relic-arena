@@ -488,7 +488,7 @@
     if(last.relicChoices?.length)relicIds=last.relicChoices.map(item=>typeof item==="string"?item:item.id);
     if(last.stageComplete)break;
    }
-   if(last?.stageComplete){battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этаж пройден · награды сохранены");if(relicIds.length)showRelicRewardScreen(relicIds);return;}
+   if(last?.stageComplete){logExpeditionEvent("Этап "+battle.stage+" пройден · награды сохранены","#9bd6a4");battle=null;selectedStage=c.progress.currentStage;screen="map";save();render();notify("Этаж пройден · награды сохранены");if(relicIds.length)showRelicRewardScreen(relicIds);return;}
    battle.finishingEnemy=false;battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.busy=false;battle.actor={type:"player",id:"player",name:c.name};
    const result=last||{};
    result.nextTargetIndex=result.nextTargetIndex??(battle.enemies||[]).findIndex(enemy=>enemy.alive&&enemy.hp>0);
