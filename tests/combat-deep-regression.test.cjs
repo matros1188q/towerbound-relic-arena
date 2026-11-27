@@ -53,11 +53,12 @@ assert.ok(ui.includes('if(c.classId==="assassin"&&attackCard&&Number(c.combo)>0)
 assert.ok(ui.includes('decayEnemyDebuffs(enemy);save();render();return;')&&!ui.includes('if(enemy.weak>0)enemy.weak=Math.max(0,enemy.weak-1);if(enemy.vulnerable>0)enemy.vulnerable=Math.max(0,enemy.vulnerable-1);\n   decayEnemyDebuffs(enemy);'),'sabotage does not decrement debuffs twice');
 assert.ok(ui.includes('playerTurnCount>=Number(battle.bossDeadlineTurns)'),'boss deadline uses the configured turn boundary');
 assert.match(sw,/towerbound-v[0-9]+/);
-assert.match(ui,/for\(const enemy of targets\)\{if\(c\.run\.playerHp<=0\)break;const hit=applyTargetDamage/,'card area attacks stop after thorns kill the player');
+assert.match(ui,/const reflectRate=Number\(target\.reflectTurns\)>0 \? 0\.25 : \(target\.champion&&target\.mechanic==="reflect" \? 0\.15 : 0\)/,"boss mirror and champion reflect return their configured damage");
+assert.match(ui,/for\(const enemy of targets\)\{if\(c\.run\.playerHp<=0\)break;const hit=applyTargetDamage/,"card area attacks stop after lethal reflection");
 assert.match(ui,/for\(let n=1;n<Number\(effects\.hits\)&&c\.run\.playerHp>0;n\+\+\)/,'multi-hit cards stop after lethal thorns');
-assert.match(ui,/for\(let hit=0;hit<3&&target\.hp>0&&c\.run\.playerHp>0;hit\+\+\)/,'multi-hit ultimates stop after lethal thorns');
-assert.match(ui,/if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}if\(battle\.enemy\.hp<=0\)/,'ultimate thorns death resolves the run immediately');
-assert.match(ui,/for\(const enemy of battle\.enemies\.filter\(x=>x\.alive\)\)\{if\(c\.run\.playerHp<=0\)break;/,'area skills stop after lethal thorns');
+assert.match(ui,/for\(const enemy of list\)\{for\(let hit=0;hit<3&&enemy\.hp>0&&c\.run\.playerHp>0;hit\+\+\)/,"multi-hit ultimates stop after lethal reflection");
+assert.match(ui,/if\(!battle\)return true;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return true;\}/,"ultimate reflection death resolves the run immediately");
+assert.match(ui,/for\(const enemy of selected\)\{if\(c\.run\.playerHp<=0\)break;/,"area skills stop after lethal reflection");
 assert.match(ui,/target\.mutation==="vampirism"&&target\.hp>0/,'vampirism mutation cannot resurrect a defeated enemy');
 assert.match(ui,/applyTargetDamage\(enemy,burn,"fire"\);(?:if\(!battle\)return;)?enemy\.burn=0;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal burn retaliation ends the run immediately');
 assert.match(ui,/applyTargetDamage\(target,dot\.damage,"dark"\);(?:if\(!battle\)return;)?dot\.ticks--;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal dark DoT retaliation ends the run immediately');
