@@ -92,3 +92,10 @@
   "@media(max-width:380px){#tbRpg .tb-v2 .tb-run-modifier-panel{column-gap:5px!important;padding:8px!important;}#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier]{padding:8px 5px!important;min-height:116px!important;}#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier] b{font-size:10px!important;}#tbRpg .tb-v2 .tb-run-modifier-panel [data-run-modifier] small{font-size:8px!important;line-height:1.25!important;}}"
  ].join("\n");
 })();
+
+
+/* Character hero portrait — use the real class artwork instead of the temporary emoji. */
+#tbRpg .tb-profile-hub .tb-profile-hero-art{position:relative;align-self:stretch;overflow:hidden;background:radial-gradient(ellipse at 50% 72%,rgba(195,139,62,.28),transparent 62%),linear-gradient(180deg,#101923,#05090e)}
+#tbRpg .tb-profile-hub .tb-profile-hero-art:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(180deg,transparent,rgba(4,8,13,.72));pointer-events:none}
+#tbRpg .tb-profile-hub .tb-profile-hero-art img{display:block;width:100%;height:100%;min-height:218px;object-fit:cover;object-position:center top;filter:drop-shadow(0 12px 18px #000b);}
+@media(max-width:520px){#tbRpg .tb-profile-hub .tb-profile-hero-art img{min-height:218px;object-fit:cover;object-position:center top}}
