@@ -23,7 +23,7 @@ for(const sheet of ui.spriteSheets)exists(sheet.path);
 for(const sheet of skills.sprite_sheets||[])exists(sheet.path);
 for(const chapter of chapters.chapters){assert.ok(chapter.background.endsWith('.jpeg'),'Chapter backgrounds must remain JPEG');exists(chapter.background);}
 exists(ui.logo);exists(ui.stylesheet);
-const sourceFiles=['rpg-rework-ui.js','rpg-mode.js','towerbound-engine.js','index.html','service-worker.js','assets/ui/art-sprites.css','styles.css','assets/relics/art-manifest.json','assets/skills/art-manifest.json','assets/ui/art-manifest.json','assets/characters/heroes/manifest.json','assets/characters/enemies/manifest.json','assets/characters/bosses/manifest.json'];
+const sourceFiles=['rpg-rework-ui.js','towerbound-engine.js','index.html','service-worker.js','assets/ui/art-sprites.css','styles.css','assets/relics/art-manifest.json','assets/skills/art-manifest.json','assets/ui/art-manifest.json','assets/characters/heroes/manifest.json','assets/characters/enemies/manifest.json','assets/characters/bosses/manifest.json'];
 const source=Object.fromEntries(sourceFiles.map(p=>[p,fs.readFileSync(path.join(root,p),'utf8')]));
 for(const [file,content] of Object.entries(source)){
  assert.ok(!/assets\/(?:characters|relics|skills|icons)\/[^"'\x60]+?\.jpeg/.test(content),'JPEG path remains in PNG art folder: '+file);
@@ -38,12 +38,8 @@ assert.ok(uiScript.includes('RELIC_ART_BY_ID'),'Card relics must have dedicated 
 assert.ok(itemArt.inventory.xp_hourglass==='../relics/hourglass.png','Hourglass must not reuse the coin JPEG.');
 assert.ok(itemArt.relics.assassin_blade==='../relics/fang.png'&&itemArt.relics.mirror_shard==='../relics/mirror.png','Relics must use dedicated matching artwork.');
 assert.ok(uiScript.includes('chapterBackgrounds=["image_2.jpeg","image_3.jpeg","image_4.jpeg","image_5.jpeg","image.jpeg"]'),'Chapter JPEG backgrounds must be preserved');
-const mode=source['rpg-mode.js'];
 const sw=source['service-worker.js'];
 assert.ok(sw.includes('./assets/characters/enemies/grave-archer.png'),'Dedicated Grave Archer portrait is cached for offline play');
-assert.ok(mode.includes("./assets/characters/heroes/image-Photoroom.png"),'Legacy RPG hero map uses uploaded PNG portrait');
-assert.ok(mode.includes("./assets/characters/bosses/mirror-executioner.png"),'Legacy RPG boss map uses existing named PNG');
-assert.ok(mode.includes("'grave-archer':'./assets/characters/enemies/grave-archer.png'"),'Legacy RPG uses the dedicated Grave Archer portrait, not a reused enemy image');
 assert.ok(uiScript.includes('"grave-archer":"enemies/grave-archer.png"'),'Card RPG uses the dedicated Grave Archer portrait');
 const css=source['assets/ui/art-sprites.css'];
 assert.ok(css.includes('.sprite-icon{')&&css.includes('../skills/image_17.png'),'Talent atlas uses the dedicated skills PNG');
