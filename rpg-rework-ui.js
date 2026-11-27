@@ -2820,15 +2820,20 @@ function profileRelicShopMarkup(c){
  document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseForFocusLoss();});window.addEventListener("blur",pauseForFocusLoss);
  window.addEventListener("pagehide",()=>{try{if(engine&&live()){engine.publishGhostSnapshot(live().id,"exit");save();window.TowerboundCloud?.flushSave?.();}}catch(error){console.warn("Ghost snapshot on exit failed",error);}});
  function boot(){
-  if(!window.TowerboundReworkReady)return;
-  window.TowerboundReworkReady.then(async value=>{
-   if(!value)return;
-   if(window.TowerboundCloudReady)await window.TowerboundCloudReady; // Resolves on local auth bootstrap; remote save hydration no longer blocks engine startup.
-   else await new Promise(resolve=>{let settled=false;const done=()=>{if(settled)return;settled=true;resolve();};window.addEventListener('towerbound-cloud-ready',done,{once:true});setTimeout(done,18000);});
+  root.innerHTML='<div style="min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;color:#e9dfca;background:radial-gradient(ellipse at 50% 0,#263447,#080d15 72%)"><div><div style="font:800 12px system-ui;letter-spacing:.24em;color:#d8b978">TOWERBOUND</div><div style="margin-top:10px;font:700 20px Georgia">ЗАГРУЗКА БАШНИ…</div><div style="margin-top:8px;color:#aebbd0;font:12px system-ui">Подготавливаем персонажей и игровой мир</div></div></div>';
+  const showFailure=error=>{
+   console.error("Towerbound rework UI failed",error);
+   root.innerHTML='<section style="min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;color:#eee;background:#080d15"><div style="max-width:440px"><h1 style="font:700 24px Georgia;color:#f2d59a">Не удалось запустить игру</h1><p data-startup-error style="color:#bdc6d5;font:13px/1.5 system-ui"></p><button type="button" data-startup-retry style="margin-top:14px;padding:13px 22px;border:1px solid #d8b978;border-radius:10px;background:#3a2d20;color:#ffe5b0;font-weight:800">ПОВТОРИТЬ ЗАГРУЗКУ</button></div></section>';
+   const message=root.querySelector('[data-startup-error]');if(message)message.textContent=error?.message||String(error||"Неизвестная ошибка загрузки");
+   root.querySelector('[data-startup-retry]')?.addEventListener('click',()=>window.location.reload());
+  };
+  if(!window.TowerboundReworkReady){showFailure(new Error("Игровое ядро не загрузилось. Обнови страницу."));return;}
+  window.TowerboundReworkReady.then(value=>{
+   if(!value)throw window.TowerboundReworkLoadError||new Error("Игровое ядро не смогло загрузить конфигурации.");
+   // Start from local data immediately. Cloud auth and remote-save hydration continue in parallel;
+   // towerbound-auth-change / towerbound-cloud-restore rehydrate this state when the cloud is ready.
    engine=value;balance=engine.balance;
-   // The engine may have been constructed from an empty local cache before cloud auth finished.
-   // Rehydrate its existing state object after the authoritative cloud restore has completed.
-   try{const raw=localStorage.getItem('tb-rpg-v2'),restored=raw?JSON.parse(raw):null;if(restored&&Array.isArray(restored.characters)){for(const key of Object.keys(engine.state))delete engine.state[key];Object.assign(engine.state,restored);}}catch(error){console.error('[Towerbound] post-cloud engine hydration failed',error);}
+   try{const raw=localStorage.getItem('tb-rpg-v2'),restored=raw?JSON.parse(raw):null;if(restored&&Array.isArray(restored.characters)){for(const key of Object.keys(engine.state))delete engine.state[key];Object.assign(engine.state,restored);}}catch(error){console.error('[Towerbound] local save hydration failed',error);}
    const unlockedBefore=Array.isArray(engine.state.account?.unlockedCards)?engine.state.account.unlockedCards.length:0;unlockedCardIds();if(engine.state.account.unlockedCards.length!==unlockedBefore)save();window.TowerboundLevelUpModal=(level,points)=>{if(!window.__TB_BALANCE_TEST_MODE)showLevelUpModal(level,points);};
    skills=[]; // Card-first combat: legacy skill catalogue is not loaded into the active UI.
    let active=null;
@@ -2846,7 +2851,7 @@ function profileRelicShopMarkup(c){
    render();
    if(Number(active?.run?.pendingEchoStage)>0)showEchoOfPastScreen(active,active.run.pendingEchoStage);
    if(active?.pendingCardReward?.length)showCardRewardScreen(active.pendingCardReward);
-  }).catch(error=>console.error("Towerbound rework UI failed",error));
+  }).catch(showFailure);
  }
  boot();
  window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;guildRaid=null;screen="map";render();save();},canStartGuildRaid:()=>!!engine&&!!live()&&!battle&&!live()?.run?.stage,startGuildRaid};
