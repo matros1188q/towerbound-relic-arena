@@ -1450,6 +1450,24 @@ function createDialog(){
   if(target.index===battle.targetIndex){battle.bossPhase=phase;battle.enemy=target;battle.enemyHp=target.hp;battle.enemyMax=target.maxHp;battle.shield=target.shield||0;}
   return phase;
  }
+ /* Combat feedback primitives: the visual add-on observes the DOM but does not define these. */
+ function combatActorElement(target){
+  if(target==='player'||target?.type==='player')return root.querySelector('.new-hero-side');
+  const index=Number(target?.index);
+  return Number.isFinite(index)?root.querySelector('.new-enemy-item[data-target="'+index+'"]'):root.querySelector('.new-enemy-item.selected');
+ }
+ function showFloatingText(target,label,color='#ffffff',kind=''){
+  try{const actor=combatActorElement(target);if(!actor)return;const node=document.createElement('span');node.className='tb-floating-damage'+(kind?' is-'+String(kind).replace(/[^a-z0-9_-]/gi,''):'');node.textContent=String(label??'');node.style.color=String(color||'#fff');node.setAttribute('aria-hidden','true');actor.appendChild(node);setTimeout(()=>node.remove(),1050);}catch(error){console.warn('[Towerbound] floating text skipped',error);}
+ }
+ function pulseCombatActor(target,kind='hit'){
+  try{const actor=combatActorElement(target);if(!actor)return;const cls='tb-combat-pulse-'+String(kind).replace(/[^a-z0-9_-]/gi,'');actor.classList.remove(cls);void actor.offsetWidth;actor.classList.add(cls);setTimeout(()=>actor.classList.remove(cls),520);}catch(error){console.warn('[Towerbound] combat pulse skipped',error);}
+ }
+ function triggerVfx(action,damageType='physical',critical=false){
+  try{const target=action==='enemy-hit'?'player':(battle?.enemy||'player');const actor=combatActorElement(target);if(actor){actor.classList.remove('tb-hit-spark');void actor.offsetWidth;actor.classList.add('tb-hit-spark');setTimeout(()=>actor.classList.remove('tb-hit-spark'),260);}if(critical)window.TowerboundCombatVisuals?.status?.(damageType==='physical'?'✦ КРИТИЧЕСКИЙ УДАР':'✦ МОЩНЫЙ УДАР');}catch(error){console.warn('[Towerbound] combat VFX skipped',error);}
+ }
+ function shakeBattleArena(){
+  try{const arena=root.querySelector('.new-battle-wrap');if(!arena||settings().disable_screen_shake)return;arena.classList.remove('tb-shake');void arena.offsetWidth;arena.classList.add('tb-shake');setTimeout(()=>arena.classList.remove('tb-shake'),240);}catch(error){console.warn('[Towerbound] arena shake skipped',error);}
+ }
  function applyEnemyHit(attacker,raw){
   if(!battle||!attacker||attacker.alive!==true||Number(attacker.hp)<=0){if(attacker){attacker.alive=false;attacker.dead=true;attacker.hp=0;attacker.pendingAttack=false;}return;}
   const c=live(),phase=attacker.type==="boss"?engine.bossPhaseInfo(attacker.hp,attacker.maxHp).phase:0;
