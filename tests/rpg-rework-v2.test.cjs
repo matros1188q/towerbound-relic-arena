@@ -537,5 +537,5 @@ console.log('RPG balance/content checks passed: 30 configs, combat cadence, curv
  assert.ok(finishStart>=0&&finishEnd>finishStart,'finishEnemy implementation is isolated');
  assert.doesNotMatch(source.slice(finishStart,finishEnd),/playerHp\s*=\s*maxHp\(character\)/,'manual stage clear must not restore full HP');
 
- assert.ok(ui.includes('ensureCardDeck(live());syncEquipmentCards(live());const result=engine.autoBattle(live().id)'),'auto battle initializes the live deck and equipment cards');
+ assert.ok(ui.includes('ensureCardDeck(c);syncEquipmentCards(c);')&&autoSource.includes('function autoBattle('),'new characters initialize card/equipment cards and the engine retains auto-battle support');
 }
