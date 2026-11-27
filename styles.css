@@ -2551,3 +2551,10 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  #tbRpg .tb-stats-source-copy b{font-size:10px!important}
  #tbRpg .tb-stats-source-item>strong{font-size:13px!important;padding:4px 6px!important}
 }
+
+
+/* Keep every source-of-power label readable on narrow mobile screens. */
+#tbRpg .tb-stats-source-copy{min-width:0!important;width:100%!important;overflow:visible!important}
+#tbRpg .tb-stats-source-copy b{display:block!important;max-width:100%!important;font-size:clamp(9px,2.7vw,11px)!important;letter-spacing:-.035em!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+#tbRpg .tb-stats-source-item>strong{font-size:13px!important;padding:4px 6px!important}
+@media(max-width:350px){#tbRpg .tb-stats-source-copy b{font-size:9px!important;letter-spacing:-.045em!important}#tbRpg .tb-stats-source-item>strong{font-size:12px!important}}
