@@ -384,7 +384,7 @@
   const stageFromPower=value=>Math.max(1,Math.min(balance.map.total_stages,Math.floor(65+(Number(value)-8000)*9/800)));
   const powerStageBeforeMargin=stageFromPower(currentPower),powerStage=stageFromPower(adjustedPower);
   const highest=Math.max(0,Number(character.progress?.highestEver)||0),bossEvery=Math.max(1,Number(balance.map?.boss_every)||10);
-  const fallbackStage=Math.max(1,Math.floor(highest/bossEvery)*bossEvery-(bossEvery-1));
+  const fallbackStage=Math.max(1,Math.floor((highest+1)/bossEvery)*bossEvery-(bossEvery-1));
   const cappedByRecord=powerStageBeforeMargin>highest;
   const targetStage=cappedByRecord?fallbackStage:Math.max(1,Math.min(powerStage,highest+1));
   return{currentPower,adjustedPower,powerStageBeforeMargin,powerStage,highest,fallbackStage,targetStage,cappedByRecord};
@@ -507,7 +507,7 @@
  async function handleModernClick(event){
   const t=event.target?.closest?.("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-card-play],[data-target],[data-cosmetic-buy],[data-cosmetic-equip],[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-battle-potion],[data-deck-viewer],[data-deck-viewer-close]");
   if(!t||!root.contains(t)||t.matches("input,textarea,select"))return;
-  if(t.dataset.battlePotion){try{engine.useHealingPotion(live().id);save();render();notify("Зелье использовано");}catch(error){notify(error.message);}return;}
+  if(t.dataset.battlePotion){try{const c=live();if(battle.actor?.type!=="player"||battle.paused)throw new Error("Зелье можно использовать только в свой ход");if(battle.potionUsedThisTurn)throw new Error("В этом ходу зелье уже использовано");if(battle.trialObjective)battle.trialPotionUsed=true;engine.useHealingPotion(c.id,t.dataset.battlePotion);battle.potionUsedThisTurn=true;save();render();notify("Зелье использовано");}catch(error){notify(error.message);}return;}
   if(t.hasAttribute("data-deck-viewer")){showDeckViewer();return;}
   if(t.hasAttribute("data-deck-viewer-close")){document.querySelector(".tb-deck-viewer-overlay")?.remove();return;}
   if(t.dataset.pick){selectedId=t.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live()?.progress.currentStage||1;screen="characters";render();save();return;}
@@ -545,7 +545,12 @@
    case "characters":screen="characters";render();break;
    case "map":if(battle){clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;}screen="map";render();save();break;
    case "profile":profileTab="stats";screen="profile";render();break;
-   case "start":beginStage();break;
+   case "start":{
+    const c=live();
+    if(c&&!c.run.active&&!c.run.stage){showStarterDeckModal();break;}
+    if(c&&eventTypeForStage(c,selectedStage)&&!c.run.completedMapEvents?.includes(Number(selectedStage))){showMapEventOverlay();break;}
+    beginStage();break;
+   }
    case "end-turn":endPlayerTurn();break;
    case "confirm-death":try{engine.confirmDeath(live().id);battle=null;screen="map";selectedStage=live().progress.currentStage;save();render();}catch(e){notify(e.message);}break;
    case "empty-login":case "empty-register":{const login=root.querySelector("#login")?.value||"",password=root.querySelector("#pass")?.value||"",remember=!!root.querySelector("#rememberMe")?.checked,msg=root.querySelector(".tb-login-message"),method=t.dataset.action==="empty-register"?"signUp":"signIn";try{if(!window.TowerboundCloud?.[method])throw new Error("Авторизация ещё загружается");await window.TowerboundCloud[method](login,password,remember);if(msg)msg.textContent="Успешно";}catch(e){if(msg)msg.textContent=e.message;notify(e.message);}break;}
@@ -2155,6 +2160,30 @@ function profileRelicShopMarkup(c){
   }).join("");
   return '<div class="tb-shop-overlay" role="dialog" aria-modal="true" aria-label="Магазин Башни"><div class="tb-shop-panel"><header class="tb-shop-hero"><div><small>ТОРГОВАЯ ЛАВКА · TOWERBOUND</small><h2>МАГАЗИН БАШНИ</h2><p>Подготовь героя к следующему восхождению</p></div><button type="button" data-shop-close aria-label="Закрыть магазин">×</button></header><div class="tb-shop-wallet"><span>ТВОЙ БАЛАНС</span><b>'+money.toLocaleString("ru-RU")+' '+(store==="silver"?"серебра":"алмазов")+'</b></div><nav class="tb-shop-currencies"><button type="button" data-shop-currency="silver" class="'+(store==="silver"?"active":"")+'">СЕРЕБРО · '+(Number(c.silver)||0).toLocaleString("ru-RU")+'</button><button type="button" data-shop-currency="diamond" class="'+(store==="diamond"?"active":"")+'">АЛМАЗЫ · '+(Number(engine.state.account?.diamonds)||0).toLocaleString("ru-RU")+'</button></nav><div class="tb-shop-content">'+(groups||'<p class="tb-shop-empty">В этой лавке пока нет доступных товаров.</p>')+(store==="diamond"?cosmeticStoreMarkup():"")+'</div><footer class="tb-shop-footer">Зелья и усиления попадают в рюкзак — активируй их перед боем или заточкой. Материалы кузницы открывают реальные улучшения экипировки.</footer></div></div>';
  }
+
+
+ function handleOverlayClick(event){
+  const t=event.target?.closest?.("[data-card-reward-pick],[data-card-reward-skip],[data-card-reward-start],[data-starter-card],[data-starter-deck-confirm],[data-starter-deck-cancel],[data-relic-reward-pick],[data-relic-acquired-close],[data-ancient-awakening-close],[data-map-event-choice],[data-trial-reward],[data-deck-viewer-close],[data-card-inspect-close],[data-loot-continue]");
+  if(!t)return;
+  const overlay=t.closest(".card-reward-overlay,.tb-starter-deck-overlay,.tb-relic-reward-overlay,.tb-relic-acquired-overlay,.tb-ancient-awakening-overlay,.tb-map-event-overlay,.tb-deck-viewer-overlay,.tb-card-inspect-overlay,.tb-loot-overlay");
+  if(root.contains(t)&&!overlay)return;
+  event.preventDefault();
+  if(t.dataset.deckViewerClose!==undefined){document.querySelector(".tb-deck-viewer-overlay")?.remove();return;}
+  if(t.dataset.cardInspectClose!==undefined){document.querySelector(".tb-card-inspect-overlay")?.remove();return;}
+  if(t.dataset.mapEventChoice!==undefined){resolveMapEventChoice(t.dataset.mapEventChoice);return;}
+  if(t.dataset.trialReward!==undefined){claimTrialReward(t.dataset.trialReward);return;}
+  if(t.dataset.starterCard!==undefined){const id=t.dataset.starterCard;if(starterDeckSelection.includes(id))starterDeckSelection=starterDeckSelection.filter(value=>value!==id);else if(starterDeckSelection.length<3&&unlockedCardIds().includes(id))starterDeckSelection.push(id);else notify("Можно выбрать не более трёх открытых карт");renderStarterDeckModal();return;}
+  if(t.dataset.starterDeckCancel!==undefined){document.querySelector(".tb-starter-deck-overlay")?.remove();starterDeckSelection=[];return;}
+  if(t.dataset.starterDeckConfirm!==undefined){confirmStarterDeck();return;}
+  if(t.dataset.relicAcquiredClose!==undefined){const tier=Number(t.dataset.ancientAwakening)||0;document.querySelector(".tb-relic-acquired-overlay")?.remove();if(tier>=2&&tier<=4)showAncientSetAwakeningScreen(tier,live()?.classId);return;}
+  if(t.dataset.ancientAwakeningClose!==undefined){document.querySelector(".tb-ancient-awakening-overlay")?.remove();return;}
+  if(t.dataset.relicRewardPick!==undefined){const c=live();try{const relic=engine.claimRelic(c.id,t.dataset.relicRewardPick);document.querySelector(".tb-relic-reward-overlay")?.remove();save();render();showRelicAcquiredScreen(relic,"НАГРАДА ЗА БОССА");}catch(error){notify(error.message);}return;}
+  if(t.dataset.cardRewardStart!==undefined){const c=live();if(!c)return;const cards=Array.isArray(c.pendingCardReward)&&c.pendingCardReward.length?c.pendingCardReward:generateCardReward(c);if(!cards.length){notify("Карты для награды не найдены");return;}c.pendingCardReward=cards;postBattleSummary=null;save();render();showCardRewardScreen(cards);return;}
+  if(t.dataset.cardRewardSkip!==undefined){skipCardReward();return;}
+  if(t.dataset.cardRewardPick!==undefined){const c=live(),cards=c?.pendingCardReward||[],chosen=cards[Number(t.dataset.cardRewardPick)];if(!c||!chosen)return;ensureCardDeck(c);c.deck.push(chosen);unlockCardPermanently(chosen.id);c.pendingCardReward=null;document.querySelector(".card-reward-overlay")?.remove();save();render();notify("Карта добавлена в колоду: "+chosen.name);return;}
+  if(t.dataset.lootContinue!==undefined){postBattleSummary=null;screen="map";save();render();return;}
+ }
+ document.addEventListener("click",handleOverlayClick);
 
  root.addEventListener("pointerup",event=>{if(event.target?.closest?.(".tb-v2"))event.stopImmediatePropagation();},true);
  root.addEventListener("click",handleModernClick);
