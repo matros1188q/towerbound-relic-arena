@@ -59,7 +59,7 @@ assert.match(ui,/for\(let n=1;n<Number\(effects\.hits\)&&c\.run\.playerHp>0;n\+\
 assert.match(ui,/for\(const enemy of list\)\{for\(let hit=0;hit<3&&enemy\.hp>0&&c\.run\.playerHp>0;hit\+\+\)/,"multi-hit ultimates stop after lethal reflection");
 assert.match(ui,/if\(!battle\)return true;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return true;\}/,"ultimate reflection death resolves the run immediately");
 assert.match(ui,/for\(const enemy of selected\)\{if\(c\.run\.playerHp<=0\)break;/,"area skills stop after lethal reflection");
-assert.match(ui,/target\.mutation==="vampirism"&&target\.hp>0/,'vampirism mutation cannot resurrect a defeated enemy');
+assert.match(ui,/const dealt=Math\.min\(target\.hp,damage\);target\.hp=Math\.max\(0,target\.hp-damage\);/,"enemy HP is clamped at zero and cannot be revived by damage handling");
 assert.match(ui,/applyTargetDamage\(enemy,burn,"fire"\);(?:if\(!battle\)return;)?enemy\.burn=0;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal burn retaliation ends the run immediately');
 assert.match(ui,/applyTargetDamage\(target,dot\.damage,"dark"\);(?:if\(!battle\)return;)?dot\.ticks--;if\(c\.run\.playerHp<=0\)\{endFromDamage\(\);return;\}/,'lethal dark DoT retaliation ends the run immediately');
 assert.match(ui,/battle\.isPlayerTurn=false;clearPendingTurnTimer\(\);battle\.busy=false;battle\.actionDamageLedger=\{\};battle\.actionIsPrimaryHit=false;battle\.actionIsSkill=false;[\s\S]*?const burnTargets=/,'end-turn status ticks start a fresh damage action and cannot trigger card procs');
