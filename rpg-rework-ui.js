@@ -1350,8 +1350,7 @@ function createDialog(){
  function advanceToPlayerTurn(){
   if(!battle)return;
   clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle.enemyQueueState=null;
-  const c=live();battle.busy=false;battle.isPlayerTurn=true;battle.actor={type:"player",id:"player",name:c.name};battle.telegraph=null;
-  c.currentEnergy=Math.max(1,Number(c.energy)||3);battle.cardsPlayedThisTurn=0;battle.cardBlock=0;drawCards(5);
+  battle.busy=false;battle.isPlayerTurn=true;battle.telegraph=null;
   showPlayerTurn();save();render();
  }
  function runEnemyTurnQueue(queue,index,token){
