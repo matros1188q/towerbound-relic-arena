@@ -2405,10 +2405,12 @@ function profileRelicShopMarkup(c){
   const gear=Array.isArray(c.gear)?c.gear:[],bag=(c.bag||[]).filter(item=>item&&item.type==="equipment"&&item.stats&&item.rarity);
   const names={attack:"АТК",defense:"ЗАЩ",health:"HP",crit:"КРИТ",critDamage:"КРИТ. УРОН",spellPower:"МАГИЯ",fireDamage:"ОГОНЬ",iceDamage:"ЛЁД",darkDamage:"ТЬМА"};
   const statsOf=item=>Object.entries(effectiveEquipmentStats(item)).filter(([,v])=>Number(v)!==0).slice(0,3).map(([k,v])=>esc(names[k]||k)+" +"+esc(String(Number(v).toFixed(k==="crit"||k==="critDamage"?2:0)))).join(" · ");
-  const tiles=slots.map(slot=>{
+  const tileMarkup=slots.map(slot=>{
    const item=gear[slot.index];
    return '<article class="tb-paper-slot '+(item?'is-filled rarity-'+rarityClass(item.rarity):'is-empty')+'"><div class="tb-paper-slot-art">'+(item?relicIconHtml(item,slot.key):'<span>'+slot.icon+'</span>')+'</div><small>'+slot.label+'</small><b>'+(item?esc(item.name||slot.label):"Пусто")+'</b>'+(item?'<em>'+esc(item.rarity)+' · ур. '+(Number(item.itemLevel)||1)+'</em><span class="tb-paper-slot-stats">'+statsOf(item)+'</span><button type="button" data-unequip="'+slot.key+'">СНЯТЬ</button>':'<em>Ячейка свободна</em>')+'</article>';
-  }).join("");
+  });
+  tileMarkup.splice(4,0,'<div class="tb-paper-hero"><img src="'+esc(portrait(c.classId))+'" alt="'+esc(clsName(c))+'"><small>'+esc(c.name)+'</small></div>');
+  const tiles=tileMarkup.join("");
   const count=gear.filter(Boolean).length,branchGear=gear.filter(item=>item&&item.branch===c.branch&&item.rarity),setCount=branchGear.length;
   const setSteps=[{n:2,label:"2 ПРЕДМЕТА",desc:"+5% профильного бонуса"},{n:4,label:"4 ПРЕДМЕТА",desc:"+10% профильного бонуса"},{n:6,label:"6 ПРЕДМЕТОВ",desc:"Уникальный эффект специализации"}].map(x=>'<div class="tb-gear-set-step '+(setCount>=x.n?'is-active':'')+'"><b>'+x.label+'</b><span>'+x.desc+'</span><small>'+Math.min(setCount,x.n)+' / '+x.n+'</small></div>').join("");
   const itemCards=bag.length?bag.map(item=>'<article class="tb-gear-loot-card rarity-'+rarityClass(item.rarity)+'"><div class="tb-gear-loot-art">'+relicIconHtml(item,item.slot)+'</div><div class="tb-gear-loot-copy"><b>'+esc(item.name||itemBagTitle(item))+'</b><small>'+esc(item.rarity)+' · '+esc(({weapon:"Оружие",chest:"Нагрудник",head:"Шлем",legs:"Поножи",hands:"Перчатки",amulet:"Амулет",accessory:"Амулет",offhand:"Вторая рука",ring:"Кольцо",belt:"Пояс"}[item.slot]||"Экипировка"))+' · ур. '+(Number(item.itemLevel)||1)+'</small><p>'+statsOf(item)+'</p></div><button type="button" data-equip="'+esc(item.id)+'">НАДЕТЬ</button></article>').join(""):'<div class="tb-lock">Подходящих предметов пока нет. Добывай экипировку в Башне.</div>';
