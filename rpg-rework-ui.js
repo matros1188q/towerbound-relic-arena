@@ -2550,6 +2550,7 @@ function profileRelicShopMarkup(c){
   return true;
  }
 
+ function startGuildRaid(){notify("Гильдейские рейды временно отключены.");return false;}
  function boot(){
   root.innerHTML='<div style="min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center;color:#e9dfca;background:radial-gradient(ellipse at 50% 0,#263447,#080d15 72%)"><div><div style="font:800 12px system-ui;letter-spacing:.24em;color:#d8b978">TOWERBOUND</div><div style="margin-top:10px;font:700 20px Georgia">ЗАГРУЗКА БАШНИ…</div><div style="margin-top:8px;color:#aebbd0;font:12px system-ui">Подготавливаем персонажей и игровой мир</div></div></div>';
   const showFailure=error=>{
@@ -2587,7 +2588,7 @@ function profileRelicShopMarkup(c){
   }).catch(showFailure);
  }
  boot();
- window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;guildRaid=null;screen="map";render();save();},canStartGuildRaid:()=>!!engine&&!!live()&&!battle&&!live()?.run?.stage,startGuildRaid};
+ window.TowerboundReworkUI={showMap:()=>{stopBattleStatusLoop();clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;guildRaid=null;screen="map";render();save();},canStartGuildRaid:()=>false,startGuildRaid};
  if(window.__TB_BALANCE_TEST_MODE){
   const balanceSnapshot=()=>{const c=live();return JSON.parse(JSON.stringify({screen,selectedStage,character:c||null,battle:battle||null,postBattleSummary:postBattleSummary||null}));};
   const allocateBalanceTalents=()=>{
