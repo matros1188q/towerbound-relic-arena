@@ -26,7 +26,7 @@ for(const classId of classIds){
  for(const branch of definition.branches){
   assert.equal(branch.talents.length,10,classId+'/'+branch.id+' has ten talents');
   assert.ok(branch.talents.every(t=>t.max_rank===3),classId+'/'+branch.id+' talents have three ranks');
-  assert.deepEqual(branch.set.bonuses.map(x=>x.pieces),[2,3,5],classId+'/'+branch.id+' set thresholds are 2/3/5');
+  assert.deepEqual(branch.set.bonuses.map(x=>x.pieces),[2,4,6],classId+'/'+branch.id+' set thresholds are 2/4/6');
   const branchSkills=skillManifest.classes[classId][branch.id];
   assert.equal(branchSkills.length,20,classId+'/'+branch.id+' has twenty skill entries');
   branchSkills.forEach((id,index)=>{
