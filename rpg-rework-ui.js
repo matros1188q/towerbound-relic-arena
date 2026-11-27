@@ -508,7 +508,7 @@
   if(!(battle.enemies||[]).some(enemy=>enemy&&enemy.alive&&Number(enemy.hp)>0)){finishCurrentEnemy();return true;}
   return false;
  }
- function endFromDamage(){clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="death";save();render();}
+ function endFromDamage(){clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;if(!settings().disable_screen_shake){root.classList.remove("tb-death-shaking");void root.offsetWidth;root.classList.add("tb-death-shaking");setTimeout(()=>root.classList.remove("tb-death-shaking"),620);}battle=null;screen="death";save();render();}
  function battleScreen(){
   const c=live(),hp=engine.maxHp(live()),arenaBackground=chapterBackgroundPath(battle.stage||selectedStage||1);
   const hpPct=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
