@@ -1691,7 +1691,7 @@ function createDialog(){
    case "wand_shield":add("block",2+potency);add("nextAttackDamage",2);label="Арканический заслон · броня и усиление удара";break;
    case "darkness":add("vulnerable",potency);label="Метка тьмы · +"+potency+" уязвимости";break;
    case "water":add("draw",potency);add("energy",1+Math.floor((potency-1)/2));label="Прилив · добор "+potency+" карты и +"+(1+Math.floor((potency-1)/2))+" энергия";break;
-   case "earth":add("block",3+potency);add("weak",1);label="Каменный оплот · броня и слабость";break;
+   case "earth":add("block",3+potency);add("weak",1);add("stun",1);label="Каменный оплот · броня, слабость и оглушение";break;
    case "dual_swords":if(cardIsAttack){add("damage",2+potency);label="Танец клинков · +"+(2+potency)+" урона";}else{add("nextAttackDamage",2+potency);label="Танец клинков · усиление следующей атаки";}add("draw",1);break;
    case "sword_shield":add("block",2+potency);add("nextAttackDamage",2);label="Стальная стойка · броня и контратака";break;
    case "rapier":add("vulnerable",1);add("nextAttackDamage",2+potency);label="Точный выпад · уязвимость и усиление атаки";break;
@@ -1827,6 +1827,7 @@ function createDialog(){
   if(c.classId==="dragonkin"&&element&&element!==String(c.element||"fire")){c.element=element;battle.cardBlock=(Number(battle.cardBlock)||0)+5;showFloatingText("player","СТИХИЯ · ЩИТ +5","#78c9ff");}
   if(c.classId==="elemental"&&magicCard&&!magicChargeSpent){c.magicCharge=Math.min(10,(Number(c.magicCharge)||0)+1);if(element){battle.elementalElements=Array.isArray(battle.elementalElements)?battle.elementalElements:[];if(!battle.elementalElements.includes(element))battle.elementalElements.push(element);const proc=balance.procs.elemental;if(battle.elementalElements.length>=2){battle.nextSkillDamageMultiplier=Number(proc.value)||1.3;battle.elementalElements=[];notify(proc.name+" · следующая техника усилена");}}}
   const statusPayload={...(effects.statuses||{})};for(const key of ["poison","bleed","burn","weak","vulnerable"])if(Number(effects[key])>0)statusPayload[key]=(Number(statusPayload[key])||0)+Number(effects[key]);
+  if(Number(effects.stun)>0&&target&&target.alive&&target.hp>0){target.stunned=true;showFloatingText(target,"ПАР · ОГЛУШЕНИЕ","#9bd4ff");logCombatEvent("Земля · противник оглушён","#9bd4ff");}
   if(Number(effects.conditionalBleed)>0&&target&&Number(target.poison)>0)statusPayload.bleed=(Number(statusPayload.bleed)||0)+Number(effects.conditionalBleed);
   const statusTargets=allDamage>0?(battle.enemies||[]).filter(enemy=>enemy.alive&&enemy.hp>0):target?[target]:[];let applied=false;
   for(const enemy of statusTargets)for(const key of ["poison","bleed","burn","weak","vulnerable"]){const stacks=Math.max(0,Math.floor(Number(statusPayload[key])||0));if(stacks){enemy[key]=Math.max(0,Number(enemy[key])||0)+stacks;applied=true;}}
@@ -1857,7 +1858,8 @@ function createDialog(){
   if(type==="heal"||type==="hot"){const heal=Math.max(1,Math.round(engine.maxHp(c)*Number(effect.heal_multiplier||.2)));const before=c.run.playerHp;c.run.playerHp=Math.min(engine.maxHp(c),c.run.playerHp+heal);dealt= c.run.playerHp-before;logCombatEvent(skill.name+" · лечение +"+dealt,"#76d7a0");}
   else if(type==="shield"){const shield=Math.max(1,Math.round(engine.maxHp(c)*Number(effect.shield_fraction||.2)));battle.cardBlock=(Number(battle.cardBlock)||0)+shield;logCombatEvent(skill.name+" · щит "+shield,"#8acfff");}
   else if(type==="buff"){battle.nextAttackDamageBonus=Math.max(Number(battle.nextAttackDamageBonus)||0,Math.max(1,Math.round(base*(Number(effect.power_multiplier)||.2))));battle.playerDamageBuffTurns=Math.max(1,Number(effect.duration)||1);logCombatEvent(skill.name+" · усиление атаки","#d8b8ff");}
-  else if(type==="debuff"||type==="control"){target.weak=Math.max(Number(target.weak)||0,Number(effect.duration)||1);target.slowTurns=Math.max(Number(target.slowTurns)||0,Number(effect.duration)||1);logCombatEvent(skill.name+" · противник ослаблен","#9bd4ff");}
+  else if(type==="control"){target.stunned=Math.max(0,Number(effect.stun_duration)||1)>0;target.weak=Math.max(Number(target.weak)||0,Number(effect.duration)||1);target.slowTurns=Math.max(Number(target.slowTurns)||0,Number(effect.duration)||1);showFloatingText(target,"ПАР · ОГЛУШЕНИЕ","#9bd4ff");logCombatEvent(skill.name+" · противник оглушён и ослаблен","#9bd4ff");}
+  else if(type==="debuff"){target.weak=Math.max(Number(target.weak)||0,Number(effect.duration)||1);target.slowTurns=Math.max(Number(target.slowTurns)||0,Number(effect.duration)||1);logCombatEvent(skill.name+" · противник ослаблен","#9bd4ff");}
   else{
    const selected=type==="aoe"||type==="dot"&&effect.area?targets:[target];
    for(const enemy of selected){const threshold=Number(effect.execute_threshold)||0,execute=threshold>0&&enemy.hp/enemy.maxHp<=threshold,raw=Math.max(1,Math.round(base*power*(execute?Number(effect.execute_multiplier)||1.5:1)));const result=applyTargetDamage(enemy,raw,effect.damage_type||skill.damage_type||"physical");dealt+=result.dealt;if(type==="dot"){if(effect.status==="poison")enemy.poison=(Number(enemy.poison)||0)+Math.max(1,Number(effect.stacks)||1);else enemy.bleed=(Number(enemy.bleed)||0)+Math.max(1,Number(effect.stacks)||1);}}
@@ -2542,6 +2544,7 @@ function profileRelicShopMarkup(c){
    ...combat
   };
   battle.actor={type:state.actorType,id:state.actorType==="enemy"?"enemy-phase":"player",name:state.actorType==="enemy"?"Ход противников":character.name};
+  if(battle.enemyStunned){const legacyStunTarget=battle.enemies.find(enemy=>enemy.index===battle.targetIndex&&enemy.alive)||battle.enemies.find(enemy=>enemy.alive);if(legacyStunTarget)legacyStunTarget.stunned=true;delete battle.enemyStunned;}
   battle.isPlayerTurn=state.actorType!=="enemy";
   battle.busy=state.actorType==="enemy";
   if(actorType==="enemy"&&!battle.enemyQueueState){battle.actor={type:"player",id:"player",name:character.name};battle.isPlayerTurn=true;battle.busy=false;}
