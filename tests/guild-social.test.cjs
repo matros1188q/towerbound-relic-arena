@@ -2,7 +2,7 @@
 const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const guild=fs.readFileSync('towerbound-guild.js','utf8');
-const mode=fs.readFileSync('rpg-mode.js','utf8');
+const mode=fs.readFileSync('towerbound-guild.css','utf8');
 const cloud=fs.readFileSync('towerbound-cloud.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
 const migrationFiles=fs.readdirSync('supabase/migrations').filter(name=>name.endsWith('.sql'));
@@ -15,7 +15,7 @@ assert.ok(guild.includes('1-е место — 50 💎')&&guild.includes('2-е м
 assert.ok(guild.includes('function startRaid()')&&guild.includes("rpc('tb_guild_begin_raid')")&&guild.includes("rpc('tb_guild_finish_raid'"),'guild raid start and settlement use authenticated server functions');
 assert.ok(guild.includes('data-guild="start-raid"')&&guild.includes('ровно три карты'),'guild raid requires the three-card arena');
 assert.ok(guild.includes('function startPolling()')&&guild.includes('lastPresence'),'guild chat, member presence and raid view refresh periodically');
-assert.ok(mode.includes(':not(#socPanel)'),'community panel remains visible under RPG body isolation');
+assert.ok(mode.includes('#tbGuildPanel{position:fixed')&&mode.includes('z-index:2147483601'),'guild panel is rendered as an isolated fixed overlay above the RPG interface');
 assert.ok(cloud.includes("'tb-social-v1'")&&cloud.includes("'tb-endgame-v1'"),'social and endgame local state are cloud-save allowlisted');
 assert.match(html,/<script src="\.\/towerbound-guild\.js\?v=\d+"><\/script>/,'guild runtime is loaded from index.html');
 assert.ok(migrationFiles.length>=3,'Supabase migration folder exists; live guild schema is audited separately against Supabase migration history');
