@@ -2408,8 +2408,8 @@ function profileRelicShopMarkup(c){
   const names={attack:"АТК",defense:"ЗАЩ",health:"HP",crit:"КРИТ",critDamage:"КРИТ. УРОН",spellPower:"МАГИЯ",fireDamage:"ОГОНЬ",iceDamage:"ЛЁД",darkDamage:"ТЬМА"};
   const statsOf=item=>Object.entries(effectiveEquipmentStats(item)).filter(([,v])=>Number(v)!==0).slice(0,3).map(([k,v])=>esc(names[k]||k)+" +"+esc(String(Number(v).toFixed(k==="crit"||k==="critDamage"?2:0)))).join(" · ");
   const tileMarkup=slots.map(slot=>{
-   const item=gear[slot.index];
-   return '<article class="tb-paper-slot '+(item?'is-filled rarity-'+rarityClass(item.rarity):'is-empty')+'"><div class="tb-paper-slot-art">'+(item?relicIconHtml(item,slot.key):relicIconHtml({rarity:"Обычная",slot:slot.key,name:slot.label},slot.key))+'</div><small>'+slot.label+'</small><b>'+(item?esc(item.name||slot.label):"Пусто")+'</b>'+(item?'<em>'+esc(item.rarity)+' · ур. '+(Number(item.itemLevel)||1)+'</em><span class="tb-paper-slot-stats">'+statsOf(item)+'</span><button type="button" data-unequip="'+slot.key+'">СНЯТЬ</button>':'<em>Ячейка свободна</em>')+'</article>';
+   const item=gear[slot.index],blocked=slot.key==="offhand"&&!!gear[0]?.twoHanded;
+   return '<article class="tb-paper-slot '+(item?'is-filled rarity-'+rarityClass(item.rarity):blocked?'is-blocked':'is-empty')+'"><div class="tb-paper-slot-art">'+(item?relicIconHtml(item,slot.key):relicIconHtml({rarity:"Обычная",slot:slot.key,name:slot.label},slot.key))+'</div><small>'+slot.label+'</small><b>'+(item?esc(item.name||slot.label):blocked?"ЗАНЯТО":"Пусто")+'</b>'+(item?'<em>'+esc(item.rarity)+' · ур. '+(Number(item.itemLevel)||1)+'</em><span class="tb-paper-slot-stats">'+statsOf(item)+'</span><button type="button" data-unequip="'+slot.key+'">СНЯТЬ</button>':blocked?'<em>Двуручное оружие</em>':'<em>Ячейка свободна</em>')+'</article>';
   });
   tileMarkup.splice(4,0,'<div class="tb-paper-hero"><img src="'+esc(portrait(c.classId))+'" alt="'+esc(clsName(c))+'"><small>'+esc(c.name)+'</small></div>');
   const tiles=tileMarkup.join("");
