@@ -147,7 +147,7 @@ assert.ok(ui.includes('function renderWithScrollSave()'),'render must preserve s
 assert.ok(ui.includes('renderView();')&&ui.includes('requestAnimationFrame(restore)'),'scroll restored after DOM replacement');
 assert.ok(ui.includes("Card-first combat: legacy skill catalogue is not loaded into the active UI."),'active battle uses card-first combat rather than obsolete attack-speed skill labels');
 assert.ok(ui.includes('c.activeSkills=chosen')&&ui.includes('slice(0,6)'),'active skills capped at six');
-assert.ok(ui.includes('data-replace-skill')&&ui.includes('Все 6 слотов заняты'),'skill replacement dialog missing');
+assert.ok(ui.includes('data-loadout-slot')&&ui.includes('ensureLoadout(c)'),'skill loadout uses the current four attack slots plus counter and ultimate');
 assert.ok(ui.includes('humanSkillDescription')&&ui.includes('особенность класса'),'technical skill tags translated');
 assert.ok(css.includes('word-break:keep-all')&&css.includes('overflow-wrap:normal')&&css.includes('hyphens:none'),'quest cards preserve word wrapping');
 assert.ok(css.includes('safe-area-inset-top')&&css.includes('padding-top:max(20px'),'notch safe area CSS missing');
