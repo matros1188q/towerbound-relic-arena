@@ -20,7 +20,7 @@ assert.ok(ui.includes('case "bottom-profile":profileTab="stats";statsOverlayOpen
 assert.ok(ui.includes('function arenaBackgroundForStage(stage)')&&ui.includes('./assets/Fon/image_25.jpeg'),'arena backgrounds resolve from the current chapter map');
 assert.ok(ui.includes('if(nextIndex<0){battle.enemyQueueState=null;advanceToPlayerTurn();return;}'),'enemy queue advances to player turn after the final living mob');
 const social=fs.readFileSync(path.join(root,'social-endgame.js'),'utf8');
-assert.ok(social.includes("e.target.closest('#socPanel [data-soc],#socPanel [data-tab],#socPanel [data-eg]')'),'social click delegation is scoped to the social panel');
+assert.ok(social.includes("e.target.closest('#socPanel [data-soc],#socPanel [data-tab],#socPanel [data-eg]')"),"social click delegation is scoped to the social panel");
 const progression=fs.readFileSync(path.join(root,'progression-24.js'),'utf8');
 assert.ok(progression.includes("closest('[data-progress-tab]')")&&progression.includes('t.dataset.progressTab'),'progression tabs use their own delegated attribute');
 assert.equal((progression.match(/data-tab=/g)||[]).length,0,'progression markup does not publish generic data-tab controls into the RPG root');
