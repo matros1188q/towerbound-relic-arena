@@ -3345,7 +3345,7 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-shop-item{display:flex;min-width:0;flex-direction:column;gap:7px;padding:10px;border:1px solid #39414a;border-radius:11px;background:linear-gradient(145deg,#202a32,#111821 76%);box-shadow:inset 0 1px #ffffff08,0 6px 16px #0003}
 #tbRpg .tb-shop-item-art{display:grid;place-items:center;min-height:88px;border:1px solid #8e754333;border-radius:8px;background:radial-gradient(circle at 50% 40%,#9c7a3d22,transparent 70%),#0c131b}
 #tbRpg .tb-shop-item-art .tb-item-art-wrap{width:82px;height:82px;margin:0}
-#tbRpg .tb-shop-item-art img.tb-shop-product-art{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 5px 8px #0009)}
+#tbRpg .tb-shop-item-art img.tb-shop-item-art{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 5px 8px #0009)}
 #tbRpg .tb-shop-item-copy{min-width:0}
 #tbRpg .tb-shop-item-copy b{display:block;color:#f0dfc0;font-size:12px;line-height:1.25}
 #tbRpg .tb-shop-item-copy p{margin:5px 0 0;color:#b9b4a9;font-size:10px;line-height:1.35}
