@@ -2057,13 +2057,13 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
  display:block!important;width:100%!important;height:100%!important;
  min-height:250px!important;max-height:none!important;
  object-fit:contain!important;object-position:center bottom!important;
- transform:scale(1.24)!important;transform-origin:center bottom!important;
+ transform:scale(1.92)!important;transform-origin:center bottom!important;
 }
 @media(max-width:520px){
  #tbRpg .tb-profile-hub .tb-profile-hero-art{min-height:218px!important}
- #tbRpg .tb-profile-hub .tb-profile-hero-art img{min-height:218px!important;transform:scale(1.22)!important}
+ #tbRpg .tb-profile-hub .tb-profile-hero-art img{min-height:218px!important;transform:scale(1.88)!important}
 }
 @media(max-width:380px){
  #tbRpg .tb-profile-hub .tb-profile-hero-art{min-height:184px!important}
- #tbRpg .tb-profile-hub .tb-profile-hero-art img{min-height:184px!important;transform:scale(1.18)!important}
+ #tbRpg .tb-profile-hub .tb-profile-hero-art img{min-height:184px!important;transform:scale(1.82)!important}
 }
