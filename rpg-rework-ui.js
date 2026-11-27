@@ -286,7 +286,7 @@
  }
  function inventoryIconHtml(item,equipment){
   const wrap=content=>'<div class="tb-item-art-wrap">'+content+'</div>';
-  if(equipment)return wrap(relicIconHtml(item,item?.slot,"tb-bag-item-art-img"));
+  if(equipment){const art=relicIconHtml(item,item?.slot,"tb-bag-item-art-img");return wrap(art.includes("<img")?art:'<img class="tb-relic-icon tb-bag-item-art-img" src="./assets/relics/rune.png" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=&#39;./assets/relics/rune.png&#39;">' );}
   const custom=customItemArtPath(item);
   if(custom)return customItemImageHtml(custom,"tb-bag-item-art-img",item);
   const value=String(item?.type||item?.id||item?.name||"").toLowerCase();
