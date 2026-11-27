@@ -510,7 +510,7 @@
  }
  function endFromDamage(){clearPendingTurnTimer();if(battle)battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;screen="death";save();render();}
  function battleScreen(){
-  const c=live(),hp=engine.maxHp(live());
+  const c=live(),hp=engine.maxHp(live()),arenaBackground=chapterBackgroundPath(battle.stage||selectedStage||1);
   const hpPct=Math.max(0,Math.min(100,(Number(c.run.playerHp)||0)/Math.max(1,hp)*100));
   const currentPotionStage=Math.max(1,Number(c.progress?.currentStage)||1),lastPotionStage=c.run?.lastPotionStage;
   const potionCooldown=lastPotionStage===null||lastPotionStage===undefined||!Number.isFinite(Number(lastPotionStage))?0:Math.max(0,5-(currentPotionStage-Number(lastPotionStage)));
@@ -544,7 +544,7 @@
   const hpWarningMarkup=hpPct<=30?'<div class="new-hero-warning '+(hpPct<=15?"critical":"") +'" role="status" aria-live="polite">'+(hpPct<=15?"⚠ КРИТИЧЕСКИ МАЛО ЗДОРОВЬЯ":"⚠ ЗДОРОВЬЕ НИЗКОЕ")+' · '+(healingPotionCount>0&&potionCooldown===0?"Зелье готово — используй его в свой ход":healingPotionCount>0?"Зелье на перезарядке · разыграй защиту":"Зелья нет · разыграй карты защиты")+'</div>':"";
   const relicMarkup=(c.relics||[]).map(id=>engine.RELICS_DATABASE?.[id]).filter(Boolean).map(relic=>'<span class="new-battle-relic" title="'+esc(relic.name+": "+relic.description)+'">'+esc(relic.icon||"✦")+'</span>').join("");
   const potionMarkup=(c.bag||[]).filter(item=>item&&item.type==="healing_potion"&&Number(item.quantity)>0).map(item=>'<button type="button" class="tb-battle-potion" data-battle-potion="'+esc(item.id)+'" title="Зелье исцеления · осталось '+Number(item.quantity)+'" '+(battle.actor?.type!=="player"||battle.paused||battle.potionUsedThisTurn||potionCooldown>0?'disabled':'')+'><span>🧪</span><b>'+Number(item.quantity)+'</b></button>').join("");
-  return '<div class="new-battle-wrap tb-arena'+(battle.fastBattle?" tb-fast-battle":"")+'"><div class="tb-arena-top" aria-hidden="true">ЭТАП '+Number(battle.stage||selectedStage||1)+'</div>'+
+  return '<div class="new-battle-wrap tb-arena'+(battle.fastBattle?" tb-fast-battle":"")+'" style="--tb-arena-background:url(\''+esc(arenaBackground)+'\')"><div class="tb-arena-top" aria-hidden="true">ЭТАП '+Number(battle.stage||selectedStage||1)+'</div>'+
    '<div class="new-battle-top"><span class="new-round-label">'+(battle.trialObjective?'ИСПЫТАНИЕ · '+esc(battle.trialObjective.label)+' · ':'')+'РАУНД '+battle.round+' · ИНИЦИАТИВА</span><div class="new-battle-relics" aria-label="Активные реликвии">'+relicMarkup+'</div>'+
    '<div class="new-battle-actions"><button type="button" class="tb-fast-battle-btn" data-action="toggle-fast-battle">'+(battle.fastBattle?"⚡ ×2":"⚡ ×1")+'</button><button type="button" class="new-pause-btn" data-action="pause">'+(battle.paused?"▶":"Ⅱ")+'</button></div></div>'+
    '<div class="new-battle-middle"><div class="new-hero-side'+(ancientSetAwakened?' tb-ancient-awakened tb-ancient-'+ancientSetTierClass+' tb-ancient-'+esc(c.classId):'')+'"><span class="tb-ancient-orbit" aria-hidden="true"></span><img src="'+esc(portrait(c.classId))+'" class="new-hero-img" alt="">'+ancientSetMarkup+
@@ -1632,7 +1632,8 @@ function createDialog(){
     advanceToPlayerTurn();return;
    }
    const enemy=queue[index];
-   if(enemy&&enemy.alive===true&&Number(enemy.hp)>0)enemyTurn(enemy);
+   try{if(enemy&&enemy.alive===true&&Number(enemy.hp)>0)enemyTurn(enemy);}
+   catch(enemyError){recoverPlayerTurn(enemyError);return;}
    else if(enemy){enemy.alive=false;enemy.dead=true;enemy.hp=0;enemy.pendingAttack=false;enemy.pendingAction=null;}
    if(!battle)return;
    if(token!==battle.enemyQueueToken){
@@ -1892,7 +1893,7 @@ function createDialog(){
 
  function endPlayerTurn(){
   if(battle?.guildRaid){notify("В рейде нужно разыграть ровно 3 карты");return;}
-  if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating)return;
+  if(!battle||battle.actor?.type!=="player"||battle.paused||battle.busy||battle.isCardAnimating||battle.enemyQueueState)return;
   playSfx("endturn");
   try{
   const c=live();ensureCardDeck(c);const doubtWeak=c.hand.reduce((sum,card)=>sum+Math.max(0,Number(cardEffects(card).endTurnPlayerWeak)||0),0);if(doubtWeak){battle.playerWeakTurns=Math.max(Number(battle.playerWeakTurns)||0,doubtWeak);notify("Сомнение ослабляет героя: "+doubtWeak+" слабость");}const retained=[],discarded=[];for(const card of c.hand){if(card.retain)retained.push(card);else if(card.ethereal)c.exhaustPile.push(card);else discarded.push(card);}c.discard.push(...discarded);c.hand=retained;c.currentEnergy=0;
@@ -1986,9 +1987,10 @@ function talentBonusDescription(talent,rank){
     const canvas=root.querySelector("#talentTreeCanvas");
     if(!canvas||!talentTreeConfig)return;
     const resize=()=>{
-     const rect=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);
-     canvas.width=Math.max(1,Math.round(rect.width*dpr));
-     canvas.height=Math.max(1,Math.round(rect.height*dpr));
+     const rect=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1),width=Math.max(1,Math.round(rect.width)),height=Math.max(280,Math.round(rect.height));
+     canvas.style.width="100%";canvas.style.height=height+"px";
+     canvas.width=Math.max(1,Math.round(width*dpr));
+     canvas.height=Math.max(1,Math.round(height*dpr));
      if(!canvas.dataset.centered){canvas.dataset.centered="1";centerTalentTreeOnBranch();}else drawTalentTree();
     };
     resize();
