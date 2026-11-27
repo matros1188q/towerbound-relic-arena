@@ -510,6 +510,7 @@
  async function handleModernClick(event){
   const t=event.target?.closest?.("[data-action],[data-pick],[data-class],[data-stage],[data-tab],[data-branch],[data-talent],[data-card-play],[data-target],[data-cosmetic-buy],[data-cosmetic-equip],[data-shop-open],[data-shop-close],[data-shop-currency],[data-shop-buy],[data-battle-potion],[data-deck-viewer],[data-deck-viewer-close]");
   if(!t||!root.contains(t)||t.matches("input,textarea,select"))return;
+  if(t.dataset.navTab){root.querySelectorAll(".tb-bottom-nav [data-nav-tab]").forEach(button=>{const on=button===t;button.classList.toggle("active",on);button.setAttribute("aria-current",on?"page":"false");});}
   if(t.dataset.battlePotion){try{const c=live();if(battle.actor?.type!=="player"||battle.paused)throw new Error("Зелье можно использовать только в свой ход");if(battle.potionUsedThisTurn)throw new Error("В этом ходу зелье уже использовано");if(battle.trialObjective)battle.trialPotionUsed=true;engine.useHealingPotion(c.id,t.dataset.battlePotion);battle.potionUsedThisTurn=true;save();render();notify("Зелье использовано");}catch(error){notify(error.message);}return;}
   if(t.hasAttribute("data-deck-viewer")){showDeckViewer();return;}
   if(t.hasAttribute("data-deck-viewer-close")){document.querySelector(".tb-deck-viewer-overlay")?.remove();return;}
@@ -533,7 +534,7 @@
    case "bottom-progress":if(window.TowerboundProgression?.open)window.TowerboundProgression.open();else notify("Модуль прогрессии ещё загружается");break;
    case "bottom-community":if(window.TowerboundSocial?.open)window.TowerboundSocial.open();else notify("Сообщество ещё загружается");break;
    case "bottom-shop":shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());break;
-   case "bottom-account":profileTab="account";screen="profile";render();break;
+   case "bottom-account":if(window.TowerboundCloud?.open)window.TowerboundCloud.open();else{profileTab="stats";screen="profile";render();}break;
    case "skip-floors":showSkipFloorsModal();break;
    case "tower-map-focus":towerMapOpen=true;render();break;
    case "tower-map-close":towerMapOpen=false;render();break;
