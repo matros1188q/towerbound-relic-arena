@@ -2004,3 +2004,23 @@ body.tb-tower-map-lock #tbRpg,body.tb-tower-map-lock #tbRpg .tb-v2{position:fixe
 #tbRpg .tb-profile-content:has(.tb-forge-button) .tb-forge-button{background-image:linear-gradient(90deg,rgba(25,18,12,.36),rgba(25,18,12,.54)),url("./assets/ui/sections/forge-glowing-ingot.jpg")!important;background-size:cover!important;background-position:center 55%!important}
 #tbRpg .tb-profile-content:has(.tb-craft-rebuild) .tb-system-card{background-image:linear-gradient(180deg,rgba(8,13,20,.68),rgba(8,13,20,.78)),url("./assets/ui/sections/forge-lava-hall.jpg");background-size:cover;background-position:center}
 #tbRpg .tb-profile-content :is(.tb-codex-hero,.tb-codex-collection-hero,.tb-card-merchant-heading,.tb-relic-shop-head,.tb-craft-main-card,.tb-system-card){border:1px solid rgba(210,176,112,.30);box-shadow:inset 0 1px rgba(255,255,255,.06),0 10px 28px rgba(0,0,0,.24)}
+
+
+/* Illustrated section emblems: replace the old emoji placeholders. */
+#tbRpg .tb-profile-hub .tb-profile-hub-emoji{
+ display:block!important;position:relative;overflow:hidden;
+ min-height:78px;border:1px solid rgba(218,181,115,.72);
+ border-radius:8px;background:rgba(7,12,19,.78);
+ box-shadow:inset 0 0 0 2px rgba(8,13,20,.48),0 5px 16px rgba(0,0,0,.32);
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-emoji img{
+ display:block;width:100%;height:100%;min-height:78px;max-height:88px;
+ object-fit:cover;object-position:center 42%;
+ filter:saturate(1.08) contrast(1.04);
+}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(1) .tb-profile-hub-emoji img{object-position:center 28%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(2) .tb-profile-hub-emoji img{object-position:center 48%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(3) .tb-profile-hub-emoji img{object-position:center 48%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(4) .tb-profile-hub-emoji img{object-position:center 48%}
+#tbRpg .tb-profile-hub .tb-profile-hub-card:nth-child(5) .tb-profile-hub-emoji img{object-position:center 40%}
+@media(max-width:520px){#tbRpg .tb-profile-hub .tb-profile-hub-emoji{min-height:70px}#tbRpg .tb-profile-hub .tb-profile-hub-emoji img{min-height:70px;max-height:76px}}
