@@ -9,7 +9,7 @@ assert.match(ui,/enemyQueueState=\{indices:/,'enemy queue cursor is persisted be
 assert.match(ui,/enemyQueueState:battle\.enemyQueueState\?/,'queue state is included in battle snapshot');
 assert.match(ui,/function resumeEnemyTurnQueue\(/,'paused enemy queue has a dedicated resume path');
 assert.match(ui,/if\(battle\.enemyQueueState&&battle\.actor\?\.type==="enemy"\)/,'manual pause resumes the same enemy queue');
-assert.match(ui,/savedSnapshot\?\.cardState\?\.actorType==="enemy"&&savedQueue/,'reload restores an interrupted enemy phase');
+assert.match(ui,/function restoreSavedBattle\(character\)[\s\S]*?const card=snapshot\.cardState\|\|\{\}[\s\S]*?actorType=card\.actorType==="enemy"[\s\S]*?enemyQueueState:snapshot\.enemyQueueState[\s\S]*?loadBattleEnemy\(battle\.targetIndex\)/,'reload restores the saved card battle and interrupted enemy phase');assert.match(ui,/else resumedBattle=restoreSavedBattle\(active\)/,'boot rehydrates the active saved battle before choosing the landing screen');assert.match(ui,/if\(resumedBattle&&battle\?\.actor\?\.type==="enemy"&&battle\.enemyQueueState\)\{resumeEnemyTurnQueue\(250\)/,'restored enemy phase resumes its saved queue');
 assert.match(ui,/function recoverBattleControl\(/,'combat exceptions release busy and animation locks');
 assert.match(ui,/recoverBattleControl\(error,"Не удалось разыграть карту/,'card effect exceptions recover player input');
 assert.match(ui,/function pauseForFocusLoss\(\).*clearPendingTurnTimer\(\)/,'app focus loss pauses without discarding the saved queue');
