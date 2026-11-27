@@ -25,7 +25,7 @@ const enemyTurnStart=ui.indexOf("function enemyTurn(enemy){");
 const enemyTurnEnd=ui.indexOf("function ",enemyTurnStart+20);
 assert.ok(enemyTurnStart>=0&&enemyTurnEnd>enemyTurnStart,'enemy turn function is present');
 assert.doesNotMatch(ui.slice(enemyTurnStart,enemyTurnEnd),/battle\.enemyStunned/,'enemy queue never consumes a global stun flag');
-assert.match(ui,/if\(effect\.type==="control"&&battle\.enemy\?\.alive&&Number\(battle\.enemy\.hp\)>0\)battle\.enemy\.stunned=true;/,'control skills stun their selected target');
+assert.match(ui,/else if\(type==="control"\)\{target\.stunned=Math\.max\(0,Number\(effect\.stun_duration\)\|\|1\)>0;[\s\S]*?logCombatEvent\(skill\.name\+" · противник оглушён и ослаблен"/,"control skills stun their selected target");
 assert.match(ui,/target\.stunned=true;showFloatingText\(target,"ПАР · ОГЛУШЕНИЕ"/,'elemental reactions stun their actual target');
 assert.match(ui,/legacyStunTarget=battle\.enemies\.find[\s\S]*?legacyStunTarget\.stunned=true/,'old global stun saves migrate to the saved target');
 assert.match(ui,/decayEnemyDebuffs\(enemy\);notify\("Враг оглушён/,'stun advances debuff durations');
