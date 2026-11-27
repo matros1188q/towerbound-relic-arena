@@ -3,6 +3,8 @@
  let root=document.getElementById("tbRpg");
  if(!root){root=document.createElement("div");root.id="tbRpg";document.body.appendChild(root);}
  document.body.classList.add("rpg-open");
+ root.dataset.renderer="rework";root.setAttribute("role","main");root.setAttribute("aria-label","Towerbound — игровой интерфейс");
+ const retiredExpansion=document.getElementById("tbExpansion");if(retiredExpansion)retiredExpansion.remove();
  root.style.cssText+=";position:fixed;inset:0;z-index:999999;width:100vw;height:100dvh;min-height:100vh;overflow:hidden;background:#080d15;color:#eee;font-family:system-ui,sans-serif";
  let towerMapOpen=false;
  let towerMapScrollTop=0;
@@ -325,7 +327,7 @@
  const SKILL_UPGRADE_LEVELS=Object.freeze({1:1,2:20,3:50});
  let pendingSkillUpgradeId=null;
  let engine=null,balance=null,skills=[],screen="characters",profileTab="stats",statsOverlayOpen=false,shopTab="silver",lastRenderedScreen=null,lastRenderedProfileTab=null;
- // The legacy RPG renderer is intentionally encapsulated in rpg-mode.js; expose its supported refresh API locally.
+ // This is the sole active screen renderer. Retired legacy RPG overlays are never invoked.
  function render(){
   if(!engine)return;
   const isBattle=screen==="battle"&&!!battle;
@@ -2062,7 +2064,8 @@ function profileRelicShopMarkup(c){
    catch(error){notify(error.message);const overlay=root.querySelector(".tb-shop-overlay");if(overlay)overlay.outerHTML=shopOverlayMarkup();}
   }
  });
-  window.addEventListener("towerbound-auth-change",()=>{
+ window.addEventListener("towerbound-auth-change",()=>{
+  const signedIn=!!window.TowerboundCloud?.signedIn;
   try{
    if(engine){
     const raw=localStorage.getItem("tb-rpg-v2"),restored=raw?JSON.parse(raw):null;
@@ -2074,7 +2077,11 @@ function profileRelicShopMarkup(c){
     }
    }
   }catch(error){console.error("[Towerbound] auth restore hydration failed",error);}
-  if(screen==="characters")render();
+  if(!signedIn){
+   if(screen==="battle"){stopBattleStatusLoop();clearPendingTurnTimer();}
+   battle=null;guildRaid=null;postBattleSummary=null;screen="characters";
+  }
+  render();
  });
  window.addEventListener("towerbound-cloud-restore",()=>{
   try{
