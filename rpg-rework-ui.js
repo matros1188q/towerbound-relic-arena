@@ -577,7 +577,7 @@
   if(t.dataset.pick){selectedId=t.dataset.pick;engine.state.activeCharacterId=selectedId;selectedStage=live()?.progress.currentStage||1;screen="characters";render();save();return;}
   if(t.dataset.class){selectedClass=t.dataset.class;render();return;}
   if(t.dataset.stage){selectedStage=Number(t.dataset.stage);render();return;}
-  if(t.dataset.tab){profileTab=t.dataset.tab;statsOverlayOpen=t.dataset.tab==="stats";screen="profile";render();if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);return;}
+  if(t.dataset.tab){if(t.dataset.tab!=="stats")pendingBranchId=null;profileTab=t.dataset.tab;statsOverlayOpen=t.dataset.tab==="stats";screen="profile";render();if(profileTab==="talents")setTimeout(initTalentTreeCanvas,0);return;}
   if(t.dataset.branch){pendingBranchId=t.dataset.branch===live()?.branch?null:t.dataset.branch;render();return;}
   if(t.dataset.talent){try{engine.useTalentPoint(live().id,t.dataset.talent,3);save();render();}catch(e){notify(e.message);}return;}
   if(t.hasAttribute("data-item-select")){selectedItemId=t.dataset.itemSelect||null;stonePickerItemId=null;renderWithScrollSave();return;}
@@ -599,7 +599,7 @@
   if(t.dataset.cosmeticEquip){try{engine.equipCosmetic(t.dataset.cosmeticEquip);save();render();notify("Косметика применена");}catch(e){notify(e.message);}return;}
   switch(t.dataset.action){
    case "bottom-map":screen=battle?"battle":"map";render();save();break;
-   case "bottom-profile":profileTab="stats";statsOverlayOpen=true;screen="profile";render();break;
+   case "bottom-profile":pendingBranchId=null;profileTab="stats";statsOverlayOpen=true;screen="profile";render();break;
    case "bottom-progress":if(window.TowerboundProgression?.open)window.TowerboundProgression.open();else notify("Модуль прогрессии ещё загружается");break;
    case "bottom-community":{const social=window.TowerboundSocial;if(social?.open)social.open();else notify("Сообщество ещё загружается");break;}
    case "bottom-shop":shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());break;
@@ -627,7 +627,7 @@
    case "play":if(!selectedId&&engine.state.characters[0])selectedId=engine.state.characters[0].id;if(!selectedId){notify("Сначала создай персонажа");return;}engine.state.activeCharacterId=selectedId;selectedStage=live().progress.currentStage;screen="map";render();save();break;
    case "characters":screen="characters";render();break;
    case "map":if(battle){clearPendingTurnTimer();battle.enemyQueueToken=(battle.enemyQueueToken||0)+1;battle=null;}screen="map";render();save();break;
-   case "profile":profileTab="stats";statsOverlayOpen=true;screen="profile";render();break;
+   case "profile":pendingBranchId=null;profileTab="stats";statsOverlayOpen=true;screen="profile";render();break;
    case "start":{
     const c=live();
     if(c&&!c.run.active&&!c.run.stage){showStarterDeckModal();break;}
@@ -2140,10 +2140,13 @@ function profileRelicShopMarkup(c){
 
  function equipmentCollectionMarkup(c){
   const names=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Амулет","Вторая рука","Кольцо","Пояс"],slots=(c.gear||[]).slice(0,9);
+  const setState=engine.getSetBonuses(c.id)||{pieces:0,bonuses:[]},branch=(classData(c).branches||[]).find(entry=>entry.id===c.branch),setConfig=branch?.set||null,setPieces=Math.max(0,Math.min(6,Number(setState.pieces)||0));
+  const milestoneMarkup=[2,4,6].map(threshold=>{const milestone=setConfig?.milestones?.[String(threshold)]||{},bonus=(setConfig?.bonuses||[]).find(entry=>Number(entry.pieces)===threshold),active=setPieces>=threshold,title=milestone.title||({2:"Пробуждение",4:"Резонанс",6:"Полный комплект"}[threshold]),description=milestone.description||({2:"Первое пробуждение комплекта",4:"Усиление бонусов специализации",6:"Все бонусы комплекта активны"}[threshold]);return '<article class="tb-equipment-set-milestone '+(active?'is-active':'')+'"><span>'+threshold+'/6</span><div><b>'+esc(title)+'</b><small>'+esc(description)+'</small></div><strong>'+(active?'АКТИВНО':'ЗАКРЫТО')+'</strong></article>';}).join("");
+  const setPanel=setConfig?'<section class="tb-equipment-set-panel"><header><div><small>КОМПЛЕКТ СПЕЦИАЛИЗАЦИИ</small><h3>'+esc(setConfig.name||"Комплект героя")+'</h3><p>'+esc(branch?.name||"")+' · '+esc(setState.rarity||setConfig.quality||"Любая редкость")+'</p></div><strong>'+setPieces+'<small>/ 6 ЧАСТЕЙ</small></strong></header><div class="tb-equipment-set-progress"><i style="width:'+(setPieces/6*100)+'%"></i></div><div class="tb-equipment-set-milestones">'+milestoneMarkup+'</div></section>':'<section class="tb-equipment-set-panel is-locked"><header><div><small>КОМПЛЕКТ СПЕЦИАЛИЗАЦИИ</small><h3>Путь героя ещё не выбран</h3><p>На 10 уровне выбери одну из трёх специализаций, чтобы открыть комплект.</p></div></header></section>';
   const slotMarkup=names.map((name,index)=>{const item=slots[index];return '<article class="tb-equipped-slot '+(item?'is-filled':'is-empty')+'"><div class="tb-equipped-slot-art">'+(item?inventoryIconHtml(item,true):'<span class="tb-equipped-empty-mark">＋</span>')+'</div><div class="tb-equipped-slot-copy"><small>'+name+'</small><b>'+(item?esc(itemBagTitle(item)):"Слот свободен")+'</b><span>'+(item?esc(item.rarity||"Экипировка")+' · ур. '+Number(item.itemLevel||1):"Подбери предмет из рюкзака")+'</span></div>'+(item?'<button type="button" data-unequip-slot="'+index+'">СНЯТЬ</button>':'')+'</article>';}).join("");
   const candidates=(c.bag||[]).filter(item=>item&&item.type==="equipment"&&item.stats&&item.rarity&&Number(c.level)>=10&&!!c.branch);
   const bagMarkup=candidates.length?candidates.map(item=>'<article class="tb-equipment-choice"><div class="tb-equipment-choice-art">'+inventoryIconHtml(item,true)+'</div><div><b>'+esc(itemBagTitle(item))+'</b><small>'+esc(item.rarity)+' · ур. '+Number(item.itemLevel||1)+' · '+esc(item.slot||"экипировка")+'</small></div><button type="button" data-equip="'+esc(item.id)+'">НАДЕТЬ</button></article>').join(""):'<p class="tb-equipment-empty">'+(c.level<10?"Экипировка откроется после 10 уровня и выбора специализации.":"В рюкзаке пока нет подходящих предметов.")+'</p>';
-  return '<section class="tb-equipment-screen tb-codex-collection-page"><header class="tb-equipment-heading"><div><small>Экипировка класса</small><h2>ЭКИПИРОВКА</h2><p>Экипировка класса: все девять слотов и предметы, доступные для надевания</p></div><button type="button" data-action="equip-best" '+(c.level<10||!c.branch?"disabled":"")+'>АВТОЭКИПИРОВКА</button></header><div class="tb-equipped-grid tb-codex-collection-grid">'+slotMarkup+'</div><section class="tb-equipment-bag"><h3>ПРЕДМЕТЫ ДЛЯ ЭКИПИРОВКИ <span>'+candidates.length+'</span></h3>'+bagMarkup+'</section><button type="button" class="tb-equipment-open-bag" data-tab="bag">ОТКРЫТЬ ВЕСЬ РЮКЗАК</button></section>';
+  return '<section class="tb-equipment-screen tb-codex-collection-page"><header class="tb-equipment-heading"><div><small>Экипировка класса</small><h2>ЭКИПИРОВКА</h2><p>Все девять слотов, комплект специализации и предметы для надевания</p></div><button type="button" data-action="equip-best" '+(c.level<10||!c.branch?"disabled":"")+'>АВТОЭКИПИРОВКА</button></header><div class="tb-equipped-grid tb-codex-collection-grid">'+slotMarkup+'</div>'+setPanel+'<section class="tb-equipment-bag"><h3>ПРЕДМЕТЫ ДЛЯ ЭКИПИРОВКИ <span>'+candidates.length+'</span></h3>'+bagMarkup+'</section><button type="button" class="tb-equipment-open-bag" data-tab="bag">ОТКРЫТЬ ВЕСЬ РЮКЗАК</button></section>';
  }
  function cardMerchantPrice(card){return ({common:100,rare:180,epic:300,legendary:500})[String(card?.rarity||"common").toLowerCase()]||100;}
  function cardMerchantMarkup(c){
