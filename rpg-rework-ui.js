@@ -2554,6 +2554,14 @@ function profileRelicShopMarkup(c){
   battle.busy=state.actorType==="enemy";
   if(actorType==="enemy"&&!battle.enemyQueueState){battle.actor={type:"player",id:"player",name:character.name};battle.isPlayerTurn=true;battle.busy=false;}
   if(actorType!=="enemy")battle.enemyQueueState=null;
+  // Repair legacy or interrupted saves that restored the arena but lost the playable hand.
+  // A player turn must always have a responsive input state and at least one opening hand.
+  if(battle.actor?.type==="player"){
+   battle.isPlayerTurn=true;battle.busy=false;
+   ensureCardDeck(character);
+   if(!character.hand.length)drawCards(5);
+   if(!Number.isFinite(Number(character.currentEnergy)))character.currentEnergy=Math.max(1,Number(character.energy)||3);
+  }
   loadBattleEnemy(battle.targetIndex);
   return true;
  }
