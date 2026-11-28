@@ -17,6 +17,8 @@ assert.ok(ui.includes('case "skip-floors":showSkipFloorsModal();'),'skip floors 
 assert.ok(css.includes('.tb-skip-floors-overlay{position:fixed!important;inset:0!important;z-index:1000002!important;'),'skip confirmation stacks above the fixed game root');
 assert.ok(ui.includes('root.addEventListener("change",event=>{const input=event.target?.closest?.("[data-setting]")'),'account preference checkboxes persist on change');
 assert.ok(ui.includes('case "bottom-profile":profileTab="stats";statsOverlayOpen=true;'),'profile navigation opens the full-screen stats view');
+assert.ok(ui.includes('if(t.dataset.branch){pendingBranchId=t.dataset.branch===live()?.branch?null:t.dataset.branch;render();return;}')&&!ui.includes('engine.chooseBranch(live().id,t.dataset.branch,0)'), 'specialization buttons preview first and cannot bypass the respec price');
+assert.ok(ui.includes('case "confirm-branch":')&&ui.includes('case "cancel-branch":'), 'specialization preview has explicit confirm and cancel actions');
 assert.ok(ui.includes('function arenaBackgroundForStage(stage)')&&ui.includes('./assets/Fon/image_25.jpeg'),'arena backgrounds resolve from the current chapter map');
 assert.ok(ui.includes('if(nextIndex<0){battle.enemyQueueState=null;advanceToPlayerTurn();return;}'),'enemy queue advances to player turn after the final living mob');
 const social=fs.readFileSync(path.join(root,'social-endgame.js'),'utf8');
