@@ -191,7 +191,13 @@ assert.ok(uiSource.includes('tb-map-quick-panel')&&uiSource.includes('data-actio
 assert.ok(nativeCss.includes('.tb-tower-hero')||nativeCss.includes('.tb-tower-secondary-actions')||uiCssSource.includes('.tb-tower-hero')||uiCssSource.includes('.tb-tower-secondary-actions'),'tower home actions have dedicated responsive styling');
 
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
-assert.ok(uiSource.includes('gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Аксессуар"]')&&uiSource.includes('gearSlotKeys=["weapon","chest","head","legs","hands","accessory"]'),'equipment collection uses localized names for all six slots');
+assert.ok(uiSource.includes('gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Амулет","Вторая рука","Кольцо","Пояс"]')&&uiSource.includes('gearSlotKeys=["weapon","chest","head","legs","hands","amulet","offhand","ring","belt"]'),'equipment collection uses the engine’s nine real slots in stable order');
+assert.ok(uiSource.includes('names=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Амулет","Вторая рука","Кольцо","Пояс"]'),'equipment screen labels all nine slots consistently with the engine');
+assert.ok(uiSource.includes('Занятые слоты снаряжения из девяти доступных'),'character stats report the actual nine equipment slots');
+assert.ok(uiSource.includes('case "confirm-branch":')&&uiSource.includes('engine.chooseBranch(c.id,branchId);')&&!uiSource.includes('engine.chooseBranch(live().id,t.dataset.branch,0)'),'specialization changes require explicit confirmation and use the engine respec price');
+assert.ok(uiSource.includes('case "cancel-branch":pendingBranchId=null;render();break;'),'specialization preview can be cancelled without changing the saved branch');
+assert.ok(uiSource.includes('function profileSectionsMarkup()')&&uiSource.includes('data-tab="stats"')&&uiSource.includes('data-tab="gear"')&&uiSource.includes('data-shop-open'),'Character dashboard retains the six current destinations');
+assert.ok(uiSource.includes('if(profileTab==="account")return header("Аккаунт",c.name+" · "+clsName(c))+accountAuthPanel()+accountSettingsMarkup();'),'Account remains limited to authentication and settings');
 assert.ok(uiSource.includes('is-locked')&&uiSource.includes('is-owned')&&uiSource.includes('data-collection-item='),'equipment collection distinguishes locked and owned entries');
 
 assert.ok(nativeCss.includes('padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))'),'modal panels reserve space for the iPhone home indicator');
