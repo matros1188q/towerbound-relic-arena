@@ -9,7 +9,7 @@ const css=fs.readFileSync(path.join(root,'styles.css'),'utf8');
 assert.ok(ui.includes('function handleModernClick(event){'),'the active RPG renderer owns one delegated click handler');
 assert.ok(ui.includes('root.addEventListener("click",handleModernClick);'),'the active renderer mounts its delegated click handler');
 assert.ok(ui.includes('event.target?.closest?.("[data-action],[data-pick],[data-class],[data-stage],[data-tab]'),'the delegated handler resolves profile and map actions from the closest actionable control');
-for(const action of ['bottom-map','bottom-profile','bottom-shop','bottom-account','skip-floors','daily-chest','stats-close','tree-close','tree-center','equip-best','end-turn','account-sync']){
+for(const action of ['bottom-map','bottom-profile','bottom-shop','bottom-account','skip-floors','daily-chest','stats-close','confirm-branch','cancel-branch','tree-close','tree-center','equip-best','end-turn','account-sync']){
  assert.ok(ui.includes('case "'+action+'"'), 'active RPG handler supports '+action);
 }
 assert.ok(ui.includes('case "daily-chest":')&&ui.includes('engine.claimDailyChest(c.id)'),'daily chest claims rewards through the current game engine');
