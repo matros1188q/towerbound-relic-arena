@@ -198,6 +198,7 @@ assert.ok(uiSource.includes('Занятые слоты снаряжения из
 assert.ok(uiSource.includes('case "confirm-branch":')&&uiSource.includes('engine.chooseBranch(c.id,branchId);')&&!uiSource.includes('engine.chooseBranch(live().id,t.dataset.branch,0)'),'specialization changes require explicit confirmation and use the engine respec price');
 assert.ok(uiSource.includes('case "cancel-branch":pendingBranchId=null;render();break;'),'specialization preview can be cancelled without changing the saved branch');
 assert.ok(uiSource.includes('function profileSectionsMarkup()')&&uiSource.includes('data-tab="stats"')&&uiSource.includes('data-tab="gear"')&&uiSource.includes('data-shop-open'),'Character dashboard retains the six current destinations');
+assert.ok(uiSource.includes("</div>'+profileSectionsMarkup()+'<div class=\"tb-profile-content\">body" )||uiSource.includes("'+profileSectionsMarkup()+'<div class=\"tb-profile-content\">"), 'profile overview and detailed stats reuse the same Character menu renderer');
 assert.ok(uiSource.includes('if(profileTab==="account")return header("Аккаунт",c.name+" · "+clsName(c))+accountAuthPanel()+accountSettingsMarkup();'),'Account remains limited to authentication and settings');
 assert.ok(uiSource.includes('is-locked')&&uiSource.includes('is-owned')&&uiSource.includes('data-collection-item='),'equipment collection distinguishes locked and owned entries');
 
