@@ -603,14 +603,14 @@
    case "bottom-progress":if(window.TowerboundProgression?.open)window.TowerboundProgression.open();else notify("Модуль прогрессии ещё загружается");break;
    case "bottom-community":{const social=window.TowerboundSocial;if(social?.open)social.open();else notify("Сообщество ещё загружается");break;}
    case "bottom-shop":shopOverlayCurrency="silver";root.querySelector(".tb-shop-overlay")?.remove();root.insertAdjacentHTML("beforeend",shopOverlayMarkup());break;
-   case "bottom-account":profileTab="account";statsOverlayOpen=false;screen="profile";render();break;
+   case "bottom-account":pendingBranchId=null;profileTab="account";statsOverlayOpen=false;screen="profile";render();break;
    case "skip-floors":showSkipFloorsModal();break;
    case "auto-battle":try{ensureCardDeck(live());syncEquipmentCards(live());const result=engine.autoBattle(live().id);save();render();notify("Автобой завершён · этапов: "+Number(result.cleared||0)+" · карт сыграно: "+Number(result.cardsPlayed||0));}catch(error){notify(error.message||"Автобой недоступен");}break;
    case "daily-chest":{const c=live();if(!c)break;try{const reward=engine.claimDailyChest(c.id);save();render();notify(reward.type==="silver"?"Сундук открыт · +"+reward.amount+" серебра":reward.type==="potion"?"Сундук открыт · зелье лечения × "+reward.amount:"Сундук открыт · материалы × "+reward.amount);}catch(error){notify(error.message);}break;}
    case "stats-close":statsOverlayOpen=false;profileTab="stats";pendingBranchId=null;screen="profile";render();break;
    case "confirm-branch":{const c=live(),branchId=pendingBranchId;if(!c||!branchId)break;try{engine.chooseBranch(c.id,branchId);grantSpecializationCards(c,branchId);pendingBranchId=null;save();render();notify("Специализация выбрана");}catch(error){notify(error.message);}break;}
    case "cancel-branch":pendingBranchId=null;render();break;
-   case "tree-close":profileTab="stats";statsOverlayOpen=false;render();break;
+   case "tree-close":pendingBranchId=null;profileTab="stats";statsOverlayOpen=false;render();break;
    case "tree-center":centerTalentTreeOnCore();break;
    case "equip-best":try{const result=engine.equipBest(live().id);save();render();notify("Автоэкипировка · надето предметов: "+Number(result.equipped||0));}catch(error){notify(error.message);}break;
    case "tower-map-focus":towerMapOpen=true;render();break;
