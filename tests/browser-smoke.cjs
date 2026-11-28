@@ -196,6 +196,20 @@ async function journey(type,name,viewport,url){
   await starterDeckConfirm.click();
   await page.waitForSelector('[data-action="end-turn"]',{timeout:10000});
   assert.equal(await page.locator('[data-action="end-turn"]').count(),1,name+' renders one End Turn button');
+  // Reproduce a legacy save whose arena snapshot survived but whose card piles were lost.
+  await page.evaluate(()=>{
+   const state=window.TowerboundRework.state,c=state.characters.find(item=>item.id===state.activeCharacterId),snapshot=c?.run?.stage?.uiBattleSnapshot;
+   if(!snapshot)throw new Error('Battle snapshot is missing before legacy-hand recovery test');
+   c.deck=[];c.hand=[];c.discard=[];c.exhaustPile=[];c.cardDeckVersion=3;
+   snapshot.cardState={deck:[],hand:[],discard:[],exhaustPile:[],currentEnergy:0,cardBlock:0,actorType:"player"};
+   localStorage.setItem('tb-rpg-v2',JSON.stringify(state));
+  });
+  await page.reload();
+  await page.waitForSelector('.new-battle-wrap',{timeout:15000});
+  await page.waitForFunction(()=>document.querySelectorAll('#cardHand .v2-card').length===5&&document.querySelector('[data-action="end-turn"]')&&!document.querySelector('[data-action="end-turn"]').disabled,{timeout:10000});
+  assert.equal(await page.locator('#cardHand .v2-card').count(),5,name+' restores five playable cards when a legacy battle save has an empty hand');
+  assert.equal(await page.locator('[data-action="end-turn"]:disabled').count(),0,name+' restores player input for a legacy battle save');
+
   // Keep the combat fixture alive across all three browsers: no lethal enemy damage or early poison victory.
   await page.evaluate(()=>{
    const character=window.TowerboundRework?.state?.characters?.find(item=>item.id===window.TowerboundRework.state.activeCharacterId),stage=character?.run?.stage,snapshot=stage?.uiBattleSnapshot;
