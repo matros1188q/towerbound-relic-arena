@@ -193,6 +193,7 @@ assert.ok(nativeCss.includes('.tb-tower-hero')||nativeCss.includes('.tb-tower-se
 // UI/UX phase 3 checks for safe-area dialogs and equipment rarity/slot labels.
 assert.ok(uiSource.includes('gearSlotNames=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Амулет","Вторая рука","Кольцо","Пояс"]')&&uiSource.includes('gearSlotKeys=["weapon","chest","head","legs","hands","amulet","offhand","ring","belt"]'),'equipment collection uses the engine’s nine real slots in stable order');
 assert.ok(uiSource.includes('names=["Оружие","Нагрудник","Шлем","Поножи","Перчатки","Амулет","Вторая рука","Кольцо","Пояс"]'),'equipment screen labels all nine slots consistently with the engine');
+assert.ok(uiSource.includes('engine.getSetBonuses(c.id)')&&uiSource.includes('tb-equipment-set-panel')&&uiSource.includes('[2,4,6]'), 'equipment screen restores specialization set progress and all three milestones');
 assert.ok(uiSource.includes('Занятые слоты снаряжения из девяти доступных'),'character stats report the actual nine equipment slots');
 assert.ok(uiSource.includes('case "confirm-branch":')&&uiSource.includes('engine.chooseBranch(c.id,branchId);')&&!uiSource.includes('engine.chooseBranch(live().id,t.dataset.branch,0)'),'specialization changes require explicit confirmation and use the engine respec price');
 assert.ok(uiSource.includes('case "cancel-branch":pendingBranchId=null;render();break;'),'specialization preview can be cancelled without changing the saved branch');
