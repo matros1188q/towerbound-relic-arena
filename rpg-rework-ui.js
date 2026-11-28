@@ -477,7 +477,7 @@
 
  function beginStage(){
   const c=live();if(!c)return;
-  try{const plan=engine.beginStage(c.id,selectedStage);battle={stage:plan.stage,count:plan.count,enemies:null,targetIndex:0,enemy:null,enemyHp:0,enemyMax:0,shield:0,actor:{type:"player",id:"player",name:c.name},isPlayerTurn:true,playerTurnCount:0,round:1,cardsPlayedThisTurn:0,cardBlock:0,busy:false,paused:false,isCardAnimating:false,enemyQueueToken:0,enemyQueueState:null,actionDamageLedger:{},combatLog:[],comboProgress:{},bossDeadlineTurns:null};resetCardBattle(c);c.currentEnergy=Math.max(1,Number(c.energy)||3);drawCards(5);loadBattleEnemy();screen="battle";save();render();}
+  try{const plan=engine.beginStage(c.id,selectedStage);battle={characterId:c.id,stage:plan.stage,count:plan.count,enemies:null,targetIndex:0,enemy:null,enemyHp:0,enemyMax:0,shield:0,actor:{type:"player",id:"player",name:c.name},isPlayerTurn:true,playerTurnCount:0,round:1,cardsPlayedThisTurn:0,cardBlock:0,busy:false,paused:false,isCardAnimating:false,enemyQueueToken:0,enemyQueueState:null,actionDamageLedger:{},combatLog:[],comboProgress:{},bossDeadlineTurns:null};resetCardBattle(c);c.currentEnergy=Math.max(1,Number(c.energy)||3);drawCards(5);loadBattleEnemy();screen="battle";save();render();}
   catch(error){notify(error.message);console.error("[Towerbound] stage start failed",error);}
  }
  function finishCurrentEnemy(){
@@ -630,6 +630,7 @@
     const c=live();
     if(c&&!c.run.active&&!c.run.stage){showStarterDeckModal();break;}
     if(c&&eventTypeForStage(c,selectedStage)&&!c.run.completedMapEvents?.includes(Number(selectedStage))){showMapEventOverlay();break;}
+    if(battle&&battle.characterId===c.id){screen="battle";render();if(battle.actor?.type==="enemy"&&battle.enemyQueueState){resumeEnemyTurnQueue(250);save();render();}break;}
     beginStage();break;
    }
    case "end-turn":endPlayerTurn();break;
@@ -2534,6 +2535,7 @@ function profileRelicShopMarkup(c){
   if(Array.isArray(card.exhaustPile))character.exhaustPile=JSON.parse(JSON.stringify(card.exhaustPile));
   if(Number.isFinite(Number(card.currentEnergy)))character.currentEnergy=Number(card.currentEnergy);
   battle={
+   characterId:character.id,
    stage:Number(stage.stage)||Number(character.progress?.currentStage)||1,
    count:Number(stage.count)||stage.mobs?.length||snapshot.enemies.length,
    enemies:JSON.parse(JSON.stringify(snapshot.enemies)),
@@ -2594,11 +2596,13 @@ function profileRelicShopMarkup(c){
      if(repaired.completed)notify("Сохранённый бой завершён · награды начислены, возвращаемся на карту");
      else resumedBattle=restoreSavedBattle(active);
     }
-    screen=resumedBattle?"battle":"characters";
+    // Always land on character selection after opening the link. Keep a restored battle in memory,
+    // but do not expose the arena or advance an enemy turn until the player selects Play.
+    screen="characters";
    }
    document.body.classList.toggle("tb-clean-ui",!!engine.state.account.settings?.clean_ui);
    render();
-   if(resumedBattle&&battle?.actor?.type==="enemy"&&battle.enemyQueueState){resumeEnemyTurnQueue(250);save();render();}
+   // A saved enemy turn is resumed only after the player selects the character and continues the run.
    if(Number(active?.run?.pendingEchoStage)>0)showEchoOfPastScreen(active,active.run.pendingEchoStage);
    if(active?.pendingCardReward?.length)showCardRewardScreen(active.pendingCardReward);
   }).catch(showFailure);
